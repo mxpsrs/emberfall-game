@@ -224,12 +224,13 @@ function renderPanel(){
   if(tab==='bag'){renderInventory();return;}if(tab==='gear'){renderEquipment();return;}if(tab==='spells'){renderSpells();return;}
   let html='';
   if(tab==='quests'){
+    pageControls(1,1);
     const q=quests[s.quest];html='<div class="questhead"><h2>'+q.title+'</h2><small>'+(s.quest===5?'COMPLETE':s.quest===0?'PROLOGUE':s.quest+' / 4')+'</small></div><p class="desc">'+q.desc+'</p>';
     if(q.checks)html+='<div class="objectives">'+q.checks().map(([name,v,n])=>'<span class="chip '+(v>=n?'done':'')+'">'+(v>=n?'✓ ':'')+name+' '+Math.min(v,n)+'/'+n+'</span>').join('')+'</div>';
     if(ready())html+='<p class="desc" style="color:#e0bc75">Ready to turn in — tap Elder Rowan.</p>';
   }
   if(tab==='bag')html='<div class="grid">'+[['Oak logs',s.bag.logs],['Iron ore',s.bag.ore],['Trout',s.bag.fish],['Wolf fangs',s.bag.fang],['Bones',s.bag.bones]].map(([n,v])=>'<div class="item">'+n+' <b>×'+v+'</b></div>').join('')+'</div><p class="desc">Equipped: '+(s.sword?'Iron sword (+4 damage)':'Bronze sword')+' · Axe · Pickaxe · Fishing rod<br>Trout heals 14 HP. Sell materials at Mara’s store.</p>';
-  if(tab==='skills')html='<div class="grid">'+Object.entries(s.xp).map(([k,x])=>{const level=lv(k),base=35*(level-1)**2,next=35*level**2;return '<div class="item">'+k+' <b>Lv. '+level+'</b><small>'+x+' / '+next+' XP</small><div class="skillbar"><i style="width:'+((x-base)/(next-base)*100)+'%"></i></div></div>';}).join('')+'</div>';
+  if(tab==='skills'){pageControls(Object.keys(s.xp).length,4);html='<div class="grid">'+pageItems(Object.entries(s.xp),4).map(([k,x])=>{const level=lv(k),base=35*(level-1)**2,next=35*level**2;return '<div class="item">'+k+' <b>Lv. '+level+'</b><small>'+x+' / '+next+' XP</small><div class="skillbar"><i style="width:'+((x-base)/(next-base)*100)+'%"></i></div></div>';}).join('')+'</div>';}
   $('panel').innerHTML=html;
 }
 function openCreator(edit=false){
@@ -328,7 +329,7 @@ function draw(){
 }
 function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(assetsReady&&!$('modal').open&&!$('creator').open&&!document.hidden){
+  if(assetsReady&&!$('modal').open&&!$('creator').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;const moving=Math.hypot(px-s.x,py-s.y)>.005;
     if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length)arrive();}}
     else if(path.length){const next=path.shift();if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;}
@@ -367,7 +368,7 @@ document.addEventListener('keydown',e=>{
   if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(e.key==='e')eat();
 });
 async function boot(){
-  resize();renderUI();renderAction();
+  initHud();resize();renderUI();renderAction();
   try{
     const names=['characters','environment','terrain','items','poses','walking'];
     await Promise.all(names.map(name=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{art[name]=img;resolve();};img.onerror=reject;img.src='assets/'+name+'.png';})));

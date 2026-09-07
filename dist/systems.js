@@ -50,19 +50,19 @@ function renderInventory(){
  const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Your inventory</h2><small>Tap an item</small></div><div id="inventoryGrid" class="inventorygrid"></div>';
  const grid=$('inventoryGrid');
  const ids=Object.keys(ITEMS).filter(owns);
- for(const id of ids){const item=ITEMS[id],b=document.createElement('button');b.className='inventoryitem';b.setAttribute('aria-label',item.name+(item.slot?'':', '+s.bag[id]));b.appendChild(itemCanvas(id));const name=document.createElement('span');name.className='itemname';name.textContent=item.name;b.appendChild(name);const qty=document.createElement('b');qty.className='quantity';qty.textContent=item.slot?(s.equipment[item.slot]===id?'E':''):s.bag[id];b.appendChild(qty);b.onclick=()=>itemDetails(id);grid.appendChild(b);}
- const pad=(4-ids.length%4)%4;for(let i=0;i<pad;i++){const div=document.createElement('div');div.className='inventoryempty';grid.appendChild(div);}
+ pageControls(ids.length,8);for(const id of pageItems(ids,8)){const item=ITEMS[id],b=document.createElement('button');b.className='inventoryitem';b.setAttribute('aria-label',item.name+(item.slot?'':', '+s.bag[id]));b.appendChild(itemCanvas(id));const name=document.createElement('span');name.className='itemname';name.textContent=item.name;b.appendChild(name);const qty=document.createElement('b');qty.className='quantity';qty.textContent=item.slot?(s.equipment[item.slot]===id?'E':''):s.bag[id];b.appendChild(qty);b.onclick=()=>itemDetails(id);grid.appendChild(b);}
+ const pad=(4-pageItems(ids,8).length%4)%4;for(let i=0;i<pad;i++){const div=document.createElement('div');div.className='inventoryempty';grid.appendChild(div);}
  paintItemIcons(panel);
 }
 function renderEquipment(){
- const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div><p class="desc" id="gearSummary"></p>';
+ pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div><p class="desc" id="gearSummary"></p>';
  const grid=$('equipmentGrid');
  for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);b.onclick=()=>{if(id)itemDetails(id);else{tab='bag';syncTabs();renderPanel();toast('Choose an item to equip.');}};grid.appendChild(b);}
  $('gearSummary').textContent=equippedWeapon().name+' · '+combatStyle()+' · Range '+Math.floor(attackRange())+' tiles'+(s.equipment.shield&&combatStyle()!=='melee'?' · Shield inactive':'');paintItemIcons(panel);
 }
 function renderSpells(){
- const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
- for(const [id,spell]of Object.entries(SPELLS)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+spell.cost+' rune'+(spell.cost>1?'s':'')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
+ pageControls(3,2);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
+ for(const [id,spell]of pageItems(Object.entries(SPELLS),2)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+spell.cost+' rune'+(spell.cost>1?'s':'')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
 }
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
