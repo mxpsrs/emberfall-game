@@ -36,12 +36,13 @@ function equipItem(id){
 function unequipItem(slot){stop();s.equipment[slot]=null;renderUI();save();}
 function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
-function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);sprite(g,'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
+function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemDetails(id){
  const item=ITEMS[id];if(!item)return;
  const isEquipped=item.slot&&s.equipment[item.slot]===id;
  const buttons=[];
  if(item.slot)buttons.push([isEquipped?'Unequip':'Equip',()=>{if(isEquipped)unequipItem(item.slot);else equipItem(id);close();toast(isEquipped?item.name+' unequipped.':item.name+' equipped.');}]);
+ if(id==='herbs')buttons.push(['Eat herbs',()=>{if(s.hp>=maxhp()){toast('Your health is full.');return;}if(s.bag.herbs>0){s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();close();}}]);
  if(id==='fish')buttons.push(['Eat trout',()=>{eat();close();}]);
  dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
  $('itemhero').appendChild(itemCanvas(id,160));paintItemIcons($('itemhero'));
@@ -70,14 +71,15 @@ function renderCombatBar(){
 }
 function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(ITEMS[id].slot&&owns(id)){toast('You already own this item.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=1;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
-function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
+function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&&lineOfSight(s.x,s.y,o.x,o.y);}
 let projectiles=[],enemyClock=0,retaliationClock=0;
 function awardDefeat(o,style){
  o.dead=time+(o.type==='dummy'?8:25);const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';gain(skill,o.xp);if(skill!=='Combat')gain('Combat',Math.ceil(o.xp*.5));s.gold+=o.coins;if(o.loot)s.bag[o.loot]++;
  if(o.kind==='goblin'||o.kind==='bandit')s.bag.arrows+=3;
  if(o.kind==='slime'||o.kind==='skeleton')s.bag.runes+=2;
- if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
+ if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
+ else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){if(s.tutorial===5)s.hp=Math.max(1,Math.min(s.hp,maxhp()-6));tutorialEvent('dummy');toast('Training complete. Try your food button to heal.');}
  else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · +'+o.coins+' coins · +'+o.xp+' '+skill+' XP');}
  stop();
@@ -107,7 +109,7 @@ function updateCombat(dt){
    if(o.type!=='dummy'&&enemyClock>=(o.slowUntil>time?.9:.38)){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
  }else if(retaliationClock>=1.3&&lineOfSight(o.x,o.y,s.x,s.y)){
    retaliationClock=0;o.attackAt=time;const hit=Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue());s.hp-=hit;floating('-'+hit,px,py,'#ffaba1');
-   if(s.hp<=0){s.gold=Math.max(0,s.gold-5);s.x=14;s.y=17;px=14;py=17;s.hp=maxhp();o.hp=o.maxhp;projectiles=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}renderUI();save();
+   if(s.hp<=0){s.gold=Math.max(0,s.gold-5);returnToVillage();s.x=14;s.y=17;px=14;py=17;s.hp=maxhp();o.hp=o.maxhp;projectiles=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}renderUI();save();
  }
 }
 function drawProjectiles(){

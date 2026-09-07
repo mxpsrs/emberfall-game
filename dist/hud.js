@@ -12,11 +12,10 @@ function initHud(){
 }
 
 function drawMinimap(){
- const c=$('minimap'),g=c.getContext('2d'),sx=c.width/W,sy=c.height/H;
- g.fillStyle='#213f30';g.fillRect(0,0,c.width,c.height);
- for(let y=0;y<H;y++)for(let x=0;x<W;x++){const tile=terrainType(x,y);g.fillStyle=['#426044','#9d8657','#727d78','#3c839d'][tile];g.fillRect(x*sx,y*sy,sx+.4,sy+.4);}
- for(const b of buildings){g.fillStyle='#d7bd86';g.fillRect(b.x*sx,b.y*sy,b.w*sx,b.h*sy);}
- for(const o of objects){if(o.dead>time||(o.type==='boss'&&s.boss))continue;g.fillStyle=fighter(o)?'#ee897a':['elder','shop','forge','inn'].includes(o.type)?'#f5d995':'#a0c68b';g.beginPath();g.arc((o.x+.5)*sx,(o.y+.5)*sy,fighter(o)?1.7:1.3,0,Math.PI*2);g.fill();}
+ const c=$('minimap'),g=c.getContext('2d'),[mapW,mapH]=sceneSize(),sx=c.width/mapW,sy=c.height/mapH;
+ if(!miniTerrain){miniTerrain=document.createElement('canvas');miniTerrain.width=c.width;miniTerrain.height=c.height;const bg=miniTerrain.getContext('2d');for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){bg.fillStyle=worldWall(x,y)?'#182730':['#426044','#9d8657','#727d78','#3c839d'][terrainType(x,y)];bg.fillRect(x*sx,y*sy,sx+.4,sy+.4);}for(const b of buildings){bg.fillStyle='#d7bd86';bg.fillRect(b.x*sx,b.y*sy,b.w*sx,b.h*sy);}}
+ g.drawImage(miniTerrain,0,0);
+ for(const o of objects){if(o.dead>time||(o.type==='boss'&&s.boss)||['tree','prop','crop'].includes(o.type))continue;g.fillStyle=fighter(o)?'#ee897a':'#f5d995';g.beginPath();g.arc((o.x+.5)*sx,(o.y+.5)*sy,fighter(o)?1.5:1.2,0,Math.PI*2);g.fill();}
  g.strokeStyle='#ffffff70';g.lineWidth=1;g.strokeRect(camera.x/TILE*sx,camera.y/TILE*sy,screen.w/TILE*sx,screen.h/TILE*sy);
  const x=(px+.5)*sx,y=(py+.5)*sy;g.fillStyle='#fff3be';g.strokeStyle='#15252a';g.lineWidth=2;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.stroke();
 }
