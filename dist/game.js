@@ -325,7 +325,7 @@ function draw(){
   drawProjectiles();
   for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);label(f.text,(f.x+.5)*TILE-camera.x,(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25,f.color,15);}ctx.globalAlpha=1;
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the Hollow King']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
-  $('region').textContent=region[0];$('regionSub').textContent=region[1];
+  $('region').textContent=region[0];$('regionSub').textContent=region[1];drawMinimap();
 }
 function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
