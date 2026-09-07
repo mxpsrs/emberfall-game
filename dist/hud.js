@@ -5,6 +5,7 @@ function pageControls(total,size){const pages=Math.max(1,Math.ceil(total/size));
 function updateOrientation(){const portrait=window.matchMedia('(orientation: portrait)').matches;$('rotateScreen').hidden=!portrait;document.body.classList.toggle('portrait-mode',portrait);if(typeof resize==='function')resize();}
 function initHud(){
  $('minimapButton').onclick=worldMap;
+ $('togglePanels').onclick=()=>{const open=$('gameDock').hidden;$('gameDock').hidden=!open;document.body.classList.toggle('panels-open',open);$('togglePanels').setAttribute('aria-expanded',String(open));$('togglePanels').textContent=open?'Close panels':'Bag & menus';if(open){tab='bag';panelPage=0;syncTabs();renderPanel();}};
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
  $('tutCollapse').onclick=()=>{const collapsed=$('tutorial').classList.toggle('collapsed');$('tutCollapse').textContent=collapsed?'Expand':'Minimize';};
