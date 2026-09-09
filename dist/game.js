@@ -6,7 +6,7 @@ const defaults = () => ({
   xp:{Combat:0, Woodcutting:0, Mining:0, Fishing:0, Smithing:0, Ranged:0, Magic:0},
   bag:{logs:0, ore:0, fish:3, fang:0, bones:0, arrows:60, runes:40},
   sword:0, quest:0, kills:0, boss:false, character:null,
-  tutorial:0, tutorialReward:false, spell:"spark",
+  spirits:{}, tutorial:0, tutorialReward:false, spell:"spark",
   gear:{bronzeSword:1,shortbow:1,oakStaff:1,leatherArmor:1,leatherBoots:1},
   equipment:{weapon:"bronzeSword",head:null,body:"leatherArmor",shield:null,feet:"leatherBoots"}
 });
@@ -16,7 +16,7 @@ try {
   if (old && old.xp && old.bag) {s = {...s, ...old, xp:{...s.xp,...old.xp}, bag:{...s.bag,...old.bag},gear:{...s.gear,...old.gear},equipment:{...s.equipment,...old.equipment}};if(old.sword&&!old.gear){s.gear.ironSword=1;s.equipment.weapon='ironSword';}}
 } catch {}
 const lv = skill => 1 + Math.floor(Math.sqrt(s.xp[skill] / 35));
-const maxhp = () => 30 + (lv('Combat') - 1) * 6;
+const maxhp = () => 30 + (lv('Combat') - 1) * 6 + spiritBonus('health');
 s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
 s.tutorial = Math.max(0, Math.min(8, s.tutorial));
@@ -73,7 +73,7 @@ function inBuilding(b,x,y) {
   return !b.arch || x===b.x || x===b.x+b.w-1;
 }
 const fighter=o=>o&&['enemy','boss','man','dummy'].includes(o.type);
-const blocked=(x,y)=>worldWall(x,y)||water(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o));
+const blocked=(x,y)=>worldWall(x,y)||water(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected);
 const land=(x,y)=>!blocked(x,y);
 if((!s.sceneId||s.sceneId==='overworld')&&!land(s.x,s.y)){s.x=14;s.y=17;}
 let px=s.x, py=s.y, path=[], target=null, elapsed=0, moveClock=0;
@@ -262,7 +262,7 @@ function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,
 // Sprite atlases are generated artwork; each logical sprite is one equal atlas cell.
 function sprite(g,atlas,index,x,bottom,width,height,flip=1,rotation=0){
   const img=art[atlas];if(!img)return;
-  const cols=atlas==='terrain'?2:4,rows=atlas==='poses'?3:cols,cellW=img.width/cols,cellH=img.height/rows;
+  const cols=['terrain','spirits'].includes(atlas)?2:4,rows=atlas==='poses'?3:cols,cellW=img.width/cols,cellH=img.height/rows;
   const crop=art.bounds?.[atlas]?.[index]||{x:(index%cols)*cellW,y:Math.floor(index/cols)*cellH,w:cellW,h:cellH};
   const ratio=Math.min(width/crop.w,height/crop.h),dw=crop.w*ratio,dh=crop.h*ratio;
   g.save();g.translate(x,bottom);g.scale(flip,1);g.rotate(rotation);g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-dw/2,-dh,dw,dh);g.restore();return {x:x-dw/2,y:bottom-dh,w:dw,h:dh};
@@ -305,7 +305,7 @@ function draw(){
     }
     const o=entry.o,x=(o.drawX+.5)*TILE-camera.x,bottom=(o.drawY+.96)*TILE-camera.y;
     if(x< -90||x>w+90||bottom< -20||bottom>h+130)continue;
-    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=living?'characters':'environment';
+    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=o.type==='spirit'?'spirits':living?'characters':'environment';
     let width=living?48:56,height=living?59:62;
     if(o.type==='crop'){width=37;height=o.harvestedUntil>time?13:37;}if(o.type==='tree'){width=91;height=111;}if(o.type==='ore'){width=58;height=47;}if(o.type==='fish'){width=36;height=28;}if(o.type==='boss'||o.kind==='warden'){width=70;height=90;}if(o.kind==='wolf'){width=58;height=49;}if(o.kind==='slime'||o.kind==='rat'){width=45;height=37;}
     if(o.type!=='fish')shadow(ctx,x,bottom,Math.min(25,width*.3));
@@ -322,14 +322,14 @@ function draw(){
     }
     if(o.type==='camp'){const g=ctx.createRadialGradient(x,bottom-13,2,x,bottom-13,43);g.addColorStop(0,'#f9b34a22');g.addColorStop(1,'#f9b34a00');ctx.fillStyle=g;ctx.fillRect(x-43,bottom-56,86,86);}
   }
-  drawWorldMood();drawProjectiles();
+  drawWorldMood();drawProjectiles();drawSpiritEffect();
   for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);label(f.text,(f.x+.5)*TILE-camera.x,(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25,f.color,15);}ctx.globalAlpha=1;
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the Hollow King']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
 }
 function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(assetsReady&&!$('modal').open&&!$('creator').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
+  if(assetsReady&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;const moving=Math.hypot(px-s.x,py-s.y)>.005;
     if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length)arrive();}}
     else if(path.length){const next=path.shift();if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;}
@@ -337,7 +337,7 @@ function frame(now){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
       else{elapsed+=dt;const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[target.type]||'Combat';const duration=fighter(target)?(combatStyle()==='magic'?1.35:combatStyle()==='ranged'?1:1.15):Math.max(.8,2.3-(lv(skill)-1)*.1);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
-    updateCombat(dt);livingWorld(dt);
+    updateCombat(dt);livingWorld(dt);updateSpirits(dt);
     for(const o of objects){if(o.dead&&o.dead<=time){o.dead=0;o.hp=o.maxhp;o.x=o.homeX;o.y=o.homeY;o.drawX=o.x;o.drawY=o.y;}o.drawX+=(o.x-o.drawX)*Math.min(1,dt*10);o.drawY+=(o.y-o.drawY)*Math.min(1,dt*10);}
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
@@ -363,14 +363,14 @@ $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListen
 $('modal').addEventListener('close',()=>{renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
-  if(!assetsReady||$('modal').open||$('creator').open)return;
+  if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open)return;
   const d={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key];
   if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(e.key==='e')eat();
 });
 async function boot(){
-  setupExpandedWorld();initHud();resize();renderUI();renderAction();
+  setupExpandedWorld();setupSpirits();initHud();resize();renderUI();renderAction();
   try{
-    const names=['characters','environment','terrain','items','poses','walking'];
+    const names=['characters','environment','terrain','items','poses','walking','spirits'];
     await Promise.all(names.map(name=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{art[name]=img;resolve();};img.onerror=reject;img.src='assets/'+name+'.png';})));
     const response=await fetch('assets/bounds.json');if(response.ok)art.bounds=await response.json();
     prepareAnimationAtlases();assetsReady=true;$('loading').hidden=true;renderUI();renderTutorial();if(!s.character)openCreator(false);

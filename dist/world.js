@@ -76,6 +76,7 @@ function enterInterior(o){s.returnPoint=[s.x,s.y];activateScene(o.destination);t
 function leaveInterior(){if(inWorld())return;const point=s.returnPoint||[14,17];activateScene('overworld',point[0],point[1]);}
 function returnToVillage(){activateScene('overworld',14,17);}
 function handleWorldInteraction(o){
+ if(o.type==='spirit'){collectSpirit(o);return true;}
  if(o.type==='door'){enterInterior(o);return true;}
  if(o.type==='exit'){leaveInterior();return true;}
  if(o.type==='villager'){stop();dialog(o.name,'<p>'+o.talk+'</p>');return true;}

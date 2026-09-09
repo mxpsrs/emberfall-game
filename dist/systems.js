@@ -26,7 +26,7 @@ function equippedWeapon(){return ITEMS[s.equipment.weapon]||{name:'Unarmed',styl
 function combatStyle(){return equippedWeapon().style;}
 function currentSpell(){return SPELLS[s.spell]||SPELLS.spark;}
 function attackRange(){return combatStyle()==='magic'?currentSpell().range:equippedWeapon().range;}
-function armorValue(){return Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
+function armorValue(){return spiritBonus('armor')+Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
@@ -91,7 +91,7 @@ function performAttack(o){
  if(style==='magic'&&(lv('Magic')<spell.level||s.bag.runes<spell.cost)){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  if(style==='ranged')s.bag.arrows--;if(style==='magic')s.bag.runes-=spell.cost;
  const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';
- const damage=(style==='magic'?spell.power+magicBonus():3)+lv(skill)+equippedWeapon().power+Math.floor(Math.random()*3);
+ const damage=spiritBonus(style)+(style==='magic'?spell.power+magicBonus():3)+lv(skill)+equippedWeapon().power+Math.floor(Math.random()*3);
  lastAttack=time;facing=o.x<s.x?-1:1;
  if(style==='melee')resolveHit(o,damage,style);else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
