@@ -1,7 +1,7 @@
 export async function handleSave(request,env){
  const headers={'Content-Type':'application/json','Cache-Control':'no-store'};
  const reply=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
- const user=request.headers.get('oai-authenticated-user-id');if(!user)return reply({error:'Sign in to load your character.'},401);
+ const user=request.headers.get('oai-authenticated-user-id');if(!user)return reply({error:'Sign in with ChatGPT to load or create your character.',code:'SIGN_IN_REQUIRED',signInPath:'/signin-with-chatgpt?return_to=%2F'},401);
  if(!env.DB)return reply({error:'Character storage is unavailable.'},503);
  try{
  if(request.method==='GET'){const row=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(user).first();return reply(row?{account:user,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,state:null,revision:0});}

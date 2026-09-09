@@ -11,10 +11,6 @@ const defaults = () => ({
   equipment:{weapon:"bronzeSword",head:null,body:"leatherArmor",shield:null,feet:"leatherBoots"}
 });
 let s = defaults();
-try {
-  const old = JSON.parse(localStorage.getItem(SAVE_KEY));
-  if (old && old.xp && old.bag) {s = {...s, ...old, xp:{...s.xp,...old.xp}, bag:{...s.bag,...old.bag},gear:{...s.gear,...old.gear},equipment:{...s.equipment,...old.equipment}};if(old.sword&&!old.gear){s.gear.ironSword=1;s.equipment.weapon='ironSword';}}
-} catch {}
 const lv = skill => 1 + Math.floor(Math.sqrt(s.xp[skill] / 35));
 const maxhp = () => 30 + (lv('Combat') - 1) * 6 + spiritBonus('health');
 s.hp = Math.max(1, Math.min(s.hp, maxhp()));
@@ -257,10 +253,14 @@ function renderLooks(){
   const c=$('characterPreview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);shadow(g,192,260,55);drawEquippedCharacter(g,192,260,selectedLook,false,10,3.8);$('lookName').textContent=looks[selectedLook].name;
 }
 function drawPortrait(){const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);}
-function finishCharacter(name,look){
+async function finishCharacter(name,look){
   const cleaned=name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
   if(!s.character){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}
-  s.character={name:cleaned,look:Math.max(0,Math.min(3,look))};$('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
+  s.character={name:cleaned,look:Math.max(0,Math.min(3,look))};
+  $('begin').disabled=true;$('begin').textContent='Saving character…';$('characterSaveError').textContent='';
+  save();const saved=await flushCloudSave();$('begin').disabled=false;
+  if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
+  $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
 }
 function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a man to choose Talk or Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a building to visit its shop, forge, or inn. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Progress saves in this browser on this device.</p>',[['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
@@ -367,7 +367,7 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
 $('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=14;close();renderTutorial();$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
-$('characterForm').onsubmit=e=>{e.preventDefault();if(!finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
+$('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!s.character)e.preventDefault();});
 $('modal').addEventListener('close',()=>{renderUI();save();});
@@ -378,7 +378,11 @@ document.addEventListener('keydown',e=>{
   if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(e.key==='e')eat();
 });
 async function boot(){
-  try{await initializeCloud();}catch{$('loading').innerHTML='<p>Your account save could not load.</p><button id=retryCloud>Retry</button>';$('retryCloud').onclick=()=>location.reload();cloudStatus('Could not load account save');return;}
+  try{await initializeCloud();}catch(error){
+    const needsSignIn=error.status===401;
+    $('loading').innerHTML=needsSignIn?'<p>Sign in to load your adventurer or create a new one.</p><a class="primary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Sign in with ChatGPT</a><button id="retryCloud">I signed in · Retry</button>':'<p>Your account save could not load. Your saved character has not been replaced.</p><button id="retryCloud">Retry</button>';
+    $('retryCloud').onclick=()=>location.reload();cloudStatus(needsSignIn?'Sign in to continue':'Could not load account save');return;
+  }
   setupExpandedWorld();setupSpirits();setupLoot();if(s.tutorialReward&&s.tutorial===8)s.tutorial=14;initHud();resize();renderUI();renderAction();
   try{
     const names=['characters','environment','terrain','items','poses','walking','spirits','heroes','monsters'];
