@@ -380,7 +380,7 @@ document.addEventListener('keydown',e=>{
 async function boot(){
   try{await initializeCloud();}catch(error){
     const needsSignIn=error.status===401;
-    $('loading').innerHTML=needsSignIn?'<p>Sign in to load your adventurer or create a new one.</p><a class="primary" href="/signin-with-chatgpt?return_to=%2F" target="_top">Sign in with ChatGPT</a><button id="retryCloud">I signed in · Retry</button>':'<p>Your account save could not load. Your saved character has not been replaced.</p><button id="retryCloud">Retry</button>';
+    $('loading').innerHTML=needsSignIn?'<p>Your signed-in account is unavailable. Reopen Emberfall from ChatGPT, then try again.</p><button id="retryCloud">Retry account connection</button>':'<p>Your account save could not load. Your saved character has not been replaced.</p><button id="retryCloud">Retry</button>';
     $('retryCloud').onclick=()=>location.reload();cloudStatus(needsSignIn?'Sign in to continue':'Could not load account save');return;
   }
   setupExpandedWorld();setupSpirits();setupLoot();if(s.tutorialReward&&s.tutorial===8)s.tutorial=14;initHud();resize();renderUI();renderAction();

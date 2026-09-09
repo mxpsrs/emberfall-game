@@ -1,10 +1,24 @@
+// Identity comes only from Sites' authenticated request headers, never the save body.
+async function accountKeys(request){
+ const id=request.headers.get('oai-authenticated-user-id')?.trim();
+ const email=request.headers.get('oai-authenticated-user-email')?.trim().toLowerCase();
+ const keys=[];if(id)keys.push(id);
+ if(email&&/^[^\s@]+@[^\s@]+$/.test(email)){
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(email));
+  keys.push('email:'+Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join(''));
+ }
+ return keys;
+}
 export async function handleSave(request,env){
  const headers={'Content-Type':'application/json','Cache-Control':'no-store'};
  const reply=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
- const user=request.headers.get('oai-authenticated-user-id');if(!user)return reply({error:'Sign in with ChatGPT to load or create your character.',code:'SIGN_IN_REQUIRED',signInPath:'/signin-with-chatgpt?return_to=%2F'},401);
+ const keys=await accountKeys(request);if(!keys.length)return reply({error:'Your signed-in account is unavailable. Reopen Emberfall from ChatGPT and try again.',code:'ACCOUNT_UNAVAILABLE'},401);
  if(!env.DB)return reply({error:'Character storage is unavailable.'},503);
  try{
- if(request.method==='GET'){const row=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(user).first();return reply(row?{account:user,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,state:null,revision:0});}
+ let user=keys[0],row=null;
+ // Preserve an existing ID-keyed save, and retain email-keyed saves if an ID becomes available later.
+ for(const key of keys){const found=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(key).first();if(found){user=key;row=found;break;}}
+ if(request.method==='GET'){return reply(row?{account:user,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,state:null,revision:0});}
  if(request.method!=='PUT')return reply({error:'Method not allowed'},405);
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
  const raw=await request.text();if(raw.length>500000)return reply({error:'Save is too large'},413);

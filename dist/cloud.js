@@ -14,7 +14,7 @@ function queueCloudSave(){if(!cloudReady||cloudConflict||!s.character)return;clo
 async function flushCloudSave(){
  if(!cloudReady||cloudBusy||!cloudDirty||cloudConflict)return false;clearTimeout(cloudTimer);cloudBusy=true;cloudDirty=false;
  try{const response=await fetch('/api/character',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:cloudRevision,state:s}),keepalive:true});
- if(response.status===401){cloudConflict=true;cloudStatus('Sign in to resume account saving');dialog('Sign in to save','<p>Your session needs to be renewed. Your character backup is kept on this device.</p><p><a href="/signin-with-chatgpt?return_to=%2F" target="_top">Sign in with ChatGPT</a></p>',[]);return false;}
+ if(response.status===401){cloudConflict=true;cloudStatus('Sign in to resume account saving');dialog('Reconnect your account','<p>Reopen Emberfall from ChatGPT to reconnect your account. Your character backup is kept on this device.</p>',[['Retry connection',()=>location.reload()]]);return false;}
  if(response.status===409){cloudConflict=true;cloudStatus('Reload: newer account save');dialog('Character open elsewhere','<p>A newer save exists from another tab or device. Reload to use it. This session’s local backup has been kept.</p>',[['Reload character',()=>location.reload()]]);return;}
  if(!response.ok)throw new Error('Save unavailable');const result=await response.json();cloudRevision=result.revision;backupCloudState(cloudDirty);cloudStatus('Saved to account');return true;
  }catch{cloudDirty=true;cloudStatus('Offline · backup on device');return false;}
