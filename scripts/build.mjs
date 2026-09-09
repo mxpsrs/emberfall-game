@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createCanvas,loadImage} from '@napi-rs/canvas';
+// Preserve the authored browser game and bundle its assets with the API Worker.
+const assets={};
+async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p);let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.png':'image/png'})[ext]||'application/octet-stream';if(ext==='.png'){const img=await loadImage(bytes),c=createCanvas(img.width,img.height);c.getContext('2d').drawImage(img,0,0);bytes=await c.encode('webp',88);mime='image/webp';}assets['/'+path.relative('dist',p)]={data:bytes.toString('base64'),mime};}}}
+await walk('dist');
+const api=fs.readFileSync('worker/api.js','utf8');
+const server=api+'\nconst assets='+JSON.stringify(assets)+';\n'+`export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==='/api/character')return handleSave(request,env);if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});const asset=assets[url.pathname==='/'?'/index.html':url.pathname];if(!asset)return new Response('Not found',{status:404});const data=request.method==='HEAD'?null:Uint8Array.from(atob(asset.data),c=>c.charCodeAt(0));return new Response(data,{headers:{'Content-Type':asset.mime,'Cache-Control':'no-cache','X-Content-Type-Options':'nosniff'}});}};`;
+fs.mkdirSync('dist/server',{recursive:true});fs.writeFileSync('dist/server/index.js',server);fs.mkdirSync('dist/.openai',{recursive:true});fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');console.log('Built character-save Worker and '+Object.keys(assets).length+' game assets; '+Math.round(server.length/1024)+' KiB module.');

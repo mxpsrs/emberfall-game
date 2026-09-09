@@ -1,6 +1,6 @@
 'use strict';
 let currentScene='overworld',worldScenes={},ambient=null,ambientEnabled=false,ambientTimer=0,miniTerrain=null;
-const sceneSizes={overworld:[72,60],inn:[14,12],shop:[14,12],forge:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25]};
+const sceneSizes={overworld:[96,84],stoneInn:[14,12],stoneShop:[14,12],inn:[14,12],shop:[14,12],forge:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25]};
 function sceneSize(){return sceneSizes[currentScene]||sceneSizes.overworld;}
 function worldWall(x,y){const [w,h]=sceneSize();if(x<1||y<1||x>=w-1||y>=h-1)return true;if(currentScene==='mine')return (x===10&&y>2&&y<18&&![7,8,15].includes(y))||(y===12&&x>10&&x<23&&x!==18);if(currentScene==='dungeon')return (x===9&&y>1&&y<22&&![5,6,17,18].includes(y))||(x===18&&y>3&&y<24&&![10,11,20].includes(y));return false;}
 function inWorld(){return currentScene==='overworld';}
@@ -8,6 +8,8 @@ function expandedWater(x,y){if(!inWorld())return false;return (x>=2&&x<=8&&y>=19
 function expandedTerrain(x,y){
  if(!inWorld())return currentScene==='mine'?1:2;
  if(expandedWater(x,y))return 3;
+ if(x>=70&&x<=81&&y>=54&&y<=64)return 2;
+ if((y>=59&&y<=61&&x>=55&&x<=91)||(x>=73&&x<=75&&y>=34)||(y>=70&&y<=72&&x>=74))return 1;
  if((x>=48&&x<=62&&y>=16&&y<=29)||(y<8&&x>10&&x<21)||(x>=10&&x<=22&&y>=12&&y<=19))return 2;
  if((x>=40&&x<=46&&y>=21&&y<=29)||(x>=13&&x<=15)||(y>=16&&y<=18&&x>=7&&x<=68)||(y>=34&&y<=36&&x>=14&&x<=60)||(x>=54&&x<=56&&y>=7&&y<=46)||(x>=27&&x<=29&&y>=17&&y<=35))return 1;
  return 0;
@@ -58,8 +60,9 @@ function setupExpandedWorld(){
  const mineDoor=add('door',55,8,'Pinewatch Mine',13,{destination:'mine'}),cryptDoor=add('door',58,45,'Sunken Crypt',13,{destination:'dungeon'});
  buildings.push({x:53,y:4,w:4,h:4,sprite:3,name:'Pinewatch Mine',service:mineDoor},{x:56,y:41,w:4,h:4,sprite:3,name:'Sunken Crypt',service:cryptDoor});
  add('prop',35,16,'Willowcross sign',13);add('prop',39,35,'Southern crossing sign',13);
+ setupFrontier();
  worldScenes.overworld={objects:objects.slice(),buildings:buildings.slice(),title:'The Border Realms',entry:[14,17]};
- for(const [id,kind,title]of [['inn','inn','Wayfarer’s Rest'],['shop','shop','Mara’s General Store'],['forge','forge','Briarhaven Smithy'],['willowInn','inn','Willowcross Inn'],['willowShop','shop','Willowcross Market'],['mine','mine','Pinewatch Mine'],['dungeon','dungeon','Sunken Crypt']])makeInterior(id,kind,title);
+ for(const [id,kind,title]of [['stoneInn','inn','Stoneford Lodge'],['stoneShop','shop','Stoneford Supplies'],['inn','inn','Wayfarer’s Rest'],['shop','shop','Mara’s General Store'],['forge','forge','Briarhaven Smithy'],['willowInn','inn','Willowcross Inn'],['willowShop','shop','Willowcross Market'],['mine','mine','Pinewatch Mine'],['dungeon','dungeon','Sunken Crypt']])makeInterior(id,kind,title);
  const savedScene=s.sceneId||'overworld',savedX=s.x,savedY=s.y;activateScene(worldScenes[savedScene]?savedScene:'overworld',savedX,savedY,false);
  $('ambientButton').onclick=toggleAmbient;
  canvas.addEventListener('pointerdown',()=>{if(s.sound!==false&&!ambient)startAmbient();},{once:true});
@@ -72,16 +75,18 @@ function activateScene(id,x,y,persist=true){
  s.x=x??scene.entry[0];s.y=y??scene.entry[1];if(!land(s.x,s.y)){[s.x,s.y]=scene.entry;}px=s.x;py=s.y;miniTerrain=null;
  $('leaveInterior').hidden=inWorld();renderTutorial();if(persist)save();
 }
-function enterInterior(o){s.returnPoint=[s.x,s.y];activateScene(o.destination);toast('Entered '+worldScenes[o.destination].title+'.');}
+function enterInterior(o){s.returnPoint=[s.x,s.y];activateScene(o.destination);tutorialEvent('inn');toast('Entered '+worldScenes[o.destination].title+'.');}
 function leaveInterior(){if(inWorld())return;const point=s.returnPoint||[14,17];activateScene('overworld',point[0],point[1]);}
 function returnToVillage(){activateScene('overworld',14,17);}
 function handleWorldInteraction(o){
+ if(o.type==='questgiver'){frontierTalk(o);return true;}
+ if(o.type==='loot'){openGroundLoot(o);return true;}
  if(o.type==='spirit'){collectSpirit(o);return true;}
  if(o.type==='door'){enterInterior(o);return true;}
  if(o.type==='exit'){leaveInterior();return true;}
  if(o.type==='villager'){stop();dialog(o.name,'<p>'+o.talk+'</p>');return true;}
  if(o.type==='prop'){stop();toast(o.name+'.');return true;}
- if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt Warden still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}s.gold+=100;s.bag.runes+=30;s.bag.arrows+=40;s.cryptLoot=true;save();renderUI();dialog('Warden’s supply cache','<p>You recover <b>100 coins, 30 rune stones, and 40 arrows.</b></p>');return true;}
+ if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt Warden still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Warden’s supply cache','<p>The cache leaves <b>100 coins, 30 rune stones, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
  return false;
 }
 function livingWorld(dt){
@@ -99,6 +104,9 @@ function livingWorld(dt){
 }
 function regionInfo(){
  if(!inWorld())return [worldScenes[currentScene].title,currentScene==='mine'?'Iron veins & miners':currentScene==='dungeon'?'The Warden’s domain':'Shelter from the road'];
+ if(s.x>=70&&s.y>=54&&s.y<=65)return ['Stoneford','Lodge · Market · Highland quests'];
+ if(s.x>=85&&s.y<42)return ['Ashwatch ruins','The Sentinel keeps watch'];
+ if(s.x>=64&&s.y>=40)return ['The High Marches','Ridge wolves & the coastal beacon'];
  if(s.x>=48&&s.x<=63&&s.y>=16&&s.y<=30)return ['Willowcross','A market town beyond the river'];
  if(s.x>=40&&s.x<=47&&s.y>=20&&s.y<=31)return ['Riverbend Farms','Growing herbs & village life'];
  if(s.x>39&&s.y<14)return ['Pinewatch Woods','Ancient pines & hidden iron'];
@@ -120,7 +128,7 @@ function drawSceneWalls(){
 }
 function expandedMap(page=0){
  if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Use the exit marker or Exit button to return to the road.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
- const places=[['Briarhaven','Your starting village',14,17],['Willowcross','Inn & market',54,26],['Riverbend Farms','Harvest herbs',44,25],['Pinewatch Mine','Enter & mine iron',55,9],['Sunken Crypt','Dungeon & Warden',58,46],['Elderwood','Ancient oak forest',14,44],['Stillwater','Fishing',9,21],['Reedwater','Southern lake',52,46],['Goblin camp','Combat level 3',27,16],['Wolf thicket','Combat level 2',23,23],['Hollow Ruins','The Hollow King',15,8],['Iron Ridge','Mining',23,7]];
+ const places=[['Stoneford','New town & quests',75,62],['Coastal beacon','Keeper Orin',86,71],['Ashwatch','Sentinel encounter',89,35],['Briarhaven','Your starting village',14,17],['Willowcross','Inn & market',54,26],['Riverbend Farms','Harvest herbs',44,25],['Pinewatch Mine','Enter & mine iron',55,9],['Sunken Crypt','Dungeon & Warden',58,46],['Elderwood','Ancient oak forest',14,44],['Stillwater','Fishing',9,21],['Reedwater','Southern lake',52,46],['Goblin camp','Combat level 3',27,16],['Wolf thicket','Combat level 2',23,23],['Hollow Ruins','The Hollow King',15,8],['Iron Ridge','Mining',23,7]];
  const pages=Math.ceil(places.length/4);dialog('The borderlands','<p>Choose a destination to walk there. '+(page+1)+' / '+pages+'</p><div class="mapgrid" id="destinations"></div>',[[page+1<pages?'More destinations':'First destinations',()=>expandedMap((page+1)%pages)]]);
  for(const [name,desc,x,y]of places.slice(page*4,page*4+4)){const b=document.createElement('button');b.innerHTML=name+'<br><small>'+desc+'</small>';b.onclick=()=>{close();walkTo(x,y);};$('destinations').appendChild(b);}
 }

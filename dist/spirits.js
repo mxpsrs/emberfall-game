@@ -18,9 +18,9 @@ function setupSpirits(){
 function collectSpirit(o){
  const id=o.spiritId,def=SPIRITS[id];stop();if(s.spirits[id])return;
  if(def.skill&&lv(def.skill)<2){dialog(def.name+' · '+def.element+' spirit','<p>This spirit is curious about your '+def.skill.toLowerCase()+'. Reach <b>'+def.skill+' level 2</b> to form a bond.</p>');return;}
- dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to travel with you.</p><p><b>Equipped bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power a summon.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};o.collected=true;o.dead=Infinity;close();toast(def.name+' joined you. Open Spirits beside your combat controls.');renderUI();save();}]]);
+ dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to travel with you.</p><p><b>Equipped bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power a summon.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};o.collected=true;o.dead=Infinity;tutorialEvent('spirit');close();toast(def.name+' joined you. Open Spirits beside your combat controls.');renderUI();save();}]]);
 }
-function openSpirits(){path=[];if(target&&!fighter(target))stop();$('spiritsDialog').showModal();renderSpirits();}
+function openSpirits(){if(s.spirits.cinder)tutorialEvent('spirit');path=[];if(target&&!fighter(target))stop();$('spiritsDialog').showModal();renderSpirits();}
 function spiritOpponent(){return target&&fighter(target)&&target.hp>0&&target.dead<=time&&Math.hypot(target.x-s.x,target.y-s.y)<=6&&lineOfSight(s.x,s.y,target.x,target.y)?target:null;}
 function renderSpirits(){
  const choices=$('spiritChoices');choices.innerHTML='';

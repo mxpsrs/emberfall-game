@@ -1,4 +1,5 @@
 'use strict';
+const MONSTER_ART={goblin:0,slime:1,wolf:2,ridgewolf:2,skeleton:3,king:4,rat:5,bandit:6,warden:7,sentinel:7};
 const ITEMS={
  bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Trains Combat.'},
  ironSword:{name:'Iron sword',icon:1,slot:'weapon',style:'melee',power:5,range:1.45,desc:'Forged iron. Four more damage than a bronze sword.'},
@@ -31,35 +32,31 @@ function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
  const item=ITEMS[id];if(!item?.slot||!owns(id))return false;
- stop();s.equipment[item.slot]=id;renderUI();save();return true;
+ stop();s.equipment[item.slot]=id;tutorialEvent('gear');renderUI();save();return true;
 }
-function unequipItem(slot){stop();s.equipment[slot]=null;renderUI();save();}
+function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots().length>=BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
 function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
-function itemDetails(id){
+function itemDetails(id,fromBag=false){
  const item=ITEMS[id];if(!item)return;
- const isEquipped=item.slot&&s.equipment[item.slot]===id;
+ const isEquipped=!fromBag&&item.slot&&s.equipment[item.slot]===id;
  const buttons=[];
- if(item.slot)buttons.push([isEquipped?'Unequip':'Equip',()=>{if(isEquipped)unequipItem(item.slot);else equipItem(id);close();toast(isEquipped?item.name+' unequipped.':item.name+' equipped.');}]);
+ if(!isEquipped)buttons.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag;if(bag[id]>0){bag[id]--;groundDrop({[id]:1});close();toast('Dropped '+item.name+'.');}}]);
+ if(item.slot)buttons.push([isEquipped?'Unequip':'Equip',()=>{if(isEquipped){if(!unequipItem(item.slot))return;}else if(!equipItem(id))return;close();toast(isEquipped?item.name+' unequipped.':item.name+' equipped.');}]);
  if(id==='herbs')buttons.push(['Eat herbs',()=>{if(s.hp>=maxhp()){toast('Your health is full.');return;}if(s.bag.herbs>0){s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();close();}}]);
  if(id==='fish')buttons.push(['Eat trout',()=>{eat();close();}]);
  dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
  $('itemhero').appendChild(itemCanvas(id,160));paintItemIcons($('itemhero'));
 }
 function renderInventory(){
- const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Your inventory</h2><small>Tap an item</small></div><div id="inventoryGrid" class="inventorygrid"></div>';
+ pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Inventory</h2><small>'+slots.length+' / 25</small></div><div id="inventoryGrid" class="inventorygrid bag25"></div>';
  const grid=$('inventoryGrid');
- const ids=Object.keys(ITEMS).filter(owns);
- pageControls(ids.length,8);for(const id of pageItems(ids,8)){const item=ITEMS[id],b=document.createElement('button');b.className='inventoryitem';b.setAttribute('aria-label',item.name+(item.slot?'':', '+s.bag[id]));b.appendChild(itemCanvas(id));const name=document.createElement('span');name.className='itemname';name.textContent=item.name;b.appendChild(name);const qty=document.createElement('b');qty.className='quantity';qty.textContent=item.slot?(s.equipment[item.slot]===id?'E':''):s.bag[id];b.appendChild(qty);b.onclick=()=>itemDetails(id);grid.appendChild(b);}
- const pad=(4-pageItems(ids,8).length%4)%4;for(let i=0;i<pad;i++){const div=document.createElement('div');div.className='inventoryempty';grid.appendChild(div);}
- paintItemIcons(panel);
+ for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}b.onclick=()=>itemDetails(slot.id,true);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderEquipment(){
- pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div><p class="desc" id="gearSummary"></p>';
- const grid=$('equipmentGrid');
- for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);b.onclick=()=>{if(id)itemDetails(id);else{tab='bag';syncTabs();renderPanel();toast('Choose an item to equip.');}};grid.appendChild(b);}
- $('gearSummary').textContent=equippedWeapon().name+' · '+combatStyle()+' · Range '+Math.floor(attackRange())+' tiles'+(s.equipment.shield&&combatStyle()!=='melee'?' · Shield inactive':'');paintItemIcons(panel);
+ pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Worn equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div>';
+ const grid=$('equipmentGrid');for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);b.onclick=()=>{if(id)itemDetails(id);else{tab='bag';panelPage=0;syncTabs();renderPanel();toast('Choose an item in your inventory to equip.');}};grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderSpells(){
  pageControls(3,2);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
@@ -69,19 +66,18 @@ function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
  $('combatResource').textContent=combatStyle()==='ranged'?s.bag.arrows+' arrows':combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Armor '+armorValue()+' · '+equippedWeapon().name;
 }
-function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(ITEMS[id].slot&&owns(id)){toast('You already own this item.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=1;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
+function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(ITEMS[id].slot&&owns(id)){toast('You already own this item.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=1;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&&lineOfSight(s.x,s.y,o.x,o.y);}
 let projectiles=[],enemyClock=0,retaliationClock=0;
 function awardDefeat(o,style){
- o.dead=time+(o.type==='dummy'?8:25);const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';gain(skill,o.xp);if(skill!=='Combat')gain('Combat',Math.ceil(o.xp*.5));s.gold+=o.coins;if(o.loot)s.bag[o.loot]++;
- if(o.kind==='goblin'||o.kind==='bandit')s.bag.arrows+=3;
- if(o.kind==='slime'||o.kind==='skeleton')s.bag.runes+=2;
+ frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
+ o.dead=time+(o.type==='dummy'?8:25);const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';gain(skill,o.xp);if(skill!=='Combat')gain('Combat',Math.ceil(o.xp*.5));monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){if(s.tutorial===5)s.hp=Math.max(1,Math.min(s.hp,maxhp()-6));tutorialEvent('dummy');toast('Training complete. Try your food button to heal.');}
- else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · +'+o.coins+' coins · +'+o.xp+' '+skill+' XP');}
+ else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · Loot on the ground · +'+o.xp+' '+skill+' XP');}
  stop();
 }
 function performAttack(o){
@@ -142,37 +138,31 @@ function drawEquippedCharacter(g,x,bottom,look,moving=false,attackAge=10,scale=1
  const action=swinging?Math.sin(attackAge/.42*Math.PI):0;
  const step=moving?Math.floor(time*8)%4:0;
  const bob=moving?Math.sin(time*16)*1.1:Math.sin(time*2.5)*.7;
- const attacking=!moving&&swinging,posed=attacking&&style!=='melee';
- const atlas=moving?'walking':'poses';
- const index=moving?look*4+step:posed?(style==='ranged'?look:4+look):8+look;
+ const attacking=!moving&&swinging,posed=false;
+ const atlas='heroes';
+ const index=look*4+(moving?step:1);
  // Normalize each source's body frame to a 61px-high figure.
- const width=posed&&style==='ranged'?58:posed?49:45;
+ const width=45;
  g.save();g.translate(x,bottom+bob*scale);g.scale(facing*scale,scale);
  g.translate(attacking?(style==='melee'?action*5:style==='ranged'?-action*2:0):0,style==='magic'&&attacking?-action*2:0);
  if(attacking&&style==='melee')g.rotate(action*.12);
  if(s.equipment.shield&&style!=='melee')drawWornItem(g,s.equipment.shield,-17,-19,12,21);
  sprite(g,atlas,index,0,0,width,61);
- // Torso stays below the face. Robes extend from the shoulders to the ankles.
- const bodyX=posed?-3:0;
- if(s.equipment.body==='mageRobe')drawWornItem(g,'mageRobe',bodyX,-5,30,39);
- else if(s.equipment.body)drawWornItem(g,s.equipment.body,bodyX,-17,27,26);
  if(s.equipment.feet==='leatherBoots'){
-   // Split the existing pair into separate feet so each follows its walking leg.
-   const crop=art.bounds?.items?.[7],img=art.items;
-   if(crop&&img){
-     const stride=moving?(step%2===0?1:-1):posed?0:1;
-     for(let foot=0;foot<2;foot++){
-       const lift=foot===0?(stride>0?6:0):(stride<0?6:0);
-       const footX=foot===0?-8:7;
-       g.drawImage(img,crop.x+foot*crop.w/2,crop.y,crop.w/2,crop.h,footX-5.5,-15-lift,11,16);
-     }
-   }
+   // Reuse the animated leg silhouette: footwear follows each foot exactly,
+   // including passing poses, instead of pasting a static pair over the legs.
+   g.save();g.beginPath();g.rect(-23,-20,46,21);g.clip();
+   g.filter='brightness(1.32) saturate(1.2)';sprite(g,atlas,index,0,0,width,61);g.restore();
  }
- if(s.equipment.head)drawWornItem(g,s.equipment.head,posed?-3:0,-38,24,23);
+ // Torso stays below the face. Robes extend from the shoulders to the ankles.
+ const bodyX=-1;
+ if(s.equipment.body==='mageRobe')drawWornItem(g,'mageRobe',bodyX,-8,25,35);
+ else if(s.equipment.body)drawWornItem(g,s.equipment.body,bodyX,-25,23,23);
+ if(s.equipment.head)drawWornItem(g,s.equipment.head,5,-46,14,15);
  // Attack poses already hold the matching bow/staff. At rest and on the move,
  // attach that same item to the weapon hand instead of using a baked-in sword.
  if(s.equipment.weapon&&!posed){
-   const handX=moving?12:14,handY=moving?-30:-23;
+   const handX=14,handY=-28;
    const id=s.equipment.weapon;
    const turn=id==='shortbow'?-.15:id==='oakStaff'?-.42:-.25+(attacking?action*1.7:0);
    g.save();g.translate(handX,handY);g.rotate(turn);
@@ -182,9 +172,9 @@ function drawEquippedCharacter(g,x,bottom,look,moving=false,attackAge=10,scale=1
    g.restore();
  }
  if(s.equipment.shield&&style==='melee'){
-   const shieldX=moving&&step%2===0?-10:-14;
-   const shieldHandY=moving?(step%2===0?-19:-27):-23;
-   drawWornItem(g,s.equipment.shield,shieldX,shieldHandY+11,20,23);
+   const shieldX=-10;
+   const shieldHandY=-26;
+   drawWornItem(g,s.equipment.shield,shieldX,shieldHandY+9,18,20);
  }
  if(attacking&&style==='melee'&&s.equipment.weapon){g.strokeStyle='#fff0c3';g.lineWidth=2;g.globalAlpha=1-attackAge/.42;g.beginPath();g.arc(10,-25,25,-1.4+attackAge*4,.1+attackAge*4);g.stroke();}
  g.restore();
