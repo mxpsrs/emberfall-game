@@ -132,18 +132,68 @@ function prepareAnimationAtlases(){
    }
  }
 }
+// Wearables use body-local anchors, then share the character's facing, bob and lunge.
+function drawWornItem(g,id,x,bottom,width,height,rotation=0){
+ const item=ITEMS[id];if(!item)return;
+ sprite(g,'items',item.icon,x,bottom,width,height,1,rotation);
+}
+function drawEquippedCharacter(g,x,bottom,look,moving=false,attackAge=10,scale=1){
+ const style=combatStyle(),swinging=attackAge>=0&&attackAge<.42;
+ const action=swinging?Math.sin(attackAge/.42*Math.PI):0;
+ const step=moving?Math.floor(time*8)%4:0;
+ const bob=moving?Math.sin(time*16)*1.1:Math.sin(time*2.5)*.7;
+ const attacking=!moving&&swinging,posed=attacking&&style!=='melee';
+ const atlas=moving?'walking':'poses';
+ const index=moving?look*4+step:posed?(style==='ranged'?look:4+look):8+look;
+ // Normalize each source's body frame to a 61px-high figure.
+ const width=posed&&style==='ranged'?58:posed?49:45;
+ g.save();g.translate(x,bottom+bob*scale);g.scale(facing*scale,scale);
+ g.translate(attacking?(style==='melee'?action*5:style==='ranged'?-action*2:0):0,style==='magic'&&attacking?-action*2:0);
+ if(attacking&&style==='melee')g.rotate(action*.12);
+ if(s.equipment.shield&&style!=='melee')drawWornItem(g,s.equipment.shield,-17,-19,12,21);
+ sprite(g,atlas,index,0,0,width,61);
+ // Torso stays below the face. Robes extend from the shoulders to the ankles.
+ const bodyX=posed?-3:0;
+ if(s.equipment.body==='mageRobe')drawWornItem(g,'mageRobe',bodyX,-5,30,39);
+ else if(s.equipment.body)drawWornItem(g,s.equipment.body,bodyX,-17,27,26);
+ if(s.equipment.feet==='leatherBoots'){
+   // Split the existing pair into separate feet so each follows its walking leg.
+   const crop=art.bounds?.items?.[7],img=art.items;
+   if(crop&&img){
+     const stride=moving?(step%2===0?1:-1):posed?0:1;
+     for(let foot=0;foot<2;foot++){
+       const lift=foot===0?(stride>0?6:0):(stride<0?6:0);
+       const footX=foot===0?-8:7;
+       g.drawImage(img,crop.x+foot*crop.w/2,crop.y,crop.w/2,crop.h,footX-5.5,-15-lift,11,16);
+     }
+   }
+ }
+ if(s.equipment.head)drawWornItem(g,s.equipment.head,posed?-3:0,-38,24,23);
+ // Attack poses already hold the matching bow/staff. At rest and on the move,
+ // attach that same item to the weapon hand instead of using a baked-in sword.
+ if(s.equipment.weapon&&!posed){
+   const handX=moving?12:14,handY=moving?-30:-23;
+   const id=s.equipment.weapon;
+   const turn=id==='shortbow'?-.15:id==='oakStaff'?-.42:-.25+(attacking?action*1.7:0);
+   g.save();g.translate(handX,handY);g.rotate(turn);
+   // Weapons in the item atlas point diagonally up-right: their grips sit
+   // near the lower-left of their crop, so offset the crop to the hand.
+   drawWornItem(g,id,id==='shortbow'?5:9,id==='shortbow'?13:2,id==='shortbow'?23:27,id==='oakStaff'?43:id==='shortbow'?37:32);
+   g.restore();
+ }
+ if(s.equipment.shield&&style==='melee'){
+   const shieldX=moving&&step%2===0?-10:-14;
+   const shieldHandY=moving?(step%2===0?-19:-27):-23;
+   drawWornItem(g,s.equipment.shield,shieldX,shieldHandY+11,20,23);
+ }
+ if(attacking&&style==='melee'&&s.equipment.weapon){g.strokeStyle='#fff0c3';g.lineWidth=2;g.globalAlpha=1-attackAge/.42;g.beginPath();g.arc(10,-25,25,-1.4+attackAge*4,.1+attackAge*4);g.stroke();}
+ g.restore();
+}
 function drawAnimatedPlayer(x,bottom){
- const look=s.character?.look||0,moving=path.length||Math.hypot(px-s.x,py-s.y)>.02,style=combatStyle(),attackAge=time-lastAttack,swinging=attackAge<.42;
- if(moving){const frame=Math.floor(time*8)%4,bob=Math.sin(time*16)*1.1;sprite(ctx,'walking',look*4+frame,x,bottom+bob,48,62,facing);return;}
- const breathe=Math.sin(time*2.5)*.7,action=swinging?Math.sin(attackAge/.42*Math.PI):0;
- if(style==='melee'){
-   const atlas=s.equipment.weapon?'characters':'poses',index=s.equipment.weapon?look:8+look;
-   sprite(ctx,atlas,index,x+facing*action*6,bottom+breathe,45,61,facing,action*.24);
-   if(swinging&&s.equipment.weapon){ctx.save();ctx.translate(x,bottom-29);ctx.scale(facing,1);ctx.strokeStyle='#fff0c3';ctx.lineWidth=3;ctx.globalAlpha=1-attackAge/.42;ctx.beginPath();ctx.arc(6,-1,28,-1.4+attackAge*4,.1+attackAge*4);ctx.stroke();ctx.restore();}
- }else if(style==='ranged'){
-   sprite(ctx,'poses',look,x-facing*action*2,bottom+breathe,58+action*3,61,facing,-action*.025);
- }else{
-   sprite(ctx,'poses',4+look,x,bottom+breathe-action*2,49,64,facing,action*.04);
-   if(swinging){ctx.save();ctx.shadowColor=currentSpell().color;ctx.shadowBlur=20;ctx.strokeStyle=currentSpell().color;ctx.lineWidth=2;ctx.globalAlpha=1-attackAge/.42;ctx.beginPath();ctx.ellipse(x,bottom,15+action*15,5+action*6,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=currentSpell().color;for(let j=0;j<5;j++){const angle=time*6+j*Math.PI*2/5;ctx.beginPath();ctx.arc(x+Math.cos(angle)*20,bottom-30+Math.sin(angle)*12,2,0,Math.PI*2);ctx.fill();}ctx.restore();}
+ const moving=path.length>0||Math.hypot(px-s.x,py-s.y)>.02;
+ const age=time-lastAttack;
+ drawEquippedCharacter(ctx,x,bottom,s.character?.look||0,moving,age);
+ if(!moving&&combatStyle()==='magic'&&age>=0&&age<.42){
+   const action=Math.sin(age/.42*Math.PI);ctx.save();ctx.shadowColor=currentSpell().color;ctx.shadowBlur=20;ctx.strokeStyle=currentSpell().color;ctx.lineWidth=2;ctx.globalAlpha=1-age/.42;ctx.beginPath();ctx.ellipse(x,bottom,15+action*15,5+action*6,0,0,Math.PI*2);ctx.stroke();ctx.restore();
  }
 }

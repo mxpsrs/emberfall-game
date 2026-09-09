@@ -250,7 +250,7 @@ function renderLooks(){
   $('looks').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('chosen',i===selectedLook);b.setAttribute('aria-pressed',String(i===selectedLook));const c=b.querySelector('canvas'),g=c.getContext('2d');g.clearRect(0,0,120,120);sprite(g,'characters',i,60,117,103,111);});
   const c=$('characterPreview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);shadow(g,192,260,55);sprite(g,'characters',selectedLook,192,260,174,234);$('lookName').textContent=looks[selectedLook].name;
 }
-function drawPortrait(){const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);sprite(g,'characters',s.character?.look||0,48,109,97,108);}
+function drawPortrait(){const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);}
 function finishCharacter(name,look){
   const cleaned=name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
   s.character={name:cleaned,look:Math.max(0,Math.min(3,look))};$('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
