@@ -38,25 +38,44 @@ function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots(
 function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
+function itemActions(id,fromBag=false){
+ const item=ITEMS[id];if(!item)return [];
+ const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
+ if(item.slot)actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(item.slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
+ else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(s.hp>=maxhp()){toast('Your health is full.');return false;}if(id==='fish')eat();else{s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
+ else actions.push(['Examine',()=>{toast(item.name+': '+item.desc);return true;}]);
+ if(!worn)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
+ return actions;
+}
+function primaryItemAction(id,fromBag=false){itemActions(id,fromBag)[0]?.[1]();}
 function itemDetails(id,fromBag=false){
  const item=ITEMS[id];if(!item)return;
  const isEquipped=!fromBag&&item.slot&&s.equipment[item.slot]===id;
- const buttons=[];
- if(!isEquipped)buttons.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag;if(bag[id]>0){bag[id]--;groundDrop({[id]:1});close();toast('Dropped '+item.name+'.');}}]);
- if(item.slot)buttons.push([isEquipped?'Unequip':'Equip',()=>{if(isEquipped){if(!unequipItem(item.slot))return;}else if(!equipItem(id))return;close();toast(isEquipped?item.name+' unequipped.':item.name+' equipped.');}]);
- if(id==='herbs')buttons.push(['Eat herbs',()=>{if(s.hp>=maxhp()){toast('Your health is full.');return;}if(s.bag.herbs>0){s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();close();}}]);
- if(id==='fish')buttons.push(['Eat trout',()=>{eat();close();}]);
+ const buttons=itemActions(id,fromBag).map(([label,action])=>[label,()=>{if(action()!==false)close();}]);
  dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
  $('itemhero').appendChild(itemCanvas(id,160));paintItemIcons($('itemhero'));
+}
+function bindItemPress(button,id,fromBag){
+ let timer=null,start=null,suppressClick=false;
+ const clear=()=>{clearTimeout(timer);timer=null;};
+ button.addEventListener('pointerdown',e=>{if(e.button!==0)return;clear();start={x:e.clientX,y:e.clientY};suppressClick=false;timer=setTimeout(()=>{timer=null;suppressClick=true;itemDetails(id,fromBag);},500);});
+ button.addEventListener('pointermove',e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>9){clear();suppressClick=true;}});
+ button.addEventListener('pointerup',()=>{clear();start=null;});
+ button.addEventListener('pointercancel',()=>{clear();start=null;suppressClick=true;});
+ button.addEventListener('pointerleave',()=>{clear();start=null;});
+ button.addEventListener('contextmenu',e=>{e.preventDefault();clear();if(!suppressClick)itemDetails(id,fromBag);suppressClick=true;});
+ button.addEventListener('keydown',e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();clear();itemDetails(id,fromBag);}});
+ button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}primaryItemAction(id,fromBag);};
+ button.setAttribute('aria-label',ITEMS[id].name+'. '+itemActions(id,fromBag)[0][0]+'. Hold for more options.');
 }
 function renderInventory(){
  pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Inventory</h2><small>'+slots.length+' / 25</small></div><div id="inventoryGrid" class="inventorygrid bag25"></div>';
  const grid=$('inventoryGrid');
- for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}b.onclick=()=>itemDetails(slot.id,true);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
+ for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}bindItemPress(b,slot.id,true);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderEquipment(){
  pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Worn equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div>';
- const grid=$('equipmentGrid');for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);b.onclick=()=>{if(id)itemDetails(id);else{tab='bag';panelPage=0;syncTabs();renderPanel();toast('Choose an item in your inventory to equip.');}};grid.appendChild(b);}paintItemIcons(panel);
+ const grid=$('equipmentGrid');for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);if(id)bindItemPress(b,id,false);else b.onclick=()=>{tab='bag';panelPage=0;syncTabs();renderPanel();toast('Choose an item in your inventory to equip.');};grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderSpells(){
  pageControls(3,2);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';

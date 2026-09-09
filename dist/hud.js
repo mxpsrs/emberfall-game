@@ -4,7 +4,7 @@ function pageItems(items,size){const pages=Math.max(1,Math.ceil(items.length/siz
 function pageControls(total,size){const pages=Math.max(1,Math.ceil(total/size));$('pageLabel').textContent=(panelPage+1)+' / '+pages;$('prevPage').disabled=panelPage===0;$('nextPage').disabled=panelPage>=pages-1;$('panelPager').hidden=pages<=1;}
 function updateOrientation(){const portrait=window.matchMedia('(orientation: portrait)').matches;$('rotateScreen').hidden=!portrait;document.body.classList.toggle('portrait-mode',portrait);if(typeof resize==='function')resize();}
 function initHud(){
- $('minimapButton').onclick=worldMap;
+ $('minimapButton').onclick=walkFromMinimap;
  $('togglePanels').onclick=()=>{const open=$('gameDock').hidden;$('gameDock').hidden=!open;document.body.classList.toggle('panels-open',open);$('togglePanels').setAttribute('aria-expanded',String(open));$('togglePanels').textContent=open?'Close panels':'Bag & menus';if(open){tab='bag';tutorialEvent('bag');panelPage=0;syncTabs();renderPanel();}};
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
@@ -20,4 +20,13 @@ function drawMinimap(){
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene){g.fillStyle='#f4d45e';g.fillRect((pile.x+.5)*sx-1,(pile.y+.5)*sy-1,2,2);}
  g.strokeStyle='#ffffff70';g.lineWidth=1;if(typeof unproject3==='function'){g.beginPath();[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].forEach(([x,y],i)=>{const p=unproject3(x,y);if(i)g.lineTo(p.x*sx,p.z*sy);else g.moveTo(p.x*sx,p.z*sy);});g.closePath();g.stroke();}
  const x=(px+.5)*sx,y=(py+.5)*sy;g.fillStyle='#fff3be';g.strokeStyle='#15252a';g.lineWidth=2;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.stroke();
+}
+
+function walkFromMinimap(e){
+ if(!assetsReady||cloudConflict||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
+ const rect=$('minimap').getBoundingClientRect(),[w,h]=sceneSize();
+ if(!rect.width||!rect.height)return;
+ const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
+ if(u<0||v<0||u>=1||v>=1)return;
+ walkTo(Math.floor(u*w),Math.floor(v*h));
 }
