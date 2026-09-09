@@ -18,6 +18,6 @@ function drawMinimap(){
  g.drawImage(miniTerrain,0,0);
  for(const o of objects){if(o.dead>time||(o.type==='boss'&&s.boss)||['tree','prop','crop'].includes(o.type))continue;g.fillStyle=fighter(o)?'#ee897a':'#f5d995';g.beginPath();g.arc((o.x+.5)*sx,(o.y+.5)*sy,fighter(o)?1.5:1.2,0,Math.PI*2);g.fill();}
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene){g.fillStyle='#f4d45e';g.fillRect((pile.x+.5)*sx-1,(pile.y+.5)*sy-1,2,2);}
- g.strokeStyle='#ffffff70';g.lineWidth=1;g.strokeRect(camera.x/TILE*sx,camera.y/TILE*sy,screen.w/TILE*sx,screen.h/TILE*sy);
+ g.strokeStyle='#ffffff70';g.lineWidth=1;if(typeof unproject3==='function'){g.beginPath();[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].forEach(([x,y],i)=>{const p=unproject3(x,y);if(i)g.lineTo(p.x*sx,p.z*sy);else g.moveTo(p.x*sx,p.z*sy);});g.closePath();g.stroke();}
  const x=(px+.5)*sx,y=(py+.5)*sy;g.fillStyle='#fff3be';g.strokeStyle='#15252a';g.lineWidth=2;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.stroke();
 }

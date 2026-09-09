@@ -17,3 +17,5 @@ body.panels-open{--dock:266px}#gameDock{width:260px}#gameDock nav{gap:0}#gameDoc
 #gameDock nav button[data-tab="gear"]{flex:1.65}#gameDock nav button:not([data-tab="gear"]){flex:1}
 
 #loading a.primary{display:inline-block;padding:12px 18px;border-radius:8px;color:#172125;background:#dfbe7e;text-decoration:none;font-weight:700}#characterSaveError:empty{display:none}#characterSaveError{color:#ffcbac;font-size:14px}
+
+#cameraControls{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;z-index:7}#cameraControls button{min-width:40px;min-height:40px;padding:5px 9px;background:#22363de8;border:1px solid #8c9b88;color:#f0e3be;font-size:18px}#cameraControls #cameraReset{font-size:14px}#world{touch-action:none}

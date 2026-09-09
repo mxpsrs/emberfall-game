@@ -354,15 +354,6 @@ function frame(now){
   }
   if(assetsReady)draw();requestAnimationFrame(frame);
 }
-canvas.addEventListener('pointerdown',e=>{
-  e.preventDefault();if(!assetsReady||$('creator').open)return;
-  const r=canvas.getBoundingClientRect(),sx=e.clientX-r.left,sy=e.clientY-r.top;
-  const pile=(s.groundLoot||[]).find(p=>p.scene===currentScene&&p.x===Math.floor((sx+camera.x)/TILE)&&p.y===Math.floor((sy+camera.y)/TILE));if(pile){select(pile);return;}
-  const direct=objects.find(o=>o.x===Math.floor((sx+camera.x)/TILE)&&o.y===Math.floor((sy+camera.y)/TILE)&&o.dead<=time&&!(o.type==='boss'&&s.boss));
-  const hit=[...hitboxes].reverse().find(b=>sx>=b.x&&sx<=b.x+b.w&&sy>=b.y&&sy<=b.y+b.h);
-  if(direct){select(direct);return;}if(hit){select(hit.o);return;}
-  walkTo(Math.floor((sx+camera.x)/TILE),Math.floor((sy+camera.y)/TILE));
-});
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(c=>c.classList.toggle('selected',c===b));renderPanel();});
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
@@ -394,4 +385,3 @@ async function boot(){
   }
   requestAnimationFrame(frame);
 }
-boot();
