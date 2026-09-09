@@ -20,8 +20,8 @@ function monsterDrop(o){
  const table={ridgewolf:{fang:2,bones:1},sentinel:{bones:4,runes:20,ironSword:1},wolf:{fang:1,bones:1},goblin:{bones:1,arrows:3},slime:{herbs:1,runes:2},skeleton:{bones:2,runes:3},bandit:{bones:1,arrows:5},rat:{bones:1},man:{bones:1},king:{bones:3,runes:15,ironHelm:1},warden:{bones:3,runes:12,ironShield:1}};
  groundDrop({coins:o.coins||0,...(table[o.kind]||{bones:1})},o.x,o.y);
 }
-function takeGroundItem(pile,id){
- const n=pile.items[id]||0;if(!n)return false;
+function takeGroundItem(pile,id,limit=Infinity){
+ const n=Math.min(pile.items[id]||0,limit);if(!n)return false;
  let taken=n;
  if(id==='coins')s.gold+=n;
  else if(ITEMS[id]?.slot){taken=Math.min(n,bagSpaceFor(id));if(!taken){toast('Inventory full. This loot stays on the ground.');return false;}s.gear[id]=(s.gear[id]||0)+taken;}
@@ -30,12 +30,17 @@ function takeGroundItem(pile,id){
  if(!Object.keys(pile.items).length)s.groundLoot=s.groundLoot.filter(p=>p!==pile);
  tutorialEvent('loot');renderUI();save();return true;
 }
-function openGroundLoot(pile){
- const entries=Object.entries(pile.items);if(!entries.length){close();return;}
- dialog('Ground loot','<p>Tap to pick up. '+inventorySlots().length+' / 25 inventory slots used.</p>',[
- ...entries.map(([id,n])=>[(ITEMS[id]?.name||'Coins')+' ×'+n,()=>{takeGroundItem(pile,id);openGroundLoot(pile);}]),
- ['Take all',()=>{for(const [id]of entries)takeGroundItem(pile,id);openGroundLoot(pile);}]
- ]);
+function topGroundItem(pile){return Object.keys(pile.items).find(id=>pile.items[id]>0)||null;}
+function groundItemLabel(pile){const id=topGroundItem(pile);if(!id)return '';const n=pile.items[id];return (id==='coins'?'Coins':ITEMS[id]?.name||id)+((id==='coins'||STACKABLE.has(id))&&n>1?' ×'+n:'');}
+function pickupGroundLoot(pile){
+ stop();
+ if(pile.scene!==currentScene||!s.groundLoot.includes(pile))return;
+ if(Math.hypot(px-pile.x,py-pile.y)>.2){toast('Move onto the loot to pick it up.');return;}
+ const id=topGroundItem(pile);if(!id)return;
+ const name=id==='coins'?'Coins':ITEMS[id]?.name||id,before=pile.items[id];
+ if(takeGroundItem(pile,id,id==='coins'||STACKABLE.has(id)?Infinity:1)){
+  const amount=before-(pile.items[id]||0);toast('Picked up '+name+(amount>1?' ×'+amount:'')+'.');
+ }
 }
 function drawGroundLoot(){
  for(const pile of s.groundLoot||[]){if(pile.scene!==currentScene)continue;const x=(pile.x+.5)*TILE-camera.x,y=(pile.y+.78)*TILE-camera.y;

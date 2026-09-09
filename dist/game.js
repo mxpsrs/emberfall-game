@@ -109,7 +109,7 @@ function select(o){
   }
   engage(o);
 }
-function engage(o){const p=route(o.x,o.y,true,fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length)arrive();}
+function engage(o){const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
 function walkTo(x,y){const p=route(x,y);if(!p){toast('Tap clear ground to walk.');return;}stop();path=p;renderAction();}
 function arrive(){
   if(!target)return;
@@ -199,7 +199,7 @@ const tutorialSteps=[
   {event:'bag',title:'Pack for the road',desc:'Open Bag & menus. Your inventory has 25 slots. Arrows and runes stack; food and materials each use a slot. Worn gear has its own tab.',point:()=>null},
   {event:'gear',title:'Choose your weapon',desc:'Tap an unequipped weapon in your inventory, then Equip. It moves to Worn equipment and appears in your hand. You can also use the combat-style buttons.',point:()=>null},
   {event:'monster',title:'Your first hunt',desc:'Defeat a giant rat near Stillwater. Watch your health and eat during combat. Your rewards will fall on the ground.',point:()=>objects.find(o=>o.kind==='rat'&&o.dead<=time)},
-  {event:'loot',title:'Claim your spoils',desc:'Tap the glowing loot where the monster fell. Pick up an item or Take all. If your bag is full, loot stays on the ground.',point:()=>(s.groundLoot||[]).find(o=>o.scene===currentScene)||null},
+  {event:'loot',title:'Claim your spoils',desc:'Tap the glowing loot where the monster fell. Your character walks over and picks up the top item. Tap again for the next item. Coins and ammunition are collected as a stack.',point:()=>(s.groundLoot||[]).find(o=>o.scene===currentScene)||null},
   {event:'spirit',title:'An elemental companion',desc:'Find Cinder beside the southern camp and form a bond. Equipped spirits grant bonuses; unleashed spirits can power a summon.',point:()=>objects.find(o=>o.spiritId==='cinder'&&!o.collected)||null},
   {event:'inn',title:'Welcome to the borderlands',desc:'Enter the village inn. Your character saves to your account. Continue Rowan’s story, then visit Stoneford for new quests.',point:()=>innObj}
 ];
@@ -340,7 +340,7 @@ function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
   if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;const moving=Math.hypot(px-s.x,py-s.y)>.005;
-    if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length)arrive();}}
+    if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}}
     else if(path.length){const next=path.shift();if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;}
     else if(target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
