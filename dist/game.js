@@ -340,7 +340,7 @@ function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
   if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;const moving=Math.hypot(px-s.x,py-s.y)>.005;
-    if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}}
+    if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length)arrive();}}
     else if(path.length){const next=path.shift();if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;}
     else if(target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
