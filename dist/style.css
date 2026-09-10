@@ -21,3 +21,5 @@ body.panels-open{--dock:266px}#gameDock{width:260px}#gameDock nav{gap:0}#gameDoc
 #cameraControls{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;z-index:7}#cameraControls button{min-width:40px;min-height:40px;padding:5px 9px;background:#22363de8;border:1px solid #8c9b88;color:#f0e3be;font-size:18px}#cameraControls #cameraReset{font-size:14px}#world{touch-action:none}
 
 .bagslot,.gearslot{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:pan-y}#minimapButton{touch-action:manipulation}
+
+#onlineStatus{position:absolute;left:12px;top:76px;z-index:6;font-size:12px;color:#c7dce3;pointer-events:none}#waveButton{position:absolute;right:12px;top:160px;z-index:7;min-height:38px;background:#263b43;color:#eadfbf;font-size:14px}

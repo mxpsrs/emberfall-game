@@ -9,15 +9,20 @@ async function accountKeys(request){
  }
  return keys;
 }
+async function resolvePlayer(request,env,headers){
+ let keys=await accountKeys(request);
+ if(!keys.length){let token=request.headers.get('cookie')?.match(/(?:^|;\s*)ember_guest=([a-f0-9]{64})(?:;|$)/)?.[1];
+ if(!token){if(request.method!=='GET')return null;token=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');headers['Set-Cookie']='ember_guest='+token+'; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax';}
+ const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token));keys=['guest:'+Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('')];}
+ let user=keys[0],row=null;for(const key of keys){const found=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(key).first();if(found){user=key;row=found;break;}}return {user,row};
+}
 export async function handleSave(request,env){
  const headers={'Content-Type':'application/json','Cache-Control':'no-store'};
  const reply=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
- const keys=await accountKeys(request);if(!keys.length)return reply({error:'Your signed-in account is unavailable. Reopen Emberfall from ChatGPT and try again.',code:'ACCOUNT_UNAVAILABLE'},401);
  if(!env.DB)return reply({error:'Character storage is unavailable.'},503);
  try{
- let user=keys[0],row=null;
- // Preserve an existing ID-keyed save, and retain email-keyed saves if an ID becomes available later.
- for(const key of keys){const found=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(key).first();if(found){user=key;row=found;break;}}
+ const player=await resolvePlayer(request,env,headers);if(!player)return reply({error:'Open the game to reconnect your character.'},401);
+ const {user,row}=player;
  if(request.method==='GET'){return reply(row?{account:user,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,state:null,revision:0});}
  if(request.method!=='PUT')return reply({error:'Method not allowed'},405);
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
@@ -29,4 +34,21 @@ export async function handleSave(request,env){
  if(!result.meta.changes)return reply({error:'Your character was saved in another tab or device. Reload to continue with that save.'},409);
  return reply({revision:body.revision+1,updatedAt:stamp});
  }catch(error){console.error('character_save_failed',error.message);return reply({error:'Could not reach character storage. Your local backup is safe.'},503);}
+}
+
+export async function handlePlayers(request,env){
+ const headers={'Content-Type':'application/json','Cache-Control':'no-store'},reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
+ if(request.method!=='POST')return reply({error:'Method not allowed'},405);
+ if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
+ try{const raw=await request.text();if(raw.length>2048)return reply({error:'Request too large'},413);const input=JSON.parse(raw);
+ const player=await resolvePlayer(request,env,headers);if(!player?.row)return reply({error:'Create your character first.'},401);
+ const sizes={overworld:[96,84],inn:[14,12],shop:[14,12],forge:[14,12],stoneInn:[14,12],stoneShop:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25]},size=sizes[input.scene];
+ if(!size||!Number.isFinite(input.x)||!Number.isFinite(input.y)||input.x<0||input.y<0||input.x>=size[0]||input.y>=size[1])return reply({error:'Invalid position'},400);
+ const state=JSON.parse(player.row.state);if(!state.character)return reply({error:'Create your character first.'},400);
+ const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('public-player:'+player.user));const id=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
+ const allowed={weapon:['bronzeSword','ironSword','shortbow','oakStaff'],head:['ironHelm'],body:['leatherArmor','mageRobe'],feet:['leatherBoots'],shield:['ironShield']},equipment={};for(const [slot,ids]of Object.entries(allowed))equipment[slot]=ids.includes(state.equipment?.[slot])?state.equipment[slot]:null;const now=Date.now(),payload={id,name:String(state.character.name||'Adventurer').slice(0,18),look:Number.isInteger(state.character.look)&&state.character.look>=0&&state.character.look<=3?state.character.look:0,equipment,x:input.x,y:input.y,heading:Number.isFinite(input.heading)?input.heading:0,emote:['Hello!','Follow me!','Nice gear!'].includes(input.emote)?input.emote:null};
+ await env.DB.prepare('INSERT INTO player_presence (player_id,scene,payload,seen_at) VALUES (?,?,?,?) ON CONFLICT(player_id) DO UPDATE SET scene=excluded.scene,payload=excluded.payload,seen_at=excluded.seen_at').bind(id,input.scene,JSON.stringify(payload),now).run();
+ const result=await env.DB.prepare('SELECT payload FROM player_presence WHERE scene = ? AND seen_at > ? AND player_id <> ? ORDER BY seen_at DESC LIMIT 60').bind(input.scene,now-12000,id).all();
+ return reply({players:result.results.map(row=>JSON.parse(row.payload))});
+ }catch(error){console.error('player_presence_failed',error.message);return reply({error:'Online world temporarily unavailable'},503);}
 }
