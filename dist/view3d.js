@@ -8,8 +8,8 @@ function unproject3(sx,sy){const u=(sx-screen.w/2)/view3d.zoom,d=(sy-screen.h*.5
 function shade3(hex,f){const n=parseInt(hex.slice(1),16);return '#'+[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))).toString(16).padStart(2,'0')).join('');}
 let meshDetail3=1;
 const staticMeshes3=new WeakMap(),terrainLayers3=new Map();
-function cachedMesh3(key,kind,build){let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}const tag=kind+':'+meshDetail3;if(!variants.has(tag)){const faces=[];const height=build({face:(points,color,normals,material)=>faces.push({points,color,normals,material})});variants.set(tag,{faces,height,kind});}return variants.get(tag);}
-function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material);return cached.height;}
+function cachedMesh3(key,kind,build){let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}const tag=kind+':'+meshDetail3;if(!variants.has(tag)){const faces=[];const height=build({face:(points,color,normals,material,colors)=>faces.push({points,color,normals,material,colors})});variants.set(tag,{faces,height,kind});}return variants.get(tag);}
+function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors);return cached.height;}
 function painter3(g,project){const faces=[],fast=project===project3,cy=Math.cos(view3d.yaw),sy=Math.sin(view3d.yaw),ct=Math.cos(view3d.tilt),st=Math.sin(view3d.tilt),zoom=view3d.zoom,ox=px+.5,oz=py+.5,sw=screen.w,sh=screen.h;
  return {face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
  for(const a of points){let q;if(fast){const dx=a[0]-ox,dz=a[2]-oz,u=dx*cy-dz*sy,d=dx*sy+dz*cy;q={x:sw/2+u*zoom,y:sh*.54+(d*st-a[1]*ct)*zoom,depth:d*ct+a[1]*st};}else q=project(...a);p.push(q);depth+=q.depth;minx=Math.min(minx,q.x);maxx=Math.max(maxx,q.x);miny=Math.min(miny,q.y);maxy=Math.max(maxy,q.y);}

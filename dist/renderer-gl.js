@@ -7,7 +7,7 @@ attribute vec3 aPosition; attribute vec3 aNormal; attribute vec3 aColor; attribu
 uniform vec4 uCamera; uniform vec4 uView; uniform vec3 uOrigin; uniform float uShadowPass; uniform float uLightRange; uniform float uTime;
 varying vec3 vWorld; varying vec3 vNormal; varying vec3 vColor; varying float vMaterial; varying vec3 vShadow;
 void main(){
- vec3 world=aPosition;if(aMaterial>8.5){world.x+=sin(uTime*1.4+world.z*1.7)*world.y*.075;}vec3 p=world-uOrigin;
+ vec3 world=aPosition;if(aMaterial>8.5&&aMaterial<9.5){world.x+=sin(uTime*1.4+world.z*1.7)*world.y*.075;}vec3 p=world-uOrigin;
  vec3 light=normalize(vec3(-0.55,1.0,0.38)); vec3 right=normalize(vec3(light.z,0.0,-light.x)); vec3 up=cross(light,right);
  vec3 lp=vec3(dot(p,right),dot(p,up),-dot(p,light));
  vShadow=vec3(lp.xy/uLightRange*0.5+0.5,lp.z/160.0+0.5);
@@ -62,10 +62,10 @@ function createRealmGPU(){
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.uniform1f(uniforms.uShadowPass,0);gl.bindTexture(gl.TEXTURE_2D,texture);gl.uniform1i(uniforms.uShadow,0);for(const entry of drawEntries)bind(entry);g.drawImage(surface,0,0,screen.w,screen.h);
  }};
 }
-function realmFaceData(data,points,color,normals,material=0){
+function realmFaceData(data,points,color,normals,material=0,colors){
  if(points.length<3)return;const rgb=parseInt(color.slice(1),16),col=[(rgb>>16)/255,((rgb>>8)&255)/255,(rgb&255)/255];
  const a=points[0],b=points[1],c=points[2],u=b.map((v,i)=>v-a[i]),v=c.map((n,i)=>n-a[i]),normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],len=Math.hypot(...normal)||1;for(let i=0;i<3;i++)normal[i]/=len;
- for(let i=1;i<points.length-1;i++)for(const j of [0,i,i+1])data.push(...points[j],...(normals?.[j]||normal),...col,material);
+ for(let i=1;i<points.length-1;i++)for(const j of [0,i,i+1])data.push(...points[j],...(normals?.[j]||normal),...(colors?.[j]||col),material);
 }
 function realmGroundCover(data,x,z){
  const seed=Math.abs(Math.sin(x*127.1+z*311.7)*43758.5453)%1;if(seed>.37)return;
@@ -88,7 +88,7 @@ painter3=function(g,project){
  if(project!==project3||realmGPUUnavailable){const painter=canvasPainterRealm(g,project);painter.software=true;return painter;}
  if(!realmGPU){try{realmGPU=createRealmGPU();}catch(error){console.warn('Using canvas rendering:',error.message);}if(!realmGPU){realmGPUUnavailable=true;return canvasPainterRealm(g,project);}}
  const gpu=realmGPU,entries=[],dynamic=[];
- return {face(points,color,normals,material){realmFaceData(dynamic,points,color,normals,material);},cached(cached){if(!cached.faces.length)return cached.height;let entry=gpu.cache.get(cached);if(!entry){const data=[];for(const f of cached.faces){let material=f.material||0;if(!material&&cached.kind==='building'){const n=parseInt(f.color.slice(1),16),red=n>>16,green=(n>>8)&255,blue=n&255,top=f.points.reduce((a,p)=>a+p[1],0)/f.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)material=6;else if(red>green*1.15&&green>blue*1.1)material=5;}realmFaceData(data,f.points,f.color,f.normals,material);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);}entries.push(entry);return cached.height;},flush(){gpu.render([...realmTerrainEntries(gpu),...entries],dynamic,g);}};
+ return {face(points,color,normals,material,colors){realmFaceData(dynamic,points,color,normals,material,colors);},indexed(mesh,m){realmIndexedData(dynamic,mesh,m);},cached(cached){if(!cached.faces.length)return cached.height;let entry=gpu.cache.get(cached);if(!entry){const data=[];for(const f of cached.faces){let material=f.material||0;if(!material&&cached.kind==='building'){const n=parseInt(f.color.slice(1),16),red=n>>16,green=(n>>8)&255,blue=n&255,top=f.points.reduce((a,p)=>a+p[1],0)/f.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)material=6;else if(red>green*1.15&&green>blue*1.1)material=5;}realmFaceData(data,f.points,f.color,f.normals,material,f.colors);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);}entries.push(entry);return cached.height;},flush(){gpu.render([...realmTerrainEntries(gpu),...entries],dynamic,g);}};
 };
 // Smooth vertex normals on bodies and fitted equipment; the canvas fallback remains valid.
 const profileBeforeGPU=profile3;

@@ -137,4 +137,3 @@ drawTerrainLayer3=function(){
  for(let z=minz;z<maxz;z+=8)for(let x=minx;x<maxx;x+=8){const key=currentScene+':'+x+':'+z;let tile=groundChunksRealm.get(key);if(!tile){tile=document.createElement('canvas');tile.width=tile.height=unit*8;const g=tile.getContext('2d');for(let yy=0;yy<8&&z+yy<mh;yy++)for(let xx=0;xx<8&&x+xx<mw;xx++){const t=terrainType(x+xx,z+yy);g.fillStyle=shade3(['#628047','#aa956e','#989e8a','#427e89'][t],.96+.06*Math.sin((x+xx)*.7+(z+yy)*.3));g.fillRect(xx*unit,yy*unit,unit,unit);if(t===2){g.strokeStyle='#798372';g.strokeRect(xx*unit+1,yy*unit+1,7,6);g.strokeRect(xx*unit+8,yy*unit+8,7,6);}}groundChunksRealm.set(key,tile);if(groundChunksRealm.size>200)groundChunksRealm.delete(groundChunksRealm.keys().next().value);}
  const origin=project3(x,0,z);ctx.save();ctx.transform(k*c,k*sn*st,-k*sn,k*c*st,origin.x,origin.y);ctx.drawImage(tile,0,0);ctx.restore();}
 };
-boot();
