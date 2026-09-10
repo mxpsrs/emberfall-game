@@ -1,6 +1,6 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const W = 96, H = 84, TILE = 48, SAVE_KEY = 'emberfall-save-v1';
+const W = 384, H = 256, TILE = 48, SAVE_KEY = 'emberfall-save-v1';
 const defaults = () => ({
   x:14, y:17, hp:30, gold:0,
   xp:{Hitpoints:0,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0},
@@ -70,7 +70,7 @@ function inBuilding(b,x,y) {
   return !b.arch || x===b.x || x===b.x+b.w-1;
 }
 const fighter=o=>o&&['enemy','boss','man','dummy'].includes(o.type);
-const blocked=(x,y)=>worldWall(x,y)||water(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected);
+let blocked=(x,y)=>worldWall(x,y)||water(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected);
 const land=(x,y)=>!blocked(x,y);
 if((!s.sceneId||s.sceneId==='overworld')&&!land(s.x,s.y)){s.x=14;s.y=17;}
 let px=s.x, py=s.y, path=[], target=null, elapsed=0, moveClock=0;

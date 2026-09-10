@@ -6,6 +6,7 @@ for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','gam
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
 vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
+for(const f of ['kingdoms','realm-models'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 const calls={static:0,dynamic:0,draws:0,shadows:0,images:0};let enumId=1;const enums={};
 const gl=new Proxy({

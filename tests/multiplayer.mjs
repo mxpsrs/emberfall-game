@@ -9,6 +9,9 @@ let r=await presence(a);assert.equal(r.status,200);assert.equal((await r.json())
 await presence(a,'overworld',16);peers=(await (await presence(b)).json()).players;assert.equal(peers[0].x,16);
 assert.equal((await handlePlayers(req('/api/players','POST','',{scene:'overworld',x:14,y:17}),env)).status,401);
 assert.equal((await presence(a,'overworld',999)).status,400);
+assert.equal((await presence(a,'overworld',350)).status,200);
+for(const [scene,x,y]of [['realm_aelindor_25',12,10],['realm_ironhollow_5',22,18],['realm_deepforge_0',8,10],['realm_crownreach_25',12,18]])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x,y}),env)).status,200,scene);
+for(const scene of ['realm_aelindor_26','realm_unknown_0','realm_crownreach_999','__proto__'])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x:5,y:5}),env)).status,400,scene);
 const saved=await (await handleSave(req('/api/character','GET',b),env)).json();assert.equal(saved.state.character.name,'Player B');
 db.exec('UPDATE player_presence SET seen_at=0');assert.equal((await (await presence(b)).json()).players.length,0);
 console.log('PASS: two separate guests, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry and rejected invalid writes.');

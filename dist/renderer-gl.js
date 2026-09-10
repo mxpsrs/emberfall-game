@@ -76,8 +76,12 @@ function realmGroundCover(data,x,z){
  if(seed<.065){for(let i=0;i<3;i++){const xx=x+.25+i*.2,zz=z+.5;realmFaceData(data,[[xx-.05,.16,zz],[xx,.23,zz-.04],[xx+.05,.16,zz],[xx,.12,zz+.04]],(x+z)%2?'#d7be70':'#adb4d0',[[0,1,0],[0,1,0],[0,1,0],[0,1,0]],9);}}
 }
 function realmTerrainEntries(gpu){
- let chunks=gpu.terrain.get(currentScene);if(!chunks){chunks=[];const [mw,mh]=sceneSize();for(let z=0;z<mh;z+=8)for(let x=0;x<mw;x+=8){const data=[];for(let zz=z;zz<Math.min(z+8,mh);zz++)for(let xx=x;xx<Math.min(x+8,mw);xx++){const bridge=inWorld()&&xx>=36&&xx<=38&&((zz>=16&&zz<=18)||(zz>=34&&zz<=36)),type=bridge?3:terrainType(xx,zz);realmFaceData(data,[[xx,0,zz],[xx,0,zz+1],[xx+1,0,zz+1],[xx+1,0,zz]],'#808080',null,type+1);if(type===0&&inWorld())realmGroundCover(data,xx,zz);}chunks.push({...gpu.upload(new Float32Array(data)),x:x+4,z:z+4,terrain:true});}gpu.terrain.set(currentScene,chunks);}
- return chunks.filter(c=>{const p=project3(c.x,0,c.z),margin=view3d.zoom*7;return p.x>-margin&&p.x<screen.w+margin&&p.y>-margin&&p.y<screen.h+margin;});
+ let chunks=gpu.terrain.get(currentScene);const [mw,mh]=sceneSize();if(!chunks){chunks=[];for(let z=0;z<mh;z+=8)for(let x=0;x<mw;x+=8)chunks.push({x:x+4,z:z+4,terrain:true});gpu.terrain.set(currentScene,chunks);}
+ const visible=chunks.filter(c=>{const p=project3(c.x,0,c.z),margin=view3d.zoom*7;return p.x>-margin&&p.x<screen.w+margin&&p.y>-margin&&p.y<screen.h+margin;});
+ gpu.terrainTick=(gpu.terrainTick||0)+1;
+ for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-4,z=c.z-4;for(let zz=z;zz<Math.min(z+8,mh);zz++)for(let xx=x;xx<Math.min(x+8,mw);xx++){const bridge=inWorld()&&xx>=36&&xx<=38&&((zz>=16&&zz<=18)||(zz>=34&&zz<=36)),type=bridge?3:terrainType(xx,zz);realmFaceData(data,[[xx,0,zz],[xx,0,zz+1],[xx+1,0,zz+1],[xx+1,0,zz]],'#808080',null,type+1);if(type===0&&inWorld())realmGroundCover(data,xx,zz);}Object.assign(c,gpu.upload(new Float32Array(data)));}
+ const resident=[...gpu.terrain.values()].flat().filter(c=>c.buffer);if(resident.length>384){resident.sort((a,b)=>a.used-b.used);for(const c of resident.slice(0,resident.length-384)){if(c.used===gpu.terrainTick)continue;gpu.gl.deleteBuffer(c.buffer);delete c.buffer;}}
+ return visible;
 }
 const canvasPainterRealm=painter3;
 painter3=function(g,project){
@@ -96,4 +100,3 @@ profile3=function(r,x,y,z,w,h,d,rings,color,t=a=>a,n=12){
  for(let j=0;j<rows.length-1;j++)for(let i=0;i<n;i++){const next=(i+1)%n;r.face([rows[j][i],rows[j+1][i],rows[j+1][next],rows[j][next]],color,[normals[j][i],normals[j+1][i],normals[j+1][next],normals[j][next]]);}
  r.face([...rows[0]].reverse(),color);r.face(rows.at(-1),color);
 };
-boot();
