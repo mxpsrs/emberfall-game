@@ -1,6 +1,6 @@
 'use strict';
-// An authored-asset pilot. Other settlements retain their existing art until
-// Briarhaven's direction is approved. Gameplay objects and save IDs are intact.
+// The approved Briarhaven art direction across all kingdoms and interiors.
+// Gameplay objects, collision footprints and save IDs stay stable.
 function briarDecode(text,Type){const bytes=Uint8Array.from(atob(text),c=>c.charCodeAt(0));return new Type(bytes.buffer);}
 function briarMesh(source){return {p:briarDecode(source.p,Float32Array),n:Float32Array.from(briarDecode(source.n,Int8Array),v=>v/127),c:Float32Array.from(briarDecode(source.c,Uint8Array),v=>v/255),i:briarDecode(source.i,Uint16Array),j:source.j?briarDecode(source.j,Uint8Array):null,w:source.w?briarDecode(source.w,Uint8Array):null,bounds:source.bounds};}
 const briarModels=Object.fromEntries(Object.entries(BRIARHAVEN_ASSETS.models).map(([k,m])=>[k,briarMesh(m)]));
@@ -21,20 +21,86 @@ function briarEmit(r,mesh,m){
  if(r.indexed){r.indexed(mesh,m);return;}
  for(let i=0;i<mesh.i.length;i+=3){const ids=[mesh.i[i]*3,mesh.i[i+1]*3,mesh.i[i+2]*3],colors=ids.map(j=>[mesh.c[j],mesh.c[j+1],mesh.c[j+2]]),col='#'+[0,1,2].map(k=>Math.round(colors.reduce((a,c)=>a+c[k],0)/3*255).toString(16).padStart(2,'0')).join('');r.face(ids.map(j=>briarPoint(mesh.p,j,m)),col,ids.map(j=>briarNormal(mesh.n,j,m)),12,colors);}
 }
+// Reuse source meshes and their atlas colors, with regional materials.
+const realmArtVariants=new Map();
+function realmArtMesh(key,race='human'){
+ const id=key+':'+race;if(realmArtVariants.has(id))return realmArtVariants.get(id);
+ const base=briarModels[key];if(race==='human')return base;
+ const c=new Float32Array(base.c);
+ for(let i=0;i<c.length;i+=3){const r=c[i],g=c[i+1],b=c[i+2],light=Math.max(r,g,b);let color;
+  if(b>r*1.08&&b>g*.98)color=race==='elf'?[.27,.56,.43]:[.36,.40,.44];
+  else if(g>r*1.08&&g>b*1.08)color=race==='elf'?[.38,.64,.48]:[.38,.47,.33];
+  else if(Math.max(r,g,b)-Math.min(r,g,b)<.19&&light>.35)color=race==='elf'?[.79,.81,.65]:[.48,.53,.57];
+  if(color)for(let a=0;a<3;a++)c[i+a]=Math.min(1,color[a]*(.4+light*.75));
+ }
+ const mesh={...base,c};realmArtVariants.set(id,mesh);return mesh;
+}
+function realmArtRace(x,z){return inWorld()?kingdomAt(x,z).race:(realmSceneInfo.get(currentScene)?.race||worldScenes[currentScene]?.race||'human');}
+function realmBuildingAsset(b){
+ if(b.arch)return 'gate';
+ if(b.archetype)return ({house:(b.variant||0)%2?'homeB':'homeA',inn:'inn',shop:'shop',forge:'forge',hall:'hall',temple:'temple',mine:'mine',castle:'castle'})[b.archetype]||'homeA';
+ if(/mine/i.test(b.name))return 'mine';if(/crypt|ruins/i.test(b.name))return 'gate';if(/beacon/i.test(b.name))return 'tower';
+ return b.sprite===1?'forge':b.sprite===2?'shop':'inn';
+}
+function realmArtFit(r,key,race,x,z,w,d,height=0){
+ const mesh=realmArtMesh(key,race),[lo,hi]=mesh.bounds,scale=Math.min(w/(hi[0]-lo[0]),d/(hi[2]-lo[2])),vertical=height?height/(hi[1]-lo[1]):scale;
+ briarEmit(r,mesh,briarTransform(x-(lo[0]+hi[0])/2*scale,-lo[1]*vertical,z-(lo[2]+hi[2])/2*scale,scale,0,vertical));return (hi[1]-lo[1])*vertical;
+}
 const buildingBeforeBriar=building3;
 building3=function(r,b){
- if(b.settlement!=='briarhaven')return buildingBeforeBriar(r,b);
- const key=['inn','shop','forge'].includes(b.archetype)?b.archetype:(b.x<8?'homeA':'homeB'),mesh=briarModels[key],[lo,hi]=mesh.bounds,scale=Math.min((b.w+.12)/(hi[0]-lo[0]),(b.h+.12)/(hi[2]-lo[2])),vertical=Math.max(scale*1.18,3.9/(hi[1]-lo[1]));
- const m=briarTransform(b.x+b.w/2-(lo[0]+hi[0])/2*scale,-lo[1]*vertical,b.y+b.h/2-(lo[2]+hi[2])/2*scale,scale,0,vertical);
- briarEmit(r,mesh,m);b.visualHeight=(hi[1]-lo[1])*vertical;return b.visualHeight;
+ // Interior perimeter walls are structural room geometry, not house models.
+ if(!inWorld())return buildingBeforeBriar(r,b);
+ const race=b.race||realmArtRace(b.x,b.y),key=realmBuildingAsset(b),mesh=briarModels[key],[lo,hi]=mesh.bounds,scale=Math.min((b.w+.12)/(hi[0]-lo[0]),(b.h+.12)/(hi[2]-lo[2]));
+ const height=key==='castle'?(race==='elf'?9:race==='dwarf'?7.2:8):key==='gate'?3.5:key==='tower'?6:Math.max(scale*(race==='elf'?1.35:race==='dwarf'?1:1.18)*(hi[1]-lo[1]),race==='dwarf'?3.5:3.9);
+ b.visualHeight=realmArtFit(r,key,race,b.x+b.w/2,b.y+b.h/2,b.w+.12,b.h+.12,height);return b.visualHeight;
 };
 const propBeforeBriar=prop3;
 prop3=function(r,o,x,z){
- const local=inWorld()?x<32&&z<38:currentScene==='inn'||currentScene==='shop'||currentScene==='forge'||currentScene.startsWith('realm_briarhaven_');
- if(local){let key,height;if(o.type==='tree'){key=(Math.floor(x+z)%2)?'treeA':'treeB';height=3.4+(Math.floor(x*3+z)%5)*.17;}else if(o.type==='prop'&&/barrel/i.test(o.name)){key='barrel';height=.65;}else if(o.type==='prop'&&/crate/i.test(o.name)){key='crate';height=.65;}
-  if(key){const mesh=briarModels[key],[lo,hi]=mesh.bounds,k=height/(hi[1]-lo[1]);briarEmit(r,mesh,briarTransform(x,-lo[1]*k,z,k,(x+z)*1.7));return height;}}
+ const race=o.race||realmArtRace(x,z);let key,height;
+ if(o.type==='tree'){key=/pine/i.test(o.name)?'treeA':'treeB';height=(race==='elf'?4.7:3.4)+(Math.floor(x*3+z)%5)*.17;}
+ else if(o.name==='Mountain outcrop'){key='mountain';height=3.3;}
+ else if(o.type==='ore'){key='rockB';height=.65;}
+ else if(o.type==='cache'){key='chest';height=.65;}
+ else if(o.type==='prop'){
+  if(/bed/i.test(o.name)){key='bed';height=.75;}
+  else if(/banquet/i.test(o.name)){key='banquet';height=.9;}
+  else if(/table/i.test(o.name)){key='table';height=.9;}
+  else if(/bookcase/i.test(o.name)){const shelf=realmArtMesh('shelf',race);for(const y of [.5,1,1.5])briarEmit(r,shelf,briarTransform(x,y,z,.5));return 1.6;}
+  else if(/pillar/i.test(o.name)){key='pillar';height=2.8;}
+  else if(/throne/i.test(o.name)){key='chair';height=1.8;}
+  else if(/altar/i.test(o.name)){key='pillar';height=1;}
+  else if(/well/i.test(o.name)){key='well';height=1.7;}
+  else if(/barrel/i.test(o.name)){key='barrel';height=.65;}
+  else if(/crate|chest/i.test(o.name)){key='crate';height=.65;}
+  else if(/lumber|log/i.test(o.name)){key='lumber';height=.5;}
+  else if(/sack|supplies/i.test(o.name)){key='sack';height=.6;}
+  else if(/rack/i.test(o.name)){key='rack';height=1.2;}
+  else if(/cart/i.test(o.name)){key='cart';height=.8;}
+  else if(/tent/i.test(o.name)){key='tent';height=1.8;}
+ }
+ if(key){const mesh=realmArtMesh(key,race),[lo,hi]=mesh.bounds,k=height/(hi[1]-lo[1]);briarEmit(r,mesh,briarTransform(x,-lo[1]*k,z,k,key==='treeA'||key==='treeB'?(x+z)*1.7:0));return height;}
  return propBeforeBriar(r,o,x,z);
 };
+// Both original river crossings share the same authored stone bridge.
+function realmBridge(r,x,z,span,width,eastWest){const mesh=realmArtMesh('bridge',realmArtRace(x,z)),[lo,hi]=mesh.bounds,k=Math.min(span/(hi[2]-lo[2]),width/(hi[0]-lo[0]));briarEmit(r,mesh,briarTransform(x,0,z,k,eastWest?Math.PI/2:0,k*.55));return .4;}
+bridge3=function(r,startY){realmBridge(r,37.5,startY+1.5,3.4,3,true);};
+
+let realmArtCrossings=null;
+function drawRealmCrossings(r){
+ if(!realmArtCrossings){const crossings=new Map();for(const [ax,ay,bx,by]of realmRoads){
+  if(ay===by&&ay<149&&ay>5&&Math.min(ax,bx)<180&&Math.max(ax,bx)>183)crossings.set('east:'+ay,{x:181.5,z:ay,w:4.4,d:3.1});
+  if(ax===bx&&ax>45&&ax<365&&Math.min(ay,by)<150&&Math.max(ay,by)>153)crossings.set('south:'+ax,{x:ax,z:151.5,w:3.1,d:4.4});
+ }realmArtCrossings=[...crossings.values()];}
+ for(const b of realmArtCrossings){const p=project3(b.x,0,b.z);if(p.x< -180||p.x>screen.w+180||p.y< -180||p.y>screen.h+180)continue;emitMesh3(r,cachedMesh3(b,'prop',r=>realmBridge(r,b.x,b.z,4.4,3.1,b.w>b.d)));}
+}
+
+const realmArtWalls=new Map();
+function drawRealmWall(r,x,z){
+ const id=currentScene+':'+x+':'+z;let key=realmArtWalls.get(id);
+ if(!key){key={};realmArtWalls.set(id,key);if(realmArtWalls.size>400)realmArtWalls.delete(realmArtWalls.keys().next().value);}
+ emitMesh3(r,cachedMesh3(key,'prop',q=>{const mesh=realmArtMesh('wall',realmArtRace(x,z)),[lo,hi]=mesh.bounds,k=1.02/(hi[0]-lo[0]),v=1.3/(hi[1]-lo[1]),heading=worldWall(x-1,z)||worldWall(x+1,z)?0:Math.PI/2;
+ const m=briarTransform(x+.5,-lo[1]*v,z+.5,k,heading,v);briarEmit(q,mesh,m);return 1.3;}));
+}
 
 // Skin pieces with their own source rig. Equipment meshes use authored head and
 // hand sockets, so the grip and helmet remain attached through every pose.
@@ -60,13 +126,14 @@ function briarEquipment(gear){
 }
 const humanoidBeforeBriar=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
- // Preserve the distinctive races and monsters. The player and other human
- // adventurers use the new character consistently, including portraits.
- if(gear._bones||(gear._race&&gear._race!=='human'))return humanoidBeforeBriar(r,x,z,look,gear,heading,walk,attack,size);
+ // All three peoples share the authored skeleton pipeline and fitted sockets.
+ if(gear._bones)return humanoidBeforeBriar(r,x,z,look,gear,heading,walk,attack,size);
  const clip=attack>.015?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':gear.weapon?'melee':'unarmed'):walk?'walk':'idle';
  const phase=attack>.015?(gear===s.equipment?Math.max(0,Math.min(.98,(time-lastAttack)/.42)):Math.min(.98,(Math.asin(Math.min(1,attack))/Math.PI)*1.8)):(walk?((walk/10)/briarRigs.Rogue.clips.walk.duration)%1:(time/briarRigs.Rogue.clips.idle.duration)%1);
- const m=briarTransform(x,0,z,size*.94,heading);
- for(const [rig,part,tint]of briarEquipment(gear))briarEmit(r,briarPose(rig,part,clip,phase,String(look%4)+tint),m);
+ const race=gear._race||'human',m=briarTransform(x,0,z,size*.94,heading,size*.94*(race==='dwarf'?.76:race==='elf'?1.08:1));
+ let parts=briarEquipment(gear);
+ if(race==='dwarf'||race==='elf'){const native=race==='dwarf'?'Barbarian':'Rogue';parts=parts.map(([rig,part,tint])=>['Head','Body','ArmLeft','ArmRight','LegLeft','LegRight'].includes(part)?[native,part,'']: [rig,part,tint]);}
+ for(const [rig,part,tint]of parts)briarEmit(r,briarPose(rig,part,clip,phase,String(look%4)+tint),m);
  if(gear.weapon==='shortbow'){
   const rig=briarRigs.Rogue,motion=rig.clips[clip],f=Math.round(phase*(motion.frames-1)),o=(f*rig.jointCount+rig.hand)*12,socket=motion.m.subarray(o,o+12),bow={face(p,c){r.face(p.map(a=>briarPoint(briarPoint(a,0,socket),0,m)),c);}};
   const points=Array.from({length:13},(_,i)=>[Math.sin(i/12*Math.PI)*.17,-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.021,'#987043',6);beamArt(bow,points[0],points[12],.005,'#d7c9a8',4);

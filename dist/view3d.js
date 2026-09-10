@@ -8,7 +8,15 @@ function unproject3(sx,sy){const u=(sx-screen.w/2)/view3d.zoom,d=(sy-screen.h*.5
 function shade3(hex,f){const n=parseInt(hex.slice(1),16);return '#'+[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))).toString(16).padStart(2,'0')).join('');}
 let meshDetail3=1;
 const staticMeshes3=new WeakMap(),terrainLayers3=new Map();
-function cachedMesh3(key,kind,build){let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}const tag=kind+':'+meshDetail3;if(!variants.has(tag)){const faces=[];const height=build({face:(points,color,normals,material,colors)=>faces.push({points,color,normals,material,colors})});variants.set(tag,{faces,height,kind});}return variants.get(tag);}
+const staticMeshQueues3={building:new Map(),prop:new Map()};
+function cachedMesh3(key,kind,build){
+ const queue=staticMeshQueues3[kind==='building'?'building':'prop'];queue.delete(key);queue.set(key,true);
+ const limit=kind==='building'?80:640;
+ if(queue.size>limit){const oldest=queue.keys().next().value;queue.delete(oldest);const discarded=staticMeshes3.get(oldest);if(typeof realmGPU!=='undefined'&&realmGPU&&discarded)for(const mesh of discarded.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(oldest);}
+ let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}
+ const tag=kind+':'+(typeof briarModels==='undefined'?meshDetail3:1);
+ if(!variants.has(tag)){const faces=[],height=build({face:(points,color,normals,material,colors)=>faces.push({points,color,normals,material,colors})});variants.set(tag,{faces,height,kind});}return variants.get(tag);
+}
 function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors);return cached.height;}
 function painter3(g,project){const faces=[],fast=project===project3,cy=Math.cos(view3d.yaw),sy=Math.sin(view3d.yaw),ct=Math.cos(view3d.tilt),st=Math.sin(view3d.tilt),zoom=view3d.zoom,ox=px+.5,oz=py+.5,sw=screen.w,sh=screen.h;
  return {face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
@@ -148,7 +156,8 @@ function draw3d(){meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:1;const w=scr
  const minx=Math.max(0,Math.floor(Math.min(...corners.map(p=>p.x)))-4),maxx=Math.min(mw-1,Math.ceil(Math.max(...corners.map(p=>p.x)))+4),minz=Math.max(0,Math.floor(Math.min(...corners.map(p=>p.z)))-4),maxz=Math.min(mh-1,Math.ceil(Math.max(...corners.map(p=>p.z)))+4);
  if(!realmGPU)drawTerrainLayer3();
  for(const o of objects){if(o.dead>time||view3d.zoom<24)continue;const q=project3(o.x,0,o.y);if(q.x< -90||q.x>w+90||q.y< -90||q.y>h+90)continue;groundShadow3(ctx,o.x+.5,o.y+.5,o.type==='tree'?.84:.32,o.type==='tree'?.6:.24,o.type==='tree'?.12:.16);}
- const mesh=painter3(ctx,project3),labels=[];hitboxes=[];if(!inWorld()){for(let z=minz;z<=maxz;z++)for(let x=minx;x<=maxx;x++)if(worldWall(x,z))box3(mesh,x+.5,.65,z+.5,1,1.3,1,'#62716e');}if(inWorld()){for(const by of [16,34]){const bp=project3(37.5,0,by+1.5);if(bp.x>-160&&bp.x<w+160&&bp.y>-120&&bp.y<h+150)bridge3(mesh,by);}}
+ const mesh=painter3(ctx,project3),labels=[];hitboxes=[];if(!inWorld()){for(let z=minz;z<=maxz;z++)for(let x=minx;x<=maxx;x++)if(worldWall(x,z)){if(typeof drawRealmWall==='function')drawRealmWall(mesh,x,z);else box3(mesh,x+.5,.65,z+.5,1,1.3,1,'#62716e');}}if(inWorld()){for(const by of [16,34]){const bp=project3(37.5,0,by+1.5);if(bp.x>-160&&bp.x<w+160&&bp.y>-120&&bp.y<h+150)bridge3(mesh,by);}}
+ if(inWorld()&&typeof drawRealmCrossings==='function')drawRealmCrossings(mesh);
  const near=(x,z)=>{if(x<minx-3||x>maxx+3||z<minz-3||z>maxz+3)return false;const q=project3(x,1,z);return q.x>-130&&q.x<w+130&&q.y>-160&&q.y<h+140;};
  const hit=(o,x,z,height,width=.65)=>{const a=project3(x,0,z),b=project3(x,height,z);hitboxes.push({x:a.x-width*view3d.zoom/2,y:Math.min(a.y,b.y)-8,w:width*view3d.zoom,h:Math.abs(a.y-b.y)+16,o,depth:a.depth});};
  for(const b of buildings){const center=project3(b.x+b.w/2,(b.visualHeight||3.3)/2,b.y+b.h/2),radius=(Math.hypot(b.w,b.h)+(b.visualHeight||3.3))*view3d.zoom*.6;if(center.x< -radius||center.x>w+radius||center.y< -radius||center.y>h+radius)continue;const cached=cachedMesh3(b,'building',r=>building3(r,b));emitMesh3(mesh,cached);if(b.service){const polygon=buildingHull3(cached);hitboxes.push({polygon,o:b.service,building:b,depth:project3(b.x+b.w/2,0,b.y+b.h/2).depth});}if(Math.hypot(px-b.x,py-b.y)<10)labels.push([b.name,b.x+b.w/2,(b.visualHeight||3.3)+.15,b.y+b.h/2,'#e8d9b0']);}

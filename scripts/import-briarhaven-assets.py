@@ -11,6 +11,7 @@ from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / '.asset-cache'
 SOURCES = {
+    'dungeon': ('KayKit-Dungeon-Remastered-1.0','b0ca9bd96a8072ab36a3a5464f00ed1e06a16d07','addons/kaykit_dungeon_remastered/Assets'),
     'town': ('KayKit-Medieval-Hexagon-Pack-1.0', '84fa4e91af6a88989be7c99e0891cede11f2ca38', 'addons/kaykit_medieval_hexagon_pack'),
     'hero': ('KayKit-Character-Pack-Adventures-1.0', '672074b73ba276876a19e8816ecdc5241817ab47', 'addons/kaykit_character_pack_adventures'),
 }
@@ -83,12 +84,14 @@ class Model:
         for i in range(len(nodes)):visit(i)
         return out
 
-    def mesh(self, node, rigid_joint=None):
-        n=self.g['nodes'][node]; p=self.g['meshes'][n['mesh']]['primitives'][0];a=p['attributes']
-        pos=self.acc(a['POSITION']); normals=self.acc(a['NORMAL']);uv=self.acc(a['TEXCOORD_0'])
+    def mesh(self, node, rigid_joint=None, primitive=0):
+        n=self.g['nodes'][node]; p=self.g['meshes'][n['mesh']]['primitives'][primitive];a=p['attributes']
+        pos=self.acc(a['POSITION']); normals=self.acc(a['NORMAL']);uv=self.acc(a['TEXCOORD_0']) if 'TEXCOORD_0' in a else np.zeros((len(pos),2))
         mat=self.g['materials'][p.get('material',0)].get('pbrMetallicRoughness',{}); factor=mat.get('baseColorFactor',[1,1,1,1])[:3]
-        tex=self.g['textures'][mat['baseColorTexture']['index']]['source'];im=self.images[tex];h,w,_=im.shape
-        colors=im[np.clip((uv[:,1]*h).astype(int),0,h-1),np.clip((uv[:,0]*w).astype(int),0,w-1)]*factor
+        if 'baseColorTexture' in mat:
+            tex=self.g['textures'][mat['baseColorTexture']['index']]['source'];im=self.images[tex];h,w,_=im.shape
+            colors=im[np.clip((uv[:,1]*h).astype(int),0,h-1),np.clip((uv[:,0]*w).astype(int),0,w-1)]*factor
+        else: colors=np.tile(np.asarray(factor)*255,(len(pos),1))
         out={'p':packed(pos,'<f4'),'n':packed(np.round(normals*127),'i1'),'c':packed(np.round(colors),'u1'),'i':packed(self.acc(p['indices']),'<u2'),'count':len(pos)}
         if rigid_joint is not None:
             j=np.zeros((len(pos),4));j[:,0]=rigid_joint;wt=np.zeros_like(j);wt[:,0]=255
@@ -109,13 +112,43 @@ static={
     'homeB':'buildings/blue/building_home_B_blue','treeA':'decoration/nature/tree_single_A',
     'treeB':'decoration/nature/tree_single_B','rock':'decoration/nature/rock_single_A',
     'barrel':'decoration/props/barrel','crate':'decoration/props/crate_A_small',
+    'castle':'buildings/blue/building_castle_blue','hall':'buildings/blue/building_barracks_blue',
+    'temple':'buildings/blue/building_church_blue','mine':'buildings/blue/building_mine_blue',
+    'tower':'buildings/blue/building_tower_B_blue','well':'buildings/blue/building_well_blue',
+    'bridge':'buildings/neutral/building_bridge_A','gate':'buildings/neutral/wall_straight_gate',
+    'mountain':'decoration/nature/mountain_A','rockB':'decoration/nature/rock_single_C',
+    'lumber':'decoration/props/resource_lumber','stone':'decoration/props/resource_stone',
+    'rack':'decoration/props/weaponrack','sack':'decoration/props/sack',
+    'tent':'decoration/props/tent','cart':'decoration/props/wheelbarrow',
+
 }
-for key,path in static.items():
-    model=Model('town','Assets/gltf/'+path+'.gltf'); node=next(i for i,n in enumerate(model.g['nodes']) if 'mesh'in n)
-    out['models'][key]=model.mesh(node)
+# Retrieve independent source files concurrently; the conversion is deterministic.
+from concurrent.futures import ThreadPoolExecutor
+paths=[('town','Assets/gltf/'+p+ext) for p in static.values() for ext in ['.gltf','.bin']]
+paths += [('hero','Characters/gltf/'+n+'.glb') for n in ['Barbarian']]
+with ThreadPoolExecutor(max_workers=6) as pool:
+    list(pool.map(lambda arg: fetch(*arg),paths))
+interior={'bed':'bed_decorated.gltf.glb','table':'table_medium_decorated_A.gltf.glb','banquet':'table_long_tablecloth_decorated_A.gltf.glb','pillar':'pillar_decorated.gltf.glb','chest':'chest.glb','shelf':'shelf_large.gltf.glb','chair':'chair.gltf.glb','wall':'wall.gltf.glb'}
+with ThreadPoolExecutor(max_workers=6) as pool:
+    list(pool.map(lambda path: fetch('dungeon','gltf/'+path),interior.values()))
+for key,kind,path in [(k,'town','Assets/gltf/'+p+'.gltf') for k,p in static.items()]+[(k,'dungeon','gltf/'+p) for k,p in interior.items()]:
+    model=Model(kind,path);parts=[];offset=0
+    arrays={k:[] for k in ['p','n','c','i']}
+    for node,n in enumerate(model.g['nodes']):
+        if 'mesh' not in n:continue
+        for primitive in range(len(model.g['meshes'][n['mesh']]['primitives'])):
+            m=model.mesh(node,primitive=primitive);parts.append(m)
+            for field,dtype in [('p','<f4'),('n','i1'),('c','u1'),('i','<u2')]:
+                values=np.frombuffer(base64.b64decode(m[field]),dtype=dtype)
+                arrays[field].append(values.astype(np.int64)+offset if field=='i' else values)
+            offset+=m['count']
+    assert offset<65536
+    joined={k:packed(np.concatenate(arrays[k]),dtype) for k,dtype in [('p','<f4'),('n','i1'),('c','u1'),('i','<u2')]}
+    joined.update(count=offset,bounds=[np.min([m['bounds'][0] for m in parts],axis=0).tolist(),np.max([m['bounds'][1] for m in parts],axis=0).tolist()])
+    out['models'][key]=joined
 
 clips={'idle':'Idle','walk':'Walking_A','melee':'1H_Melee_Attack_Chop','ranged':'2H_Ranged_Shoot','magic':'Spellcast_Shoot','unarmed':'Unarmed_Melee_Attack_Punch_A'}
-for name,extras in [('Rogue',[]),('Knight',['Knight_Helmet','1H_Sword','Badge_Shield']),('Mage',['2H_Staff'])]:
+for name,extras in [('Rogue',[]),('Knight',['Knight_Helmet','1H_Sword','Badge_Shield']),('Mage',['2H_Staff']),('Barbarian',[])]:
     model=Model('hero','Characters/gltf/'+name+'.glb');g=model.g;skin=g['skins'][0];joints=skin['joints'];bind=model.acc(skin['inverseBindMatrices']).reshape(-1,4,4).transpose(0,2,1)
     extra_nodes=[next(i for i,n in enumerate(g['nodes']) if n['name']==e) for e in extras]
     # Include the authored hand attachment even when a shortbow is drawn locally.
@@ -138,5 +171,5 @@ for name,extras in [('Rogue',[]),('Knight',['Knight_Helmet','1H_Sword','Badge_Sh
 dest=ROOT/'dist/assets/briarhaven';dest.mkdir(parents=True,exist_ok=True)
 (dest/'models.js').write_text('// Generated by scripts/import-briarhaven-assets.py. KayKit assets: CC0.\nconst BRIARHAVEN_ASSETS='+json.dumps(out,separators=(',',':'))+';\n')
 for kind in SOURCES:(dest/(kind+'-LICENSE.txt')).write_bytes(fetch(kind,'LICENSE.txt').read_bytes())
-(dest/'CREDITS.txt').write_text('Briarhaven art pilot: models and animation by Kay Lousberg (KayKit).\nCC0 1.0 Universal. https://kaylousberg.com/\n\n'+ '\n'.join(f'https://github.com/KayKit-Game-Assets/{r}/tree/{sha}' for r,sha,_ in SOURCES.values())+'\n\nSelected meshes and animations converted for Emberfall; original atlas colors baked to vertices.\n')
+(dest/'CREDITS.txt').write_text('Emberfall world art: models and animation by Kay Lousberg (KayKit).\nCC0 1.0 Universal. https://kaylousberg.com/\n\n'+ '\n'.join(f'https://github.com/KayKit-Game-Assets/{r}/tree/{sha}' for r,sha,_ in SOURCES.values())+'\n\nSelected meshes and animations converted for Emberfall; original atlas colors baked to vertices.\n')
 print('Wrote',dest/'models.js', (dest/'models.js').stat().st_size)
