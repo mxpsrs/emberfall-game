@@ -1,10 +1,34 @@
 'use strict';
+const COMBAT_SKILLS=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'];
+const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Bury bones for XP. Adds spiritual protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
+function combatLevel(){return 1+Math.floor((lv('Hitpoints')-1)*.15+(lv('Attack')-1)*.2+(lv('Strength')-1)*.2+(lv('Defense')-1)*.2+(lv('Worship')-1)*.05+(lv('Magic')-1)*.1+(lv('Ranged')-1)*.1+1e-9);}
+function migrateCombatSkills(state,original=state){
+ const old=original?.xp||{},legacy=Math.max(0,Number(old.Combat)||0);state.xp=state.xp||{};
+ for(const skill of COMBAT_SKILLS){const retained=Number(old[skill]);state.xp[skill]=Number.isFinite(retained)&&retained>=0?retained:['Hitpoints','Attack','Strength','Defense'].includes(skill)?legacy:0;}
+ if(legacy&&!original?.combatSkillsVersion)state.legacyCombatXP=legacy;
+ delete state.xp.Combat;state.combatSkillsVersion=1;
+ if(!['accurate','aggressive','defensive','balanced'].includes(state.meleeTraining))state.meleeTraining='balanced';
+ if(!['focused','defensive'].includes(state.rangedTraining))state.rangedTraining='focused';
+ if(!['focused','defensive'].includes(state.magicTraining))state.magicTraining='focused';
+}
+function trainingFocus(style=combatStyle()){return style==='melee'?s.meleeTraining||'balanced':s[style+'Training']||'focused';}
+function awardCombatDamage(damage,style,focus=trainingFocus(style)){
+ if(!(damage>0))return;const xp=damage*3;gain('Hitpoints',damage,true);
+ if(style==='melee'){
+  const skill={accurate:'Attack',aggressive:'Strength',defensive:'Defense'}[focus];
+  if(skill)gain(skill,xp,true);else for(const skill of ['Attack','Strength','Defense'])gain(skill,damage,true);
+ }else{const skill=style==='magic'?'Magic':'Ranged';if(focus==='defensive'){gain(skill,damage*2,true);gain('Defense',damage,true);}else gain(skill,xp,true);}
+}
+function buryBones(){if((s.bag.bones||0)<1)return false;s.bag.bones--;gain('Worship',18);floating('+18 Worship',px,py,'#dbc58a');toast('Bones buried · +18 Worship XP');renderUI();save();return true;}
+function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'Attack':style==='magic'?'Magic':'Ranged');return Math.max(.35,Math.min(.97,.84+(level-(o.level||1))*.025));}
+function enemyAccuracy(o){return Math.max(.2,Math.min(.94,.83+((o.level||1)-lv('Defense'))*.025));}
+function playerMaxHit(style=combatStyle()){return spiritBonus(style)+(style==='magic'?currentSpell().power+magicBonus():3)+lv(style==='magic'?'Magic':style==='ranged'?'Ranged':'Strength')+equippedWeapon().power+2;}
 const MONSTER_ART={goblin:0,slime:1,wolf:2,ridgewolf:2,skeleton:3,king:4,rat:5,bandit:6,warden:7,sentinel:7};
 const ITEMS={
- bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Trains Combat.'},
+ bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Choose Accurate, Aggressive, Defensive, or Balanced training.'},
  ironSword:{name:'Iron sword',icon:1,slot:'weapon',style:'melee',power:5,range:1.45,desc:'Forged iron. Four more damage than a bronze sword.'},
- shortbow:{name:'Shortbow',icon:2,slot:'weapon',style:'ranged',power:2,range:5,desc:'Fires one arrow per shot. Trains Ranged and Combat.'},
- oakStaff:{name:'Oak staff',icon:3,slot:'weapon',style:'magic',power:1,range:4,desc:'Channels your selected spell using rune stones. Trains Magic and Combat.'},
+ shortbow:{name:'Shortbow',icon:2,slot:'weapon',style:'ranged',power:2,range:5,desc:'Fires one arrow per shot. Trains Ranged and Hitpoints; Defensive training also earns Defense XP.'},
+ oakStaff:{name:'Oak staff',icon:3,slot:'weapon',style:'magic',power:1,range:4,desc:'Channels your selected spell using rune stones. Trains Magic and Hitpoints; Defensive training also earns Defense XP.'},
  ironHelm:{name:'Iron helmet',icon:4,slot:'head',armor:2,desc:'Reduces incoming damage by 2.'},
  leatherArmor:{name:'Leather armor',icon:5,slot:'body',armor:1,desc:'Light armor. Reduces incoming damage by 1.'},
  ironShield:{name:'Iron shield',icon:6,slot:'shield',armor:2,desc:'Reduces incoming damage by 2 with a melee weapon. Inactive with bows and staves.'},
@@ -15,7 +39,7 @@ const ITEMS={
  fang:{name:'Wolf fang',icon:11,desc:'A trophy from a briar wolf. Sell for 6 coins.'},
  arrows:{name:'Arrows',icon:12,desc:'One consumed per bow shot. Buy at Mara’s store or craft at the forge.'},
  runes:{name:'Rune stones',icon:13,desc:'Fuel for magic. Buy at Mara’s store or find on monsters.'},
- bones:{name:'Bones',icon:14,desc:'Dropped by goblins and skeletons. Sell for 4 coins.'},
+ bones:{name:'Bones',icon:14,desc:'Tap to bury one for 18 Worship XP. Dropped by creatures throughout the realm. Can also be sold for 4 coins.'},
  mageRobe:{name:'Mage robe',icon:15,slot:'body',magic:2,desc:'Adds 2 magic damage. Offers no armor protection.'}
 };
 const SPELLS={
@@ -27,7 +51,7 @@ function equippedWeapon(){return ITEMS[s.equipment.weapon]||{name:'Unarmed',styl
 function combatStyle(){return equippedWeapon().style;}
 function currentSpell(){return SPELLS[s.spell]||SPELLS.spark;}
 function attackRange(){return combatStyle()==='magic'?currentSpell().range:equippedWeapon().range;}
-function armorValue(){return spiritBonus('armor')+Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
+function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Worship')/5)+spiritBonus('armor')+Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
@@ -43,6 +67,7 @@ function itemActions(id,fromBag=false){
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
  if(item.slot)actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(item.slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
  else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(s.hp>=maxhp()){toast('Your health is full.');return false;}if(id==='fish')eat();else{s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
+ else if(id==='bones')actions.push(['Bury',buryBones]);
  else actions.push(['Examine',()=>{toast(item.name+': '+item.desc);return true;}]);
  if(!worn)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
  return actions;
@@ -84,6 +109,9 @@ function renderSpells(){
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
  $('combatResource').textContent=combatStyle()==='ranged'?s.bag.arrows+' arrows':combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Armor '+armorValue()+' · '+equippedWeapon().name;
+ const select=$('trainingFocus'),style=combatStyle(),focus=trainingFocus(style),key=style+':'+focus;
+ if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
+ select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
 }
 function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(ITEMS[id].slot&&owns(id)){toast('You already own this item.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=1;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
@@ -92,11 +120,11 @@ function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&
 let projectiles=[],enemyClock=0,retaliationClock=0;
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
- o.dead=time+(o.type==='dummy'?8:25);const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';gain(skill,o.xp);if(skill!=='Combat')gain('Combat',Math.ceil(o.xp*.5));monsterDrop(o);
+ o.dead=time+(o.type==='dummy'?8:25);monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){if(s.tutorial===5)s.hp=Math.max(1,Math.min(s.hp,maxhp()-6));tutorialEvent('dummy');toast('Training complete. Try your food button to heal.');}
- else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · Loot on the ground · +'+o.xp+' '+skill+' XP');}
+ else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · Loot on the ground');}
  stop();
 }
 function performAttack(o){
@@ -105,17 +133,17 @@ function performAttack(o){
  if(style==='ranged'&&s.bag.arrows<1){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
  if(style==='magic'&&(lv('Magic')<spell.level||s.bag.runes<spell.cost)){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  if(style==='ranged')s.bag.arrows--;if(style==='magic')s.bag.runes-=spell.cost;
- const skill=style==='magic'?'Magic':style==='ranged'?'Ranged':'Combat';
- const damage=spiritBonus(style)+(style==='magic'?spell.power+magicBonus():3)+lv(skill)+equippedWeapon().power+Math.floor(Math.random()*3);
+ const focus=trainingFocus(style),maxHit=playerMaxHit(style);
+ const damage=Math.random()<playerAccuracy(o,style)?1+Math.floor(Math.random()*Math.max(1,maxHit)):0;
  lastAttack=time;facing=o.x<s.x?-1:1;
- if(style==='melee')resolveHit(o,damage,style);else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,slow:style==='magic'?spell.slow||0:0});
+ if(style==='melee')resolveHit(o,damage,style,0,focus);else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
-function resolveHit(o,damage,style,slow=0){if(o.dead>time)return;o.hp-=damage;o.hitAt=time;o.slowUntil=slow?time+slow:o.slowUntil||0;floating('-'+damage,o.x,o.y);if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
+function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
 function updateCombat(dt){
  for(const p of projectiles)p.age+=dt;
  const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
- for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow);
+ for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
  if(!target||!fighter(target))return;
  const o=target;
  if(o.dead>time){stop();return;}
@@ -123,7 +151,7 @@ function updateCombat(dt){
  if(Math.hypot(o.x-s.x,o.y-s.y)>1.45){
    if(o.type!=='dummy'&&enemyClock>=(o.slowUntil>time?.9:.38)){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
  }else if(retaliationClock>=1.3&&lineOfSight(o.x,o.y,s.x,s.y)){
-   retaliationClock=0;o.attackAt=time;const hit=Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue());s.hp-=hit;floating('-'+hit,px,py,'#ffaba1');
+   retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue()):0;s.hp-=hit;floating(hit?'-'+hit:'Blocked',px,py,hit?'#ffaba1':'#a7c7cf');
    if(s.hp<=0){s.gold=Math.max(0,s.gold-5);returnToVillage();s.x=14;s.y=17;px=14;py=17;s.hp=maxhp();o.hp=o.maxhp;projectiles=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}renderUI();save();
  }
 }

@@ -5,4 +5,5 @@ for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','gam
 
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
+vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
 const start=Date.now();vm.runInContext(`renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();screen={w:900,h:400};view3d.zoom=14;activateScene('overworld',40,30);for(let i=0;i<3;i++)draw3d();`,ctx);console.log(JSON.stringify({msForThreeFrames:Date.now()-start}));

@@ -5,6 +5,7 @@ for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','gam
 
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
+vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();screen={w:900,h:500};
 for(const yaw of [-3,-1,0,1,3])for(const zoom of [14,34,65])for(const tilt of [.5,.85,1.2]){

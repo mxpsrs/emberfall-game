@@ -52,5 +52,12 @@ function drawRealmItem(g,id){const w=g.canvas?.width||96,h=g.canvas?.height||96,
  else if(id==='ironShield'){const pts=[[-.46,1.16,0],[.46,1.16,0],[.4,.62,0],[0,.1,0],[-.4,.62,0]],center=[0,.8,.17];for(let i=0;i<5;i++)surface3(r,[pts[i],pts[(i+1)%5],center],m.iron);oval3(r,0,.81,.18,.2,.2,.07,m.gold);}
  else if(id==='leatherBoots'){for(const x of [-.21,.21]){limb3(r,x,.59,0,.33,.8,.36,m.leather);oval3(r,x,.19,.12,.34,.31,.62,m.leather);}}
  else if(id==='leatherArmor'||id==='mageRobe'){profile3(r,0,.82,0,.89,.95,.52,[[-.5,.66],[-.2,.7],[.3,1],[.5,.78]],id==='mageRobe'?'#695d82':m.leather);for(const side of [-1,1])oval3(r,side*.47,1.08,0,.29,.32,.4,id==='mageRobe'?'#695d82':m.leather);box3(r,0,.48,.23,.65,.09,.025,m.gold);}
+
+ else if(id==='logs'){for(const [x,y]of [[-.2,.35],[.2,.35],[0,.66]]){beamArt(r,[x,y,-.35],[x,y,.4],.19,m.timber,10);profile3(r,x,y,.41,.35,.015,.35,[[-.5,1],[.5,1]],m.oak,a=>[a[0],y+(a[2]-.41),.41+(a[1]-y)],10);}}
+ else if(id==='ore'){crownArt(r,-.15,.55,0,.85,.75,.7,'#7c8582',2);crownArt(r,.27,.35,.1,.55,.45,.5,'#abb1a5',5);}
+ else if(id==='fish'){oval3(r,0,.68,0,1.05,.36,.3,'#86a5a1');r.face([[.48,.7,0],[.78,.95,0],[.76,.43,0]],'#647f7d');r.face([[-.1,.83,0],[.1,1.08,0],[.29,.81,0]],'#78918a');oval3(r,-.38,.73,.14,.065,.065,.03,'#283c3c');}
+ else if(id==='fang'){profile3(r,0,.72,0,.44,1.1,.35,[[-.5,.03],[-.2,.5],[.25,1],[.5,.8]],'#dfd5b3',a=>[a[0]+(a[1]-.5)*.2,a[1],a[2]]);}
+ else if(id==='bones'){beamArt(r,[-.3,.3,0],[.3,1.12,0],.085,'#d8d1b1');for(const [x,y]of [[-.3,.3],[.3,1.12]])for(const dx of [-.07,.07])oval3(r,x+dx,y,0,.17,.2,.2,'#e1d9bc');}
+ else if(id==='arrows'){for(const x of [-.18,0,.18]){beamArt(r,[x,.15,0],[x,1.3,0],.022,m.oak);r.face([[x-.065,1.25,0],[x,1.48,0],[x+.065,1.25,0]],m.iron);r.face([[x,.18,0],[x-.1,.05,0],[x-.1,.29,0],[x,.4,0]],'#d3cdb7');}}
+ else if(id==='runes'){crownArt(r,0,.6,0,.85,.9,.3,'#99a5a1',2);beamArt(r,[-.18,.43,.17],[.06,.94,.17],.035,'#a8e4dc',4);beamArt(r,[.06,.94,.17],[.22,.62,.17],.035,'#a8e4dc',4);beamArt(r,[-.07,.62,.17],[.22,.62,.17],.035,'#a8e4dc',4);}
  else {meshDetail3=prev;return false;}r.flush();meshDetail3=prev;return true;}
-boot();

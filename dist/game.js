@@ -3,7 +3,8 @@ const $ = id => document.getElementById(id);
 const W = 96, H = 84, TILE = 48, SAVE_KEY = 'emberfall-save-v1';
 const defaults = () => ({
   x:14, y:17, hp:30, gold:0,
-  xp:{Combat:0, Woodcutting:0, Mining:0, Fishing:0, Smithing:0, Ranged:0, Magic:0},
+  xp:{Hitpoints:0,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0},
+  combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
   bag:{logs:0, ore:0, fish:3, fang:0, bones:0, arrows:60, runes:40},
   sword:0, quest:0, kills:0, boss:false, character:null,
   spirits:{}, tutorial:0, tutorialReward:false, spell:"spark",
@@ -11,8 +12,8 @@ const defaults = () => ({
   equipment:{weapon:"bronzeSword",head:null,body:"leatherArmor",shield:null,feet:"leatherBoots"}
 });
 let s = defaults();
-const lv = skill => 1 + Math.floor(Math.sqrt(s.xp[skill] / 35));
-const maxhp = () => 30 + (lv('Combat') - 1) * 6 + spiritBonus('health');
+const lv = skill => skill==='Combat'?combatLevel():1+Math.floor(Math.sqrt(Math.max(0,Number(s.xp[skill])||0)/35));
+const maxhp = () => 30 + (lv('Hitpoints') - 1) * 6 + spiritBonus('health');
 s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
 s.tutorial = Math.max(0, Math.min(14, s.tutorial));
@@ -83,7 +84,7 @@ function save() {
   catch{$('saveStatus').textContent='Saving unavailable in this browser';}
 }
 function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
-function gain(skill,n){const before=lv(skill);s.xp[skill]+=n;if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Combat')s.hp=maxhp();}renderUI();}
+function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
 function stop(){target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
 function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
@@ -236,7 +237,7 @@ function renderPanel(){
     if(ready())html+='<p class="desc" style="color:#e0bc75">Ready to turn in — tap Elder Rowan.</p>';
   }
   if(tab==='bag')html='<div class="grid">'+[['Oak logs',s.bag.logs],['Iron ore',s.bag.ore],['Trout',s.bag.fish],['Wolf fangs',s.bag.fang],['Bones',s.bag.bones]].map(([n,v])=>'<div class="item">'+n+' <b>×'+v+'</b></div>').join('')+'</div><p class="desc">Equipped: '+(s.sword?'Iron sword (+4 damage)':'Bronze sword')+' · Axe · Pickaxe · Fishing rod<br>Trout heals 14 HP. Sell materials at Mara’s store.</p>';
-  if(tab==='skills'){pageControls(Object.keys(s.xp).length,4);html='<div class="grid">'+pageItems(Object.entries(s.xp),4).map(([k,x])=>{const level=lv(k),base=35*(level-1)**2,next=35*level**2;return '<div class="item">'+k+' <b>Lv. '+level+'</b><small>'+x+' / '+next+' XP</small><div class="skillbar"><i style="width:'+((x-base)/(next-base)*100)+'%"></i></div></div>';}).join('')+'</div>';}
+  if(tab==='skills'){const skills=Object.entries(s.xp).filter(([k])=>k!=='Combat');pageControls(skills.length,4);html='<div class="questhead"><h2>Skills</h2><small>Combat '+combatLevel()+'</small></div><div class="grid skillcards">'+pageItems(skills,4).map(([k,x])=>{const level=lv(k),base=35*(level-1)**2,next=35*level**2;return '<div class="item" title="'+(COMBAT_SKILL_DETAILS[k]||'')+'">'+k+' <b>Lv. '+level+'</b><small>'+x+' / '+next+' XP</small><div class="skillbar"><i style="width:'+((x-base)/(next-base)*100)+'%"></i></div><small class="skillpurpose">'+(COMBAT_SKILL_DETAILS[k]||'')+'</small></div>';}).join('')+'</div>';}
   $('panel').innerHTML=html;
 }
 function openCreator(edit=false){
