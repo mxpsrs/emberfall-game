@@ -37,7 +37,7 @@ function equipItem(id){
 function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots().length>=BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
 function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
-function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
+function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawRealmItem==='function'&&drawRealmItem(g,c.dataset.itemIcon))return;sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];

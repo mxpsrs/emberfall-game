@@ -4,6 +4,7 @@ const els={},data={},ctx={assert,console,performance:{now:()=>0},setTimeout:noop
 for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
+vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();screen={w:900,h:400};assetsReady=true;
 for(const yaw of [-1,0,1,2]){view3d.yaw=yaw;draw3d();const house=hitboxes.find(h=>h.building?.service?.destination==='inn');assert(house);const roof=project3(house.building.x+house.building.w/2,2.2,house.building.y+house.building.h/2);assert(pointInHull3(roof.x,roof.y,house.polygon));}

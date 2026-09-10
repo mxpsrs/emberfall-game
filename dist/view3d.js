@@ -51,11 +51,13 @@ function humanoid3(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const part=(a,b,d,w,h,dep,col,t=root)=>oval3(r,a,b,d,w,h,dep,col,t);
  // Chest contour narrows at the waist and wraps around the shoulders and back.
  profile3(r,0,1.13,0,.53,.57,.30,[[-.5,.72],[-.22,.82],[.24,1],[.43,.95],[.5,.57]],armor,root,10);
+ if(gear.body&&!gear._bones){for(const side of [-1,1])surface3(r,[[side*.05,.89,.155],[side*.2,1.23,.15],[side*.14,1.37,.11],[side*.015,1.1,.164]].map(root),robe?'#9983ae':'#b58a55');}
+ if(gear._bones){for(let i=0;i<3;i++)for(const side of [-1,1])part(side*.13,1.03+i*.105,.13,.2,.047,.1,'#e7debd');}
  profile3(r,0,.85,0,.43,.085,.28,[[-.5,1],[.5,1]],leather,root);box3(r,0,.85,.14,.075,.065,.025,'#c5ad76',root);
  if(robe)profile3(r,0,.57,0,.61,.5,.41,[[-.5,1],[-.25,.95],[.5,.62]],armor,root,10);
- part(0,1.46,0,.14,.15,.15,skin);part(0,1.66,0,.29,.38,.29,skin);
+ part(0,1.46,0,.14,.15,.15,skin);profile3(r,0,1.66,0,.285,.365,.28,[[-.5,.57],[-.2,.85],[.2,1],[.5,.75]],skin,root);
  // Rounded skull, fitted helmet cap, visible cheeks and a small nose.
- part(0,1.79,-.025,.31,.2,.3,gear.head?metal:hair);
+ profile3(r,0,1.8,-.025,.32,.18,.31,[[-.5,1],[-.15,1],[.5,.4]],gear.head?metal:hair,root);
  if(gear.head){part(-.137,1.67,-.025,.045,.23,.24,metal);part(.137,1.67,-.025,.045,.23,.24,metal);part(0,1.76,.132,.28,.045,.04,'#d0d7d3');}
  else part(0,1.68,-.125,.28,.23,.09,hair);
  part(0,1.66,.153,.045,.068,.075,skin);part(0,1.565,.12,.11,.025,.018,'#ac7960');
@@ -184,4 +186,3 @@ canvas.addEventListener('pointerup',e=>{const p=cameraPointers.get(e.pointerId);
 canvas.addEventListener('pointercancel',e=>{cameraPointers.delete(e.pointerId);gestureMoved=true;pinchStart=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();view3d.zoom=Math.max(14,Math.min(65,view3d.zoom*Math.exp(-e.deltaY*.001)));rememberView();},{passive:false});
 $('cameraLeft').onclick=()=>{view3d.yaw-=Math.PI/8;rememberView();};$('cameraRight').onclick=()=>{view3d.yaw+=Math.PI/8;rememberView();};$('zoomOut').onclick=()=>{view3d.zoom=Math.max(14,view3d.zoom/1.2);rememberView();};$('zoomIn').onclick=()=>{view3d.zoom=Math.min(65,view3d.zoom*1.2);rememberView();};$('cameraReset').onclick=()=>{Object.assign(view3d,{yaw:-.55,tilt:.85,zoom:34});rememberView();};
-boot();
