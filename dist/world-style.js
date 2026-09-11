@@ -99,7 +99,7 @@ function worldCastle(r,b){
  // A keep, courtyard and crenellated perimeter replace the warehouse-sized roof.
  // All supports sit on the existing perimeter; the walkable room stays clear.
  const kx=b.x+b.w*.5,kz=b.y+b.h*.36,kw=b.w*.43,kd=b.h*.48,keepTop=baseY+3.9;
- box3(stone,kx,baseY+1.95,kz,kw,3.9,kd,p.stone);
+ box3(stone,kx,keepTop/2,kz,kw,keepTop,kd,p.stone);
  worldRoof(q,kx,keepTop,kz,kw+.15,kd+.15,race==='elf'?3.7:2.8,p.roof[0],{hip:race==='dwarf',curve:race==='elf'});
  for(const side of [-1,1]){
   for(let i=1;i<5;i++){const xx=kx-kw/2+i*kw/5;windowRealm(q,xx,baseY+2.5,kz+side*(kd/2+.015),.58,1.43,p.trim,true);}
