@@ -7,7 +7,7 @@ attribute vec3 aPosition; attribute vec3 aNormal; attribute vec3 aColor; attribu
 uniform float uLandCamera; uniform mat4 uModel; uniform vec4 uCamera; uniform vec4 uView; uniform vec3 uOrigin; uniform float uShadowPass; uniform float uLightRange; uniform float uTime;
 varying vec3 vWorld; varying vec3 vNormal; varying vec3 vColor; varying float vMaterial; varying vec3 vShadow; varying vec2 vUV;
 void main(){
- vec3 world=(uModel*vec4(aPosition,1.0)).xyz;if(aMaterial>8.5&&aMaterial<9.5){world.x+=sin(uTime*1.4+world.z*1.7)*world.y*.075;}vec3 p=world-uOrigin;
+ vec3 world=(uModel*vec4(aPosition,1.0)).xyz;if(aMaterial>8.5&&aMaterial<9.5){world.x+=sin(uTime*1.4+world.z*1.7)*min(.5,max(0.0,world.y))*.075;}vec3 p=world-uOrigin;
  vec3 light=normalize(vec3(-0.55,1.0,0.38)); vec3 right=normalize(vec3(light.z,0.0,-light.x)); vec3 up=cross(light,right);
  vec3 lp=vec3(dot(p,right),dot(p,up),-dot(p,light));
  vShadow=vec3(lp.xy/uLightRange*0.5+0.5,lp.z/160.0+0.5);
@@ -28,13 +28,14 @@ void main(){
  if(uShadowPass>.5){gl_FragColor=packDepth(gl_FragCoord.z);return;}
  vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 light=normalize(vec3(-.55,1.0,.38)),col=vColor;float gloss=.0;vec2 p=vWorld.xz;float grain=noise(p*18.0);
  if(vMaterial>19.5){col*=albedo.rgb;}
- else if(vMaterial>14.5&&vMaterial<16.5){float patches=noise(p*.42)*.6+noise(p*2.7)*.4;vec3 grass=mix(vec3(.19,.31,.13),vec3(.44,.53,.23),patches)*(.91+.15*noise(p*34.0));vec3 dirt=mix(vec3(.39,.30,.18),vec3(.67,.55,.34),noise(p*1.4));if(vMaterial>15.5)dirt=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;float edge=min(vUV.x,1.0-vUV.x);float wear=smoothstep(.01,.20,edge+(noise(p*8.0)-.5)*.10);col=mix(grass,dirt,wear);}
+ else if(vMaterial>16.5&&vMaterial<17.5){float rim=min(min(vUV.x,1.0-vUV.x),1.0-vUV.y);col*=.72+.28*smoothstep(.0,.075,rim);col*=.96+.055*noise(vWorld.xz*32.0);}
+ else if(vMaterial>14.5&&vMaterial<16.5){float patches=noise(p*.42)*.6+noise(p*2.7)*.4;vec3 grass=mix(vec3(.19,.31,.13),vec3(.44,.53,.23),patches)*(.91+.15*noise(p*34.0));vec3 dirt=mix(vec3(.42,.34,.22),vec3(.55,.46,.31),noise(p*4.5));dirt*=.91+.13*noise(p*28.0);if(vMaterial>15.5)dirt=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;float edge=min(vUV.x,1.0-vUV.x);float wear=smoothstep(.01,.20,edge+(noise(p*8.0)-.5)*.10);col=mix(grass,dirt,wear);}
 
  else if(vMaterial>.5&&vMaterial<1.5){float patches=noise(p*.42)*.6+noise(p*2.7)*.4;col=mix(vec3(.19,.31,.13),vec3(.44,.53,.23),patches);col*=.91+.15*noise(p*34.0);}
  else if(vMaterial<2.5&&vMaterial>1.5){col=mix(vec3(.39,.30,.18),vec3(.67,.55,.34),noise(p*1.4));float gravel=step(.84,hash(floor(p*15.0)));col+=gravel*.09;}
  else if(vMaterial<3.5&&vMaterial>2.5){col=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;}
  else if(vMaterial<4.5&&vMaterial>3.5){float wave=sin(p.x*3.0+uTime*1.1)+sin(p.y*4.6-uTime*.8);n=normalize(vec3(cos(p.x*3.0+uTime*1.1)*.13,1.0,cos(p.y*4.6-uTime*.8)*.10));col=mix(vec3(.035,.22,.27),vec3(.10,.43,.46),.5+wave*.14);col+=pow(max(0.0,sin(p.x*8.0+p.y*6.0+uTime*1.6)),22.0)*.075;gloss=.7;}
- else if(vMaterial<5.5&&vMaterial>4.5){vec2 wood=vec2(vWorld.x+vWorld.z,vWorld.y);col*=.82+.22*noise(vec2(wood.x*35.0,wood.y*2.0));}
+ else if(vMaterial<5.5&&vMaterial>4.5){vec2 wood=vWorld.xz;float plank=floor(wood.x*3.0);float seam=smoothstep(.015,.06,min(fract(wood.x*3.0),1.0-fract(wood.x*3.0)));float grain=noise(vec2(wood.x*65.0,wood.y*1.6));float join=smoothstep(.0,.02,fract(wood.y*.36+mod(plank,3.0)*.33));col*=.76+.13*grain+.11*hash(vec2(plank,floor(wood.y*.36)));col*=.76+.24*seam*join;}
  else if(vMaterial<6.5&&vMaterial>5.5){vec2 tile=vec2(vWorld.z*5.0,(vWorld.x+vWorld.y)*6.0);tile.x+=mod(floor(tile.y),2.0)*.5;vec2 f=fract(tile);float lip=smoothstep(.02,.15,min(f.x,min(f.y,1.0-f.y)));col*=.68+.32*lip+hash(floor(tile))*.12;}
  else {col*=.95+.075*noise((vWorld.xz+vWorld.yy)*24.0);}
  float lit=1.0;if(vShadow.x>0.0&&vShadow.x<1.0&&vShadow.y>0.0&&vShadow.y<1.0){float shade=0.0;float bias=.0008+.0006*(1.0-max(0.0,dot(n,light)));for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=unpackDepth(texture2D(uShadow,vShadow.xy+vec2(float(x),float(y))/1024.0));shade+=step(vShadow.z-bias,d);}lit=.48+.52*shade/9.0;}

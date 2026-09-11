@@ -11,7 +11,7 @@ function landNode(x,z){if(!inWorld())return 0;const key=x+':'+z;if(landHeights.h
  let water=Infinity;for(let dz=-4;dz<=4;dz++)for(let dx=-4;dx<=4;dx++){const d=Math.hypot(dx,dz);if(d<water&&cachedLandWater(x+dx,z+dz))water=d;}
  h=Math.min(h,water*.72);if(cachedLandWater(x,z))h=0;landHeights.set(key,h);return h;
 }
-function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return (landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*u)*(1-v)+(landNode(ix,iz+1)*(1-u)+landNode(ix+1,iz+1)*u)*v;}
+function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return v>=u?landNode(ix,iz)*(1-v)+landNode(ix,iz+1)*(v-u)+landNode(ix+1,iz+1)*u:landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*(u-v)+landNode(ix+1,iz+1)*v;}
 const flatProject3=project3;
 project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return flatProject3(x,y+(v===view3d?landHeight(x,z)-landHeight(cx,cz):0),z,v,cx,cz,w,h);};
 unproject3=function(sx,sy){const v=view3d,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),u=(sx-screen.w/2)/v.zoom,screenD=(sy-screen.h*.54)/v.zoom,base=landHeight(px+.5,py+.5);let d=screenD/Math.sin(v.tilt);for(let i=0;i<24;i++){const x=px+.5+u*c+d*sn,z=py+.5-u*sn+d*c,next=(screenD+(landHeight(x,z)-base)*Math.cos(v.tilt))/Math.sin(v.tilt);if(Math.abs(next-d)<.0001){d=next;break;}d=d*.35+next*.65;}return {x:px+.5+u*c+d*sn,z:py+.5-u*sn+d*c};};

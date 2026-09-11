@@ -104,13 +104,13 @@ blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=r
 const borderRoute=route;
 route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
  if(!kingdomsReady)return borderRoute(tx,ty,adjacent,reach,startX,startY);const nav=realmNav(),{w,h}=nav;if(tx<0||ty<0||tx>=w||ty>=h)return null;
- const cells=nav.cells.slice();for(const o of nav.moving)if(!o.collected&&o.x>=0&&o.y>=0&&o.x<w&&o.y<h)cells[o.y*w+o.x]=1;
- const start=startY*w+startX,goal=ty*w+tx;if(!adjacent&&cells[goal])return null;const costs=new Float32Array(w*h);costs.fill(Infinity);const previous=new Int32Array(w*h);previous.fill(-1);const heap=[];
+ const cells=nav.cells,moving=new Set(nav.moving.filter(o=>!o.collected).map(o=>o.y*w+o.x)),isSolid=id=>cells[id]||moving.has(id);
+ const start=startY*w+startX,goal=ty*w+tx;if(!adjacent&&isSolid(goal))return null;const costs=new Map(),previous=new Map();const heap=[];
  const push=o=>{heap.push(o);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].f<=o.f)break;heap[i]=heap[p];i=p;}heap[i]=o;};
  const pop=()=>{const out=heap[0],last=heap.pop();if(heap.length){let i=0;while(i*2+1<heap.length){let c=i*2+1;if(c+1<heap.length&&heap[c+1].f<heap[c].f)c++;if(heap[c].f>=last.f)break;heap[i]=heap[c];i=c;}heap[i]=last;}return out;};
- costs[start]=0;push({id:start,g:0,f:0});let end=-1;
- while(heap.length){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>costs[a.id]+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
-  for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){const nx=x+dx,ny=y+dy,id=ny*w+nx;if(nx<1||ny<1||nx>=w-1||ny>=h-1||cells[id]||dx&&dy&&(cells[y*w+nx]||cells[ny*w+x]))continue;const g=a.g+(dx&&dy?Math.SQRT2:1);if(g<costs[id]-.001){costs[id]=g;previous[id]=a.id;push({id,g,f:g+Math.max(0,Math.hypot(tx-nx,ty-ny)-(adjacent?reach:0))});}}
+ costs.set(start,0);push({id:start,g:0,f:0});let end=-1;
+ while(heap.length){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>(costs.get(a.id)??Infinity)+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
+  for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){const nx=x+dx,ny=y+dy,id=ny*w+nx;if(nx<1||ny<1||nx>=w-1||ny>=h-1||isSolid(id)||dx&&dy&&(isSolid(y*w+nx)||isSolid(ny*w+x)))continue;const g=a.g+(dx&&dy?Math.SQRT2:1);if(g<(costs.get(id)??Infinity)-.001){costs.set(id,g);previous.set(id,a.id);push({id,g,f:g+Math.max(0,Math.hypot(tx-nx,ty-ny)-(adjacent?reach:0))});}}
  }
- if(end<0)return null;const result=[];while(end!==start){result.push([end%w,Math.floor(end/w)]);end=previous[end];if(end<0)return null;}return result.reverse();
+ if(end<0)return null;const result=[];while(end!==start){result.push([end%w,Math.floor(end/w)]);end=previous.get(end);if(end===undefined)return null;}return result.reverse();
 };

@@ -8,6 +8,7 @@ function initHud(){
  $('togglePanels').onclick=()=>{const open=$('gameDock').hidden;$('gameDock').hidden=!open;document.body.classList.toggle('panels-open',open);$('togglePanels').setAttribute('aria-expanded',String(open));$('togglePanels').textContent=open?'Close panels':'Bag & menus';if(open){tab='bag';tutorialEvent('bag');panelPage=0;syncTabs();renderPanel();}};
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
+ if(window.matchMedia('(pointer: coarse)').matches){$('tutorial').classList.add('collapsed');$('tutCollapse').textContent='Expand';}
  $('tutCollapse').onclick=()=>{const collapsed=$('tutorial').classList.toggle('collapsed');$('tutCollapse').textContent=collapsed?'Expand':'Minimize';};
  window.addEventListener('resize',updateOrientation);window.addEventListener('orientationchange',updateOrientation);updateOrientation();
 }

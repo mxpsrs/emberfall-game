@@ -4,31 +4,56 @@ function rebuiltMesh(m){const result={bounds:m.bounds};for(const k of ['p','uv']
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:briarDecode(c.m,Float32Array)}]))}]));
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){const mesh=rebuiltModels[name];if(!mesh)return;const m=briarTransform(x,y,z,scale,heading,vertical);briarEmit(r,tint?{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])}:mesh,m);}
+function rebuiltRoof(r,x,y,z,w,d,rise,color){
+ const half=(w+.7)/2,depth=d+.7,rows=Math.ceil(half/.44),columns=Math.ceil(depth/.52),tiles=materialRealm(r,13),trim=materialRealm(r,5);
+ for(const side of [-1,1])tiles.face([[x,y+rise,z-depth/2],[x,y+rise,z+depth/2],[x+side*half,y,z+depth/2],[x+side*half,y,z-depth/2]],shade3(color,.60));
+ for(const side of [-1,1])for(let row=0;row<rows;row++){
+  const u0=row/rows,u1=(row+1)/rows;
+  for(let col=-1;col<columns;col++){
+   const z0=Math.max(-depth/2,(col+(row%2)*.5)*depth/columns-depth/2),z1=Math.min(depth/2,(col+1+(row%2)*.5)*depth/columns-depth/2-.012);if(z1<=z0)continue;
+   const a=[x+side*half*u0,y+rise*(1-u0)+.028,z+z0],b=[a[0],a[1],z+z1],c=[x+side*half*u1,y+rise*(1-u1)+.035,z+z1],e=[c[0],c[1],z+z0];
+   const shade=.90+.12*(Math.sin(row*29.7+col*18.1+x)*.5+.5);r.face([a,b,c,e],shade3(color,shade),null,17,null,[[0,0],[1,0],[1,1],[0,1]]);
+   tiles.face([e,c,[c[0],c[1]-.045,c[2]],[e[0],e[1]-.045,e[2]]],shade3(color,.69));
+  }
+ }
+ for(const side of [-1,1]){
+  const zz=z+side*d/2;materialRealm(r,7).face([[x-w/2,y-.05,zz],[x+w/2,y-.05,zz],[x,y+rise-.04,zz]],'#b6aa8b');
+  beamArt(trim,[x-half,y,zz],[x,y+rise,zz],.09,'#67503b');beamArt(trim,[x,y+rise,zz],[x+half,y,zz],.09,'#67503b');
+ }
+ beamArt(tiles,[x,y+rise+.06,z-depth/2],[x,y+rise+.06,z+depth/2],.12,shade3(color,.82),6);
+}
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
- const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||b.archetype==='temple',wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,level=2.7*scale;
- const floors=b._cutaway?1:tower?3:castle?2:['inn','hall','temple'].includes(b.archetype)?2:1+(b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
+ const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||b.archetype==='temple',wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,wallScale=scale*.85,level=2.65*scale;
+ const floors=b._cutaway?1:tower?3:castle?2:['hall','temple'].includes(b.archetype)||b.archetype==='inn'&&b.variant%2===0?2:1+(b.archetype==='house'&&b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
  if(b.walkIn){for(let zz=b.y+.15;zz<b.y+d-.15;zz+=1)for(let xx=b.x+.15;xx<b.x+w-.15;xx+=1)r.face([[xx,.055,zz],[xx,.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,zz]],'#9b8465',null,b.archetype==='forge'?3:5);}
  for(let floor=0;floor<floors;floor++){
   for(const side of [-1,1])for(let i=0;i<segments;i++){
-   const xx=b.x+(i+.5)*w/segments,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&((i+floor)%2===0||b.archetype==='inn');
-   if(b._cutaway&&side===1&&!door){box3(r,xx,.32,z+d/2,w/segments,.64,.16,'#938675');continue;}
-   const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale,tint);
-   if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale);
-   if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale);}
+   const xx=b.x+(i+.5)*w/segments,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&(i+floor)%2===0;
+   if(b._cutaway&&side*Math.cos(view3d.yaw)>.05&&!door){box3(r,xx,.32,z+d/2,w/segments,.64,.16,'#938675');continue;}
+   const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale,tint);
+   if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale);
+   if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale,0,wallScale);}
   }
   for(const side of [-1,1])for(let i=0;i<sideSegments;i++){
    const zz=b.y+(i+.5)*d/sideSegments,angle=side===1?Math.PI/2:-Math.PI/2,window=(i+floor)%2===0;
-   rebuiltPlace(r,'Wall_'+wall+'_'+(window?'Window_Wide_Flat':'Straight'),x+side*w/2,floor*level,zz,sideScale,angle,scale,tint);
-   if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,scale);
+   if(b._cutaway&&side*Math.sin(view3d.yaw)>.05){box3(r,x+side*w/2,.32,zz,.16,.64,d/sideSegments,'#938675');continue;}
+   rebuiltPlace(r,'Wall_'+wall+'_'+(window?'Window_Wide_Flat':'Straight'),x+side*w/2,floor*level,zz,sideScale,angle,wallScale,tint);
+   if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,wallScale);
   }
  }
+ if(b.walkIn&&['inn','house','hall','temple'].includes(b.archetype)){
+  const rx=x,rz=b.y+d*.55,rw=Math.min(w-3,4.2),rd=Math.min(d-4,4.8),rug=materialRealm(r,13);
+  rug.face([[rx-rw/2,.072,rz-rd/2],[rx-rw/2,.072,rz+rd/2],[rx+rw/2,.072,rz+rd/2],[rx+rw/2,.072,rz-rd/2]],race==='elf'?'#405d50':'#654c44');
+  for(const side of [-1,1])rug.face([[rx-rw/2+.15,.076,rz+side*(rd/2-.24)],[rx+rw/2-.15,.076,rz+side*(rd/2-.24)],[rx+rw/2-.15,.076,rz+side*(rd/2-.12)],[rx-rw/2+.15,.076,rz+side*(rd/2-.12)]],'#b39a6b');
+ }
  if(b._cutaway)return level;
- const roofScale=Math.max(w,d)/4,roofY=floors*level+.1;
- rebuiltPlace(r,'Roof_RoundTiles_4x4',x,roofY,z,roofScale,0,Math.min(1.6,roofScale*.58),race==='elf'?[.59,.76,.72]:race==='dwarf'?[.62,.66,.70]:[.78,.69,.60]);
- for(const side of [-1,1])rebuiltPlace(r,'Roof_Front_Brick4',x,roofY,z+side*d/2,roofScale,side===1?0:Math.PI,Math.min(1.6,roofScale*.58),tint);
+ // Roof tiles keep a human-scale size as the footprint grows.
+ const roofY=floors*level-.04,roofRise=tower?1.65:castle?Math.min(5,w*.18):Math.min(3.0,1.25+w*.11);
+ const tileColor=race==='elf'?'#45635b':race==='dwarf'||b.archetype==='forge'?'#59636b':b.variant%3===1?'#746555':'#9b5038';
+ rebuiltRoof(r,x,roofY,z,w,d,roofRise,tileColor);
  if(!tower)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
  if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltPlace(r,'Prop_Vine1',x+side*w*.35,level*.45,z+d*.5+.08,scale*.9);
- return roofY+rebuiltModels.Roof_RoundTiles_4x4.bounds[1][1]*Math.min(1.6,roofScale*.58);
+ return roofY+roofRise;
 }
 building3=function(r,b){
  const kind=b.archetype;
@@ -66,18 +91,20 @@ const rebuiltPoses=new Map();
 function avatarPose(sex,clip,phase,gear,look){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)))),key=[sex,clip,frame,look,gear.body,gear.feet,gear.head].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
  const mesh=a.mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t),off=frame*a.count*12,m=motion.m;
- const cloth=[[.26,.40,.47],[.35,.41,.27],[.46,.27,.28],[.36,.29,.43]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
+ const cloth=[[.22,.38,.50],[.47,.20,.20],[.23,.39,.26],[.36,.26,.46]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
-  const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.90&&y<1.48&&Math.abs(x)<.62,feet=y<.25;
+  const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
   if(torso){const color=gear.body==='mageRobe'?[.30,.24,.40]:gear.body==='leatherArmor'?[.38,.24,.14]:cloth;for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
   else if(y>1.49||Math.abs(x)>.70){for(let j=0;j<3;j++){c[i+j]*=skin[j];f[i+j]*=skin[j];}}
   if(feet&&gear.feet){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.20,.13,.08][j];t[v]=20;}
-  const expand=(torso&&gear.body||feet&&gear.feet)?.018:0;
+  const expand=torso?(y<1.02?.055:.027):feet&&gear.feet?.018:0;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=off+mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(m[k]*(x+mesh.n[i]*expand)+m[k+1]*(y+mesh.n[i+1]*expand)+m[k+2]*(mesh.p[i+2]+mesh.n[i+2]*expand)+m[k+3]);n[i+axis]+=weight*(m[k]*mesh.n[i]+m[k+1]*mesh.n[i+1]+m[k+2]*mesh.n[i+2]);}}
  }
  const result={...mesh,p,n,c,f,t,pose:m.subarray(off,off+a.count*12),avatar:a};rebuiltPoses.set(key,result);if(rebuiltPoses.size>48)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
 }
 function affineMultiply(a,b){const m=new Float32Array(12);for(let row=0;row<3;row++)for(let col=0;col<4;col++){m[row*4+col]=(col===3?a[row*4+3]:0);for(let k=0;k<3;k++)m[row*4+col]+=a[row*4+k]*b[k*4+col];}return m;}
+const hairPalette=[[.30,.20,.12],[.45,.22,.12],[.10,.10,.11],[.67,.68,.65]],hairTintCache=new Map();
+function tintedHair(name,look){const key=name+':'+look%4;if(!hairTintCache.has(key)){const m=rebuiltModels[name],t=hairPalette[look%4];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._bones)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);
@@ -86,7 +113,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const mesh=avatarPose(sex,clip,phase,gear,look),k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
- if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,rebuiltModels[hair],headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head){const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);briarEmit(r,{...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)},root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){

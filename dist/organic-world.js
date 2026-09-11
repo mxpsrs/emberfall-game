@@ -31,18 +31,33 @@ setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.
  while(remaining.length){let best=null;for(const a of connected)for(const b of remaining){const d=Math.hypot(a.x-b.x,a.y-b.y);if(!best||d<best.d)best={a,b,d};}curveRoad(best.a.x+.5,best.a.y+.5,best.b.x+.5,best.b.y+.5,1.3);connected.push(best.b);remaining.splice(remaining.indexOf(best.b),1);}
  for(const t of SETTLEMENTS){const local=world.buildings.filter(b=>b.settlement===t.id),junctions=[[t.x+.5,t.y+.5]];local.sort((a,b)=>Math.hypot(a.service.x-t.x,a.service.y-t.y)-Math.hypot(b.service.x-t.x,b.service.y-t.y));for(const b of local){const door=[b.service.x+.5,b.service.y+.5],join=junctions.reduce((best,p)=>Math.hypot(p[0]-door[0],p[1]-door[1])<Math.hypot(best[0]-door[0],best[1]-door[1])?p:best);curveRoad(...join,...door,.95,t.kind==='city');junctions.push(door);}}
  for(const [a,b]of [[[42.5,51.5],[42.5,105.5]],[[42.5,51.5],[28.5,63.5]],[[42.5,51.5],[165.5,24.5]],[[42.5,105.5],[165.5,135.5]]])curveRoad(...a,...b,1.15);
- clearStreetObstacles(world);populateWalkInRooms(world);landHeights.clear();landWater.clear();realmNavigation.clear();if(resume.scale===3&&resume.scene==='overworld')activateScene('overworld',resume.x,resume.y,false);
+ clearStreetObstacles(world);plantSettlementGroves(world);populateWalkInRooms(world);landHeights.clear();landWater.clear();realmNavigation.clear();const resuming=resume.scale===3&&resume.scene==='overworld';restoreWalkInDoors(world,resuming?resume:null);if(resuming)activateScene('overworld',resume.x,resume.y,false);
 };
 function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','ore','prop'].includes(o.type))continue;const conflicts=(x,z)=>world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&z>=b.y-1&&z<b.y+b.h+1)||organicRoads.some(seg=>Math.abs((seg.a[0]+seg.b[0])/2-x)<3&&Math.abs((seg.a[1]+seg.b[1])/2-z)<3&&roadSegmentDistance(x+.5,z+.5,seg)<seg.width+.45);if(!conflicts(o.x,o.y))continue;let found=false;for(let radius=2;radius<=12&&!found;radius+=2)for(let i=0;i<16&&!found;i++){const x=Math.round(o.x+Math.cos(i*Math.PI/8)*radius),z=Math.round(o.y+Math.sin(i*Math.PI/8)*radius);if(!expandedWater(x,z)&&!conflicts(x,z)&&!world.objects.some(p=>p!==o&&p.x===x&&p.y===z)){Object.assign(o,{x,y:z,homeX:x,homeY:z,drawX:x,drawY:z});found=true;}}}}
 function roadSegmentDistance(x,z,seg){const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],t=Math.max(0,Math.min(1,((x-seg.a[0])*dx+(z-seg.a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-seg.a[0]-dx*t,z-seg.a[1]-dz*t);}
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
-drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);for(const seg of organicRoads){const x=(seg.a[0]+seg.b[0])/2,z=(seg.a[1]+seg.b[1])/2;if(Math.abs(x-px)>screen.w/view3d.zoom+20||Math.abs(z-py)>Math.hypot(screen.w,screen.h)/view3d.zoom+20)continue;const q=project3(x,0,z);if(q.x< -100||q.x>screen.w+100||q.y< -100||q.y>screen.h+100||expandedWater(x,z))continue;emitMesh3(r,cachedMesh3(seg,'prop',m=>{const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],len=Math.hypot(dx,dz),nx=-dz/len,nz=dx/len,na=seg.na||[nx,nz],nb=seg.nb||[nx,nz],edge=p=>seg.width*(1+.10*Math.sin(p[0]*2.3+p[1]*1.7)),a=seg.a,b=seg.b,wa=edge(a),wb=edge(b);m.face([[a[0]-na[0]*wa,.035,a[1]-na[1]*wa],[b[0]-nb[0]*wb,.035,b[1]-nb[1]*wb],[b[0]+nb[0]*wb,.035,b[1]+nb[1]*wb],[a[0]+na[0]*wa,.035,a[1]+na[1]*wa]],'#aa9167',null,seg.paved?16:15,null,[[0,0],[0,1],[1,1],[1,0]]);return .05;}));}
- for(const b of buildings){if(!b.service||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=b.service.openedAt===undefined?0:Math.min(1,(time-b.service.openedAt)/.35);rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.48);}
+drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);for(const seg of organicRoads){const x=(seg.a[0]+seg.b[0])/2,z=(seg.a[1]+seg.b[1])/2;if(Math.abs(x-px)>screen.w/view3d.zoom+20||Math.abs(z-py)>Math.hypot(screen.w,screen.h)/view3d.zoom+20)continue;const q=project3(x,0,z);if(q.x< -100||q.x>screen.w+100||q.y< -100||q.y>screen.h+100||expandedWater(x,z))continue;emitMesh3(r,cachedMesh3(seg,'prop',m=>{const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],len=Math.hypot(dx,dz),nx=-dz/len,nz=dx/len,na=seg.na||[nx,nz],nb=seg.nb||[nx,nz],edge=p=>seg.width*(1+.10*Math.sin(p[0]*2.3+p[1]*1.7)),a=seg.a,b=seg.b,wa=edge(a),wb=edge(b);const along=Math.max(1,Math.ceil(len/.35)),across=Math.max(2,Math.ceil(Math.max(wa,wb)*2/.35));
+const point=(t,u)=>{const xx=a[0]*(1-t)+b[0]*t,zz=a[1]*(1-t)+b[1]*t,nx=na[0]*(1-t)+nb[0]*t,nz=na[1]*(1-t)+nb[1]*t,w=wa*(1-t)+wb*t;return [xx+nx*w*(u*2-1),.065,zz+nz*w*(u*2-1)];};
+for(let i=0;i<along;i++)for(let j=0;j<across;j++){const t=i/along,v=(i+1)/along,u=j/across,w=(j+1)/across;m.face([point(t,u),point(v,u),point(v,w),point(t,w)],'#aa9167',null,seg.paved?16:15,null,[[u,t],[u,v],[w,v],[w,t]]);}return .05;}));}
+ for(const b of buildings){if(!b.service||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85);}
 };
 let doorReturnUntil=0;
 const engageBeforeDoors=engage;
 engage=function(o){if(o.type!=='door'||!o.destination)return engageBeforeDoors(o);const p=route(o.x,o.y,false);if(p===null){toast('There is no clear path to this door.');return;}o.openedAt=time;target=o;path=p;elapsed=0;renderAction();if(!p.length&&Math.hypot(px-o.x,py-o.y)<.05)arrive();};
-openBuilding3=function(b){if(b.service?.destination)engage(b.service);};
+openBuilding3=function(b){if(b.walkIn){walkTo(b.service.x,b.service.y);return;}if(b.service?.destination)engage(b.service);};
 const leaveBeforeDoors=leaveInterior;
 leaveInterior=function(){doorReturnUntil=time+2;leaveBeforeDoors();};
 function updateDoorThreshold(){if(!inWorld()||time<doorReturnUntil||target?.type==='door')return;const door=objects.find(o=>o.type==='door'&&o.destination&&o.openedAt!==undefined&&Math.hypot(px-o.x,py-o.y)<.18);if(door)enterInterior(door);}
+
+// Irregular groups of the existing tree assets frame towns and their approaches.
+function plantSettlementGroves(world){let id=2400000;const occupied=new Set(world.objects.map(o=>o.x+':'+o.y));
+ for(const town of SETTLEMENTS)for(let group=0;group<8;group++){
+  const angle=group*2.399+town.x*.013,radius=(town.kind==='city'?65:26)+(group%3)*6,cx=town.x+Math.cos(angle)*radius,cz=town.y+Math.sin(angle)*radius;
+  for(let n=0;n<5;n++){
+   const x=Math.round(cx+Math.cos(n*2.399)*Math.sqrt(n)*2.2),y=Math.round(cz+Math.sin(n*2.399)*Math.sqrt(n)*2.2);id++;
+   if(x<2||y<2||x>1149||y>765||expandedWater(x,y)||occupied.has(x+':'+y)||Math.hypot(s.x-x,s.y-y)<2)continue;
+   if(world.buildings.some(b=>x>b.x-4&&x<b.x+b.w+4&&y>b.y-4&&y<b.y+b.h+4)||organicRoads.some(seg=>Math.abs(seg.a[0]-x)<6&&Math.abs(seg.a[1]-y)<6&&roadSegmentDistance(x+.5,y+.5,seg)<seg.width+2))continue;
+   world.objects.push({id,type:'tree',name:town.kingdom==='khazdur'?'Mountain pine':'Old-growth oak',race:town.kingdom==='sylvaran'?'elf':town.kingdom==='khazdur'?'dwarf':'human',x,y,homeX:x,homeY:y,sprite:4,dead:0});occupied.add(x+':'+y);
+  }
+ }
+}

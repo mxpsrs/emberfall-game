@@ -62,12 +62,12 @@ prop3=function(r,o,x,z){
  else if(o.type==='ore'){key='rockB';height=.65;}
  else if(o.type==='cache'){key='chest';height=.65;}
  else if(o.type==='prop'){
-  if(/bed/i.test(o.name)){key='bed';height=.75;}
+  if(/bed/i.test(o.name)){key='bed';height=1.12;}
   else if(/banquet/i.test(o.name)){key='banquet';height=.9;}
-  else if(/table/i.test(o.name)){key='table';height=.9;}
+  else if(/table/i.test(o.name)){key='table';height=1.18;}
   else if(/bookcase/i.test(o.name)){const shelf=realmArtMesh('shelf',race);for(const y of [.5,1,1.5])briarEmit(r,shelf,briarTransform(x,y,z,.5));return 1.6;}
   else if(/pillar/i.test(o.name)){key='pillar';height=2.8;}
-  else if(/throne|chair/i.test(o.name)){key='chair';height=1.8;}
+  else if(/throne|chair/i.test(o.name)){key='chair';height=/throne/i.test(o.name)?1.65:.95;}
   else if(/altar/i.test(o.name)){key='pillar';height=1;}
   else if(/well/i.test(o.name)){key='well';height=1.7;}
   else if(/barrel/i.test(o.name)){key='barrel';height=.65;}
