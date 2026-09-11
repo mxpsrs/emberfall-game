@@ -373,13 +373,14 @@ creature3=function(r,o,x,z){
 const worldWallBefore=drawRealmWall;
 drawRealmWall=function(r,x,z){
  const mine=currentScene==='mine'||realmSceneInfo.get(currentScene)?.kind==='mine';if(!mine)return worldWallBefore(r,x,z);
- if([[1,0],[-1,0],[0,1],[0,-1]].every(([a,b])=>worldWall(x+a,z+b)))return;
+ const [width,depth]=sceneSize();
+ if(x>0&&z>0&&x<width-1&&z<depth-1&&[[1,0],[-1,0],[0,1],[0,-1]].every(([a,b])=>worldWall(x+a,z+b)))return;
  const id=currentScene+':cave:'+x+':'+z;let key=realmArtWalls.get(id);if(!key){key={};realmArtWalls.set(id,key);if(realmArtWalls.size>400)realmArtWalls.delete(realmArtWalls.keys().next().value);}
  emitMesh3(r,cachedMesh3(key,'prop',q=>{
   const corner=(xx,zz)=>[xx,2.08+worldRand(xx,zz)*.42,zz],corners=[corner(x,z),corner(x+1,z),corner(x+1,z+1),corner(x,z+1)],rock=materialRealm(q,14),height=Math.max(...corners.map(p=>p[1]));
   rock.face([corners[0],corners[3],corners[2],corners[1]],'#747c6b');
   for(let side=0;side<4;side++){
-   const a=corners[side],b=corners[(side+1)%4],dx=[0,1,0,-1][side],dz=[-1,0,1,0][side];if(worldWall(x+dx,z+dz))continue;
+   const a=corners[side],b=corners[(side+1)%4],dx=[0,1,0,-1][side],dz=[-1,0,1,0][side];if(x+dx>=0&&z+dz>=0&&x+dx<width&&z+dz<depth&&worldWall(x+dx,z+dz))continue;
    const center=[(a[0]+b[0])*.5+dx*.055,.85+worldRand(x+side,z)*.35,(a[2]+b[2])*.5+dz*.055],lowA=[a[0],0,a[2]],lowB=[b[0],0,b[2]];
    for(const [tri,color]of [[[lowA,center,lowB],'#677363'],[[lowA,a,center],'#7c8270'],[[a,b,center],'#828874'],[[center,b,lowB],'#727c69']])rock.face(tri,color);
   }
