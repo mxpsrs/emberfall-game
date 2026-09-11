@@ -366,9 +366,9 @@ $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListen
 $('modal').addEventListener('close',()=>{renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
-  if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open)return;
-  const d={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key];
-  if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(e.key==='e')eat();
+  if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
+  const key=e.key.toLowerCase();const d={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key]||({w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]})[key];
+  if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(key==='e')eat();
 });
 async function boot(){
   try{await initializeCloud();}catch(error){
