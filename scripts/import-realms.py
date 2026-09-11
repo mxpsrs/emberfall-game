@@ -104,7 +104,13 @@ for sex in ['Male','Female']:
                     pivot=m[:3,3].copy();m=rotation(axis,angle)@m;m[:3,3]=pivot
                 posed[i]=m;return m
             for i in range(len(g['nodes'])):visit(i)
-            poses.append(np.asarray([posed[j]@bind[k] for k,j in enumerate(joints)]+[posed[names[n]] for n in ['Head','hand_r','hand_l']])[:,:3,:].ravel())
+            grips=[]
+            for side in ['r','l']:
+                hand=names['hand_'+side];finger=names['middle_01_'+side]
+                grip=np.eye(4);grip[:3,:3]=np.array([[1,0,0],[0,0,-1],[0,1,0]])
+                grip[:3,3]=rest[hand][:3,3]*.35+rest[finger][:3,3]*.65
+                grips.append(posed[hand]@np.linalg.inv(rest[hand])@grip)
+            poses.append(np.asarray([posed[j]@bind[k] for k,j in enumerate(joints)]+[posed[names['Head']]]+grips)[:,:3,:].ravel())
         avatar['clips'][clip]={'duration':duration,'frames':frames,'m':packed(poses,'<f4')}
     out['avatars'][sex.lower()]=avatar
 

@@ -8,8 +8,8 @@ const presence=(cookie,scene='overworld',x=14)=>handlePlayers(req('/api/players'
 let r=await presence(a);assert.equal(r.status,200);assert.equal((await r.json()).players.length,0);r=await presence(b);let peers=(await r.json()).players;assert.equal(peers.length,1);assert.equal(peers[0].name,'Player A');assert.equal(peers[0].emote,'Hello!');assert(!JSON.stringify(peers).includes(a.split('=')[1]));
 await presence(a,'overworld',16);peers=(await (await presence(b)).json()).players;assert.equal(peers[0].x,16);
 assert.equal((await handlePlayers(req('/api/players','POST','',{scene:'overworld',x:14,y:17}),env)).status,401);
-assert.equal((await presence(a,'overworld',999)).status,400);
-assert.equal((await presence(a,'overworld',350)).status,200);
+assert.equal((await presence(a,'overworld',1152)).status,400);
+assert.equal((await presence(a,'overworld',1100)).status,200);
 for(const [scene,x,y]of [['realm_aelindor_25',12,10],['realm_ironhollow_5',22,18],['realm_deepforge_0',8,10],['realm_crownreach_25',12,18]])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x,y}),env)).status,200,scene);
 for(const scene of ['realm_aelindor_26','realm_unknown_0','realm_crownreach_999','__proto__'])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x:5,y:5}),env)).status,400,scene);
 const saved=await (await handleSave(req('/api/character','GET',b),env)).json();assert.equal(saved.state.character.name,'Player B');

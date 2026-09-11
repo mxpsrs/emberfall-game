@@ -8,7 +8,7 @@ async function initializeCloud(){
  s=defaults();
  if(restored){const d=defaults();s={...d,...restored,xp:{...d.xp,...restored.xp},bag:{...d.bag,...restored.bag},gear:{...d.gear,...restored.gear},equipment:{...d.equipment,...restored.equipment}};}
  migrateCombatSkills(s,restored||s);s.hp=Math.max(1,Math.min(s.hp,maxhp()));
- cloudRevision=record.revision;cloudReady=true;cloudStatus('Account save ready');
+ if(s.character)s.character.race='human';cloudRevision=record.revision;cloudReady=true;cloudStatus('Account save ready');
 }
 function backupCloudState(pending){try{localStorage.setItem('emberfall-cloud-backup-v1',JSON.stringify({account:cloudAccount,revision:cloudRevision,pending,state:s}));}catch{}}
 function queueCloudSave(){if(!cloudReady||cloudConflict||!s.character)return;cloudDirty=true;backupCloudState(true);cloudStatus('Saving…');clearTimeout(cloudTimer);cloudTimer=setTimeout(flushCloudSave,700);}

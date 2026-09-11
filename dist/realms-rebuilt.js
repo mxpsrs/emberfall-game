@@ -6,13 +6,13 @@ const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){const mesh=rebuiltModels[name];if(!mesh)return;const m=briarTransform(x,y,z,scale,heading,vertical);briarEmit(r,tint?{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])}:mesh,m);}
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||b.archetype==='temple',wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,level=2.7*scale;
- const floors=tower?3:castle?2:['inn','hall','temple'].includes(b.archetype)?2:1+(b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
+ const floors=b._cutaway?0:tower?3:castle?2:['inn','hall','temple'].includes(b.archetype)?2:1+(b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
  for(let floor=0;floor<floors;floor++){
   for(const side of [-1,1])for(let i=0;i<segments;i++){
    const xx=b.x+(i+.5)*w/segments,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&((i+floor)%2===0||b.archetype==='inn');
    const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale,tint);
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale);
-   if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale);rebuiltPlace(r,'Door_1_Round',xx-.53*scale,floor*level,z+d/2+.04,scale);}
+   if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale);}
   }
   for(const side of [-1,1])for(let i=0;i<sideSegments;i++){
    const zz=b.y+(i+.5)*d/sideSegments,angle=side===1?Math.PI/2:-Math.PI/2,window=(i+floor)%2===0;
@@ -20,6 +20,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,scale);
   }
  }
+ if(b._cutaway){for(const side of [-1,1])box3(r,x+side*w/2,.18,z,.18,.36,d,'#82786b');box3(r,x,.18,b.y,w,.36,.18,'#82786b');return .4;}
  const roofScale=Math.max(w,d)/4,roofY=floors*level+.1;
  rebuiltPlace(r,'Roof_RoundTiles_4x4',x,roofY,z,roofScale,0,roofScale*.72,race==='elf'?[.59,.76,.72]:race==='dwarf'?[.62,.66,.70]:[.78,.69,.60]);
  for(const side of [-1,1])rebuiltPlace(r,'Roof_Front_Brick4',x,roofY,z+side*d/2,roofScale,side===1?0:Math.PI,roofScale*.72,tint);
@@ -82,13 +83,14 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const clip=attack>.01?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':'melee'):walk?'walk':'idle',phase=attack>.01?Math.min(.99,Math.max(0,gear===s.equipment?(time-lastAttack)/.42:attack*.8)):walk?(walk/10/.8)%1:(time/2)%1;
  const mesh=avatarPose(sex,clip,phase,gear,look),k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
- if(!gear.head){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,rebuiltModels[hair],headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
- else{const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);briarEmit(r,{...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)},root);}
+ if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
+ if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,rebuiltModels[hair],headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ else if(gear.head){const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);briarEmit(r,{...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)},root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:gear.weapon==='oakStaff'?briarRigs.Mage.meshes['2H_Staff']:gear.weapon==='shortbow'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
-  if(source)briarEmit(r,source,world);
+  if(source){const k=slot==='shield'?.62:gear.weapon==='oakStaff'?.78:.50;const grip=slot==='weapon'&&gear.weapon!=='oakStaff'?.12:0;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,grip,0,0,k,0]));}
   else{const bow={face(p,c){r.face(p.map(v=>briarPoint(v,0,world)),c);}},points=Array.from({length:13},(_,i)=>[.13*Math.sin(i*Math.PI/12),-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.016,'#81613b',5);beamArt(bow,points[0],points[12],.004,'#c9bd9d',4);}
  }
 };

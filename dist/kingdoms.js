@@ -53,8 +53,8 @@ function buildKingdoms(){
  if(kingdomsReady)return;sceneSizes.overworld=[384,256];
  const savedScene=currentScene,savedX=s.x,savedY=s.y;activateScene('overworld',14,17,false);
  for(const t of SETTLEMENTS){connectRealmRoad(96,112,t.x,t.y);if(t.legacy)continue;
-  const count=t.kind==='city'?25:5,cols=t.kind==='city'?5:3;
-  for(let i=0;i<count;i++){const col=i%cols,row=Math.floor(i/cols),x=t.x-(t.kind==='city'?22:12)+col*9,y=t.y-(t.kind==='city'?18:7)+row*8;
+  const count=t.kind==='city'?25:5,lots=organicLots(t,count);
+  for(let i=0;i<count;i++){const [x,y]=lots[i];
    const kind=i===0?'inn':i===1?'shop':i===2?'forge':i===3?'hall':i===4?'temple':i===5&&t.kingdom==='khazdur'?'mine':'house';realmBuilding(t,i,x,y,kind,4+(i%7===0?1:0),4);
   }
   if(t.capital)realmBuilding(t,25,t.x-6,t.y-32,'castle',12,10);
@@ -91,12 +91,12 @@ expandedMap=function(page=0){
  dialog('World atlas · '+k.name,'<p>'+k.description+'</p><p>3 kingdoms · 6 cities · 7 villages · 3 castles</p><div id="kingdomAtlas" class="mapgrid"></div>',[['Next kingdom',()=>expandedMap((page+1)%3)],['Borderland landmarks',()=>borderlandMap()]]);
  for(const t of places){const b=document.createElement('button');b.textContent=t.name+' · '+t.kind+(t.capital?' · Castle':'');b.onclick=()=>{close();walkTo(...realmDestination(t));};$('kingdomAtlas').appendChild(b);}
 };
-function borderlandMap(){const places=[['Pinewatch Mine',55,9],['Sunken Crypt',58,46],['Stillwater',9,21],['Ashwatch',89,35],['Riverbend Farms',44,25]];dialog('Borderland landmarks','<div id="oldAtlas" class="mapgrid"></div>',[['Kingdoms',()=>expandedMap()]]);for(const [name,x,y]of places){const b=document.createElement('button');b.textContent=name;b.onclick=()=>{close();walkTo(x,y);};$('oldAtlas').appendChild(b);}}
+function borderlandMap(){const places=[['Pinewatch Mine',55,9],['Sunken Crypt',58,46],['Stillwater',9,21],['Ashwatch',89,35],['Riverbend Farms',44,25]];dialog('Borderland landmarks','<div id="oldAtlas" class="mapgrid"></div>',[['Kingdoms',()=>expandedMap()]]);for(const [name,x,y]of places){const b=document.createElement('button');b.textContent=name;b.onclick=()=>{close();walkTo(x*3,y*3);};$('oldAtlas').appendChild(b);}}
 function realmNav(){
  let nav=realmNavigation.get(currentScene);if(nav)return nav;const [w,h]=sceneSize(),cells=new Uint8Array(w*h),moving=[];
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(worldWall(x,y)||water(x,y))cells[y*w+x]=1;
  for(const b of buildings)for(let y=Math.floor(b.y);y<b.y+b.h;y++)for(let x=Math.floor(b.x);x<b.x+b.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;
- for(const o of objects){if(fighter(o)||o.collected)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h)cells[o.y*w+o.x]=1;}
+ for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h)cells[o.y*w+o.x]=1;}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
 const beforeRealmBlocked=blocked;
