@@ -2,7 +2,7 @@
 // Human-scale modular architecture and textured, articulated characters.
 function rebuiltMesh(m){const result={bounds:m.bounds};for(const k of ['p','uv'])result[k]=briarDecode(m[k],Float32Array);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);for(const k of ['c','f'])result[k]=Float32Array.from(briarDecode(m[k],Uint8Array),v=>v/255);result.t=briarDecode(m.t,Uint8Array);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}result.i=briarDecode(m.i,Uint16Array);return result;}
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
-const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:briarDecode(c.m,Float32Array)}]))}]));
+const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),rig:a.rig?{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)}:null,clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:c.m?briarDecode(c.m,Float32Array):null,trs:c.trs?briarDecode(c.trs,Float32Array):null}]))}]));
 const rebuiltTints=new WeakMap();
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){let mesh=rebuiltModels[name];if(!mesh)return;
  if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
@@ -135,9 +135,32 @@ drawRealmWall=function(r,x,z){const id=currentScene+':'+x+':'+z;let key=realmArt
 
 let creatorDraft=null;
 const rebuiltPoses=new Map();
-function avatarPose(sex,clip,phase,gear,look){
- const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round((clip==='idle'?0:phase)*(motion.frames-1)))),key=[sex,clip,frame,look,gear.body,gear.feet,gear.head,gear._cloth].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
- const mesh=a.mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t),off=frame*a.count*12,m=motion.m;
+function sampleRealmJoint(motion,frame,bone,joints,out){
+ const lo=Math.floor(frame),hi=Math.min(motion.frames-1,lo+1),mix=frame-lo,a=(lo*joints+bone)*10,b=(hi*joints+bone)*10,data=motion.trs;
+ const sign=data[a+3]*data[b+3]+data[a+4]*data[b+4]+data[a+5]*data[b+5]+data[a+6]*data[b+6]<0?-1:1;
+ for(let j=0;j<10;j++)out[j]=data[a+j]*(1-mix)+data[b+j]*mix*(j>=3&&j<=6?sign:1);
+ const length=Math.hypot(out[3],out[4],out[5],out[6]);for(let j=3;j<7;j++)out[j]/=length;
+}
+function realmJointMatrix(v){
+ const [tx,ty,tz,x,y,z,w,sx,sy,sz]=v;
+ return new Float32Array([(1-2*(y*y+z*z))*sx,2*(x*y-z*w)*sy,2*(x*z+y*w)*sz,tx,2*(x*y+z*w)*sx,(1-2*(x*x+z*z))*sy,2*(y*z-x*w)*sz,ty,2*(x*z-y*w)*sx,2*(y*z+x*w)*sy,(1-2*(x*x+y*y))*sz,tz]);
+}
+function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame){
+ const motion=a.clips[clip];if(!motion.trs){const offset=Math.round(frame)*a.count*12;return new Float32Array(motion.m.subarray(offset,offset+a.count*12));}
+ const rig=a.rig,global=[],pose=new Float32Array(a.count*12),v=new Float32Array(10),base=new Float32Array(10);
+ for(let bone=0;bone<a.joints;bone++){
+  sampleRealmJoint(motion,frame,bone,a.joints,v);
+  if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,bone,a.joints,base);const sign=v[3]*base[3]+v[4]*base[4]+v[5]*base[5]+v[6]*base[6]<0?-1:1;for(let j=0;j<10;j++)v[j]=base[j]*(1-blend)+v[j]*blend*(j>=3&&j<=6?sign:1);const length=Math.hypot(v[3],v[4],v[5],v[6]);for(let j=3;j<7;j++)v[j]/=length;}
+  const local=realmJointMatrix(v),parent=rig.parents[bone];global.push(parent<0?local:affineMultiply(global[parent],local));
+  pose.set(affineMultiply(global[bone],rig.bind.subarray(bone*12,bone*12+12)),bone*12);
+ }
+ pose.set(global[rig.head],a.head*12);pose.set(affineMultiply(global[rig.right],rig.rightGrip),a.right*12);pose.set(affineMultiply(global[rig.left],rig.leftGrip),a.left*12);
+ return pose;
+}
+function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
+ const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)*2)/2)),baseFrame=Math.min(a.clips[baseClip].frames-1,Math.max(0,Math.round(basePhase*(a.clips[baseClip].frames-1)*2)/2));blend=Math.round(blend*16)/16;
+ const key=[sex,clip,frame,look,gear.body,gear.feet,gear.head,gear._cloth,blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
+ const mesh=a.mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t),m=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame);
  const cloth=[[.22,.38,.50],[.47,.20,.20],[.23,.39,.26],[.36,.26,.46]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
   const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
@@ -146,15 +169,9 @@ function avatarPose(sex,clip,phase,gear,look){
   if(feet&&gear.feet){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.20,.13,.08][j];t[v]=20;}
   if(y>.89&&y<.96){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.19,.14,.085][j];t[v]=20;}
   const expand=torso?(y<1.02?.020:.010):feet&&gear.feet?.012:0;
-  for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=off+mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(m[k]*(x+mesh.n[i]*expand)+m[k+1]*(y+mesh.n[i+1]*expand)+m[k+2]*(mesh.p[i+2]+mesh.n[i+2]*expand)+m[k+3]);n[i+axis]+=weight*(m[k]*mesh.n[i]+m[k+1]*mesh.n[i+1]+m[k+2]*mesh.n[i+2]);}}
+  for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(m[k]*(x+mesh.n[i]*expand)+m[k+1]*(y+mesh.n[i+1]*expand)+m[k+2]*(mesh.p[i+2]+mesh.n[i+2]*expand)+m[k+3]);n[i+axis]+=weight*(m[k]*mesh.n[i]+m[k+1]*mesh.n[i+1]+m[k+2]*mesh.n[i+2]);}}
  }
- const pose=new Float32Array(m.subarray(off,off+a.count*12));
- if(clip==='run'||clip==='walk'){
-  const cycle=phase*Math.PI*2,lean=clip==='run'?.13:.025,roll=Math.sin(cycle)*(clip==='run'?.035:.02),c0=Math.cos(lean),s0=Math.sin(lean),c1=Math.cos(roll),s1=Math.sin(roll);
-  const transform=(x,y,z,position)=>{const yy=y-(position?.90:0),a=yy*c0-z*s0,b=yy*s0+z*c0;return [x*c1-a*s1,x*s1+a*c1+(position?.90:0),b];};
-  for(let i=0;i<p.length;i+=3){const blend=Math.max(0,Math.min(1,(mesh.p[i+1]-.80)/.25));if(!blend)continue;const q=transform(p[i],p[i+1],p[i+2],true),nn=transform(n[i],n[i+1],n[i+2],false);for(let j=0;j<3;j++){p[i+j]+=(q[j]-p[i+j])*blend;n[i+j]+=(nn[j]-n[i+j])*blend;}}
-  for(const bone of [a.head,a.right,a.left]){const start=bone*12;for(let col=0;col<4;col++){const q=transform(pose[start+col],pose[start+4+col],pose[start+8+col],col===3);for(let row=0;row<3;row++)pose[start+row*4+col]=q[row];}}
- }
+ const pose=m;
  const result={...mesh,p,n,c,f,t,pose,avatar:a};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
 }
 function affineMultiply(a,b){const m=new Float32Array(12);for(let row=0;row<3;row++)for(let col=0;col<4;col++){m[row*4+col]=(col===3?a[row*4+3]:0);for(let k=0;k<3;k++)m[row*4+col]+=a[row*4+k]*b[k*4+col];}return m;}
@@ -165,10 +182,13 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  r=groundedPainter(r,x,z);
  if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3},race=identity.race||gear._race||'human',sex=identity.frame||'male';
- const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01;
- const clip=attack>.01?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':'melee'):(locomotion?(playerMotion.running?'run':'walk'):walk?'walk':'idle'),phase=attack>.01?Math.min(.99,Math.max(0,player?(time-lastAttack)/.65:attack*.8)):locomotion?playerMotion.phase:walk?(walk/10/.75)%1:(time/2)%1;
- let mesh=avatarPose(sex,clip,phase,gear,look);
- if(player&&locomotion&&attack<=.01&&playerMotion.blend<.999){const idle=avatarPose(sex,'idle',(time/2)%1,gear,look),t=playerMotion.blend;mesh={...mesh,p:Float32Array.from(mesh.p,(v,i)=>idle.p[i]*(1-t)+v*t),n:Float32Array.from(mesh.n,(v,i)=>idle.n[i]*(1-t)+v*t),pose:Float32Array.from(mesh.pose,(v,i)=>idle.pose[i]*(1-t)+v*t)};}
+ const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
+ const attackClip=gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=age>=0&&age<duration;
+ // Small, distant NPCs retain the authored resting pose. Updating every finger
+ // on every background character was needlessly repacking megabytes per frame.
+ const idleClip=gear.weapon&&['bronzeSword','ironSword'].includes(gear.weapon)?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
+ const phase=attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
+ const mesh=avatarPose(sex,clip,phase,gear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
  if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3),headTransform);
@@ -193,11 +213,11 @@ function fittedSwordRealm(r,m,bronze){
 }
 function buildFittedSwordRealm(r,m,bronze){
  const local={face(p,c,n,material){r.face(p.map(v=>briarPoint(v,0,m)),c,null,material||0);}},steel=bronze?'#ad9261':'#b6c3c3',edge=bronze?'#d2b781':'#e1e4da';
- const blade=[[-.055,.11,0],[.055,.11,0],[.039,.70,0],[0,.86,0],[-.039,.70,0]],ridge=[0,.40,.019];
+ const blade=[[-.040,.08,0],[.040,.08,0],[.029,.60,0],[0,.74,0],[-.029,.60,0]],ridge=[0,.35,.014];
  for(let i=0;i<blade.length;i++){local.face([blade[i],blade[(i+1)%blade.length],ridge],i<2?steel:edge);local.face([blade[(i+1)%blade.length],blade[i],[0,.40,-.019]],steel);}
- beamArt(local,[-.13,.10,0],[.13,.10,0],.026,bronze?'#7b633e':'#727f80',7);
- beamArt(materialRealm(local,5),[0,-.12,0],[0,.08,0],.026,'#42352b',8);
- oval3(local,0,-.145,0,.065,.07,.06,bronze?'#9c8050':'#939d9b',p=>p,8);
+ beamArt(local,[-.095,.07,0],[.095,.07,0],.020,bronze?'#7b633e':'#727f80',7);
+ beamArt(materialRealm(local,5),[0,-.10,0],[0,.055,0],.014,'#42352b',8);
+ oval3(local,0,-.12,0,.05,.045,.044,bronze?'#9c8050':'#939d9b',p=>p,8);
 }
 
 let REALM_ATLAS_IMAGE=null;

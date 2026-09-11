@@ -99,7 +99,7 @@ function creature3(r,o,x,z){const kind=o.kind,walk=Math.hypot(o.drawX-o.x,o.draw
  if(kind==='slime'){oval3(r,x,.29,z,.87,.6,.76,'#77a987');oval3(r,x-.13,.39,z+.32,.07,.08,.03,'#293f3b');oval3(r,x+.13,.39,z+.32,.07,.08,.03,'#293f3b');return .75;}
  if(o.type==='spirit'){cone3(r,x,.45+Math.sin(time*3)*.08,z,.24,.52,['#db9764','#83baca','#d7c379','#a0b98a'][o.sprite%4]);return 1.3;}
  const enemy=fighter(o),gear=enemy?{body:kind==='skeleton'?null:'leatherArmor',weapon:'ironSword',_kind:kind,_race:kind==='goblin'?'goblin':'human',_bones:kind==='skeleton',_skin:kind==='skeleton'?'#d3d1b5':kind==='goblin'?'#789568':null}:{};
- humanoid3(r,x,z,(o.sprite||0)%4,gear,Math.atan2(px-x,py-z),walk,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)),kind==='warden'||o.type==='boss'?1.35:1);return o.type==='boss'?2.6:2;
+ gear._attackAt=o.attackAt;humanoid3(r,x,z,(o.sprite||0)%4,gear,Math.atan2(px-x,py-z),walk,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)),kind==='warden'||o.type==='boss'?1.35:1);return o.type==='boss'?2.6:2;
 }
 function prop3(r,o,x,z){
  if(o.type==='tree'){

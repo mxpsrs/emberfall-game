@@ -2,11 +2,11 @@
 This verifies geometry/material output; it is not browser or device performance QA.
 Usage: python3 scripts/render-scene.py CAPTURE_DIR OUTPUT.png
 """
-import ctypes as C, os, json, sys
+import ctypes as C, os, json, sys, io
 from pathlib import Path
 from PIL import Image
 os.environ['EGL_PLATFORM']='surfaceless'
-root=Path(sys.argv[1]); scene=json.loads((root/'scene.json').read_text()); width,height=scene['width'],scene['height']
+root=Path(sys.argv[1]); scene=json.loads((root/(sys.argv[3] if len(sys.argv)>3 else 'scene.json')).read_text()); width,height=scene['width'],scene['height']
 E=C.CDLL('libEGL.so.1'); I=C.c_int; U=C.c_uint; P=C.c_void_p; F=C.c_float
 
 def egl(name,ret,args):
@@ -59,4 +59,11 @@ bindfb(0x8D40,0);viewport(0,0,width,height);clearcolor(.14,.23,.25,1);clear(0x41
 for draw in scene['draws']:drawentry(draw)
 gl('glFinish',None,[])();error=gl('glGetError',U,[])();assert error==0,hex(error)
 pixels=C.create_string_buffer(width*height*4);gl('glReadPixels',None,[I,I,I,I,U,U,P])(0,0,width,height,0x1908,0x1401,pixels)
-Image.frombytes('RGBA',(width,height),pixels.raw).transpose(Image.Transpose.FLIP_TOP_BOTTOM).convert('RGB').save(sys.argv[2]);print('Rendered production geometry, atlas, lighting and shadows:',sys.argv[2])
+encoded=io.BytesIO()
+Image.frombytes('RGBA',(width,height),pixels.raw).transpose(Image.Transpose.FLIP_TOP_BOTTOM).convert('RGB').save(encoded,format='PNG')
+dest=Path(sys.argv[2]);temporary=dest.with_suffix('.writing');data=encoded.getvalue()
+with temporary.open('wb') as f:
+ f.write(data);f.flush();os.fsync(f.fileno())
+temporary.replace(dest)
+assert dest.stat().st_size==len(data)
+print('Rendered production geometry, atlas, lighting and shadows:',sys.argv[2])

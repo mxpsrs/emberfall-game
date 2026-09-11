@@ -335,7 +335,7 @@ function advanceMovement(dt){
   const running=s.runEnabled&&s.runEnergy>0,speed=running?4:2;
   const used=Math.min(remaining,distance/speed,running?s.runEnergy/1.8:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
-  travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?2.4:1.5))%1;playerMotion.running=running;
+  travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
   if(running){runningTime+=used;s.runEnergy=Math.max(0,s.runEnergy-used*1.8);if(s.runEnergy<1e-6){s.runEnergy=0;s.runEnabled=false;toast('Out of run energy. Walking while you recover.');}}
   else walkingTime+=used;
   remaining-=used;

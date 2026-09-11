@@ -15,7 +15,12 @@ function realmIndexedData(data,mesh,m){
  const p=mesh.p,n=mesh.n,c=mesh.c,positions=new Float32Array(p.length),normals=new Float32Array(n.length);
  const a=m[0],b=m[1],cc=m[2],d=m[4],e=m[5],f=m[6],g=m[8],h=m[9],k=m[10],det=a*(e*k-f*h)-b*(d*k-f*g)+cc*(d*h-e*g)||1,N=[e*k-f*h,f*g-d*k,d*h-e*g,cc*h-b*k,a*k-cc*g,b*g-a*h,b*f-cc*e,cc*d-a*f,a*e-b*d].map(v=>v/det);
  for(let i=0;i<p.length;i+=3){positions[i]=a*p[i]+b*p[i+1]+cc*p[i+2]+m[3];positions[i+1]=d*p[i]+e*p[i+1]+f*p[i+2]+m[7];positions[i+2]=g*p[i]+h*p[i+1]+k*p[i+2]+m[11];normals[i]=N[0]*n[i]+N[1]*n[i+1]+N[2]*n[i+2];normals[i+1]=N[3]*n[i]+N[4]*n[i+1]+N[5]*n[i+2];normals[i+2]=N[6]*n[i]+N[7]*n[i+1]+N[8]*n[i+2];}
- for(let j=0;j<mesh.i.length;j++){const v=mesh.i[j],i=v*3;data.push(positions[i],positions[i+1],positions[i+2],normals[i],normals[i+1],normals[i+2],c[i],c[i+1],c[i+2],mesh.t?.[v]||(mesh.uv?20:12),mesh.uv?.[v*2]||0,mesh.uv?.[v*2+1]||0);}
+ // Atlas slots are categorical: interpolating slot numbers across a sleeve
+ // boundary sampled unrelated textures and produced stripes across the wrist.
+ for(let j=0;j<mesh.i.length;j+=3){
+  const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],materials=ids.map(v=>mesh.t?.[v]||(mesh.uv?20:12)),mixed=materials[0]!==materials[1]||materials[1]!==materials[2],material=mixed?20:materials[0],colors=mixed&&mesh.f?mesh.f:c;
+  for(const v of ids){const i=v*3;data.push(positions[i],positions[i+1],positions[i+2],normals[i],normals[i+1],normals[i+2],colors[i],colors[i+1],colors[i+2],material,mesh.uv?.[v*2]||0,mesh.uv?.[v*2+1]||0);}
+ }
 }
 function briarEmit(r,mesh,m){
  if(r.indexed){r.indexed(mesh,m);return;}
@@ -139,4 +144,3 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
   const points=Array.from({length:13},(_,i)=>[Math.sin(i/12*Math.PI)*.17,-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.021,'#987043',6);beamArt(bow,points[0],points[12],.005,'#d7c9a8',4);
  }
 };
-

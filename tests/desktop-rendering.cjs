@@ -15,7 +15,8 @@ screen={w:1920,h:1080};activateScene('overworld',42,51);draw3d();
 assert(realmGPU.presented,'the GPU canvas is displayed directly');
 const firstUploads=counters.static;
 for(let i=0;i<4;i++){time+=1/60;draw3d();}
-assert.equal(counters.static,firstUploads,'standing still reuses uploaded world and character meshes');
+assert(counters.static-firstUploads<=4,'only the nearby player idle pose changes; distant NPCs and the world stay cached');
+const idleUploads=counters.static;draw3d();assert.equal(counters.static,idleUploads,'rendering the same pose reuses its mesh');
 assert.equal(counters.images,0,'displaying a frame does not copy the GPU canvas into the HUD');
 assert(realmGPU.terrain.get(currentScene).size<200,'only nearby terrain is constructed');
 for(const [w,h]of [[1920,1080],[3840,2160]]){

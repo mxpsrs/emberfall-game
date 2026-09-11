@@ -3,3 +3,7 @@ https://quaternius.itch.io/medieval-village-megakit
 https://quaternius.itch.io/universal-base-characters
 https://quaternius.itch.io/stylized-nature-megakit
 Converted and adapted for Emberfall.
+
+Character motion: Quaternius Universal Animation Library (Standard), CC0 1.0.
+https://quaternius.itch.io/universal-animation-library
+Retargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Emberfall.
