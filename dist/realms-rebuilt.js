@@ -6,10 +6,12 @@ const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){const mesh=rebuiltModels[name];if(!mesh)return;const m=briarTransform(x,y,z,scale,heading,vertical);briarEmit(r,tint?{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])}:mesh,m);}
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||b.archetype==='temple',wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,level=2.7*scale;
- const floors=b._cutaway?0:tower?3:castle?2:['inn','hall','temple'].includes(b.archetype)?2:1+(b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
+ const floors=b._cutaway?1:tower?3:castle?2:['inn','hall','temple'].includes(b.archetype)?2:1+(b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
+ if(b.walkIn){for(let zz=b.y+.15;zz<b.y+d-.15;zz+=1)for(let xx=b.x+.15;xx<b.x+w-.15;xx+=1)r.face([[xx,.055,zz],[xx,.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,zz]],'#9b8465',null,b.archetype==='forge'?3:5);}
  for(let floor=0;floor<floors;floor++){
   for(const side of [-1,1])for(let i=0;i<segments;i++){
    const xx=b.x+(i+.5)*w/segments,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&((i+floor)%2===0||b.archetype==='inn');
+   if(b._cutaway&&side===1&&!door){box3(r,xx,.32,z+d/2,w/segments,.64,.16,'#938675');continue;}
    const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale,tint);
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,scale);
    if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale);}
@@ -20,13 +22,13 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,scale);
   }
  }
- if(b._cutaway){for(const side of [-1,1])box3(r,x+side*w/2,.18,z,.18,.36,d,'#82786b');box3(r,x,.18,b.y,w,.36,.18,'#82786b');return .4;}
+ if(b._cutaway)return level;
  const roofScale=Math.max(w,d)/4,roofY=floors*level+.1;
- rebuiltPlace(r,'Roof_RoundTiles_4x4',x,roofY,z,roofScale,0,roofScale*.72,race==='elf'?[.59,.76,.72]:race==='dwarf'?[.62,.66,.70]:[.78,.69,.60]);
- for(const side of [-1,1])rebuiltPlace(r,'Roof_Front_Brick4',x,roofY,z+side*d/2,roofScale,side===1?0:Math.PI,roofScale*.72,tint);
+ rebuiltPlace(r,'Roof_RoundTiles_4x4',x,roofY,z,roofScale,0,Math.min(1.6,roofScale*.58),race==='elf'?[.59,.76,.72]:race==='dwarf'?[.62,.66,.70]:[.78,.69,.60]);
+ for(const side of [-1,1])rebuiltPlace(r,'Roof_Front_Brick4',x,roofY,z+side*d/2,roofScale,side===1?0:Math.PI,Math.min(1.6,roofScale*.58),tint);
  if(!tower)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
  if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltPlace(r,'Prop_Vine1',x+side*w*.35,level*.45,z+d*.5+.08,scale*.9);
- return roofY+3.1*roofScale;
+ return roofY+rebuiltModels.Roof_RoundTiles_4x4.bounds[1][1]*Math.min(1.6,roofScale*.58);
 }
 building3=function(r,b){
  const kind=b.archetype;

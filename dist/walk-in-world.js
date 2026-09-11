@@ -15,7 +15,12 @@ const settlementBeforeWalkIn=settlementAt;
 settlementAt=function(x,z){if(!physicalWorldReady)return settlementBeforeWalkIn(x,z);return SETTLEMENTS.find(t=>Math.hypot((x-t.x)/(t.kind==='city'?90:45),(z-t.y)/(t.kind==='city'?90:40))<1);};
 const oldLandBase=landBase;
 landBase=function(x,z){return oldLandBase(physicalWorldReady?x/3:x,physicalWorldReady?z/3:z);};
-function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn)continue;const room=worldScenes[b.service.destination];if(!room)continue;b.service.walkThrough=true;b.service.building=b;const [w,h]=sceneSizes[b.service.destination]||[16,14],used=new Set();for(const original of room.objects){if(original.type==='exit')continue;const o={...original,interiorBuilding:b.service.destination};let x=Math.round(b.x+1+(original.x/(w-1))*(b.w-3)),y=Math.round(b.y+1+(original.y/(h-1))*(b.h-3));for(let d=0;used.has(x+':'+y)&&d<8;d++)x=Math.min(b.x+b.w-2,x+1);used.add(x+':'+y);Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});world.objects.push(o);}}
+function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn)continue;const room=worldScenes[b.service.destination];if(!room)continue;b.service.walkThrough=true;b.service.building=b;const [w,h]=sceneSizes[b.service.destination]||[16,14],used=new Set();
+ const place=(original,x,y)=>{let chosen=null;for(let radius=0;radius<Math.max(b.w,b.h)&&!chosen;radius++)for(let dz=-radius;dz<=radius&&!chosen;dz++)for(let dx=-radius;dx<=radius&&!chosen;dx++){const a=x+dx,c=y+dz;if(a<=b.x||a>=b.x+b.w-1||c<=b.y||c>=b.y+b.h-1||used.has(a+':'+c)||c>b.y+b.h-4&&Math.abs(a-b.service.x)<2)continue;chosen=[a,c];}if(!chosen)return;const [a,c]=chosen;used.add(a+':'+c);world.objects.push({...original,interiorBuilding:b.service.destination,x:a,y:c,homeX:a,homeY:c,drawX:a,drawY:c});};
+ for(const original of room.objects){if(original.type==='exit')continue;place(original,Math.round(b.x+1+(original.x/(w-1))*(b.w-3)),Math.round(b.y+1+(original.y/(h-1))*(b.h-3)));}
+ const furnishings=b.archetype==='inn'?[['Bed',2,2],['Bed',b.w-3,2],['Dining table',Math.floor(b.w/2),Math.floor(b.h/2)],['Chair',Math.floor(b.w/2)+1,Math.floor(b.h/2)]]:b.archetype==='shop'?[['Display table',Math.floor(b.w/2),Math.floor(b.h/2)],['Supplies',b.w-2,b.h-3]]:b.archetype==='forge'?[['Tool table',2,b.h-3],['Supplies',b.w-2,2]]:[];
+ for(const [i,[name,x,y]]of furnishings.entries())place({id:800000+b.service.id*10+i,type:'prop',name,sprite:12,dead:0},b.x+x,b.y+y);
+ }
  if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}
  // Existing saves inside a shop now resume inside that shop's physical world footprint.
  const b=world.buildings.find(b=>b.walkIn&&b.service.destination===s.sceneId);if(b){const [w,h]=sceneSizes[s.sceneId]||[16,14],x=Math.round(b.x+1+s.x/(w-1)*(b.w-3)),y=Math.round(b.y+1+s.y/(h-1)*(b.h-3));activateScene('overworld',x,y,false);}
@@ -23,15 +28,16 @@ function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn
 const solidBuildingBefore=inBuilding;
 inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const perimeter=x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1;if(!perimeter)return false;return !(y===b.y+b.h-1&&x===b.service.x&&b.service.openedAt!==undefined);};
 const engageBeforeWalkIn=engage;
-engage=function(o){if(!o.building?.walkIn)return engageBeforeWalkIn(o);o.openedAt=time;realmNavigation.clear();const p=route(o.x,o.y-2,false);if(p===null){toast('There is no clear path through this doorway.');return;}stop();path=p;renderAction();};
-updateDoorThreshold=function(){if(!inWorld())return;const b=buildings.find(b=>b.walkIn&&px>b.x&&px<b.x+b.w-1&&py>b.y&&py<b.y+b.h-1);if(b&&s.insideBuilding!==b.service.destination){s.insideBuilding=b.service.destination;tutorialEvent('inn');}else if(!b)s.insideBuilding=null;};
+let pendingWalkInDoor=null;
+const stopBeforeWalkIn=stop;
+stop=function(){pendingWalkInDoor=null;stopBeforeWalkIn();};
+function continueThroughDoor(o){o.openedAt=time;realmNavigation.clear();const p=route(o.x,o.y-2,false);pendingWalkInDoor=null;if(p===null){toast('The doorway is blocked.');return;}path=p;renderAction();}
+engage=function(o){if(!o.building?.walkIn)return engageBeforeWalkIn(o);stop();if(o.openedAt!==undefined||Math.hypot(px-o.x,py-o.y)<1.1){continueThroughDoor(o);return;}const p=route(o.x,o.y,false);if(p===null){toast('There is no clear path to the door.');return;}path=p;pendingWalkInDoor=o;renderAction();};
+updateDoorThreshold=function(){if(!inWorld())return;if(pendingWalkInDoor&&!path.length&&Math.hypot(px-pendingWalkInDoor.x,py-pendingWalkInDoor.y)<.2)continueThroughDoor(pendingWalkInDoor);const b=buildings.find(b=>b.walkIn&&px>b.x&&px<b.x+b.w-1&&py>b.y&&py<b.y+b.h-1);if(b&&s.insideBuilding!==b.service.destination){s.insideBuilding=b.service.destination;if(b.archetype==='inn')tutorialEvent('inn');}else if(!b)s.insideBuilding=null;};
 const enterBeforeWalkIn=enterInterior;
 enterInterior=function(o){if(o.building?.walkIn)return engage(o);return enterBeforeWalkIn(o);};
 const regionBeforeWalkIn=regionInfo;
 regionInfo=function(){if(inWorld()&&s.insideBuilding){const b=buildings.find(b=>b.service?.destination===s.insideBuilding);if(b)return [b.name,'Walk through the door to return outside'];}return regionBeforeWalkIn();};
 returnToVillage=function(){activateScene('overworld',42,51);};
-
-const crossingsBeforeRooms=drawRealmCrossings;
-drawRealmCrossings=function(r){crossingsBeforeRooms(r);for(const b of buildings){if(!b.walkIn||!b._cutaway)continue;for(let z=b.y+1;z<b.y+b.h-1;z++)for(let x=b.x+1;x<b.x+b.w-1;x++)r.face([[x,.045,z],[x,.045,z+1],[x+1,.045,z+1],[x+1,.045,z]],'#988975',null,3);}};
 
 bridge3=function(r,z){realmBridge(r,112.5,z+4.5,11,8,true);};
