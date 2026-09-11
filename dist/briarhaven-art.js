@@ -10,16 +10,16 @@ for(const [key,mesh] of Object.entries(briarModels))if(['inn','shop','forge','ho
 
 function briarTransform(x,y,z,scale=1,heading=0,vertical=scale){const c=Math.cos(heading),s=Math.sin(heading);return [c*scale,0,s*scale,x,0,vertical,0,y,-s*scale,0,c*scale,z];}
 function briarPoint(p,i,m){return [m[0]*p[i]+m[1]*p[i+1]+m[2]*p[i+2]+m[3],m[4]*p[i]+m[5]*p[i+1]+m[6]*p[i+2]+m[7],m[8]*p[i]+m[9]*p[i+1]+m[10]*p[i+2]+m[11]];}
-function briarNormal(n,i,m){const sx=m[0]*m[0]+m[8]*m[8],sy=m[5]*m[5];return [m[0]*n[i]/sx+m[2]*n[i+2]/sx,m[5]*n[i+1]/sy,m[8]*n[i]/sx+m[10]*n[i+2]/sx];}
+function briarNormal(n,i,m){const a=m[0],b=m[1],c=m[2],d=m[4],e=m[5],f=m[6],g=m[8],h=m[9],k=m[10],det=a*(e*k-f*h)-b*(d*k-f*g)+c*(d*h-e*g)||1;return [((e*k-f*h)*n[i]+(f*g-d*k)*n[i+1]+(d*h-e*g)*n[i+2])/det,((c*h-b*k)*n[i]+(a*k-c*g)*n[i+1]+(b*g-a*h)*n[i+2])/det,((b*f-c*e)*n[i]+(c*d-a*f)*n[i+1]+(a*e-b*d)*n[i+2])/det];}
 function realmIndexedData(data,mesh,m){
  const p=mesh.p,n=mesh.n,c=mesh.c,positions=new Float32Array(p.length),normals=new Float32Array(n.length);
- const sx=m[0]*m[0]+m[8]*m[8],sy=m[5]*m[5];
- for(let i=0;i<p.length;i+=3){positions[i]=m[0]*p[i]+m[2]*p[i+2]+m[3];positions[i+1]=m[5]*p[i+1]+m[7];positions[i+2]=m[8]*p[i]+m[10]*p[i+2]+m[11];normals[i]=(m[0]*n[i]+m[2]*n[i+2])/sx;normals[i+1]=m[5]*n[i+1]/sy;normals[i+2]=(m[8]*n[i]+m[10]*n[i+2])/sx;}
- for(let j=0;j<mesh.i.length;j++){const i=mesh.i[j]*3;data.push(positions[i],positions[i+1],positions[i+2],normals[i],normals[i+1],normals[i+2],c[i],c[i+1],c[i+2],12);}
+ const a=m[0],b=m[1],cc=m[2],d=m[4],e=m[5],f=m[6],g=m[8],h=m[9],k=m[10],det=a*(e*k-f*h)-b*(d*k-f*g)+cc*(d*h-e*g)||1,N=[e*k-f*h,f*g-d*k,d*h-e*g,cc*h-b*k,a*k-cc*g,b*g-a*h,b*f-cc*e,cc*d-a*f,a*e-b*d].map(v=>v/det);
+ for(let i=0;i<p.length;i+=3){positions[i]=a*p[i]+b*p[i+1]+cc*p[i+2]+m[3];positions[i+1]=d*p[i]+e*p[i+1]+f*p[i+2]+m[7];positions[i+2]=g*p[i]+h*p[i+1]+k*p[i+2]+m[11];normals[i]=N[0]*n[i]+N[1]*n[i+1]+N[2]*n[i+2];normals[i+1]=N[3]*n[i]+N[4]*n[i+1]+N[5]*n[i+2];normals[i+2]=N[6]*n[i]+N[7]*n[i+1]+N[8]*n[i+2];}
+ for(let j=0;j<mesh.i.length;j++){const v=mesh.i[j],i=v*3;data.push(positions[i],positions[i+1],positions[i+2],normals[i],normals[i+1],normals[i+2],c[i],c[i+1],c[i+2],mesh.t?.[v]||(mesh.uv?20:12),mesh.uv?.[v*2]||0,mesh.uv?.[v*2+1]||0);}
 }
 function briarEmit(r,mesh,m){
  if(r.indexed){r.indexed(mesh,m);return;}
- for(let i=0;i<mesh.i.length;i+=3){const ids=[mesh.i[i]*3,mesh.i[i+1]*3,mesh.i[i+2]*3],colors=ids.map(j=>[mesh.c[j],mesh.c[j+1],mesh.c[j+2]]),col='#'+[0,1,2].map(k=>Math.round(colors.reduce((a,c)=>a+c[k],0)/3*255).toString(16).padStart(2,'0')).join('');r.face(ids.map(j=>briarPoint(mesh.p,j,m)),col,ids.map(j=>briarNormal(mesh.n,j,m)),12,colors);}
+ for(let i=0;i<mesh.i.length;i+=3){const ids=[mesh.i[i]*3,mesh.i[i+1]*3,mesh.i[i+2]*3],colors=ids.map(j=>{const c=r.software&&mesh.f?mesh.f:mesh.c;return [c[j],c[j+1],c[j+2]];}),col='#'+[0,1,2].map(k=>Math.min(255,Math.max(0,Math.round(ids.reduce((a,j)=>a+(mesh.f||mesh.c)[j+k],0)/3*255))).toString(16).padStart(2,'0')).join('');r.face(ids.map(j=>briarPoint(mesh.p,j,m)),col,ids.map(j=>briarNormal(mesh.n,j,m)),mesh.t?.[ids[0]/3]||(mesh.uv?20:12),colors,mesh.uv?ids.map(j=>[mesh.uv[j/3*2],mesh.uv[j/3*2+1]]):null);}
 }
 // Reuse source meshes and their atlas colors, with regional materials.
 const realmArtVariants=new Map();
@@ -139,4 +139,4 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
   const points=Array.from({length:13},(_,i)=>[Math.sin(i/12*Math.PI)*.17,-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.021,'#987043',6);beamArt(bow,points[0],points[12],.005,'#d7c9a8',4);
  }
 };
-boot();
+

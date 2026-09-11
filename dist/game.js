@@ -257,7 +257,8 @@ function drawPortrait(){const g=$('portraitCanvas').getContext('2d');g.clearRect
 async function finishCharacter(name,look){
   const cleaned=name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
   if(!s.character){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}
-  s.character={name:cleaned,look:Math.max(0,Math.min(3,look))};
+  const draft=typeof creatorDraft==='undefined'?null:creatorDraft;
+  s.character={name:cleaned,look:Math.max(0,Math.min(3,look)),race:draft?.race||s.character?.race||'human',frame:draft?.frame||s.character?.frame||'male',hair:draft?.hair??s.character?.hair??0,creationVersion:2};
   $('begin').disabled=true;$('begin').textContent='Saving character…';$('characterSaveError').textContent='';
   save();const saved=await flushCloudSave();$('begin').disabled=false;
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
@@ -361,7 +362,7 @@ $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('jou
 $('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=14;close();renderTutorial();$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
-$('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!s.character)e.preventDefault();});
+$('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});
 $('modal').addEventListener('close',()=>{renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
@@ -380,7 +381,7 @@ async function boot(){
     const names=['characters','environment','terrain','items','poses','walking','spirits','heroes','monsters'];
     await Promise.all(names.map(name=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{art[name]=img;resolve();};img.onerror=reject;img.src='assets/'+name+'.png';})));
     const response=await fetch('assets/bounds.json');if(response.ok)art.bounds=await response.json();
-    prepareAnimationAtlases();assetsReady=true;save();$('loading').hidden=true;renderUI();renderTutorial();if(!s.character)openCreator(false);
+    prepareAnimationAtlases();assetsReady=true;save();$('loading').hidden=true;renderUI();renderTutorial();if(!s.character?.name?.trim())openCreator(false);
   }catch{
     $('loading').innerHTML='';const message=document.createElement('p');message.textContent='The realm could not load. Check your connection and try again.';$('loading').appendChild(message);const b=document.createElement('button');b.textContent='Try again';b.onclick=()=>location.reload();$('loading').appendChild(b);
   }

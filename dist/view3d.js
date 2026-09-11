@@ -15,9 +15,9 @@ function cachedMesh3(key,kind,build){
  if(queue.size>limit){const oldest=queue.keys().next().value;queue.delete(oldest);const discarded=staticMeshes3.get(oldest);if(typeof realmGPU!=='undefined'&&realmGPU&&discarded)for(const mesh of discarded.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(oldest);}
  let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}
  const tag=kind+':'+(typeof briarModels==='undefined'?meshDetail3:1);
- if(!variants.has(tag)){const faces=[],height=build({face:(points,color,normals,material,colors)=>faces.push({points,color,normals,material,colors})});variants.set(tag,{faces,height,kind});}return variants.get(tag);
+ if(!variants.has(tag)){const faces=[],instances=[],collector={face:(points,color,normals,material,colors,uvs)=>faces.push({points,color,normals,material,colors,uvs})};if(kind!=='building')collector.indexed=(mesh,matrix)=>instances.push({mesh,matrix});const height=build(collector);variants.set(tag,{faces,instances,height,kind});}return variants.get(tag);
 }
-function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors);return cached.height;}
+function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const instance of cached.instances||[])briarEmit(r,instance.mesh,instance.matrix);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
 function painter3(g,project){const faces=[],fast=project===project3,cy=Math.cos(view3d.yaw),sy=Math.sin(view3d.yaw),ct=Math.cos(view3d.tilt),st=Math.sin(view3d.tilt),zoom=view3d.zoom,ox=px+.5,oz=py+.5,sw=screen.w,sh=screen.h;
  return {face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
  for(const a of points){let q;if(fast){const dx=a[0]-ox,dz=a[2]-oz,u=dx*cy-dz*sy,d=dx*sy+dz*cy;q={x:sw/2+u*zoom,y:sh*.54+(d*st-a[1]*ct)*zoom,depth:d*ct+a[1]*st};}else q=project(...a);p.push(q);depth+=q.depth;minx=Math.min(minx,q.x);maxx=Math.max(maxx,q.x);miny=Math.min(miny,q.y);maxy=Math.max(maxy,q.y);}
