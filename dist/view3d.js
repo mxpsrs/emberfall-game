@@ -3,22 +3,23 @@
 const view3d={yaw:-.55,tilt:.85,zoom:34,min:14,max:65};
 try{const v=JSON.parse(localStorage.getItem('emberfall-camera-v1'));if(v){view3d.yaw=Number(v.yaw)||-.55;view3d.tilt=Math.max(.5,Math.min(1.2,Number(v.tilt)||.85));view3d.zoom=Math.max(14,Math.min(65,Number(v.zoom)||34));}}catch{}
 function rememberView(){try{localStorage.setItem('emberfall-camera-v1',JSON.stringify(view3d));}catch{}}
-function project3(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){const dx=x-cx,dz=z-cz,c=Math.cos(v.yaw),s=Math.sin(v.yaw),u=dx*c-dz*s,d=dx*s+dz*c;return {x:w/2+u*v.zoom,y:h*.54+(d*Math.sin(v.tilt)-y*Math.cos(v.tilt))*v.zoom,depth:d*Math.cos(v.tilt)+y*Math.sin(v.tilt)};}
-function unproject3(sx,sy){const u=(sx-screen.w/2)/view3d.zoom,d=(sy-screen.h*.54)/view3d.zoom/Math.sin(view3d.tilt),c=Math.cos(view3d.yaw),s=Math.sin(view3d.yaw);return {x:px+.5+u*c+d*s,z:py+.5-u*s+d*c};}
+function cameraZoom3(v=view3d){return v.zoom*(v===view3d?Math.max(1,screen.h/640):1);}
+function project3(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){const dx=x-cx,dz=z-cz,c=Math.cos(v.yaw),s=Math.sin(v.yaw),u=dx*c-dz*s,d=dx*s+dz*c;return {x:w/2+u*cameraZoom3(v),y:h*.54+(d*Math.sin(v.tilt)-y*Math.cos(v.tilt))*cameraZoom3(v),depth:d*Math.cos(v.tilt)+y*Math.sin(v.tilt)};}
+function unproject3(sx,sy){const u=(sx-screen.w/2)/cameraZoom3(),d=(sy-screen.h*.54)/cameraZoom3()/Math.sin(view3d.tilt),c=Math.cos(view3d.yaw),s=Math.sin(view3d.yaw);return {x:px+.5+u*c+d*s,z:py+.5-u*s+d*c};}
 function shade3(hex,f){const n=parseInt(hex.slice(1),16);return '#'+[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))).toString(16).padStart(2,'0')).join('');}
 let meshDetail3=1;
+let meshFrame3=0;
 const staticMeshes3=new WeakMap(),terrainLayers3=new Map();
 const staticMeshQueues3={building:new Map(),prop:new Map()};
 function cachedMesh3(key,kind,build){
- const queue=staticMeshQueues3[kind==='building'?'building':'prop'];queue.delete(key);queue.set(key,true);
- const limit=kind==='building'?36:480;
- if(queue.size>limit){const oldest=queue.keys().next().value;queue.delete(oldest);const discarded=staticMeshes3.get(oldest);if(typeof realmGPU!=='undefined'&&realmGPU&&discarded)for(const mesh of discarded.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(oldest);}
+ const queue=staticMeshQueues3[kind==='building'?'building':'prop'];queue.delete(key);queue.set(key,meshFrame3);
  let variants=staticMeshes3.get(key);if(!variants){variants=new Map();staticMeshes3.set(key,variants);}
  const tag=kind+':'+(typeof briarModels==='undefined'?meshDetail3:1)+':'+(key._cutaway?(Math.sin(view3d.yaw)>.05?1:0)+':'+(Math.cos(view3d.yaw)>.05?1:0):'closed');
- if(!variants.has(tag)){const faces=[],instances=[],collector={face:(points,color,normals,material,colors,uvs)=>faces.push({points,color,normals,material,colors,uvs})};if(kind!=='building')collector.indexed=(mesh,matrix)=>instances.push({mesh,matrix});const height=build(collector);variants.set(tag,{faces,instances,height,kind});}return variants.get(tag);
+ if(!variants.has(tag)){const faces=[],instances=[],collector={face:(points,color,normals,material,colors,uvs)=>faces.push({points,color,normals,material,colors,uvs})};collector.indexed=(mesh,matrix)=>instances.push({mesh,matrix});const height=build(collector);variants.set(tag,{faces,instances,height,kind});}return variants.get(tag);
 }
+function trimStaticMeshes3(){for(const [kind,queue]of Object.entries(staticMeshQueues3)){const limit=kind==='building'?80:480;for(const [key,used]of queue){if(queue.size<=limit)break;if(used===meshFrame3)continue;queue.delete(key);const discarded=staticMeshes3.get(key);if(realmGPU&&discarded)for(const mesh of discarded.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(key);}}}
 function emitMesh3(r,cached){if(r.cached)return r.cached(cached);for(const instance of cached.instances||[])briarEmit(r,instance.mesh,instance.matrix);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
-function painter3(g,project){const faces=[],fast=project===project3,cy=Math.cos(view3d.yaw),sy=Math.sin(view3d.yaw),ct=Math.cos(view3d.tilt),st=Math.sin(view3d.tilt),zoom=view3d.zoom,ox=px+.5,oz=py+.5,sw=screen.w,sh=screen.h;
+function painter3(g,project){const faces=[],fast=project===project3,cy=Math.cos(view3d.yaw),sy=Math.sin(view3d.yaw),ct=Math.cos(view3d.tilt),st=Math.sin(view3d.tilt),zoom=cameraZoom3(),ox=px+.5,oz=py+.5,sw=screen.w,sh=screen.h;
  return {face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
  for(const a of points){let q;if(fast&&typeof landHeight==='undefined'){const dx=a[0]-ox,dz=a[2]-oz,u=dx*cy-dz*sy,d=dx*sy+dz*cy;q={x:sw/2+u*zoom,y:sh*.54+(d*st-a[1]*ct)*zoom,depth:d*ct+a[1]*st};}else q=project(...a);p.push(q);depth+=q.depth;minx=Math.min(minx,q.x);maxx=Math.max(maxx,q.x);miny=Math.min(miny,q.y);maxy=Math.max(maxy,q.y);}
  if(fast&&(maxx<0||minx>sw||maxy<0||miny>sh))return;
@@ -33,7 +34,7 @@ function drawTerrainLayer3(){
  if(t===3){g.fillStyle='#7ba1a4';g.fillRect(x*unit+3,z*unit+6,8,1);g.fillStyle='#608e9b';g.fillRect(x*unit+10,z*unit+14,6,1);}
  }
  terrainLayers3.set(currentScene,layer);}
- const c=Math.cos(view3d.yaw),sn=Math.sin(view3d.yaw),st=Math.sin(view3d.tilt),k=view3d.zoom/unit,origin=project3(0,0,0);
+ const c=Math.cos(view3d.yaw),sn=Math.sin(view3d.yaw),st=Math.sin(view3d.tilt),k=cameraZoom3()/unit,origin=project3(0,0,0);
  ctx.save();ctx.transform(k*c,k*sn*st,-k*sn,k*c*st,origin.x,origin.y);ctx.drawImage(layer,0,0);ctx.restore();
 }
 function box3(r,x,y,z,w,h,d,color,transform=a=>a){const p=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(([a,b,c])=>transform([x+a*w/2,y+b*h/2,z+c*d/2]));[[[0,1,2,3],.72],[[4,7,6,5],1],[[0,4,5,1],.55],[[3,2,6,7],1.18],[[1,5,6,2],.85],[[0,3,7,4],.95]].forEach(([ids,f])=>r.face(ids.map(i=>p[i]),shade3(color,f)));}
@@ -152,22 +153,24 @@ function drawRoadDetails3(minx,maxx,minz,maxz){
  else if((x*3+z)%5===0)road.face([[x+.23,.009,z+.31],[x+.48,.009,z+.27],[x+.54,.009,z+.4],[x+.32,.009,z+.46]],'#aca180');
  }road.flush();
 }
-function draw3d(){meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:1;const w=screen.w,h=screen.h;ctx.clearRect(0,0,w,h);ctx.fillStyle='#243b40';ctx.fillRect(0,0,w,h);const r=painter3(ctx,project3),corners=[[0,0],[w,0],[w,h],[0,h]].map(p=>unproject3(...p)),[mw,mh]=sceneSize();
+let realmViewCorners=null;const basicBridgeKeys3=[{},{}];
+function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:1;const w=screen.w,h=screen.h;ctx.clearRect(0,0,w,h);const r=painter3(ctx,project3);if(!realmGPU?.presented){ctx.fillStyle='#243b40';ctx.fillRect(0,0,w,h);}const corners=[[0,0],[w,0],[w,h],[0,h]].map(p=>unproject3(...p)),[mw,mh]=sceneSize();
+ realmViewCorners=corners;
  const minx=Math.max(0,Math.floor(Math.min(...corners.map(p=>p.x)))-4),maxx=Math.min(mw-1,Math.ceil(Math.max(...corners.map(p=>p.x)))+4),minz=Math.max(0,Math.floor(Math.min(...corners.map(p=>p.z)))-4),maxz=Math.min(mh-1,Math.ceil(Math.max(...corners.map(p=>p.z)))+4);
  if(!realmGPU)drawTerrainLayer3();
- for(const o of objects){if(o.dead>time||view3d.zoom<24||Math.hypot(o.x-px,o.y-py)>Math.hypot(w,h)/view3d.zoom+12)continue;const q=project3(o.x,0,o.y);if(q.x< -90||q.x>w+90||q.y< -90||q.y>h+90)continue;groundShadow3(ctx,o.x+.5,o.y+.5,o.type==='tree'?.84:.32,o.type==='tree'?.6:.24,o.type==='tree'?.12:.16);}
- const mesh=painter3(ctx,project3),labels=[];hitboxes=[];if(!inWorld()){for(let z=minz;z<=maxz;z++)for(let x=minx;x<=maxx;x++)if(worldWall(x,z)){if(typeof drawRealmWall==='function')drawRealmWall(mesh,x,z);else box3(mesh,x+.5,.65,z+.5,1,1.3,1,'#62716e');}}if(inWorld()){for(const by of [48,102]){const bp=project3(112.5,0,by+4.5);if(bp.x>-160&&bp.x<w+160&&bp.y>-120&&bp.y<h+150)bridge3(mesh,by);}}
+ if(!realmGPU)for(const o of objects){if(o.dead>time||view3d.zoom<24||Math.hypot(o.x-px,o.y-py)>Math.hypot(w,h)/cameraZoom3()+12)continue;const q=project3(o.x,0,o.y);if(q.x< -90||q.x>w+90||q.y< -90||q.y>h+90)continue;groundShadow3(ctx,o.x+.5,o.y+.5,o.type==='tree'?.84:.32,o.type==='tree'?.6:.24,o.type==='tree'?.12:.16);}
+ const mesh=painter3(ctx,project3),labels=[],visibleBuildings=[],openRooms=new Set();hitboxes=[];if(!inWorld()){for(let z=minz;z<=maxz;z++)for(let x=minx;x<=maxx;x++)if(worldWall(x,z)){if(typeof drawRealmWall==='function')drawRealmWall(mesh,x,z);else box3(mesh,x+.5,.65,z+.5,1,1.3,1,'#62716e');}}if(inWorld()){for(const by of [48,102]){const bp=project3(112.5,0,by+4.5);if(bp.x>-160&&bp.x<w+160&&bp.y>-120&&bp.y<h+150)emitMesh3(mesh,cachedMesh3((typeof villageBridges==='undefined'?basicBridgeKeys3:villageBridges)[by===48?0:1],'prop',r=>bridge3(r,by)));}}
  if(inWorld()&&typeof drawRealmCrossings==='function')drawRealmCrossings(mesh);
  const near=(x,z)=>{if(x<minx-3||x>maxx+3||z<minz-3||z>maxz+3)return false;const q=project3(x,1,z);return q.x>-130&&q.x<w+130&&q.y>-160&&q.y<h+140;};
- const hit=(o,x,z,height,width=.65)=>{const a=project3(x,0,z),b=project3(x,height,z);hitboxes.push({x:a.x-width*view3d.zoom/2,y:Math.min(a.y,b.y)-8,w:width*view3d.zoom,h:Math.abs(a.y-b.y)+16,o,depth:a.depth});};
- for(const b of buildings){b._cutaway=!!b.walkIn&&px+.5>b.x&&px+.5<b.x+b.w&&py+.5>b.y&&py+.5<b.y+b.h+1;const center=project3(b.x+b.w/2,(b.visualHeight||3.3)/2,b.y+b.h/2),radius=(Math.hypot(b.w,b.h)+(b.visualHeight||3.3))*view3d.zoom*.6;if(center.x< -radius||center.x>w+radius||center.y< -radius||center.y>h+radius)continue;const cached=cachedMesh3(b,'building',r=>building3(r,b));emitMesh3(mesh,cached);if(b.service&&!b._cutaway){const polygon=buildingHull3(cached);hitboxes.push({polygon,o:b.service,building:b,depth:project3(b.x+b.w/2,0,b.y+b.h/2).depth});}if((s.insideBuilding===b.service?.destination||target===b.service)&&Math.hypot(px-b.x,py-b.y)<10)labels.push([b.name,b.x+b.w/2,(b.visualHeight||3.3)+.15,b.y+b.h/2,'#e8d9b0']);}
- for(const o of objects){if(o.building?.walkIn||o.dead>time||(o.type==='boss'&&s.boss)||!near(o.x,o.y))continue;const x=(o.drawX??o.x)+.5,z=(o.drawY??o.y)+.5,living=fighter(o)||o.characterSprite||['elder','shop','questgiver','spirit','villager','inn'].includes(o.type),height=living?creature3(mesh,o,x,z):['camp','crop','spirit'].includes(o.type)?prop3(mesh,o,x,z):emitMesh3(mesh,cachedMesh3(o,'prop',r=>prop3(r,o,x,z))); hit(o,x,z,height,o.type==='tree'?1.1:.7);if(['elder','questgiver'].includes(o.type))labels.push(['!',x,height+.3,z,'#ffdb8d']);if(o.tutor&&Math.hypot(x-px,z-py)<7&&(!target||target===o))labels.push([o.name,x,height+.35,z,'#e8d6a6']);if(target===o)labels.push([o.name,x,height+.35,z,'#ffe0bb',o]);}
+ const hit=(o,x,z,height,width=.65)=>{const a=project3(x,0,z),b=project3(x,height,z);hitboxes.push({x:a.x-width*cameraZoom3()/2,y:Math.min(a.y,b.y)-8,w:width*cameraZoom3(),h:Math.abs(a.y-b.y)+16,o,depth:a.depth});};
+ for(const b of buildings){b._cutaway=!!b.walkIn&&px+.5>b.x&&px+.5<b.x+b.w&&py+.5>b.y&&py+.5<b.y+b.h+1;const center=project3(b.x+b.w/2,(b.visualHeight||3.3)/2,b.y+b.h/2),radius=(Math.hypot(b.w,b.h)+(b.visualHeight||3.3))*cameraZoom3()*.6;if(center.x< -radius||center.x>w+radius||center.y< -radius||center.y>h+radius)continue;visibleBuildings.push(b);if(b._cutaway)openRooms.add(b.service?.destination);const cached=cachedMesh3(b,'building',r=>building3(r,b));emitMesh3(mesh,cached);if(b.service&&!b._cutaway){const polygon=buildingHull3(cached);hitboxes.push({polygon,o:b.service,building:b,depth:project3(b.x+b.w/2,0,b.y+b.h/2).depth});}if((s.insideBuilding===b.service?.destination||target===b.service)&&Math.hypot(px-b.x,py-b.y)<10)labels.push([b.name,b.x+b.w/2,(b.visualHeight||3.3)+.15,b.y+b.h/2,'#e8d9b0']);}
+ for(const o of objects){if(o.interiorBuilding&&!openRooms.has(o.interiorBuilding)||o.building?.walkIn||o.dead>time||(o.type==='boss'&&s.boss)||!near(o.x,o.y))continue;const x=(o.drawX??o.x)+.5,z=(o.drawY??o.y)+.5,living=fighter(o)||o.characterSprite||['elder','shop','questgiver','spirit','villager','inn'].includes(o.type),height=living?creature3(mesh,o,x,z):['camp','crop','spirit'].includes(o.type)?prop3(mesh,o,x,z):emitMesh3(mesh,cachedMesh3(o,'prop',r=>prop3(r,o,x,z))); hit(o,x,z,height,o.type==='tree'?1.1:.7);if(['elder','questgiver'].includes(o.type))labels.push(['!',x,height+.3,z,'#ffdb8d']);if(o.tutor&&Math.hypot(x-px,z-py)<7&&(!target||target===o))labels.push([o.name,x,height+.35,z,'#e8d6a6']);if(target===o)labels.push([o.name,x,height+.35,z,'#ffe0bb',o]);}
  const moving=playerMotion.moving;if(moving){const delta=Math.atan2(Math.sin(playerMotion.heading-playerHeading),Math.cos(playerMotion.heading-playerHeading));playerHeading+=delta*.3;}else if(target)playerHeading=Math.atan2(target.x-px,target.y-py);
  const worldDetail=meshDetail3;meshDetail3=1;humanoid3(mesh,px+.5,py+.5,s.character?.look||0,s.equipment,playerHeading,moving?1:0,Math.max(0,Math.sin(Math.min(1,(time-lastAttack)/.65)*Math.PI)));meshDetail3=worldDetail;
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene&&near(pile.x,pile.y)){box3(mesh,pile.x+.5,.1,pile.y+.5,.3,.2,.26,'#d7b66b');hit(pile,pile.x+.5,pile.y+.5,.35,.7);if(Math.hypot(px-pile.x,py-pile.y)<4)labels.push([groundItemLabel(pile),pile.x+.5,.55,pile.y+.5,'#f4daa0']);}
  if(typeof drawOnlinePlayers==='function')drawOnlinePlayers(mesh,labels);mesh.flush();
  // A full-height door target remains selectable with the roof cut away.
- for(const b of buildings)if(b.walkIn){const o=b.service,seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,m=briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-doorOpenFraction(o)*Math.PI*.52,scale*.85);hitboxes.push({polygon:[[-.05,0,0],[1.08,0,0],[1.08,2.36,0],[-.05,2.36,0]].map(p=>project3(...briarPoint(p,0,m))),o,door:true,depth:project3(xx,0,b.y+b.h).depth});}
+ for(const b of visibleBuildings)if(b.walkIn){const o=b.service,seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,m=briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-doorOpenFraction(o)*Math.PI*.52,scale*.85);hitboxes.push({polygon:[[-.05,0,0],[1.08,0,0],[1.08,2.36,0],[-.05,2.36,0]].map(p=>project3(...briarPoint(p,0,m))),o,door:true,depth:project3(xx,0,b.y+b.h).depth});}
  if(path.length){ctx.beginPath();for(const [i,p]of [[px,py],...path].entries()){const q=project3(p[0]+.5,.035+walkSurfaceHeight(p[0]+.5,p[1]+.5)-landHeight(p[0]+.5,p[1]+.5),p[1]+.5);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);}ctx.strokeStyle='#e9dba6';ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);}
  groundShadow3(ctx,px+.5,py+.5,.38,.27,.23);ring3(ctx,px+.5,py+.5,'#e4d6a2',.33);if(target)ring3(ctx,target.x+.5,target.y+.5,fighter(target)?'#e79580':'#e4d6a2');
  const tp=inWorld()&&s.character&&tutorialStep()?tutorialStep().point():null;if(tp)ring3(ctx,tp.x+.5,tp.y+.5,'#f3d280',.58);
@@ -185,14 +188,19 @@ function draw3d(){meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:1;const w=scr
  for(const p of projectiles){const t=Math.min(1,p.age/p.duration),q=project3(p.x+(p.tx-p.x)*t+.5,1+Math.sin(t*Math.PI)*.3,p.y+(p.ty-p.y)*t+.5);ctx.fillStyle=p.color||'#e3c382';ctx.beginPath();ctx.arc(q.x,q.y,p.style==='ranged'?3:5,0,Math.PI*2);ctx.fill();}
  if(spiritEffect)ring3(ctx,spiritEffect.x+.5,spiritEffect.y+.5,'#bce4d5',.6+spiritEffect.age);
  for(const f of floaters){const combat=/^(?:-\d|Miss|Blocked)/.test(f.text),p=project3(f.x+.5,(combat?1.3:2.6)+(1.4-f.life)*.55,f.y+.5),player=Math.hypot(f.x-px,f.y-py)<.4,offset=combat?(player?-23:23):0;if(combat){ctx.fillStyle=player?'#652f29e8':'#343a30ed';const half=Math.max(12,f.text.length*3.7);ctx.beginPath();ctx.ellipse(p.x+offset,p.y,half,12,0,0,Math.PI*2);ctx.fill();}label(f.text,p.x+offset,p.y,f.color,combat?12:14);}
- const region=regionInfo()||['Briarhaven','The Border Realms'];$('region').textContent=region[0];$('regionSub').textContent=region[1];drawMinimap();
+ const region=regionInfo()||['Briarhaven','The Border Realms'];$('region').textContent=region[0];$('regionSub').textContent=region[1];drawMinimap();trimStaticMeshes3();
 }
 // Creation, equipment previews and gameplay share precisely the same fitted model.
 drawEquippedCharacter=function(g,x,bottom,look,moving=false,age=10,scale=1){const prevDetail=meshDetail3;meshDetail3=1;const v={yaw:-.45,tilt:.35,zoom:29*scale},proj=(a,b,c)=>project3(a,b,c,v,0,0,0,0),r=painter3(g,(a,b,c)=>{const p=proj(a,b,c);return {...p,x:p.x+x,y:p.y+bottom};});humanoid3(r,0,0,look,s.equipment,0,moving?time*10:0,Math.max(0,Math.sin(Math.min(1,age/.42)*Math.PI)));r.flush();meshDetail3=prevDetail;};
 draw=draw3d;
 function buildingHull3(cached){
- const key=[view3d.yaw,view3d.tilt,view3d.zoom].join(':');if(cached.hullKey!==key){
- const points=cached.faces.flatMap(f=>f.points.map(p=>project3(...p,view3d,0,0,0,0))).sort((a,b)=>a.x-b.x||a.y-b.y),cross=(a,b,c)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x),lower=[],upper=[];
+ if(!cached.pickPoints){const layers=new Map(),add=p=>{const key=Math.round(p[1]*20),b=layers.get(key);if(b){b[0]=Math.min(b[0],p[0]);b[1]=Math.min(b[1],p[1]);b[2]=Math.min(b[2],p[2]);b[3]=Math.max(b[3],p[0]);b[4]=Math.max(b[4],p[1]);b[5]=Math.max(b[5],p[2]);}else layers.set(key,[...p,...p]);};
+  for(const f of cached.faces)for(const p of f.points)add(p);
+  for(const {mesh,matrix}of cached.instances||[])if(mesh.bounds){const [lo,hi]=mesh.bounds;for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])add(briarPoint([x,y,z],0,matrix));}
+  cached.pickPoints=[...layers.values()].flatMap(b=>[[b[0],b[1],b[2]],[b[3],b[1],b[2]],[b[3],b[4],b[5]],[b[0],b[4],b[5]]]);
+ }
+ const key=[view3d.yaw,view3d.tilt,cameraZoom3()].join(':');if(cached.hullKey!==key){
+ const points=cached.pickPoints.map(p=>project3(...p,view3d,0,0,0,0)).sort((a,b)=>a.x-b.x||a.y-b.y),cross=(a,b,c)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x),lower=[],upper=[];
  for(const p of points){while(lower.length>=2&&cross(lower.at(-2),lower.at(-1),p)<=0)lower.pop();lower.push(p);}for(let i=points.length-1;i>=0;i--){const p=points[i];while(upper.length>=2&&cross(upper.at(-2),upper.at(-1),p)<=0)upper.pop();upper.push(p);}lower.pop();upper.pop();cached.hull=lower.concat(upper);cached.hullKey=key;
  }const offset=project3(0,0,0);return cached.hull.map(p=>({x:p.x+offset.x,y:p.y+offset.y}));
 }

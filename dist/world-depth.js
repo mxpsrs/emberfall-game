@@ -1,18 +1,19 @@
 'use strict';
 // Continuous heightfield: geometry, camera, picking and characters share one surface.
 const landHeights=new Map();
-let foundationLevels=new WeakMap();
-function resetLandSurface(){landHeights.clear();foundationLevels=new WeakMap();}
+let foundationLevels=new WeakMap(),foundationBuckets=null;
+function resetLandSurface(){landHeights.clear();foundationLevels=new WeakMap();foundationBuckets=null;}
 function shoreDistance(x,z){return Math.max(0,worldWaterDistance(x,z));}
 function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}
 function shoreHeight(x,z){return Math.max(0,Math.min(landBase(x,z),shoreDistance(x,z)*.33));}
 function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);let level=Infinity;for(let z=Math.floor(b.y-.7);z<=Math.ceil(b.y+b.h+.7);z++)for(let x=Math.floor(b.x-.7);x<=Math.ceil(b.x+b.w+.7);x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
- if(!inWorld())return 0;const key=x+':'+z;if(landHeights.has(key))return landHeights.get(key);
+ if(!inWorld())return 0;const key=x+z*2048;if(landHeights.has(key))return landHeights.get(key);
  const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}
  let h=shoreHeight(x,z),weight=0,total=0,strength=0;
- for(const b of buildings){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12)continue;
+ if(!foundationBuckets){foundationBuckets=new Map();for(const b of buildings)for(let bz=Math.floor((b.y-13)/16);bz<=Math.floor((b.y+b.h+13)/16);bz++)for(let bx=Math.floor((b.x-13)/16);bx<=Math.floor((b.x+b.w+13)/16);bx++){const key=bx+bz*128;if(!foundationBuckets.has(key))foundationBuckets.set(key,[]);foundationBuckets.get(key).push(b);}}
+ for(const b of foundationBuckets.get(Math.floor(x/16)+Math.floor(z/16)*128)||[]){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12)continue;
   const foundation=foundationLevel(b);if(d===0){h=foundation;weight=0;break;}
   const t=d/12,blend=1-t*t*(3-2*t),w=blend/Math.max(.0001,d*d);weight+=w;total+=w*foundation;strength=Math.max(strength,blend);
  }
@@ -26,7 +27,7 @@ project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return
 // Intersect the camera ray with the visible surface, from front to back.
 // Fixed-point iteration diverged on banks and snapped taps across bridge edges.
 unproject3=function(sx,sy){
- const v=view3d,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),st=Math.sin(v.tilt),ct=Math.cos(v.tilt),u=(sx-screen.w/2)/v.zoom,screenD=(sy-screen.h*.54)/v.zoom,base=walkSurfaceHeight(px+.5,py+.5);
+ const v=view3d,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),st=Math.sin(v.tilt),ct=Math.cos(v.tilt),u=(sx-screen.w/2)/cameraZoom3(v),screenD=(sy-screen.h*.54)/cameraZoom3(v),base=walkSurfaceHeight(px+.5,py+.5);
  const point=d=>({x:px+.5+u*c+d*sn,z:py+.5-u*sn+d*c});
  const value=d=>{const p=point(d);return d*st-(walkSurfaceHeight(p.x,p.z)-base)*ct-screenD;};
  let hi=(screenD+(32-base)*ct)/st,lo=(screenD+(-2-base)*ct)/st,previous=hi;
@@ -50,6 +51,11 @@ function groundedPainter(r,x,z){
 drawTerrainLayer3=function(){const r=canvasPainterRealm(ctx,project3),[mw,mh]=sceneSize(),corners=[[0,0],[screen.w,0],[0,screen.h],[screen.w,screen.h]].map(p=>unproject3(...p));const minx=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.x)))-10),maxx=Math.min(inWorld()?mw+128:mw,Math.ceil(Math.max(...corners.map(p=>p.x)))+10),minz=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.z)))-10),maxz=Math.min(inWorld()?mh+128:mh,Math.ceil(Math.max(...corners.map(p=>p.z)))+10);for(let z=minz;z<maxz;z++)for(let x=minx;x<maxx;x++){const t=terrainType(x,z);r.face([[x,0,z],[x,0,z+1],[x+1,0,z+1],[x+1,0,z]],['#628047','#aa956e','#989e8a','#427e89'][t]);}r.flush();};
 // Goblins have their own anatomy and motion, independent of the human avatar mesh.
 function goblinRealm3(r,x,z,heading,walk,attack,size=1,hurt=0){
+ if(!r.indexed)return buildGoblinRealm3(r,x,z,heading,walk,attack,size,hurt);
+ const stride=Math.round(Math.sin(walk)*24)/24,swing=Math.round(attack*32)/32,recoil=Math.round(hurt*16)/16,key=['goblin',meshDetail3,stride,swing,recoil].join(':');
+ return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>buildGoblinRealm3(q,0,0,0,Math.asin(stride),swing,1,recoil))*size;
+}
+function buildGoblinRealm3(r,x,z,heading,walk,attack,size=1,hurt=0){
  const c=Math.cos(heading),sn=Math.sin(heading),stride=Math.sin(walk),k=.88*size,bob=Math.abs(stride)*.025;
  const root=([a,b,d])=>[x+(a*c+d*sn)*k,(b+bob-hurt*.035)*k,z+(-a*sn+d*c-hurt*.07)*k];
  const skin='#748b51',shade='#566d3f',cloth='#69573e',leather='#493d2e',local={face(p,col,n,mat){r.face(p.map(root),col,null,mat);}};
@@ -84,12 +90,14 @@ function npcDressRealm(r,headTransform,root,gear){if(!['bandit','warden'].includ
 }
 const distinctCreatureBefore=creature3;
 creature3=function(r,o,x,z){
- if(o.kind==='dummy'){
-  r=groundedPainter(r,x,z);const wood=materialRealm(r,5),straw=materialRealm(r,13);beamArt(wood,[x,.02,z],[x,1.65,z],.09,'#6c5034',8);beamArt(wood,[x-.62,1.15,z],[x+.62,1.15,z],.07,'#81613d',8);
+ if(['wolf','ridgewolf','rat'].includes(o.kind)&&r.indexed){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02,phase=moving?Math.round((time*9%(Math.PI*2))*24)/24:0;return cachedRealmShape(groundedPainter(r,x,z),[o.kind,meshDetail3,moving,phase].join(':'),briarTransform(x,0,z,1,Math.atan2(px-x,py-z)),q=>quadrupedArt(q,{...o,x:0,y:0,drawX:moving?1:0,drawY:0},0,0,0,phase));}
+ if(o.kind==='dummy'){r=groundedPainter(r,x,z);return r.indexed?cachedRealmShape(r,'dummy:'+meshDetail3+':'+o.tutorialRole,briarTransform(x,0,z),q=>drawPracticeDummy(q,o,0,0)):drawPracticeDummy(r,o,x,z);}
+ if(o.tutor){const role=o.tutor,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]},gear={_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:role==='combat'?'ironHelm':null,feet:'leatherBoots'};humanoid3(r,x,z,o.sprite%4,gear,Math.atan2(px-x,py-z),0,0);return 1.9;}
+ if(o.kind==='goblin')return goblinRealm3(groundedPainter(r,x,z),x,z,Math.atan2(px-x,py-z),Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02?time*8:0,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt??-9))/.65)*Math.PI)),1,Math.max(0,Math.sin(Math.min(1,(time-(o.hitAt??-9))/.3)*Math.PI)));return distinctCreatureBefore(['wolf','ridgewolf','rat','slime'].includes(o.kind)?groundedPainter(r,x,z):r,o,x,z);};
+
+function drawPracticeDummy(r,o,x,z){const wood=materialRealm(r,5),straw=materialRealm(r,13);beamArt(wood,[x,.02,z],[x,1.65,z],.09,'#6c5034',8);beamArt(wood,[x-.62,1.15,z],[x+.62,1.15,z],.07,'#81613d',8);
   for(const side of [-1,1])beamArt(wood,[x,.2,z],[x+side*.38,.03,z+.25],.06,'#5b4831',6);
   profile3(straw,x,1.06,z,.57,.69,.35,[[-.5,.8],[-.2,1],[.4,.95],[.5,.8]],'#afa071',p=>p,12);oval3(straw,x,1.57,z,.33,.35,.31,'#c2b484',p=>p,12);
   const color=o.tutorialRole==='magic-dummy'?'#796b9b':'#8a4938';for(const [radius,c]of [[.19,color],[.115,'#d2bd87'],[.045,color]]){const points=Array.from({length:24},(_,i)=>[x+Math.cos(i*Math.PI/12)*radius,1.09+Math.sin(i*Math.PI/12)*radius,z+.184+(1-radius)*.004]);straw.face(points,c);}
   return 1.85;
- }
- if(o.tutor){const role=o.tutor,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]},gear={_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:role==='combat'?'ironHelm':null,feet:'leatherBoots'};humanoid3(r,x,z,o.sprite%4,gear,Math.atan2(px-x,py-z),0,0);return 1.9;}
- if(o.kind==='goblin')return goblinRealm3(groundedPainter(r,x,z),x,z,Math.atan2(px-x,py-z),Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02?time*8:0,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt??-9))/.65)*Math.PI)),1,Math.max(0,Math.sin(Math.min(1,(time-(o.hitAt??-9))/.3)*Math.PI)));return distinctCreatureBefore(['wolf','ridgewolf','rat','slime'].includes(o.kind)?groundedPainter(r,x,z):r,o,x,z);};
+}

@@ -36,11 +36,14 @@ building3=function(r,b){
 const originalCreatureArt=creature3;
 creature3=function(r,o,x,z){
  if(!['wolf','ridgewolf','rat'].includes(o.kind))return originalCreatureArt(r,o,x,z);
- const rat=o.kind==='rat',k=rat?.58:1,col=rat?'#897766':o.kind==='ridgewolf'?'#afb8ad':'#78867a',heading=Math.atan2(px-x,py-z),c=Math.cos(heading),ss=Math.sin(heading),rr={face(points,color){r.face(points.map(([a,b,d])=>[x+(a*c+d*ss)*k,b*k,z+(-a*ss+d*c)*k]),color);}},moving=Math.hypot(o.drawX-o.x,o.drawY-o.y)>.02;
+ return quadrupedArt(r,o,x,z);
+};
+function quadrupedArt(r,o,x,z,heading=Math.atan2(px-x,py-z),phase=time*9){
+ const rat=o.kind==='rat',k=rat?.58:1,col=rat?'#897766':o.kind==='ridgewolf'?'#afb8ad':'#78867a',c=Math.cos(heading),ss=Math.sin(heading),rr={face(points,color){r.face(points.map(([a,b,d])=>[x+(a*c+d*ss)*k,b*k,z+(-a*ss+d*c)*k]),color);}},moving=Math.hypot(o.drawX-o.x,o.drawY-o.y)>.02;
  profile3(rr,0,.51,0,.48,.5,1.04,[[-.5,.65],[-.15,1],[.3,.9],[.5,.56]],col);
  profile3(rr,0,.72,.35,.42,.62,.43,[[-.5,.75],[0,1],[.5,.6]],col);oval3(rr,0,.92,.47,.33,.34,.42,col);oval3(rr,0,.84,.72,.22,.18,.36,'#b0b09a');oval3(rr,0,.87,.89,.15,.1,.07,'#35453f');
  for(const side of [-1,1]){cone3(rr,side*.12,1.02,.4,.09,rat?.12:.25,col,5);oval3(rr,side*.15,.96,.6,.035,.043,.045,'#293b32');}
- for(const a of [-1,1])for(const b of [-1,1]){const stride=moving?Math.sin(time*9+a*b)*.09:0;beamArt(rr,[a*.17,.5,b*.33],[a*.18,.22,b*.36+stride],.066,col);beamArt(rr,[a*.18,.22,b*.36+stride],[a*.18,.08,b*.33+stride],.04,col);oval3(rr,a*.18,.06,b*.33+.05+stride,.14,.12,.22,col);}
+ for(const a of [-1,1])for(const b of [-1,1]){const stride=moving?Math.sin(phase+a*b)*.09:0;beamArt(rr,[a*.17,.5,b*.33],[a*.18,.22,b*.36+stride],.066,col);beamArt(rr,[a*.18,.22,b*.36+stride],[a*.18,.08,b*.33+stride],.04,col);oval3(rr,a*.18,.06,b*.33+.05+stride,.14,.12,.22,col);}
  beamArt(rr,[0,.57,-.45],[0,.48,-.78],rat?.035:.085,col);beamArt(rr,[0,.48,-.78],[.08,.26,-1],rat?.025:.05,col);return 1.3*k;
 };
 // Item silhouettes use the same materials and lighting as worn equipment.

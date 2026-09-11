@@ -248,7 +248,7 @@ async function finishCharacter(name,look){
 }
 function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a man to choose Talk or Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=2;tutorialCameraStart=null;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
-function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
+function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2,Math.sqrt(8294400/Math.max(1,r.width*r.height)));screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
 // Sprite atlases are generated artwork; each logical sprite is one equal atlas cell.
 function sprite(g,atlas,index,x,bottom,width,height,flip=1,rotation=0){
@@ -344,7 +344,10 @@ function advanceMovement(dt){
  s.runEnergy=Math.min(100,s.runEnergy+walkingTime*2.5+Math.max(0,dt-runningTime-walkingTime)*5);
  playerMotion.moving=travelled>0;playerMotion.speed=travelled/Math.max(dt,.001);playerMotion.blend+=(Number(playerMotion.moving)-playerMotion.blend)*Math.min(1,dt*14);renderRun();return travelled>0;
 }
+let nextFrameAt=0;
 function frame(now){
+  const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
+  if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;
   if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
@@ -360,7 +363,7 @@ function frame(now){
     saveClock+=dt;if(saveClock>10){saveClock=0;save();}
   }
   if($('modal').open||$('creator').open||$('spiritsDialog').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
-  if(assetsReady)draw();requestAnimationFrame(frame);
+  if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(c=>c.classList.toggle('selected',c===b));renderPanel();});
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));

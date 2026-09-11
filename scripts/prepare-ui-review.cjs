@@ -9,7 +9,9 @@ html=html.replace('</body>',`<script>
 draw=()=>{};resize=()=>{};save=()=>{};queueCloudSave=()=>{};
 assetsReady=true;s=defaults();s.character={name:'Interface review',look:0};s.tutorial=tutorialSteps.length;s.gold=80;s.bag.logs=3;s.bag.bones=2;
 art.items=new Image();art.items.onload=()=>{renderUI();};art.items.src='assets/items.png';
-$('loading').hidden=true;$('world').style.background='#304938';$('cloudStatus').textContent='Disposable interface review';$('onlineStatus').textContent='';
+$('loading').hidden=true;
+const reviewSurface=document.createElement('canvas');reviewSurface.className='realm-surface';reviewSurface.style.background='#304938';$('world').before(reviewSurface);
+$('cloudStatus').textContent='Disposable interface review';$('onlineStatus').textContent='';
 initHud();renderUI();
 const review=document.createElement('div');review.style='position:absolute;top:58px;left:calc(50% - 110px);display:flex;gap:8px;z-index:10';
 for(const [label,action]of [['Test shop',()=>shop()],['Test long dialog',()=>showHelp()]]){const b=document.createElement('button');b.textContent=label;b.onclick=action;review.appendChild(b);}document.body.appendChild(review);

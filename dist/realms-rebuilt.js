@@ -3,7 +3,11 @@
 function rebuiltMesh(m){const result={bounds:m.bounds};for(const k of ['p','uv'])result[k]=briarDecode(m[k],Float32Array);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);for(const k of ['c','f'])result[k]=Float32Array.from(briarDecode(m[k],Uint8Array),v=>v/255);result.t=briarDecode(m.t,Uint8Array);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}result.i=briarDecode(m.i,Uint16Array);return result;}
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:briarDecode(c.m,Float32Array)}]))}]));
-function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){const mesh=rebuiltModels[name];if(!mesh)return;const m=briarTransform(x,y,z,scale,heading,vertical);briarEmit(r,tint?{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])}:mesh,m);}
+const rebuiltTints=new WeakMap();
+function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){let mesh=rebuiltModels[name];if(!mesh)return;
+ if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
+ briarEmit(r,mesh,briarTransform(x,y,z,scale,heading,vertical));
+}
 function rebuiltRoof(r,x,y,z,w,d,rise,color){
  const half=(w+.7)/2,depth=d+.7,rows=Math.ceil(half/.44),columns=Math.ceil(depth/.52),tiles=materialRealm(r,13),trim=materialRealm(r,5);
  for(const side of [-1,1])tiles.face([[x,y+rise,z-depth/2],[x,y+rise,z+depth/2],[x+side*half,y,z+depth/2],[x+side*half,y,z-depth/2]],shade3(color,.60));
@@ -89,6 +93,7 @@ building3=function(r,b){
 const propBeforeRebuild=prop3;
 prop3=function(r,o,x,z){
  let name,height;
+ if(o.type==='camp'&&r.indexed){const base=groundedPainter(r,x,z);cachedRealmShape(base,'camp-base:'+meshDetail3,briarTransform(x,0,z),q=>{for(let i=0;i<8;i++){const a=i/8*Math.PI*2;oval3(q,Math.cos(a)*.3,.08,Math.sin(a)*.3,.18,.15,.18,'#7c8176',p=>p,6);}limb3(q,0,.13,0,.5,.15,.14,'#6e513c');return 1;});cone3(base,x,.15,z,.17,.5+Math.sin(time*12)*.06,'#e9ad6b',8);return 1;}
  if(o.name==='Village well'){
   const base=groundedPainter(r,x,z),stone=materialRealm(base,3),wood=materialRealm(base,5),segments=16;
   for(let row=0;row<3;row++)for(let i=0;i<segments;i++){
@@ -158,7 +163,7 @@ function tintedHair(name,look){const key=name+':'+look%4;if(!hairTintCache.has(k
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  r=groundedPainter(r,x,z);
- if(gear._bones)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);
+ if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01;
  const clip=attack>.01?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':'melee'):(locomotion?(playerMotion.running?'run':'walk'):walk?'walk':'idle'),phase=attack>.01?Math.min(.99,Math.max(0,player?(time-lastAttack)/.65:attack*.8)):locomotion?playerMotion.phase:walk?(walk/10/.75)%1:(time/2)%1;
@@ -170,7 +175,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
  if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
- else if(gear.head){const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);briarEmit(r,{...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)},root);}
+ else if(gear.head){if(!mesh.helmet){const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);mesh.helmet={...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)};}briarEmit(r,mesh.helmet,root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:gear.weapon==='oakStaff'?briarRigs.Mage.meshes['2H_Staff']:gear.weapon==='shortbow'?null:briarRigs.Knight.meshes['1H_Sword'];
@@ -183,6 +188,10 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
 
 // A tapered blade with a narrow grip and guard, built around the palm socket.
 function fittedSwordRealm(r,m,bronze){
+ if(r.indexed){cachedRealmShape(r,'fitted-sword:'+bronze,m,q=>{buildFittedSwordRealm(q,[1,0,0,0,0,1,0,0,0,0,1,0],bronze);return 1;});return;}
+ buildFittedSwordRealm(r,m,bronze);
+}
+function buildFittedSwordRealm(r,m,bronze){
  const local={face(p,c,n,material){r.face(p.map(v=>briarPoint(v,0,m)),c,null,material||0);}},steel=bronze?'#ad9261':'#b6c3c3',edge=bronze?'#d2b781':'#e1e4da';
  const blade=[[-.055,.11,0],[.055,.11,0],[.039,.70,0],[0,.86,0],[-.039,.70,0]],ridge=[0,.40,.019];
  for(let i=0;i<blade.length;i++){local.face([blade[i],blade[(i+1)%blade.length],ridge],i<2?steel:edge);local.face([blade[(i+1)%blade.length],blade[i],[0,.40,-.019]],steel);}

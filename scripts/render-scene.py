@@ -42,7 +42,9 @@ for draw in scene['draws']:
  if draw['file'] in buffers:continue
  data=(root/draw['file']).read_bytes();b=U();gl('glGenBuffers',None,[I,P])(1,C.byref(b));bindbuffer(0x8892,b);gl('glBufferData',None,[U,C.c_ssize_t,P,U])(0x8892,len(data),C.c_char_p(data),0x88E4);buffers[draw['file']]=b.value
 attribute=gl('glGetAttribLocation',I,[U,C.c_char_p]);attributes=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV']];enableattr=gl('glEnableVertexAttribArray',None,[U]);attrpointer=gl('glVertexAttribPointer',None,[U,I,U,U,I,P]);matrix=gl('glUniformMatrix4fv',None,[I,I,U,P]);model=location(program,b'uModel');drawarrays=gl('glDrawArrays',None,[U,I,I])
+normalmatrix=gl('glUniformMatrix3fv',None,[I,I,U,P]);normal=location(program,b'uNormal')
 def drawentry(draw):
+ normalmatrix(normal,1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
  matrix(model,1,0,(F*16)(*draw['model']));bindbuffer(0x8892,buffers[draw['file']])
  for i,a in enumerate(attributes):
   if a<0:continue
