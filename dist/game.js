@@ -113,7 +113,12 @@ function select(o){
   engage(o);
 }
 function engage(o){const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
-function walkTo(x,y){const p=route(x,y);if(!p){toast('Tap clear ground to walk.');return;}stop();path=p;renderAction();}
+function walkTo(x,y){
+ x=Math.floor(x);y=Math.floor(y);const [w,h]=sceneSize();if(!Number.isFinite(x+y)||x<0||y<0||x>=w||y>=h)return false;
+ let p=land(x,y)?route(x,y):null;
+ if(p===null){const candidates=[];for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(dx*dx+dy*dy<=4&&land(x+dx,y+dy))candidates.push([x+dx,y+dy,Math.hypot(dx,dy)+Math.hypot(x+dx-px,y+dy-py)*.015]);candidates.sort((a,b)=>a[2]-b[2]);for(const [a,b]of candidates.slice(0,3)){p=route(a,b);if(p!==null)break;}}
+ if(p===null){toast('That spot is out of reach.');return false;}stop();path=p;renderAction();return true;
+}
 function arrive(){
   if(!target)return;
   const o=target;
@@ -157,17 +162,25 @@ function elder(){
     dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;}s.gold+=reward;s.quest++;close();toast(s.quest===5?'You are the Guardian of Briarhaven!':'Quest complete! Check your journal for the next quest.');}]]);
   }else dialog('Elder Rowan','<p>'+quests[s.quest].desc+'</p><p>“Rest by the campfire when you need to heal. Watch for goblins on the eastern road.”</p>');
 }
-function shop(){dialog('Mara’s General Store','<p>Food, ammunition, and equipment for the road.</p><p>Your coins: <b>'+s.gold+'</b></p>',[
-  ['Buy 3 trout · 9 coins',()=>{if(buySupply('fish',3,9))shop();}],
-  ['Buy 20 arrows · 10 coins',()=>{if(buySupply('arrows',20,10))shop();}],
-  ['Buy 20 rune stones · 14 coins',()=>{if(buySupply('runes',20,14))shop();}],
-  ['Buy iron helmet · 50 coins',()=>{if(buySupply('ironHelm',1,50))shop();}],
-  ['Buy iron shield · 45 coins',()=>{if(buySupply('ironShield',1,45))shop();}],
-  ['Buy mage robe · 65 coins',()=>{if(buySupply('mageRobe',1,65))shop();}],
-  ['Sell all herbs · 3 coins each',()=>sell('herbs',3)],
-  ['Sell all logs · 3 coins each',()=>sell('logs',3)],['Sell all ore · 4 coins each',()=>sell('ore',4)],['Sell all fangs · 6 coins each',()=>sell('fang',6)],['Sell all bones · 4 coins each',()=>sell('bones',4)]
-]);}
-function sell(item,price){if(!s.bag[item]){toast('You have none to sell.');return;}s.gold+=s.bag[item]*price;s.bag[item]=0;shop();renderUI();save();}
+const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65]];
+const shopPrices={herbs:3,logs:3,ore:4,fang:6,bones:4};
+function shop(mode='buy',message=''){
+ dialog('Mara’s General Store','<div class="shopheading"><span>Coins <b>'+s.gold+'</b></span><span>Bag '+inventorySlots().length+' / '+BAG_SIZE+'</span></div><div class="shoptabs"><button id="shopBuy" aria-pressed="'+(mode==='buy')+'">Buy</button><button id="shopSell" aria-pressed="'+(mode==='sell')+'">Sell</button></div><p id="shopNotice" role="status">'+message+'</p><div id="shopItems" class="shopitems"></div>');
+ $('shopBuy').onclick=()=>shop('buy');$('shopSell').onclick=()=>shop('sell');
+ const rows=mode==='buy'?shopStock:Object.entries(shopPrices).filter(([id])=>(s.bag[id]||0)>0).map(([id,price])=>[id,s.bag[id],price]);
+ if(!rows.length){$('shopNotice').textContent=(message?message+' ':'')+'You have no items Mara can buy.';return;}
+ for(const [id,count,price]of rows){
+  const item=ITEMS[id],row=document.createElement('button');row.className='shopitem';row.appendChild(itemCanvas(id));
+  const copy=document.createElement('span');copy.className='shopitemcopy';const cost=mode==='buy'?price:price*count;
+  const reason=mode==='sell'?'':item.slot&&owns(id)?'Already owned':s.gold<price?'Need '+(price-s.gold)+' more coins':!canCarry(id,count)?'Bag full':'';
+  copy.innerHTML='<strong>'+item.name+(count>1?' ×'+count:'')+'</strong><small>'+cost+' coins'+(reason?' · '+reason:'')+'</small>';row.appendChild(copy);row.disabled=!!reason;
+  row.setAttribute('aria-label',(mode==='buy'?'Buy ':'Sell ')+item.name+' ×'+count+' for '+cost+' coins'+(reason?'. '+reason:''));
+  row.onclick=()=>{if(mode==='buy'){if(buySupply(id,count,price))shop('buy','Bought '+item.name+(count>1?' ×'+count:'')+'.');}else sell(id,price);};$('shopItems').appendChild(row);
+ }
+ paintItemIcons($('shopItems'));
+}
+function sell(item,price){const quantity=s.bag[item]||0;if(!quantity){shop('sell','You have none of that item to sell.');return false;}s.gold+=quantity*price;s.bag[item]=0;renderUI();save();shop('sell','Sold '+ITEMS[item].name+' ×'+quantity+' for '+quantity*price+' coins.');return true;}
+
 function forge(){
  const buttons=[];
  if(!s.sword)buttons.push(['Forge iron sword · 5 ore + 2 logs + 20 coins',()=>{if(s.bag.ore<5||s.bag.logs<2||s.gold<20){toast('You need 5 ore, 2 logs, and 20 coins.');return;}s.bag.ore-=5;s.bag.logs-=2;s.gold-=20;s.sword=1;s.gear.ironSword=1;s.equipment.weapon='ironSword';gain('Smithing',70);close();toast('Iron sword forged and equipped!');}]);
@@ -191,7 +204,7 @@ function tickAction(){
 }
 
 function renderUI(){
-  $('hp').textContent=s.hp+' / '+maxhp();$('hpbar').style.width=(s.hp/maxhp()*100)+'%';
+  $('hp').textContent=s.hp+' / '+maxhp();$('hpbar').style.width=(s.hp/maxhp()*100)+'%';$('hpbar').parentElement?.classList.toggle('critical',s.hp/maxhp()<=.25);
   $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=s.bag.fish;
   renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
 }

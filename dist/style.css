@@ -76,3 +76,27 @@ input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:tex
 .bankcolumns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bankcolumns h3{font:18px Georgia,serif;margin:12px 0}.bankcolumns button{font-size:13px;min-height:44px;margin:4px 0;text-align:left;width:100%}
 @media(pointer:coarse) and (orientation:landscape){#waveButton{display:none}#runButton{top:170px;right:12px;min-width:112px}}
 @media(max-height:360px){#runButton{top:146px;right:12px}#waveButton{display:none}}
+
+/* Controls stay in the world area when the bag is open. Dialog footers never cover content. */
+body.panels-open #runButton,body.panels-open #waveButton,body.panels-open #cameraControls{right:calc(var(--dock) + 12px)}
+body.panels-open #gameDock{bottom:62px;overflow:hidden}
+#panel{overflow-y:auto;overscroll-behavior:contain}
+#modal[open]{display:flex;flex-direction:column;overflow:hidden;max-height:calc(100dvh - 24px);padding:16px;width:min(610px,calc(100vw - 32px))}
+#modalBody{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 3px 10px;scrollbar-gutter:stable}
+#closeModal{position:static;flex:0 0 auto;box-shadow:none;margin:8px 0 0;min-height:44px;border-top-color:#c7ad78}
+#toast{top:52px;max-width:min(390px,calc(100% - 300px));pointer-events:none;box-shadow:0 3px 14px #0005}
+.shopheading{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:#d4c69e;margin-bottom:12px}
+.shoptabs{display:flex;gap:8px}.shoptabs button{width:auto;flex:1;margin:0;background:#1a2925}.shoptabs button[aria-pressed="true"]{background:#74643e;border-color:#d4b879}
+#shopNotice{min-height:20px;font-size:14px;margin:10px 0;color:#e4d5ac}
+.shopitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.shopitem{display:flex;align-items:center;gap:10px;min-width:0;min-height:76px;margin:0;padding:10px;text-align:left;background:#1b2a25}
+.shopitem canvas{width:40px;height:40px;flex:0 0 40px;pointer-events:none}.shopitemcopy{min-width:0}
+.shopitem strong{display:block;font-size:15px;font-weight:600}.shopitem small{display:block;font-size:13px;line-height:1.35;color:#ccb987;margin-top:4px}
+.shopitem:disabled{opacity:.57;cursor:default}.shopitem:disabled:hover{background:#1b2a25;border-color:#77694d}
+@media(max-width:560px){.shopitems{grid-template-columns:1fr}body.panels-open #cameraControls{display:none}#toast{max-width:calc(100% - 150px);left:12px;transform:none}}
+@media(prefers-reduced-motion:no-preference){.health.critical{animation:healthWarning 1s ease-in-out infinite}@keyframes healthWarning{50%{box-shadow:0 0 0 2px #e59a68,0 0 12px #b83725}}}
+
+body.panels-open .legend{display:none}
+.bagslot{height:clamp(28px,calc((100dvh - 190px)/5),47px)}
+@media(pointer:fine){.bagslot{height:clamp(28px,calc((100dvh - 190px)/5),52px)}}
+@media(orientation:landscape) and (max-height:600px){#waveButton{display:none}#runButton{top:170px}.legend{display:none}}

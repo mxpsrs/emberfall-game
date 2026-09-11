@@ -8,22 +8,26 @@ function expandPhysicalWorld(world){if(physicalWorldReady)return;physicalWorldRe
  for(const [ax,az,bx,bz]of realmRoads){if(az===bz&&az<447&&az>15&&Math.min(ax,bx)<540&&Math.max(ax,bx)>549)realmArtCrossings.push({x:544.5,z:az,w:11,d:4});if(ax===bx&&ax>135&&ax<1095&&Math.min(az,bz)<450&&Math.max(az,bz)>459)realmArtCrossings.push({x:ax,z:454.5,w:4,d:11});}
 }
 const waterBeforeWalkIn=expandedWater;
-function worldWaterSurface(x,z){
- if(!physicalWorldReady)return waterBeforeWalkIn(x,z);if(!inWorld())return false;
+function worldWaterDistance(x,z){
+ if(!physicalWorldReady)return waterBeforeWalkIn(x,z)?-1:10;if(!inWorld())return 100;
  const a=x/3,b=z/3;
- if(x<6+2*Math.sin(z*.07)||z<5+2*Math.sin(x*.055)||x>1145+2*Math.sin(z*.04)||z>761+2*Math.cos(x*.04))return true;
+ let d=Math.min(x-6-2*Math.sin(z*.035),z-5-2*Math.sin(x*.03),1145+2*Math.sin(z*.025)-x,761+2*Math.cos(x*.025)-z);
  if(a<96&&b<84){
-  const lake=Math.pow((x-15.5)/10.5,2)+Math.pow((z-66.5)/11.5,2)<1+.09*Math.sin(x*.53+z*.36);
-  const pond=Math.pow((x-141)/15,2)+Math.pow((z-132)/13.5,2)<1+.08*Math.sin(x*.28-z*.37);
-  return lake||pond||Math.abs(x-(111.5+1.25*Math.sin((z-52)*.055)))<3.6&&z>3&&z<177;
+  const lake=(Math.hypot((x-15.5)/10.5,(z-66.5)/11.5)-1)*10.5+.24*Math.sin(z*.18+x*.12);
+  const pond=(Math.hypot((x-141)/15,(z-132)/13.5)-1)*13.5+.35*Math.sin(x*.12-z*.17);
+  const river=Math.max(Math.abs(x-(111.5+1.25*Math.sin((z-52)*.055)))-3.6,3-z,z-177);
+  return Math.min(d,lake,pond,river);
  }
- if(SETTLEMENTS.some(t=>Math.hypot((x-t.x)/3,(z-t.y)/3)<32))return false;
- return (Math.abs(z-(454.5+2.5*Math.sin(x*.015)))<4.5&&a>45&&a<365)||(Math.abs(x-(544.5+2*Math.sin(z*.021)))<4.5&&b>5&&b<149)||(a>340&&b>170);
+ if(SETTLEMENTS.some(t=>Math.hypot((x-t.x)/3,(z-t.y)/3)<32))return d;
+ return Math.min(d,Math.max(Math.abs(z-(454.5+2.5*Math.sin(x*.015)))-4.5,135-x,x-1095),Math.max(Math.abs(x-(544.5+2*Math.sin(z*.021)))-4.5,15-z,z-447),Math.max(1020+8*Math.sin(z*.012)-x,510+9*Math.sin(x*.017)-z));
 }
+function worldWaterSurface(x,z){return worldWaterDistance(x,z)<0;}
+let physicalBridges=null;
 const villageBridges=[{x:111.5,z:51.5,span:16,width:6,eastWest:true},{x:111.5,z:105.5,span:16,width:6,eastWest:true}];
-function bridgesInRealm(){return [...villageBridges,...(realmArtCrossings||[]).map(b=>({x:b.x,z:b.z,span:Math.max(b.w,b.d)+6,width:Math.min(b.w,b.d),eastWest:b.w>b.d}))];}
-function bridgeAt(x,z){if(!inWorld()||!physicalWorldReady)return null;return bridgesInRealm().find(b=>Math.abs(b.eastWest?x-b.x:z-b.z)<=b.span/2&&Math.abs(b.eastWest?z-b.z:x-b.x)<b.width/2-.18);}
-expandedWater=function(x,z){return worldWaterSurface(x,z)&&!bridgeAt(x+.5,z+.5);};
+function bridgesInRealm(){return physicalBridges??= [...villageBridges,...(realmArtCrossings||[]).map(b=>({x:b.x,z:b.z,span:Math.max(b.w,b.d)+6,width:Math.min(b.w,b.d),eastWest:b.w>b.d}))];}
+function bridgeAt(x,z){if(!inWorld()||!physicalWorldReady)return null;return bridgesInRealm().find(b=>Math.abs(b.eastWest?x-b.x:z-b.z)<=b.span/2&&Math.abs(b.eastWest?z-b.z:x-b.x)<=b.width/2-.65);}
+function bridgeBarrier(x,z){return inWorld()&&physicalWorldReady&&bridgesInRealm().some(b=>Math.abs(b.eastWest?x-b.x:z-b.z)<b.span/2+.35&&Math.abs(b.eastWest?z-b.z:x-b.x)>b.width/2-.65&&Math.abs(b.eastWest?z-b.z:x-b.x)<b.width/2+.55);}
+expandedWater=function(x,z){return bridgeBarrier(x+.5,z+.5)||(worldWaterSurface(x+.5,z+.5)&&!bridgeAt(x+.5,z+.5));};
 function bridgeDeckHeight(b,x,z){const u=Math.max(0,Math.min(1,((b.eastWest?x-b.x:z-b.z)+b.span/2)/b.span)),a=landHeight(b.x-(b.eastWest?b.span/2:0),b.z-(b.eastWest?0:b.span/2)),c=landHeight(b.x+(b.eastWest?b.span/2:0),b.z+(b.eastWest?0:b.span/2));return a*(1-u)+c*u+.06+.65*Math.sin(u*Math.PI);}
 function walkSurfaceHeight(x,z){const b=bridgeAt(x,z);return b?bridgeDeckHeight(b,x,z):landHeight(x,z);}
 
@@ -32,7 +36,12 @@ kingdomAt=function(x,z){return kingdomBeforeWalkIn(physicalWorldReady?x/3:x,phys
 const settlementBeforeWalkIn=settlementAt;
 settlementAt=function(x,z){if(!physicalWorldReady)return settlementBeforeWalkIn(x,z);return SETTLEMENTS.find(t=>Math.hypot((x-t.x)/(t.kind==='city'?90:45),(z-t.y)/(t.kind==='city'?90:40))<1);};
 const oldLandBase=landBase;
-landBase=function(x,z){const a=physicalWorldReady?x/3:x,b=physicalWorldReady?z/3:z;return oldLandBase(a,b)*2.1+3.8*Math.sin(x*.075)*Math.cos(z*.06);};
+landBase=function(x,z){
+ const raw=(a,b)=>oldLandBase(physicalWorldReady?a/3:a,physicalWorldReady?b/3:b)*1.65+1.8*Math.sin(a*.020)*Math.cos(b*.017);
+ let height=raw(x,z);
+ if(physicalWorldReady)for(const town of SETTLEMENTS){const inner=town.kind==='city'?65:26,outer=inner+36,d=Math.hypot(x-town.x,z-town.y);if(d>=outer)continue;const t=Math.max(0,(d-inner)/(outer-inner)),weight=1-t*t*(3-2*t);height=height*(1-weight)+raw(town.x,town.y)*weight;}
+ return height;
+};
 function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn)continue;const room=worldScenes[b.service.destination];if(!room)continue;b.service.walkThrough=true;b.service.building=b;const [w,h]=sceneSizes[b.service.destination]||[16,14],used=new Set();
  const place=(original,x,y)=>{let chosen=null;for(let radius=0;radius<Math.max(b.w,b.h)&&!chosen;radius++)for(let dz=-radius;dz<=radius&&!chosen;dz++)for(let dx=-radius;dx<=radius&&!chosen;dx++){const a=x+dx,c=y+dz;if(a<=b.x||a>=b.x+b.w-1||c<=b.y||c>=b.y+b.h-1||used.has(a+':'+c)||c>b.y+2&&Math.abs(a-b.service.x)<1.2)continue;chosen=[a,c];}if(!chosen)return;const [a,c]=chosen;used.add(a+':'+c);world.objects.push({...original,interiorBuilding:b.service.destination,x:a,y:c,homeX:a,homeY:c,drawX:a,drawY:c});};
  const kind=b.archetype,center=b.service.x-b.x;
@@ -104,7 +113,13 @@ const enterBeforeWalkIn=enterInterior;
 enterInterior=function(o){if(o.building?.walkIn)return engage(o);return enterBeforeWalkIn(o);};
 const regionBeforeWalkIn=regionInfo;
 regionInfo=function(){if(inWorld()&&s.insideBuilding){const b=buildings.find(b=>b.service?.destination===s.insideBuilding);if(b)return [b.name,'Walk through the door to return outside'];}return regionBeforeWalkIn();};
-returnToVillage=function(){activateScene('overworld',42,51);};
+returnToVillage=function(){
+ activateScene('overworld',42,51);
+ for(let radius=0;radius<8;radius++)for(let z=51-radius;z<=51+radius;z++)for(let x=42-radius;x<=42+radius;x++){
+  if(!land(x,z)||worldWaterDistance(x+.5,z+.5)<4||objects.some(o=>o.type==='tree'&&Math.hypot(o.x-x,o.y-z)<4))continue;
+  activateScene('overworld',x,z);return;
+ }
+};
 
 bridge3=function(r,z){realmBridge(r,111.5,z+3.5,16,6,true);};
 

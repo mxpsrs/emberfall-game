@@ -96,7 +96,7 @@ function realmNav(){
  let nav=realmNavigation.get(currentScene);if(nav)return nav;const [w,h]=sceneSize(),cells=new Uint8Array(w*h),moving=[];
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(worldWall(x,y)||water(x,y))cells[y*w+x]=1;
  for(const b of buildings)for(let y=Math.floor(b.y);y<b.y+b.h;y++)for(let x=Math.floor(b.x);x<b.x+b.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;
- for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h)cells[o.y*w+o.x]=1;}
+ for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){cells[o.y*w+o.x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
 const beforeRealmBlocked=blocked;
@@ -109,7 +109,7 @@ route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
  const push=o=>{heap.push(o);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].f<=o.f)break;heap[i]=heap[p];i=p;}heap[i]=o;};
  const pop=()=>{const out=heap[0],last=heap.pop();if(heap.length){let i=0;while(i*2+1<heap.length){let c=i*2+1;if(c+1<heap.length&&heap[c+1].f<heap[c].f)c++;if(heap[c].f>=last.f)break;heap[i]=heap[c];i=c;}heap[i]=last;}return out;};
  costs.set(start,0);push({id:start,g:0,f:0});let end=-1;
- while(heap.length){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>(costs.get(a.id)??Infinity)+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
+ while(heap.length&&costs.size<45000){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>(costs.get(a.id)??Infinity)+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
   for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){const nx=x+dx,ny=y+dy,id=ny*w+nx;if(nx<1||ny<1||nx>=w-1||ny>=h-1||isSolid(id)||dx&&dy&&(isSolid(y*w+nx)||isSolid(ny*w+x)))continue;const g=a.g+(dx&&dy?Math.SQRT2:1);if(g<(costs.get(id)??Infinity)-.001){costs.set(id,g);previous.set(id,a.id);push({id,g,f:g+Math.max(0,Math.hypot(tx-nx,ty-ny)-(adjacent?reach:0))});}}
  }
  if(end<0)return null;const result=[];while(end!==start){result.push([end%w,Math.floor(end/w)]);end=previous.get(end);if(end===undefined)return null;}return result.reverse();

@@ -31,9 +31,9 @@ setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.
  while(remaining.length){let best=null;for(const a of connected)for(const b of remaining){const d=Math.hypot(a.x-b.x,a.y-b.y);if(!best||d<best.d)best={a,b,d};}curveRoad(best.a.x+.5,best.a.y+.5,best.b.x+.5,best.b.y+.5,1.3);connected.push(best.b);remaining.splice(remaining.indexOf(best.b),1);}
  for(const t of SETTLEMENTS){const local=world.buildings.filter(b=>b.settlement===t.id),junctions=[[t.x+.5,t.y+.5]];local.sort((a,b)=>Math.hypot(a.service.x-t.x,a.service.y-t.y)-Math.hypot(b.service.x-t.x,b.service.y-t.y));for(const b of local){const door=[b.service.x+.5,b.service.y+.5],join=junctions.reduce((best,p)=>Math.hypot(p[0]-door[0],p[1]-door[1])<Math.hypot(best[0]-door[0],best[1]-door[1])?p:best);curveRoad(...join,...door,.95,t.kind==='city');junctions.push(door);}}
  for(const [a,b]of [[[42.5,51.5],[42.5,105.5]],[[42.5,51.5],[28.5,63.5]],[[42.5,51.5],[165.5,24.5]],[[42.5,105.5],[165.5,135.5]]])curveRoad(...a,...b,1.15);
- clearStreetObstacles(world);plantSettlementGroves(world);populateWalkInRooms(world);resetLandSurface();realmNavigation.clear();const resuming=resume.scale===3&&resume.scene==='overworld';restoreWalkInDoors(world,resuming?resume:null);if(resuming)activateScene('overworld',resume.x,resume.y,false);
+ clearStreetObstacles(world);plantSettlementGroves(world);dressSettlementSites(world);populateWalkInRooms(world);resetLandSurface();realmNavigation.clear();const resuming=resume.scale===3&&resume.scene==='overworld';restoreWalkInDoors(world,resuming?resume:null);if(resuming)activateScene('overworld',resume.x,resume.y,false);
 };
-function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','ore','prop'].includes(o.type))continue;const conflicts=(x,z)=>world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&z>=b.y-1&&z<b.y+b.h+1)||organicRoads.some(seg=>Math.abs((seg.a[0]+seg.b[0])/2-x)<3&&Math.abs((seg.a[1]+seg.b[1])/2-z)<3&&roadSegmentDistance(x+.5,z+.5,seg)<seg.width+.45);if(!conflicts(o.x,o.y))continue;let found=false;for(let radius=2;radius<=12&&!found;radius+=2)for(let i=0;i<16&&!found;i++){const x=Math.round(o.x+Math.cos(i*Math.PI/8)*radius),z=Math.round(o.y+Math.sin(i*Math.PI/8)*radius);if(!expandedWater(x,z)&&!conflicts(x,z)&&!world.objects.some(p=>p!==o&&p.x===x&&p.y===z)){Object.assign(o,{x,y:z,homeX:x,homeY:z,drawX:x,drawY:z});found=true;}}}}
+function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','ore','prop'].includes(o.type))continue;const conflicts=(x,z)=>worldWaterDistance(x+.5,z+.5)<1.5||world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&z>=b.y-1&&z<b.y+b.h+1)||organicRoads.some(seg=>Math.abs((seg.a[0]+seg.b[0])/2-x)<3&&Math.abs((seg.a[1]+seg.b[1])/2-z)<3&&roadSegmentDistance(x+.5,z+.5,seg)<seg.width+.45);if(!conflicts(o.x,o.y))continue;let found=false;for(let radius=2;radius<=12&&!found;radius+=2)for(let i=0;i<16&&!found;i++){const x=Math.round(o.x+Math.cos(i*Math.PI/8)*radius),z=Math.round(o.y+Math.sin(i*Math.PI/8)*radius);if(!expandedWater(x,z)&&!conflicts(x,z)&&!world.objects.some(p=>p!==o&&p.x===x&&p.y===z)){Object.assign(o,{x,y:z,homeX:x,homeY:z,drawX:x,drawY:z});found=true;}}}}
 function roadSegmentDistance(x,z,seg){const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],t=Math.max(0,Math.min(1,((x-seg.a[0])*dx+(z-seg.a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-seg.a[0]-dx*t,z-seg.a[1]-dz*t);}
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
 drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
@@ -53,7 +53,7 @@ function plantSettlementGroves(world){let id=2400000;const occupied=new Set(worl
   const angle=group*2.399+town.x*.013,radius=(town.kind==='city'?65:26)+(group%3)*6,cx=town.x+Math.cos(angle)*radius,cz=town.y+Math.sin(angle)*radius;
   for(let n=0;n<5;n++){
    const x=Math.round(cx+Math.cos(n*2.399)*Math.sqrt(n)*2.2),y=Math.round(cz+Math.sin(n*2.399)*Math.sqrt(n)*2.2);id++;
-   if(x<2||y<2||x>1149||y>765||expandedWater(x,y)||occupied.has(x+':'+y)||Math.hypot(s.x-x,s.y-y)<2)continue;
+   if(x<2||y<2||x>1149||y>765||worldWaterDistance(x+.5,y+.5)<2||occupied.has(x+':'+y)||Math.hypot(s.x-x,s.y-y)<2)continue;
    if(world.buildings.some(b=>x>b.x-4&&x<b.x+b.w+4&&y>b.y-4&&y<b.y+b.h+4)||organicRoads.some(seg=>Math.abs(seg.a[0]-x)<6&&Math.abs(seg.a[1]-y)<6&&roadSegmentDistance(x+.5,y+.5,seg)<seg.width+2))continue;
    world.objects.push({id,type:'tree',name:town.kingdom==='khazdur'?'Mountain pine':'Old-growth oak',race:town.kingdom==='sylvaran'?'elf':town.kingdom==='khazdur'?'dwarf':'human',x,y,homeX:x,homeY:y,sprite:4,dead:0});occupied.add(x+':'+y);
   }
@@ -66,5 +66,28 @@ function roadInfluence(x,z){
  if(!inWorld())return [0,0,0];
  if(!roadBuckets){roadBuckets=new Map();for(const seg of organicRoads){const pad=seg.width+.9;for(let b=Math.floor((Math.min(seg.a[1],seg.b[1])-pad)/8);b<=Math.floor((Math.max(seg.a[1],seg.b[1])+pad)/8);b++)for(let a=Math.floor((Math.min(seg.a[0],seg.b[0])-pad)/8);a<=Math.floor((Math.max(seg.a[0],seg.b[0])+pad)/8);a++){const key=a+':'+b;if(!roadBuckets.has(key))roadBuckets.set(key,[]);roadBuckets.get(key).push(seg);}}}
  let amount=0,paved=0;for(const seg of roadBuckets.get(Math.floor(x/8)+':'+Math.floor(z/8))||[]){const edge=seg.width*(1+.06*Math.sin(x*2.3+z*1.7))-roadSegmentDistance(x,z,seg),t=Math.max(0,Math.min(1,(edge+.55)/1.1)),blend=t*t*(3-2*t);amount=Math.max(amount,blend);if(seg.paved)paved=Math.max(paved,blend);}
+ for(const town of SETTLEMENTS){if(Math.abs(x-town.x)>5||Math.abs(z-town.y)>5)continue;const d=Math.hypot((x-town.x)/4.0,(z-town.y)/3.4),t=Math.max(0,Math.min(1,(1.1-d)/.25));amount=Math.max(amount,t);paved=Math.max(paved,t);}
  return [amount,paved,0];
+}
+
+// Small, purposeful clusters identify services without filling travel lanes.
+function dressSettlementSites(world){
+ let id=3200000;
+ const place=(name,cx,cz,radius=.6)=>{
+  for(let r=0;r<=5;r++)for(let dz=-r;dz<=r;dz++)for(let dx=-r;dx<=r;dx++){
+   if(Math.max(Math.abs(dx),Math.abs(dz))!==r)continue;const x=Math.round(cx+dx),y=Math.round(cz+dz);
+   if(worldWaterDistance(x+.5,y+.5)<3||world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&y>=b.y-1&&y<b.y+b.h+1||b.service&&Math.abs(x-b.service.x)<=radius+1.2&&y>=b.service.y-1&&y<=b.service.y+5)||world.objects.some(o=>!o.collected&&Math.hypot(o.x-x,o.y-y)<radius+1))continue;
+   let road=false;for(let rz=-2;rz<=2;rz++)for(let rx=-2;rx<=2;rx++)if(Math.hypot(rx,rz)<radius+.5&&roadInfluence(x+.5+rx,y+.5+rz)[0]>.05)road=true;if(road)continue;
+   world.objects.push({id:id++,type:'prop',name,x,y,homeX:x,homeY:y,drawX:x,drawY:y,sprite:12,dead:0,collisionRadius:radius});return;
+  }
+ };
+ for(const town of SETTLEMENTS){
+  place('Village well',town.x+3,town.y-4,.9);
+  for(const b of world.buildings.filter(b=>b.settlement===town.id&&['shop','inn','forge'].includes(b.archetype))){
+   const z=b.y+b.h+2;
+   if(b.archetype==='shop'){place('Merchant wagon',b.x+1,z,1.1);place('Supplies',b.x+b.w-1,z,.65);}
+   if(b.archetype==='inn'){place('Dining table',b.x+2,z,.8);place('Barrel',b.x+4,z,.55);}
+   if(b.archetype==='forge'){place('Log pile',b.x+1,z,.8);place('Tool table',b.x+b.w-2,z,.8);}
+  }
+ }
 }

@@ -70,7 +70,7 @@ function setupExpandedWorld(){
  document.addEventListener('visibilitychange',()=>{if(ambient){if(document.hidden)ambient.context.suspend();else if(ambientEnabled)ambient.context.resume();}});
 }
 function activateScene(id,x,y,persist=true){
- const scene=worldScenes[id];if(!scene)return;stop();projectiles=[];floaters=[];currentScene=id;s.sceneId=id;
+ const scene=worldScenes[id];if(!scene)return;stop();projectiles=[];meleeImpacts=[];floaters=[];currentScene=id;s.sceneId=id;
  objects.splice(0,objects.length,...scene.objects);buildings.splice(0,buildings.length,...scene.buildings);
  s.x=x??scene.entry[0];s.y=y??scene.entry[1];if(!land(s.x,s.y)){[s.x,s.y]=scene.entry;}px=s.x;py=s.y;miniTerrain=null;
  $('leaveInterior').hidden=inWorld();renderTutorial();if(persist)save();

@@ -19,9 +19,13 @@ else if(choice==='hills')activateScene('overworld',575,230);
 else if(choice==='river')activateScene('overworld',119,61);
 else if(choice==='lake')activateScene('overworld',28,64);
 else if(choice==='edge')activateScene('overworld',14,18);
+else if(choice==='bridge')activateScene('overworld',111,52);
+else if(choice==='shore')activateScene('overworld',52,87);
+else if(choice==='shop')activateScene('overworld',54,47);
+else if(choice==='combat'){const enemy=objects.find(o=>o.kind==='goblin');activateScene('overworld',enemy.x-1,enemy.y);target=enemy;lastAttack=time-posePhase*.65;enemy.attackAt=lastAttack;playerHeading=Math.PI/2;}
 else if(choice==='walk'||choice==='run'){activateScene('overworld',43,75);playerMotion.moving=true;playerMotion.blend=1;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;}
 if(choice==='willow-inside')setWalkInDoor(captureInn.service,true,true);
-view3d.zoom=choice==='walk'||choice==='run'?110:choice==='willow-inside'?40:choice==='briarhaven'?28:22;view3d.yaw=-.55;view3d.tilt=.85;updateDoorThreshold();
+view3d.zoom=['walk','run','combat'].includes(choice)?110:choice==='willow-inside'?40:choice==='shop'?38:choice==='briarhaven'?28:22;view3d.yaw=-.55;view3d.tilt=.85;updateDoorThreshold();
 realmGPU={cache:new WeakMap(),sharedMeshes:new WeakMap(),terrain:new Map(),gl:{deleteBuffer(){}},upload,
  render(entries,dynamic){if(dynamic.length)entries.push(upload(new Float32Array(dynamic)));
  const draws=entries.map(e=>{const m=e.model?Array.from(e.model):null;if(m)m[7]+=landHeight(m[3],m[11]);return {file:e.buffer,count:e.count,terrain:!!e.terrain,model:m?[m[0],m[4],m[8],0,m[1],m[5],m[9],0,m[2],m[6],m[10],0,m[3],m[7],m[11],1]:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]};});

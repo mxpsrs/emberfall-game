@@ -121,7 +121,7 @@ function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&&lineOfSight(s.x,s.y,o.x,o.y);}
-let projectiles=[],enemyClock=0,retaliationClock=0;
+let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100;
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
  o.dead=time+(o.type==='dummy'?8:25);monsterDrop(o);
@@ -141,11 +141,18 @@ function performAttack(o){
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
  const damage=Math.random()<playerAccuracy(o,style)?1+Math.floor(Math.random()*Math.max(1,maxHit)):0;
  lastAttack=time;facing=o.x<s.x?-1:1;
- if(style==='melee')resolveHit(o,damage,style,0,focus);else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
+ if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
 function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
+function applyEnemyHit(o,hit){
+ s.hp=Math.max(0,s.hp-hit);playerHitAt=hit>0?time:playerHitAt;floating(hit?'-'+hit:'Blocked',px,py,hit?'#ffaba1':'#a7c7cf');
+ if(s.hp<=0){s.gold=Math.max(0,s.gold-5);returnToVillage();s.hp=maxhp();o.hp=o.maxhp;projectiles=[];meleeImpacts=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}
+ renderUI();save();
+}
 function updateCombat(dt){
+ const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot(hit.o.x-s.x,hit.o.y-s.y)>1.75||!lineOfSight(s.x,s.y,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
  for(const p of projectiles)p.age+=dt;
  const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
  for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
@@ -156,8 +163,7 @@ function updateCombat(dt){
  if(Math.hypot(o.x-s.x,o.y-s.y)>1.45){
    if(o.type!=='dummy'&&enemyClock>=(o.slowUntil>time?.9:.38)){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
  }else if(retaliationClock>=1.3&&lineOfSight(o.x,o.y,s.x,s.y)){
-   retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue()):0;s.hp-=hit;floating(hit?'-'+hit:'Blocked',px,py,hit?'#ffaba1':'#a7c7cf');
-   if(s.hp<=0){s.gold=Math.max(0,s.gold-5);returnToVillage();s.x=14;s.y=17;px=14;py=17;s.hp=maxhp();o.hp=o.maxhp;projectiles=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}renderUI();save();
+   retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue()):0;meleeImpacts.push({o,damage:hit,due:time+.30,enemy:true});
  }
 }
 function drawProjectiles(){

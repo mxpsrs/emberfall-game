@@ -12,7 +12,7 @@ s.equipment.weapon=null;handlers.pointerdown(e);pending();handlers.pointerup(e);
 handlers.pointerdown(e);handlers.pointermove({...e,clientX:40});assert.equal(pending,null);handlers.pointerup(e);b.onclick(e);assert.equal(s.equipment.weapon,null);
 s.hp=10;primaryItemAction('fish',true);assert(s.hp>10);assert.equal(s.bag.fish,1);assert.equal(itemActions('fish',true)[0][0],'Eat trout');withinWalkIn=()=>false;primaryItemAction('logs',true);assert.equal(s.bag.logs,1);assert(s.xp.Firemaking>0);
 let dest=null;walkTo=(x,y)=>dest=[x,y];assetsReady=true;$('minimap').getBoundingClientRect=()=>({left:20,top:30,width:240,height:180});
-walkFromMinimap({clientX:140,clientY:120});assert.equal(dest[0],48);assert.equal(dest[1],42);
+walkFromMinimap({clientX:140,clientY:120});assert.equal(dest[0],48);assert.equal(dest[1],36);
 currentScene='inn';walkFromMinimap({clientX:140,clientY:120});assert.equal(dest[0],7);assert.equal(dest[1],6);
 console.log('PASS: tap primary action, hold-only menu, suppressed release click, scroll cancellation, food/material actions, minimap coordinates in world and interior.');
 `,ctx);

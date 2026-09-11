@@ -1,30 +1,20 @@
 'use strict';
 // Continuous heightfield: geometry, camera, picking and characters share one surface.
-const landHeights=new Map(),landWater=new Map();
-let shoreField=null,foundationLevels=new WeakMap();
-function resetLandSurface(){landHeights.clear();landWater.clear();shoreField=null;foundationLevels=new WeakMap();}
-// Whole-field distances avoid the former four-tile lookup cliff at every riverbank.
-function waterDistances(){
- if(shoreField)return shoreField;
- const [width,height]=sceneSize(),w=width+1,h=height+1,wet=new Uint8Array(w*h),distance=new Float32Array(w*h);
- for(let z=0;z<h;z++)for(let x=0;x<w;x++)wet[z*w+x]=worldWaterSurface(x,z)?1:0;
- for(let z=0;z<h;z++)for(let x=0;x<w;x++){const i=z*w+x;distance[i]=wet[i]||x>0&&wet[i-1]||z>0&&wet[i-w]||x>0&&z>0&&wet[i-w-1]?0:10000;}
- for(let z=0;z<h;z++)for(let x=0;x<w;x++){const i=z*w+x;let d=distance[i];if(x)d=Math.min(d,distance[i-1]+1);if(z){d=Math.min(d,distance[i-w]+1);if(x)d=Math.min(d,distance[i-w-1]+Math.SQRT2);if(x+1<w)d=Math.min(d,distance[i-w+1]+Math.SQRT2);}distance[i]=d;}
- for(let z=h-1;z>=0;z--)for(let x=w-1;x>=0;x--){const i=z*w+x;let d=distance[i];if(x+1<w)d=Math.min(d,distance[i+1]+1);if(z+1<h){d=Math.min(d,distance[i+w]+1);if(x)d=Math.min(d,distance[i+w-1]+Math.SQRT2);if(x+1<w)d=Math.min(d,distance[i+w+1]+Math.SQRT2);}distance[i]=d;}
- return shoreField={w,h,wet,distance};
-}
-function shoreDistance(x,z){const f=waterDistances(),a=Math.round(x),b=Math.round(z);return a<0||b<0||a>=f.w||b>=f.h?0:f.distance[b*f.w+a];}
-function cachedLandWater(x,z){const f=waterDistances();return x<0||z<0||x>=f.w||z>=f.h?true:!!f.wet[z*f.w+x];}
+const landHeights=new Map();
+let foundationLevels=new WeakMap();
+function resetLandSurface(){landHeights.clear();foundationLevels=new WeakMap();}
+function shoreDistance(x,z){return Math.max(0,worldWaterDistance(x,z));}
+function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}
-function shoreHeight(x,z){return Math.max(0,Math.min(landBase(x,z),shoreDistance(x,z)*.40));}
+function shoreHeight(x,z){return Math.max(0,Math.min(landBase(x,z),shoreDistance(x,z)*.33));}
 function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);let level=Infinity;for(let z=Math.floor(b.y-.7);z<=Math.ceil(b.y+b.h+.7);z++)for(let x=Math.floor(b.x-.7);x<=Math.ceil(b.x+b.w+.7);x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
  if(!inWorld())return 0;const key=x+':'+z;if(landHeights.has(key))return landHeights.get(key);
- const water=shoreDistance(x,z);if(!water){landHeights.set(key,-.22);return -.22;}
+ const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}
  let h=shoreHeight(x,z),weight=0,total=0,strength=0;
- for(const b of buildings){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=8)continue;
+ for(const b of buildings){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12)continue;
   const foundation=foundationLevel(b);if(d===0){h=foundation;weight=0;break;}
-  const t=d/8,blend=1-t*t*(3-2*t),w=blend/Math.max(.0001,d*d);weight+=w;total+=w*foundation;strength=Math.max(strength,blend);
+  const t=d/12,blend=1-t*t*(3-2*t),w=blend/Math.max(.0001,d*d);weight+=w;total+=w*foundation;strength=Math.max(strength,blend);
  }
  if(weight)h=h*(1-strength)+total/weight*strength;
  h=Math.min(h,water*.45);landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
@@ -33,7 +23,17 @@ function landNormal(x,z){const a=landHeight(x-.2,z)-landHeight(x+.2,z),b=landHei
 function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return v>=u?landNode(ix,iz)*(1-v)+landNode(ix,iz+1)*(v-u)+landNode(ix+1,iz+1)*u:landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*(u-v)+landNode(ix+1,iz+1)*v;}
 const flatProject3=project3;
 project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return flatProject3(x,y+(v===view3d?landHeight(x,z)-walkSurfaceHeight(cx,cz):0),z,v,cx,cz,w,h);};
-unproject3=function(sx,sy){const v=view3d,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),u=(sx-screen.w/2)/v.zoom,screenD=(sy-screen.h*.54)/v.zoom,base=walkSurfaceHeight(px+.5,py+.5);let d=screenD/Math.sin(v.tilt);for(let i=0;i<24;i++){const x=px+.5+u*c+d*sn,z=py+.5-u*sn+d*c,next=(screenD+(walkSurfaceHeight(x,z)-base)*Math.cos(v.tilt))/Math.sin(v.tilt);if(Math.abs(next-d)<.0001){d=next;break;}d=d*.35+next*.65;}return {x:px+.5+u*c+d*sn,z:py+.5-u*sn+d*c};};
+// Intersect the camera ray with the visible surface, from front to back.
+// Fixed-point iteration diverged on banks and snapped taps across bridge edges.
+unproject3=function(sx,sy){
+ const v=view3d,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),st=Math.sin(v.tilt),ct=Math.cos(v.tilt),u=(sx-screen.w/2)/v.zoom,screenD=(sy-screen.h*.54)/v.zoom,base=walkSurfaceHeight(px+.5,py+.5);
+ const point=d=>({x:px+.5+u*c+d*sn,z:py+.5-u*sn+d*c});
+ const value=d=>{const p=point(d);return d*st-(walkSurfaceHeight(p.x,p.z)-base)*ct-screenD;};
+ let hi=(screenD+(32-base)*ct)/st,lo=(screenD+(-2-base)*ct)/st,previous=hi;
+ for(let d=hi-1.5;d>lo;d-=1.5){if(value(d)<=0){lo=d;hi=previous;break;}previous=d;}
+ for(let i=0;i<19;i++){const mid=(lo+hi)/2;if(value(mid)>0)hi=mid;else lo=mid;}
+ return point((lo+hi)/2);
+};
 const flatFaceData=realmFaceData;
 realmFaceData=function(data,points,color,normals,material,colors,uvs){const lifted=points.map(p=>[p[0],p[1]+landHeight(p[0],p[2]),p[2]]);return flatFaceData(data,lifted,color,material===4?points.map(()=>[0,1,0]):material>=1&&material<=3?points.map(p=>landNormal(p[0],p[2])):normals,material,colors,uvs);};
 const flatIndexedData=realmIndexedData;
@@ -49,15 +49,32 @@ function groundedPainter(r,x,z){
 // Fallback rendering uses the same raised terrain instead of a flat bitmap.
 drawTerrainLayer3=function(){const r=canvasPainterRealm(ctx,project3),[mw,mh]=sceneSize(),corners=[[0,0],[screen.w,0],[0,screen.h],[screen.w,screen.h]].map(p=>unproject3(...p));const minx=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.x)))-10),maxx=Math.min(inWorld()?mw+128:mw,Math.ceil(Math.max(...corners.map(p=>p.x)))+10),minz=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.z)))-10),maxz=Math.min(inWorld()?mh+128:mh,Math.ceil(Math.max(...corners.map(p=>p.z)))+10);for(let z=minz;z<maxz;z++)for(let x=minx;x<maxx;x++){const t=terrainType(x,z);r.face([[x,0,z],[x,0,z+1],[x+1,0,z+1],[x+1,0,z]],['#628047','#aa956e','#989e8a','#427e89'][t]);}r.flush();};
 // Goblins have their own anatomy and motion, independent of the human avatar mesh.
-function goblinRealm3(r,x,z,heading,walk,attack,size=1){const c=Math.cos(heading),sn=Math.sin(heading),stride=Math.sin(walk),bob=Math.abs(stride)*.035,k=.85*size,root=([a,b,d])=>[x+(a*c+d*sn)*k,(b+bob)*k,z+(-a*sn+d*c)*k];const skin='#718747',dark='#526334',cloth='#69523b';
- const part=(a,b,d,w,h,depth,col,transform=root)=>profile3(r,a,b,d,w,h,depth,[[-.5,.45],[-.3,.85],[.15,1],[.38,.8],[.5,.3]],col,transform,12);
- // Short bowed legs, broad feet, hunched shoulders and unusually long forearms.
- for(const side of [-1,1]){const leg=p=>root([p[0],p[1]+Math.max(0,stride*side)*.07,p[2]+stride*side*.12]);part(side*.15,.30,0,.16,.5,.18,dark,leg);part(side*.16,.07,.12,.23,.12,.37,'#493d29',leg);const swing=stride*side*.12+(side===1?attack*.3:0);part(side*.35,.65,.10+swing,.16,.70,.17,skin);part(side*.36,.31,.16+swing,.20,.20,.18,skin);for(let finger=0;finger<3;finger++)part(side*.36+(finger-1)*.047,.22,.18+swing,.035,.14,.055,dark);}
- part(0,.84,-.06,.52,.68,.37,skin);part(0,.51,0,.46,.28,.37,cloth);part(0,1.10,.12,.31,.27,.28,skin);part(0,1.30,.19,.52,.45,.42,skin);part(0,1.22,.43,.19,.16,.25,dark);
- // Swept pointed ears and heavy brows give an immediately nonhuman silhouette.
- for(const side of [-1,1]){const ear=[[side*.20,1.40,.15],[side*.59,1.55,.02],[side*.30,1.18,.12],[side*.25,1.34,.22]];for(const tri of [[0,1,3],[1,2,3],[2,0,3]])r.face(tri.map(i=>root(ear[i])),skin);part(side*.115,1.36,.385,.18,.07,.07,dark);part(side*.115,1.31,.393,.063,.04,.035,'#ddb654');part(side*.115,1.31,.413,.018,.033,.012,'#1d2715');const tusk=[[side*.13,1.13,.37],[side*.10,1.26,.44],[side*.06,1.13,.40]];r.face(tusk.map(root),'#d9cd9c');}
- const weapon={face(p,col){r.face(p.map(root),col);}};beamArt(weapon,[.36,.30,.23],[.36,.55,.68],.037,'#65482e',7);profile3(weapon,.36,.62,.80,.22,.27,.27,[[-.5,.6],[0,1],[.5,.65]],'#747b6c',p=>p,7);
- return 1.6*size;
+function goblinRealm3(r,x,z,heading,walk,attack,size=1,hurt=0){
+ const c=Math.cos(heading),sn=Math.sin(heading),stride=Math.sin(walk),k=.88*size,bob=Math.abs(stride)*.025;
+ const root=([a,b,d])=>[x+(a*c+d*sn)*k,(b+bob-hurt*.035)*k,z+(-a*sn+d*c-hurt*.07)*k];
+ const skin='#748b51',shade='#566d3f',cloth='#69573e',leather='#493d2e',local={face(p,col,n,mat){r.face(p.map(root),col,null,mat);}};
+ const joint=(p,w,h,d,col)=>oval3(local,...p,w,h,d,col,p=>p,12);
+ // Bent legs and digitigrade stance distinguish scavengers from human residents.
+ for(const side of [-1,1]){
+  const step=stride*side,hip=[side*.14,.59,-.06],knee=[side*.19,.34,.09+step*.09],ankle=[side*.17,.10,.02+step*.16];
+  beamArt(local,hip,knee,.095,cloth,9);joint(knee,.17,.18,.18,shade);beamArt(local,knee,ankle,.072,skin,9);joint([ankle[0],.07,ankle[2]+.12],.22,.13,.36,shade);
+ }
+ joint([0,.88,-.025],.57,.70,.37,skin);joint([0,.64,.0],.45,.27,.34,cloth);
+ // A fitted, ragged leather vest and belt give the body readable material changes.
+ const vest=materialRealm(local,5);
+ for(const side of [-1,1]){vest.face([[side*.05,1.17,.095],[side*.25,1.12,.10],[side*.25,.66,.16],[side*.09,.62,.17]],cloth);beamArt(vest,[side*.25,1.12,.04],[side*.20,1.19,-.10],.048,cloth,6);}
+ profile3(vest,0,.66,.01,.47,.085,.37,[[-.5,1],[.5,1]],leather,p=>p,12);box3(local,0,.66,.208,.07,.06,.025,'#b39a65');
+ joint([0,1.22,.13],.28,.29,.27,skin);joint([0,1.43,.20],.49,.46,.40,skin);joint([0,1.34,.415],.21,.14,.22,shade);
+ for(const side of [-1,1]){
+  const ear=[[side*.20,1.50,.15],[side*.52,1.57,.025],[side*.29,1.31,.15],[side*.26,1.44,.24]];for(const tri of [[0,1,3],[1,2,3],[2,0,3]])local.face(tri.map(i=>ear[i]),skin);
+  beamArt(local,[side*.055,1.48,.37],[side*.195,1.50,.34],.033,shade,6);joint([side*.12,1.447,.382],.064,.046,.030,'#dbb869');joint([side*.12,1.448,.403],.020,.030,.016,'#1b2417');
+  local.face([[side*.135,1.25,.38],[side*.103,1.35,.45],[side*.065,1.26,.42]],'#d8cfad');
+  const shoulder=[side*.30,1.07,-.01],swing=side===1?attack:0,elbow=[side*.40,.78+swing*.35,.06-swing*.30+stride*side*.05],hand=[side*.38,.48+swing*.85,.20-swing*.14+stride*side*.10];
+  joint(shoulder,.22,.25,.23,skin);beamArt(local,shoulder,elbow,.082,skin,10);joint(elbow,.17,.17,.17,shade);beamArt(local,elbow,hand,.073,skin,10);joint(hand,.17,.20,.16,skin);
+  for(let finger=-1;finger<=1;finger++)beamArt(local,[hand[0]+finger*.045,hand[1]-.025,hand[2]+.015],[hand[0]+finger*.04,hand[1]-.11,hand[2]+.07],.017,shade,5);
+  if(side===1){const tip=[hand[0],hand[1]+.17+swing*.26,hand[2]+.48-swing*.28];beamArt(vest,hand,tip,.035,'#604d32',8);joint(tip,.18,.27,.23,'#828679');for(const t of [-1,1])local.face([[tip[0]+t*.08,tip[1]+.06,tip[2]],[tip[0]+t*.17,tip[1]+.10,tip[2]],[tip[0]+t*.08,tip[1]+.12,tip[2]+.05]],'#b6afa0');}
+ }
+ return 1.75*size;
 }
 function npcDressRealm(r,headTransform,root,gear){if(!['bandit','warden'].includes(gear._kind))return;const local={face(p,col){r.face(p.map(v=>briarPoint(v,0,headTransform)),col);}},color=gear._kind==='warden'?'#454b53':'#443a35';
  // Open-front cowl, fitted face wrap and a separate short cloak.
@@ -75,4 +92,4 @@ creature3=function(r,o,x,z){
   return 1.85;
  }
  if(o.tutor){const role=o.tutor,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]},gear={_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:role==='combat'?'ironHelm':null,feet:'leatherBoots'};humanoid3(r,x,z,o.sprite%4,gear,Math.atan2(px-x,py-z),0,0);return 1.9;}
- if(o.kind==='goblin')return goblinRealm3(groundedPainter(r,x,z),x,z,Math.atan2(px-x,py-z),Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02?time*8:0,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)));return distinctCreatureBefore(['wolf','ridgewolf','rat','slime'].includes(o.kind)?groundedPainter(r,x,z):r,o,x,z);};
+ if(o.kind==='goblin')return goblinRealm3(groundedPainter(r,x,z),x,z,Math.atan2(px-x,py-z),Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02?time*8:0,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt??-9))/.65)*Math.PI)),1,Math.max(0,Math.sin(Math.min(1,(time-(o.hitAt??-9))/.3)*Math.PI)));return distinctCreatureBefore(['wolf','ridgewolf','rat','slime'].includes(o.kind)?groundedPainter(r,x,z):r,o,x,z);};
