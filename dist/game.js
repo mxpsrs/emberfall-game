@@ -3,11 +3,12 @@ const $ = id => document.getElementById(id);
 const W = 384, H = 256, TILE = 48, SAVE_KEY = 'emberfall-save-v1';
 const defaults = () => ({
   x:14, y:17, hp:30, gold:0,
-  xp:{Hitpoints:0,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0},
+  xp:{Hitpoints:0,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0,Firemaking:0,Cooking:0},
   combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
   bag:{logs:0, ore:0, fish:3, fang:0, bones:0, arrows:60, runes:40},
   sword:0, quest:0, kills:0, boss:false, character:null,
-  spirits:{}, tutorial:0, tutorialReward:false, spell:"spark",
+  spirits:{}, tutorial:0, tutorialVersion:2, tutorialReward:false, spell:"spark",
+  runEnabled:false,runEnergy:100,bank:{},
   gear:{bronzeSword:1,shortbow:1,oakStaff:1,leatherArmor:1,leatherBoots:1},
   equipment:{weapon:"bronzeSword",head:null,body:"leatherArmor",shield:null,feet:"leatherBoots"}
 });
@@ -16,7 +17,7 @@ const lv = skill => skill==='Combat'?combatLevel():1+Math.floor(Math.sqrt(Math.m
 const maxhp = () => 30 + (lv('Hitpoints') - 1) * 6 + spiritBonus('health');
 s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
-s.tutorial = Math.max(0, Math.min(14, s.tutorial));
+s.tutorial = Math.max(0, Math.floor(Number(s.tutorial)||0));
 if (s.character) s.character.look = Math.max(0, Math.min(3, Number(s.character.look) || 0));
 const objects = [], buildings = [];
 let serial = 0;
@@ -27,6 +28,7 @@ function add(type, x, y, name, sprite, extra={}) {
 [[3,4],[6,5],[8,3],[4,8],[7,9],[9,7],[3,12],[6,13],[8,11],[10,4],[2,6],[10,18],[4,28],[7,30]].forEach(([x,y]) => add('tree',x,y,'Oak tree',4));
 [[22,4],[25,5],[26,8],[23,9],[21,7],[27,3],[13,20]].forEach(([x,y]) => add('ore',x,y,'Iron deposit',6));
 [[2,20],[5,19],[8,24],[8,21]].forEach(([x,y]) => add('fish',x,y,'Fishing spot',9));
+for(const [role,x,y]of [['tree',10,18],['ore',13,20],['fish',8,21]])objects.find(o=>o.x===x&&o.y===y).tutorialRole=role;
 const elderObj = add('elder',14,15,'Elder Rowan',4);
 const campObj = add('camp',12,17,'Campfire',7);
 const shopObj = add('shop',17,15,'Mara the merchant',5);
@@ -86,7 +88,7 @@ function save() {
 function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
-function stop(){target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
+function stop(){if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
 function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
   const start=[startX,startY],open=[{x:startX,y:startY,g:0,f:0}],cost=new Map([[start.join(','),0]]),prev=new Map();let end=null;
   while(open.length){
@@ -175,59 +177,26 @@ function forge(){
 function inn(){dialog('The Wayfarer’s Rest','<p>Warm bread, a crackling hearth, and stories from the old road.</p><p>“Take a moment to rest. You look like you’ve come a long way.”</p>',[['Rest · free',()=>{s.hp=maxhp();close();toast('You leave the inn fully rested.');}],['Ask about the region',()=>dialog('Word from the road','<p>Goblins gather east of Briarhaven. Slimes lurk southwest of the lake. Wolves roam the southeast thicket, and bandits guard the far southern road.</p><p>The skeletons near the northern ruins are stronger. Make an iron sword before going there.</p>')]]);}
 function eat(){
   if(!s.bag.fish){toast('No trout. Fish at the lake or buy some from Mara.');return;}
-  if(s.hp>=maxhp()){if(s.tutorial===6)tutorialEvent('eat');toast('Your health is already full.');return;}
+  if(s.hp>=maxhp()){tutorialEvent('eat');toast('Your health is already full.');return;}
   const heal=Math.min(14,maxhp()-s.hp);s.bag.fish--;s.hp+=heal;floating('+'+heal,px,py,'#b9efad');tutorialEvent('eat');renderUI();save();
 }
 function tickAction(){
   const o=target;if(!o)return;
   if(o.type==='crop'){if(o.harvestedUntil>time){stop();toast('This patch is growing back.');return;}if(!addToBag('herbs')){stop();return;}o.harvestedUntil=time+35;gain('Farming',15);floating('+1 herbs',o.x,o.y);stop();renderUI();save();return;}
   if(['tree','ore','fish'].includes(o.type)){
-    const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type],item={tree:'logs',ore:'ore',fish:'fish'}[o.type];
-    if(!addToBag(item)){stop();return;}gain(skill,12);floating('+1 '+{logs:'oak log',ore:'iron ore',fish:'trout'}[item],o.x,o.y);o.hitAt=time;lastAttack=time;tutorialEvent(o.type);renderUI();save();return;
+    const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type],item={tree:'logs',ore:'ore',fish:'rawTrout'}[o.type];
+    if(!addToBag(item)){stop();return;}gain(skill,12);floating('+1 '+{logs:'oak log',ore:'iron ore',rawTrout:'raw trout'}[item],o.x,o.y);o.hitAt=time;lastAttack=time;tutorialEvent(o.type);renderUI();save();return;
   }
   if(fighter(o))performAttack(o);
 }
 
-const tutorialSteps=[
-  {event:'walk',title:'Take your first steps',desc:'Tap the glowing ground marker just south of you. The view follows your character.',point:()=>({x:14,y:18})},
-  {event:'elder',title:'Meet your guide',desc:'Tap Elder Rowan to speak. He has your first quest.',point:()=>elderObj},
-  {event:'tree',title:'Gather an oak log',desc:'Tap the highlighted oak tree. Your character walks over and chops automatically.',point:()=>objects.find(o=>o.x===10&&o.y===18)},
-  {event:'ore',title:'Mine your first ore',desc:'Tap the highlighted iron deposit. Your pickaxe is already equipped.',point:()=>objects.find(o=>o.x===13&&o.y===20)},
-  {event:'fish',title:'Catch a trout',desc:'Follow the path to the lake and tap the fishing ripple. Trout restores health.',point:()=>objects.find(o=>o.x===8&&o.y===21)},
-  {event:'dummy',title:'Learn to fight',desc:'Tap the training dummy. Try Melee, Ranged, or Magic below the world, then tap the dummy again.',point:()=>dummyObj},
-  {event:'eat',title:'Recover your health',desc:'Tap Eat below the world. One trout restores up to 14 health.',point:()=>null},
-  {event:'camp',title:'A safe place to rest',desc:'Tap the campfire to heal for free. Next, prepare your gear for your first real encounter.',point:()=>campObj},
-  {event:'bag',title:'Pack for the road',desc:'Open Bag & menus. Your inventory has 25 slots. Arrows and runes stack; food and materials each use a slot. Worn gear has its own tab.',point:()=>null},
-  {event:'gear',title:'Choose your weapon',desc:'Tap an unequipped weapon in your inventory, then Equip. It moves to Worn equipment and appears in your hand. You can also use the combat-style buttons.',point:()=>null},
-  {event:'monster',title:'Your first hunt',desc:'Defeat a giant rat near Stillwater. Watch your health and eat during combat. Your rewards will fall on the ground.',point:()=>objects.find(o=>o.kind==='rat'&&o.dead<=time)},
-  {event:'loot',title:'Claim your spoils',desc:'Tap the glowing loot where the monster fell. Your character walks over and picks up the top item. Tap again for the next item. Coins and ammunition are collected as a stack.',point:()=>(s.groundLoot||[]).find(o=>o.scene===currentScene)||null},
-  {event:'spirit',title:'An elemental companion',desc:'Find Cinder beside the southern camp and form a bond. Equipped spirits grant bonuses; unleashed spirits can power a summon.',point:()=>objects.find(o=>o.spiritId==='cinder'&&!o.collected)||null},
-  {event:'inn',title:'Welcome to the borderlands',desc:'Enter the village inn. Your character saves to your account. Continue Rowan’s story, then visit Stoneford for new quests.',point:()=>innObj}
-];
-function tutorialEvent(event){
-  if(!s.character||s.tutorial>=14||tutorialSteps[s.tutorial].event!==event)return;
-  if(event==='walk'&&(s.x!==(s.worldScale===3?42:14)||s.y!==(s.worldScale===3?54:18)))return;
-  s.tutorial++;stop();
-  if(s.tutorial===14){const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;}dialog('Ready for the road','<p>You know the basics. Finish Rowan’s quests, gather supplies, or head east to the goblin camp.</p><p>Rats and slimes are easier opponents. Townsmen can be spoken to or attacked. Rest at the inn or campfire whenever you need.</p>'+(earned?'<p><b>Tutorial reward: 15 coins.</b></p>':'') );}
-  renderTutorial();renderUI();save();
-}
-function renderTutorial(){
-  $('tutorial').hidden=!s.character||s.tutorial>=14||!inWorld();
-  if(s.tutorial>=14){$('eat').classList.remove('tutorialfocus');return;}
-  const step=tutorialSteps[s.tutorial];$('tutCount').textContent='FIRST STEPS · '+(s.tutorial+1)+' / 14';$('tutTitle').textContent=step.title;$('tutDesc').textContent=step.desc;$('guide').hidden=!step.point();$('guide').textContent=s.tutorial===0?'Walk to the marker':'Walk to the highlighted spot';
-  $('eat').classList.toggle('tutorialfocus',step.event==='eat');
-}
-function guide(){
-  if(!inWorld()){leaveInterior();return;}
-  const point=tutorialSteps[s.tutorial]?.point();if(!point)return;
-  const p=route(point.x,point.y,point.id!==undefined);if(p===null){toast('No clear route. Try walking closer.');return;}stop();path=p;renderAction();if(!p.length)toast(s.tutorial===0?'Tap the glowing marker.':'Tap the highlighted '+point.name+'.');
-}
 function renderUI(){
   $('hp').textContent=s.hp+' / '+maxhp();$('hpbar').style.width=(s.hp/maxhp()*100)+'%';
   $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=s.bag.fish;
-  renderPanel();renderCombatBar();if(assetsReady)drawPortrait();
+  renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
 }
 function renderPanel(){
+  if(tab==='skills'&&!$('gameDock').hidden)tutorialEvent('skills');
   if(tab==='bag'){renderInventory();return;}if(tab==='gear'){renderEquipment();return;}if(tab==='spells'){renderSpells();return;}
   let html='';
   if(tab==='quests'){
@@ -264,7 +233,7 @@ async function finishCharacter(name,look){
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
   $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
 }
-function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a man to choose Talk or Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Progress saves in this browser on this device.</p>',[['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;renderTutorial();save();}]]);}
+function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a man to choose Talk or Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=2;tutorialCameraStart=null;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
 function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
@@ -292,7 +261,7 @@ function label(text,x,y,color='#f5e7be',size=12){ctx.font='600 '+size+'px system
 function draw(){
   const {w,h}=screen;camera.x=px*TILE+TILE/2-w/2;camera.y=py*TILE+TILE/2-h/2;ctx.clearRect(0,0,w,h);drawGround();drawSceneWalls();hitboxes=[];drawGroundLoot();
   if(path.length){ctx.strokeStyle='#ffe6a0b0';ctx.lineWidth=2;ctx.setLineDash([2,7]);ctx.beginPath();ctx.moveTo((px+.5)*TILE-camera.x,(py+.8)*TILE-camera.y);for(const [x,y]of path)ctx.lineTo((x+.5)*TILE-camera.x,(y+.8)*TILE-camera.y);ctx.stroke();ctx.setLineDash([]);const end=path[path.length-1];groundRing(end[0],end[1],'#ffe6a0',10);}
-  const tutPoint=inWorld()&&s.character&&s.tutorial<14?tutorialSteps[s.tutorial].point():null;
+  const tutPoint=inWorld()&&s.character&&!!tutorialStep()?tutorialStep()?.point?.():null;
   if(tutPoint){groundRing(tutPoint.x,tutPoint.y,'#ffd98b',22+Math.sin(time*3)*3);const tx=(tutPoint.x+.5)*TILE-camera.x,ty=(tutPoint.y+.5)*TILE-camera.y;if(tx<20||tx>w-20||ty<65||ty>h-25){const dx=tx-w/2,dy=ty-h/2,t=Math.min((w/2-25)/Math.max(1,Math.abs(dx)),(h/2-70)/Math.max(1,Math.abs(dy)));const ex=w/2+dx*t,ey=h/2+dy*t;ctx.save();ctx.translate(ex,ey);ctx.rotate(Math.atan2(dy,dx));ctx.fillStyle='#ffe1a2';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-5,-6);ctx.lineTo(-5,6);ctx.closePath();ctx.fill();ctx.restore();}}
   const renderables=buildings.map(b=>({b,depth:b.y+b.h-.2}));
   for(const o of objects)if(o.dead<=time&&!(o.type==='boss'&&s.boss))renderables.push({o,depth:o.y+.9});
@@ -338,28 +307,53 @@ function draw(){
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the Hollow King']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
 }
+const playerMotion={phase:0,moving:false,running:false,speed:0,blend:0,heading:0};
+function renderRun(){const button=$('runButton');if(!button)return;const energy=Math.max(0,Math.min(100,s.runEnergy??100)),shown=Math.ceil(energy),key=s.runEnabled+':'+shown;if(button.dataset.value===key)return;button.dataset.value=key;button.setAttribute('aria-pressed',String(s.runEnabled));button.setAttribute('aria-label',(s.runEnabled?'Disable':'Enable')+' running. Run energy '+shown+' percent.');$('runLabel').textContent=s.runEnabled?'Run on':'Run off';$('runEnergy').textContent=shown+'%';button.style.setProperty?.('--energy',energy+'%');}
+function toggleRun(){s.runEnabled=!s.runEnabled;if(s.runEnabled&&s.runEnergy<1){s.runEnabled=false;toast('Catch your breath. Run energy recovers while walking or resting.');}renderRun();save();}
+function advanceMovement(dt){
+ let remaining=dt,travelled=0,runningTime=0,walkingTime=0;
+ while(remaining>1e-7){
+  let distance=Math.hypot(s.x-px,s.y-py);
+  if(distance<1e-6){
+   px=s.x;py=s.y;if(!path.length)break;
+   const next=path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
+   if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
+  }
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4:2;
+  const used=Math.min(remaining,distance/speed,running?s.runEnergy/1.8:Infinity),step=Math.min(distance,used*speed);
+  playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
+  travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?2.4:1.5))%1;playerMotion.running=running;
+  if(running){runningTime+=used;s.runEnergy=Math.max(0,s.runEnergy-used*1.8);if(s.runEnergy<1e-6){s.runEnergy=0;s.runEnabled=false;toast('Out of run energy. Walking while you recover.');}}
+  else walkingTime+=used;
+  remaining-=used;
+  if(step>=distance-1e-6){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length){arrive();break;}}
+ }
+ s.runEnergy=Math.min(100,s.runEnergy+walkingTime*2.5+Math.max(0,dt-runningTime-walkingTime)*5);
+ playerMotion.moving=travelled>0;playerMotion.speed=travelled/Math.max(dt,.001);playerMotion.blend+=(Number(playerMotion.moving)-playerMotion.blend)*Math.min(1,dt*14);renderRun();return travelled>0;
+}
 function frame(now){
   const dt=Math.min((now-last)/1000||0,.05);last=now;
   if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
-    time+=dt;const moving=Math.hypot(px-s.x,py-s.y)>.005;
-    if(moving){const d=Math.hypot(s.x-px,s.y-py),step=Math.min(d,dt*5);px+=(s.x-px)/d*step;py+=(s.y-py)/d*step;if(step===d){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length)arrive();}}
-    else if(path.length){const next=path.shift();if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;}
-    else if(target){
+    time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
+    if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
       else{elapsed+=dt;const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[target.type]||'Combat';const duration=fighter(target)?(combatStyle()==='magic'?1.35:combatStyle()==='ranged'?1:1.15):Math.max(.8,2.3-(lv(skill)-1)*.1);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
     updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
+    for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
     for(const o of objects){if(o.dead&&o.dead<=time){o.dead=0;o.hp=o.maxhp;o.x=o.homeX;o.y=o.homeY;o.drawX=o.x;o.drawY=o.y;}o.drawX+=(o.x-o.drawX)*Math.min(1,dt*10);o.drawY+=(o.y-o.drawY)*Math.min(1,dt*10);}
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
     saveClock+=dt;if(saveClock>10){saveClock=0;save();}
   }
+  if($('modal').open||$('creator').open||$('spiritsDialog').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
   if(assetsReady)draw();requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(c=>c.classList.toggle('selected',c===b));renderPanel();});
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
-$('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=14;close();renderTutorial();$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
+$('runButton').onclick=toggleRun;
+$('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length;close();renderTutorial();$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});
@@ -368,7 +362,7 @@ document.addEventListener('visibilitychange',()=>{save();last=performance.now();
 document.addEventListener('keydown',e=>{
   if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
   const key=e.key.toLowerCase();const d={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key]||({w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]})[key];
-  if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(key==='e')eat();
+  if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
 });
 async function boot(){
   try{await initializeCloud();}catch(error){
@@ -376,7 +370,7 @@ async function boot(){
     $('loading').innerHTML=needsSignIn?'<p>Your signed-in account is unavailable. Reopen Emberfall from ChatGPT, then try again.</p><button id="retryCloud">Retry account connection</button>':'<p>Your account save could not load. Your saved character has not been replaced.</p><button id="retryCloud">Retry</button>';
     $('retryCloud').onclick=()=>location.reload();cloudStatus(needsSignIn?'Sign in to continue':'Could not load account save');return;
   }
-  setupExpandedWorld();setupSpirits();setupLoot();if(s.tutorialReward&&s.tutorial===8)s.tutorial=14;initHud();resize();renderUI();renderAction();
+  setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();initHud();resize();renderUI();renderAction();
   try{
     const names=['characters','environment','terrain','items','poses','walking','spirits','heroes','monsters'];
     await Promise.all(names.map(name=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{art[name]=img;resolve();};img.onerror=reject;img.src='assets/'+name+'.png';})));

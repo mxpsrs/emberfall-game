@@ -68,7 +68,15 @@ for name in village+nature+['Hair_SimpleParted','Hair_Long','Hair_Beard','Hair_B
 
 def rotation(axis,angle):
     c,s=math.cos(angle),math.sin(angle)
-    return np.array([[1,0,0,0],[0,c,-s,0],[0,s,c,0],[0,0,0,1]]) if axis=='x' else np.array([[c,-s,0,0],[s,c,0,0],[0,0,1,0],[0,0,0,1]])
+    if axis=='x':return np.array([[1,0,0,0],[0,c,-s,0],[0,s,c,0],[0,0,0,1]])
+    if axis=='y':return np.array([[c,0,s,0],[0,1,0,0],[-s,0,c,0],[0,0,0,1]])
+    return np.array([[c,-s,0,0],[s,c,0,0],[0,0,1,0],[0,0,0,1]])
+
+def align_segment(rest_matrix,source,target,position):
+    a=source/np.linalg.norm(source);b=target/np.linalg.norm(target);v=np.cross(a,b);c=np.clip(np.dot(a,b),-1,1)
+    skew=np.array([[0,-v[2],v[1]],[v[2],0,-v[0]],[-v[1],v[0],0]])
+    r=np.eye(3)+skew+skew@skew/max(1e-7,1+c)
+    m=rest_matrix.copy();m[:3,:3]=r@rest_matrix[:3,:3];m[:3,3]=position;return m
 
 for sex in ['Male','Female']:
     model=LocalModel(next(SOURCE.rglob('Superhero_'+sex+'_FullBody.gltf')));g=model.g;rest=model.pose();skin=g['skins'][0];joints=skin['joints'];bind=model.acc(skin['inverseBindMatrices']).reshape(-1,4,4).transpose(0,2,1)
@@ -86,20 +94,44 @@ for sex in ['Male','Female']:
                         elif y<1.48 and abs(x)<.62:part['c'][i]=[.34,.42,.43];part['f'][i]=part['c'][i];part['t'][i]=20
                 parts.append(part)
     avatar={'headBind':np.linalg.inv(rest[names['Head']])[:3,:].ravel().tolist(),'mesh':encode(parts,avatar=True),'clips':{},'joints':len(joints),'head':len(joints),'right':len(joints)+1,'left':len(joints)+2,'count':len(joints)+3}
-    for clip,duration in [('idle',2),('walk',.8),('melee',.65),('ranged',.8),('magic',1)]:
-        frames=25;poses=[]
+    for clip,duration in [('idle',2),('walk',.75),('run',.6),('melee',.65),('ranged',.8),('magic',1)]:
+        frames=49;poses=[]
         for f in range(frames):
-            phase=f/(frames-1);stride=math.sin(phase*math.pi*2) if clip=='walk' else 0;strike=math.sin(phase*math.pi)
+            phase=f/(frames-1);locomotion=clip in ['walk','run'];running=clip=='run';stride=math.sin(phase*math.pi*2) if locomotion else 0;strike=math.sin(phase*math.pi)
             posed={}
+            def leg(side,parent):
+                thigh=names['thigh_'+side];calf=names['calf_'+side];foot=names['foot_'+side]
+                hip=(visit(parent)@np.linalg.inv(rest[parent])@rest[thigh])[:3,3]
+                cycle=(phase+(0 if side=='l' else .5))%1;stance=.34 if running else .52;length=2.4 if running else 1.5
+                if cycle<stance:
+                    forward=length*(stance*.5-cycle);lift=0
+                else:
+                    t=(cycle-stance)/(1-stance);ease=t*t*(3-2*t)
+                    forward=length*stance*(ease-.5);lift=(.27 if running else .13)*math.sin(t*math.pi)**1.4
+                ankle=rest[foot][:3,3].copy();ankle[2]=rest[thigh][2,3]+forward;ankle[1]+=.008+lift
+                upper=rest[calf][:3,3]-rest[thigh][:3,3];lower=rest[foot][:3,3]-rest[calf][:3,3];l1=np.linalg.norm(upper);l2=np.linalg.norm(lower)
+                delta=ankle-hip;d=min(np.linalg.norm(delta),l1+l2-.002);axis=delta/np.linalg.norm(delta);ankle=hip+axis*d
+                along=(l1*l1-l2*l2+d*d)/(2*d);height=math.sqrt(max(0,l1*l1-along*along));pole=np.array([0.,0.,1.]);pole-=axis*np.dot(pole,axis);pole/=np.linalg.norm(pole)
+                knee=hip+axis*along+pole*height
+                posed[thigh]=align_segment(rest[thigh],upper,knee-hip,hip)
+                posed[calf]=align_segment(rest[calf],lower,ankle-knee,knee)
+                posed[foot]=rest[foot].copy();posed[foot][:3,3]=ankle
             def visit(i):
                 if i in posed:return posed[i]
-                parent=model.parent.get(i);m=visit(parent)@np.linalg.inv(rest[parent])@rest[i] if parent is not None else rest[i].copy();name=g['nodes'][i]['name'];mods=[]
+                parent=model.parent.get(i);name=g['nodes'][i]['name']
+                if locomotion and name.startswith('thigh_'):
+                    leg(name[-1],parent);return posed[i]
+                parent_pose=visit(parent) if parent is not None else None
+                if i in posed:return posed[i]
+                m=parent_pose@np.linalg.inv(rest[parent])@rest[i] if parent is not None else rest[i].copy();mods=[]
+                if name=='pelvis':
+                    m[1,3]+=(-.10+(.07 if running else .012)*(1-math.cos(phase*math.pi*4))) if locomotion else .008*math.sin(phase*math.pi*2)
+                    if locomotion:mods=[('x',.12 if running else .025),('y',stride*.035)]
+                if name.startswith('spine_') and locomotion:mods=[('y',-stride*.025)]
                 if name.startswith('upperarm_'):
-                    side=1 if name.endswith('_l') else -1;mods=[('z',-side*1.30),('x',stride*side*.48)]
+                    side=1 if name.endswith('_l') else -1;mods=[('z',-side*1.46),('x',stride*side*(.50 if running else .26))]
                     if clip in ['melee','magic','ranged']:mods.append(('x',(-1.6 if name.endswith('_r') else -.65)*strike))
-                if name.startswith('lowerarm_'):mods=[('x',-.12-(strike*.75 if clip in ['melee','magic','ranged'] else 0))]
-                if name.startswith('thigh_'):mods=[('x',stride*(1 if name.endswith('_l') else -1)*.58)]
-                if name.startswith('calf_'):mods=[('x',max(0,-stride*(1 if name.endswith('_l') else -1))*.65)]
+                if name.startswith('lowerarm_'):mods=[('x',-(.95 if running else .38 if locomotion else .22)-(strike*.75 if clip in ['melee','magic','ranged'] else 0))]
                 for axis,angle in mods:
                     pivot=m[:3,3].copy();m=rotation(axis,angle)@m;m[:3,3]=pivot
                 posed[i]=m;return m

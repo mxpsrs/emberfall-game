@@ -79,6 +79,7 @@ function enterInterior(o){s.returnPoint=[s.x,s.y];activateScene(o.destination);t
 function leaveInterior(){if(inWorld())return;const point=s.returnPoint||[14,17];activateScene('overworld',point[0],point[1]);}
 function returnToVillage(){activateScene('overworld',14,17);}
 function handleWorldInteraction(o){
+ if(handleTutorialInteraction(o))return true;
  if(o.type==='questgiver'){frontierTalk(o);return true;}
  if(o.type==='loot'){pickupGroundLoot(o);return true;}
  if(o.type==='spirit'){collectSpirit(o);return true;}

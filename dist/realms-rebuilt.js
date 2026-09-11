@@ -70,6 +70,7 @@ building3=function(r,b){
 const propBeforeRebuild=prop3;
 prop3=function(r,o,x,z){
  let name,height;
+ if(o.type==='practiceForge')return propBeforeRebuild(r,{...o,type:'forge'},x,z);
  if(o.type==='tree'){const race=o.race||realmArtRace(x,z);name=race==='elf'?'TwistedTree_1':/pine/i.test(o.name)?(o.id%2?'Pine_1':'Pine_3'):(o.id%2?'CommonTree_1':'CommonTree_4');height=race==='elf'?7:5+(o.id%4)*.4;}
  else if(o.type==='ore'||o.name==='Mountain outcrop'){name=o.id%2?'Rock_Medium_1':'Rock_Medium_3';height=o.type==='ore'?.65:3;}
  else if(o.type==='prop'&&/fence/i.test(o.name)){name='Prop_WoodenFence_Single';height=1;}
@@ -79,7 +80,7 @@ prop3=function(r,o,x,z){
 };
 const crossingsBeforeRebuild=drawRealmCrossings,rebuiltGround=new Map();
 drawRealmCrossings=function(r){crossingsBeforeRebuild(r);let count=0;for(let x=Math.floor((px-15)/3)*3;x<px+15;x+=3)for(let z=Math.floor((py-15)/3)*3;z<py+15;z+=3){
- if(count>=65||x<1||z<1||terrainType(x,z)!==0||Math.abs(Math.sin(x*78.3+z*31.7))<.35||buildings.some(b=>x>b.x-1&&x<b.x+b.w+1&&z>b.y-1&&z<b.y+b.h+1))continue;
+ if(count>=65||x<1||z<1||terrainType(x,z)!==0||roadInfluence(x,z)[0]>.15||Math.abs(Math.sin(x*78.3+z*31.7))<.35||buildings.some(b=>x>b.x-1&&x<b.x+b.w+1&&z>b.y-1&&z<b.y+b.h+1))continue;
  const p=project3(x,0,z);if(p.x< -40||p.x>screen.w+40||p.y< -40||p.y>screen.h+40)continue;count++;
  const id=x+':'+z;let key=rebuiltGround.get(id);if(!key){key={};rebuiltGround.set(id,key);if(rebuiltGround.size>200)rebuiltGround.delete(rebuiltGround.keys().next().value);}
  emitMesh3(r,cachedMesh3(key,'prop',q=>{rebuiltPlace(q,(x+z)%7===0?'Fern_1':(x+z)%5===0?'Flower_3_Group':'Grass_Wispy_Short',x+.2,0,z+.1,.28+(Math.abs(x+z)%3)*.04,x+z);return .4;}));
@@ -89,29 +90,35 @@ drawRealmWall=function(r,x,z){const id=currentScene+':'+x+':'+z;let key=realmArt
 let creatorDraft=null;
 const rebuiltPoses=new Map();
 function avatarPose(sex,clip,phase,gear,look){
- const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)))),key=[sex,clip,frame,look,gear.body,gear.feet,gear.head].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
+ const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)))),key=[sex,clip,frame,look,gear.body,gear.feet,gear.head,gear._cloth].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
  const mesh=a.mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t),off=frame*a.count*12,m=motion.m;
  const cloth=[[.22,.38,.50],[.47,.20,.20],[.23,.39,.26],[.36,.26,.46]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
   const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
-  if(torso){const color=gear.body==='mageRobe'?[.30,.24,.40]:gear.body==='leatherArmor'?[.38,.24,.14]:cloth;for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
+  if(torso){const color=gear._cloth|| (gear.body==='mageRobe'?[.30,.24,.40]:gear.body==='leatherArmor'?[.38,.24,.14]:cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
   else if(y>1.49||Math.abs(x)>.70){for(let j=0;j<3;j++){c[i+j]*=skin[j];f[i+j]*=skin[j];}}
   if(feet&&gear.feet){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.20,.13,.08][j];t[v]=20;}
   const expand=torso?(y<1.02?.055:.027):feet&&gear.feet?.018:0;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=off+mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(m[k]*(x+mesh.n[i]*expand)+m[k+1]*(y+mesh.n[i+1]*expand)+m[k+2]*(mesh.p[i+2]+mesh.n[i+2]*expand)+m[k+3]);n[i+axis]+=weight*(m[k]*mesh.n[i]+m[k+1]*mesh.n[i+1]+m[k+2]*mesh.n[i+2]);}}
  }
- const result={...mesh,p,n,c,f,t,pose:m.subarray(off,off+a.count*12),avatar:a};rebuiltPoses.set(key,result);if(rebuiltPoses.size>48)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
+ const result={...mesh,p,n,c,f,t,pose:m.subarray(off,off+a.count*12),avatar:a};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
 }
 function affineMultiply(a,b){const m=new Float32Array(12);for(let row=0;row<3;row++)for(let col=0;col<4;col++){m[row*4+col]=(col===3?a[row*4+3]:0);for(let k=0;k<3;k++)m[row*4+col]+=a[row*4+k]*b[k*4+col];}return m;}
 const hairPalette=[[.30,.20,.12],[.45,.22,.12],[.10,.10,.11],[.67,.68,.65]],hairTintCache=new Map();
 function tintedHair(name,look){const key=name+':'+look%4;if(!hairTintCache.has(key)){const m=rebuiltModels[name],t=hairPalette[look%4];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
+ r=groundedPainter(r,x,z);
  if(gear._bones)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3},race=identity.race||gear._race||'human',sex=identity.frame||'male';
- const clip=attack>.01?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':'melee'):walk?'walk':'idle',phase=attack>.01?Math.min(.99,Math.max(0,gear===s.equipment?(time-lastAttack)/.42:attack*.8)):walk?(walk/10/.8)%1:(time/2)%1;
- const mesh=avatarPose(sex,clip,phase,gear,look),k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));briarEmit(r,mesh,root);
+ const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01;
+ const clip=attack>.01?(gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':'melee'):(locomotion?(playerMotion.running?'run':'walk'):walk?'walk':'idle'),phase=attack>.01?Math.min(.99,Math.max(0,player?(time-lastAttack)/.42:attack*.8)):locomotion?playerMotion.phase:walk?(walk/10/.75)%1:(time/2)%1;
+ let mesh=avatarPose(sex,clip,phase,gear,look);
+ if(player&&locomotion&&attack<=.01&&playerMotion.blend<.999){const idle=avatarPose(sex,'idle',(time/2)%1,gear,look),t=playerMotion.blend;mesh={...mesh,p:Float32Array.from(mesh.p,(v,i)=>idle.p[i]*(1-t)+v*t),n:Float32Array.from(mesh.n,(v,i)=>idle.n[i]*(1-t)+v*t),pose:Float32Array.from(mesh.pose,(v,i)=>idle.pose[i]*(1-t)+v*t)};}
+ const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
+ if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3),headTransform);
+ if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
  if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head){const indices=[];for(let j=0;j<mesh.i.length;j+=3){const ids=[mesh.i[j],mesh.i[j+1],mesh.i[j+2]],y=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+1],0)/3,z=ids.reduce((s,v)=>s+mesh.avatar.mesh.p[v*3+2],0)/3;if(y>1.62&&(y>1.74||z<.035))indices.push(...ids);}const p=Float32Array.from(mesh.p,(v,i)=>v+mesh.n[i]*.017),c=Float32Array.from(mesh.c,(_,i)=>[.48,.53,.55][i%3]);briarEmit(r,{...mesh,p,c,f:c,t:new Uint8Array(mesh.t.length).fill(20),i:new Uint16Array(indices)},root);}
@@ -125,4 +132,4 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
 };
 
 let REALM_ATLAS_IMAGE=null;
-function startRebuiltRealm(){if(typeof Image==='undefined'){boot();return;}REALM_ATLAS_IMAGE=new Image();REALM_ATLAS_IMAGE.onload=()=>boot();REALM_ATLAS_IMAGE.onerror=()=>{$('loading').innerHTML='The world textures could not load. <button id="retryArt">Retry</button>';$('retryArt').onclick=startRebuiltRealm;};REALM_ATLAS_IMAGE.src='assets/realms/atlas.png';}
+function startRebuiltRealm(){if(typeof Image==='undefined'){boot();return;}REALM_ATLAS_IMAGE=new Image();REALM_ATLAS_IMAGE.onload=()=>{if(window.matchMedia('(pointer: coarse)').matches){const source=REALM_ATLAS_IMAGE,small=document.createElement('canvas');small.width=small.height=2048;small.getContext('2d').drawImage(source,0,0,2048,2048);source.onload=null;REALM_ATLAS_IMAGE=small;}boot();};REALM_ATLAS_IMAGE.onerror=()=>{$('loading').innerHTML='The world textures could not load. <button id="retryArt">Retry</button>';$('retryArt').onclick=startRebuiltRealm;};REALM_ATLAS_IMAGE.src='assets/realms/atlas.png';}

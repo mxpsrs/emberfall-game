@@ -8,7 +8,25 @@ function expandPhysicalWorld(world){if(physicalWorldReady)return;physicalWorldRe
  for(const [ax,az,bx,bz]of realmRoads){if(az===bz&&az<447&&az>15&&Math.min(ax,bx)<540&&Math.max(ax,bx)>549)realmArtCrossings.push({x:544.5,z:az,w:11,d:4});if(ax===bx&&ax>135&&ax<1095&&Math.min(az,bz)<450&&Math.max(az,bz)>459)realmArtCrossings.push({x:ax,z:454.5,w:4,d:11});}
 }
 const waterBeforeWalkIn=expandedWater;
-expandedWater=function(x,z){if(!physicalWorldReady)return waterBeforeWalkIn(x,z);if(!inWorld())return false;const a=x/3,b=z/3;if(a<96&&b<84)return borderWater(a,b);if(onRealmRoad(x,z)||SETTLEMENTS.some(t=>Math.hypot((x-t.x)/3,(z-t.y)/3)<32))return false;return (b>=150&&b<=153&&a>45&&a<365)||(a>=180&&a<=183&&b>5&&b<149)||(a>340&&b>170);};
+function worldWaterSurface(x,z){
+ if(!physicalWorldReady)return waterBeforeWalkIn(x,z);if(!inWorld())return false;
+ const a=x/3,b=z/3;
+ if(x<6+2*Math.sin(z*.07)||z<5+2*Math.sin(x*.055)||x>1145+2*Math.sin(z*.04)||z>761+2*Math.cos(x*.04))return true;
+ if(a<96&&b<84){
+  const lake=Math.pow((x-15.5)/10.5,2)+Math.pow((z-66.5)/11.5,2)<1+.09*Math.sin(x*.53+z*.36);
+  const pond=Math.pow((x-141)/15,2)+Math.pow((z-132)/13.5,2)<1+.08*Math.sin(x*.28-z*.37);
+  return lake||pond||Math.abs(x-(111.5+1.25*Math.sin((z-52)*.055)))<3.6&&z>3&&z<177;
+ }
+ if(SETTLEMENTS.some(t=>Math.hypot((x-t.x)/3,(z-t.y)/3)<32))return false;
+ return (Math.abs(z-(454.5+2.5*Math.sin(x*.015)))<4.5&&a>45&&a<365)||(Math.abs(x-(544.5+2*Math.sin(z*.021)))<4.5&&b>5&&b<149)||(a>340&&b>170);
+}
+const villageBridges=[{x:111.5,z:51.5,span:16,width:6,eastWest:true},{x:111.5,z:105.5,span:16,width:6,eastWest:true}];
+function bridgesInRealm(){return [...villageBridges,...(realmArtCrossings||[]).map(b=>({x:b.x,z:b.z,span:Math.max(b.w,b.d)+6,width:Math.min(b.w,b.d),eastWest:b.w>b.d}))];}
+function bridgeAt(x,z){if(!inWorld()||!physicalWorldReady)return null;return bridgesInRealm().find(b=>Math.abs(b.eastWest?x-b.x:z-b.z)<=b.span/2&&Math.abs(b.eastWest?z-b.z:x-b.x)<b.width/2-.18);}
+expandedWater=function(x,z){return worldWaterSurface(x,z)&&!bridgeAt(x+.5,z+.5);};
+function bridgeDeckHeight(b,x,z){const u=Math.max(0,Math.min(1,((b.eastWest?x-b.x:z-b.z)+b.span/2)/b.span)),a=landHeight(b.x-(b.eastWest?b.span/2:0),b.z-(b.eastWest?0:b.span/2)),c=landHeight(b.x+(b.eastWest?b.span/2:0),b.z+(b.eastWest?0:b.span/2));return a*(1-u)+c*u+.06+.65*Math.sin(u*Math.PI);}
+function walkSurfaceHeight(x,z){const b=bridgeAt(x,z);return b?bridgeDeckHeight(b,x,z):landHeight(x,z);}
+
 const kingdomBeforeWalkIn=kingdomAt;
 kingdomAt=function(x,z){return kingdomBeforeWalkIn(physicalWorldReady?x/3:x,physicalWorldReady?z/3:z);};
 const settlementBeforeWalkIn=settlementAt;
@@ -88,4 +106,25 @@ const regionBeforeWalkIn=regionInfo;
 regionInfo=function(){if(inWorld()&&s.insideBuilding){const b=buildings.find(b=>b.service?.destination===s.insideBuilding);if(b)return [b.name,'Walk through the door to return outside'];}return regionBeforeWalkIn();};
 returnToVillage=function(){activateScene('overworld',42,51);};
 
-bridge3=function(r,z){realmBridge(r,112.5,z+4.5,11,8,true);};
+bridge3=function(r,z){realmBridge(r,111.5,z+3.5,16,6,true);};
+
+// The arch, parapets and walking deck share the same world-space profile.
+realmBridge=function(r,x,z,span,width,eastWest){
+ const b={x,z,span,width,eastWest},at=(u,v,h=0)=>{const xx=x+(eastWest?u:v),zz=z+(eastWest?v:u);return [xx,bridgeDeckHeight(b,xx,zz)+h-landHeight(xx,zz),zz];},stone=materialRealm(r,18),courses=Math.ceil(span/.7);
+ for(let i=0;i<courses;i++){
+  const a=-span/2+i*span/courses,c=-span/2+(i+1)*span/courses;
+  stone.face([at(a,-width/2),at(c,-width/2),at(c,width/2),at(a,width/2)],'#999c8c');
+  for(const side of [-1,1]){
+   const v=side*width/2,inside=v-side*.23;
+   stone.face([at(a,v,-.4),at(c,v,-.4),at(c,v,.63),at(a,v,.63)],'#969b8c');
+   stone.face([at(a,inside),at(a,inside,.63),at(c,inside,.63),at(c,inside)],'#a2a694');
+   stone.face([at(a,v,.65),at(c,v,.65),at(c,inside,.65),at(a,inside,.65)],'#b6b8a1');
+  }
+ }
+ // Curved masonry soffit leaves an actual open arch over the river.
+ for(const side of [-1,1])for(let i=0;i<20;i++){
+  const a=-span*.34+i*span*.68/20,c=-span*.34+(i+1)*span*.68/20,v=side*(width/2-.08),arch=u=>-.38-Math.pow(Math.abs(u)/(span*.34),3)*2.4;
+  stone.face([at(a,v,-.37),at(c,v,-.37),at(c,v,arch(c)),at(a,v,arch(a))],'#828b80');
+ }
+ return 2;
+};

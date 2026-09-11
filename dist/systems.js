@@ -1,6 +1,6 @@
 'use strict';
 const COMBAT_SKILLS=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'];
-const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Bury bones for XP. Adds spiritual protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
+const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Bury bones and form first spirit bonds for XP. Adds spiritual protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
 function combatLevel(){return 1+Math.floor((lv('Hitpoints')-1)*.15+(lv('Attack')-1)*.2+(lv('Strength')-1)*.2+(lv('Defense')-1)*.2+(lv('Worship')-1)*.05+(lv('Magic')-1)*.1+(lv('Ranged')-1)*.1+1e-9);}
 function migrateCombatSkills(state,original=state){
  const old=original?.xp||{},legacy=Math.max(0,Number(old.Combat)||0);state.xp=state.xp||{};
@@ -19,7 +19,7 @@ function awardCombatDamage(damage,style,focus=trainingFocus(style)){
   if(skill)gain(skill,xp,true);else for(const skill of ['Attack','Strength','Defense'])gain(skill,damage,true);
  }else{const skill=style==='magic'?'Magic':'Ranged';if(focus==='defensive'){gain(skill,damage*2,true);gain('Defense',damage,true);}else gain(skill,xp,true);}
 }
-function buryBones(){if((s.bag.bones||0)<1)return false;s.bag.bones--;gain('Worship',18);floating('+18 Worship',px,py,'#dbc58a');toast('Bones buried · +18 Worship XP');renderUI();save();return true;}
+function buryBones(){if((s.bag.bones||0)<1)return false;s.bag.bones--;gain('Worship',18);tutorialEvent('bury');floating('+18 Worship',px,py,'#dbc58a');toast('Bones buried · +18 Worship XP');renderUI();save();return true;}
 function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'Attack':style==='magic'?'Magic':'Ranged');return Math.max(.35,Math.min(.97,.84+(level-(o.level||1))*.025));}
 function enemyAccuracy(o){return Math.max(.2,Math.min(.94,.83+((o.level||1)-lv('Defense'))*.025));}
 function playerMaxHit(style=combatStyle()){return spiritBonus(style)+(style==='magic'?currentSpell().power+magicBonus():3)+lv(style==='magic'?'Magic':style==='ranged'?'Ranged':'Strength')+equippedWeapon().power+2;}
@@ -66,8 +66,12 @@ function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
  if(item.slot)actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(item.slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
- else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(s.hp>=maxhp()){toast('Your health is full.');return false;}if(id==='fish')eat();else{s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
+ else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(id==='fish')eat();else{if(s.hp>=maxhp()){toast('Your health is full.');return false;}s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
  else if(id==='bones')actions.push(['Bury',buryBones]);
+ else if(id==='logs')actions.push(['Light fire',lightLog]);
+ else if(id==='rawTrout')actions.push(['Cook',cookTrout]);
+ else if(id==='ore'||id==='ironBar')actions.push([id==='ore'?'Smelt':'Smith arrowheads',workPracticeForge]);
+ else if(id==='arrowheads')actions.push(['Make arrows',finishArrows]);
  else actions.push(['Examine',()=>{toast(item.name+': '+item.desc);return true;}]);
  if(!worn)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
  return actions;
@@ -123,7 +127,7 @@ function awardDefeat(o,style){
  o.dead=time+(o.type==='dummy'?8:25);monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
- else if(o.kind==='dummy'){if(s.tutorial===5)s.hp=Math.max(1,Math.min(s.hp,maxhp()-6));tutorialEvent('dummy');toast('Training complete. Try your food button to heal.');}
+ else if(o.kind==='dummy'){tutorialEvent('dummy');toast('Training complete.');}
  else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · Loot on the ground');}
  stop();
 }
@@ -133,6 +137,7 @@ function performAttack(o){
  if(style==='ranged'&&s.bag.arrows<1){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
  if(style==='magic'&&(lv('Magic')<spell.level||s.bag.runes<spell.cost)){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  if(style==='ranged')s.bag.arrows--;if(style==='magic')s.bag.runes-=spell.cost;
+ if(style==='magic'){gain('Magic',4,true);tutorialEvent('magic');}
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
  const damage=Math.random()<playerAccuracy(o,style)?1+Math.floor(Math.random()*Math.max(1,maxHit)):0;
  lastAttack=time;facing=o.x<s.x?-1:1;

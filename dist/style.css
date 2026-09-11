@@ -67,3 +67,12 @@ body{height:100dvh}#fullscreenButton{position:absolute;top:124px;left:8px;z-inde
  .region{max-width:calc(50% - 115px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  #trainingFocus{font-size:14px;min-height:36px}
 }
+
+/* Game gestures never start Safari text selection or callouts. */
+#game,dialog{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+#runButton{--energy:100%;position:absolute;right:12px;top:205px;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:110px;min-height:44px;padding:8px 10px;background:linear-gradient(90deg,#405d3c var(--energy),#1c2c27 var(--energy));border:1px solid #8c9b6e;font-size:13px}
+#runButton[aria-pressed="true"]{border-color:#e2c279;box-shadow:inset 0 0 0 1px #d1b46b}#runEnergy{font-variant-numeric:tabular-nums;color:#efdcad;font-weight:600}
+.bankcolumns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bankcolumns h3{font:18px Georgia,serif;margin:12px 0}.bankcolumns button{font-size:13px;min-height:44px;margin:4px 0;text-align:left;width:100%}
+@media(pointer:coarse) and (orientation:landscape){#waveButton{display:none}#runButton{top:170px;right:12px;min-width:112px}}
+@media(max-height:360px){#runButton{top:146px;right:12px}#waveButton{display:none}}

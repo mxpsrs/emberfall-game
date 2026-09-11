@@ -91,7 +91,7 @@ function drawRealmCrossings(r){
   if(ay===by&&ay<149&&ay>5&&Math.min(ax,bx)<180&&Math.max(ax,bx)>183)crossings.set('east:'+ay,{x:181.5,z:ay,w:4.4,d:3.1});
   if(ax===bx&&ax>45&&ax<365&&Math.min(ay,by)<150&&Math.max(ay,by)>153)crossings.set('south:'+ax,{x:ax,z:151.5,w:3.1,d:4.4});
  }realmArtCrossings=[...crossings.values()];}
- for(const b of realmArtCrossings){const p=project3(b.x,0,b.z);if(p.x< -180||p.x>screen.w+180||p.y< -180||p.y>screen.h+180)continue;emitMesh3(r,cachedMesh3(b,'prop',r=>realmBridge(r,b.x,b.z,Math.max(b.w,b.d),Math.min(b.w,b.d),b.w>b.d)));}
+ for(const b of realmArtCrossings){const p=project3(b.x,0,b.z);if(p.x< -180||p.x>screen.w+180||p.y< -180||p.y>screen.h+180)continue;emitMesh3(r,cachedMesh3(b,'prop',r=>realmBridge(r,b.x,b.z,Math.max(b.w,b.d)+6,Math.min(b.w,b.d),b.w>b.d)));}
 }
 
 const realmArtWalls=new Map();
