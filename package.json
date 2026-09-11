@@ -1,1 +1,18 @@
-{"name":"emberfall","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","db:generate":"drizzle-kit generate"},"dependencies":{"drizzle-orm":"0.45.2"},"devDependencies":{"drizzle-kit":"0.31.10","@napi-rs/canvas":"0.1.80"}}
+{
+  "name": "emberfall",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "db:generate": "drizzle-kit generate",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "0.1.80",
+    "drizzle-kit": "0.31.10",
+    "vite": "^8.3.0"
+  }
+}
