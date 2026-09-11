@@ -27,7 +27,7 @@ function rebuiltRoof(r,x,y,z,w,d,rise,color){
  beamArt(tiles,[x,y+rise+.06,z-depth/2],[x,y+rise+.06,z+depth/2],.12,shade3(color,.82),6);
 }
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
- const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||b.archetype==='temple',wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,wallScale=scale*.85,level=2.65*scale;
+ const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||['temple','castle'].includes(b.archetype),wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,wallScale=scale*.85,level=2.65*scale;
  const floors=b._cutaway?1:tower?3:castle?2:['hall','temple'].includes(b.archetype)||b.archetype==='inn'&&b.variant%2===0?2:1+(b.archetype==='house'&&b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
  if(b.walkIn){for(let zz=b.y+.15;zz<b.y+d-.15;zz+=1)for(let xx=b.x+.15;xx<b.x+w-.15;xx+=1)r.face([[xx,.055,zz],[xx,.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,zz]],'#9b8465',null,b.archetype==='forge'?3:5);}
  for(let floor=0;floor<floors;floor++){
@@ -73,20 +73,15 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  // Roof tiles keep a human-scale size as the footprint grows.
  const roofY=floors*level-.04,roofRise=tower?1.65:castle?Math.min(5,w*.18):Math.min(3.0,1.25+w*.11);
  const tileColor=race==='elf'?'#45635b':race==='dwarf'||b.archetype==='forge'?'#59636b':b.variant%3===1?'#746555':'#9b5038';
- rebuiltRoof(r,x,roofY,z,w,d,roofRise,tileColor);
- if(!tower)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
+ const actualRoofTop=worldHouseRoof(r,b,roofY,roofRise,tileColor);
+ if(!tower&&!b._castleCurtain)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
  if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltPlace(r,'Prop_Vine1',x+side*w*.35,level*.45,z+d*.5+.08,scale*.9);
- return roofY+roofRise;
+ return Math.max(roofY+roofRise,actualRoofTop);
 }
 building3=function(r,b){
  const kind=b.archetype;
  if(b.arch||/crypt|ruins/i.test(b.name)){const k=b.w/2;rebuiltPlace(r,'Wall_Arch',b.x+b.w/2,0,b.y+b.h/2,k,0,1.1);b.visualHeight=3.3;return 3.3;}
- if(kind==='castle'){
-  // A broad central hall with four full-height corner towers.
-  let top=rebuiltHouse(r,{...b,x:b.x+1.2,y:b.y+1.2,w:b.w-2.4,h:b.h-2.4},{castle:true});
-  for(const sx of [-1,1])for(const sz of [-1,1]){const size=2.15;top=Math.max(top,rebuiltHouse(r,{...b,x:b.x+(sx===1?b.w-size:0),y:b.y+(sz===1?b.h-size:0),w:size,h:size},{tower:true}));}
-  b.visualHeight=top;return top;
- }
+ if(kind==='castle'){b.visualHeight=worldCastle(r,b);return b.visualHeight;}
  b.visualHeight=rebuiltHouse(r,b,{tower:/beacon/i.test(b.name)});return b.visualHeight;
 };
 
@@ -125,12 +120,7 @@ prop3=function(r,o,x,z){
  return propBeforeRebuild(r,o,x,z);
 };
 const crossingsBeforeRebuild=drawRealmCrossings,rebuiltGround=new Map();
-drawRealmCrossings=function(r){crossingsBeforeRebuild(r);let count=0;for(let x=Math.floor((px-15)/3)*3;x<px+15;x+=3)for(let z=Math.floor((py-15)/3)*3;z<py+15;z+=3){
- if(count>=65||x<1||z<1||terrainType(x,z)!==0||roadInfluence(x,z)[0]>.15||Math.abs(Math.sin(x*78.3+z*31.7))<.35||buildings.some(b=>x>b.x-1&&x<b.x+b.w+1&&z>b.y-1&&z<b.y+b.h+1))continue;
- const p=project3(x,0,z);if(p.x< -40||p.x>screen.w+40||p.y< -40||p.y>screen.h+40)continue;count++;
- const id=x+':'+z;let key=rebuiltGround.get(id);if(!key){key={};rebuiltGround.set(id,key);if(rebuiltGround.size>200)rebuiltGround.delete(rebuiltGround.keys().next().value);}
- emitMesh3(r,cachedMesh3(key,'prop',q=>{rebuiltPlace(q,(x+z)%7===0?'Fern_1':(x+z)%5===0?'Flower_3_Group':'Grass_Wispy_Short',x+.2,0,z+.1,.28+(Math.abs(x+z)%3)*.04,x+z);return .4;}));
-}};
+drawRealmCrossings=function(r){crossingsBeforeRebuild(r);drawWorldUnderstory(r);};
 drawRealmWall=function(r,x,z){const id=currentScene+':'+x+':'+z;let key=realmArtWalls.get(id);if(!key){key={};realmArtWalls.set(id,key);if(realmArtWalls.size>400)realmArtWalls.delete(realmArtWalls.keys().next().value);}emitMesh3(r,cachedMesh3(key,'prop',q=>{rebuiltPlace(q,'Wall_UnevenBrick_Straight',x+.5,0,z+.5,.5,worldWall(x-1,z)||worldWall(x+1,z)?0:Math.PI/2,.44);return 1.4;}));};
 
 let creatorDraft=null;

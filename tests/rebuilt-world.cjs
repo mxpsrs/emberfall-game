@@ -6,7 +6,7 @@ for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','tut
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
 vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
-for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
+for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 vm.runInContext(`for(const [sex,a] of Object.entries(rebuiltAvatars))for(const clip of Object.keys(a.clips))for(const phase of [0,.5,1]){const m=avatarPose(sex,clip,phase,{body:'leatherArmor',feet:'leatherBoots'},0);assert([...m.p,...m.n].every(Number.isFinite));assert(Math.max(...m.p.map(Math.abs))<5);assert([...m.i].every(i=>i<m.p.length/3));}assert(rebuiltModels.Hair_Buzzed);`,ctx);
 const calls={static:0,dynamic:0,draws:0,shadows:0,images:0};let enumId=1;const enums={};

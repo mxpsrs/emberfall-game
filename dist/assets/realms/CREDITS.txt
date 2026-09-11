@@ -7,3 +7,6 @@ Converted and adapted for Emberfall.
 Character motion: Quaternius Universal Animation Library (Standard), CC0 1.0.
 https://quaternius.itch.io/universal-animation-library
 Retargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Emberfall.
+
+Quaternius Fantasy Props MegaKit, Standard edition, CC0 1.0.
+https://quaternius.itch.io/fantasy-props-megakit

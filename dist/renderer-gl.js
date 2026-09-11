@@ -32,8 +32,20 @@ void main(){
  else if(vMaterial>16.5&&vMaterial<17.5){float rim=min(min(vUV.x,1.0-vUV.x),1.0-vUV.y);col*=.72+.28*smoothstep(.0,.075,rim);col*=.96+.055*noise(vWorld.xz*32.0);}
  else if(vMaterial>14.5&&vMaterial<16.5){float patches=noise(p*.42)*.6+noise(p*2.7)*.4;vec3 grass=mix(vec3(.19,.31,.13),vec3(.44,.53,.23),patches)*(.91+.15*noise(p*34.0));vec3 dirt=mix(vec3(.42,.34,.22),vec3(.55,.46,.31),noise(p*4.5));dirt*=.91+.13*noise(p*28.0);if(vMaterial>15.5)dirt=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;float edge=min(vUV.x,1.0-vUV.x);float wear=smoothstep(.01,.20,edge+(noise(p*8.0)-.5)*.10);col=mix(grass,dirt,wear);}
 
- else if(vMaterial>.5&&vMaterial<1.5){float patches=noise(p*.22)*.65+noise(p*2.7)*.35;col=mix(vec3(.21,.30,.15),vec3(.42,.49,.25),patches);col*=.94+.10*noise(p*30.0);float bank=vUV.y>.5?1.0-smoothstep(.4,3.8,vUV.x):0.0;vec3 earth=mix(vec3(.29,.26,.19),vec3(.48,.42,.30),noise(p*3.5));col=mix(col,earth,max(bank*.82,(1.0-smoothstep(.72,.94,n.y))*.65));if(vUV.y>.5){vec3 dirt=mix(vec3(.40,.335,.23),vec3(.48,.405,.29),noise(p*3.5));dirt*=.96+.055*noise(p*25.0);dirt+=vec3(.065,.060,.048)*smoothstep(.85,.97,noise(p*18.0));vec3 paving=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;dirt=mix(dirt,paving,vColor.g);col=mix(col,dirt,smoothstep(.05,.9,vColor.r));}}
- else if(vMaterial<2.5&&vMaterial>1.5){col=mix(vec3(.39,.30,.18),vec3(.67,.55,.34),noise(p*1.4));float gravel=step(.84,hash(floor(p*15.0)));col+=gravel*.09;}
+ else if(vMaterial>.5&&vMaterial<1.5){
+  float patches=noise(p*.15)*.55+noise(p*1.8)*.30+noise(p*.043)*.15;
+  col=mix(vec3(.23,.32,.17),vec3(.39,.46,.26),patches);
+  float forest=smoothstep(449.0,490.0,p.y)*smoothstep(135.0,175.0,p.x),mountain=smoothstep(548.0,610.0,p.x)*(1.0-smoothstep(417.0,465.0,p.y));
+  vec3 woodland=mix(vec3(.19,.29,.20),vec3(.35,.42,.25),patches);
+  vec3 moor=mix(vec3(.32,.35,.28),vec3(.43,.43,.34),patches);
+  col=mix(mix(col,woodland,forest),moor,mountain);col*=.96+.065*noise(p*25.0);
+  float bank=vUV.y>.5?1.0-smoothstep(.4,3.8,vUV.x):0.0;
+  vec3 earth=mix(vec3(.31,.28,.22),vec3(.46,.41,.32),noise(p*3.5));
+  float scree=mountain*smoothstep(.58,.82,noise(p*.23))*.42;
+  col=mix(col,earth,max(max(bank*.82,(1.0-smoothstep(.78,.97,n.y))*.7),scree));
+  if(vUV.y>.5){vec3 dirt=mix(vec3(.40,.335,.25),vec3(.47,.405,.31),noise(p*3.5));dirt*=.96+.055*noise(p*25.0);dirt+=vec3(.055,.052,.044)*smoothstep(.87,.97,noise(p*18.0));vec3 paving=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;dirt=mix(dirt,paving,vColor.g);col=mix(col,dirt,smoothstep(.05,.9,vColor.r));}
+ }
+ else if(vMaterial<2.5&&vMaterial>1.5){float earth=noise(p*.65)*.62+noise(p*4.5)*.38;col=mix(vec3(.28,.285,.255),vec3(.39,.375,.31),earth);col*=.96+.075*noise(p*18.0);}
  else if(vMaterial<3.5&&vMaterial>2.5){col=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;}
  else if(vMaterial<4.5&&vMaterial>3.5){float flow=noise(p*.18+vec2(uTime*.015,-uTime*.012));float a=dot(p,vec2(.65,.23))+uTime*.6,b=dot(p,vec2(-.19,.78))-uTime*.37;float ripple=sin(a+flow*3.0)*.018+sin(b)*.012;n=normalize(vec3(cos(a)*.035,1.0,cos(b)*.025));col=mix(vec3(.055,.20,.22),vec3(.12,.30,.29),flow)+ripple;float shallow=1.0-smoothstep(-.3,2.0,-vUV.x);col=mix(col,vec3(.23,.34,.29),shallow*.45);float foam=(1.0-smoothstep(.04,.28,abs(vUV.x)))*(.4+.6*noise(p*2.0+uTime*.1));col+=vec3(.16,.19,.15)*foam;float glint=pow(max(0.0,sin(a*2.0+sin(b))),24.0);col+=vec3(.14,.20,.18)*glint*.10;gloss=.12;}
  else if(vMaterial<5.5&&vMaterial>4.5){vec2 wood=vWorld.xz;float plank=floor(wood.x*3.0);float seam=smoothstep(.015,.06,min(fract(wood.x*3.0),1.0-fract(wood.x*3.0)));float grain=noise(vec2(wood.x*65.0,wood.y*1.6));float join=smoothstep(.0,.02,fract(wood.y*.36+mod(plank,3.0)*.33));col*=.76+.13*grain+.11*hash(vec2(plank,floor(wood.y*.36)));col*=.76+.24*seam*join;}
@@ -123,12 +135,16 @@ function realmTerrainEntries(gpu){
  for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-4,z=c.z-4,samples=new Map(),sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),road:roadInfluence(a,b),shore:[shoreDistance(a,b),1]};samples.set(key,v);}return v;};
   for(let zz=z;zz<Math.min(z+8,inWorld()?mh+128:mh);zz++)for(let xx=x;xx<Math.min(x+8,inWorld()?mw+128:mw);xx++){
    const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=inWorld()&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
-   if(type!==3||shore){const detail=inWorld()?2:1;for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2]));flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),1,vertices.map(v=>v.road),vertices.map(v=>v.shore));}else realmFaceData(data,points,'#808080',null,type+1);}if(type===0&&inWorld())realmGroundCover(data,xx,zz);}
+   if(type!==3||shore){const detail=inWorld()?2:1;for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2]));flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),1,vertices.map(v=>v.road),vertices.map(v=>v.shore));}else realmFaceData(data,points,'#808080',null,type+1);}}
    if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,inWorld()?corners.map(([a,b])=>[worldWaterDistance(a,b),0]):null);}
   }
   Object.assign(c,gpu.upload(new Float32Array(data)));
  }
  const resident=[...gpu.terrain.values()].flatMap(scene=>[...scene.values()]).filter(c=>c.buffer);if(resident.length>384){resident.sort((a,b)=>a.used-b.used);for(const c of resident.slice(0,resident.length-384)){if(c.used===gpu.terrainTick)continue;gpu.gl.deleteBuffer(c.buffer);gpu.terrain.get(c.scene).delete(c.key);}}
+ if(!inWorld()&&(currentScene==='mine'||realmSceneInfo.get(currentScene)?.kind==='mine')){
+  if(!gpu.caveBackground){const data=[];flatFaceData(data,[[-128,-.03,-128],[-128,-.03,512],[512,-.03,512],[512,-.03,-128]],'#323b35',null,14);gpu.caveBackground={...gpu.upload(new Float32Array(data)),terrain:true};}
+  return [gpu.caveBackground,...visible];
+ }
  return visible;
 }
 const canvasPainterRealm=painter3;

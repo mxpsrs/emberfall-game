@@ -37,9 +37,10 @@ const settlementBeforeWalkIn=settlementAt;
 settlementAt=function(x,z){if(!physicalWorldReady)return settlementBeforeWalkIn(x,z);return SETTLEMENTS.find(t=>Math.hypot((x-t.x)/(t.kind==='city'?90:45),(z-t.y)/(t.kind==='city'?90:40))<1);};
 const oldLandBase=landBase;
 landBase=function(x,z){
- const raw=(a,b)=>oldLandBase(physicalWorldReady?a/3:a,physicalWorldReady?b/3:b)*1.65+1.8*Math.sin(a*.020)*Math.cos(b*.017);
+ const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
+ const raw=(a,b)=>oldLandBase(physicalWorldReady?a/3:a,physicalWorldReady?b/3:b)*1.65+1.8*Math.sin(a*.020)*Math.cos(b*.017)+(physicalWorldReady?smooth(565,650,a)*(1-smooth(410,465,b))*(3.8+3.1*Math.sin(a*.026)*Math.cos(b*.024)):0);
  let height=raw(x,z);
- if(physicalWorldReady)for(const town of SETTLEMENTS){const inner=town.kind==='city'?65:26,outer=inner+36,d=Math.hypot(x-town.x,z-town.y);if(d>=outer)continue;const t=Math.max(0,(d-inner)/(outer-inner)),weight=1-t*t*(3-2*t);height=height*(1-weight)+raw(town.x,town.y)*weight;}
+ if(physicalWorldReady)for(const town of SETTLEMENTS){const inner=town.kind==='city'?65:26,outer=inner+36,d=Math.hypot(x-town.x,z-town.y);if(d>=outer)continue;const t=Math.max(0,(d-inner)/(outer-inner)),weight=1-t*t*(3-2*t),rise=(town.kingdom==='khazdur'?1.35:.65)*Math.sin((x-town.x)*.055)*Math.cos((z-town.y)*.046);height=height*(1-weight)+(raw(town.x,town.y)+rise)*weight;}
  return height;
 };
 function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn)continue;const room=worldScenes[b.service.destination];if(!room)continue;b.service.walkThrough=true;b.service.building=b;const [w,h]=sceneSizes[b.service.destination]||[16,14],used=new Set();

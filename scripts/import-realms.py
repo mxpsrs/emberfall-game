@@ -1,6 +1,6 @@
 """Convert the CC0 Quaternius standard packs into textured runtime meshes.
 Input: extracted Medieval Village MegaKit, Universal Base Characters,
-Universal Animation Library Standard, and Stylized Nature MegaKit folders.
+Universal Animation Library Standard, Stylized Nature MegaKit, and Fantasy Props MegaKit folders.
 Original downloads: quaternius.itch.io.
 """
 import pathlib,sys,json,base64,hashlib,math,subprocess
@@ -11,6 +11,8 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 SOURCE=pathlib.Path(sys.argv[1])
 if not any(SOURCE.rglob('UAL1_Standard.glb')):
     raise SystemExit('Include Universal Animation Library Standard in the source folder; the shipped humanoid motion requires it.')
+if not any(SOURCE.rglob('Anvil_Log.gltf')):
+    raise SystemExit('Include Fantasy Props MegaKit Standard; the world furnishings require it.')
 # Reuse the checked glTF accessor/TRS implementation, without running its build.
 code=(ROOT/'scripts/import-briarhaven-assets.py').read_text()
 exec(code[:code.index("out={'models':")])
@@ -155,3 +157,4 @@ atlas.save(dest/'atlas.png',optimize=True)
 (dest/'CREDITS.txt').write_text('Quaternius: Medieval Village MegaKit, Universal Base Characters, Stylized Nature MegaKit. Standard editions, CC0 1.0.\nhttps://quaternius.itch.io/medieval-village-megakit\nhttps://quaternius.itch.io/universal-base-characters\nhttps://quaternius.itch.io/stylized-nature-megakit\nConverted and adapted for Emberfall.\n')
 print('Converted',len(out['models']),'models,',len(textures),'textures and two human avatars.')
 subprocess.run([sys.executable,str(ROOT/'scripts/import-authored-motion.py'),str(SOURCE)],check=True)
+subprocess.run([sys.executable,str(ROOT/'scripts/import-world-props.py'),str(SOURCE)],check=True)
