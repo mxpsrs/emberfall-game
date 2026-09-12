@@ -1,6 +1,13 @@
 {
-  "status": "Model and name proposals for owner review; not imported or approved for publication",
+  "status": "Owner approved all six model designs and assigned four bosses plus two regular monsters; source files and combat clips still require inspection before integration",
   "checked": "2026-09-12",
+  "design_approval": {
+    "date": "2026-09-12",
+    "bosses": ["Runeforged Colossus", "Veyr the Mindbreaker", "Varkesh the Blightwing", "Xalith the Broodmother"],
+    "regular_monsters": {"Forest Giant": "Forests", "Ork": "Dungeons"},
+    "retired_shortlist_names": ["Old Bracken", "Borruk the Pitbreaker"],
+    "scope": "Model appearance, names and monster classification approved; source-file inspection and game integration remain pending"
+  },
   "retained_name": "Runeforged Colossus",
   "retired_draft_names": ["Mossfang", "Grik the Scrapchief", "Crypt Warden", "The Hollow King", "Ashwatch Sentinel", "Cindermaw", "The Briar Oracle", "Nightbloom Sovereign"],
   "requirements": ["Free commercial use", "Existing rig and included animation", "Detailed anatomy and materials", "Boss silhouette readable at the game camera", "Review actual model and animation before publication", "Only a few bosses have phases or multiple attack styles", "Preserve misses and accurate zero-damage hits"],
@@ -12,7 +19,9 @@
   "models": [
     {
       "name": "Runeforged Colossus",
-      "subtitle": "Crystal guardian | Existing name retained",
+      "subtitle": "Boss | Crystal guardian",
+      "encounter_kind": "boss",
+      "design_approved": true,
       "asset": "Icebronze - Golem",
       "artist": "melikovfuad7",
       "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze",
@@ -40,8 +49,11 @@
       "note": "Commercial game incorporation is permitted by CGTrader sections 21A/21B. Ship converted game data with reasonable asset protection, never the original FBX or source bundle. No model-training use. Source attack clips must be inspected before claiming the three styles are animated."
     },
     {
-      "name": "Old Bracken",
-      "subtitle": "Ancient treant | Forest boss proposal",
+      "name": "Forest Giant",
+      "subtitle": "Regular monster | Forests",
+      "encounter_kind": "regular_monster",
+      "design_approved": true,
+      "habitat": "forest",
       "asset": "Free Treant Pack — Tree 02",
       "artist": "Tennessippi Studios",
       "url": "https://tennessippistudios.itch.io/treant-pack",
@@ -56,12 +68,15 @@
       "animations": ["Attack01", "Attack02", "Attack03", "Death01", "Death02", "Death03", "Idle", "Dance", "Run", "Taunt"],
       "triangles": 7340,
       "asset_files_inspected": false,
-      "proposed_role": "A forest guardian with heavy branch attacks. Single-phase fight by default.",
-      "note": "The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials. Choose a body rather than treating color swaps as different bosses."
+      "approved_role": "A standard Forest Giant found in forests, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
+      "note": "Owner reassigned the Old Bracken model to a regular monster named Forest Giant. The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials."
     },
     {
-      "name": "Borruk the Pitbreaker",
-      "subtitle": "Minotaur brawler | Quarry miniboss proposal",
+      "name": "Ork",
+      "subtitle": "Regular monster | Dungeons",
+      "encounter_kind": "regular_monster",
+      "design_approved": true,
+      "habitat": "dungeon",
       "asset": "Animated Minotaur",
       "artist": "vsify",
       "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/minotaur-cda47223-1a94-4f7d-bc2b-82344547726d",
@@ -76,12 +91,14 @@
       "animations": ["Idle", "Walk", "Run", "Jump", "Shout", "Get_Hit", "Death1", "Death2", "Attack", "Walk_Mecanim", "Run_Mecanim"],
       "triangles": 5637,
       "asset_files_inspected": false,
-      "proposed_role": "A heavy unarmed brawler for an earlier miniboss encounter. Single phase, clear punches and recovery windows.",
-      "note": "Simpler art than Icebronze; proposed for a lower-level miniboss. No new weapon attachment is needed."
+      "approved_role": "A regular dungeon monster displayed as Ork, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
+      "note": "Owner reassigned the Borruk model to an ordinary dungeon Ork. Retain Animated Minotaur as the original asset title in credits only. No new weapon attachment is needed."
     },
     {
       "name": "Veyr the Mindbreaker",
-      "subtitle": "Orb-wielding demon | Ruins boss proposal",
+      "subtitle": "Boss | Orb-wielding demon",
+      "encounter_kind": "boss",
+      "design_approved": true,
       "asset": "Demon Creature with Weapon — 25 animations, 2 skins",
       "artist": "andriichykrii",
       "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins",
@@ -97,11 +114,13 @@
       "triangles": 17244,
       "asset_files_inspected": false,
       "proposed_role": "An ancient psychic enemy. Strong candidate for one of the small number of fights using several attack styles, because the source includes corresponding actions.",
-      "note": "Darker horror direction than the treant/minotaur; owner should review the style. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose."
+      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose."
     },
     {
       "name": "Varkesh the Blightwing",
-      "subtitle": "Dragon | Visual candidate; combat clips unverified",
+      "subtitle": "Boss | Dragon",
+      "encounter_kind": "boss",
+      "design_approved": true,
       "asset": "Prowler Dragon Variant Rig",
       "artist": "DM-913",
       "url": "https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9",
@@ -121,7 +140,9 @@
     },
     {
       "name": "Xalith the Broodmother",
-      "subtitle": "Insect creature | Visual candidate; combat clips unverified",
+      "subtitle": "Boss | Insect creature",
+      "encounter_kind": "boss",
+      "design_approved": true,
       "asset": "Insectoid Monster Rig",
       "artist": "DM-913",
       "url": "https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176",
@@ -136,7 +157,7 @@
       "animation_count": 1,
       "triangles": 13156,
       "asset_files_inspected": false,
-      "proposed_role": "A large chitin-armored creature for an underground hive. Single-phase melee encounter unless separately approved.",
+      "proposed_role": "A large chitin-armored boss for an underground hive. Keep the default fight to a single phase; only a few selected bosses should use phases or multiple styles.",
       "note": "Credit DM-913 and link CC BY 4.0. Animated preview is not proof of attack, death, or locomotion coverage. Keep conditional until the source action is inspected."
     }
   ]
