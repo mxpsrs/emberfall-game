@@ -124,7 +124,7 @@ function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100;
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
- o.dead=time+(o.type==='dummy'?8:25);monsterDrop(o);
+ o.dead=time+(o.type==='dummy'?8:25);o.deathAt=time;monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){tutorialEvent('dummy');toast('Training complete.');}

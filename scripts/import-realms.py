@@ -13,6 +13,9 @@ if not any(SOURCE.rglob('UAL1_Standard.glb')):
     raise SystemExit('Include Universal Animation Library Standard in the source folder; the shipped humanoid motion requires it.')
 if not any(SOURCE.rglob('Anvil_Log.gltf')):
     raise SystemExit('Include Fantasy Props MegaKit Standard; the world furnishings require it.')
+for required in ['UAL2_Standard.glb','Puglin.glb','Imp.glb','Wolf.glb','Rat.glb','Skeleton2.glb','Slime.glb']:
+    if not any(SOURCE.rglob(required)):
+        raise SystemExit('Include the replacement creature source: '+required)
 # Reuse the checked glTF accessor/TRS implementation, without running its build.
 code=(ROOT/'scripts/import-briarhaven-assets.py').read_text()
 exec(code[:code.index("out={'models':")])
@@ -158,3 +161,6 @@ atlas.save(dest/'atlas.png',optimize=True)
 print('Converted',len(out['models']),'models,',len(textures),'textures and two human avatars.')
 subprocess.run([sys.executable,str(ROOT/'scripts/import-authored-motion.py'),str(SOURCE)],check=True)
 subprocess.run([sys.executable,str(ROOT/'scripts/import-world-props.py'),str(SOURCE)],check=True)
+
+# Creature textures share the atlas; rebuild them after the world packs.
+subprocess.run([sys.executable,str(ROOT/'scripts/import-creatures.py'),str(SOURCE)],check=True)

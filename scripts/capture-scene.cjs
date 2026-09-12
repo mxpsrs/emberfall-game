@@ -4,11 +4,11 @@ const fs=require('fs'),vm=require('vm'),path=require('path');
 const output=process.argv[2];if(!output)throw new Error('Output directory required');fs.mkdirSync(output,{recursive:true});
 const noop=()=>{},elements={};function element(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},appendChild:noop,querySelectorAll:()=>[],addEventListener:noop,setAttribute:noop,setPointerCapture:noop,getContext:()=>new Proxy({},{get:()=>noop}),getBoundingClientRect:()=>({width:1112,height:512,left:0,top:0}),showModal(){this.open=true},close(){this.open=false}}}
 let next=0,captureIndex=0;const entries=[];const motionFrames=Number(process.env.EMBERFALL_CAPTURE_FRAMES||1);
-const sandbox={console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:()=>null,setItem:noop},document:{getElementById:id=>elements[id]??=element(),querySelectorAll:()=>[],createElement:element,addEventListener:noop,body:element()},window:{addEventListener:noop,matchMedia:()=>({matches:false})},
+const sandbox={processCaptureClip:process.env.EMBERFALL_CAPTURE_CLIP||'idle',console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:()=>null,setItem:noop},document:{getElementById:id=>elements[id]??=element(),querySelectorAll:()=>[],createElement:element,addEventListener:noop,body:element()},window:{addEventListener:noop,matchMedia:()=>({matches:false})},
  upload(data){const name='mesh-'+next+++'.bin';fs.writeFileSync(path.join(output,name),Buffer.from(data.buffer,data.byteOffset,data.byteLength));return {buffer:name,count:data.length/12}},
  capture(data){fs.writeFileSync(path.join(output,motionFrames>1?'scene-'+String(captureIndex++).padStart(3,'0')+'.json':'scene.json'),JSON.stringify(data));},motionFrames,captureYaw:Number(process.env.EMBERFALL_CAPTURE_YAW||-.55),captureTilt:Number(process.env.EMBERFALL_CAPTURE_TILT||.85),captureZoom:Number(process.env.EMBERFALL_CAPTURE_ZOOM||0),captureSex:process.env.EMBERFALL_CAPTURE_SEX||'male',choice:process.argv[3]||'willow-inside',posePhase:Number(process.argv[4]||0),captureWidth:Number(process.env.EMBERFALL_CAPTURE_WIDTH||1112),captureHeight:Number(process.env.EMBERFALL_CAPTURE_HEIGHT||512)};
 vm.createContext(sandbox);
-for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
+for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();screen={w:captureWidth,h:captureHeight};s.character={name:'Adventurer',look:0,frame:captureSex,hair:0,race:'human'};s.equipment={weapon:'bronzeSword',body:'leatherArmor'};s.worldClock=120;time=1;assetsReady=true;
 const captureInn=buildings.find(b=>b.service?.destination==='willowInn');
@@ -30,9 +30,12 @@ else if(choice==='props'){
  activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
  for(const [i,name]of ['forge','Bed','Dining table','Barrel','Bookcase','Merchant wagon','Altar','camp'].entries())objects.push({id:4000000+i,type:['forge','camp'].includes(name)?name:'prop',name,x:36+(i%4)*4,y:69+Math.floor(i/4)*4,dead:0});
 }
-else if(['wolf','skeleton','slime'].includes(choice)){
+else if(['goblin','king','wolf','ridgewolf','rat','skeleton','slime','creature-lineup'].includes(choice)){
  activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
- objects.push({id:4000000,type:'enemy',kind:choice,x:44,y:75,drawX:44,drawY:75,sprite:1,dead:0,attackAt:1-posePhase*.65});
+ for(const [i,kind]of (choice==='creature-lineup'?['goblin','wolf','rat','skeleton','slime','king']:[choice]).entries()){
+  const x=choice==='creature-lineup'?38+(i%3)*4:44,y=choice==='creature-lineup'?71+Math.floor(i/3)*5:75;
+  objects.push({id:4000000+i,type:'enemy',name:kind,kind,x,y,drawX:x,drawY:y,sprite:1,dead:0,attackAt:-100,hitAt:-100,_creatureMotion:{time:1,x:x+.5,z:y+.5,phase:posePhase,blend:0,speed:0,heading:.2}});
+ }
 }
 else if(choice==='combat'){const enemy=objects.find(o=>o.kind==='goblin');activateScene('overworld',enemy.x-1,enemy.y);target=enemy;lastAttack=time-posePhase*.65;enemy.attackAt=lastAttack;playerHeading=Math.PI/2;}
 else if(['walk','run','idle','sword','transition'].includes(choice)){activateScene('overworld',43,75);playerMotion.moving=['walk','run','transition'].includes(choice);playerMotion.blend=playerMotion.moving?1:0;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;}
@@ -45,6 +48,12 @@ realmGPU={cache:new WeakMap(),sharedMeshes:new WeakMap(),terrain:new Map(),gl:{d
  }};
 for(let i=0;i<motionFrames;i++){
  if(motionFrames>1){posePhase=i/(motionFrames-1);playerMotion.phase=posePhase;time=1+posePhase;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;if(choice==='idle')time=posePhase*rebuiltAvatars[captureSex].clips.swordIdle.duration;if(choice==='transition')playerMotion.blend=Math.sin(posePhase*Math.PI)**2;}
+ if(creatureAssets[choice]){
+  const o=objects[0],a=creatureAssets[choice],clip=processCaptureClip;
+  o._creatureMotion.time=time;o._creatureMotion.phase=posePhase;o._creatureMotion.blend=['walk','run'].includes(clip)?1:0;o._creatureMotion.speed=clip==='run'?4:1.5;
+  if(clip==='attack')o.attackAt=time-posePhase*a.clips.attack.duration;
+  if(clip==='death'){o.dead=time+25;o.deathAt=time-posePhase*a.clips.death.duration;}
+ }
  draw3d();
 }
 `,sandbox);
