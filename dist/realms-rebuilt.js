@@ -1,9 +1,37 @@
 'use strict';
 // Human-scale modular architecture and textured, articulated characters.
-function rebuiltMesh(m){const result={bounds:m.bounds};for(const k of ['p','uv'])result[k]=briarDecode(m[k],Float32Array);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);for(const k of ['c','f'])result[k]=Float32Array.from(briarDecode(m[k],Uint8Array),v=>v/255);result.t=briarDecode(m.t,Uint8Array);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}result.i=briarDecode(m.i,Uint16Array);return result;}
+function rebuiltMesh(m){const result={bounds:m.bounds};result.p=m.pScale?Float32Array.from(briarDecode(m.p,Int16Array),v=>v*m.pScale):briarDecode(m.p,Float32Array);result.uv=m.uv?briarDecode(m.uv,Float32Array):new Float32Array(result.p.length/3*2);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);result.c=Float32Array.from(briarDecode(m.c,Uint8Array),v=>v/255);result.f=m.f?Float32Array.from(briarDecode(m.f,Uint8Array),v=>v/255):result.c;result.t=m.t?briarDecode(m.t,Uint8Array):new Uint8Array(result.p.length/3).fill(20);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}result.i=briarDecode(m.i,Uint16Array);return result;}
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),rig:a.rig?{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)}:null,clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:c.m?briarDecode(c.m,Float32Array):null,trs:c.trs?briarDecode(c.trs,Float32Array):null}]))}]));
 const rebuiltTints=new WeakMap();
+const modularMeshes=new Map();
+function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Emberfall_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,rebuiltMesh(source));}}return modularMeshes.get(key);}
+function makeRealmNecklace(sex){
+ const p=[],n=[],c=[],j=[],w=[],indices=[],cy=sex==='female'?1.46:1.50;
+ for(let bead=0;bead<25;bead++){const a=bead/24*Math.PI*2,pendant=bead===24,center=pendant?[0,cy-.13,.09]:[Math.cos(a)*.118,cy-.025-Math.max(0,Math.sin(a))*.075,-.035+Math.sin(a)*.12],radius=pendant?.025:.008,color=pendant?[.25,.55,.43]:[.70,.43,.24],offset=p.length/3;
+  for(const v of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]){p.push(...center.map((x,k)=>x+v[k]*radius));n.push(...v);c.push(...color);j.push(4,0,0,0);w.push(1,0,0,0);}
+  for(const face of [[0,2,4],[2,1,4],[1,3,4],[3,0,4],[2,0,5],[1,2,5],[3,1,5],[0,3,5]])indices.push(...face.map(x=>x+offset));
+ }
+ return {p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(c),f:new Float32Array(c),j:new Uint8Array(j),w:new Float32Array(w),i:new Uint16Array(indices),uv:new Float32Array(p.length/3*2),t:new Uint8Array(p.length/3).fill(20),bounds:[[-.13,cy-.16,-.16],[.13,cy,.11]]};
+}
+function modularModel(id){return ITEMS[id]?.model||(id==='ironHelm'?'Headgear.I.001':null);}
+function modularBelt(gear){const set=MODULAR_ARMOR_SETS.find(a=>a.id===ITEMS[gear.body]?.armorSet);return 'Belt.'+(set?.source||'B')+'.001';}
+function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot]||'').join('/')+':'+(gear._civilian||'');}
+function mergeWornMeshes(base,sex,gear){
+ const sources=[base],indices=[];
+ if(gear._civilian){sources.splice(0);for(const name of ['Default_Male_Head_Medium','Default_Male_Arms_Medium','Default_Male_Feet_Medium','Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']){const part=modularMesh(sex,name);if(part)sources.push(part);}}
+ const covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body),hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs),feet:!!modularModel(gear.feet),shoulders:!!modularModel(gear.shoulders)};
+ for(let i=0;i<base.i.length;i+=3){const ids=[base.i[i],base.i[i+1],base.i[i+2]],x=ids.reduce((n,v)=>n+Math.abs(base.p[v*3]),0)/3,y=ids.reduce((n,v)=>n+base.p[v*3+1],0)/3;
+  if(covered.head&&y>1.565||covered.body&&y>1.045&&y<1.48&&x<.29||covered.hands&&x>.53&&y>1.15||covered.legs&&y>.32&&y<1.02||covered.feet&&y<.34||covered.shoulders&&x>.24&&x<.43&&y>1.30)continue;
+  indices.push(...ids);
+ }
+ if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
+ for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=modularMesh(sex,model);if(mesh)sources.push(mesh);}}
+ if(!gear._civilian)for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
+ let vertices=0,indexCount=0;for(const m of sources){vertices+=m.p.length/3;indexCount+=m.i.length;}if(vertices>=65536)throw new Error('Worn mesh exceeds index budget');
+ const result={...base};for(const [key,width,Type]of [['p',3,Float32Array],['n',3,Float32Array],['c',3,Float32Array],['f',3,Float32Array],['uv',2,Float32Array],['t',1,Uint8Array],['j',4,Uint8Array],['w',4,Float32Array]]){const data=new Type(vertices*width);let offset=0;for(const m of sources){data.set(m[key],offset);offset+=m[key].length;}result[key]=data;}
+ result.i=new Uint16Array(indexCount);let offset=0,count=0;for(const m of sources){for(const index of m.i)result.i[count++]=index+offset;offset+=m.p.length/3;}return result;
+}
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){let mesh=rebuiltModels[name];if(!mesh)return;
  if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
  briarEmit(r,mesh,briarTransform(x,y,z,scale,heading,vertical));
@@ -149,23 +177,23 @@ function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame){
  return pose;
 }
 function avatarMaterial(sex,gear,look){
- const key=[sex,look,gear.body,gear.feet,gear._cloth].join(':');if(avatarMaterials.has(key))return avatarMaterials.get(key);
+ const key=[sex,look,armorAppearanceKey(gear),gear._cloth].join(':');if(avatarMaterials.has(key))return avatarMaterials.get(key);
  const mesh=(rebuiltAvatars[sex]||rebuiltAvatars.male).mesh,p=new Float32Array(mesh.p),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t);
  const cloth=[[.22,.38,.50],[.47,.20,.20],[.23,.39,.26],[.36,.26,.46]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
   const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
-  if(torso){const color=gear._cloth|| (gear.body==='mageRobe'?[.30,.24,.40]:gear.body==='leatherArmor'?[.38,.24,.14]:cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
+  if(torso){const color=gear._cloth|| (modularModel(gear.body)?[.15,.13,.10]:gear.body==='mageRobe'?[.30,.24,.40]:gear.body==='leatherArmor'?[.38,.24,.14]:cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
   else if(y>1.49||Math.abs(x)>.70){for(let j=0;j<3;j++){c[i+j]*=skin[j];f[i+j]*=skin[j];}}
   if(feet&&gear.feet){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.20,.13,.08][j];t[v]=20;}
   if(y>.89&&y<.96){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.19,.14,.085][j];t[v]=20;}
   const expand=torso?(y<1.02?.020:.010):feet&&gear.feet?.012:0;
   for(let axis=0;axis<3;axis++)p[i+axis]+=mesh.n[i+axis]*expand;
  }
- const material={...mesh,p,c,f,t};avatarMaterials.set(key,material);if(avatarMaterials.size>64)avatarMaterials.delete(avatarMaterials.keys().next().value);return material;
+ const material=mergeWornMeshes({...mesh,p,c,f,t},sex,gear);avatarMaterials.set(key,material);if(avatarMaterials.size>64)avatarMaterials.delete(avatarMaterials.keys().next().value);return material;
 }
 function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)*2)/2)),baseFrame=Math.min(a.clips[baseClip].frames-1,Math.max(0,Math.round(basePhase*(a.clips[baseClip].frames-1)*2)/2));blend=Math.round(blend*16)/16;
- const key=[sex,clip,frame,look,gear.body,gear.feet,gear.head,gear._cloth,blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
+ const key=[sex,clip,frame,look,armorAppearanceKey(gear),gear._cloth,blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
  const mesh=avatarMaterial(sex,gear,look),p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame);
  for(let v=0;v<p.length/3;v++){const i=v*3;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*mesh.p[i]+pose[k+1]*mesh.p[i+1]+pose[k+2]*mesh.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*mesh.n[i]+pose[k+1]*mesh.n[i+1]+pose[k+2]*mesh.n[i+2]);}}
@@ -195,7 +223,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const attackClip=gear.weapon==='oakStaff'?'magic':gear.weapon==='shortbow'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=age>=0&&age<duration;
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
- const idleClip=gear.weapon&&['bronzeSword','ironSword'].includes(gear.weapon)?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
+ const idleClip=gear.weapon&&ITEMS[gear.weapon]?.style==='melee'?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
  const phase=attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
  const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,gear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
@@ -204,13 +232,15 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3),headTransform);
  if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
- if(!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
- else if(gear.head){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
+ if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:gear.weapon==='oakStaff'?briarRigs.Mage.meshes['2H_Staff']:gear.weapon==='shortbow'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
-  if(slot==='weapon'&&['bronzeSword','ironSword'].includes(gear.weapon)){fittedSwordRealm(r,world,gear.weapon==='bronzeSword');}
+  const modular=modularMesh(sex,modularModel(gear[slot]));
+  if(modular)briarEmit(r,modular,world);
+  else if(slot==='weapon'&&['bronzeSword','ironSword'].includes(gear.weapon)){fittedSwordRealm(r,world,gear.weapon==='bronzeSword');}
   else if(source){const k=slot==='shield'?.62:.78;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,0,0,0,k,0]));}
   else{const bow={face(p,c){r.face(p.map(v=>briarPoint(v,0,world)),c);}},points=Array.from({length:13},(_,i)=>[.13*Math.sin(i*Math.PI/12),-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.016,'#81613b',5);beamArt(bow,points[0],points[12],.004,'#c9bd9d',4);}
  }
@@ -230,9 +260,10 @@ function buildFittedSwordRealm(r,m,bronze){
  oval3(local,0,-.12,0,.05,.045,.044,bronze?'#9c8050':'#939d9b',p=>p,8);
 }
 
-let REALM_ATLAS_IMAGE=null;
+let REALM_ATLAS_IMAGE=null,MODULAR_ICON_IMAGE=null;
+function drawModularItemIcon(g,id){const name=id==='toolBelt'?'PermanentToolBelt':modularModel(id),tile=REALM_MODELS.armorIcons?.[name];if(!MODULAR_ICON_IMAGE||tile===undefined)return false;g.drawImage(MODULAR_ICON_IMAGE,tile%8*128,Math.floor(tile/8)*128,128,128,0,0,g.canvas.width,g.canvas.height);return true;}
 async function loadRebuiltTextures(){
- REALM_ATLAS_IMAGE=await realmLoadImage('assets/realms/atlas.png');
+ [REALM_ATLAS_IMAGE,MODULAR_ICON_IMAGE]=await Promise.all([realmLoadImage('assets/realms/atlas.png'),realmLoadImage('assets/realms/armor-icons.png')]);
  if(window.matchMedia('(pointer: coarse)').matches){const small=document.createElement('canvas');small.width=small.height=2048;small.getContext('2d').drawImage(REALM_ATLAS_IMAGE,0,0,2048,2048);REALM_ATLAS_IMAGE=small;}
 }
 function startRebuiltRealm(){boot();}

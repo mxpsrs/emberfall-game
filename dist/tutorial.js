@@ -114,6 +114,7 @@ function setupTutorialVillage(){
  const rat=world.objects.find(o=>o.kind==='rat');rat.tutorialRole='rat';fit(rat,47,78);
  make('hearth','camp','Cooking hearth',39,46,{cooking:true});
  make('practice-forge','practiceForge','Practice forge',61,47);
+ make('town-resident','villager','Tobin the beggar',54,49,{characterSprite:true,civilianModel:'chosan',_stationary:true,talk:'“A warm meal and dry boots make a fine day. Mara’s store is just here, and the cooking hearth is west by the inn. If you find work, keep your tools on your belt—you’ll want room in your bag.”'});
  const dummy=make('magic-dummy','dummy','Spell practice dummy',61,57,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';
  const cinder=world.objects.find(o=>o.spiritId==='cinder');if(cinder){cinder.tutorialRole='cinder';fit(cinder,38,61);}SPIRITS.cinder.hint='Beside Keeper Sera at Briarhaven’s shrine.';
  if(inWorld())objects.splice(0,objects.length,...world.objects);realmNavigation.clear();miniTerrain=null;
@@ -143,6 +144,7 @@ ITEMS.arrowheads={name:'Iron arrowheads',icon:12,desc:'Combine ten arrowheads wi
 STACKABLE.add('arrowheads');
 let practiceFireSerial=2900000;
 function lightLog(){
+ if(!useBeltTool('tinderbox'))return false;
  if(!s.bag.logs)return false;stop();
  if(!inWorld()||buildings.some(b=>b.walkIn?withinWalkIn(b,px,py):px>=b.x&&px<b.x+b.w&&py>=b.y&&py<b.y+b.h)||water(s.x,s.y)){toast('Light a fire on clear ground outdoors.');return false;}
  if(objects.some(o=>o.type==='camp'&&Math.hypot(o.x-px,o.y-py)<1)){toast('There is already a fire here.');return false;}
@@ -154,6 +156,7 @@ function cookTrout(){
  s.bag.rawTrout--;s.bag.fish=(s.bag.fish||0)+1;gain('Cooking',20);tutorialEvent('cook');renderUI();save();toast('Trout cooked · +20 Cooking XP');return true;
 }
 function workPracticeForge(){
+ if(!useBeltTool('hammer'))return false;
  if(!objects.some(o=>(o.type==='practiceForge'||o.type==='forge')&&Math.hypot(o.x-px,o.y-py)<2)){toast('Stand beside the practice forge.');return false;}
  if(s.bag.ironBar>0){s.bag.ironBar--;s.bag.arrowheads=(s.bag.arrowheads||0)+10;gain('Smithing',20);tutorialEvent('smith');toast('10 arrowheads forged · +20 Smithing XP');}
  else if(s.bag.ore>0){s.bag.ore--;s.bag.ironBar=(s.bag.ironBar||0)+1;gain('Smithing',15);tutorialEvent('smelt');toast('Iron bar smelted · +15 Smithing XP');}

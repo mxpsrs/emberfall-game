@@ -24,6 +24,11 @@ function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'A
 function enemyAccuracy(o){return Math.max(.2,Math.min(.94,.83+((o.level||1)-lv('Defense'))*.025));}
 function playerMaxHit(style=combatStyle()){return spiritBonus(style)+(style==='magic'?currentSpell().power+magicBonus():3)+lv(style==='magic'?'Magic':style==='ranged'?'Ranged':'Strength')+equippedWeapon().power+2;}
 const MONSTER_ART={goblin:0,slime:1,wolf:2,ridgewolf:2,skeleton:3,king:4,rat:5,bandit:6,warden:7,sentinel:7};
+const EQUIPMENT_SLOTS=[['head','Headgear'],['crest','Helmet attachment'],['neck','Necklace'],['shoulders','Shoulder pads'],['body','Chestplate'],['hands','Gauntlets'],['legs','Legguards'],['feet','Boots'],['weapon','Weapon'],['shield','Shield']];
+const TOOL_BELT_TOOLS={axe:{name:'Axe',skill:'Woodcutting',description:'Used automatically when you chop a tree.'},pickaxe:{name:'Pickaxe',skill:'Mining',description:'Used automatically when you mine an ore deposit.'},fishingRod:{name:'Fishing rod',skill:'Fishing',description:'Used automatically at fishing spots.'},tinderbox:{name:'Tinderbox',skill:'Firemaking',description:'Used automatically when you light logs.'},hammer:{name:'Smithing hammer',skill:'Smithing',description:'Used automatically at a forge.'}};
+function normalizeToolBelt(state){state.toolBelt={axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true,...state.toolBelt};if(state.equipment)delete state.equipment.beltAttachment;return state.toolBelt;}
+function useBeltTool(id){if(!normalizeToolBelt(s)[id]){toast('Your tool belt needs a '+TOOL_BELT_TOOLS[id].name.toLowerCase()+'.');return false;}s.lastToolUsed=id;return true;}
+let toolBeltOpen=false;
 const ITEMS={
  bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Choose Accurate, Aggressive, Defensive, or Balanced training.'},
  ironSword:{name:'Iron sword',icon:1,slot:'weapon',style:'melee',power:5,range:1.45,desc:'Forged iron. Four more damage than a bronze sword.'},
@@ -43,6 +48,16 @@ const ITEMS={
  ashes:{name:'Ashes',icon:9,desc:'Cool ashes left after a log fire burns out.'},
  mageRobe:{name:'Mage robe',icon:15,slot:'body',magic:2,desc:'Adds 2 magic damage. Offers no armor protection.'}
 };
+const MODULAR_ARMOR_SETS=[{id:'bronze',name:'Bronze',source:'B',level:1,cost:28,armor:1},{id:'iron',name:'Iron',source:'I',level:5,cost:55,armor:2},{id:'gold',name:'Gold',source:'G',level:10,cost:95,armor:2},{id:'mithril',name:'Mithril',source:'M',level:20,cost:180,armor:3},{id:'dragonslayer',name:'Dragonslayer',source:'DS',level:35,cost:360,armor:4}];
+const MODULAR_ARMOR_PARTS=[['head','Headgear','headgear'],['shoulders','Shoulder','shoulder pads'],['body','Chestplate','chestplate'],['hands','Gauntlets','gauntlets'],['legs','Legguards','legguards'],['feet','Boots','boots']];
+const modularShopStock=[];
+ITEMS.copperNecklace={name:'Copper necklace',slot:'neck',icon:14,model:'Emberfall_Necklace',desc:'A simple copper necklace with a green stone. Worn in the necklace slot.'};modularShopStock.push(['copperNecklace',1,18]);
+for(const set of MODULAR_ARMOR_SETS){
+ for(const [slot,source,label]of MODULAR_ARMOR_PARTS){const id=set.id+'_'+slot,armor=['body','legs'].includes(slot)?set.armor:['head','shoulders'].includes(slot)?Math.max(1,set.armor-1):0;ITEMS[id]={name:set.name+' '+label,slot,icon:4,armor,defenseLevel:set.level,armorSet:set.id,model:source+'.'+set.source+'.001',desc:'Fitted '+set.name.toLowerCase()+' '+label+'. Equip and mix with other armor pieces. Requires Defense '+set.level+'.'};modularShopStock.push([id,1,Math.round(set.cost*(['body','legs'].includes(slot)?1.7:slot==='hands'||slot==='feet'?.65:1))]);}
+ const shield=set.id+'_shield';ITEMS[shield]={name:set.name+' shield',slot:'shield',style:'melee',icon:6,armor:set.armor,defenseLevel:set.level,armorSet:set.id,model:(set.source==='G'?'G_':set.source)+'_Shield',desc:'A '+set.name.toLowerCase()+' shield. Its protection applies with melee weapons. Requires Defense '+set.level+'.'};modularShopStock.push([shield,1,set.cost]);
+ const weapon=set.id+'_weapon';ITEMS[weapon]={name:set.name+' sword',slot:'weapon',style:'melee',icon:0,power:Math.min(8,set.armor+1),range:1.45,attackLevel:set.level,armorSet:set.id,model:set.source+'_Sword',desc:'A balanced '+set.name.toLowerCase()+' blade. Requires Attack '+set.level+'.'};modularShopStock.push([weapon,1,set.cost*2]);
+}
+for(const [i,label]of ['Crimson plume','Royal plume','Winged crest','Crown crest','Knight crest'].entries()){const id='helmet_crest_'+(i+1);ITEMS[id]={name:label,slot:'crest',icon:4,model:'HeadAttach.'+String(i+1).padStart(3,'0'),desc:'A cosmetic helmet attachment. Wear headgear first.'};modularShopStock.push([id,1,25+i*10]);}
 const SPELLS={
  spark:{name:'Wind spark',level:1,cost:1,power:4,range:4,color:'#a7e9ff',desc:'A quick burst of arcane energy.'},
  ember:{name:'Ember bolt',level:3,cost:2,power:8,range:5,color:'#ffba63',desc:'A stronger bolt of flame.'},
@@ -57,12 +72,15 @@ function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
  const item=ITEMS[id];if(!item?.slot||!owns(id))return false;
+ if(item.defenseLevel&&lv('Defense')<item.defenseLevel){toast('Requires Defense '+item.defenseLevel+'.');return false;}
+ if(item.attackLevel&&lv('Attack')<item.attackLevel){toast('Requires Attack '+item.attackLevel+'.');return false;}
+ if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
  stop();s.equipment[item.slot]=id;tutorialEvent('gear');renderUI();save();return true;
 }
-function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots().length>=BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
+function unequipItem(slot){if(!s.equipment[slot])return false;const count=slot==='head'&&s.equipment.crest?2:1;if(inventorySlots().length+count>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;if(slot==='head')s.equipment.crest=null;renderUI();save();return true;}
 function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
-function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const item=ITEMS[c.dataset.itemIcon];if(!item)return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawRealmItem==='function'&&drawRealmItem(g,c.dataset.itemIcon))return;sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
+function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
@@ -105,8 +123,14 @@ function renderInventory(){
  for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}bindItemPress(b,slot.id,true,window.realmTrade?'bag':null);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderEquipment(){
- pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Worn equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div>';
- const grid=$('equipmentGrid');for(const [slot,title]of [['head','Head'],['body','Body'],['weapon','Weapon'],['shield','Shield'],['feet','Feet']]){const b=document.createElement('button');b.className='gearslot';const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);if(id)bindItemPress(b,id,false);else b.onclick=()=>{tab='bag';panelPage=0;syncTabs();renderPanel();toast('Choose an item in your inventory to equip.');};grid.appendChild(b);}paintItemIcons(panel);
+ pageControls(1,1);if(toolBeltOpen)return renderToolBelt();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Worn equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid equipment-slots"></div>';
+ const grid=$('equipmentGrid');for(const [slot,title]of EQUIPMENT_SLOTS){const b=document.createElement('button');b.className='gearslot';b.dataset.equipmentSlot=slot;const id=s.equipment[slot],label=document.createElement('small');label.textContent=title;b.appendChild(label);if(id)b.appendChild(itemCanvas(id));const n=document.createElement('span');n.textContent=id?ITEMS[id].name:'Empty';b.appendChild(n);if(id)bindItemPress(b,id,false);else{b.setAttribute('aria-label',title+': empty. Choose an item from your bag.');b.onclick=()=>{tab='bag';panelPage=0;syncTabs();renderPanel();toast('Choose '+title.toLowerCase()+' from your inventory.');};}grid.appendChild(b);}
+ const belt=document.createElement('button');belt.className='gearslot tool-belt-slot';belt.dataset.equipmentSlot='toolBelt';belt.setAttribute('aria-label','Tool belt. Always worn. Open your crafting tools.');belt.innerHTML='<small>Tool belt</small>';belt.appendChild(itemCanvas('toolBelt'));const worn=document.createElement('span');worn.textContent='Always worn';belt.appendChild(worn);belt.onclick=()=>{toolBeltOpen=true;renderEquipment();panel.scrollTop=0;};grid.appendChild(belt);paintItemIcons(panel);
+}
+function renderToolBelt(){
+ const owned=normalizeToolBelt(s),panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Tool belt</h2><button id="backToEquipment" type="button">Back</button></div><p class="desc">Your belt and attached pouch stay worn together. Tools are used automatically and take no bag space.</p><div id="toolBeltContents" class="tool-belt-contents"></div>';
+ $('backToEquipment').onclick=()=>{toolBeltOpen=false;renderEquipment();panel.scrollTop=0;};
+ for(const [id,tool]of Object.entries(TOOL_BELT_TOOLS)){const row=document.createElement('div');row.className='tool-belt-entry';row.dataset.tool=id;row.innerHTML='<strong>'+tool.name+'</strong><small>'+tool.skill+' · '+(owned[id]?'On belt':'Not on belt')+'</small><p>'+tool.description+'</p>';$('toolBeltContents').appendChild(row);}
 }
 function renderSpells(){
  pageControls(3,2);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';

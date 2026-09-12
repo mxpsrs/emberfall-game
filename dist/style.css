@@ -104,3 +104,17 @@ body.panels-open .legend{display:none}
 
 /* The loading cover is part of the game surface, including touch gestures. */
 #viewport,#loading{touch-action:none}#loading{gap:14px;justify-items:center;padding:24px;text-align:center}#loading strong{font-size:18px}#loading progress{width:min(260px,70vw);height:8px;accent-color:var(--gold)}#loading p{margin:0}
+
+/* All armor pieces remain reachable on desktop and short mobile screens. */
+#panel:has(.equipment-slots),#panel:has(.tool-belt-contents){overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#8c805b #243229}
+.equipment-slots{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding-bottom:5px}
+.equipment-slots .gearslot{min-height:86px;justify-content:space-between;gap:2px;min-width:0;position:relative}
+.equipment-slots .gearslot small{font-size:10px;color:#c8cbb8;line-height:1.1;min-height:22px;display:flex;align-items:center;text-align:center}
+.equipment-slots .gearslot canvas{width:42px;height:42px;object-fit:contain}
+.equipment-slots .gearslot span{font-size:10px;line-height:1.1;text-align:center;overflow-wrap:anywhere}
+.equipment-slots .tool-belt-slot{grid-column:span 2;border-color:#b6a06a;background:radial-gradient(ellipse at top,#5b5235,#273128)}
+.tool-belt-contents{display:grid;gap:7px;padding:2px 0 8px}
+.tool-belt-entry{padding:10px;border:1px solid #657158;border-radius:5px;background:#202f27}
+.tool-belt-entry strong{display:block;color:#edddae;font-size:14px}.tool-belt-entry small{display:block;margin-top:3px;color:#b7c5ad;font-size:11px}.tool-belt-entry p{margin:5px 0 0;font-size:12px;line-height:1.35;color:#c7cabb}
+#backToEquipment{min-height:36px;padding:5px 10px;font-size:12px}
+@media(max-height:500px) and (orientation:landscape){.equipment-slots .gearslot{min-height:70px}.equipment-slots .gearslot canvas{width:32px;height:32px}}

@@ -10,7 +10,8 @@ const defaults = () => ({
   spirits:{}, tutorial:0, tutorialVersion:2, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
   gear:{bronzeSword:1,shortbow:1,oakStaff:1,leatherArmor:1,leatherBoots:1},
-  equipment:{weapon:"bronzeSword",head:null,body:"leatherArmor",shield:null,feet:"leatherBoots"}
+  equipment:{weapon:"bronzeSword",head:null,crest:null,neck:null,shoulders:null,body:"leatherArmor",hands:null,legs:null,shield:null,feet:"leatherBoots"},
+  toolBelt:{axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true}
 });
 let s = defaults();
 const lv = skill => skill==='Combat'?combatLevel():1+Math.floor(Math.sqrt(Math.max(0,Number(s.xp[skill])||0)/35));
@@ -157,14 +158,14 @@ const quests=[
 ];
 function ready(){const q=quests[s.quest];return q.checks&&q.checks().every(([,v,n])=>v>=n);}
 function elder(){
-  if(s.quest===0){dialog('Elder Rowan','<p>“Welcome to Briarhaven. The forest has turned restless. Gather supplies for the village and I’ll see that you’re rewarded.”</p><p>Your axe, pickaxe, and fishing rod are already equipped.</p>',[['Accept quest',()=>{s.quest=1;close();toast('Quest accepted: Tools of the trade');}]]);return;}
+  if(s.quest===0){dialog('Elder Rowan','<p>“Welcome to Briarhaven. The forest has turned restless. Gather supplies for the village and I’ll see that you’re rewarded.”</p><p>Your axe, pickaxe, and fishing rod are on your tool belt. Open Equipment → Tool belt to see them.</p>',[['Accept quest',()=>{s.quest=1;close();toast('Quest accepted: Tools of the trade');}]]);return;}
   if(s.quest===5){dialog('Elder Rowan','<p>“Briarhaven will remember your name, Guardian. There will always be a place for you beside our fire.”</p>');return;}
   if(ready()){
     const reward=[0,45,70,50,200][s.quest];
     dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;}s.gold+=reward;s.quest++;close();toast(s.quest===5?'You are the Guardian of Briarhaven!':'Quest complete! Check your journal for the next quest.');}]]);
   }else dialog('Elder Rowan','<p>'+quests[s.quest].desc+'</p><p>“Rest by the campfire when you need to heal. Watch for goblins on the eastern road.”</p>');
 }
-const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65]];
+const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65],...modularShopStock];
 const shopPrices={herbs:3,logs:3,ore:4,fang:6,bones:4};
 function shop(){openTrade('shop');}
 function sell(id,price,quantity=1){
@@ -175,6 +176,7 @@ function sell(id,price,quantity=1){
 }
 
 function forge(){
+ if(!useBeltTool('hammer'))return;
  const buttons=[];
  if(!s.sword)buttons.push(['Forge iron sword · 5 ore + 2 logs + 20 coins',()=>{if(s.bag.ore<5||s.bag.logs<2||s.gold<20){toast('You need 5 ore, 2 logs, and 20 coins.');return;}s.bag.ore-=5;s.bag.logs-=2;s.gold-=20;s.sword=1;s.gear.ironSword=1;s.equipment.weapon='ironSword';gain('Smithing',70);close();toast('Iron sword forged and equipped!');}]);
  buttons.push(['Craft 20 arrows · 1 ore + 1 log',()=>{if(craftArrows()){forge();toast('20 arrows crafted.');}}]);
@@ -190,6 +192,7 @@ function tickAction(){
   const o=target;if(!o)return;
   if(o.type==='crop'){if(o.harvestedUntil>time){stop();toast('This patch is growing back.');return;}if(!addToBag('herbs')){stop();return;}o.harvestedUntil=time+35;gain('Farming',15);floating('+1 herbs',o.x,o.y);stop();renderUI();save();return;}
   if(['tree','ore','fish'].includes(o.type)){
+    if(!useBeltTool({tree:'axe',ore:'pickaxe',fish:'fishingRod'}[o.type])){stop();return;}
     const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type],item={tree:'logs',ore:'ore',fish:'rawTrout'}[o.type];
     if(!addToBag(item)){stop();return;}gain(skill,12);floating('+1 '+{logs:'oak log',ore:'iron ore',rawTrout:'raw trout'}[item],o.x,o.y);o.hitAt=time;lastAttack=time;tutorialEvent(o.type);renderUI();save();return;
   }
@@ -229,7 +232,8 @@ function renderLooks(){
   $('looks').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('chosen',i===selectedLook);b.setAttribute('aria-pressed',String(i===selectedLook));const c=b.querySelector('canvas'),g=c.getContext('2d');g.clearRect(0,0,120,120);drawEquippedCharacter(g,60,117,i,false,10,1.7);});
   const c=$('characterPreview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);shadow(g,192,260,55);drawEquippedCharacter(g,192,260,selectedLook,false,10,3.8);$('lookName').textContent=looks[selectedLook].name;
 }
-function drawPortrait(){const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);}
+let portraitAppearance=null;
+function drawPortrait(){const key=JSON.stringify([s.character,s.equipment]);if(portraitAppearance===key)return;const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);portraitAppearance=key;}
 async function finishCharacter(name,look){
   const cleaned=name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
   if(!s.character){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}

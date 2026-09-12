@@ -6,12 +6,13 @@ const noop=()=>{},elements={};function element(){return {style:{},dataset:{},cla
 let next=0,captureIndex=0;const entries=[];const motionFrames=Number(process.env.EMBERFALL_CAPTURE_FRAMES||1);
 const sandbox={processCaptureClip:process.env.EMBERFALL_CAPTURE_CLIP||'idle',console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:()=>null,setItem:noop},document:{getElementById:id=>elements[id]??=element(),querySelectorAll:()=>[],createElement:element,addEventListener:noop,body:element()},window:{addEventListener:noop,matchMedia:()=>({matches:false})},
  upload(data){const name='mesh-'+next+++'.bin';fs.writeFileSync(path.join(output,name),Buffer.from(data.buffer,data.byteOffset,data.byteLength));return {buffer:name,count:data.length/12}},
- captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',
+ captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',captureIsolated:process.env.EMBERFALL_CAPTURE_ISOLATED==='1',captureGear:process.env.EMBERFALL_CAPTURE_GEAR?JSON.parse(process.env.EMBERFALL_CAPTURE_GEAR):null,
  capture(data){fs.writeFileSync(path.join(output,motionFrames>1?'scene-'+String(captureIndex++).padStart(3,'0')+'.json':'scene.json'),JSON.stringify(data));},motionFrames,captureYaw:Number(process.env.EMBERFALL_CAPTURE_YAW||-.55),captureTilt:Number(process.env.EMBERFALL_CAPTURE_TILT||.85),captureZoom:Number(process.env.EMBERFALL_CAPTURE_ZOOM||0),captureSex:process.env.EMBERFALL_CAPTURE_SEX||'male',choice:process.argv[3]||'willow-inside',posePhase:Number(process.argv[4]||0),captureWidth:Number(process.env.EMBERFALL_CAPTURE_WIDTH||1112),captureHeight:Number(process.env.EMBERFALL_CAPTURE_HEIGHT||512)};
 vm.createContext(sandbox);
 for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();screen={w:captureWidth,h:captureHeight};s.character={name:'Adventurer',look:0,frame:captureSex,hair:0,race:'human'};s.equipment={weapon:'bronzeSword',body:'leatherArmor'};s.worldClock=120;time=1;assetsReady=true;
+if(captureGear)s.equipment=captureGear;
 const captureInn=buildings.find(b=>b.service?.destination==='willowInn');
 if(choice==='willow-inside')activateScene('overworld',captureInn.service.x,captureInn.service.y-2);
 else if(choice==='willow-outside')activateScene('overworld',captureInn.service.x,captureInn.service.y+7);
@@ -40,6 +41,7 @@ else if(['goblin','king','wolf','ridgewolf','rat','skeleton','slime','creature-l
 }
 else if(choice==='combat'){const enemy=objects.find(o=>o.kind==='goblin');activateScene('overworld',enemy.x-1,enemy.y);target=enemy;lastAttack=time-posePhase*.65;enemy.attackAt=lastAttack;playerHeading=Math.PI/2;}
 else if(['walk','run','idle','sword','transition'].includes(choice)){activateScene('overworld',43,75);playerMotion.moving=['walk','run','transition'].includes(choice);playerMotion.blend=playerMotion.moving?1:0;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;}
+if(captureIsolated){objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};}
 if(choice==='willow-inside')setWalkInDoor(captureInn.service,true,true);
 view3d.zoom=captureZoom||(['walk','run','combat','idle','sword','transition'].includes(choice)?110:choice==='willow-inside'?40:choice==='shop'?38:choice==='briarhaven'?28:22);view3d.yaw=captureYaw;view3d.tilt=captureTilt;updateDoorThreshold();
 realmGPU={skinning:captureSkinning,skinnedMeshes:new WeakMap(),cache:new WeakMap(),sharedMeshes:new WeakMap(),terrain:new Map(),gl:{deleteBuffer(){}},upload,
