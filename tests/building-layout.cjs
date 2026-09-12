@@ -11,6 +11,12 @@ for(const b of buildings.filter(b=>b.walkIn)){
 }
 const school=buildings.find(b=>b.service?.destination==='realm_briarhaven_3'),nell=tutorialTutor('fishing');assert(school.x>65,'school moved east');assert(Math.hypot(school.x-nell.x,school.y-nell.y)>35,'Nell has a clear shoreline');
 for(const role of ['magic','bank']){const o=tutorialTutor(role),b=buildings.find(b=>b.service?.destination===o.interiorBuilding);assert(withinWalkIn(b,o.x,o.y),'tutor follows rotated room');assert(!inBuilding(b,o.x,o.y),'tutor not in a wall');}
+const kitchen=buildings.find(b=>b.service?.destination==='village_kitchen');assert.equal(kitchen.doorFacing,'west','kitchen faces the village square');
+for(const b of buildings.filter(b=>b!==kitchen&&b.walkIn)){const gap=Math.hypot(Math.max(b.x-kitchen.x-kitchen.w,kitchen.x-b.x-b.w,0),Math.max(b.y-kitchen.y-kitchen.h,kitchen.y-b.y-b.h,0));assert(gap>=5,kitchen.name+' has space around '+b.name);}
+for(const o of [tutorialTutor('cooking'),tutorialObject('range')])assert(withinWalkIn(kitchen,o.x,o.y),'cooking lesson moved with its building');
+assert(!objects.some(o=>fighter(o)&&withinWalkIn(kitchen,o.x,o.y)),'the new plot does not enclose a wandering resident');
+const resumed=buildingResumePosition(worldScenes.overworld,{x:37,y:48,version:1});assert(withinWalkIn(kitchen,...resumed),'saved player follows the relocated kitchen');assert(land(...resumed),'resumed player is on clear interior ground');
+assert.deepEqual(buildingResumePosition(worldScenes.overworld,{x:37,y:48,version:1,kitchenVersion:1}),[37,48],'new saves in the reclaimed space stay there');
 assert.deepEqual(buildingResumePosition(worldScenes.overworld,{x:34,y:66}),[77,66],'old school save follows relocated room');
 assert.deepEqual(buildingResumePosition(worldScenes.overworld,{x:58,y:67}),[58,69],'old bank save follows its rotated interior');
 assert.deepEqual(buildingResumePosition(worldScenes.overworld,{x:77,y:66,version:1}),[77,66],'current saves do not rotate a second time');

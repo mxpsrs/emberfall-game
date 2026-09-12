@@ -15,7 +15,7 @@ const tutorialSteps=[
  lesson('fish','Net some shrimp','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
  lesson('fire','Light a fire beside Nell','Stay beside Fisher Nell. Tap a log in your bag to light a fire on clear ground. If you need another log, chop the tree beside her.'),
  lesson('cook-shrimp','Cook with Nell','While Nell watches, tap your raw shrimp and choose Cook. Walk to the fire you lit beside her and turn your catch into food.','fishing-fire'),
- lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the village kitchen beside the inn. He will supply a new recipe.','tutor-cooking'),
+ lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the village kitchen east of the square. He will supply a new recipe.','tutor-cooking'),
  lesson('mix-dough','Mix your bread dough','Bram has given you flour and water. Tap either ingredient in your bag to mix bread dough.'),
  lesson('bake-bread','Bake at the range','Tap the cooking range inside the village kitchen to bake your dough into bread. A range cooks food indoors.','range'),
  lesson('eat','Food for the road','Tap Eat, or tap your cooked bread or shrimp in your bag. Food restores health; raw food must be cooked first.'),
@@ -132,8 +132,8 @@ function guide(){
 const TUTORS={
  guide:{name:'Elder Rowan',at:[43,52],look:0,text:'Welcome to Briarhaven. The minimap moves you to a place when you tap it. Swipe with one finger to turn your view. The icons on the right open your bag, equipment and skills. Tap an item for its usual action, and hold for its other options. Look at your bag and skills, then meet Forester Ash west of the square.'},
  woods:{name:'Forester Ash',at:[28,49],look:2,text:'Trees supply logs and Woodcutting experience. Tap the tree beside me to cut a log, then carry it to Fisher Nell at Stillwater. She will show you how to light a fire and cook your first catch. There is another tree beside her if you need more logs.'},
- fishing:{name:'Fisher Nell',at:[28,63],look:1,text:'Tap the fishing ripples at the shore. Your net is already with you. Every catch trains Fishing. Stay beside me, light a fire with a log, and cook your shrimp while I watch. Chop the tree beside me if you need another log. Then visit Cook Bram inside the village kitchen by the inn for a new recipe.'},
- cooking:{name:'Cook Bram',at:[36,46],look:3,text:'Welcome to the village kitchen. Nell taught you to cook a catch over a fire; now we will bake bread. Take my flour and water, tap either ingredient in your bag to mix dough, then use the range beside me to bake it. Try your food, then visit Smith Orin east of the square.'},
+ fishing:{name:'Fisher Nell',at:[28,63],look:1,text:'Tap the fishing ripples at the shore. Your net is already with you. Every catch trains Fishing. Stay beside me, light a fire with a log, and cook your shrimp while I watch. Chop the tree beside me if you need another log. Then visit Cook Bram inside the village kitchen east of the square for a new recipe.'},
+ cooking:{name:'Cook Bram',at:[57,52],look:3,text:'Welcome to the village kitchen. Nell taught you to cook a catch over a fire; now we will bake bread. Take my flour and water, tap either ingredient in your bag to mix dough, then use the range beside me to bake it. Try your food, then visit Smith Orin east of the square.'},
  mining:{name:'Smith Orin',at:[68,43],look:0,text:'Mine copper and tin in my yard. The furnace combines them into bronze. At the anvil, work a bronze bar into a dagger. Better ores and recipes need higher levels. Mining and Smithing have separate levels. When you have made your dagger, Captain Vale will teach you to fight.'},
  combat:{name:'Captain Vale',at:[45,80],look:1,text:'First, equip the bronze dagger you forged. Then open Equipment and inspect your combat stats. I will give you a wooden sword and shield before we practise on the dummy. Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. After the dummy, go through the gate beside me and defeat a giant rat. The gate closes behind you when you enter or leave, and the rats stay inside. Collect its drops, then visit Banker Ada inside Briarhaven Bank to the north.'},
  bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Briarhaven Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
@@ -158,7 +158,7 @@ function setupTutorialVillage(){
  for(let y=60;y<71;y++)for(let x=18;x<28;x++)if(expandedWater(x,y)&&!expandedWater(x+1,y)&&!occupied(x+1,y,null)&&(!fishingSpot||Math.hypot(x-25,y-64)<Math.hypot(fishingSpot.x-25,fishingSpot.y-64)))fishingSpot={x,y};
  if(fishing&&fishingSpot)place(fishing,fishingSpot.x,fishingSpot.y);
  dummyObj.tutorialRole='dummy';fit(dummyObj,44,78);dummyObj.atk=0;
- const range=make('range','range','Cooking range',39,45,{cooking:true,workstation:'range',interiorBuilding:'village_kitchen'});place(range,39,45);
+ const range=make('range','range','Cooking range',60,51,{cooking:true,workstation:'range',interiorBuilding:'village_kitchen'});place(range,60,51);
  make('fishing-tree','tree','Tree',31,63,{resourceId:'normal',sprite:4});
  make('practice-forge','practiceForge','Practice forge',66,44);
  make('town-resident','villager','Tobin the beggar',54,49,{characterSprite:true,civilianModel:'chosan',_stationary:true,talk:'“A warm meal and dry boots make a fine day. Mara’s store is just here, and the cooking hearth is west by the inn. If you find work, keep your tools on your belt—you’ll want room in your bag.”'});
@@ -250,7 +250,7 @@ const tutorialWorkplaces=[
  {id:'square',name:'Briarhaven square',x:43,y:52,rx:4,ry:3,paved:true},
  {id:'woodland',name:'Ash’s timber yard',x:27,y:49,rx:5,ry:4},
  {id:'fishing',name:'Stillwater landing',x:28,y:64,rx:2.7,ry:3.7},
- {id:'kitchen',name:'Village kitchen',x:36,y:46,rx:4.5,ry:3,paved:true},
+ {id:'kitchen',name:'Village kitchen',x:57,y:52,rx:4.5,ry:3,paved:true},
  {id:'smithy',name:'Orin’s smithing yard',x:68,y:44,rx:5,ry:4,paved:true},
  {id:'training',name:'Briarhaven training yard',x:44,y:79,rx:4,ry:5},
  {id:'ratpen',name:'Giant rat pen',x:56,y:82,rx:8,ry:6},
@@ -268,9 +268,18 @@ function setupTutorWorkplaces(world){
 }
 function setupVillageKitchen(world){
  const destination='village_kitchen';if(world.buildings.some(b=>b.service?.destination===destination))return;
- const service={id:4800000,type:'door',name:'Village kitchen',x:37,y:51,dead:0,sprite:13,walkThrough:true,destination};
- const b={x:33,y:43,w:9,h:8,name:'Village kitchen',service,walkIn:true,settlement:'briarhaven',kingdom:'aurelia',race:'human',archetype:'house',variant:0,visualHeight:4.7};service.building=b;
+ const service={id:4800000,type:'door',name:'Village kitchen',x:58,y:57,dead:0,sprite:13,walkThrough:true,destination};
+ const b={x:54,y:49,w:9,h:8,name:'Village kitchen',service,walkIn:true,settlement:'briarhaven',kingdom:'aurelia',race:'human',archetype:'house',variant:0,visualHeight:4.7};service.building=b;
  world.buildings.push(b);world.objects=world.objects.filter(o=>o.type==='door'||fighter(o)||o.tutorialRole||o.x<b.x-1||o.x>b.x+b.w||o.y<b.y-1||o.y>b.y+b.h);world.objects.push(service);
+ // Residents displaced by the plot resume outdoors with an outdoor home position.
+ for(const o of world.objects){
+  if(!fighter(o)||!withinWalkIn(b,o.x,o.y))continue;
+  let spot=null;for(let radius=1;radius<15&&!spot;radius++)for(let dy=-radius;dy<=radius&&!spot;dy++)for(let dx=-radius;dx<=radius&&!spot;dx++){
+   if(Math.abs(dx)!==radius&&Math.abs(dy)!==radius)continue;const x=o.x+dx,y=o.y+dy;
+   if(expandedWater(x,y)||world.buildings.some(a=>x>=a.x-1&&x<=a.x+a.w&&y>=a.y-1&&y<=a.y+a.h)||world.objects.some(a=>a!==o&&!a.walkThrough&&a.x===x&&a.y===y))continue;spot=[x,y];
+  }
+  if(spot){const [x,y]=spot;Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});}
+ }
 }
 function dressTutorWorkplaces(world){
  let id=3700000;
@@ -285,12 +294,12 @@ function dressTutorWorkplaces(world){
   ['Stone altar',41,64],['Offering bowl',40,62],['Bench',43,67]
  ])prop(name,x,y);
  for(const [name,x,y,room]of [
-  ['Cooking table',35,45,'village_kitchen'],['Flour supplies',34,44,'village_kitchen'],['Fresh produce crate',34,47,'village_kitchen'],['Water barrel',40,48,'village_kitchen'],
+  ['Cooking table',56,51,'village_kitchen'],['Flour supplies',55,50,'village_kitchen'],['Fresh produce crate',55,53,'village_kitchen'],['Water barrel',61,54,'village_kitchen'],
   ['Bank counter',56,69,'realm_briarhaven_4'],['Bank chest',60,67,'realm_briarhaven_4'],['Bank chest',60,69,'realm_briarhaven_4'],['Ledger table',56,66,'realm_briarhaven_4'],
   ['Bookcase',74,63,'realm_briarhaven_3'],['Bookcase',75,63,'realm_briarhaven_3'],['Study table',74,66,'realm_briarhaven_3'],['Rune supplies',80,63,'realm_briarhaven_3']
  ])prop(name,x,y,{interiorBuilding:room});
  for(const [x,y,h]of [[22,47,0],[22,49,0],[25,44,Math.PI/2],[27,44,Math.PI/2]])prop('Timber yard fence',x,y,{heading:h});
- const lanes=[[[43,52],[28,50]],[[28,50],[28,63]],[[28,63],[37,51]],[[43,52],[68,45]],[[43,52],[50,55]],[[50,62],[58,74]],[[58,74],[77,72]],[[43,64],[58,74]],[[50,62],[45,72]],[[45,72],[46,82]],[[46,82],[48,82]]];
+ const lanes=[[[43,52],[28,50]],[[28,50],[28,63]],[[43,52],[58,57]],[[43,52],[68,45]],[[43,52],[50,55]],[[50,62],[58,74]],[[58,74],[77,72]],[[43,64],[58,74]],[[50,62],[45,72]],[[45,72],[46,82]],[[46,82],[48,82]]];
  for(const [a,b]of lanes)curveRoad(a[0]+.5,a[1]+.5,b[0]+.5,b[1]+.5,.72);
 }
 

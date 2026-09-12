@@ -2,6 +2,7 @@
 // Rotate each complete room around its lot, including its door and contents.
 // The original south-facing plan remains the source for authored geometry.
 const BUILDING_LAYOUT_VERSION=1;
+const KITCHEN_LAYOUT_VERSION=1;
 function buildingTile(b,x,y){
  const p=b.southPlan;if(!p)return [x,y];const u=x-p.x,v=y-p.y;
  switch(b.doorFacing){case 'east':return [b.x+v,b.y+p.w-1-u];case 'north':return [b.x+p.w-1-u,b.y+p.h-1-v];case 'west':return [b.x+p.h-1-v,b.y+u];default:return [x,y];}
@@ -32,6 +33,10 @@ function chooseBuildingFacing(b,world){
 }
 function buildingResumePosition(world,resume){
  let x=resume.x,y=resume.y;
+ if(resume.version===BUILDING_LAYOUT_VERSION&&resume.kitchenVersion!==KITCHEN_LAYOUT_VERSION&&x>=33&&x<41&&y>=43&&y<52){
+  const kitchen=world.buildings.find(b=>b.service?.destination==='village_kitchen');
+  if(kitchen){const source=kitchen.southPlan;return buildingTile(kitchen,source.x+8-(y-43),source.y+x-33);}
+ }
  if(resume.version!==BUILDING_LAYOUT_VERSION){
   if(x>=30&&x<39&&y>=63&&y<71){x+=43;y-=1;}
   const b=world.buildings.find(b=>b.walkIn&&x>=b.southPlan.x&&x<b.southPlan.x+b.southPlan.w&&y>=b.southPlan.y&&y<b.southPlan.y+b.southPlan.h);
@@ -74,14 +79,14 @@ function orientTownBuildings(world,resume){
   const [x,y]=buildingResumePosition(world,resume);
   realmNavigation.clear();activateScene('overworld',x,y,false);
  }
- s.buildingLayoutVersion=BUILDING_LAYOUT_VERSION;roadBuckets=null;miniTerrain=null;realmNavigation.clear();resetLandSurface();
+ s.buildingLayoutVersion=BUILDING_LAYOUT_VERSION;s.kitchenLayoutVersion=KITCHEN_LAYOUT_VERSION;roadBuckets=null;miniTerrain=null;realmNavigation.clear();resetLandSurface();
 }
 const setupBeforeBuildingFacing=setupExpandedWorld;
 let buildingResume=null;
-setupExpandedWorld=function(){if(townBuildingsOriented)return;buildingResume??={scene:s.sceneId,x:s.x,y:s.y,version:s.buildingLayoutVersion,scale:s.worldScale};setupBeforeBuildingFacing();if(buildingResume.scale!==3||buildingResume.scene!=='overworld'&&s.sceneId==='overworld')buildingResume={scene:s.sceneId,x:s.x,y:s.y,version:undefined,scale:3};};
+setupExpandedWorld=function(){if(townBuildingsOriented)return;buildingResume??={scene:s.sceneId,x:s.x,y:s.y,version:s.buildingLayoutVersion,kitchenVersion:s.kitchenLayoutVersion,scale:s.worldScale};setupBeforeBuildingFacing();if(buildingResume.scale!==3||buildingResume.scene!=='overworld'&&s.sceneId==='overworld')buildingResume={scene:s.sceneId,x:s.x,y:s.y,version:undefined,scale:3};};
 const tutorialBeforeBuildingFacing=setupTutorialVillage;
 let townBuildingsOriented=false;
-setupTutorialVillage=function(){tutorialBeforeBuildingFacing();if(townBuildingsOriented)return;townBuildingsOriented=true;orientTownBuildings(worldScenes.overworld,buildingResume||{scene:s.sceneId,x:s.x,y:s.y,version:s.buildingLayoutVersion});};
+setupTutorialVillage=function(){tutorialBeforeBuildingFacing();if(townBuildingsOriented)return;townBuildingsOriented=true;orientTownBuildings(worldScenes.overworld,buildingResume||{scene:s.sceneId,x:s.x,y:s.y,version:s.buildingLayoutVersion,kitchenVersion:s.kitchenLayoutVersion});};
 const buildingBeforeFacing=building3;
 building3=function(r,b){
  if(!b.southPlan||b.doorFacing==='south')return buildingBeforeFacing(r,b);
