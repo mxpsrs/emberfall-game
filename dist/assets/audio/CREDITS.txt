@@ -1,0 +1,19 @@
+Emberfall area music
+
+"Teller of the Tales", "Lord of the Land", and "Drums of the Deep"
+Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0
+https://creativecommons.org/licenses/by/4.0/
+
+Source and license listing: https://incompetech.com/music/packs.html
+Composer licensing: https://incompetech.com/music/royalty-free/licenses/
+
+Source downloads:
+https://incompetech.com/music/royalty-free/mp3-royaltyfree/Teller%20of%20the%20Tales.mp3
+https://incompetech.com/music/royalty-free/mp3-royaltyfree/Lord%20of%20the%20Land.mp3
+https://incompetech.com/music/royalty-free/mp3-royaltyfree/Drums%20of%20the%20Deep.mp3
+
+Changes: transcoded to 96 kbps stereo MP3 for in-game streaming. Volume and area
+crossfades are applied by the game. Compositions and arrangements are unchanged.
+
+Gameplay sound effects are original Web Audio synthesis authored for Emberfall.

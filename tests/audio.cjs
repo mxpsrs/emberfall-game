@@ -1,0 +1,20 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{ctx}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;
+const timers=new Map();let timerId=0,nodes=0,plays=0;
+class Param{constructor(){this.value=0;}setValueAtTime(v,t){assert(Number.isFinite(v+t));this.value=v;}exponentialRampToValueAtTime(v,t){assert(v>0&&Number.isFinite(v+t));this.value=v;}setTargetAtTime(v,t,k){assert(Number.isFinite(v+t+k));this.value=v;}cancelScheduledValues(){}}
+const node=()=>{nodes++;return {gain:new Param(),frequency:new Param(),Q:new Param(),pan:new Param(),threshold:new Param(),ratio:new Param(),connect(){},disconnect(){},start(){},stop(){}};};
+class AudioContext{constructor(){this.currentTime=0;this.sampleRate=44100;this.state='suspended';this.destination={};}createGain(){return node();}createDynamicsCompressor(){return node();}createOscillator(){return node();}createBufferSource(){return node();}createBiquadFilter(){return node();}createStereoPanner(){return node();}createMediaElementSource(){return node();}createBuffer(channels,length){const data=new Float32Array(length);return {getChannelData:()=>data};}resume(){this.state='running';return Promise.resolve();}suspend(){this.state='suspended';return Promise.resolve();}}
+class Audio{constructor(){this.paused=true;}play(){plays++;this.paused=false;return Promise.resolve();}pause(){this.paused=true;}}
+ctx.window.AudioContext=AudioContext;ctx.Audio=Audio;ctx.realmAssetURL=p=>p;ctx.setTimeout=fn=>{timers.set(++timerId,fn);return timerId;};ctx.clearTimeout=id=>timers.delete(id);ctx.runAudioTimers=()=>{for(const [id,fn]of timers){timers.delete(id);fn();}};ctx.nodeCount=()=>nodes;ctx.playCount=()=>plays;
+for(const f of ['game-icons','trading','world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','game-audio'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
+vm.runInContext(`{
+save=()=>{};s.character={name:'Audio check'};s.sound=true;currentScene='tutorial';
+assert.equal(gameAudio.context,null,'no audio or music download before a gesture');unlockGameAudio();assert.equal(gameAudio.context.state,'running');assert.equal(gameAudio.current,'refuge');assert.equal(gameAudio.tracks.size,1);assert.equal(gameAudio.tracks.get('refuge').element.preload,'none');assert(gameAudio.tracks.get('refuge').element.loop);
+const cues=['step','wood','mine','smith','fish','cook','fire','sword','bow','magic','spirit','teleport','hit','hurt','miss','door','coins','bank','equip','eat','bury','craft','quest','level','lesson','lowHealth','click'];
+for(const cue of cues){const before=nodeCount();gameAudio.context.currentTime+=3;playGameSound(cue);assert(nodeCount()>before,cue+' produces finite audio nodes');runAudioTimers();assert.equal(gameAudio.voices,0,'finished voices are released');}
+const before=nodeCount();s.audio.effects=0;playGameSound('wood');assert.equal(nodeCount(),before,'effects volume zero is silent');s.audio.effects=.65;
+currentScene='overworld';regionInfo=()=>['Briarhaven','Village'];settlementAt=()=>null;updateAreaMusic();assert.equal(gameAudio.current,'town');assert.equal(gameAudio.tracks.size,2);
+currentScene='mine';updateAreaMusic();assert.equal(gameAudio.current,'danger');assert.equal(gameAudio.tracks.size,3);const streams=gameAudio.tracks.size;updateAreaMusic();assert.equal(gameAudio.tracks.size,streams,'repeated updates reuse music streams');
+toggleAmbient();runAudioTimers();assert.equal(s.sound,false);assert.equal(gameAudio.master.gain.value,0);assert([...gameAudio.tracks.values()].every(t=>t.element.paused));const silentNodes=nodeCount();playGameSound('magic');assert.equal(nodeCount(),silentNodes);
+toggleAmbient();assert.equal(s.sound,true);assert.equal(gameAudio.current,'danger');document.hidden=true;const hiddenNodes=nodeCount();playGameSound('step');assert.equal(nodeCount(),hiddenNodes);
+console.log('PASS: 27 sound cues, finite envelopes, released nodes, silent mute/zero-volume/background states, gesture initialization, and three reusable area music streams.');
+}`,ctx);
