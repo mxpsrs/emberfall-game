@@ -1,0 +1,56 @@
+[
+  {
+    "checked": "2026-09-12",
+    "source": "https://api.sketchfab.com/v3/models/7ee71aaf323d426bbbdf28d73d55bbd9",
+    "name": "Prowler Dragon Variant Rig",
+    "artist": "DM-913",
+    "description": "Yet another rig of a variant of dragon I made in a span of 3 weeks. Though I very mostly made up the design as I went along (as usual) I had several insperations in which some may show more than others ranging from a VRex to the modern godzilla, to crocodiles to a handful of dragon art on the internet and etc. Would look even better if Sketchfab was able to process Blender bendy bones, but outside of Blender the tail, neck and wings will look like that (and if animation was my specialty). Was originally going to be a dark gray and somewhat similar and simpler patterns, but ended up with this instead. Didnt really establish any kind of lore n stuff as usual ,but I would imagine about this boi being a green fire breather that would result into toxic or venomous fumes and being extremely ferral.\n\n\n(some under the hood shots of the armeture) \n\n![](https://i.imgur.com/husx728.jpg)\n![](https://i.imgur.com/lGQ6nrM.jpg)\n\nFeel free to donate sometime if you like this model >  https://ko-fi.com/dm913",
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+      "label": "CC Attribution",
+      "fullName": "Creative Commons Attribution",
+      "requirements": "Author must be credited. Commercial use is allowed.",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "slug": "by"
+    },
+    "isDownloadable": true,
+    "animationCount": 3,
+    "faceCount": 19766,
+    "viewerUrl": "https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9",
+    "thumbnail": {
+      "uid": "9bef982679e545c8a37c1a7b95a9e488",
+      "width": 1920,
+      "height": 1080,
+      "size": 255956,
+      "url": "https://media.sketchfab.com/models/7ee71aaf323d426bbbdf28d73d55bbd9/thumbnails/a02d2302f6584af58598cd0b4a88f89c/b175da2e2e6a470bba3109150cef9305.jpeg"
+    },
+    "source_files_inspected": false
+  },
+  {
+    "checked": "2026-09-12",
+    "source": "https://api.sketchfab.com/v3/models/01323e4b2563430f9da85cd255b6e176",
+    "name": "Insectoid Monster Rig",
+    "artist": "DM-913",
+    "description": "One of my earlier rigs of a mere insetcoid type monster i made around the 1st half of quarintine.\n\nFeel free to donate sometime if you like this model >  https://ko-fi.com/dm913",
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+      "label": "CC Attribution",
+      "fullName": "Creative Commons Attribution",
+      "requirements": "Author must be credited. Commercial use is allowed.",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "slug": "by"
+    },
+    "isDownloadable": true,
+    "animationCount": 1,
+    "faceCount": 13156,
+    "viewerUrl": "https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176",
+    "thumbnail": {
+      "uid": "b4044508ab674972a6a3b6fb7a07cc57",
+      "width": 1920,
+      "height": 1080,
+      "size": 124842,
+      "url": "https://media.sketchfab.com/models/01323e4b2563430f9da85cd255b6e176/thumbnails/6e9c619806d7474a8ae981a81028bb11/15f33f0004fd4768b4c41f93763d934a.jpeg"
+    },
+    "source_files_inspected": false
+  }
+]
