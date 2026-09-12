@@ -154,17 +154,18 @@ function renderCombatBar(){
 }
 function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
-function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
+function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>(o.type==='tree'||o.blocksSight)&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange()+.01&&lineOfSight(px,py,o.x,o.y);}
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100,playerAttackReadyAt=0;
 function actorWalkSpeed(o){return o.type==='man'||o.type==='villager'?.75:['wolf','ridgewolf'].includes(o.kind)?1.6:o.kind==='slime'?.85:1.25;}
 function advanceActorMovement(o,dt){
+ if(o.penId&&!insideTrainingPen(o.x,o.y,1)){o.x=o.homeX;o.y=o.homeY;o.drawX=o.x;o.drawY=o.y;delete o._creatureMotion;}
  if(!Number.isFinite(o.drawX+o.drawY)){o.drawX=o.x;o.drawY=o.y;return;}
  const dx=o.x-o.drawX,dy=o.y-o.drawY,distance=Math.hypot(dx,dy),speed=actorWalkSpeed(o)*(o.slowUntil>time?.45:1),step=Math.min(distance,speed*dt);
  if(distance>0){o.drawX+=dx/distance*step;o.drawY+=dy/distance*step;}
 }
 function awardDefeat(o,style){
- frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
+ frontierKill(o);if(o.type!=='dummy'&&(tutorialStep()?.event!=='monster'||o.penId&&o.kind==='rat'))tutorialEvent('monster');
  const respawnSeconds=o.type==='dummy'?8:25;o.dead=time+respawnSeconds;o.respawnAt=Date.now()+respawnSeconds*1000;o.deathAt=time;monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
@@ -181,7 +182,8 @@ function performAttack(o){
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
  if(style==='ranged')s.bag[ammo]--;if(style==='magic')consumeIngredients(spell.ingredients);
  if(style==='magic'){gain('Magic',spell.baseXP,true);tutorialEvent('magic');}
- const damage=Math.random()<playerAccuracy(o,style)?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
+ const accurate=Math.random()<playerAccuracy(o,style),rolled=accurate||o.type==='dummy'?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
+ const damage=o.type==='dummy'?Math.max(1,rolled):rolled;
  lastAttack=time;playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
  if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
@@ -203,7 +205,7 @@ function updateCombat(dt){
  if(o.dead>time){stop();return;}
  enemyClock+=dt;retaliationClock+=dt;
  if(Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py)>1.45){
-   if(o.type!=='dummy'&&enemyClock>=.3&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.01){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
+   if(o.type!=='dummy'&&enemyClock>=.3&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.01){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y,o);if(p?.length){[o.x,o.y]=p[0];}}
  }else if(o.type!=='dummy'&&retaliationClock>=2.4&&lineOfSight(o.x,o.y,px,py)){
    retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(0,Math.floor(Math.random()*((o.atk||0)+(o.spread||0)+1))-Math.floor(lv('Worship')/5)-spiritBonus('armor')):0;meleeImpacts.push({o,damage:hit,due:time+.30,enemy:true});
  }

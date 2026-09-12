@@ -7,7 +7,7 @@ const defaults = () => ({
   skillProgressionVersion:1,combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
   bag:{logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
   sword:0, quest:0, kills:0, boss:false, character:null,
-  spirits:{}, tutorial:0, tutorialVersion:3, tutorialReward:false, spell:"spark",
+  spirits:{}, tutorial:0, tutorialVersion:4, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
   starterGearVersion:1,tutorialGifts:{},gear:{},
   equipment:{weapon:null,head:null,neck:null,body:null,hands:null,legs:null,shield:null,feet:null},
@@ -73,7 +73,7 @@ function inBuilding(b,x,y) {
   return !b.arch || x===b.x || x===b.x+b.w-1;
 }
 const fighter=o=>o&&['enemy','boss','man','dummy'].includes(o.type);
-let blocked=(x,y)=>worldWall(x,y)||water(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected);
+let blocked=(x,y)=>worldWall(x,y)||water(x,y)||trainingGateClosedAt(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected&&!o.walkThrough);
 const land=(x,y)=>!blocked(x,y);
 if((!s.sceneId||s.sceneId==='overworld')&&!land(s.x,s.y)){s.x=14;s.y=17;}
 let px=s.x, py=s.y, path=[], target=null, elapsed=0, moveClock=0;
@@ -90,15 +90,15 @@ function save() {
 function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
-function stop(){if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
-function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
+function stop(){if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
+function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
   const start=[startX,startY],open=[{x:startX,y:startY,g:0,f:0}],cost=new Map([[start.join(','),0]]),prev=new Map();let end=null;
   while(open.length){
     open.sort((a,b)=>a.f-b.f);const {x,y,g}=open.shift();if(g>cost.get(x+','+y))continue;
     if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):x===tx&&y===ty){end=[x,y];break;}
     for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){
       const nx=x+dx,ny=y+dy,k=nx+','+ny;
-      if(!land(nx,ny)||(dx&&dy&&(!land(x+dx,y)||!land(x,y+dy))))continue;
+      if(!land(nx,ny)||actor&&!trainingRatCanMove(actor,nx,ny)||(dx&&dy&&(!land(x+dx,y)||!land(x,y+dy))))continue;
       const next=g+Math.hypot(dx,dy);if(next<(cost.get(k)??Infinity)){cost.set(k,next);prev.set(k,[x,y]);open.push({x:nx,y:ny,g:next,f:next+Math.max(0,Math.hypot(tx-nx,ty-ny)-(adjacent?reach:0))});}
     }
   }
@@ -111,7 +111,7 @@ function select(o){
   }
   engage(o);
 }
-function engage(o){if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
+function engage(o){if(o.type==='gate'){enterTrainingGate();return;}if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}stop();target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
 function walkTo(x,y){
  x=Math.floor(x);y=Math.floor(y);const [w,h]=sceneSize();if(!Number.isFinite(x+y)||x<0||y<0||x>=w||y>=h)return false;
  let p=land(x,y)?route(x,y):null;
@@ -227,7 +227,7 @@ async function finishCharacter(name,look){
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
   $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
 }
-function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Swipe with one finger</b> to turn the camera; pinch to zoom. On a computer, drag or hold the arrow keys to turn and tilt; scroll to zoom. Tap or click the ground to move.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=3;tutorialCameraStart=null;renderTutorial();save();}]]);}
+function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Swipe with one finger</b> to turn the camera; pinch to zoom. On a computer, drag or hold the arrow keys to turn and tilt; scroll to zoom. Tap or click the ground to move.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open it, then tap inside to walk through. Roofs disappear within five tiles so you can see and select the interior. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=4;s.tutorialActions={};tutorialCameraStart=null;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
 function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2,Math.sqrt(8294400/Math.max(1,r.width*r.height)));screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
@@ -309,8 +309,8 @@ function advanceMovement(dt){
  while(remaining>1e-7){
   let distance=Math.hypot(s.x-px,s.y-py);
   if(distance<1e-6){
-   px=s.x;py=s.y;if(target&&fighter(target)&&inAttackRange(target))path=[];if(!path.length)break;
-   const next=path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
+   px=s.x;py=s.y;if(target&&fighter(target)&&inAttackRange(target)&&!crossingTrainingGate())path=[];if(!path.length)break;
+   const next=path[0];if(!prepareTrainingGateStep(next))break;path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
   const running=s.runEnabled&&s.runEnergy>0,speed=running?4:2;
@@ -338,7 +338,7 @@ function frame(now){
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{elapsed+=dt;const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
-    updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
+    updateTrainingGate();updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
     for(const o of objects)advanceActorMovement(o,dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);

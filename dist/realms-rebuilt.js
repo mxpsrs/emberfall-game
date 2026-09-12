@@ -346,7 +346,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3,...(gear._appearance||{})},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
- const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,poseGear=gathering?{...gear,weapon:null,shield:null}:gear;
+ const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,poseGear=gathering?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
  const attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':ITEMS[gear.weapon]?.style==='ranged'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!gathering&&age>=0&&age<duration;
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.

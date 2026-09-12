@@ -24,7 +24,7 @@ function arrangeBriarhaven(world){const plan={inn:[30,32,11,10],shop:[49,35,9,8]
 const terrainBeforeOrganic=expandedTerrain;
 expandedTerrain=function(x,z){if(!inWorld())return terrainBeforeOrganic(x,z);return worldWaterSurface(x,z)?3:0;};
 const setupBeforeOrganic=setupExpandedWorld;
-setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.worldScale};setupBeforeOrganic();if(organicRoads.length)return;const world=worldScenes.overworld;expandPhysicalWorld(world);arrangeBriarhaven(world);
+setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.worldScale};setupBeforeOrganic();if(organicRoads.length)return;const world=worldScenes.overworld;expandPhysicalWorld(world);arrangeBriarhaven(world);setupVillageKitchen(world);
  for(const b of world.buildings){if(!b.service)continue;const seg=Math.max(1,Math.round(b.w/2)),xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg;b.service.x=Math.round(xx-.5);b.service.y=Math.round(b.y+b.h);}
  // One connected inter-town network; every lane is routed around real obstacles.
  const connected=[SETTLEMENTS.find(t=>t.id==='briarhaven')],remaining=SETTLEMENTS.filter(t=>t.id!=='briarhaven');

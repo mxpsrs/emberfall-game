@@ -55,7 +55,7 @@ body{height:100dvh}#fullscreenButton{position:absolute;top:124px;left:8px;z-inde
  #tutorial.collapsed{width:auto;max-width:230px;padding:6px 9px;bottom:102px}
  #tutorial.collapsed #tutTitle,#tutorial.collapsed #tutCount,#tutorial.collapsed #skipTutorial{display:none}
  #tutorial.collapsed #tutCollapse{min-height:32px;padding:3px 8px;font-size:14px}
- #tutorial.collapsed #tutCollapse::before{content:'First steps · '}
+ #tutorial.collapsed #tutCollapse{white-space:normal;text-align:left}
  #tutorial:not(.collapsed){max-height:calc(100dvh - 180px);overflow:auto}
  #cameraControls{bottom:62px;gap:3px}
  #cameraControls button{min-width:40px;padding:7px 9px}

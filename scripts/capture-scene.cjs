@@ -29,6 +29,7 @@ else if(['crownreach','ironhollow','aelindor','deepforge','moonwillow'].includes
 else if(choice.endsWith('-castle')){const race=choice.split('-')[0],b=buildings.find(b=>b.race===race&&b.archetype==='castle');activateScene('overworld',b.x+b.w/2,b.y+b.h+12);}
 else if(choice==='mine')activateScene('mine',10,12);
 else if(choice==='forge-detail')activateScene('overworld',69,45);
+else if(choice==='rat-pen')activateScene('overworld',54,82);
 else if(choice==='tree-lineup'){
  activateScene('overworld',50,81);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
  for(const [i,resourceId]of ['normal','oak','willow','maple','yew','magic'].entries())objects.push({id:4000002+i,type:'tree',resourceId,name:resourceId,x:36+i*6,y:78,drawX:36+i*6,drawY:78,dead:0});

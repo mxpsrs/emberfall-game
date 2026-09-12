@@ -392,6 +392,13 @@ drawRealmWall=function(r,x,z){
 const propBeforeWorkplaces=prop3;
 prop3=function(r,o,x,z){
  const q=groundedPainter(r,x,z),wood=materialRealm(q,5),stone=materialRealm(q,18),name=o.name||'';
+ if(o.type==='range'){
+  box3(stone,x,.55,z,1.5,1.1,.9,'#847766');box3(q,x,1.14,z,1.62,.13,1,'#3d403a');
+  box3(q,x,.57,z+.46,.85,.55,.04,'#292b28');box3(q,x,.53,z+.49,.63,.28,.035,'#ad582c');
+  for(const offset of [-.26,0,.26])box3(q,x+offset,.55,z+.515,.035,.40,.03,'#30332d');
+  for(const offset of [-.4,.4])profile3(q,x+offset,1.22,z,.42,.045,.42,[[-.5,1],[.5,1]],'#232723',v=>v,12);
+  box3(stone,x,1.9,z-.35,.58,1.45,.42,'#817462');box3(q,x,1.34,z+.12,.44,.16,.32,'#ad7750');return 2.7;
+ }
  if(o.workplace){
   if(['woodland','kitchen','smithy'].includes(o.workplace)){
    const w=o.workplace==='kitchen'?7:5,d=2.7,zz=z-2.5;
@@ -406,6 +413,28 @@ prop3=function(r,o,x,z){
    worldModel(q,'Stall_Cart_Empty',x+1.1,0,z-2.1,1.1);worldModel(q,'Bucket_Wooden_1',x-.45,0,z-.6,.42);
   }
   return .1;
+ }
+ if(o.penFence){
+  const woodColor='#806345',ironColor='#454744';
+  if(o.type==='gate'){
+   for(const side of [-1,1]){box3(wood,x,.86,z+side*.52,.18,1.72,.18,'#67513b');box3(q,x,1.48,z+side*.52,.20,.09,.20,ironColor);}
+   const leaf=worldLocal(q,x,0,z-.5,-trainingGateFraction()*Math.PI/2),timber=materialRealm(leaf,5);
+   for(const zz of [.13,.37,.63,.87])box3(timber,0,.8,zz,.09,1.38,.17,woodColor);
+   for(const yy of [.26,1.25])box3(timber,0,yy,.5,.15,.14,1,woodColor);
+   beamArt(timber,[0,.28,.06],[0,1.23,.94],.045,'#ab8960',4);box3(leaf,-.09,.97,.86,.04,.09,.18,ironColor);
+  }else{
+   const f=worldLocal(q,x,0,z,o.heading||0),timber=materialRealm(f,5);
+   box3(timber,0,.85,0,.18,1.7,.18,'#69533b');box3(f,0,1.46,0,.20,.08,.20,ironColor);
+   for(const zz of [-.32,.32])box3(timber,0,.78,zz,.095,1.48,.16,woodColor);
+   for(const yy of [.25,1.22])box3(timber,0,yy,0,.14,.14,1.04,'#96764f');
+   box3(timber,0,.10,0,.16,.18,1.04,'#685139');
+   if((o.x===TRAINING_PEN.left||o.x===TRAINING_PEN.right)&&(o.y===TRAINING_PEN.top||o.y===TRAINING_PEN.bottom)){
+    const direction=o.y===TRAINING_PEN.top?1:-1;
+    for(const yy of [.25,1.22])box3(wood,x,yy,z+direction*.25,.14,.14,.54,'#96764f');
+    box3(wood,x,.78,z+direction*.32,.095,1.48,.16,woodColor);
+   }
+  }
+  return 1.72;
  }
  if(/yard fence/.test(name)){const f=worldLocal(q,x,0,z,o.heading||0);for(const side of [-1,1])box3(materialRealm(f,5),0,.55,side*.82,.13,1.1,.13,'#776143');for(const yy of [.35,.79])beamArt(materialRealm(f,5),[0,yy,-.9],[0,yy,.9],.055,'#8d7754',5);return 1.1;}
  if(name==='Village noticeboard'){
@@ -424,4 +453,4 @@ prop3=function(r,o,x,z){
  return propBeforeWorkplaces(r,o,x,z);
 };
 const roadBeforeWorkplaces=roadInfluence;
-roadInfluence=function(x,z){const result=roadBeforeWorkplaces(x,z);if(!inWorld()||x<18||x>80||z<40||z>80)return result;for(const a of tutorialWorkplaces){const d=Math.hypot((x-a.x)/a.rx,(z-a.y)/a.ry),edge=1+.035*Math.sin(x*2.5+z*1.4),t=Math.max(0,Math.min(1,(edge-d)/.25)),blend=t*t*(3-2*t);result[0]=Math.max(result[0],blend);if(a.paved)result[1]=Math.max(result[1],blend);}return result;};
+roadInfluence=function(x,z){const result=roadBeforeWorkplaces(x,z);if(!inWorld()||x<18||x>84||z<40||z>94)return result;for(const a of tutorialWorkplaces){const d=Math.hypot((x-a.x)/a.rx,(z-a.y)/a.ry),edge=1+.035*Math.sin(x*2.5+z*1.4),t=Math.max(0,Math.min(1,(edge-d)/.25)),blend=t*t*(3-2*t);result[0]=Math.max(result[0],blend);if(a.paved)result[1]=Math.max(result[1],blend);}return result;};

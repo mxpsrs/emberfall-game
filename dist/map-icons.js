@@ -1,6 +1,6 @@
 'use strict';
 const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],shop:['shop','General stores'],weapons:['melee','Weapons'],armour:['gear','Armour'],bank:['bank','Banks'],forge:['forge','Forges'],inn:['inn','Inns'],magic:['spells','Magic schools'],shrine:['shrine','Shrines'],mine:['mine','Mines']};
-const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting & Firemaking',fishing:'Fishing',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
+const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishing & Firemaking',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
  if(o.tutor)return {kind:o.tutor==='bank'?'bank':'tutor',tags:['tutor',...(o.tutor==='bank'?['bank']:o.tutor==='magic'?['magic']:o.tutor==='worship'?['shrine']:[])],detail:MAP_TUTOR_SUBJECTS[o.tutor]+' tutor'};

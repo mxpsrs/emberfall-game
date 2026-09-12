@@ -9,13 +9,15 @@ const paintCreator=renderLooks;let rendered=0;renderLooks=()=>{rendered++};s=def
 assert.equal(creatorDraft.topStyle,4);assert.equal(creatorDraft.bottomStyle,3);assert.equal(creatorDraft.frame,'male');assert.equal($('choice-frame-0').attributes['aria-pressed'],'true');
 assert.equal(Object.values(s.equipment).filter(Boolean).length,0);assert.equal(Object.keys(s.gear).length,0,'clothing does not grant equipment');
 $('choice-frame-1').onclick();assert.equal(creatorDraft.frame,'female');assert.equal($('choice-frame-1').attributes['aria-pressed'],'true');
-setCreatorChoice('topStyle',5);creatorStep('topStyle',1);assert.equal(creatorDraft.topStyle,0,'next wraps');creatorStep('topStyle',-1);assert.equal(creatorDraft.topStyle,5,'previous wraps');
+setCreatorChoice('topStyle',1);creatorStep('topStyle',1);assert.equal(creatorDraft.topStyle,4,'next wraps between authored outfits');creatorStep('topStyle',-1);assert.equal(creatorDraft.topStyle,5,'previous wraps');
 $('choice-hairColor-3').onclick();assert.equal(creatorDraft.hairColor,3);assert.equal($('choice-hairColor-3').attributes['aria-pressed'],'true');
-setCreatorChoice('bottomStyle',4);assert.equal($('appearance-bottomStyle').textContent,'Ranger trousers');
+setCreatorChoice('bottomStyle',1);assert.equal($('appearance-bottomStyle').textContent,'Ranger trousers');
 creatorAngle=0;$('characterPreview').listeners.keydown({key:'ArrowRight',preventDefault(){}});assert.equal(creatorAngle,Math.PI/4);$('characterPreview').listeners.keydown({key:'ArrowLeft',preventDefault(){}});assert.equal(creatorAngle,0);
 $('characterPreview').listeners.pointerdown({pointerId:1,button:0,clientX:100,preventDefault(){}});$('characterPreview').listeners.pointermove({pointerId:1,clientX:160});assert.equal(creatorAngle,.84);$('characterPreview').listeners.pointerup({pointerId:1});assert.equal(creatorDrag,null);
 $('creatorZoom').onclick();assert.equal(creatorFace,true);$('creatorZoom').onclick();assert.equal(creatorFace,false);
-s.character={name:'Original',frame:'male',hair:1,topStyle:2,bottomStyle:1};openCreator(true);assert.equal(creatorDraft.topStyle,2,'old appearance retained');setCreatorChoice('topStyle',5);assert.equal(s.character.topStyle,2,'draft changes do not modify saved character');
+s.character={name:'Original',frame:'male',hair:1,topStyle:2,bottomStyle:1};openCreator(true);assert.equal(creatorDraft.topStyle,4,'removed legacy top defaults to Peasant');assert.equal(creatorDraft.bottomStyle,3,'removed legacy legs default to Peasant');setCreatorChoice('topStyle',1);assert.equal(s.character.topStyle,2,'draft changes do not modify saved character');
+s.character={name:'Ranger',frame:'female',topStyle:5,bottomStyle:4,topColor:2,bottomColor:7};openCreator(true);assert.equal(creatorDraft.topStyle,5);assert.equal(creatorDraft.bottomStyle,4);assert.equal(creatorDraft.topColor,2);assert.equal(creatorDraft.bottomColor,7);assert.equal($('appearance-topStyle').textContent,'Ranger tunic');
+for(let i=0;i<100;i++){$('creatorRandom').onclick();assert([4,5].includes(creatorDraft.topStyle));assert([3,4].includes(creatorDraft.bottomStyle));}
 assert.equal(ITEMS.rangerHood.slot,'head');assert(ITEMS.rangerHood.openFace);assert(SKILL_SHOP_STOCK.some(row=>row[0]==='rangerHood'),'hood can be obtained');
 for(const sex of ['male','female']){
  for(const hair of ['Hair_SimpleParted','Hair_Long','Hair_Buzzed']){const fitted=fittedHairMesh(hair,sex);assert(fitted.bounds[1][1]>rebuiltAvatars[sex].mesh.bounds[1][1]+.007,'hair covers crown '+sex+' '+hair);assert([...fitted.p].every(Number.isFinite));}

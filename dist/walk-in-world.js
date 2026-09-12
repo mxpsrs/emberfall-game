@@ -71,7 +71,8 @@ function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn
 }
 const solidBuildingBefore=inBuilding;
 inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const perimeter=x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1;if(!perimeter)return false;const [dx,dy]=doorThreshold(b.service);return !(y===dy&&x===dx&&b.service.openedAt!==undefined);};
-// Door state is persistent. Clicking operates the leaf; ground clicks move.
+// Door clicks operate the leaf; exposed interior ground remains directly walkable.
+function buildingRoofHidden(b,x=px,y=py){return !!b.walkIn&&Math.hypot(Math.max(b.x-x-.5,0,x+.5-b.x-b.w),Math.max(b.y-y-.5,0,y+.5-b.y-b.h))<=5;}
 function withinWalkIn(b,x,y){return x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h;}
 function doorNormal(o){return ({south:[0,1],east:[1,0],north:[0,-1],west:[-1,0]})[o.building?.doorFacing||'south'];}
 function doorThreshold(o){const [dx,dy]=doorNormal(o);return [o.x-dx,o.y-dy];}
@@ -99,16 +100,17 @@ function operateWalkInDoor(o){
  const [dx,dy]=doorThreshold(o);if(o.openedAt!==undefined&&Math.hypot(px-dx,py-dy)<.8){toast('Step clear of the doorway to close it.');return;}
  setWalkInDoor(o,o.openedAt===undefined);renderAction();
 }
-engage=function(o){
- if(!o.building?.walkIn)return engageBeforeWalkIn(o);
- const [approachX,approachY]=doorApproach(o,withinWalkIn(o.building,px,py));stop();
- if(Math.hypot(px-approachX,py-approachY)<1.5){operateWalkInDoor(o);return;}
+function approachWalkInDoor(o){
+ const inside=withinWalkIn(o.building,px,py),[approachX,approachY]=doorApproach(o,inside);stop();
  const p=route(approachX,approachY,false);if(p===null){toast('There is no clear path to the door.');return;}
  path=p;pendingWalkInDoor=o;pendingDoorApproachX=approachX;pendingDoorApproachY=approachY;renderAction();
-};
+}
+engage=function(o){if(o.building?.walkIn)return approachWalkInDoor(o);return engageBeforeWalkIn(o);};
+const openBuildingBeforeWalkIn=openBuilding3;
+openBuilding3=function(b){if(b.walkIn)return walkTo(...doorApproach(b.service,withinWalkIn(b,px,py)));return openBuildingBeforeWalkIn(b);};
 updateDoorThreshold=function(){
  if(!inWorld())return;
- if(pendingWalkInDoor&&!path.length&&Math.hypot(px-pendingDoorApproachX,py-pendingDoorApproachY)<.2)operateWalkInDoor(pendingWalkInDoor);
+ if(pendingWalkInDoor&&!path.length&&Math.hypot(px-pendingDoorApproachX,py-pendingDoorApproachY)<.02)operateWalkInDoor(pendingWalkInDoor);
  const b=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py));
  if(b&&s.insideBuilding!==b.service.destination){s.insideBuilding=b.service.destination;if(b.archetype==='inn')tutorialEvent('inn');}
  else if(!b)s.insideBuilding=null;

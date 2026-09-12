@@ -7,6 +7,7 @@ const creatureAssets=Object.fromEntries(Object.entries(REALM_CREATURES).map(([ke
 const creaturePoses=new Map();
 const creatureRigPoses=new Map();
 const creatureKinds={goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
+function creatureSize(o){return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
 function creatureAsset(o){return creatureAssets[creatureKinds[o.kind]];}
 function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
  const a=creatureAssets[kind],motion=a.clips[clip],frame=Math.max(0,Math.min(motion.frames-1,phase*(motion.frames-1)));
@@ -60,7 +61,7 @@ function creatureMotion(o,x,z){
   const walking=distance>.0003&&distance<2;
   state.speed+=(walking?distance/dt-state.speed:-state.speed)*Math.min(1,dt*8);
   state.blend+=(walking?1-state.blend:-state.blend)*Math.min(1,dt*12);
-  if(walking)state.phase=(state.phase+distance/(o.kind==='rat'?.52:['wolf','ridgewolf'].includes(o.kind)?1.6:1.15))%1;
+  if(walking)state.phase=(state.phase+distance/(o.kind==='rat'?.52*creatureSize(o):['wolf','ridgewolf'].includes(o.kind)?1.6:1.15))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
   if(!walking&&target===o&&Math.hypot(px+.5-x,py+.5-z)<3)desired=Math.atan2(px+.5-x,py+.5-z);
   const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
@@ -79,7 +80,7 @@ creature3=function(r,o,x,z){
   humanoid3(r,x,z,(o.sprite||0)%4,gear,state.heading,state.blend>.015?state.phase*7.5:0);return gear._race==='dwarf'?1.8:2;
  }
  const kind=creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
- const dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height>65,near=Math.hypot(x-px-.5,z-py-.5)<8;
+ const variant=creatureSize(o),dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height*variant>65,near=Math.hypot(x-px-.5,z-py-.5)<8;
  const idlePhase=near?((Math.floor(time*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0;
  let clip='idle',phase=idlePhase,blend=1,baseClip='idle',basePhase=idlePhase;
  const gait=state.speed>3.2?'run':'walk';
@@ -92,7 +93,7 @@ creature3=function(r,o,x,z){
  const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
  phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
  if(!dying){state.lastClip=clip;state.lastPhase=phase;}
- const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase):creaturePose(kind,clip,phase,blend,baseClip,basePhase),variant=o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1,k=a.scale*variant;
+ const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase):creaturePose(kind,clip,phase,blend,baseClip,basePhase),k=a.scale*variant;
  const sink=dying?Math.max(0,time-o.deathAt-a.clips.death.duration)*.3:0;
  // Imported motion can dip below the original bind-pose floor. Keep the
  // lowest contact above the terrain while preserving genuine airborne steps.

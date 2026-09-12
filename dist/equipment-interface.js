@@ -11,6 +11,7 @@ function appendEquipmentSlots(grid,interactive=true){
 renderEquipment=function(){
  pageControls(1,1);if(toolBeltOpen)return renderToolBelt();const panel=$('panel');panel.innerHTML='<div class="questhead"><small>Combat level '+combatLevel()+'</small><small>Armour '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid equipment-slots paper-equipment"></div><div class="equipment-actions"><button id="equipmentStats" type="button"></button><button id="equipmentTools" type="button"></button><button id="equipmentFollowers" type="button"></button></div>';
  appendEquipmentSlots($('equipmentGrid'));setHudButton('equipmentStats','View combat stats','stats');setHudButton('equipmentTools','Tool belt','tools');setHudButton('equipmentFollowers','Elemental Spirits','followers');
+ $('equipmentStats').classList.toggle('tutorialfocus',tutorialStep()?.event==='combat-stats');
  $('equipmentStats').onclick=openCombatStats;$('equipmentTools').onclick=()=>{toolBeltOpen=true;renderEquipment();panel.scrollTop=0;};$('equipmentFollowers').onclick=openSpirits;paintItemIcons(panel);
 };
 function combatStatGroups(){return [

@@ -99,7 +99,7 @@ function livingWorld(dt){
   const atHome=Math.hypot(o.x-o.homeX,o.y-o.homeY)<3;
   const dirs=atHome?[[1,0],[-1,0],[0,1],[0,-1]]:[[Math.sign(o.homeX-o.x),0],[0,Math.sign(o.homeY-o.y)]];
   const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)],nx=o.x+dx,ny=o.y+dy;
-  if(land(nx,ny)&&!(nx===s.x&&ny===s.y)&&!objects.some(other=>other!==o&&other.dead<=time&&other.x===nx&&other.y===ny)){o.x=nx;o.y=ny;}
+  if(land(nx,ny)&&trainingRatCanMove(o,nx,ny)&&!(nx===s.x&&ny===s.y)&&!objects.some(other=>other!==o&&other.dead<=time&&other.x===nx&&other.y===ny)){o.x=nx;o.y=ny;}
  }
  ambientTimer+=dt;if(ambientTimer>5){ambientTimer=0;ambientChirp();}
 }

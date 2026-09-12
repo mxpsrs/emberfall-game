@@ -100,11 +100,11 @@ function realmNav(){
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
 const beforeRealmBlocked=blocked;
-blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=realmNav();return x<0||y<0||x>=n.w||y>=n.h||n.cells[y*n.w+x]||n.moving.some(o=>!o.collected&&o.x===x&&o.y===y);};
+blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=realmNav();return x<0||y<0||x>=n.w||y>=n.h||n.cells[y*n.w+x]||trainingGateClosedAt(x,y)||n.moving.some(o=>!o.collected&&o.x===x&&o.y===y);};
 const borderRoute=route;
-route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
- if(!kingdomsReady)return borderRoute(tx,ty,adjacent,reach,startX,startY);const nav=realmNav(),{w,h}=nav;if(tx<0||ty<0||tx>=w||ty>=h)return null;
- const cells=nav.cells,moving=new Set(nav.moving.filter(o=>!o.collected).map(o=>o.y*w+o.x)),isSolid=id=>cells[id]||moving.has(id);
+route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
+ if(!kingdomsReady)return borderRoute(tx,ty,adjacent,reach,startX,startY,actor);const nav=realmNav(),{w,h}=nav;if(tx<0||ty<0||tx>=w||ty>=h)return null;
+ const cells=nav.cells,moving=new Set(nav.moving.filter(o=>!o.collected).map(o=>o.y*w+o.x)),isSolid=id=>cells[id]||moving.has(id)||actor&&!trainingRatCanMove(actor,id%w,Math.floor(id/w));
  const start=startY*w+startX,goal=ty*w+tx;if(!adjacent&&isSolid(goal))return null;const costs=new Map(),previous=new Map();const heap=[];
  const push=o=>{heap.push(o);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].f<=o.f)break;heap[i]=heap[p];i=p;}heap[i]=o;};
  const pop=()=>{const out=heap[0],last=heap.pop();if(heap.length){let i=0;while(i*2+1<heap.length){let c=i*2+1;if(c+1<heap.length&&heap[c+1].f<heap[c].f)c++;if(heap[c].f>=last.f)break;heap[i]=heap[c];i=c;}heap[i]=last;}return out;};

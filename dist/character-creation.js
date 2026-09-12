@@ -6,22 +6,24 @@ const CREATOR_FIELDS=[
  ['hairColor','Hair colour',['Black','Brown','Auburn','Blond','Silver','White']],
  ['beard','Facial hair',['Clean shaven','Full beard','Shaped beard']],
  ['skin','Skin colour',['Porcelain','Fair','Warm','Tan','Brown','Deep']],
- ['topStyle','Top',['Long sleeves','Sleeveless','Trimmed tunic','Traveller shirt','Peasant shirt','Ranger tunic']],
+ ['topStyle','Top',['Peasant shirt','Ranger tunic'],[4,5]],
  ['topColor','Top colour',['Blue','Red','Green','Purple','Ochre','Charcoal','Linen','Brown']],
- ['bottomStyle','Legs & footwear',['Trousers','Breeches & stockings','Loose trousers','Peasant breeches','Ranger trousers']],
+ ['bottomStyle','Legs & footwear',['Peasant breeches','Ranger trousers'],[3,4]],
  ['bottomColor','Leg colour',['Blue','Red','Green','Purple','Ochre','Charcoal','Linen','Brown']]
 ];
 const CREATOR_SWATCHES={skin:['#e1c3a2','#cda782','#b99370','#aa7c58','#805b42','#593e2d'],hairColor:['#272728','#60432d','#924c30','#bb9552','#b2b4b0','#e2dece'],topColor:['#456e8b','#8d4240','#4b7855','#75558d','#b19a56','#45494d','#c6bfa2','#795139']};
 CREATOR_SWATCHES.bottomColor=CREATOR_SWATCHES.topColor;
-function creatorChoiceValue(key,index){return key==='frame'?(index?'female':'male'):index;}
+// Keep the authored outfit IDs stable for saved characters and the world renderer.
+function creatorChoiceValue(key,index){const values=CREATOR_FIELDS.find(row=>row[0]===key)?.[3];return key==='frame'?(index?'female':'male'):values?values[index]:index;}
+function creatorChoiceIndex(key){const field=CREATOR_FIELDS.find(row=>row[0]===key);return Math.max(0,field[2].findIndex((_,i)=>creatorChoiceValue(key,i)===creatorDraft[key]));}
 function setCreatorChoice(key,index){
  const field=CREATOR_FIELDS.find(row=>row[0]===key);if(!field||!creatorDraft)return;
  const n=field[2].length;index=(index%n+n)%n;creatorDraft[key]=creatorChoiceValue(key,index);syncCreatorControls();renderLooks();
 }
-function creatorStep(key,delta){const value=key==='frame'?(creatorDraft.frame==='female'?1:0):Number(creatorDraft[key])||0;setCreatorChoice(key,value+delta);}
+function creatorStep(key,delta){setCreatorChoice(key,creatorChoiceIndex(key)+delta);}
 function syncCreatorControls(){
  for(const [key,,options]of CREATOR_FIELDS){
-  const value=key==='frame'?(creatorDraft.frame==='female'?1:0):creatorDraft[key];
+  const value=creatorChoiceIndex(key);
   const label=$('appearance-'+key);if(label){label.textContent=options[value];label.dataset.value=String(creatorDraft[key]);}
   for(let i=0;i<options.length;i++){const button=$('choice-'+key+'-'+i);if(button)button.setAttribute('aria-pressed',String(value===i));}
  }
@@ -51,7 +53,7 @@ function buildCreatorControls(){
 openCreator=function(edit=false){
  stop();if($('modal').open)$('modal').close();editingCharacter=edit;selectedLook=s.character?.look||0;creatorAngle=-.4;creatorFace=false;
  creatorDraft={race:'human',frame:'male',skin:1,hair:0,hairColor:1,beard:0,topStyle:4,topColor:6,bottomStyle:3,bottomColor:7,...s.character};
- for(const [key,,options]of CREATOR_FIELDS){if(key==='frame')creatorDraft.frame=creatorDraft.frame==='female'?'female':'male';else if(!Number.isInteger(creatorDraft[key])||creatorDraft[key]<0||creatorDraft[key]>=options.length)creatorDraft[key]=0;}
+ for(const [key,,options]of CREATOR_FIELDS)if(!options.some((_,i)=>creatorChoiceValue(key,i)===creatorDraft[key]))creatorDraft[key]=creatorChoiceValue(key,0);
  $('creatorTitle').textContent=edit?'Change your appearance':'Choose your appearance';$('characterName').value=s.character?.name||accountUsername||'';
  $('begin').textContent=edit?'Save appearance':'Begin adventure';$('cancelCreator').hidden=!edit;$('characterSaveError').textContent='';$('creatorZoom').textContent='Face detail';
  buildCreatorControls();$('creator').showModal();renderLooks();

@@ -13,7 +13,7 @@ function initHud(){
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
  if(window.matchMedia('(pointer: coarse)').matches){$('tutorial').classList.add('collapsed');$('tutCollapse').textContent='Expand';}
- $('tutCollapse').onclick=()=>{const collapsed=$('tutorial').classList.toggle('collapsed');$('tutCollapse').textContent=collapsed?'Expand':'Minimize';};
+ $('tutCollapse').onclick=()=>{$('tutorial').classList.toggle('collapsed');renderTutorial();};
  window.addEventListener('resize',updateOrientation);window.addEventListener('orientationchange',updateOrientation);updateOrientation();
 }
 

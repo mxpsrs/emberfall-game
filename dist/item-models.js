@@ -171,6 +171,9 @@ function buildBowItem(r,id){
  for(const y of [-.40,.40])itemRod(r,[.22,y-.04,0],[.24,y+.025,0],.035,trim);
 }
 function buildMiscItem(r,id){
+ if(id==='bread'||id==='breadDough'){itemOval(r,0,0,0,.86,.48,.52,id==='bread'?'#b87b3d':'#ddd0aa',10);if(id==='bread')for(const x of [-.23,0,.23])itemRod(r,[x-.05,.19,.13],[x+.06,.19,-.13],.024,'#e4b873',5);return;}
+ if(id==='flour'){itemProfile(r,0,-.03,0,.66,.7,.50,[[-.5,.72],[-.2,1],[.27,.86],[.5,.60]],'#bda580',8);itemProfile(r,0,.34,0,.42,.07,.33,[[-.5,1],[.5,1]],'#e5ddc4',8);return;}
+ if(id==='jugWater'){itemProfile(r,0,-.06,0,.55,.72,.52,[[-.5,.64],[-.25,1],[.2,.84],[.5,.54]],'#a97b55',10);itemProfile(r,0,.31,0,.30,.06,.30,[[-.5,1],[.5,1]],'#527e91',10);itemPath(r,[[.19,.19,0],[.42,.2,0],[.45,-.17,0],[.23,-.27,0]],.05,'#a97b55');return;}
  if(id==='oakStaff'){itemPath(r,[[0,-.65,0],[.02,.19,0],[-.05,.48,0],[.03,.63,0],[.17,.57,0]],.045,'#8d6845');itemOval(r,.02,.51,0,.23,.27,.23,'#78aaa8',6);return;}
  if(id==='bones'){for(const [a,b]of [[[-.35,-.25,0],[.33,.24,0]],[[-.32,.28,.03],[.32,-.25,.03]]]){itemRod(r,a,b,.048,'#d7cfb2');for(const p of [a,b])for(const dx of [-.047,.047])itemOval(r,p[0]+dx,p[1],p[2],.12,.13,.12,'#e6dec5',6);}return;}
  if(id==='fang'){itemProfile(r,0,0,0,.39,.88,.29,[[-.5,.05],[-.25,.32],[.15,.84],[.42,1],[.5,.75]],'#e0d4b1',7);itemProfile(r,0,.37,0,.38,.18,.30,[[-.5,1],[.5,.83]],'#a49b82',7);return;}
