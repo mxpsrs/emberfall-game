@@ -101,3 +101,6 @@ body.panels-open .legend{display:none}
 @media(pointer:fine){.bagslot{height:clamp(28px,calc((100dvh - 190px)/5),52px)}}
 @media(orientation:landscape) and (max-height:600px){#waveButton{display:none}#runButton{top:170px}.legend{display:none}}
 .realm-surface{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}#world{position:relative;z-index:0}
+
+/* The loading cover is part of the game surface, including touch gestures. */
+#viewport,#loading{touch-action:none}#loading{gap:14px;justify-items:center;padding:24px;text-align:center}#loading strong{font-size:18px}#loading progress{width:min(260px,70vw);height:8px;accent-color:var(--gold)}#loading p{margin:0}

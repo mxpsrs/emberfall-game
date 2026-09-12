@@ -41,14 +41,18 @@ bindbuffer=gl('glBindBuffer',None,[U,U]);buffers={}
 for draw in scene['draws']:
  if draw['file'] in buffers:continue
  data=(root/draw['file']).read_bytes();b=U();gl('glGenBuffers',None,[I,P])(1,C.byref(b));bindbuffer(0x8892,b);gl('glBufferData',None,[U,C.c_ssize_t,P,U])(0x8892,len(data),C.c_char_p(data),0x88E4);buffers[draw['file']]=b.value
-attribute=gl('glGetAttribLocation',I,[U,C.c_char_p]);attributes=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV']];enableattr=gl('glEnableVertexAttribArray',None,[U]);attrpointer=gl('glVertexAttribPointer',None,[U,I,U,U,I,P]);matrix=gl('glUniformMatrix4fv',None,[I,I,U,P]);model=location(program,b'uModel');drawarrays=gl('glDrawArrays',None,[U,I,I])
+attribute=gl('glGetAttribLocation',I,[U,C.c_char_p]);attributes=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights']];enableattr=gl('glEnableVertexAttribArray',None,[U]);attrpointer=gl('glVertexAttribPointer',None,[U,I,U,U,I,P]);matrix=gl('glUniformMatrix4fv',None,[I,I,U,P]);model=location(program,b'uModel');drawarrays=gl('glDrawArrays',None,[U,I,I])
 normalmatrix=gl('glUniformMatrix3fv',None,[I,I,U,P]);normal=location(program,b'uNormal')
 def drawentry(draw):
+ palette=draw.get('palette');uniform('uSkinning',1 if palette else 0)
+ if palette:gl('glUniform4fv',None,[I,I,P])(location(program,b'uBones[0]'),len(palette)//4,(F*len(palette))(*palette))
  normalmatrix(normal,1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
  matrix(model,1,0,(F*16)(*draw['model']));bindbuffer(0x8892,buffers[draw['file']])
  for i,a in enumerate(attributes):
   if a<0:continue
-  enableattr(a);attrpointer(a,2 if i==4 else 1 if i==3 else 3,0x1406,0,48,P(40 if i==4 else i*12))
+  if i>=5 and not palette:
+   gl('glDisableVertexAttribArray',None,[U])(a);gl('glVertexAttrib4f',None,[U,F,F,F,F])(a,0,0,0,0);continue
+  enableattr(a);attrpointer(a,4 if i>=5 else 2 if i==4 else 1 if i==3 else 3,0x1406,0,draw.get('stride',48),P(48 if i==5 else 64 if i==6 else 40 if i==4 else i*12))
  drawarrays(4,0,draw['count'])
 enable=gl('glEnable',None,[U]);disable=gl('glDisable',None,[U]);enable(0x0B71);gl('glDepthFunc',None,[U])(0x0203);disable(0x0B44);disable(0x0BE2)
 viewport=gl('glViewport',None,[I,I,I,I]);clearcolor=gl('glClearColor',None,[F,F,F,F]);clear=gl('glClear',None,[U])

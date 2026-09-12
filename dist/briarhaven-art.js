@@ -1,7 +1,7 @@
 'use strict';
 // The approved Briarhaven art direction across all kingdoms and interiors.
 // Gameplay objects, collision footprints and save IDs stay stable.
-function briarDecode(text,Type){const bytes=Uint8Array.from(atob(text),c=>c.charCodeAt(0));return new Type(bytes.buffer);}
+function briarDecode(text,Type){const binary=atob(text),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return new Type(bytes.buffer);}
 function briarMesh(source){return {p:briarDecode(source.p,Float32Array),n:Float32Array.from(briarDecode(source.n,Int8Array),v=>v/127),c:Float32Array.from(briarDecode(source.c,Uint8Array),v=>v/255),i:briarDecode(source.i,Uint16Array),j:source.j?briarDecode(source.j,Uint8Array):null,w:source.w?briarDecode(source.w,Uint8Array):null,bounds:source.bounds};}
 const briarModels=Object.fromEntries(Object.entries(BRIARHAVEN_ASSETS.models).map(([k,m])=>[k,briarMesh(m)]));
 const briarRigs=Object.fromEntries(Object.entries(BRIARHAVEN_ASSETS.rigs).map(([k,r])=>[k,{...r,meshes:Object.fromEntries(Object.entries(r.meshes).map(([n,m])=>[n,briarMesh(m)])),clips:Object.fromEntries(Object.entries(r.clips).map(([n,c])=>[n,{...c,m:briarDecode(c.m,Float32Array)}]))}]));

@@ -82,6 +82,7 @@ const canvas=$('world'), ctx=canvas.getContext('2d');
 const art={};
 const looks=[{name:'Blue wanderer',description:'Short brown hair, blue tunic'},{name:'Crimson wanderer',description:'Auburn ponytail, crimson tunic'},{name:'Emerald wanderer',description:'Short black hair, emerald tunic'},{name:'Violet wanderer',description:'Silver hair, violet tunic'}];
 function save() {
+  if(!assetsReady||window.realmStartup?.failed)return;
   queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));$('saveStatus').textContent='Progress saved on this device';}
   catch{$('saveStatus').textContent='Saving unavailable in this browser';}
 }
@@ -381,19 +382,25 @@ document.addEventListener('keydown',e=>{
   if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
 });
 async function boot(){
-  try{await initializeCloud();}catch(error){
-    const needsSignIn=error.status===401;
-    $('loading').innerHTML=needsSignIn?'<p>Your signed-in account is unavailable. Reopen Emberfall from ChatGPT, then try again.</p><button id="retryCloud">Retry account connection</button>':'<p>Your account save could not load. Your saved character has not been replaced.</p><button id="retryCloud">Retry</button>';
-    $('retryCloud').onclick=()=>location.reload();cloudStatus(needsSignIn?'Sign in to continue':'Could not load account save');return;
-  }
-  setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();initHud();resize();renderUI();renderAction();
+  if(window.realmStartup?.failed)return;
+  realmLoadStatus('Loading your character and the world…',35);
   try{
-    const names=['characters','environment','terrain','items','poses','walking','spirits','heroes','monsters'];
-    await Promise.all(names.map(name=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{art[name]=img;resolve();};img.onerror=reject;img.src='assets/'+name+'.png';})));
-    const response=await fetch('assets/bounds.json');if(response.ok)art.bounds=await response.json();
-    prepareAnimationAtlases();assetsReady=true;save();$('loading').hidden=true;renderUI();renderTutorial();if(!s.character?.name?.trim())openCreator(false);
-  }catch{
-    $('loading').innerHTML='';const message=document.createElement('p');message.textContent='The realm could not load. Check your connection and try again.';$('loading').appendChild(message);const b=document.createElement('button');b.textContent='Try again';b.onclick=()=>location.reload();$('loading').appendChild(b);
+    // The current 3D renderer needs these three UI atlases. The retired 2D
+    // character/walking/terrain sheets must not block entry into this world.
+    let completed=0;const update=()=>realmLoadStatus('Loading your character and the world…',35+(++completed)*8);
+    await Promise.all([
+      initializeCloud().then(update),loadRebuiltTextures().then(update),
+      ...['items','environment','spirits'].map(async name=>{art[name]=await realmLoadImage('assets/'+name+'.png');update();}),
+      fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw new Error('Item artwork unavailable');art.bounds=await response.json();update();})
+    ]);
+    if(window.realmStartup?.failed)return;
+    realmLoadStatus('Preparing Briarhaven…',90);
+    await new Promise(resolve=>requestAnimationFrame(resolve));
+    setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();initHud();resize();renderUI();renderAction();
+    assetsReady=true;renderUI();renderTutorial();draw();
+    if(!s.character?.name?.trim())openCreator(false);
+    realmLoadComplete();save();requestAnimationFrame(frame);
+  }catch(error){
+    assetsReady=false;realmLoadFailure(error.status===401?'Your account connection expired. Reopen Emberfall and retry.':'Please retry loading. Your saved character has been kept.',error);
   }
-  requestAnimationFrame(frame);
 }

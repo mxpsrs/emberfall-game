@@ -5,14 +5,15 @@ const creatureAssets=Object.fromEntries(Object.entries(REALM_CREATURES).map(([ke
  clips:Object.fromEntries(Object.entries(a.clips).map(([key,c])=>[key,{...c,trs:briarDecode(c.trs,Float32Array)}]))
 }]));
 const creaturePoses=new Map();
+const creatureRigPoses=new Map();
 const creatureKinds={goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
 function creatureAsset(o){return creatureAssets[creatureKinds[o.kind]];}
-function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
+function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
  const a=creatureAssets[kind],motion=a.clips[clip],frame=Math.max(0,Math.min(motion.frames-1,phase*(motion.frames-1)));
  const baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
- const key=[kind,clip,frame.toFixed(2),blend.toFixed(2),blend<1?baseClip:'',blend<1?baseFrame.toFixed(2):''].join(':');
- if(creaturePoses.has(key))return creaturePoses.get(key);
- const global=[],skin=[],v=new Float32Array(10),b=new Float32Array(10);
+ const key=[kind,clip,frame.toFixed(3),blend.toFixed(3),blend<1?baseClip:'',blend<1?baseFrame.toFixed(3):''].join(':');
+ if(creatureRigPoses.has(key))return creatureRigPoses.get(key);
+ const global=[],palette=new Float32Array(a.rig.deforms.length*12),v=new Float32Array(10),b=new Float32Array(10);
  for(let i=0;i<a.joints;i++){
   sampleRealmJoint(motion,frame,i,a.joints,v);
   if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,i,a.joints,b);const sign=v[3]*b[3]+v[4]*b[4]+v[5]*b[5]+v[6]*b[6]<0?-1:1;
@@ -21,21 +22,34 @@ function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
   }
   const local=realmJointMatrix(v),parent=a.rig.parents[i],world=parent<0?local:affineMultiply(global[parent],local);global.push(world);
  }
- for(let i=0;i<a.rig.deforms.length;i++)skin.push(affineMultiply(global[a.rig.deforms[i]],a.rig.bind.subarray(i*12,i*12+12)));
- const mesh=a.mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length);let floorY=Infinity;
+ for(let i=0;i<a.rig.deforms.length;i++)palette.set(affineMultiply(global[a.rig.deforms[i]],a.rig.bind.subarray(i*12,i*12+12)),i*12);
+ // Only solve contact height on the CPU. Positions and normals are deformed
+ // by the GPU, using the same palette, in both the color and shadow passes.
+ const mesh=a.mesh;let floorY=Infinity;
+ for(let i=0,k=0;i<mesh.p.length/3;i++,k+=3){let y=0;
+  for(let j=0;j<4;j++){const weight=mesh.w[i*4+j];if(!weight)continue;const t=mesh.j[i*4+j]*12+4;y+=weight*(palette[t]*mesh.p[k]+palette[t+1]*mesh.p[k+1]+palette[t+2]*mesh.p[k+2]+palette[t+3]);}
+  floorY=Math.min(floorY,y);
+ }
+ const pose={key,palette,floorY};creatureRigPoses.set(key,pose);
+ if(creatureRigPoses.size>80)creatureRigPoses.delete(creatureRigPoses.keys().next().value);
+ return pose;
+}
+function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
+ const rig=creatureRigPose(kind,clip,phase,blend,baseClip,basePhase);
+ if(creaturePoses.has(rig.key))return creaturePoses.get(rig.key);
+ const mesh=creatureAssets[kind].mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),m=rig.palette;
  for(let i=0;i<mesh.p.length/3;i++){
   const k=i*3;
   for(let j=0;j<4;j++){
-   const weight=mesh.w[i*4+j];if(!weight)continue;const m=skin[mesh.j[i*4+j]];
-   for(let axis=0;axis<3;axis++){const t=axis*4;
+   const weight=mesh.w[i*4+j];if(!weight)continue;const bone=mesh.j[i*4+j]*12;
+   for(let axis=0;axis<3;axis++){const t=bone+axis*4;
     p[k+axis]+=weight*(m[t]*mesh.p[k]+m[t+1]*mesh.p[k+1]+m[t+2]*mesh.p[k+2]+m[t+3]);
     n[k+axis]+=weight*(m[t]*mesh.n[k]+m[t+1]*mesh.n[k+1]+m[t+2]*mesh.n[k+2]);
    }
   }
   const length=Math.hypot(n[k],n[k+1],n[k+2])||1;for(let axis=0;axis<3;axis++)n[k+axis]/=length;
-  floorY=Math.min(floorY,p[k+1]);
  }
- const result={...mesh,p,n,floorY};creaturePoses.set(key,result);
+ const result={...mesh,p,n,floorY:rig.floorY};creaturePoses.set(rig.key,result);
  if(creaturePoses.size>80)creaturePoses.delete(creaturePoses.keys().next().value);
  return result;
 }
@@ -48,7 +62,7 @@ function creatureMotion(o,x,z){
   state.blend+=(walking?1-state.blend:-state.blend)*Math.min(1,dt*12);
   if(walking)state.phase=(state.phase+distance/(o.kind==='rat'?.52:['wolf','ridgewolf'].includes(o.kind)?1.6:1.15))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
-  if(target===o&&Math.hypot(px+.5-x,py+.5-z)<3)desired=Math.atan2(px+.5-x,py+.5-z);
+  if(!walking&&target===o&&Math.hypot(px+.5-x,py+.5-z)<3)desired=Math.atan2(px+.5-x,py+.5-z);
   const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
   state.time=time;state.x=x;state.z=z;
  }
@@ -59,19 +73,24 @@ const creatureBeforeImports=creature3;
 creature3=function(r,o,x,z){
  const kind=creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
  const dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height>65,near=Math.hypot(x-px-.5,z-py-.5)<8;
- const idlePhase=near?(Math.floor(time*(large?16:8))/(large?16:8)/a.clips.idle.duration)%1:0;
+ const idlePhase=near?((Math.floor(time*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0;
  let clip='idle',phase=idlePhase,blend=1,baseClip='idle',basePhase=idlePhase;
+ const gait=state.speed>3.2?'run':'walk';
  const attackAge=time-(o.attackAt??-100),hitAge=time-(o.hitAt??-100);
- if(dying){clip='death';phase=Math.min(1,(time-o.deathAt)/a.clips.death.duration);}
- else if(attackAge>=0&&attackAge<a.clips.attack.duration){clip='attack';phase=attackAge/a.clips.attack.duration;blend=Math.min(1,attackAge/.07,(a.clips.attack.duration-attackAge)/.10);}
- else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.045,(a.clips.hit.duration-hitAge)/.08);}
- else if(state.blend>.015){clip=state.speed>3.2?'run':'walk';phase=state.phase;blend=state.blend;}
- const steps=large?48:24;phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*8)/8;
- const mesh=creaturePose(kind,clip,phase,blend,baseClip,basePhase),variant=o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1,k=a.scale*variant;
+ if(dying){clip='death';phase=Math.min(1,(time-o.deathAt)/a.clips.death.duration);blend=Math.min(1,(time-o.deathAt)/.12);baseClip=state.lastClip||'idle';basePhase=state.lastPhase||0;}
+ else if(attackAge>=0&&attackAge<a.clips.attack.duration){clip='attack';phase=attackAge/a.clips.attack.duration;blend=Math.min(1,attackAge/.10,(a.clips.attack.duration-attackAge)/.14);}
+ else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}
+ else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}
+ if(!dying&&['attack','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
+ const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
+ phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
+ if(!dying){state.lastClip=clip;state.lastPhase=phase;}
+ const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase):creaturePose(kind,clip,phase,blend,baseClip,basePhase),variant=o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1,k=a.scale*variant;
  const sink=dying?Math.max(0,time-o.deathAt-a.clips.death.duration)*.3:0;
  // Imported motion can dip below the original bind-pose floor. Keep the
  // lowest contact above the terrain while preserving genuine airborne steps.
  const floor=dying?mesh.floorY:Math.min(mesh.floorY,a.mesh.bounds[0][1]);
- briarEmit(groundedPainter(r,x,z),mesh,briarTransform(x,-floor*k-sink,z,k,state.heading));
+ const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink,z,k,state.heading);
+ if(painter.skinned)painter.skinned(a.mesh,transform,mesh.palette);else briarEmit(painter,mesh,transform);
  return a.height*variant;
 };

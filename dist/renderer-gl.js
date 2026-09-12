@@ -56,6 +56,20 @@ void main(){
  float localGlow=exp(-length(vWorld-uOrigin)*.19)*uInterior;col+=vec3(.20,.10,.025)*localGlow;
  float fog=smoothstep(19.0,65.0,length(vWorld.xz-uOrigin.xz));col=mix(col,vec3(.28,.39,.40),fog*.32);col=pow(max(col,vec3(0.0)),vec3(.92));gl_FragColor=vec4(col,1.0);
 }`;
+const REALM_SKIN_BONES=80;
+// Uniform palettes work on WebGL 1 hardware with at least 256 vertex vectors.
+// Devices below that limit retain the exact CPU deformation path.
+const realmSkinnedVertexShader=realmVertexShader.replace('void main(){',`
+attribute vec4 aJoints;attribute vec4 aWeights;
+uniform vec4 uBones[240];uniform float uSkinning;
+vec3 skinPoint(float bone,vec4 point){int b=int(bone)*3;return vec3(dot(uBones[b],point),dot(uBones[b+1],point),dot(uBones[b+2],point));}
+void main(){
+ vec3 skinPosition=aPosition,skinNormal=aNormal;
+ if(uSkinning>.5){
+  skinPosition=skinPoint(aJoints.x,vec4(aPosition,1.0))*aWeights.x+skinPoint(aJoints.y,vec4(aPosition,1.0))*aWeights.y+skinPoint(aJoints.z,vec4(aPosition,1.0))*aWeights.z+skinPoint(aJoints.w,vec4(aPosition,1.0))*aWeights.w;
+  skinNormal=skinPoint(aJoints.x,vec4(aNormal,0.0))*aWeights.x+skinPoint(aJoints.y,vec4(aNormal,0.0))*aWeights.y+skinPoint(aJoints.z,vec4(aNormal,0.0))*aWeights.z+skinPoint(aJoints.w,vec4(aNormal,0.0))*aWeights.w;
+ }
+`).replace('uModel*vec4(aPosition,1.0)','uModel*vec4(skinPosition,1.0)').replace('uNormal*aNormal','uNormal*normalize(skinNormal)');
 let realmGPU=null,realmGPUUnavailable=false;
 const realmResolution={scale:1,samples:0,total:0};
 function observeRenderTime(milliseconds){
@@ -88,21 +102,38 @@ function trimRealmMeshes(gpu){
  if(!gpu.meshUse)return;
  for(const [mesh,entry]of gpu.meshUse){if(gpu.meshBytes<=48*1024*1024)break;if(entry.used===gpu.frameId)continue;gpu.gl.deleteBuffer(entry.buffer);gpu.meshUse.delete(mesh);gpu.sharedMeshes.delete(mesh);gpu.meshBytes-=entry.bytes;}
 }
+function realmSkinnedEntry(gpu,mesh){
+ let entry=gpu.skinnedMeshes.get(mesh);if(entry)return entry;
+ const data=new Float32Array(mesh.i.length*20);let offset=0;
+ for(let triangle=0;triangle<mesh.i.length;triangle+=3){
+  const ids=[mesh.i[triangle],mesh.i[triangle+1],mesh.i[triangle+2]],materials=ids.map(v=>mesh.t?.[v]||20),mixed=materials.some(m=>m!==materials[0]),colors=mixed&&mesh.f?mesh.f:mesh.c;
+  for(const v of ids){const p=v*3,j=v*4;
+   data.set([mesh.p[p],mesh.p[p+1],mesh.p[p+2],mesh.n[p],mesh.n[p+1],mesh.n[p+2],colors[p],colors[p+1],colors[p+2],mixed?20:materials[0],mesh.uv?.[v*2]||0,mesh.uv?.[v*2+1]||0,mesh.j[j],mesh.j[j+1],mesh.j[j+2],mesh.j[j+3],mesh.w[j],mesh.w[j+1],mesh.w[j+2],mesh.w[j+3]],offset);offset+=20;
+  }
+ }
+ entry={...gpu.upload(data),count:mesh.i.length,stride:80};gpu.skinnedMeshes.set(mesh,entry);return entry;
+}
 function createRealmGPU(){
  const surface=document.createElement('canvas');const gl=surface.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'high-performance'});
  if(!gl||typeof gl.getParameter(gl.VERSION)!=='string')return null;
  const compile=(type,source)=>{const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(shader));return shader;};
- const program=gl.createProgram();gl.attachShader(program,compile(gl.VERTEX_SHADER,realmVertexShader));gl.attachShader(program,compile(gl.FRAGMENT_SHADER,realmFragmentShader));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));gl.useProgram(program);
- const attrs=['aPosition','aNormal','aColor','aMaterial','aUV'].map(n=>gl.getAttribLocation(program,n));const uniforms=Object.fromEntries(['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera'].map(n=>[n,gl.getUniformLocation(program,n)]));
+ const link=vertex=>{const p=gl.createProgram(),v=compile(gl.VERTEX_SHADER,vertex),f=compile(gl.FRAGMENT_SHADER,realmFragmentShader);gl.attachShader(p,v);gl.attachShader(p,f);gl.linkProgram(p);gl.deleteShader(v);gl.deleteShader(f);if(!gl.getProgramParameter(p,gl.LINK_STATUS)){const error=gl.getProgramInfoLog(p);gl.deleteProgram(p);throw new Error(error);}return p;};
+ let skinning=Number(gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS))>=256,program;
+ try{program=link(skinning?realmSkinnedVertexShader:realmVertexShader);}catch(error){if(!skinning)throw error;skinning=false;program=link(realmVertexShader);}
+ gl.useProgram(program);
+ const attrs=['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights'].map(n=>gl.getAttribLocation(program,n));const uniforms=Object.fromEntries(['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera','uSkinning','uBones[0]'].map(n=>[n,gl.getUniformLocation(program,n)]));
  const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1024,1024,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
  const framebuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);const depth=gl.createRenderbuffer();gl.bindRenderbuffer(gl.RENDERBUFFER,depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,1024,1024);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,depth);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Shadow target unavailable');gl.bindFramebuffer(gl.FRAMEBUFFER,null);
  const atlas=gl.createTexture();gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,atlas);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([255,255,255,255]));if(typeof REALM_ATLAS_IMAGE!=='undefined'&&REALM_ATLAS_IMAGE?.width>0&&REALM_ATLAS_IMAGE.complete!==false){gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,REALM_ATLAS_IMAGE);}gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.activeTexture(gl.TEXTURE0);
  const sharedMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map(),dynamicBuffer=gl.createBuffer();
  const upload=data=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);return {buffer,count:data.length/12};};
- const bind=entry=>{gl.uniformMatrix3fv(uniforms.uNormal,false,realmNormalMatrix(entry.model));const a=entry.model?Array.from(entry.model):null;if(a&&typeof landHeight==='function')a[7]+=landHeight(a[3],a[11]);gl.uniformMatrix4fv(uniforms.uModel,false,a?new Float32Array([a[0],a[4],a[8],0,a[1],a[5],a[9],0,a[2],a[6],a[10],0,a[3],a[7],a[11],1]):new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);for(let i=0;i<5;i++){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],i===4?2:i===3?1:3,gl.FLOAT,false,48,i===4?40:i*12);}gl.drawArrays(gl.TRIANGLES,0,entry.count);};
+ const bind=entry=>{gl.uniformMatrix3fv(uniforms.uNormal,false,realmNormalMatrix(entry.model));const a=entry.model?Array.from(entry.model):null;if(a&&typeof landHeight==='function')a[7]+=landHeight(a[3],a[11]);gl.uniformMatrix4fv(uniforms.uModel,false,a?new Float32Array([a[0],a[4],a[8],0,a[1],a[5],a[9],0,a[2],a[6],a[10],0,a[3],a[7],a[11],1]):new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);for(let i=0;i<5;i++){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],i===4?2:i===3?1:3,gl.FLOAT,false,entry.stride||48,i===4?40:i*12);}
+  if(skinning){gl.uniform1f(uniforms.uSkinning,entry.palette?1:0);if(entry.palette)gl.uniform4fv(uniforms['uBones[0]'],entry.palette);for(let i=5;i<7;i++){if(entry.palette){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],4,gl.FLOAT,false,80,i===5?48:64);}else{gl.disableVertexAttribArray(attrs[i]);gl.vertexAttrib4f(attrs[i],0,0,0,0);}}}
+  gl.drawArrays(gl.TRIANGLES,0,entry.count);
+ };
  const presented=!!canvas.parentElement?.insertBefore;if(presented){surface.className='realm-surface';surface.setAttribute('aria-hidden','true');canvas.parentElement.insertBefore(surface,canvas);}
  surface.addEventListener('webglcontextlost',e=>{e.preventDefault();surface.hidden=true;realmGPU=null;realmGPUUnavailable=true;});surface.addEventListener('webglcontextrestored',()=>{surface.remove?.();realmGPUUnavailable=false;});
- return {surface,presented,gl,cache,sharedMeshes,terrain,upload,frameId:0,render(entries,dynamic,g){
+ return {surface,presented,gl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),skinning,terrain,upload,frameId:0,render(entries,dynamic,g){
   if(gl.isContextLost())return;
   const dpr=realmPixelScale(),width=Math.round(screen.w*dpr),height=Math.round(screen.h*dpr);if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;}
   gl.useProgram(program);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
@@ -152,7 +183,9 @@ painter3=function(g,project){
  if(project!==project3||realmGPUUnavailable){const painter=canvasPainterRealm(g,project);painter.software=true;return painter;}
  if(!realmGPU){try{realmGPU=createRealmGPU();}catch(error){console.warn('Using canvas rendering:',error.message);}if(!realmGPU){realmGPUUnavailable=true;return canvasPainterRealm(g,project);}}
  const gpu=realmGPU,entries=[],dynamic=[];
- return {face(points,color,normals,material,colors,uvs){realmFaceData(dynamic,points,color,normals,material,colors,uvs);},indexed(mesh,m){entries.push({...realmMeshEntry(gpu,mesh),model:m});},cached(cached){if(cached.kind!=='building')for(const instance of cached.instances||[])entries.push({...realmMeshEntry(gpu,instance.mesh),model:instance.matrix});if(!cached.faces.length&&cached.kind!=='building')return cached.height;let entry=gpu.cache.get(cached);if(!entry){const data=[];if(cached.kind==='building')for(const instance of cached.instances||[])realmIndexedData(data,instance.mesh,instance.matrix);for(const f of cached.faces){let material=f.material||0;if(!material&&cached.kind==='building'){const n=parseInt(f.color.slice(1),16),red=n>>16,green=(n>>8)&255,blue=n&255,top=f.points.reduce((a,p)=>a+p[1],0)/f.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)material=6;else if(red>green*1.15&&green>blue*1.1)material=5;}realmFaceData(data,f.points,f.color,f.normals,material,f.colors,f.uvs);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);}entries.push(entry);return cached.height;},flush(){gpu.render([...realmTerrainEntries(gpu),...entries],dynamic,g);trimRealmMeshes(gpu);gpu.frameId=(gpu.frameId||0)+1;}};
+ const painter={face(points,color,normals,material,colors,uvs){realmFaceData(dynamic,points,color,normals,material,colors,uvs);},indexed(mesh,m){entries.push({...realmMeshEntry(gpu,mesh),model:m});},cached(cached){if(cached.kind!=='building')for(const instance of cached.instances||[])entries.push({...realmMeshEntry(gpu,instance.mesh),model:instance.matrix});if(!cached.faces.length&&cached.kind!=='building')return cached.height;let entry=gpu.cache.get(cached);if(!entry){const data=[];if(cached.kind==='building')for(const instance of cached.instances||[])realmIndexedData(data,instance.mesh,instance.matrix);for(const f of cached.faces){let material=f.material||0;if(!material&&cached.kind==='building'){const n=parseInt(f.color.slice(1),16),red=n>>16,green=(n>>8)&255,blue=n&255,top=f.points.reduce((a,p)=>a+p[1],0)/f.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)material=6;else if(red>green*1.15&&green>blue*1.1)material=5;}realmFaceData(data,f.points,f.color,f.normals,material,f.colors,f.uvs);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);}entries.push(entry);return cached.height;},flush(){gpu.render([...realmTerrainEntries(gpu),...entries],dynamic,g);trimRealmMeshes(gpu);gpu.frameId=(gpu.frameId||0)+1;}};
+ if(gpu.skinning)painter.skinned=(mesh,m,palette)=>{if(palette.length>REALM_SKIN_BONES*12)throw new Error("Creature rig exceeds palette limit");entries.push({...realmSkinnedEntry(gpu,mesh),model:m,palette});};
+ return painter;
 };
 // Smooth vertex normals on bodies and fitted equipment; the canvas fallback remains valid.
 const profileBeforeGPU=profile3;
