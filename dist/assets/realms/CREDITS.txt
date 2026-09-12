@@ -34,3 +34,12 @@ https://kevdev.itch.io/human-archer-animations-free
 Standard Asset Store EULA. Incorporated and adapted for Emberfall; not a standalone asset redistribution.
 Magic casting and kneeling: Quaternius Universal Animation Library (Standard), CC0 1.0.
 FBX conversion uses ufbx (MIT); source hashes and retargeting provenance are recorded in action-motion-provenance.json.
+
+Forest Giant: Tree02 from Free Treant Pack by Tennessippi Studios, CC0 1.0.
+https://tennessippistudios.itch.io/treant-pack
+Original skin and native actions preserved; texture atlas and game scale adapted.
+
+Ork: Animated Minotaur by vsify, CGTrader Royalty Free License (no AI).
+https://www.cgtrader.com/free-3d-models/character/fantasy-character/minotaur-cda47223-1a94-4f7d-bc2b-82344547726d
+Incorporated game data only; original FBX and texture source files are not distributed.
+Original body, clothing, skin and six native actions converted for Emberfall.

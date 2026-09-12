@@ -63,7 +63,7 @@
       "animation_count": null,
       "triangles": 10344,
       "asset_files_inspected": false,
-      "download_status": "Free Download opened CGTrader sign-in; original files not downloaded",
+      "download_status": "Original ice.rar downloaded; iceidle.fbx and iceanima.fbx inspected. Full combat animation coverage is under review.",
       "encounter": {
         "status": "User-approved behavior; tuning values proposed",
         "movement": "Remains anchored in its arena; can turn and animate but cannot chase",
@@ -99,7 +99,7 @@
       "encounter_kind": "regular_monster",
       "design_approved": true,
       "habitat": "forest",
-      "asset": "Free Treant Pack — Tree 02",
+      "asset": "Free Treant Pack \u2014 Tree 02",
       "artist": "Tennessippi Studios",
       "url": "https://tennessippistudios.itch.io/treant-pack",
       "image": "treant2.png",
@@ -161,16 +161,19 @@
         "Run_Mecanim"
       ],
       "triangles": 5637,
-      "asset_files_inspected": false,
+      "asset_files_inspected": true,
       "approved_role": "A regular dungeon monster displayed as Ork, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
-      "note": "Owner reassigned the Borruk model to an ordinary dungeon Ork. Retain Animated Minotaur as the original asset title in credits only. No new weapon attachment is needed."
+      "note": "Owner reassigned the Borruk model to an ordinary dungeon Ork. Retain Animated Minotaur as the original asset title in credits only. No new weapon attachment is needed.",
+      "download_status": "Original Minotaur.rar downloaded from the signed-in CGTrader Free Download page",
+      "import_audit": "ork-import.json",
+      "runtime_status": "Four ordinary level-26 Orks in the Ork Warrens; native idle, walk, run, attack, hit and death; no phases or boss rewards."
     },
     {
       "name": "Veyr the Mindbreaker",
       "subtitle": "Boss | Orb-wielding demon",
       "encounter_kind": "boss",
       "design_approved": true,
-      "asset": "Demon Creature with Weapon — 25 animations, 2 skins",
+      "asset": "Demon Creature with Weapon \u2014 25 animations, 2 skins",
       "artist": "andriichykrii",
       "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins",
       "image": "mindbreaker.webp",
@@ -198,7 +201,8 @@
       "triangles": 17244,
       "asset_files_inspected": false,
       "proposed_role": "An ancient psychic enemy. Strong candidate for one of the small number of fights using several attack styles, because the source includes corresponding actions.",
-      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose."
+      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose.",
+      "download_status": "Original Demon.fbx downloaded; 26 animation takes inspected. Body and orb texture packages still needed."
     },
     {
       "name": "Varkesh the Blightwing",

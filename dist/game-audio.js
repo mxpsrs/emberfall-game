@@ -12,7 +12,7 @@ function areaMusicKey(){
  if($('loginScreen').open||$('creator').open||!s.character)return 'title';
  if(currentScene==='tutorial'||typeof activeEncounter!=='undefined'&&activeEncounter?.o.encounter)return 'hero';
  const region=regionInfo(),name=(currentScene+' '+(region?.[0]||'')+' '+(s.insideBuilding||'')).toLowerCase();
- if(/mine|crypt|dungeon|ruins|ashwatch/.test(name))return 'danger';
+ if(/mine|crypt|dungeon|warrens|lair_|ruins|ashwatch/.test(name))return 'danger';
  const town=typeof settlementAt==='function'&&settlementAt(px,py);return town||/briarhaven|stoneford|willowcross|inn|shop|forge/.test(name)?'town':'refuge';
 }
 function setAudioVolumes(){

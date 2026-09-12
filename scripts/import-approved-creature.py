@@ -29,19 +29,35 @@ def build(config):
     world = json.loads((DEST/'models.js').read_text().split('=', 1)[1].rstrip(';\n'))
     atlas = Image.open(DEST/'atlas.png').convert('RGBA')
     slots = world.setdefault('approvedCreatureTextures', {})
-    texture_path = Path(config['texture'])
-    digest = hashlib.sha256(texture_path.read_bytes()).hexdigest()
-    if digest not in slots:
-        slot = max([0] + list(world['tiles'].values()) + list(slots.values())) + 1
-        if slot >= 64: raise ValueError('The world atlas is full')
-        art = Image.open(texture_path).convert('RGBA').resize((508,508), Image.Resampling.LANCZOS)
-        tile = art.resize((512,512)); tile.paste(art, (2,2))
-        atlas.paste(tile, (slot%8*512, slot//8*512)); slots[digest] = slot
-    slot = slots[digest]
-    world['tiles']['Approved_'+digest[:12]] = slot
+    def texture_slot(texture):
+        texture_path = Path(texture)
+        digest = hashlib.sha256(texture_path.read_bytes()).hexdigest()
+        if digest not in slots:
+            slot = max([0] + list(world['tiles'].values()) + list(slots.values())) + 1
+            if slot >= 64: raise ValueError('The world atlas is full')
+            art = Image.open(texture_path).convert('RGBA').resize((508,508), Image.Resampling.LANCZOS)
+            tile = art.resize((512,512)); tile.paste(art, (2,2))
+            atlas.paste(tile, (slot%8*512, slot//8*512)); slots[digest] = slot
+        slot = slots[digest]
+        world['tiles']['Approved_'+digest[:12]] = slot
+        return slot
+    material_slots = {}
+    for i, material in enumerate(data['materials']):
+        texture = config.get('textures', {}).get(material['name'], config.get('texture'))
+        if not texture: raise ValueError('No reviewed texture for material '+material['name'])
+        material_slots[i] = texture_slot(texture)
+    if not data['materials']: material_slots[-1] = texture_slot(config['texture'])
     nodes = data['nodes']
+    # DCC control rigs may contain hundreds of unused helper nodes. Preserve the
+    # complete ancestry of every deforming joint, while removing unused controls.
+    used = set()
+    for mesh in data['meshes']:
+        for deform in mesh['deforms']:
+            i = deform['node']
+            while i >= 0 and i not in used:
+                used.add(i); i = nodes[i]['parent']
     def depth(i): return 0 if nodes[i]['parent'] < 0 else 1 + depth(nodes[i]['parent'])
-    order = sorted(range(len(nodes)), key=depth)
+    order = sorted(used, key=lambda i:(depth(i),i))
     node_index = {old:new for new,old in enumerate(order)}
     parents = [node_index.get(nodes[i]['parent'], -1) for i in order]
     deforms, binds, chunks = [], [], []
@@ -55,7 +71,7 @@ def build(config):
     vertices = np.concatenate(chunks)
     # Index vertices by all skin/material attributes, keeping authored hard edges.
     vertices, inverse = np.unique(vertices, axis=0, return_inverse=True)
-    if len(vertices) >= 65536 or len(nodes) >= 256 or len(deforms) > 80:
+    if len(vertices) >= 65536 or len(order) >= 256 or len(deforms) > 80:
         raise ValueError('Model exceeds the current vertex or GPU skeleton budget')
     p, normal, uv = vertices[:,:3].copy(), vertices[:,3:6], vertices[:,6:8].copy()
     joints, weights = vertices[:,9:13].astype(int), vertices[:,13:17]
@@ -76,17 +92,29 @@ def build(config):
     # FBX image coordinates use a bottom origin; the game atlas uses a top origin.
     uv[:,1] = 1 - uv[:,1]
     tex = np.asarray(atlas)
-    u = (slot%8*512+2+(uv[:,0]%1)*508).astype(int)
-    v = (slot//8*512+2+(uv[:,1]%1)*508).astype(int)
+    vertex_slots = np.array([material_slots[int(m)] for m in vertices[:,8]])
+    u = (vertex_slots%8*512+2+(uv[:,0]%1)*508).astype(int)
+    v = (vertex_slots//8*512+2+(uv[:,1]%1)*508).astype(int)
     fallback = tex[v,u,:3]/255
     packed = motion.packed
     mesh = {k:packed(val,kind) for k,val,kind in [
         ('p',p,'<f4'),('n',np.round(np.clip(normal,-1,1)*127),'i1'),
-        ('uv',uv,'<f4'),('i',inverse,'<u2'),('t',np.full(len(p),20+slot),'u1'),
+        ('uv',uv,'<f4'),('i',inverse,'<u2'),('t',20+vertex_slots,'u1'),
         ('c',np.full((len(p),3),255),'u1'),('f',np.round(fallback*255),'u1'),
         ('j',joints,'u1'),('w',np.round(weights*255),'u1')]}
     mesh['bounds'] = [lo.tolist(), hi.tolist()]
     native = {a['name']:a for a in data['animations']}
+    animation_files = []
+    for entry in config.get('additionalAnimations', []):
+        extra = json.loads(Path(entry['export']).read_text())
+        # Animation files must be exports of the exact same hierarchy, not a
+        # similarly named or proportioned skeleton that merely looks compatible.
+        if [(n['name'],n['parent']) for n in extra['nodes']] != [(n['name'],n['parent']) for n in nodes]:
+            raise ValueError('Different animation hierarchy: '+entry['fbx'])
+        animation = next(a for a in extra['animations'] if a['name'] == entry['take'])
+        native[entry['name']] = {**animation, 'name':entry['name']}
+        animation_files.append({'file':Path(entry['fbx']).name,'action':entry['name'],
+                                'take':entry['take'],'sha256':hashlib.sha256(Path(entry['fbx']).read_bytes()).hexdigest()})
     clips = {}
     for target, entry in config['clips'].items():
         source = entry if isinstance(entry,str) else entry['source']
@@ -111,8 +139,9 @@ def build(config):
     required = {'idle','walk','run','attack','death'}
     if not required <= clips.keys(): raise ValueError('Missing required motions '+str(required-clips.keys()))
     model = {'mesh':mesh,'rig':{'names':[nodes[i]['name'] for i in order],'parents':parents,'deforms':deforms,'bind':packed(bind[:,:3])},
-             'joints':len(nodes),'clips':clips,'scale':config['height']/(hi[1]-lo[1]),'height':config['height'],
-             'source':{**config['source'],'sha256':hashlib.sha256(Path(config['fbx']).read_bytes()).hexdigest(),'file':Path(config['fbx']).name,'nativeActions':list(native)}}
+             'joints':len(order),'clips':clips,'scale':config['height']/(hi[1]-lo[1]),'height':config['height'],
+             'source':{**config['source'],'sha256':hashlib.sha256(Path(config['fbx']).read_bytes()).hexdigest(),'file':Path(config['fbx']).name,'nativeActions':list(native),
+                       'animationFiles':animation_files,'sourceNodes':len(nodes)}}
     target_path = DEST/'approved-creatures.js'
     result = json.loads(target_path.read_text().split('=',1)[1].rstrip(';\n')) if target_path.exists() else {}
     result[config['key']] = model

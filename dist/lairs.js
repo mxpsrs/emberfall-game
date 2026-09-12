@@ -5,7 +5,7 @@ const CREATURE_LAIRS={
  lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'veyr',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4a4353',trim:'#93836b',glow:'#bd96f5',fog:[.17,.13,.23],ambient:[1,.91,1.12],light:[.21,.10,.31],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
  lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'varkesh',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[270,105],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
  lair_xalith:{title:'The Brood Hollow',subtitle:'Xalith the Broodmother · Amber hive cavern',boss:'xalith',theme:'hive',size:[54,54],entry:[27,50],arena:[27,21],spawn:[27,20],entrance:[720,516],floor:'#554333',trim:'#9e7850',glow:'#e1b666',fog:[.20,.15,.09],ambient:[1.1,.96,.79],light:[.29,.16,.035],rooms:[['ellipse',27,21,19,17],['rect',23,36,9,16],['ellipse',10,32,6,8],['ellipse',44,32,6,8]]},
- ork_warrens:{title:'Ork Warrens',subtitle:'Ork camps · Raided dwarven workings',theme:'ork',size:[38,44],entry:[19,40],arena:[19,20],entrance:[657,198],floor:'#615646',trim:'#99866b',glow:'#e2ac62',fog:[.20,.17,.13],ambient:[1.02,.95,.85],light:[.25,.14,.045],rooms:[['rect',14,3,10,38],['rect',4,7,12,11],['rect',22,8,12,11],['rect',4,24,12,11],['rect',22,25,12,11]]}
+ ork_warrens:{title:'Ork Warrens',subtitle:'Ork camps · Raided dwarven workings',theme:'ork',size:[38,44],entry:[19,39],arena:[19,20],entrance:[657,198],spawns:[[12,13],[26,15],[12,30],[25,32]],floor:'#615646',trim:'#99866b',glow:'#e2ac62',fog:[.20,.17,.13],ambient:[1.02,.95,.85],light:[.25,.14,.045],rooms:[['rect',14,3,10,38],['rect',4,7,12,11],['rect',22,8,12,11],['rect',4,24,12,11],['rect',22,25,12,11]]}
 };
 let creatureLairsReady=false,pendingLairSave=null;
 const FOREST_GIANT_HABITAT={name:'Elderwood giant grove',entry:[43,127],spawns:[[38,138],[49,145],[36,153]],center:[42,144]};
@@ -13,6 +13,26 @@ function creatureLairReleased(lair){return lair.boss?encounterReleased(lair.boss
 function lairContains(room,x,z){return room[0]==='ellipse'?((x-room[1])/room[3])**2+((z-room[2])/room[4])**2<=1:x>=room[1]&&z>=room[2]&&x<room[1]+room[3]&&z<room[2]+room[4];}
 const wallBeforeLairs=worldWall;
 worldWall=function(x,z){const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallBeforeLairs(x,z);return x<1||z<1||x>=lair.size[0]-1||z>=lair.size[1]-1||!lair.rooms.some(room=>lairContains(room,x,z));};
+function lairDecorBlocked(scene,x,z){
+ return (worldScenes[scene]?.decor||[]).some(o=>{
+  const dx=x+.5-o.x,dz=z+.5-o.z,k=o.size||1;
+  if(o.kind==='model'){
+   const mesh=rebuiltModels[o.model];if(!mesh)return false;
+   const [lo,hi]=mesh.bounds,s=o.height/(hi[1]-lo[1]),a=o.heading||0,c=Math.cos(a),n=Math.sin(a);
+   return Math.abs(dx*c-dz*n)<(hi[0]-lo[0])*s/2+.18&&Math.abs(dx*n+dz*c)<(hi[2]-lo[2])*s/2+.18;
+  }
+  if(o.kind==='arch')return [-1,1].some(side=>Math.abs(dx-side*2.6*k)<.55*k&&Math.abs(dz)<.6*k);
+  const radius=o.kind==='crystal'?.85*k:o.kind==='egg'?1.35*k:o.kind==='hearth'?k+.2:0;
+  return radius>0&&Math.hypot(dx,dz)<radius;
+ });
+}
+const navigationBeforeLairs=realmNav;
+realmNav=function(){
+ const nav=navigationBeforeLairs();if(CREATURE_LAIRS[currentScene]&&!nav.lairDecor){
+  for(let z=0;z<nav.h;z++)for(let x=0;x<nav.w;x++)if(lairDecorBlocked(currentScene,x,z))nav.cells[z*nav.w+x]=1;
+  nav.lairDecor=true;
+ }return nav;
+};
 function lairScenery(lair){
  const [cx,cz]=lair.arena,decor=[],model=(name,x,z,height,heading=0,tint)=>decor.push({kind:'model',model:name,x,z,height,heading,tint}),feature=(kind,x,z,size=1)=>decor.push({kind,x,z,size});
  if(lair.theme==='crystal'){
@@ -51,7 +71,9 @@ function setupCreatureLairs(){
   // Clear scenery from the approach, preserving services and quest characters.
   for(let i=mainland.objects.length-1;i>=0;i--){const o=mainland.objects[i];if(['tree','prop'].includes(o.type)&&Math.abs(o.x-lair.entrance[0])<5&&Math.abs(o.y-lair.entrance[1])<5)mainland.objects.splice(i,1);}
   const point=encounterSpawnPoint('overworld',...lair.entrance,16);if(!point)throw new Error('No reachable entrance for '+lair.title);
-  const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;lair.returnPoint=[point[0],point[1]+1];
+  const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;
+  lair.returnPoint=encounterSpawnPoint('overworld',point[0],point[1]+2,6);
+  if(!lair.returnPoint)throw new Error('No clear return point for '+lair.title);
  }
  setupForestGiantHabitat(mainland);realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);
 }

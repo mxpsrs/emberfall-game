@@ -11,7 +11,8 @@ assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'onl
 assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
 assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
 assert(!Object.values(worldScenes).some(w=>w.objects.some(o=>o.encounter)),'no rejected or unverified boss encounters ship');
-assert(!Object.keys(worldScenes).some(id=>id.startsWith('lair_')||id==='ork_warrens'),'no empty lairs ship');
+assert(!Object.keys(worldScenes).some(id=>id.startsWith('lair_')),'unreleased boss lairs stay closed');
+assert.equal(worldScenes.ork_warrens.objects.filter(o=>o.kind==='ork').length,4,'four ordinary Orks populate their dungeon');
 const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
 // A cardinal flood confirms mainland spawns are in the main walkable landmass.
@@ -22,6 +23,24 @@ for(const o of objects.filter(o=>ENEMY_TIERS[o.kind]?.look)){
  assert(!blocked(o.x,o.y),'clear spawn: '+o.kind+' '+o.x+','+o.y);assert(seen[o.y*nav.w+o.x],'reachable mainland spawn: '+o.kind+' '+o.x+','+o.y);
  const a=creatureAsset(o);assert(a,'renderable creature '+o.kind);const variant=creatureTint(o,a.mesh);assert(variant.c.every(Number.isFinite));assert.equal(variant.p,a.mesh.p,'variants reuse geometry');
 }
+const warrens=CREATURE_LAIRS.ork_warrens,door=objects.find(o=>o.destination==='ork_warrens');
+assert(door,'warrens entrance is visible on the mainland');
+assert(seen[warrens.returnPoint[1]*nav.w+warrens.returnPoint[0]],'warrens return point connects to the mainland');
+assert(route(door.x,door.y,true,1.45,...warrens.returnPoint),'entrance is accessible from its return point');
+activateScene('ork_warrens',...warrens.entry);
+assert(!blocked(px,py),'dungeon entry is clear');
+assert(route(worldScenes.ork_warrens.exit.x,worldScenes.ork_warrens.exit.y,true),'exit is reachable');
+for(const ork of objects.filter(o=>o.kind==='ork')){
+ assert(!blocked(ork.x,ork.y),'Ork is clear of scenery');
+ assert(route(ork.x,ork.y,true,attackRange(ork)),'each Ork is reachable from the entry');
+ assert(!ork.encounter&&ork.type==='enemy','Ork is an ordinary monster');
+}
+assert(blocked(6,9),'weapon stand footprint is solid');
+assert(!blocked(19,22),'central fighting corridor stays open');
+s.sceneId='ork_warrens';s.x=12;s.y=13;setupExpandedWorld();setupTutorialVillage();
+assert.equal(currentScene,'ork_warrens','saved characters restore to the dungeon');
+leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py),'leaving the dungeon lands on a clear tile');
+activateScene('overworld',42,51);
 const rat=objects.find(o=>o.kind==='rat'),ratStats=JSON.stringify([rat.maxhp,rat.maxHit,rat.level]);for(const skill of COMBAT_SKILLS)s.xp[skill]=skillThreshold(skill,70);setupEncounters();assert.equal(JSON.stringify([rat.maxhp,rat.maxHit,rat.level]),ratStats,'enemies never grow to match the player');
 const originalSight=lineOfSight;lineOfSight=()=>true;
 function fresh(kind='rat'){
@@ -40,7 +59,7 @@ for(let run=0;run<1000;run++){
 }
 killTimes.sort((a,b)=>a-b);assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds');assert(killTimes[950]<36,'unlucky starter fights stay reasonable while preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
 console.log('Starter rat / 1,000 real simulated fights: median '+killTimes[500].toFixed(2)+'s; p95 '+killTimes[950].toFixed(2)+'s; mean HP lost '+(totalDamage/1000).toFixed(2)+'; deaths '+deaths+'. Zero hits are preserved.');
-for(const kind of ['slinger','brambleslime','warden','sentinel','king','forestgiant']){o=fresh(kind);target=o;beginEncounter(o);time=activeEncounter.nextAttack;updateEncounterAI(.05);assert(['strike','projectile'].includes(activeEncounter.hazards[0].shape),'ordinary fight has no ground pattern: '+kind);assert.equal(activeEncounter.phase,0);}
+for(const kind of ['slinger','brambleslime','warden','sentinel','king','forestgiant','ork']){o=fresh(kind);target=o;beginEncounter(o);time=activeEncounter.nextAttack;updateEncounterAI(.05);assert(['strike','projectile'].includes(activeEncounter.hazards[0].shape),'ordinary fight has no ground pattern: '+kind);assert.equal(activeEncounter.phase,0);}
 // Ordinary Forest Giants cycle native melee motions without phase mechanics.
 o=fresh('forestgiant');target=o;beginEncounter(o);for(let i=0;i<3;i++){activeEncounter.move=i;scheduleEnemyMove(activeEncounter,'bite');assert.equal(o.attackClip,['attack','attack2','attack3'][i]);assert.equal(creatureAttackAnimation(o,creatureAssets.forestgiant,.3).clip,o.attackClip);}
 // Large imported bodies can be hit at the visible edge with the same damage rules.

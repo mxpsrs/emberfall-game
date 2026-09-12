@@ -2,7 +2,7 @@
 // Enemy tiers are authored once. They never scale against the current player.
 const ENEMY_TIERS={
  forestgiant:{name:'Forest Giant',look:'forestgiant',level:18,hp:34,maxHit:4,interval:3.8,weak:'magic',combatRadius:.7},
- ork:{name:'Ork',look:'ork',level:26,hp:46,maxHit:5,interval:3.5,weak:'magic'},
+ ork:{name:'Ork',look:'ork',level:26,hp:46,maxHit:5,interval:3.5,weak:'magic',combatRadius:.45},
  warden:{name:'Crypt guard',level:12,hp:28,maxHit:3,interval:3.5},
  king:{name:'Ruins guardian',level:18,hp:48,maxHit:4,interval:3.5},
  sentinel:{name:'Ashwatch guardian',level:30,hp:68,maxHit:5,interval:3.5},
@@ -79,7 +79,7 @@ function applyEnemyTier(o,row){
 }
 function encounterSpawnPoint(scene,x,y,radius=12){
  const saved=currentScene;currentScene=scene;const world=worldScenes[scene],[w,h]=sceneSize();
- const free=(a,b)=>a>2&&b>2&&a<w-3&&b<h-3&&!worldWall(a,b)&&!water(a,b)&&!world.buildings.some(o=>a>=o.x-2&&a<=o.x+o.w+2&&b>=o.y-2&&b<=o.y+o.h+2)&&!world.objects.some(o=>Math.hypot(a-o.x,b-o.y)<1.5);
+ const free=(a,b)=>a>2&&b>2&&a<w-3&&b<h-3&&!worldWall(a,b)&&!water(a,b)&&!lairDecorBlocked(scene,a,b)&&!world.buildings.some(o=>a>=o.x-2&&a<=o.x+o.w+2&&b>=o.y-2&&b<=o.y+o.h+2)&&!world.objects.some(o=>Math.hypot(a-o.x,b-o.y)<1.5);
  try{for(let r=0;r<=radius;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r&&free(x+dx,y+dy))return [x+dx,y+dy];return null;}finally{currentScene=saved;}
 }
 function setupEncounters(){
@@ -98,6 +98,7 @@ function setupEncounters(){
  for(const zone of HUNT_ZONES)zone.kinds.forEach((kind,i)=>{for(let n=0;n<3;n++)spawnOne(kind,'overworld',zone.at[0]+i*7+(n%2)*3,zone.at[1]+Math.floor(n/2)*6);});
  for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))if(encounterReleased(kind)&&worldScenes[e.scene]&&!worldScenes[e.scene].objects.some(o=>o.kind===kind))spawnOne(kind,e.scene,...e.at);
  if(creatureAssets.forestgiant)for(const point of FOREST_GIANT_HABITAT.spawns){const giant=spawnOne('forestgiant','overworld',...point);if(giant)giant.habitat='elderwood';}
+ if(creatureAssets.ork&&worldScenes.ork_warrens)for(const point of CREATURE_LAIRS.ork_warrens.spawns)spawnOne('ork','ork_warrens',...point);
  realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);huntProgress();
 }
 const villageBeforeEncounters=setupTutorialVillage;
@@ -218,11 +219,12 @@ function renderHunts(){
  }
 }
 function renderHuntingGrounds(){
- const grounds=[{name:'Elderwood giant grove',at:FOREST_GIANT_HABITAT.entry,kinds:['forestgiant']},...HUNT_ZONES];pageControls(grounds.length,3);
+ const grounds=[{name:'Elderwood giant grove',at:FOREST_GIANT_HABITAT.entry,kinds:['forestgiant']},...HUNT_ZONES];
+ if(worldScenes.ork_warrens)grounds.splice(3,0,{name:'Ork Warrens',at:CREATURE_LAIRS.ork_warrens.entrance,kinds:['ork'],scene:'ork_warrens'});pageControls(grounds.length,3);
  $('panel').innerHTML='<div class="questhead"><h2>Hunting grounds</h2><small>Combat '+combatLevel()+'</small></div><p class="desc">Find creatures suited to your level. Their strength stays fixed as you improve. Bring food and collect drops from the ground.</p><div id="huntCards"></div>';
  for(const zone of pageItems(grounds,3)){
   const rows=zone.kinds.map(k=>ENEMY_TIERS[k]),low=Math.min(...rows.map(e=>e.level)),high=Math.max(...rows.map(e=>e.level)),card=document.createElement('section');card.className='hunt-card';card.innerHTML='<h3>'+zone.name+'</h3><small>Creature levels '+low+(high!==low?'–'+high:'')+'</small><p>'+rows.map(e=>e.name).join(' · ')+'</p>';
-  const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find hunting ground';b.disabled=currentScene==='tutorial';b.onclick=()=>{if(currentScene!=='overworld'){toast('Return to the mainland to follow this trail.');return;}const point=encounterSpawnPoint('overworld',...zone.at,12);if(point){openGamePanel('hunts',true);walkTo(...point);}};card.appendChild(b);$('huntCards').appendChild(card);
+  const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find hunting ground';b.disabled=currentScene==='tutorial';b.onclick=()=>{if(currentScene!=='overworld'){toast('Return to the mainland to follow this trail.');return;}if(zone.scene){const door=objects.find(o=>o.destination===zone.scene);if(door){openGamePanel('hunts',true);select(door);}return;}const point=encounterSpawnPoint('overworld',...zone.at,12);if(point){openGamePanel('hunts',true);walkTo(...point);}};card.appendChild(b);$('huntCards').appendChild(card);
  }
 }
 const panelBeforeEncounters=renderPanel;

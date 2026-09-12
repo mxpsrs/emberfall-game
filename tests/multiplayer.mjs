@@ -37,3 +37,7 @@ assert.equal((await handleSave(req('/api/character','PUT',apprentice,{state:{...
 assert.equal((await handleSave(req('/api/character','PUT',apprentice,{state:lesson.state,revision:lesson.revision}),env)).status,400,'completion cannot be rolled back to reopen the island');
 db.exec('UPDATE player_presence SET seen_at=0');assert.equal((await (await presence(b)).json()).players.length,0);
 console.log('PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.');
+
+assert.equal((await presence(a,'ork_warrens',19)).status,200,'released Ork dungeon accepts player presence');
+assert.equal((await presence(a,'ork_warrens',38)).status,400,'dungeon presence remains inside its actual map');
+assert.equal((await presence(a,'lair_colossus',19)).status,400,'unreleased boss lairs stay unavailable');
