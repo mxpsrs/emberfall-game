@@ -4,10 +4,9 @@ const creatureAssets=Object.fromEntries(Object.entries({...REALM_CREATURES,...(t
  ...a,mesh:rebuiltMesh(a.mesh),rig:{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)},
  clips:Object.fromEntries(Object.entries(a.clips).map(([key,c])=>[key,{...c,trs:briarDecode(c.trs,Float32Array)}]))
 }]));
-if(typeof BOSS_MODELS!=='undefined')for(const [key,model]of Object.entries(BOSS_MODELS))creatureAssets[key]={...creatureAssets[model.base],base:model.base,mesh:rebuiltMesh(model.mesh),height:model.height,scale:model.scale};
 const creaturePoses=new Map();
 const creatureRigPoses=new Map();
-const creatureKinds={goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
+const creatureKinds={forestgiant:'forestgiant',ork:'ork',goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
 function creatureSize(o){if(o.size)return o.size;return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
 function creatureAsset(o){return creatureAssets[o.creatureLook||creatureKinds[o.kind]];}
 function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
@@ -90,7 +89,7 @@ creature3=function(r,o,x,z){
  else if(attack){({clip,phase,blend}=attack);}
  else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}
  else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}
- if(!dying&&['attack','cast','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
+ if(!dying&&['attack','attack2','attack3','cast','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
  const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
  phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
  if(!dying){state.lastClip=clip;state.lastPhase=phase;}
@@ -112,7 +111,7 @@ function creatureTint(o,mesh){
  const tinted={...mesh,c:Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*o.tint[i%3])),f:Float32Array.from(mesh.f,(v,i)=>Math.min(1,v*o.tint[i%3]))};variants.set(key,tinted);return tinted;
 }
 function creatureAttackAnimation(o,a,age){
- const style=o.attackVisualStyle,clip=style==='magic'&&a.clips.cast?'cast':style==='ranged'&&a.clips.throw?'throw':'attack';
+ const style=o.attackVisualStyle,clip=o.attackClip&&a.clips[o.attackClip]?o.attackClip:style==='magic'&&a.clips.cast?'cast':style==='ranged'&&a.clips.throw?'throw':'attack';
  const windup=o.attackWindup;if(!windup)return age>=0&&age<a.clips.attack.duration?{clip:'attack',phase:age/a.clips.attack.duration,blend:Math.min(1,age/.1,(a.clips.attack.duration-age)/.14)}:null;
  const duration=windup+.55;if(age<0||age>=duration)return null;
  const release=clip==='cast'?.51:clip==='throw'?.48:.38,phase=age<windup?age/windup*release:release+(age-windup)/.55*(1-release);

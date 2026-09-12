@@ -31,8 +31,8 @@ function makeInterior(id,kind,title){
   add('villager',5,17,'Miner Aldis',6,{characterSprite:true,talk:'“The richest iron is past the eastern passage. Bring a light, and keep an eye on those rats.”'});add('camp',7,18,'Miners’ fire',7);
  }else if(kind==='dungeon'){
   [[5,6],[7,13],[12,6],[14,17],[21,7],[22,15]].forEach(([x,y])=>spawn('skeleton',x,y));
-  add('enemy',23,20,'Crypt Warden',12,{kind:'warden',hp:85,maxhp:85,atk:5,spread:3,xp:150,coins:70,level:9,loot:'bones'});
-  add('cache',24,22,'Warden’s supply cache',12);add('camp',4,20,'Abandoned brazier',7);
+  add('enemy',23,20,'Crypt guard',12,{kind:'warden',hp:85,maxhp:85,atk:5,spread:3,xp:150,coins:70,level:9,loot:'bones'});
+  add('cache',24,22,'Crypt supply cache',12);add('camp',4,20,'Abandoned brazier',7);
  }
  const scene={objects:objects.splice(0),buildings:buildings.splice(0),title,entry:[Math.floor(w/2),h-3],exit};
  objects.push(...oldO);buildings.push(...oldB);currentScene='overworld';worldScenes[id]=scene;
@@ -46,7 +46,7 @@ function setupExpandedWorld(){
  const innDoor=add('door',50,24,'Willowcross Inn',13,{destination:'willowInn'}),marketDoor=add('door',58,24,'Willowcross Market',13,{destination:'willowShop'});
  buildings.push({x:49,y:20,w:3,h:4,sprite:0,name:'Willowcross Inn',service:innDoor},{x:57,y:20,w:3,h:4,sprite:2,name:'Willowcross Market',service:marketDoor});
  add('camp',54,25,'Town fire',7);add('prop',53,21,'Town well',15);
- for(const [x,y,name,talk]of [[52,27,'Miller Fen','“Follow the road west across the river to Briarhaven. We trade herbs and grain with the farmers.”'],[60,27,'Scout Elin','“Skeletons guard the Sunken Crypt. The Warden keeps a supply cache in the deepest room.”'],[42,25,'Farmer Tessa','“Help yourself to the herb rows. They grow back after a short while. Fresh herbs will patch you up.”']])add('villager',x,y,name,5,{characterSprite:true,talk});
+ for(const [x,y,name,talk]of [[52,27,'Miller Fen','“Follow the road west across the river to Briarhaven. We trade herbs and grain with the farmers.”'],[60,27,'Scout Elin','“Skeletons guard the Sunken Crypt. A crypt guard keeps a supply cache in the deepest room.”'],[42,25,'Farmer Tessa','“Help yourself to the herb rows. They grow back after a short while. Fresh herbs will patch you up.”']])add('villager',x,y,name,5,{characterSprite:true,talk});
  for(const [x,y]of [[50,18],[59,17],[53,28],[44,31]])spawn('man',x,y,{name:'Man · villager'});
  for(let x=41;x<=45;x+=2)for(let y=22;y<=28;y+=2)add('crop',x,y,'Herb patch',14,{harvestedUntil:0});
  for(let x=41;x<47;x+=2)add('prop',x,30,'Farm fence',11);
@@ -87,7 +87,7 @@ function handleWorldInteraction(o){
  if(o.type==='exit'){leaveInterior();return true;}
  if(o.type==='villager'){stop();dialog(o.name,'<p>'+o.talk+'</p>');return true;}
  if(o.type==='prop'){stop();toast(o.name+'.');return true;}
- if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt Warden still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Warden’s supply cache','<p>The cache leaves <b>100 coins, 30 rune stones, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
+ if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt guard still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Crypt supply cache','<p>The cache leaves <b>100 coins, 30 rune stones, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
  return false;
 }
 function livingWorld(dt){
@@ -104,9 +104,9 @@ function livingWorld(dt){
  ambientTimer+=dt;if(ambientTimer>5){ambientTimer=0;ambientChirp();}
 }
 function regionInfo(){
- if(!inWorld())return [worldScenes[currentScene].title,currentScene==='mine'?'Iron veins & miners':currentScene==='dungeon'?'The Warden’s domain':'Shelter from the road'];
+ if(!inWorld())return [worldScenes[currentScene].title,currentScene==='mine'?'Iron veins & miners':currentScene==='dungeon'?'Ancient crypt passages':'Shelter from the road'];
  if(s.x>=70&&s.y>=54&&s.y<=65)return ['Stoneford','Lodge · Market · Highland quests'];
- if(s.x>=85&&s.y<42)return ['Ashwatch ruins','The Sentinel keeps watch'];
+ if(s.x>=85&&s.y<42)return ['Ashwatch ruins','The eastern watch'];
  if(s.x>=64&&s.y>=40)return ['The High Marches','Ridge wolves & the coastal beacon'];
  if(s.x>=48&&s.x<=63&&s.y>=16&&s.y<=30)return ['Willowcross','A market town beyond the river'];
  if(s.x>=40&&s.x<=47&&s.y>=20&&s.y<=31)return ['Riverbend Farms','Growing herbs & village life'];
@@ -129,7 +129,7 @@ function drawSceneWalls(){
 }
 function expandedMap(page=0){
  if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Use the exit marker or Exit button to return to the road.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
- const places=[['Stoneford','New town & quests',75,62],['Coastal beacon','Keeper Orin',86,71],['Ashwatch','Sentinel encounter',89,35],['Briarhaven','Your starting village',14,17],['Willowcross','Inn & market',54,26],['Riverbend Farms','Harvest herbs',44,25],['Pinewatch Mine','Enter & mine iron',55,9],['Sunken Crypt','Dungeon & Warden',58,46],['Elderwood','Ancient oak forest',14,44],['Stillwater','Fishing',9,21],['Reedwater','Southern lake',52,46],['Goblin camp','Combat level 3',27,16],['Wolf thicket','Combat level 2',23,23],['Hollow Ruins','The Hollow King',15,8],['Iron Ridge','Mining',23,7]];
+ const places=[['Stoneford','New town & quests',75,62],['Coastal beacon','Keeper Orin',86,71],['Ashwatch','Ruins & guards',89,35],['Briarhaven','Your starting village',14,17],['Willowcross','Inn & market',54,26],['Riverbend Farms','Harvest herbs',44,25],['Pinewatch Mine','Enter & mine iron',55,9],['Sunken Crypt','Dungeon & guards',58,46],['Elderwood','Ancient oak forest',14,44],['Stillwater','Fishing',9,21],['Reedwater','Southern lake',52,46],['Goblin camp','Combat level 3',27,16],['Wolf thicket','Combat level 2',23,23],['Hollow Ruins','The ruins guardian',15,8],['Iron Ridge','Mining',23,7]];
  const pages=Math.ceil(places.length/4);dialog('The borderlands','<p>Choose a destination to walk there. '+(page+1)+' / '+pages+'</p><div class="mapgrid" id="destinations"></div>',[[page+1<pages?'More destinations':'First destinations',()=>expandedMap((page+1)%pages)]]);
  for(const [name,desc,x,y]of places.slice(page*4,page*4+4)){const b=document.createElement('button');b.innerHTML=name+'<br><small>'+desc+'</small>';b.onclick=()=>{close();walkTo(x,y);};$('destinations').appendChild(b);}
 }

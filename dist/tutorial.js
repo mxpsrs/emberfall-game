@@ -96,7 +96,7 @@ function tutorialEvent(event){
  if(!tutorialStep()){
   const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
   if(typeof departTutorialIsland==='function')departTutorialIsland();
-  dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the Hollow King.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and runes in your bank.</b> Your worn items and bag stay with you.</p>':''));
+  dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and runes in your bank.</b> Your worn items and bag stay with you.</p>':''));
  }
  renderTutorial();renderUI();save();
  if(tutorialStep()?.event==='equip-dagger'&&s.equipment.weapon==='bronze_dagger')tutorialEvent('equip-dagger');
@@ -341,7 +341,7 @@ function setupTrainingPen(world){
  for(let i=0;i<15;i++){
   const x=p.left+2+(i%5)*3,y=p.top+2+Math.floor(i/5)*4;
   const o=i===0&&original?original:put(4900100+i,'enemy',species.rat.name,x,y,{...species.rat,kind:'rat',maxhp:species.rat.hp});
-  Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y,hp:5,maxhp:5,atk:1,spread:0,_stationary:false,tutorialRole:'rat',penId:p.id,roamClock:i*.31});
+  Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y,hp:species.rat.hp,maxhp:species.rat.hp,atk:species.rat.atk,spread:species.rat.spread,_stationary:false,tutorialRole:'rat',penId:p.id,roamClock:i*.31});
  }
  realmNavigation.clear();
 }

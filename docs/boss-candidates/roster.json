@@ -1,5 +1,5 @@
 {
-  "status": "All six designs approved. Forest Giant original model and ten native actions inspected and imported; five remaining original models and full lair integration are pending.",
+  "status": "Owner authorized staged publication. Forest Giant native model and forest habitat are complete; four approved bosses and the ordinary dungeon Ork remain gated pending original model files and review.",
   "checked": "2026-09-12",
   "design_approval": {
     "date": "2026-09-12",
@@ -128,7 +128,7 @@
       "note": "Owner reassigned the Old Bracken model to a regular monster named Forest Giant. The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials.",
       "download_status": "Downloaded original Treant Package from creator; Tree02_FBX.fbx and light albedo imported",
       "import_audit": "forestgiant-import.json",
-      "runtime_status": "Native asset loads in creature renderer. Forest habitat spawns and visual QA pending."
+      "runtime_status": "Ready for staged publication: three ordinary level-18 Forest Giants in the Elderwood giant grove, three native melee actions, ordinary drops and respawns, no boss music, marks, or phases."
     },
     {
       "name": "Ork",

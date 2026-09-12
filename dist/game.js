@@ -48,10 +48,10 @@ const species = {
   slime:{name:'Marsh slime',sprite:9,hp:10,atk:1,spread:1,xp:12,coins:4,level:1},
   skeleton:{name:'Restless skeleton',sprite:11,hp:30,atk:4,spread:2,xp:42,coins:13,level:5,loot:'bones'},
   bandit:{name:'Road bandit',sprite:13,hp:36,atk:4,spread:3,xp:48,coins:17,level:6},
-  rat:{name:'Giant rat',sprite:15,hp:8,atk:1,spread:1,xp:8,coins:2,level:1},
+  rat:{name:'Giant rat',sprite:15,hp:8,atk:1,spread:0,xp:8,coins:2,level:1},
   man:{name:'Man',sprite:6,hp:12,atk:1,spread:2,xp:14,coins:5,level:1},
   dummy:{name:'Training dummy',sprite:14,hp:12,atk:1,spread:0,xp:6,coins:0,level:1},
-  king:{name:'The Hollow King',sprite:12,hp:90,atk:5,spread:4,xp:180,coins:80,level:10}
+  king:{name:'The ruins guardian',sprite:12,hp:90,atk:5,spread:4,xp:180,coins:80,level:10}
 };
 function spawn(kind,x,y,extra={}) {
   const spec=species[kind];
@@ -112,13 +112,13 @@ function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null)
   if(!end)return null;const out=[];while(end[0]!==start[0]||end[1]!==start[1]){out.unshift(end);end=prev.get(end.join(','));}return out;
 }
 function select(o){
-  if(o.dead>time||(o.kind==='king'&&s.boss&&!o.repeatable)){toast(o.dead>time?'They will return shortly.':'The Hollow King has fallen.');return;}
+  if(o.dead>time||(o.kind==='king'&&s.boss&&!o.repeatable)){toast(o.dead>time?'They will return shortly.':'The ruins guardian has fallen.');return;}
   if(o.type==='man'){
     talkVillager(o);return;
   }
   engage(o);
 }
-function engage(o){if(o.type==='gate'){enterTrainingGate();return;}if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange():1.45);if(!p){toast('There is no clear path to that spot.');return;}stop();target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
+function engage(o){if(o.type==='gate'){enterTrainingGate();return;}if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange(o):1.45);if(!p){toast('There is no clear path to that spot.');return;}stop();target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
 function walkTo(x,y){
  x=Math.floor(x);y=Math.floor(y);const [w,h]=sceneSize();if(!Number.isFinite(x+y)||x<0||y<0||x>=w||y>=h)return false;
  let p=land(x,y)?route(x,y):null;
@@ -158,8 +158,8 @@ const quests=[
   {title:'Tools of the trade',desc:'Gather 5 oak logs, 5 iron ore, and 3 trout. Bring them to Elder Rowan.',checks:()=>[['Oak logs',s.bag.logs,5],['Iron ore',s.bag.ore,5],['Trout',s.bag.fish,3]]},
   {title:'Teeth in the thicket',desc:'Defeat 5 briar wolves southeast of the village, then return to Rowan.',checks:()=>[['Wolves defeated',s.kills,5]]},
   {title:'Iron resolve',desc:'Forge an iron sword at the smithy. Train Combat to level 3, then speak to Rowan.',checks:()=>[['Iron sword',s.sword,1],['Combat level',lv('Combat'),3]]},
-  {title:'The Hollow Crown',desc:'Defeat the Hollow King beyond the northern gate. Bring word back to Rowan.',checks:()=>[['Hollow King defeated',+s.boss,1]]},
-  {title:'Guardian of Briarhaven',desc:'The Hollow King has fallen. Explore the goblin camp, hunt bandits, or keep mastering your skills.'}
+  {title:'The Northern Watch',desc:'Defeat the ruins guardian beyond the northern gate. Bring word back to Rowan.',checks:()=>[['Ruins guardian defeated',+s.boss,1]]},
+  {title:'Guardian of Briarhaven',desc:'The ruins guardian has fallen. Explore the goblin camp, hunt bandits, or keep mastering your skills.'}
 ];
 function ready(){const q=quests[s.quest];return q.checks&&q.checks().every(([,v,n])=>v>=n);}
 function elder(){
@@ -308,7 +308,7 @@ function draw(){
   }
   drawWorldMood();drawProjectiles();drawSpiritEffect();
   for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);const x=(f.x+.5)*TILE-camera.x,y=(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25;if(f.experience)drawExperienceDrop(f,x,y);else label(f.text,x,y,f.color,15);}ctx.globalAlpha=1;
-  const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the Hollow King']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
+  const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the ruins guardian']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
 }
 const playerMotion={phase:0,moving:false,running:false,speed:0,blend:0,heading:0};
@@ -344,7 +344,7 @@ function frame(now){
   if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
-      if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
+      if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{elapsed+=dt;const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }

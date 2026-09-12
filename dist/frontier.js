@@ -3,7 +3,7 @@ const frontierQuests=[
  {title:'Medicine for Stoneford',npc:'Healer Nessa',desc:'Bring 5 fresh herbs from Riverbend Farms to Healer Nessa in Stoneford.',goal:5,reward:45,kind:'deliver',item:'herbs'},
  {title:'Wolves on the ridge',npc:'Ranger Vale',desc:'Speak with Ranger Vale, then defeat 4 ridge wolves east of Stoneford.',goal:4,reward:70,kind:'hunt',enemy:'ridgewolf'},
  {title:'The broken beacon',npc:'Keeper Orin',desc:'Bring 4 iron ore and 4 oak logs to Keeper Orin at the coastal beacon.',goal:4,reward:90,kind:'repair'},
- {title:'Ashwatch oath',npc:'Keeper Orin',desc:'Defeat the Ashwatch Sentinel in the eastern ruins, then return to Keeper Orin.',goal:1,reward:150,kind:'hunt',enemy:'sentinel'}
+ {title:'Ashwatch oath',npc:'Keeper Orin',desc:'Defeat the Ashwatch guardian in the eastern ruins, then return to Keeper Orin.',goal:1,reward:150,kind:'hunt',enemy:'sentinel'}
 ];
 function setupFrontier(){
  s.frontier=s.frontier||{quest:0,accepted:false,kills:0};
@@ -15,7 +15,7 @@ function setupFrontier(){
  for(let x=65;x<=90;x+=4)for(let y=42;y<=78;y+=6)if(!(y>=54&&y<=64)&&!(x>=85&&y>=65))add('tree',x,y,'Highland pine',5);
  for(const [x,y]of [[83,51],[86,56],[88,61],[82,68]])spawn('wolf',x,y,{kind:'ridgewolf',name:'Ridge wolf',hp:28,maxhp:28,atk:3,xp:38,coins:11});
  for(const [x,y]of [[76,72],[80,76],[89,75]])spawn('bandit',x,y,{name:'Ashwatch raider',hp:42,maxhp:42,coins:22,xp:55});
- spawn('skeleton',90,35,{kind:'sentinel',name:'Ashwatch Sentinel',hp:120,maxhp:120,atk:7,xp:230,coins:120,level:12});
+ spawn('skeleton',90,35,{kind:'sentinel',name:'Ashwatch guardian',hp:120,maxhp:120,atk:7,xp:230,coins:120,level:12});
  buildings.push({x:88,y:30,w:4,h:3,sprite:3,name:'Ashwatch ruins'});
  add('ore',83,44,'Ridge iron vein',6);add('ore',88,46,'Ridge iron vein',6);add('fish',66,76,'Highland fishing',9);
 }

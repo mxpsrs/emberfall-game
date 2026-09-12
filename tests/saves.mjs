@@ -10,9 +10,10 @@ assert.equal((await auth('login',{...credentials,password:'wrong-password-983!'}
 const login=await auth('login',{...credentials,username:'TEST_PLAYER'});assert.equal(login.status,200);const secondCookie=login.headers.get('set-cookie').split(';')[0];
 assert.equal((await(await auth('session',null,secondCookie)).json()).account.username,'Test_Player');
 const record=await(await handleSave(req('/api/character','GET',null,cookie),env)).json();assert.equal(record.state,null);
-const state={x:42,y:51,hp:10,gold:0,xp:{Attack:0},bag:{},equipment:{},character:{name:'Test_Player',frame:'female',hair:3,skin:4,topStyle:1,topColor:2,bottomColor:5,hairColor:2,beard:0}};
+const state={sceneId:'overworld',combatProgress:{kills:{forestgiant:2},firstClears:{}},boss:true,wardenClear:true,x:42,y:51,hp:10,gold:0,xp:{Attack:0},bag:{},equipment:{},character:{name:'Test_Player',frame:'female',hair:3,skin:4,topStyle:1,topColor:2,bottomColor:5,hairColor:2,beard:0}};
 assert.equal((await handleSave(req('/api/character','PUT',{state,revision:0,resetVersion:SAVE_RESET_VERSION},cookie),env)).status,200);
 assert.deepEqual((await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state.character,state.character);
+const savedCharacter=(await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state;assert.deepEqual(savedCharacter.combatProgress,state.combatProgress);assert(savedCharacter.boss&&savedCharacter.wardenClear,'legacy quest completion survives the creature release');
 const peer=await handlePlayers(req('/api/players','POST',{scene:'overworld',x:42,y:51},cookie),env);assert.equal(peer.status,200);
 const stored=db.prepare('SELECT password_hash FROM game_accounts').get().password_hash;assert.match(stored,/^\$2[ab]\$12\$/);assert.notEqual(stored,credentials.password);assert.equal(db.prepare('SELECT count(*) n FROM game_sessions WHERE token_hash=?').get(cookie.split('=')[1]).n,0);
 assert.equal((await handleAuth(req('/api/auth/register','POST',credentials,'','https://evil.test'),env)).status,403);

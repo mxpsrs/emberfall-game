@@ -97,7 +97,7 @@ const SPELLS={
 function equippedWeapon(){if(s.tutorialCasting&&!s.tutorialReward)return {name:'Practice spell',style:'magic',power:0,range:4};return ITEMS[s.equipment.weapon]||{name:'Unarmed',style:'melee',power:0,range:1.45};}
 function combatStyle(){return equippedWeapon().style;}
 function currentSpell(){return SPELLS[s.spell]||SPELLS.spark;}
-function attackRange(){return combatStyle()==='magic'?currentSpell().range:equippedWeapon().range;}
+function attackRange(o=null){return (combatStyle()==='magic'?currentSpell().range:equippedWeapon().range)+(o?.combatRadius||0);}
 function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Worship')/5)+spiritBonus('armor')+Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
@@ -202,7 +202,7 @@ function renderCombatBar(){
 function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>(o.type==='tree'||o.blocksSight)&&o.x===x&&o.y===y))return false;}return true;}
-function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange()+.01&&lineOfSight(px,py,o.x,o.y);}
+function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange(o)+.01&&lineOfSight(px,py,o.x,o.y);}
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100,playerAttackReadyAt=0;
 function actorWalkSpeed(o){return o.type==='man'||o.type==='villager'?.75:['wolf','ridgewolf'].includes(o.kind)?1.6:o.kind==='slime'?.85:1.25;}
 function advanceActorMovement(o,dt){
@@ -214,15 +214,15 @@ function advanceActorMovement(o,dt){
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy'&&(tutorialStep()?.event!=='monster'||o.penId&&o.kind==='rat'))tutorialEvent('monster');
  const respawnSeconds=o.type==='dummy'?8:25;o.dead=time+respawnSeconds;o.respawnAt=Date.now()+respawnSeconds*1000;o.deathAt=time;monsterDrop(o);
- if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
- else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
+ if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt guard falls. The supply cache is yours.');}
+ else if(o.kind==='king'){s.boss=true;toast('The ruins guardian falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){tutorialEvent('dummy');toast('Training complete.');}
  else{if(o.kind==='wolf')s.kills++;toast(o.name+' defeated · Loot on the ground');}
  stop();
 }
 function performAttack(o){
  if(time+.0001<playerAttackReadyAt||o.dead>time||o.hp<=0)return false;
- if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange());if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
+ if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange(o));if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
  const style=combatStyle(),spell=currentSpell();
  const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast(s.equipment.ammo&&s.equippedAmmoCount?'This bow cannot fire '+ITEMS[s.equipment.ammo].name.toLowerCase()+'. Equip suitable arrows.':'Equip arrows in your ammunition slot to fire your bow.');return false;}
  if(style==='magic'&&(lv('Magic')<spell.level||!hasIngredients(spell.ingredients))){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}

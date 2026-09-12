@@ -21,9 +21,9 @@ for(let frame=0;frame<90;frame++){
 }
 assert.equal(creaturePoses.size,0,'GPU animation does not allocate deformed CPU meshes');
 assert(creatureRigPoses.size<=80,'bone cache stays bounded');
-frameCosts.sort((a,b)=>a-b);console.log('Creature CPU preparation, six simultaneous attacks: median '+frameCosts[45].toFixed(2)+' ms, p95 '+frameCosts[85].toFixed(2)+' ms. GPU execution is not included.');
+frameCosts.sort((a,b)=>a-b);console.log('Creature CPU preparation, '+monsters.length+' simultaneous attacks: median '+frameCosts[45].toFixed(2)+' ms, p95 '+frameCosts[85].toFixed(2)+' ms. GPU execution is not included.');
 `,ctx);
-if(palettes!==90*6*2)throw new Error('Both shadows and color must receive every creature palette');
+if(palettes!==90*vm.runInContext('monsters.length',ctx)*2)throw new Error('Both shadows and color must receive every creature palette');
 vm.runInContext(`
 const walkingGear={body:'leatherArmor',feet:'leatherBoots',head:'ironHelm',weapon:'ironSword',shield:'ironShield'};
 for(const sex of ['male','female']){

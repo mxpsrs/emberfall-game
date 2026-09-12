@@ -2,12 +2,14 @@
 // Authored encounter spaces. Stable scene IDs and mainland exits survive saves.
 const CREATURE_LAIRS={
  lair_colossus:{title:'The Crystal Crucible',subtitle:'Runeforged Colossus · Ancient crystal foundry',boss:'colossus',theme:'crystal',size:[46,48],entry:[23,44],arena:[23,19],spawn:[23,18],entrance:[945,387],floor:'#3d4d58',trim:'#8a9ea6',glow:'#72cfff',fog:[.11,.18,.25],ambient:[.86,.97,1.13],light:[.08,.24,.37],rooms:[['ellipse',23,19,17,15],['rect',19,30,9,16],['ellipse',10,27,5,5],['ellipse',36,27,5,5]]},
- lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'king',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4a4353',trim:'#93836b',glow:'#bd96f5',fog:[.17,.13,.23],ambient:[1,.91,1.12],light:[.21,.10,.31],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
- lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'sentinel',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[270,105],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
- lair_xalith:{title:'The Brood Hollow',subtitle:'Xalith the Broodmother · Amber hive cavern',boss:'nightbloom',theme:'hive',size:[54,54],entry:[27,50],arena:[27,21],spawn:[27,20],entrance:[720,516],floor:'#554333',trim:'#9e7850',glow:'#e1b666',fog:[.20,.15,.09],ambient:[1.1,.96,.79],light:[.29,.16,.035],rooms:[['ellipse',27,21,19,17],['rect',23,36,9,16],['ellipse',10,32,6,8],['ellipse',44,32,6,8]]},
+ lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'veyr',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4a4353',trim:'#93836b',glow:'#bd96f5',fog:[.17,.13,.23],ambient:[1,.91,1.12],light:[.21,.10,.31],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
+ lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'varkesh',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[270,105],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
+ lair_xalith:{title:'The Brood Hollow',subtitle:'Xalith the Broodmother · Amber hive cavern',boss:'xalith',theme:'hive',size:[54,54],entry:[27,50],arena:[27,21],spawn:[27,20],entrance:[720,516],floor:'#554333',trim:'#9e7850',glow:'#e1b666',fog:[.20,.15,.09],ambient:[1.1,.96,.79],light:[.29,.16,.035],rooms:[['ellipse',27,21,19,17],['rect',23,36,9,16],['ellipse',10,32,6,8],['ellipse',44,32,6,8]]},
  ork_warrens:{title:'Ork Warrens',subtitle:'Ork camps · Raided dwarven workings',theme:'ork',size:[38,44],entry:[19,40],arena:[19,20],entrance:[657,198],floor:'#615646',trim:'#99866b',glow:'#e2ac62',fog:[.20,.17,.13],ambient:[1.02,.95,.85],light:[.25,.14,.045],rooms:[['rect',14,3,10,38],['rect',4,7,12,11],['rect',22,8,12,11],['rect',4,24,12,11],['rect',22,25,12,11]]}
 };
 let creatureLairsReady=false,pendingLairSave=null;
+const FOREST_GIANT_HABITAT={name:'Elderwood giant grove',entry:[43,127],spawns:[[38,138],[49,145],[36,153]],center:[42,144]};
+function creatureLairReleased(lair){return lair.boss?encounterReleased(lair.boss):lair.theme==='ork'&&!!creatureAssets.ork;}
 function lairContains(room,x,z){return room[0]==='ellipse'?((x-room[1])/room[3])**2+((z-room[2])/room[4])**2<=1:x>=room[1]&&z>=room[2]&&x<room[1]+room[3]&&z<room[2]+room[4];}
 const wallBeforeLairs=worldWall;
 worldWall=function(x,z){const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallBeforeLairs(x,z);return x<1||z<1||x>=lair.size[0]-1||z>=lair.size[1]-1||!lair.rooms.some(room=>lairContains(room,x,z));};
@@ -42,6 +44,7 @@ function setupCreatureLairs(){
  if(creatureLairsReady)return;creatureLairsReady=true;let id=5800000;
  const mainland=worldScenes.overworld;
  for(const [scene,lair]of Object.entries(CREATURE_LAIRS)){
+  if(!creatureLairReleased(lair))continue;
   sceneSizes[scene]=lair.size;
   const exit={id:id++,type:'exit',name:'Return to '+(lair.theme==='crystal'?'Deepforge':lair.theme==='arcane'?'Hollow Ruins':lair.theme==='blight'?'Ashwatch':lair.theme==='hive'?'Moonwillow':'Khaz-Dur'),sprite:13,x:lair.entry[0],y:lair.entry[1]+1,dead:0};
   worldScenes[scene]={title:lair.title,subtitle:lair.subtitle,objects:[exit],buildings:[],entry:lair.entry.slice(),exit,lair:scene,decor:lairScenery(lair),floorChunks:new Map(),openAir:!!lair.openAir};
@@ -50,16 +53,32 @@ function setupCreatureLairs(){
   const point=encounterSpawnPoint('overworld',...lair.entrance,16);if(!point)throw new Error('No reachable entrance for '+lair.title);
   const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;lair.returnPoint=[point[0],point[1]+1];
  }
- realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+ setupForestGiantHabitat(mainland);realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+}
+function setupForestGiantHabitat(world){
+ if(!creatureAssets.forestgiant)return;const habitat=FOREST_GIANT_HABITAT;
+ // Leave the mature canopy around the grove, with clear space at each home.
+ for(let i=world.objects.length-1;i>=0;i--){const o=world.objects[i];if(!['tree','prop'].includes(o.type))continue;if(habitat.spawns.some(([x,z])=>Math.hypot(o.x-x,o.y-z)<3.8))world.objects.splice(i,1);}
+ let serial=5900000;const place=(model,x,y,height,heading,tint)=>{const p=encounterSpawnPoint('overworld',x,y,3);if(!p||habitat.spawns.some(([a,b])=>Math.hypot(p[0]-a,p[1]-b)<3.6))return;world.objects.push({id:serial++,type:'prop',name:model==='Fern_1'?'Woodland ferns':model==='Bush_Common'?'Elderwood undergrowth':'Mossy boulder',sprite:12,x:p[0],y:p[1],dead:0,habitatModel:model,habitatHeight:height,heading,tint,walkThrough:model!=='Rock_Medium_1'});};
+ for(const [i,[x,z]]of [[29,133],[43,131],[55,137],[57,151],[43,159],[28,154],[27,141]].entries()){
+  place('Rock_Medium_1',x,z,1.1+(i%3)*.2,i*.8,[.76,.89,.65]);
+  place('Bush_Common',x+2,z+1,.9,i*.7,[.88,1,.79]);
+  place('Fern_1',x-1,z+2,.65,i*.4,[.94,1,.85]);
+ }
+ for(const [x,y]of [[32,133],[54,156]]){const p=encounterSpawnPoint('overworld',x,y,2);if(p)world.objects.push({id:serial++,type:'prop',name:'Log pile',sprite:12,x:p[0],y:p[1],dead:0});}
+ for(const [x,y]of [[26,131],[30,126],[36,125],[49,128],[58,132],[60,139],[60,149],[54,162],[45,165],[37,166],[29,161],[23,155],[22,144],[23,136],[44,132],[51,136],[29,147]]){
+  const p=encounterSpawnPoint('overworld',x,y,2);if(!p||habitat.spawns.some(([a,b])=>Math.hypot(p[0]-a,p[1]-b)<5.5))continue;
+  world.objects.push({id:serial++,type:'tree',name:'Oak tree',resourceId:'oak',sprite:0,x:p[0],y:p[1],dead:0,collisionRadius:1});
+ }
 }
 const expandedBeforeLairs=setupExpandedWorld;
 setupExpandedWorld=function(){pendingLairSave=CREATURE_LAIRS[s.sceneId]?{id:s.sceneId,x:s.x,y:s.y}:null;return expandedBeforeLairs();};
 const villageBeforeLairs=setupTutorialVillage;
-setupTutorialVillage=function(){villageBeforeLairs();setupCreatureLairs();if(pendingLairSave&&s.tutorial>=tutorialSteps.length){activateScene(pendingLairSave.id,pendingLairSave.x,pendingLairSave.y,false);pendingLairSave=null;}};
+setupTutorialVillage=function(){villageBeforeLairs();setupCreatureLairs();if(pendingLairSave&&worldScenes[pendingLairSave.id]&&s.tutorial>=tutorialSteps.length){activateScene(pendingLairSave.id,pendingLairSave.x,pendingLairSave.y,false);}pendingLairSave=null;};
 const leaveBeforeLairs=leaveInterior;
 leaveInterior=function(){const lair=CREATURE_LAIRS[currentScene];if(!lair)return leaveBeforeLairs();const point=lair.returnPoint||lair.entrance;activateScene('overworld',...point);};
 const regionBeforeLairs=regionInfo;
-regionInfo=function(){const lair=CREATURE_LAIRS[currentScene];return lair?[lair.title,lair.subtitle]:regionBeforeLairs();};
+regionInfo=function(){const lair=CREATURE_LAIRS[currentScene];if(lair)return [lair.title,lair.subtitle];if(inWorld()&&creatureAssets.forestgiant&&Math.hypot(px-42,py-144)<20)return [FOREST_GIANT_HABITAT.name,'Forest Giants · Level 18'];return regionBeforeLairs();};
 function lairModel(r,name,x,y,z,height,heading=0,tint){
  const mesh=rebuiltModels[name];if(!mesh)return 0;const [lo,hi]=mesh.bounds,k=height/(hi[1]-lo[1]),cx=(lo[0]+hi[0])*.5*k,cz=(lo[2]+hi[2])*.5*k,c=Math.cos(heading),s=Math.sin(heading);
  rebuiltPlace(r,name,x-cx*c-cz*s,y-lo[1]*k,z+cx*s-cz*c,k,heading,k,tint);return height;
@@ -102,4 +121,4 @@ drawRealmWall=function(r,x,z){
  lairModel(r,['arcane','crystal'].includes(lair.theme)?'Wall_UnevenBrick_Straight':'Rock_Medium_1',x+.5,0,z+.5,height,Math.sin(x*3+z)*.3,lair.theme==='hive'?[.9,.7,.43]:lair.theme==='blight'?[.82,.85,.67]:[.70,.76,.88]);
 };
 const propBeforeLairs=prop3;
-prop3=function(r,o,x,z){if(o.lairEntrance){const lair=CREATURE_LAIRS[o.lairEntrance];drawLairFeature(r,{kind:'arch',x,z,size:1},lair);if(lair.theme==='crystal'||lair.theme==='arcane')for(const side of [-1,1])drawLairFeature(r,{kind:'crystal',x:x+side*3.2,z:z-.8,size:.8},lair);return 4.4;}return propBeforeLairs(r,o,x,z);};
+prop3=function(r,o,x,z){if(o.habitatModel)return lairModel(r,o.habitatModel,x,0,z,o.habitatHeight,o.heading,o.tint);if(o.lairEntrance){const lair=CREATURE_LAIRS[o.lairEntrance];drawLairFeature(r,{kind:'arch',x,z,size:1},lair);if(lair.theme==='crystal'||lair.theme==='arcane')for(const side of [-1,1])drawLairFeature(r,{kind:'crystal',x:x+side*3.2,z:z-.8,size:.8},lair);return 4.4;}return propBeforeLairs(r,o,x,z);};

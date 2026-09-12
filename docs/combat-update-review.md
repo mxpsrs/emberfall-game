@@ -1,19 +1,52 @@
-# Combat and boss design review
+# Staged combat, sound, and Forest Giant release
 
-This update is a source draft. The live game remains the previously published version 51. The owner rejected the procedural boss designs and approved the replacement models and roles in [boss-roster-review.md](boss-roster-review.md): four bosses, a standard Forest Giant and a regular dungeon Ork. All earlier draft boss names except Runeforged Colossus are retired, as are the shortlist names Old Bracken and Borruk the Pitbreaker. The old runtime labels and save IDs remain in the unpublished draft until the approved assets are integrated; they are not accepted designs. Design selection is approved; source-file inspection and game integration remain pending.
+The owner requested that each finished batch be published as it completes. This
+batch releases the available native creature and ordinary-combat/audio work.
+The four approved boss designs and the ordinary dungeon Ork remain gated until
+their actual source files, animations, and environments have been checked.
 
-User constraints:
+## Released behavior
 
-- Preserve missed attacks and successful zero-damage rolls.
-- Make starter rats quicker and less punishing. A seeded simulation of 1,000 real fights produced a 4.50-second median, 15.00-second p95, 0.17 mean HP lost, and zero deaths. These are simulation results, not playtest results.
-- Regular enemies use straightforward combat. Only a few selected bosses should have phases or multiple attack styles. The existing draft has three phased encounters; the replacement roster has not been mapped onto those slots yet.
-- Forest Giant (the treant model formerly called Old Bracken) is an ordinary forest monster. Ork (the Animated Minotaur model formerly called Borruk) is an ordinary dungeon monster. Neither belongs to the named encounter roster or uses boss phases, boss rewards or boss music. The four approved bosses are Runeforged Colossus, Veyr the Mindbreaker, Varkesh the Blightwing and Xalith the Broodmother.
-- Bosses must use detailed, commercially usable models with existing rigs and animation clips. The mesh drafts in `boss-design-drafts.png` are rejected and superseded by the replacement shortlist. Review actual artist previews and source actions before importing; inspect final silhouettes and weapon grips in motion after integration.
-- Runeforged Colossus uses the owner's chosen Icebronze model if its files pass inspection. Its requested fight stays anchored, switches melee/ranged/magic, and has exactly two phases with a red, faster second phase. The current draft's three-phase encounter and combat pursuit do not yet satisfy that request.
-- The Tournament is for login and character creation. Medieval Opener is for tutorial and named boss/miniboss fights. Both uploaded MP3s have been integrated alongside existing commercial-use area tracks.
-- Sounds cover woodcutting, mining, firemaking, fishing, smithing, cooking and combat. Twenty-four CC0 Kenney recordings supplement procedural sound effects.
-- The owner asked whether their and their wife's recordings can voice NPC dialogue. We answered yes for supplied recorded lines, with her permission. No voice recordings have arrived and no voice cloning or voice provider has been configured.
+- Rats use one shared baseline throughout the tutorial and mainland: 8 health,
+  maximum hit 1 instead of 2, and fixed level 1. No per-instance rat tuning.
+- The starter simulation with a level-1 character and bronze dagger has a
+  15.00-second median across 1,000 seeded fights. The 95th percentile is 29.70
+  seconds because misses and accurate zero-damage rolls remain possible. The
+  duration is a balance result, not a scripted timer. Stronger gear and skills
+  shorten fights naturally.
+- Enemy tiers are fixed. They do not grow to match the player's level.
+- Fourteen ordinary enemy variants add 42 spawns across five hunting grounds.
+- Three level-18 Forest Giants live in a mainland Elderwood grove with mature
+  resource oaks, ferns, bushes, mossy boulders, log piles, and clear fighting
+  space. These are ordinary monsters with bones/logs/coin drops and normal
+  respawns. No boss marks, phases, or boss music.
+- The rejected procedural boss mesh bundle is removed. Older quest enemies
+  are ordinary Ruins guardian, Crypt guard, and Ashwatch guardian creatures;
+  existing quest completion and cache flags remain intact. No empty boss lairs
+  or unavailable boss cards are exposed in this batch.
+- The Tournament plays on login/character creation. Medieval Opener plays in
+  the tutorial and is assigned to future released bosses. Existing commercial
+  use area music remains. Skill/combat sounds include 24 CC0 recorded clips
+  and synthesized cues, with mute and separate music/effects/environment levels.
 
-Checks already passed on the older draft: all 36 tutorial lessons; explicit item use (previous publication); ordinary enemy placement flood; 42 new normal spawns; exactly three phased encounters; starter combat simulation including accurate zero rolls; dodging, retreat, reward persistence; 29 audio cues and five music destinations; base renderer GPU/CPU animation checks; finite posed palettes for all nine rejected boss drafts. These checks do not validate any shortlisted replacement model.
+## Verification
 
-Before publication: obtain and inspect the approved source models, integrate their selected names and roles, check final silhouettes and animation/weapon placement, rerun encounter/tutorial/audio checks against the final assets, build, verify built assets and multiplayer persistence, push the exact source commit, package and publish through Sites. The owner has approved the replacement designs; do not request that same approval again. Do not describe imported animation coverage or integration as complete until checked.
+Passed: all 36 tutorial lessons and one-way mainland departure; mainland spawn
+flood/path checks; shared rat stats; 1,000 starter fights; preserved accurate
+zero hits and misses; Forest Giant body targeting, native melee actions,
+ordinary drops and retreat; audio transitions and sample loading; GPU and CPU
+skinning and context-loss fallback; cross-device save round trips including
+Forest Giant kill counts and legacy quest flags; build and all startup assets.
+
+The Forest Giant's original FBX contains 7,340 triangles, 33 skin joints, and
+10 native actions. All actions deform correctly; close-up and habitat captures
+use the production geometry, texture atlas, and GLSL. See forest-giant-review/.
+They are render captures, not claims about measured mobile GPU performance.
+
+## Remaining batches
+
+Original model download access still blocks the Colossus, Veyr, Varkesh, Xalith,
+and Ork. Lair source is staged behind explicit release checks. Complete and
+verify each one, then publish it without asking again for design or deployment
+approval. The Colossus must remain stationary, switch among melee/ranged/magic,
+and have exactly two phases; its second phase turns red and attacks faster.

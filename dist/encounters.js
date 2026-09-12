@@ -1,7 +1,12 @@
 'use strict';
 // Enemy tiers are authored once. They never scale against the current player.
 const ENEMY_TIERS={
- rat:{level:1,hp:3,maxHit:1,interval:3.6,accuracy:.30},slime:{level:2,hp:6,maxHit:1,interval:3.5,accuracy:.36},
+ forestgiant:{name:'Forest Giant',look:'forestgiant',level:18,hp:34,maxHit:4,interval:3.8,weak:'magic',combatRadius:.7},
+ ork:{name:'Ork',look:'ork',level:26,hp:46,maxHit:5,interval:3.5,weak:'magic'},
+ warden:{name:'Crypt guard',level:12,hp:28,maxHit:3,interval:3.5},
+ king:{name:'Ruins guardian',level:18,hp:48,maxHit:4,interval:3.5},
+ sentinel:{name:'Ashwatch guardian',level:30,hp:68,maxHit:5,interval:3.5},
+ rat:{level:1,hp:species.rat.hp,maxHit:1,interval:3.6,accuracy:.30},slime:{level:2,hp:6,maxHit:1,interval:3.5,accuracy:.36},
  wolf:{level:4,hp:10,maxHit:2,interval:3.3},goblin:{level:6,hp:14,maxHit:2,interval:3.2},
  skeleton:{level:10,hp:20,maxHit:3,interval:3.1},bandit:{level:12,hp:24,maxHit:3,interval:3.1},ridgewolf:{level:15,hp:28,maxHit:4,interval:3.1},
  thornwolf:{name:'Thornback wolf',look:'wolf',level:5,hp:12,maxHit:2,interval:3.3,weak:'magic',tint:[.75,1,.65]},
@@ -19,17 +24,15 @@ const ENEMY_TIERS={
  ashknight:{name:'Ashen knight',look:'skeleton',level:60,hp:96,maxHit:9,interval:3.4,weak:'magic',size:1.15,tint:[1.15,.65,.5]},
  crystalguard:{name:'Crystal guardian',look:'king',level:66,hp:108,maxHit:10,interval:3.8,style:'ranged',weak:'melee',size:.8,tint:[.65,1.1,1.2]}
 };
+// A boss is released only after its approved native model, actions and lair pass review.
+// The four designs are approved; unreleased entries never spawn or expose empty lairs.
 const HUNT_ENCOUNTERS={
- mossfang:{name:'Mossfang',look:'boss_mossfang',mechanics:true,rank:'Miniboss',level:8,hp:30,maxHit:3,coins:22,marks:1,scene:'overworld',at:[73,129],area:'Elderwood fringe',weak:'magic',phases:[{name:'The hunt',at:1,moves:['bite','pounce']},{name:'Cornered',at:.5,moves:['pounce','sweep']}],drops:{fang:2,shrimp:2}},
- scrapchief:{name:'Grik the Scrapchief',look:'boss_scrapchief',rank:'Miniboss',level:16,hp:52,maxHit:4,coins:42,marks:1,scene:'overworld',at:[207,39],area:'Pinewatch eastern trail',weak:'ranged',style:'ranged',drops:{ironBar:2,airRunes:15}},
- warden:{name:'Crypt Warden',look:'boss_warden',rank:'Boss',level:12,hp:44,maxHit:3,coins:38,marks:2,scene:'dungeon',at:[23,20],area:'Sunken Crypt',weak:'magic',style:'melee',drops:{bones:3,airRunes:15,runes:15}},
- king:{name:'The Hollow King',look:'boss_king',mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'overworld',at:[45,9],area:'Hollow Ruins',weak:'ranged',phases:[{name:'The broken crown',at:1,moves:['bite','sweep']},{name:'Riftcaller',at:.65,moves:['hex','sweep','shot']},{name:'The last oath',at:.3,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
- sentinel:{name:'Ashwatch Sentinel',look:'boss_sentinel',rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'overworld',at:[270,105],area:'Ashwatch ruins',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
- cindermaw:{name:'Cindermaw',look:'boss_cindermaw',rank:'Miniboss',level:32,hp:87,maxHit:6,coins:75,marks:2,scene:'overworld',at:[657,198],area:'Khaz-Dur foothills',weak:'ranged',style:'magic',drops:{coal:4,fireRunes:20}},
- colossus:{name:'Runeforged Colossus',look:'boss_colossus',mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'overworld',at:[945,387],area:'Deepforge slag fields',weak:'magic',phases:[{name:'Ironbound',at:1,moves:['sweep','shot']},{name:'Furnace heart',at:.65,moves:['hex','cross','shot']},{name:'Unbound',at:.3,moves:['ring','cross','sweep']}],drops:{mithrilBar:2,deathRunes:15}},
- briaroracle:{name:'The Briar Oracle',look:'boss_briaroracle',rank:'Miniboss',level:48,hp:130,maxHit:8,coins:120,marks:3,scene:'overworld',at:[351,501],area:'Sylvaran border grove',weak:'ranged',style:'magic',drops:{natureRunes:12,yewLogs:2}},
- nightbloom:{name:'Nightbloom Sovereign',look:'boss_nightbloom',rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'overworld',at:[720,516],area:'Moonwillow outer wilds',weak:'melee',style:'magic',drops:{adamantBar:2,bloodRunes:15}}
+ veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:false,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
+ varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:false,rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
+ colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:false,anchored:true,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
+ xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:false,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
 };
+function encounterReleased(kind){const e=HUNT_ENCOUNTERS[kind];return !!(e?.released&&creatureAssets[e.look]?.source);}
 const HUNT_ZONES=[
  {name:'Elderwood fringe',at:[69,117],kinds:['thornwolf','slinger','brambleslime']},
  {name:'Pinewatch trails',at:[193,36],kinds:['hexer','cavecrawler','quarrybrute']},
@@ -83,17 +86,18 @@ function setupEncounters(){
  if(encountersReady)return;encountersReady=true;let serial=4700000;
  for(const [scene,world]of Object.entries(worldScenes))for(const o of world.objects){
   if(!fighter(o)||o.kind==='dummy'||o.kind==='man')continue;
-  const row=ENEMY_TIERS[o.kind];if(row)applyEnemyTier(o,row);
-  if(scene==='tutorial'){if(o.kind==='rat'){o.hp=o.maxhp=3;o.maxHit=1;o.accuracy=.25;o.interval=3.8;}continue;}
-  const encounter=HUNT_ENCOUNTERS[o.kind];if(encounter){applyEnemyTier(o,encounter);o.encounter=o.kind;o.repeatable=true;o._stationary=true;o.type=encounter.rank==='Boss'?'boss':'enemy';}
+  const row=ENEMY_TIERS[o.kind];if(row)applyEnemyTier(o,row);if(['king','warden','sentinel'].includes(o.kind)){o.type='enemy';o.repeatable=true;}
+  if(scene==='tutorial')continue;
+  const encounter=HUNT_ENCOUNTERS[o.kind];if(encounter&&encounterReleased(o.kind)){applyEnemyTier(o,encounter);o.encounter=o.kind;o.repeatable=true;o._stationary=true;o.type=encounter.rank==='Boss'?'boss':'enemy';}
  }
  const spawnOne=(kind,scene,x,y)=>{
-  const row=HUNT_ENCOUNTERS[kind]||ENEMY_TIERS[kind],point=encounterSpawnPoint(scene,x,y);if(!point)return null;
+  const row=HUNT_ENCOUNTERS[kind]||ENEMY_TIERS[kind];if(!row||row.look&&!creatureAssets[row.look])return null;const point=encounterSpawnPoint(scene,x,y);if(!point)return null;
   const [a,b]=point,o={id:serial++,kind,type:row.rank==='Boss'?'boss':'enemy',x:a,y:b,homeX:a,homeY:b,drawX:a,drawY:b,dead:0,attackAt:-100,hitAt:-100,coins:Math.max(4,Math.round(row.level*1.6)),sprite:species[row.look]?.sprite||11};
   applyEnemyTier(o,row);if(row.rank){o.encounter=kind;o.repeatable=true;o._stationary=true;}worldScenes[scene].objects.push(o);return o;
  };
  for(const zone of HUNT_ZONES)zone.kinds.forEach((kind,i)=>{for(let n=0;n<3;n++)spawnOne(kind,'overworld',zone.at[0]+i*7+(n%2)*3,zone.at[1]+Math.floor(n/2)*6);});
- for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))if(!worldScenes[e.scene].objects.some(o=>o.kind===kind))spawnOne(kind,e.scene,...e.at);
+ for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))if(encounterReleased(kind)&&worldScenes[e.scene]&&!worldScenes[e.scene].objects.some(o=>o.kind===kind))spawnOne(kind,e.scene,...e.at);
+ if(creatureAssets.forestgiant)for(const point of FOREST_GIANT_HABITAT.spawns){const giant=spawnOne('forestgiant','overworld',...point);if(giant)giant.habitat='elderwood';}
  realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);huntProgress();
 }
 const villageBeforeEncounters=setupTutorialVillage;
@@ -116,14 +120,15 @@ activateScene=function(...args){const previous=currentScene,result=sceneBeforeEn
 function hazardContains(h,x,y){
  const dx=x-h.x,dy=y-h.y,d=Math.hypot(dx,dy);
  if(h.shape==='projectile')return Math.hypot(x-h.fromX,y-h.fromY)<=h.range+1;
- if(h.shape==='strike')return Math.hypot(x-(h.o.drawX??h.o.x),y-(h.o.drawY??h.o.y))<=1.8;
+ if(h.shape==='strike')return Math.hypot(x-(h.o.drawX??h.o.x),y-(h.o.drawY??h.o.y))<=1.8+(h.o.combatRadius||0);
  if(h.shape==='ring')return d>=h.inner&&d<=h.radius;
  if(h.shape==='cross')return Math.abs(dx)<=h.radius&&Math.abs(dy)<=h.length||Math.abs(dy)<=h.radius&&Math.abs(dx)<=h.length;
  if(h.shape==='line'){const ax=h.x-h.fromX,ay=h.y-h.fromY,length=ax*ax+ay*ay,t=length?Math.max(0,Math.min(1,((x-h.fromX)*ax+(y-h.fromY)*ay)/length)):0;return Math.hypot(x-h.fromX-t*ax,y-h.fromY-t*ay)<=h.radius;}
  return d<=h.radius;
 }
 function scheduleEnemyMove(fight,key){
- const o=fight.o,move=ENCOUNTER_MOVES[key],near=move.origin==='enemy';
+ const o=fight.o,move=o.kind==='forestgiant'?{...ENCOUNTER_MOVES[key],windup:1}:ENCOUNTER_MOVES[key],near=move.origin==='enemy';
+ o.attackClip=o.kind==='forestgiant'?['attack','attack2','attack3'][fight.move%3]:null;
  const h={...move,key,o,x:near?(o.drawX??o.x):px,y:near?(o.drawY??o.y):py,fromX:o.drawX??o.x,fromY:o.drawY??o.y,started:time,due:time+move.windup};
  fight.hazards.push(h);o.attackAt=time;o.attackMove=key;o.attackVisualStyle=move.style;o.attackWindup=move.windup;
  if(typeof playGameSound==='function')playGameSound(move.style==='magic'?'magic':move.style==='ranged'?'bow':'sword',o.x,o.y);
@@ -148,22 +153,22 @@ function updateEncounterAI(dt){
  }
  if(activeEncounter!==fight)return;
  fight.hazards=fight.hazards.filter(h=>h.due>time);
- const distance=Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py),style=o.attackStyle||'melee',range=definition?.mechanics?1.6:style==='melee'?1.5:5.5;
- if(!fight.hazards.length&&distance>range&&time>=fight.nextMove&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
+ const distance=Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py),style=o.attackStyle||'melee',range=definition?.mechanics?1.6:style==='melee'?1.5+(o.combatRadius||0):5.5;
+ if(!definition?.anchored&&!fight.hazards.length&&distance>range&&time>=fight.nextMove&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
   fight.nextMove=time+.35;const p=route(Math.round(px),Math.round(py),true,range,o.x,o.y,o);if(p?.length){[o.x,o.y]=p[0];}
  }
  if(time>=fight.nextAttack&&!fight.hazards.length&&lineOfSight(o.x,o.y,px,py)){
   let key=definition?.mechanics?definition.phases[fight.phase].moves[fight.move%definition.phases[fight.phase].moves.length]:style==='magic'?'spell':style==='ranged'?'arrow':'bite';
-  if(key==='bite'&&distance>1.7){if(definition?.mechanics)key=definition.phases[fight.phase].moves.find(k=>k!=='bite')||'shot';else return;}
+  if(key==='bite'&&distance>1.7+(o.combatRadius||0)){if(definition?.mechanics)key=definition.phases[fight.phase].moves.find(k=>k!=='bite')||'shot';else return;}
   if(distance>10)return;
-  scheduleEnemyMove(fight,key);fight.move++;fight.nextAttack=time+ENCOUNTER_MOVES[key].windup+(definition?.mechanics?2.3:o.interval||3.2);
+  scheduleEnemyMove(fight,key);fight.move++;fight.nextAttack=time+o.attackWindup+(definition?.mechanics?2.3:o.interval||3.2);
  }
  renderEncounterHud();
 }
 // Resolve the existing player projectiles/XP, then run fixed-stat enemy attacks.
 updateCombat=function(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
- for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
  for(const p of projectiles){p.age+=dt;p.tx=p.o.drawX??p.o.x;p.ty=p.o.drawY??p.o.y;}
  const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
  for(const p of hits)if(p.o.hp>0&&p.o.dead<=time)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
@@ -179,7 +184,7 @@ awardDefeat=function(o,style){
 const lootBeforeEncounters=monsterDrop;
 monsterDrop=function(o){
  const e=HUNT_ENCOUNTERS[o.encounter];if(e){const drops=Object.fromEntries(Object.entries(e.drops||{}).filter(([id])=>ITEMS[id]));groundDrop({coins:e.coins,huntersMark:e.marks,...drops},o.x,o.y);return;}
- if(ENEMY_TIERS[o.kind]?.look){const bonus=o.attackStyle==='magic'?{runes:3+Math.floor(o.level/5),airRunes:5+o.level}:o.attackStyle==='ranged'?{arrows:5+Math.floor(o.level/3)}:{bones:1};groundDrop({coins:o.coins,...bonus},o.x,o.y);return;}
+ if(ENEMY_TIERS[o.kind]?.look){const bonus=o.kind==='forestgiant'?{bones:2,logs:3}:o.attackStyle==='magic'?{runes:3+Math.floor(o.level/5),airRunes:5+o.level}:o.attackStyle==='ranged'?{arrows:5+Math.floor(o.level/3)}:{bones:1};groundDrop({coins:o.coins,...bonus},o.x,o.y);return;}
  lootBeforeEncounters(o);
 };
 function renderEncounterHud(){
@@ -203,13 +208,21 @@ const drawBeforeEncounters=draw3d;
 draw3d=function(){drawBeforeEncounters();drawEncounterWarnings();};
 const HUNT_REWARDS=[['iron_weapon',3],['willowBow',3],['oakStaff',2],['steel_weapon',7],['steel_body',8],['mithril_weapon',16],['mithril_body',20],['adamant_weapon',28],['rune_weapon',40]];
 function renderHunts(){
- const rows=Object.entries(HUNT_ENCOUNTERS).sort((a,b)=>a[1].level-b[1].level),p=huntProgress(),panel=$('panel');pageControls(rows.length+1,3);
+ const rows=Object.entries(HUNT_ENCOUNTERS).filter(([kind])=>encounterReleased(kind)).sort((a,b)=>a[1].level-b[1].level),p=huntProgress(),panel=$('panel');if(!rows.length)return renderHuntingGrounds();pageControls(rows.length+1,3);
  panel.innerHTML='<div class="questhead"><h2>Hunter’s journal</h2><small>Combat '+combatLevel()+'</small></div><p class="desc">Choose your next challenge. Levels are recommendations. Bosses return after one minute.</p><div id="huntCards"></div>';
  for(const [kind,e]of pageItems([...rows,['rewards',null]],3)){
   const card=document.createElement('section');card.className='hunt-card';
   if(kind==='rewards'){card.innerHTML='<h3>Mark exchange</h3><p>'+(s.bag.huntersMark||0)+' marks carried · Earn more from named encounters.</p>';for(const [id,cost]of HUNT_REWARDS){if(!ITEMS[id])continue;const b=document.createElement('button');b.textContent=ITEMS[id].name+' · '+cost+' marks';b.disabled=(s.bag.huntersMark||0)<cost;b.onclick=()=>{if((s.bag.huntersMark||0)<cost||!canCarry(id)){toast('Bring enough marks and make space in your bag.');return;}s.bag.huntersMark-=cost;s.gear[id]=(s.gear[id]||0)+1;save();renderUI();};card.appendChild(b);}}
-  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+(e.level*4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(e.scene==='dungeon'&&currentScene==='overworld'){const door=objects.find(o=>o.destination==='dungeon');if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
+  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+(e.level*4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
   $('huntCards').appendChild(card);
+ }
+}
+function renderHuntingGrounds(){
+ const grounds=[{name:'Elderwood giant grove',at:FOREST_GIANT_HABITAT.entry,kinds:['forestgiant']},...HUNT_ZONES];pageControls(grounds.length,3);
+ $('panel').innerHTML='<div class="questhead"><h2>Hunting grounds</h2><small>Combat '+combatLevel()+'</small></div><p class="desc">Find creatures suited to your level. Their strength stays fixed as you improve. Bring food and collect drops from the ground.</p><div id="huntCards"></div>';
+ for(const zone of pageItems(grounds,3)){
+  const rows=zone.kinds.map(k=>ENEMY_TIERS[k]),low=Math.min(...rows.map(e=>e.level)),high=Math.max(...rows.map(e=>e.level)),card=document.createElement('section');card.className='hunt-card';card.innerHTML='<h3>'+zone.name+'</h3><small>Creature levels '+low+(high!==low?'–'+high:'')+'</small><p>'+rows.map(e=>e.name).join(' · ')+'</p>';
+  const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find hunting ground';b.disabled=currentScene==='tutorial';b.onclick=()=>{if(currentScene!=='overworld'){toast('Return to the mainland to follow this trail.');return;}const point=encounterSpawnPoint('overworld',...zone.at,12);if(point){openGamePanel('hunts',true);walkTo(...point);}};card.appendChild(b);$('huntCards').appendChild(card);
  }
 }
 const panelBeforeEncounters=renderPanel;

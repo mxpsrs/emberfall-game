@@ -1,20 +1,24 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {ctx,els}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;
 const getElement=ctx.document.getElementById;ctx.document.getElementById=id=>{const e=getElement(id);e.remove=()=>{};e.replaceChildren=()=>{};return e;};
-for(const f of ['game-icons','trading','world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','encounters'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['game-icons','trading','world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 s.character={name:'Combat test'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.sceneId='overworld';setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
-assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,3,'only three encounters use phases');
-assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,42,'fourteen ordinary monster types have three spawns each');
-assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off the tutorial island');
-for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))assert(worldScenes[e.scene].objects.some(o=>o.kind===kind&&o.encounter===kind),'spawn exists: '+kind);
+assert.equal(Object.keys(HUNT_ENCOUNTERS).length,4,'only the four approved boss designs remain');
+assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).length,0,'unverified boss assets stay out of this staged release');
+assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'only selected future bosses have phases');
+assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
+assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
+assert(!Object.values(worldScenes).some(w=>w.objects.some(o=>o.encounter)),'no rejected or unverified boss encounters ship');
+assert(!Object.keys(worldScenes).some(id=>id.startsWith('lair_')||id==='ork_warrens'),'no empty lairs ship');
+const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
 // A cardinal flood confirms mainland spawns are in the main walkable landmass.
 const nav=realmNav(),seen=new Uint8Array(nav.cells.length),queue=new Int32Array(nav.cells.length);let head=0,tail=0;
 const start=51*nav.w+42;queue[tail++]=start;seen[start]=1;
 while(head<tail){const id=queue[head++],x=id%nav.w,y=Math.floor(id/nav.w);for(const [dx,dy]of [[0,-1],[0,1],[-1,0],[1,0]]){const nx=x+dx,ny=y+dy,next=ny*nav.w+nx;if(nx<1||ny<1||nx>=nav.w-1||ny>=nav.h-1||nav.cells[next]||seen[next])continue;seen[next]=1;queue[tail++]=next;}}
-for(const o of objects.filter(o=>o.encounter||ENEMY_TIERS[o.kind]?.look)){
+for(const o of objects.filter(o=>ENEMY_TIERS[o.kind]?.look)){
  assert(!blocked(o.x,o.y),'clear spawn: '+o.kind+' '+o.x+','+o.y);assert(seen[o.y*nav.w+o.x],'reachable mainland spawn: '+o.kind+' '+o.x+','+o.y);
  const a=creatureAsset(o);assert(a,'renderable creature '+o.kind);const variant=creatureTint(o,a.mesh);assert(variant.c.every(Number.isFinite));assert.equal(variant.p,a.mesh.p,'variants reuse geometry');
 }
@@ -34,20 +38,18 @@ for(let run=0;run<1000;run++){
  for(let frame=0;frame<2400&&r.hp>0;frame++){if(time>=playerAttackReadyAt)performAttack(r);const hp=s.hp;time+=.05;updateCombat(.05);loss+=Math.max(0,hp-s.hp);if($('modal').open){deaths++;$('modal').close();break;}}
  assert(r.hp<=0||deaths,'starter rat resolves');killTimes.push(time-started);totalDamage+=loss;
 }
-killTimes.sort((a,b)=>a-b);assert(killTimes[500]<=8,'median starter rat is quick');assert(killTimes[950]<20,'unlucky starter fights stay bounded statistically');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
+killTimes.sort((a,b)=>a-b);assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds');assert(killTimes[950]<36,'unlucky starter fights stay reasonable while preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
 console.log('Starter rat / 1,000 real simulated fights: median '+killTimes[500].toFixed(2)+'s; p95 '+killTimes[950].toFixed(2)+'s; mean HP lost '+(totalDamage/1000).toFixed(2)+'; deaths '+deaths+'. Zero hits are preserved.');
-for(const kind of ['slinger','brambleslime','warden','sentinel','nightbloom']){o=fresh(kind);target=o;beginEncounter(o);time=activeEncounter.nextAttack;updateEncounterAI(.05);assert(['strike','projectile'].includes(activeEncounter.hazards[0].shape),'ordinary fight has no ground pattern: '+kind);assert.equal(activeEncounter.phase,0);}
-for(const kind of ['mossfang','king','colossus']){
- o=fresh(kind);target=o;beginEncounter(o);const e=HUNT_ENCOUNTERS[kind];
- for(let i=0;i<e.phases.length;i++){
-  o.hp=Math.max(1,Math.floor(o.maxhp*e.phases[i].at));updateEncounterAI(.05);assert.equal(activeEncounter.phase,i);
-  for(const key of e.phases[i].moves){const fight=activeEncounter;fight.hazards=[];scheduleEnemyMove(fight,key);const h=fight.hazards[0],hp=s.hp;assert(h.due>time,'attacks have advance warning');updateEncounterAI(.01);assert.equal(s.hp,hp,'warning cannot instantly damage');if(!['strike','projectile'].includes(h.shape)){assert(hazardContains(h,h.x,h.y)===(h.shape!=='ring'));px=s.x=61+8;py=s.y=90+7;time=h.due+.01;updateEncounterAI(.05);assert.equal(s.hp,hp,'moving clear avoids special attacks');px=s.x=60;py=s.y=90;}}
- }
- const low=o.hp;px=s.x=o.homeX+20;updateEncounterAI(.05);assert.equal(activeEncounter,null);assert.equal(o.hp,o.maxhp);assert(!o._inCombat);assert($('encounterHud').hidden);
-}
-o=fresh('king');target=o;beginEncounter(o);const gold=s.gold;resolveHit(o,o.hp,'melee');assert(s.boss);assert.equal(huntProgress().kills.king,1);assert.equal(s.gold-gold,HUNT_ENCOUNTERS.king.level*4);assert(s.groundLoot.some(p=>p.items.huntersMark===3));assert.equal(activeEncounter,null);assert.equal(o.dead,time+60);
-const firstGold=s.gold;o.dead=0;o.hp=o.maxhp;resolveHit(o,o.hp,'melee');assert.equal(huntProgress().kills.king,2);assert.equal(s.gold,firstGold,'first-clear bonus is not repeated');
-s=JSON.parse(JSON.stringify(s));normalizeJourney(s);assert.equal(huntProgress().kills.king,2,'progress survives a saved character');
-o=fresh('colossus');beginEncounter(o);activateScene('mine',10,12);assert.equal(activeEncounter,null,'scene change clears fight');assert.equal(o.hp,o.maxhp);
-lineOfSight=originalSight;console.log('PASS: fixed level tiers, 42 reachable new monsters, nine named encounters, exactly three phased fights, warning and dodge rules, simple ordinary attacks, retreat, scene cleanup, repeat kills and first-clear rewards.');
+for(const kind of ['slinger','brambleslime','warden','sentinel','king','forestgiant']){o=fresh(kind);target=o;beginEncounter(o);time=activeEncounter.nextAttack;updateEncounterAI(.05);assert(['strike','projectile'].includes(activeEncounter.hazards[0].shape),'ordinary fight has no ground pattern: '+kind);assert.equal(activeEncounter.phase,0);}
+// Ordinary Forest Giants cycle native melee motions without phase mechanics.
+o=fresh('forestgiant');target=o;beginEncounter(o);for(let i=0;i<3;i++){activeEncounter.move=i;scheduleEnemyMove(activeEncounter,'bite');assert.equal(o.attackClip,['attack','attack2','attack3'][i]);assert.equal(creatureAttackAnimation(o,creatureAssets.forestgiant,.3).clip,o.attackClip);}
+// Large imported bodies can be hit at the visible edge with the same damage rules.
+o=fresh('forestgiant');px=s.x=o.x-2;let edgeRoll=0;Math.random=()=>edgeRoll++?.5:0;assert(inAttackRange(o));assert(performAttack(o));time+=.31;updateCombat(.31);assert(o.hp<o.maxhp,'melee impact reaches the same expanded body as targeting');
+const giantGold=s.gold;resolveHit(o,o.hp,'melee');assert.equal(huntProgress().kills.forestgiant,1);assert(!huntProgress().firstClears.forestgiant);assert.equal(s.gold,giantGold,'ordinary giant has no first-clear boss bonus');assert(s.groundLoot.some(p=>p.items.logs===3&&p.items.bones===2));assert(!s.groundLoot.some(p=>p.items.huntersMark),'ordinary giants have no boss marks');assert.equal(activeEncounter,null);assert.equal(o.dead,time+25);const savedGiantProgress=JSON.parse(JSON.stringify(s));normalizeJourney(savedGiantProgress);assert.equal(savedGiantProgress.combatProgress.kills.forestgiant,1,'giant kill progress survives save normalization');
+o=fresh('king');target=o;beginEncounter(o);resolveHit(o,o.hp,'melee');assert(s.boss,'existing ruins quest flag still advances');
+o=fresh('warden');resolveHit(o,o.hp,'melee');assert(s.wardenClear,'crypt cache flag still advances');
+o=fresh('forestgiant');beginEncounter(o);o.hp=5;px=s.x=o.homeX+20;updateEncounterAI(.05);assert.equal(activeEncounter,null);assert.equal(o.hp,o.maxhp);assert(!o._inCombat);
+o=fresh('forestgiant');beginEncounter(o);activateScene('mine',10,12);assert.equal(activeEncounter,null,'scene change clears fight');assert.equal(o.hp,o.maxhp);
+
+lineOfSight=originalSight;console.log('PASS: 45 reachable ordinary monsters, native giant attacks, melee body reach, ordinary rewards, legacy quest flags, retreat, and zero-inclusive combat. Unverified bosses and empty lairs are not released.');
 `,ctx);
