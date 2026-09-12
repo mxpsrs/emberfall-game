@@ -1,0 +1,16 @@
+{
+  "archer": {
+    "author": "Kevin Iglesias",
+    "pack": "Human Archer Animations 2.0 FREE",
+    "source": "https://kevdev.itch.io/human-archer-animations-free",
+    "license": "Standard Asset Store EULA; commercial game use allowed; standalone asset resale prohibited",
+    "sha256": "87565026f3a3b0aa8aeaadbcc155533ee58d927f5c443a6b2a11f396a461c904"
+  },
+  "castingAndBurial": {
+    "author": "Quaternius",
+    "pack": "Universal Animation Library Standard",
+    "license": "CC0 1.0",
+    "source": "https://quaternius.itch.io/universal-animation-library",
+    "sha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997"
+  }
+}

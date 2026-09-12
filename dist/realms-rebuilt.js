@@ -101,8 +101,8 @@ function mergeWornMeshes(base,sex,gear){
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
  for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
  if(shoulderId){const shoulders=wornModularMesh(sex,shoulderId);if(shoulders)sources.push(shoulders);}
- for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&!gear.head,'Hair.007',null],[outfit.beard===2&&!gear.head,'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>(color===null?Math.max(.70,v):v)*tint[i%3]);sources.push({...part,c,f:c});}}
- if(!gear._civilian&&!gear.head&&outfit.hair===4)sources.push(avatarHairCap(sex,outfit.hairColor??0));
+ for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&(!gear.head||gear.head==='rangerCap'),'Hair.007',null],[outfit.beard===2&&(!gear.head||gear.head==='rangerCap'),'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>(color===null?Math.max(.70,v):v)*tint[i%3]);sources.push({...part,c,f:c});}}
+ if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&outfit.hair===4)sources.push(avatarHairCap(sex,outfit.hairColor??0));
  if(outfitTop)for(const part of ['Body','Arms'])sources.push(outfitClothingMesh(sex,outfitTop,part,outfit.topColor,outfit.skin));
  if(outfitBottom)for(const part of ['Legs',...(!gear.feet?['Feet']:[])])sources.push(outfitClothingMesh(sex,outfitBottom,part,outfit.bottomColor,outfit.skin));
  if(!gear._civilian&&(!outfitTop&&!outfitBottom||gear.body||gear.legs))for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
@@ -346,12 +346,12 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3,...(gear._appearance||{})},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
- const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,poseGear=gathering?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
- const attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':ITEMS[gear.weapon]?.style==='ranged'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!gathering&&age>=0&&age<duration;
+ const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,burying=player&&playerAction?.kind==='bury',busy=gathering||burying,poseGear=busy?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
+ const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!locomotion&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
- const idleClip=poseGear.weapon&&ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=gathering?(gathering.object.type==='fish'?'ranged':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
- const phase=gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
+ const idleClip=poseGear.weapon?(bow?'bowIdle':ITEMS[poseGear.weapon]?.style==='magic'?'staffIdle':ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle'):'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=burying?'bury':gathering?(gathering.object.type==='fish'?'fishing':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
+ const phase=burying?Math.min(1,(time-playerAction.started)/playerAction.duration):gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=burying?1:gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
  const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,poseGear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
  if(r.skinned)r.skinned(mesh.gpuMesh,root,mesh.pose);else briarEmit(r,mesh,root);
@@ -359,20 +359,66 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3,sex),headTransform);
  if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
- if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
+ if(gear.head==='rangerCap')briarEmit(r,rebuiltModels.Ranger_Cap,affineMultiply(headTransform,briarTransform(0,a.mesh.bounds[1][1]-.052,.015,1.13)));
+ if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0);
+ if(burying)drawBoneOffering(r,root,mesh,(time-playerAction.started)/playerAction.duration);
  // Weapon meshes are attached to the new rig's actual palms.
  if(gathering&&typeof drawGatheringTool==='function')drawGatheringTool(r,affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),gathering.tool);
- for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(!gathering&&gear[slot]){
+ if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(playerAttackMotion?.ammo||s.equippedAmmoCount>0));
+ for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(!busy&&!bow&&gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:ITEMS[gear.weapon]?.style==='magic'?briarRigs.Mage.meshes['2H_Staff']:ITEMS[gear.weapon]?.style==='ranged'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
   const modular=wornModularMesh(sex,gear[slot]);
   if(modular)briarEmit(r,modular,world);
   else if(slot==='weapon'&&['bronzeSword','ironSword'].includes(gear.weapon)){fittedSwordRealm(r,world,gear.weapon==='bronzeSword');}
-  else if(source){const k=slot==='shield'?.62:.78;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,0,0,0,k,0]));}
+  else if(source){const k=slot==='shield'?.62:ITEMS[gear.weapon]?.style==='magic'?.68:.78;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,0,0,0,k,0]));}
   else{const bow={face(p,c){r.face(p.map(v=>briarPoint(v,0,world)),c);}},points=Array.from({length:13},(_,i)=>[.13*Math.sin(i*Math.PI/12),-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.016,'#81613b',5);beamArt(bow,points[0],points[12],.004,'#c9bd9d',4);}
  }
+ if(attacking&&attackClip==='magic'&&age<a.clips.magic.releaseAt)drawCastingLight(r,root,mesh,age/a.clips.magic.releaseAt,playerAttackMotion?.color||'#a2ddea');
 };
+
+// Imported props share the same meshes in the world, bag and equipment view.
+let fittedBowMesh=null;
+function archerBowMesh(){
+ if(fittedBowMesh)return fittedBowMesh;const mesh=rebuiltModels.Archer_Bow,indices=[];
+ // The original straight string is replaced by a string attached to the draw hand.
+ for(let i=0;i<mesh.i.length;i+=3){const ids=Array.from(mesh.i.subarray(i,i+3)),xs=ids.map(v=>mesh.p[v*3]),ys=ids.map(v=>mesh.p[v*3+1]);if(Math.min(...xs)>-.025&&Math.max(...ys)-Math.min(...ys)>.35)continue;indices.push(...ids);}
+ return fittedBowMesh={...mesh,i:new Uint16Array(indices)};
+}
+function arrowTransform(start,end,width=1){
+ const y=end.map((v,i)=>v-start[i]),length=Math.hypot(...y)||1;for(let i=0;i<3;i++)y[i]/=length;
+ const x=Math.abs(y[1])<.9?[y[2],0,-y[0]]:[1,0,0],xl=Math.hypot(...x)||1;for(let i=0;i<3;i++)x[i]/=xl;
+ const z=[x[1]*y[2]-x[2]*y[1],x[2]*y[0]-x[0]*y[2],x[0]*y[1]-x[1]*y[0]];
+ return [x[0]*width,y[0]*length,z[0]*width,start[0],x[1]*width,y[1]*length,z[1]*width,start[1],x[2]*width,y[2]*length,z[2]*width,start[2]];
+}
+function drawFittedBow(r,root,mesh,age,loaded){
+ const rig=mesh.avatar.rig,hand=affineMultiply(root,affineMultiply(mesh.pose.subarray(rig.left*12,rig.left*12+12),rig.bowBind)),m=affineMultiply(hand,[-.65,0,0,-.20,0,.65,0,0,0,0,-.65,0]);
+ briarEmit(r,archerBowMesh(),m);
+ const top=briarPoint([0,1,0],0,m),bottom=briarPoint([0,-1,0],0,m),rest=briarPoint([0,0,0],0,m),right=affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),draw=briarPoint([0,0,0],0,right),release=mesh.avatar.clips.ranged.releaseAt;
+ const pull=age<0?0:age<release?Math.min(1,Math.max(0,(age-.12)/.32)):Math.max(0,1-(age-release)/.07),nock=rest.map((v,i)=>v+(draw[i]-v)*pull);
+ beamArt(r,top,nock,.0035,'#d4c9ac',4);beamArt(r,nock,bottom,.0035,'#d4c9ac',4);
+ if(loaded&&age>=.15&&age<release){const grip=briarPoint([-.30,0,0],0,m),d=grip.map((v,i)=>v-nock[i]),length=Math.hypot(...d)||1,end=nock.map((v,i)=>v+d[i]/length*.78);briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(nock,end,.75));}
+}
+function visibleQuiverArrows(count){return Math.min(5,Math.max(0,Math.ceil(Number(count)||0)));}
+function drawArcherQuiver(r,root,mesh,count){
+ const spine=mesh.avatar.rig.names.indexOf('spine_03'),body=affineMultiply(root,mesh.pose.subarray(spine*12,spine*12+12)),m=affineMultiply(body,[.86,-.22,0,.13,.22,.86,0,1.22,0,0,.9,-.25]);
+ briarEmit(r,rebuiltModels.Archer_Quiver,m);
+ for(let i=0;i<visibleQuiverArrows(count);i++){const x=(i%3-1)*.029,z=(Math.floor(i/3)-.5)*.039,start=briarPoint([x,.43+(i%2)*.027,z],0,m),end=briarPoint([x,-.21,z],0,m);briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(start,end,.65));}
+}
+function drawBoneOffering(r,root,mesh,phase){
+ if(phase<.53){const hand=affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),q={face:(p,c)=>r.face(p.map(v=>briarPoint(v,0,hand)),c)};beamArt(q,[-.10,0,0],[.10,0,0],.018,'#d6cfb8',6);for(const x of [-.10,.10])oval3(q,x,0,0,.065,.048,.04,'#d6cfb8',p=>p,6);}
+ else if(phase<.82){const k=(phase-.53)/.29,p=briarPoint([0,.012,.52],0,root);oval3(r,p[0],p[1],p[2],.24*(1-k),.018,.15*(1-k),'#79664c',p=>p,8);}
+}
+function drawCastingLight(r,root,mesh,phase,color){
+ const hand=affineMultiply(root,mesh.pose.subarray(mesh.avatar.left*12,mesh.avatar.left*12+12)),p=briarPoint([0,.05,0],0,hand),size=.045+Math.sin(phase*Math.PI)*.065;
+ oval3(r,...p,size,size,size,color,p=>p,8);
+ for(let i=0;i<3;i++){const angle=phase*8+i*Math.PI*2/3;oval3(r,p[0]+Math.cos(angle)*.12,p[1]+Math.sin(angle)*.10,p[2],.027,.027,.027,'#e6f5df',p=>p,5);}
+}
+function drawCombatProjectiles3(r){
+ for(const p of projectiles){if(p.style!=='ranged'||p.age<0)continue;const t=Math.min(1,p.age/p.duration),x=p.x+(p.tx-p.x)*t+.5,z=p.y+(p.ty-p.y)*t+.5,y=1.3+Math.sin(t*Math.PI)*.15,d=[p.tx-p.x,0,p.ty-p.y],length=Math.hypot(...d)||1,tip=[x,y,z],tail=tip.map((v,i)=>v-d[i]/length*.78);briarEmit(groundedPainter(r,x,z),rebuiltModels.Archer_Arrow,arrowTransform(tail,tip,.75));}
+}
 
 // A tapered blade with a narrow grip and guard, built around the palm socket.
 function fittedSwordRealm(r,m,bronze){

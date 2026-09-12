@@ -13,7 +13,7 @@ for(const sex of ['male','female']){
  const a=rebuiltAvatars[sex],rig=a.rig,rest=Array.from({length:a.joints},(_,i)=>invertMotionAffine(rig.bind.subarray(i*12,i*12+12)));
  assert.equal(rig.names.length,65);
  assert(a.clips.walk.source==='Walk_Loop'&&a.clips.melee.source==='Sword_Attack','the original artist clips are identified');
- for(const clip of ['idle','swordIdle','walk','run','melee','unarmed','magic']){
+ for(const clip of ['idle','swordIdle','walk','run','melee','unarmed','magic','ranged','bowIdle','bury']){
   const motion=a.clips[clip];assert(motion.trs&&!motion.m,'authored clips use local skeletal transforms');
   for(let f=0;f<=24;f++)for(const blend of [1,.5]){
    const frame=f/24*(motion.frames-1),p=realmSkeletonPose(a,clip,frame,blend,'swordIdle',0);
@@ -26,10 +26,10 @@ for(const sex of ['male','female']){
    const hand=invertMotionAffine(global[rig.right]),socket=affineMultiply(hand,p.subarray(a.right*12,a.right*12+12));
    for(let j=0;j<12;j++)assert(Math.abs(socket[j]-rig.rightGrip[j])<.0001,'the sword stays attached to the same place in the palm');
    const knuckle=affineMultiply(hand,global[rig.names.indexOf('middle_01_r')]),tip=affineMultiply(hand,global[rig.names.indexOf('middle_04_leaf_r')]);
-   assert(Math.hypot(knuckle[3]-tip[3],knuckle[7]-tip[7],knuckle[11]-tip[11])<.09,sex+' '+clip+' frame '+f+' blend '+blend+': the right fingers stay curled around the grip');
+   if(!['ranged','bowIdle','bury'].includes(clip))assert(Math.hypot(knuckle[3]-tip[3],knuckle[7]-tip[7],knuckle[11]-tip[11])<.09,sex+' '+clip+' frame '+f+' blend '+blend+': the right fingers stay curled around the grip');
   }
  }
- for(const clip of ['walk','run','melee'])for(const phase of [0,.125,.25,.375,.5,.625,.75,.875,1]){
+ for(const clip of ['walk','run','melee','ranged','magic','bury'])for(const phase of [0,.125,.25,.375,.5,.625,.75,.875,1]){
   const mesh=avatarPose(sex,clip,phase,{weapon:'bronzeSword',body:'leatherArmor'},0);
   assert([...mesh.p,...mesh.n].every(Number.isFinite));
   let lowest=Infinity;for(let i=1;i<mesh.p.length;i+=3)lowest=Math.min(lowest,mesh.p[i]);

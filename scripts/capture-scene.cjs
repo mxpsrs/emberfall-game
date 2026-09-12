@@ -6,13 +6,13 @@ const noop=()=>{},elements={};function element(){return {style:{},dataset:{},cla
 let next=0,captureIndex=0;const entries=[];const motionFrames=Number(process.env.EMBERFALL_CAPTURE_FRAMES||1);
 const sandbox={processCaptureClip:process.env.EMBERFALL_CAPTURE_CLIP||'idle',console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:()=>null,setItem:noop},document:{getElementById:id=>elements[id]??=element(),querySelectorAll:()=>[],createElement:element,addEventListener:noop,body:element()},window:{addEventListener:noop,matchMedia:()=>({matches:false})},
  upload(data){const name='mesh-'+next+++'.bin';fs.writeFileSync(path.join(output,name),Buffer.from(data.buffer,data.byteOffset,data.byteLength));return {buffer:name,count:data.length/12}},
- captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',captureIsolated:process.env.EMBERFALL_CAPTURE_ISOLATED==='1',captureGear:process.env.EMBERFALL_CAPTURE_GEAR?JSON.parse(process.env.EMBERFALL_CAPTURE_GEAR):null,captureAppearance:JSON.parse(process.env.EMBERFALL_CAPTURE_APPEARANCE||'{}'),
+ captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',captureIsolated:process.env.EMBERFALL_CAPTURE_ISOLATED==='1',captureAmmo:Number(process.env.EMBERFALL_CAPTURE_AMMO||2500),captureGear:process.env.EMBERFALL_CAPTURE_GEAR?JSON.parse(process.env.EMBERFALL_CAPTURE_GEAR):null,captureAppearance:JSON.parse(process.env.EMBERFALL_CAPTURE_APPEARANCE||'{}'),
  capture(data){fs.writeFileSync(path.join(output,motionFrames>1?'scene-'+String(captureIndex++).padStart(3,'0')+'.json':'scene.json'),JSON.stringify(data));},motionFrames,captureYaw:Number(process.env.EMBERFALL_CAPTURE_YAW||-.55),captureTilt:Number(process.env.EMBERFALL_CAPTURE_TILT||.85),captureZoom:Number(process.env.EMBERFALL_CAPTURE_ZOOM||0),captureSex:process.env.EMBERFALL_CAPTURE_SEX||'male',choice:process.argv[3]||'willow-inside',posePhase:Number(process.argv[4]||0),captureWidth:Number(process.env.EMBERFALL_CAPTURE_WIDTH||1112),captureHeight:Number(process.env.EMBERFALL_CAPTURE_HEIGHT||512)};
 vm.createContext(sandbox);
 for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','tree-identity','world-depth','organic-world','walk-in-world','world-style','building-orientation','assets/realms/monsters','creatures','item-models'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();screen={w:captureWidth,h:captureHeight};s.character={name:'Adventurer',look:0,frame:captureSex,hair:0,race:'human'};s.equipment={weapon:'bronzeSword',body:'leatherArmor'};s.worldClock=120;time=1;assetsReady=true;
-if(captureGear)s.equipment=captureGear;Object.assign(s.character,captureAppearance);
+if(captureGear)s.equipment=captureGear;s.equippedAmmoCount=captureAmmo;Object.assign(s.character,captureAppearance);
 const captureInn=buildings.find(b=>b.service?.destination==='willowInn');
 if(choice==='willow-inside')activateScene('overworld',captureInn.service.x,captureInn.service.y-2);
 else if(choice==='willow-outside')activateScene('overworld',captureInn.service.x,captureInn.service.y+7);
@@ -50,10 +50,12 @@ else if(['goblin','king','wolf','ridgewolf','rat','skeleton','slime','creature-l
  }
 }
 else if(choice==='combat'){const enemy=objects.find(o=>o.kind==='goblin');activateScene('overworld',enemy.x-1,enemy.y);target=enemy;lastAttack=time-posePhase*.65;enemy.attackAt=lastAttack;playerHeading=Math.PI/2;}
-else if(['walk','run','idle','sword','transition'].includes(choice)){activateScene('overworld',43,75);playerMotion.moving=['walk','run','transition'].includes(choice);playerMotion.blend=playerMotion.moving?1:0;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;}
+else if(['walk','run','idle','sword','transition','ranged','magic','bury','bow-idle'].includes(choice)){activateScene('overworld',43,75);playerMotion.moving=['walk','run','transition'].includes(choice);playerMotion.blend=playerMotion.moving?1:0;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;}
+function captureAction(){if(['ranged','magic'].includes(choice)){lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips[choice].duration;playerAttackMotion={...combatMotion(choice),weapon:s.equipment.weapon,ammo:'arrows',started:lastAttack,color:'#76c7ed'};}if(choice==='bury')playerAction={kind:'bury',started:time-posePhase*1.8,duration:1.8,commitAt:.95,committed:posePhase>.53};}
+captureAction();
 if(captureIsolated){objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};}
 if(choice==='willow-inside')setWalkInDoor(captureInn.service,true,true);
-view3d.zoom=captureZoom||(['walk','run','combat','idle','sword','transition'].includes(choice)?110:choice==='willow-inside'?40:choice==='shop'?38:choice==='briarhaven'?28:22);view3d.yaw=captureYaw;view3d.tilt=captureTilt;updateDoorThreshold();
+view3d.zoom=captureZoom||(['walk','run','combat','idle','sword','transition','ranged','magic','bury','bow-idle'].includes(choice)?110:choice==='willow-inside'?40:choice==='shop'?38:choice==='briarhaven'?28:22);view3d.yaw=captureYaw;view3d.tilt=captureTilt;updateDoorThreshold();
 realmGPU={skinning:captureSkinning,skinnedMeshes:new WeakMap(),cache:new WeakMap(),sharedMeshes:new WeakMap(),terrain:new Map(),gl:{deleteBuffer(){}},upload,
  render(entries,dynamic){if(dynamic.length)entries.push(upload(new Float32Array(dynamic)));
  const draws=entries.map(e=>{const m=e.model?Array.from(e.model):null;if(m)m[7]+=landHeight(m[3],m[11]);return {file:e.buffer,count:e.count,stride:e.stride||48,palette:e.palette?Array.from(e.palette):null,terrain:!!e.terrain,normal:Array.from(realmNormalMatrix(e.model)),model:m?[m[0],m[4],m[8],0,m[1],m[5],m[9],0,m[2],m[6],m[10],0,m[3],m[7],m[11],1]:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]};});
@@ -67,7 +69,7 @@ for(let i=0;i<motionFrames;i++){
   if(clip==='attack')o.attackAt=time-posePhase*a.clips.attack.duration;
   if(clip==='death'){o.dead=time+25;o.deathAt=time-posePhase*a.clips.death.duration;}
  }
- draw3d();
+ captureAction();draw3d();
 }
 `,sandbox);
 console.log('Captured',next,'mesh buffers for',sandbox.choice);

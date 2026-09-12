@@ -189,6 +189,9 @@ function buildMiscItem(r,id){
  return false;
 }
 function buildSupplyItem(r,id,item){
+ if(id==='rangerCap'){briarEmit(r,rebuiltModels.Ranger_Cap,briarTransform(0,0,0));return {lie:false,authored:true};}
+ if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,rebuiltModels.Archer_Bow,briarTransform(0,0,0));return {lie:true,authored:true};}
+ if(typeof isAmmunition==='function'&&isAmmunition(id)){for(let i=0;i<3;i++)briarEmit(r,rebuiltModels.Archer_Arrow,briarTransform((i-1)*.14,(i%2)*.1,0));return {lie:true,authored:true};}
  const food=itemFoodInfo(id);if(food){buildFoodItem(r,food);return {lie:true,food};}
  if(item.logType){buildLogItem(r,item.logType);return {lie:false};}
  if(item.resource){buildOreItem(r,item.resource);return {lie:false};}
@@ -197,7 +200,6 @@ function buildSupplyItem(r,id,item){
  if(item.beltTool){buildToolItem(r,id,item);return {lie:true};}
  if(id==='arrowheads'||id==='arrowShafts'||id==='headlessArrows'||id==='arrows'||/Arrowheads$|Arrows$/.test(id)){buildAmmoItem(r,id);return {lie:true};}
  if(item.slot==='body'||id==='leatherBoots'){buildClothingItem(r,id,item);return {lie:true};}
- if(item.style==='ranged'&&item.slot==='weapon'){buildBowItem(r,id);return {lie:true};}
  if(buildMiscItem(r,id)===false)return null;
  return {lie:!['ashes','coins'].includes(id)};
 }

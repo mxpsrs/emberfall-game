@@ -6,6 +6,7 @@ const defaults = () => ({
   xp:{Hitpoints:1154,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0,Firemaking:0,Cooking:0,Fletching:0,Farming:0},
   skillProgressionVersion:1,combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
   bag:{logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
+  equippedAmmoCount:0,
   sword:0, quest:0, kills:0, boss:false, character:null,
   spirits:{}, tutorial:0, tutorialVersion:4, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
@@ -90,7 +91,13 @@ function save() {
 function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
-function stop(){if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
+function showExperienceDrop(rewards){
+ const recent=floaters.findLast(f=>f.experience&&time-f.started<.8&&Math.hypot(f.x-px,f.y-py)<.4);
+ if(recent){for(const [skill,xp]of Object.entries(rewards))recent.experience[skill]=(recent.experience[skill]||0)+xp;recent.life=1.4;return;}
+ floaters.push({text:'',experience:{...rewards},started:time,x:px,y:py,life:1.4,color:'#ecd590'});
+}
+function drawExperienceDrop(f,x,y){const entries=Object.entries(f.experience);entries.forEach(([skill,xp],i)=>label('+'+(Math.round(xp*10)/10)+' '+skill+' XP',x,y-(entries.length-1-i)*15,f.color,12));}
+function stop(){if(typeof playerAction!=='undefined')playerAction=null;if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
 function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
   const start=[startX,startY],open=[{x:startX,y:startY,g:0,f:0}],cost=new Map([[start.join(','),0]]),prev=new Map();let end=null;
   while(open.length){
@@ -133,18 +140,19 @@ function arrive(){
   renderAction();
 }
 function renderAction(){
+  if(playerAction){$('targetTitle').textContent='Burying bones';$('targetSub').textContent='Tap Stop or move to cancel.';return;}
   const a=target;
   $('targetTitle').textContent=a?(path.length?'Walking to '+a.name:a.name):path.length?'Following the path':'Explore the borderlands';
   $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Tap Stop to cancel'):path.length?'Tap Stop or another spot to change course.':'Tap a resource, building, person, or monster.';
 }
 function dialog(title,html,buttons=[]){
-  if(window.realmTrade)close();
+  if(window.realmTrade||window.equipmentStatsOpen)close();
   stop();$('modalBody').innerHTML='';const h=document.createElement('h2');h.textContent=title;$('modalBody').appendChild(h);
   const body=document.createElement('div');body.className='dialogcopy';body.innerHTML=html;$('modalBody').appendChild(body);
   for(const [label,fn,style] of buttons){const b=document.createElement('button');b.className=style||'primary';b.textContent=label;b.onclick=fn;$('modalBody').appendChild(b);}
   if(!$('modal').open)$('modal').showModal();
 }
-function close(){if(window.realmTrade)endTrade();$('modal').close();renderUI();save();}
+function close(){if(window.realmTrade)endTrade();if(window.equipmentStatsOpen)endCombatStats();$('modal').close();renderUI();save();}
 const quests=[
   {title:'A village in need',desc:'Find Elder Rowan beside the village square to begin your adventure.'},
   {title:'Tools of the trade',desc:'Gather 5 oak logs, 5 iron ore, and 3 trout. Bring them to Elder Rowan.',checks:()=>[['Oak logs',s.bag.logs,5],['Iron ore',s.bag.ore,5],['Trout',s.bag.fish,3]]},
@@ -187,6 +195,7 @@ function renderUI(){
   $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=Object.entries(s.bag).reduce((n,[id,q])=>n+(ITEMS[id]?.heal?q:0),0);
   renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
   if(window.realmTrade)renderTradeContents();
+  if(window.equipmentStatsOpen)renderCombatStats();
 }
 function renderPanel(){
   if(tab==='skills'&&!$('gameDock').hidden)tutorialEvent('skills');
@@ -297,7 +306,7 @@ function draw(){
     if(o.type==='camp'){const g=ctx.createRadialGradient(x,bottom-13,2,x,bottom-13,43);g.addColorStop(0,'#f9b34a22');g.addColorStop(1,'#f9b34a00');ctx.fillStyle=g;ctx.fillRect(x-43,bottom-56,86,86);}
   }
   drawWorldMood();drawProjectiles();drawSpiritEffect();
-  for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);label(f.text,(f.x+.5)*TILE-camera.x,(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25,f.color,15);}ctx.globalAlpha=1;
+  for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);const x=(f.x+.5)*TILE-camera.x,y=(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25;if(f.experience)drawExperienceDrop(f,x,y);else label(f.text,x,y,f.color,15);}ctx.globalAlpha=1;
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the Hollow King']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
 }
@@ -338,7 +347,7 @@ function frame(now){
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{elapsed+=dt;const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
-    updateTrainingGate();updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
+    updatePlayerAction();updateTrainingGate();updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
     for(const o of objects)advanceActorMovement(o,dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);

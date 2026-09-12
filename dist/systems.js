@@ -1,6 +1,6 @@
 'use strict';
 const COMBAT_SKILLS=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'];
-const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Bury bones and form first spirit bonds for XP. Adds spiritual protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
+const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Deal damage with spirit abilities, bury bones and form spirit bonds for XP. Strengthens spirit attacks and adds protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
 function combatLevel(){return 1+Math.floor((lv('Hitpoints')-1)*.15+(lv('Attack')-1)*.2+(lv('Strength')-1)*.2+(lv('Defense')-1)*.2+(lv('Worship')-1)*.05+(lv('Magic')-1)*.1+(lv('Ranged')-1)*.1+1e-9);}
 function migrateCombatSkills(state,original=state){
  const old=original?.xp||{},legacy=Math.max(0,Number(old.Combat)||0);state.xp=state.xp||{};
@@ -13,24 +13,47 @@ function migrateCombatSkills(state,original=state){
 }
 function trainingFocus(style=combatStyle()){return style==='melee'?s.meleeTraining||'balanced':s[style+'Training']||'focused';}
 function awardCombatDamage(damage,style,focus=trainingFocus(style)){
- if(!(damage>0))return;const xp=damage*3;gain('Hitpoints',damage,true);
+ if(!Number.isFinite(damage)||damage<=0||!['melee','ranged','magic','worship'].includes(style))return;
+ const rewards={Hitpoints:damage*4/3};
  if(style==='melee'){
   const skill={accurate:'Attack',aggressive:'Strength',defensive:'Defense'}[focus];
-  if(skill)gain(skill,xp,true);else for(const skill of ['Attack','Strength','Defense'])gain(skill,damage,true);
- }else{const skill=style==='magic'?'Magic':'Ranged';if(focus==='defensive'){gain(skill,damage*2,true);gain('Defense',damage,true);}else gain(skill,xp,true);}
+  if(skill)rewards[skill]=damage*4;else for(const skill of ['Attack','Strength','Defense'])rewards[skill]=damage*4/3;
+ }else if(style==='ranged'){rewards.Ranged=damage*(focus==='defensive'?2:4);if(focus==='defensive')rewards.Defense=damage*2;}
+ else if(style==='magic'){rewards.Magic=damage*(focus==='defensive'?4/3:2);if(focus==='defensive')rewards.Defense=damage;}
+ else rewards.Worship=damage*4;
+ for(const [skill,xp]of Object.entries(rewards))gain(skill,xp,true);
+ showExperienceDrop(rewards);
 }
-function buryBones(){if((s.bag.bones||0)<1)return false;s.bag.bones--;gain('Worship',18);tutorialEvent('bury');floating('+18 Worship',px,py,'#dbc58a');toast('Bones buried · +18 Worship XP');renderUI();save();return true;}
+let playerAction=null,playerAttackMotion=null;
+function buryBones(){
+ if((s.bag.bones||0)<1||playerAction)return false;stop();playerAction={kind:'bury',started:time,duration:1.8,commitAt:.95,committed:false};renderAction();return true;
+}
+function updatePlayerAction(){
+ const action=playerAction;if(!action)return;const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
+ if(!action.committed&&age>=action.commitAt){
+  action.committed=true;if((s.bag.bones||0)<1){playerAction=null;return;}
+  s.bag.bones--;gain('Worship',18,true);showExperienceDrop({Worship:18});tutorialEvent('bury');toast('Bones buried · +18 Worship XP');renderUI();save();
+ }
+ if(age>=action.duration){playerAction=null;$('activity').style.width='0';renderAction();}
+}
+function combatMotion(style){
+ const clip=style==='melee'?(s.equipment.weapon?'melee':'unarmed'):style==='worship'?'magic':style;
+ const a=typeof rebuiltAvatars!=='undefined'?rebuiltAvatars[s.character?.frame||'male']:null;
+ return {clip,duration:a?.clips[clip]?.duration||(style==='ranged'?1.6:style==='magic'?1.3:1.05),releaseAt:a?.clips[clip]?.releaseAt||(style==='ranged'?.94:style==='magic'?.66:.3)};
+}
 function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'Attack':style==='magic'?'Magic':'Ranged');return Math.max(.35,Math.min(.97,.84+(level-(o.level||1))*.025));}
 function enemyAccuracy(o){return Math.max(.2,Math.min(.94,.83+((o.level||1)-lv('Defense'))*.025));}
 function playerMaxHit(style=combatStyle()){return spiritBonus(style)+(style==='magic'?currentSpell().power+magicBonus():3)+lv(style==='magic'?'Magic':style==='ranged'?'Ranged':'Strength')+equippedWeapon().power+2;}
 const MONSTER_ART={goblin:0,slime:1,wolf:2,ridgewolf:2,skeleton:3,king:4,rat:5,bandit:6,warden:7,sentinel:7};
-const EQUIPMENT_SLOTS=[['head','Head'],['neck','Neck'],['weapon','Weapon'],['body','Body'],['shield','Shield'],['hands','Hands'],['legs','Legs'],['feet','Feet']];
+const EQUIPMENT_SLOTS=[['head','Head'],['neck','Neck'],['ammo','Ammunition'],['weapon','Weapon'],['body','Body'],['shield','Shield'],['hands','Hands'],['legs','Legs'],['feet','Feet']];
 function normalizeEquipmentSlots(state){
  state.equipment=state.equipment||{};state.gear=state.gear||{};state.bank=state.bank||{};
  // Old standalone attachments remain owned. Bank the previously worn copy
  // so simplifying the layout cannot overflow a full inventory or lose gear.
  for(const slot of ['crest','shoulders']){const id=state.equipment[slot];if(id){state.gear[id]=Math.max(0,(state.gear[id]||1)-1);state.bank[id]=(state.bank[id]||0)+1;}delete state.equipment[slot];}
- state.equipmentLayoutVersion=2;
+ state.equippedAmmoCount=Number.isSafeInteger(state.equippedAmmoCount)&&state.equippedAmmoCount>0?state.equippedAmmoCount:0;
+ if(!isAmmunition(state.equipment.ammo)||!state.equippedAmmoCount){state.equipment.ammo=null;state.equippedAmmoCount=0;}
+ state.equipmentLayoutVersion=3;
 }
 const TOOL_BELT_TOOLS={axe:{name:'Axe',skill:'Woodcutting',description:'Used automatically when you chop a tree.'},pickaxe:{name:'Pickaxe',skill:'Mining',description:'Used automatically when you mine an ore deposit.'},fishingRod:{name:'Fishing rod',skill:'Fishing',description:'Used automatically at fishing spots.'},tinderbox:{name:'Tinderbox',skill:'Firemaking',description:'Used automatically when you light logs.'},hammer:{name:'Smithing hammer',skill:'Smithing',description:'Used automatically at a forge.'}};
 function normalizeToolBelt(state){state.toolBelt={axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true,...state.toolBelt};if(state.equipment)delete state.equipment.beltAttachment;return state.toolBelt;}
@@ -59,6 +82,7 @@ const MODULAR_ARMOR_SETS=[{id:'bronze',name:'Bronze',source:'B',level:1,cost:28,
 const MODULAR_ARMOR_PARTS=[['head','Headgear','headgear'],['shoulders','Shoulder','shoulder pads'],['body','Chestplate','chestplate'],['hands','Gauntlets','gauntlets'],['legs','Legguards','legguards'],['feet','Boots','boots']];
 const modularShopStock=[];
 ITEMS.copperNecklace={name:'Copper necklace',slot:'neck',icon:14,model:'Emberfall_Necklace',desc:'A simple copper necklace with a green stone. Worn in the necklace slot.'};modularShopStock.push(['copperNecklace',1,18]);
+ITEMS.rangerCap={name:'Ranger cap',slot:'head',icon:4,rangedAccuracy:1,armor:1,desc:'A feathered archer’s cap. A little protection and +1 ranged accuracy.'};modularShopStock.push(['rangerCap',1,20]);
 for(const set of MODULAR_ARMOR_SETS){
  for(const [slot,source,label]of MODULAR_ARMOR_PARTS){const id=set.id+'_'+slot,armor=['body','legs'].includes(slot)?set.armor:['head','shoulders'].includes(slot)?Math.max(1,set.armor-1):0;ITEMS[id]={name:set.name+' '+label,slot,icon:4,armor,defenseLevel:set.level,armorSet:set.id,model:source+'.'+set.source+'.001',desc:'Fitted '+set.name.toLowerCase()+' '+label+'. Equip and mix with other armor pieces. Requires Defense '+set.level+'.'};modularShopStock.push([id,1,Math.round(set.cost*(['body','legs'].includes(slot)?1.7:slot==='hands'||slot==='feet'?.65:1))]);}
  const shield=set.id+'_shield';ITEMS[shield]={name:set.name+' shield',slot:'shield',style:'melee',icon:6,armor:set.armor,defenseLevel:set.level,armorSet:set.id,model:(set.source==='G'?'G_':set.source)+'_Shield',desc:'A '+set.name.toLowerCase()+' shield. Its protection applies with melee weapons. Requires Defense '+set.level+'.'};modularShopStock.push([shield,1,set.cost]);
@@ -77,22 +101,41 @@ function attackRange(){return combatStyle()==='magic'?currentSpell().range:equip
 function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Worship')/5)+spiritBonus('armor')+Object.entries(s.equipment).reduce((total,[slot,id])=>total+((slot==='shield'&&combatStyle()!=='melee')?0:ITEMS[id]?.armor||0),0);}
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
+function isAmmunition(id){return !!ITEMS[id]?.rangedStrength;}
+function ammunitionLabel(count){return count>=1000000?Math.floor(count/100000)/10+'M':count>=1000?Math.floor(count/100)/10+'K':String(count);}
+function equipAmmunition(id){
+ const count=s.bag[id]||0;if(!isAmmunition(id)||count<1)return false;
+ const previous=s.equipment.ammo,remaining=s.equippedAmmoCount||0;
+ if(previous&&previous!==id&&remaining&&inventorySlots().length-1+(s.bag[previous]>0?0:1)>BAG_SIZE){toast('Make space in your bag for the previous arrows.');return false;}
+ stop();s.bag[id]=0;
+ if(previous===id)s.equippedAmmoCount=remaining+count;
+ else{if(previous&&remaining)s.bag[previous]=(s.bag[previous]||0)+remaining;s.equipment.ammo=id;s.equippedAmmoCount=count;}
+ renderUI();save();return true;
+}
+function unequipAmmunition(){
+ const id=s.equipment.ammo,count=s.equippedAmmoCount||0;if(!id||!count)return false;
+ if(!(s.bag[id]>0)&&inventorySlots().length>=BAG_SIZE){toast('Make space in your bag before unequipping arrows.');return false;}
+ stop();s.bag[id]=(s.bag[id]||0)+count;s.equipment.ammo=null;s.equippedAmmoCount=0;renderUI();save();return true;
+}
 function equipItem(id){
+ if(isAmmunition(id))return equipAmmunition(id);
  const item=ITEMS[id];if(!item?.slot||!owns(id))return false;const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
  if(!EQUIPMENT_SLOTS.some(([slot])=>slot===item.slot)){toast(item.slot==='shoulders'?'Shoulder armor is included with the matching chest piece.':'This ornament is a keepsake. Headgear uses one equipment slot.');return false;}
  if(item.defenseLevel&&lv('Defense')<item.defenseLevel){toast('Requires Defense '+item.defenseLevel+'.');return false;}
  if(item.attackLevel&&lv('Attack')<item.attackLevel){toast('Requires Attack '+item.attackLevel+'.');return false;}
  if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
- stop();s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');renderUI();save();return true;
+ if(item.slot==='shield'&&combatStyle()==='ranged'){toast('Bows need both hands. Equip a one-handed weapon before wearing a shield.');return false;}
+ if(item.slot==='weapon'&&item.style==='ranged'&&s.equipment.shield&&inventorySlots().length+(s.equipment.weapon?1:0)>BAG_SIZE){toast('Make room in your bag for your shield before equipping a bow.');return false;}
+ stop();if(item.slot==='weapon'&&item.style==='ranged')s.equipment.shield=null;s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');renderUI();save();return true;
 }
-function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots().length+1>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
+function unequipItem(slot){if(slot==='ammo')return unequipAmmunition();if(!s.equipment[slot])return false;if(inventorySlots().length+1>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
 function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(id){if(equipItem(id))toast(ITEMS[id].name+' equipped.');return;}if(style==='melee'){s.tutorialCasting=false;if(s.equipment.weapon&&!unequipItem('weapon'))return;renderUI();save();return;}toast(style==='magic'&&tutorialStep()?'Speak to Arcanist Elowen for your practice staff and runes.':'You need a '+(style==='ranged'?'bow':'staff')+' to use this combat style.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawItemModelIcon==='function'&&drawItemModelIcon(g,id))return;if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
- const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
- if(item.slot&&EQUIPMENT_SLOTS.some(([slot])=>slot===item.slot))actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(item.slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
+ const slot=isAmmunition(id)?'ammo':item.slot,worn=!fromBag&&slot&&s.equipment[slot]===id,actions=[];
+ if(slot&&EQUIPMENT_SLOTS.some(([key])=>key===slot))actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
  else if(skillItemActions(id))actions.push(...skillItemActions(id));
  else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(id==='fish')eat();else{if(s.hp>=maxhp()){toast('Your health is full.');return false;}s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
  else if(id==='bones')actions.push(['Bury',buryBones]);
@@ -107,9 +150,9 @@ function itemActions(id,fromBag=false){
 function primaryItemAction(id,fromBag=false){itemActions(id,fromBag)[0]?.[1]();}
 function itemDetails(id,fromBag=false){
  const item=ITEMS[id];if(!item)return;
- const isEquipped=!fromBag&&item.slot&&s.equipment[item.slot]===id;
+ const isEquipped=!fromBag&&s.equipment[isAmmunition(id)?'ammo':item.slot]===id;
  const buttons=itemActions(id,fromBag).map(([label,action])=>[label,()=>{if(action()!==false)close();}]);
- dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
+ dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(isAmmunition(id)?'<p>'+(isEquipped?'Equipped':'In your bag')+': <b>'+(isEquipped?s.equippedAmmoCount:s.bag[id]||0).toLocaleString()+'</b></p>':item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
  $('itemhero').appendChild(itemCanvas(id,160));paintItemIcons($('itemhero'));
 }
 function bindItemPress(button,id,fromBag,tradeSide=null){
@@ -127,7 +170,7 @@ function bindItemPress(button,id,fromBag,tradeSide=null){
  button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+itemActions(id,fromBag)[0][0]+'. Hold for more options.');
 }
 function renderInventory(){
- pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Inventory</h2><small>'+slots.length+' / 25</small></div>'+(window.realmTrade?'<p class="trade-bag-hint">Tap to '+(window.realmTrade.kind==='bank'?'deposit':'sell')+' · Hold for options</p>':'')+'<div id="inventoryGrid" class="inventorygrid bag25"></div>';
+ pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="inventory-summary"><span>'+slots.length+' / 25</span>'+(window.realmTrade?'<span>Tap to '+(window.realmTrade.kind==='bank'?'deposit':'sell')+'</span>':'')+'</div><div id="inventoryGrid" class="inventorygrid bag25"></div>';
  const grid=$('inventoryGrid');
  for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}bindItemPress(b,slot.id,true,window.realmTrade?'bag':null);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
 }
@@ -147,7 +190,7 @@ function renderSpells(){
 }
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
- $('combatResource').textContent=combatStyle()==='ranged'?(selectedAmmo()?(s.bag[selectedAmmo()]+' '+ITEMS[selectedAmmo()].name):'No usable arrows'):combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Defense bonus '+armorValue()+' · '+equippedWeapon().name;
+ $('combatResource').textContent=combatStyle()==='ranged'?(selectedAmmo()?(s.equippedAmmoCount+' '+ITEMS[selectedAmmo()].name):'Equip suitable arrows'):combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Defense bonus '+armorValue()+' · '+equippedWeapon().name;
  const select=$('trainingFocus'),style=combatStyle(),focus=trainingFocus(style),key=style+':'+focus;
  if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
  select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
@@ -177,15 +220,15 @@ function performAttack(o){
  if(time+.0001<playerAttackReadyAt||o.dead>time||o.hp<=0)return false;
  if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange());if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
  const style=combatStyle(),spell=currentSpell();
- const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
+ const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast(s.equipment.ammo&&s.equippedAmmoCount?'This bow cannot fire '+ITEMS[s.equipment.ammo].name.toLowerCase()+'. Equip suitable arrows.':'Equip arrows in your ammunition slot to fire your bow.');return false;}
  if(style==='magic'&&(lv('Magic')<spell.level||!hasIngredients(spell.ingredients))){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
- if(style==='ranged')s.bag[ammo]--;if(style==='magic')consumeIngredients(spell.ingredients);
- if(style==='magic'){gain('Magic',spell.baseXP,true);tutorialEvent('magic');}
+ if(style==='ranged'&&--s.equippedAmmoCount<=0){s.equippedAmmoCount=0;s.equipment.ammo=null;}if(style==='magic')consumeIngredients(spell.ingredients);
+ if(style==='magic'){gain('Magic',spell.baseXP,true);showExperienceDrop({Magic:spell.baseXP});tutorialEvent('magic');}
  const accurate=Math.random()<playerAccuracy(o,style),rolled=accurate||o.type==='dummy'?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
  const damage=o.type==='dummy'?Math.max(1,rolled):rolled;
- lastAttack=time;playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
- if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
+ lastAttack=time;playerAttackMotion={...combatMotion(style),style,weapon:s.equipment.weapon,ammo,started:time,color:spell.color};playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
+ if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,ammo,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
 function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
@@ -197,7 +240,7 @@ function applyEnemyHit(o,hit){
 function updateCombat(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
  for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
- for(const p of projectiles)p.age+=dt;
+ for(const p of projectiles){p.age+=dt;p.tx=p.o.drawX??p.o.x;p.ty=p.o.drawY??p.o.y;}
  const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
  for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
  if(!target||!fighter(target))return;
@@ -211,7 +254,7 @@ function updateCombat(dt){
  }
 }
 function drawProjectiles(){
- for(const p of projectiles){const t=Math.min(1,p.age/p.duration),x=(p.x+(p.tx-p.x)*t+.5)*TILE-camera.x,y=(p.y+(p.ty-p.y)*t+.2)*TILE-camera.y;ctx.save();if(p.style==='ranged'){ctx.translate(x,y);ctx.rotate(Math.atan2(p.ty-p.y,p.tx-p.x)+Math.PI/4);sprite(ctx,'items',12,0,8,29,24);}else{ctx.shadowColor=p.color;ctx.shadowBlur=16;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(x,y,5+Math.sin(t*12),0,Math.PI*2);ctx.fill();ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-(p.tx-p.x)*5,y-(p.ty-p.y)*5);ctx.stroke();}ctx.restore();}
+ for(const p of projectiles){if(p.age<0)continue;const t=Math.min(1,p.age/p.duration),x=(p.x+(p.tx-p.x)*t+.5)*TILE-camera.x,y=(p.y+(p.ty-p.y)*t+.2)*TILE-camera.y;ctx.save();if(p.style==='ranged'){ctx.translate(x,y);ctx.rotate(Math.atan2(p.ty-p.y,p.tx-p.x)+Math.PI/4);sprite(ctx,'items',12,0,8,29,24);}else{ctx.shadowColor=p.color;ctx.shadowBlur=16;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(x,y,5+Math.sin(t*12),0,Math.PI*2);ctx.fill();ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-(p.tx-p.x)*5,y-(p.ty-p.y)*5);ctx.stroke();}ctx.restore();}
 }
 function syncTabs(){document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab&&!$('gameDock').hidden;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));b.setAttribute('aria-expanded',String(active));});const title=$('dockTitle');if(title)title.textContent={bag:'Bag',gear:'Equipment',quests:'Quests',skills:'Skills',spells:'Spells'}[tab]||'Adventurer';}
 // Decode opaque atlas matte pixels into a canvas texture at load time. The source

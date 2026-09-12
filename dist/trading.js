@@ -16,6 +16,7 @@ function endTrade(){
  syncPanelButton();
 }
 function openTrade(kind){
+ if(window.equipmentStatsOpen)endCombatStats();
  stop();if($('modal').open)$('modal').close();
  window.realmTrade={kind,quantity:1,custom:10,search:'',filter:'all',notice:''};
  document.body.classList.add('panels-open','trade-open');$('gameDock').hidden=false;tab='bag';panelPage=0;syncTabs();

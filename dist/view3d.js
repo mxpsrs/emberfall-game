@@ -179,6 +179,7 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
   else box3(mesh,x,.1,z,.3,.2,.26,'#d7b66b');
   hit(pile,x,z,.40,1);if(Math.hypot(px-pile.x,py-pile.y)<4)labels.push([groundItemLabel(pile),x,.65,z,'#f4daa0']);
  }
+ if(typeof drawCombatProjectiles3==='function')drawCombatProjectiles3(mesh);
  if(typeof drawOnlinePlayers==='function')drawOnlinePlayers(mesh,labels);mesh.flush();
  // A full-height door target remains selectable with the roof cut away.
  for(const b of visibleBuildings)if(b.walkIn){const o=b.service,seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,m=typeof buildingDoorTransform==='function'?buildingDoorTransform(b):briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-doorOpenFraction(o)*Math.PI*.52,scale*.85);hitboxes.push({polygon:[[-.05,0,0],[1.08,0,0],[1.08,2.36,0],[-.05,2.36,0]].map(p=>project3(...briarPoint(p,0,m))),o,door:true,depth:project3(o.x+.5,0,o.y+.5).depth});}
@@ -196,9 +197,9 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
  }
  if(target&&fighter(target)){const q=project3(px+.5,2.2+walkSurfaceHeight(px+.5,py+.5)-landHeight(px+.5,py+.5),py+.5);ctx.fillStyle='#15221d';ctx.fillRect(q.x-22,q.y-4,44,6);ctx.fillStyle=s.hp/maxhp()<.25?'#ed9a64':'#95b47a';ctx.fillRect(q.x-21,q.y-3,42*Math.max(0,s.hp/maxhp()),4);}
 
- for(const p of projectiles){const t=Math.min(1,p.age/p.duration),q=project3(p.x+(p.tx-p.x)*t+.5,1+Math.sin(t*Math.PI)*.3,p.y+(p.ty-p.y)*t+.5);ctx.fillStyle=p.color||'#e3c382';ctx.beginPath();ctx.arc(q.x,q.y,p.style==='ranged'?3:5,0,Math.PI*2);ctx.fill();}
+ for(const p of projectiles){if(p.age<0||p.style==='ranged')continue;const t=Math.min(1,p.age/p.duration),q=project3(p.x+(p.tx-p.x)*t+.5,1.3+Math.sin(t*Math.PI)*.15,p.y+(p.ty-p.y)*t+.5),back=Math.max(0,t-.16),tail=project3(p.x+(p.tx-p.x)*back+.5,1.3+Math.sin(back*Math.PI)*.15,p.y+(p.ty-p.y)*back+.5);ctx.save();ctx.shadowColor=p.color||'#a2ddea';ctx.shadowBlur=12;ctx.strokeStyle=p.color||'#a2ddea';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(tail.x,tail.y);ctx.lineTo(q.x,q.y);ctx.stroke();ctx.fillStyle='#eefbdf';ctx.beginPath();ctx.arc(q.x,q.y,4,0,Math.PI*2);ctx.fill();ctx.restore();}
  if(spiritEffect)ring3(ctx,spiritEffect.x+.5,spiritEffect.y+.5,'#bce4d5',.6+spiritEffect.age);
- for(const f of floaters){const combat=/^(?:-\d|Miss|Blocked)/.test(f.text),p=project3(f.x+.5,(combat?1.3:2.6)+(1.4-f.life)*.55,f.y+.5),player=Math.hypot(f.x-px,f.y-py)<.4,offset=combat?(player?-23:23):0;if(combat){ctx.fillStyle=player?'#652f29e8':'#343a30ed';const half=Math.max(12,f.text.length*3.7);ctx.beginPath();ctx.ellipse(p.x+offset,p.y,half,12,0,0,Math.PI*2);ctx.fill();}label(f.text,p.x+offset,p.y,f.color,combat?12:14);}
+ for(const f of floaters){const combat=/^(?:-\d|Miss|Blocked)/.test(f.text),p=project3(f.x+.5,(combat?1.3:2.6)+(1.4-f.life)*.55,f.y+.5),player=Math.hypot(f.x-px,f.y-py)<.4,offset=combat?(player?-23:23):0;if(f.experience){drawExperienceDrop(f,p.x,p.y);continue;}if(combat){ctx.fillStyle=player?'#652f29e8':'#343a30ed';const half=Math.max(12,f.text.length*3.7);ctx.beginPath();ctx.ellipse(p.x+offset,p.y,half,12,0,0,Math.PI*2);ctx.fill();}label(f.text,p.x+offset,p.y,f.color,combat?12:14);}
  const region=regionInfo()||['Briarhaven','The Border Realms'];$('region').textContent=region[0];$('regionSub').textContent=region[1];drawMinimap();trimStaticMeshes3();
 }
 // Creation, equipment previews and gameplay share precisely the same fitted model.

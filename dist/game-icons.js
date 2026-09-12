@@ -1,6 +1,7 @@
 'use strict';
 // Original 32-unit silhouettes, shared by the HUD and both canvas maps.
 const GAME_ICON_DEFS={
+ ammo:[['M7 11L24 13L21 29L10 28Z','#9c724b'],['M11 13L13 3M17 14L21 2M21 15L27 6','none','#d7c193'],['M10 3L14 7L16 2M18 2L21 6L24 2M24 6L27 10L30 6','none','#b2c7b5'],['M9 17L23 19','none','#d8af6a']],
  followers:[['M14 5Q8 10 12 16Q4 18 5 25L15 29L24 24Q25 19 20 16Q24 9 19 7L16 10Z','#b0c4a9'],['M23 3Q18 9 24 13L29 10L28 5Z','#d2c393'],['M11 12H13M16 12H18','none','#354c3c']],
  stats:[['M3 4H21V28H3Z','#b3a682'],['M7 10H17M7 16H14M7 22H15','none','#5c624c'],['M23 12L29 15V28H18V19Z','#8caa9b']],
  tools:[['M5 28L23 6','none','#a27f4b'],['M15 3L27 5L30 12L23 15L19 10Z','#a1b2ac'],['M4 6L27 27','none','#c1a678'],['M3 8L7 3L12 8L8 13Z','#b1bcb2']],

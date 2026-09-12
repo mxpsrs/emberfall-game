@@ -45,16 +45,16 @@ function unleashSpirit(id){
  owned.state='standby';s.hp=Math.min(s.hp,maxhp());
  if(id==='brook'){const healed=Math.min(20,maxhp()-s.hp);s.hp+=healed;floating('+'+healed,px,py,'#9ee5ff');}
  if(id==='cairn')stoneWard=8;
- if(def.power)resolveHit(enemy,def.power+lv('Magic'),'magic',id==='zephyr'?3:0);
+ if(def.power)resolveHit(enemy,def.power+lv('Worship'),'worship',id==='zephyr'?3:0);
  spiritEffect={icon:def.icon,color:def.color,age:0,duration:1.3,large:false,x:px,y:py};$('spiritsDialog').close();renderUI();save();return true;
 }
 function summonSpirits(){
  const ready=Object.entries(s.spirits).filter(([,v])=>v.state==='standby'),enemy=spiritOpponent();
  if(ready.length<2)return false;if(!enemy){$('spiritState').textContent='Select a nearby enemy before summoning.';return false;}
  for(const [,value]of ready){value.state='recovery';value.recovery=30;}
- const x=enemy.x,y=enemy.y,damage=ready.length*12+lv('Magic')*2;
+ const x=enemy.x,y=enemy.y,damage=ready.length*12+lv('Worship')*2;
  const victims=objects.filter(o=>fighter(o)&&o.hp>0&&o.dead<=time&&(o===enemy||o.type==='enemy')&&Math.hypot(o.x-x,o.y-y)<=2.5&&lineOfSight(x,y,o.x,o.y));
- for(const o of victims)resolveHit(o,damage,'magic');
+ for(const o of victims)resolveHit(o,damage,'worship');
  spiritEffect={icon:SPIRITS[ready[0][0]].icon,color:'#e5c8ff',age:0,duration:2,large:true,x,y};$('spiritsDialog').close();renderUI();save();return true;
 }
 function updateSpirits(dt){
