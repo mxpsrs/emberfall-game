@@ -5,12 +5,12 @@ const defaults = () => ({
   x:14, y:17, hp:10, gold:0,
   xp:{Hitpoints:1154,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0,Firemaking:0,Cooking:0,Fletching:0,Farming:0},
   skillProgressionVersion:1,combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
-  bag:{logs:0, ore:0, fish:3, fang:0, bones:0, arrows:60, runes:40,airRunes:120,feathers:30},
+  bag:{logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
   sword:0, quest:0, kills:0, boss:false, character:null,
   spirits:{}, tutorial:0, tutorialVersion:2, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
-  gear:{bronzeSword:1,shortbow:1,oakStaff:1,leatherArmor:1,leatherBoots:1},
-  equipment:{weapon:"bronzeSword",head:null,crest:null,neck:null,shoulders:null,body:"leatherArmor",hands:null,legs:null,shield:null,feet:"leatherBoots"},
+  starterGearVersion:1,gear:{},
+  equipment:{weapon:null,head:null,crest:null,neck:null,shoulders:null,body:null,hands:null,legs:null,shield:null,feet:null},
   toolBelt:{axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true}
 });
 let s = defaults();
@@ -107,10 +107,7 @@ function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y){
 function select(o){
   if(o.dead>time||(o.type==='boss'&&s.boss)){toast(o.type==='boss'?'The Hollow King has fallen.':'They will return shortly.');return;}
   if(o.type==='man'){
-    dialog(o.name,'An ordinary villager going about his day.<div class="npcdetails">Combat level '+o.level+' · '+o.maxhp+' HP<br>Drops coins when defeated.</div>',[
-      ['Talk',()=>dialog(o.name,'“The goblins are gathering east of town. Mara sells food if you’re heading out.”')],
-      ['Attack',()=>{close();engage(o);},'danger']
-    ]);return;
+    talkVillager(o);return;
   }
   engage(o);
 }
@@ -230,7 +227,7 @@ async function finishCharacter(name,look){
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
   $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
 }
-function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a man to choose Talk or Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=2;tutorialCameraStart=null;renderTutorial();save();}]]);}
+function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=2;tutorialCameraStart=null;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
 function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2,Math.sqrt(8294400/Math.max(1,r.width*r.height)));screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
@@ -354,7 +351,7 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
 $('runButton').onclick=toggleRun;
-$('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length;close();renderTutorial();$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
+$('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length-1;close();tutorialEvent('talk-finish');$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});

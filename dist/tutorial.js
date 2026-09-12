@@ -22,7 +22,7 @@ const tutorialSteps=[
  lesson('smelt','Smelt a bronze bar','Tap the furnace to combine one copper ore and one tin ore into bronze.','furnace'),
  lesson('smith','Work the metal','Tap the practice anvil to hammer your bronze bar into your first bronze dagger. Both actions earn Smithing XP.','practice-forge'),
  lesson('talk-combat','Meet the combat tutor','Orin sends you to Captain Vale at the training yard.','tutor-combat'),
- lesson('gear','Choose a fighting style','Tap Melee, Ranged or Magic to equip its weapon. The training selector chooses which combat skill gains XP.'),
+ lesson('gear','Choose a fighting style','Tap Melee to practise unarmed. The training selector chooses which combat skill gains XP. Starter equipment is awarded after the apprenticeship.'),
  lesson('dummy','Practice your attacks','Tap the training dummy. Attack controls accuracy, Strength controls melee damage, Defense protects you, and Hitpoints gives health.','dummy'),
  lesson('monster','A small field test','Defeat the giant rat just south of the training yard. Tap Eat if your health gets low.','rat'),
  lesson('loot','Pick up the drops','Collect the coins and bones where the rat fell. Each tap takes the next item; keep the bones for Keeper Sera.'),
@@ -33,7 +33,7 @@ const tutorialSteps=[
  lesson('bury','Honour the fallen','Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.'),
  lesson('spirit','Form a spiritual bond','Speak to Cinder beside Sera and form a bond. Worship grows through burial and first bonds; spirits grant their own bonuses.','cinder'),
  lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen inside the magic school. Open the door and walk in.','tutor-magic'),
- lesson('magic','Cast your first spell','Tap Magic to equip your staff, then attack the practice dummy. A cast uses runes and trains your own Magic level.','magic-dummy'),
+ lesson('magic','Cast your first spell','Tap Magic to practise casting without a staff, then attack the practice dummy. A cast uses runes and trains your own Magic level.','magic-dummy'),
  lesson('talk-finish','Ready for the realm','Return to Rowan in the square. Your apprenticeship is complete; the kingdoms and his first quest await.','tutor-guide')
 ];
 
@@ -62,7 +62,8 @@ function tutorialStep(){return Number.isInteger(s.tutorial)?tutorialSteps[s.tuto
 function normalizeJourney(state,original=state){
  const previous=Math.max(0,Math.floor(Number(original?.tutorial)||0));
  state.tutorial=original?.tutorialVersion===2?Math.min(tutorialSteps.length,previous):previous>=14?tutorialSteps.length:0;
- state.tutorialVersion=2;state.runEnabled=state.runEnabled===true;
+ if(!original?.starterGearVersion&&!state.tutorialReward&&state.tutorial<tutorialSteps.length){for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots']){if(state.gear[id]>0)state.gear[id]--;for(const slot of Object.keys(state.equipment))if(state.equipment[slot]===id)state.equipment[slot]=null;}}
+ state.starterGearVersion=1;state.tutorialVersion=2;state.runEnabled=state.runEnabled===true;
  state.runEnergy=Number.isFinite(state.runEnergy)?Math.max(0,Math.min(100,state.runEnergy)):100;
  state.bank=state.bank&&typeof state.bank==='object'&&!Array.isArray(state.bank)?state.bank:{};
  for(const key of Object.keys(state.bank))if(!ITEMS[key]||!Number.isFinite(state.bank[key])||state.bank[key]<1)delete state.bank[key];else state.bank[key]=Math.floor(state.bank[key]);
@@ -73,8 +74,8 @@ function tutorialEvent(event){
  if(event==='loot'&&!(s.bag.bones>0))return;
  s.tutorial++;stop();tutorialCameraStart=null;
  if(!tutorialStep()){
-  const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;}
-  dialog('Apprenticeship complete','<p>“You have met Briarhaven’s tutors and learned to live off the land. Your next adventure is yours to choose.”</p><p>Talk to Rowan again for the village quest, or follow the roads into the kingdoms.</p>'+(earned?'<p><b>Reward: 15 coins.</b></p>':''));
+  const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
+  dialog('Apprenticeship complete','<p>“You have met Briarhaven’s tutors and learned to live off the land. Your next adventure is yours to choose.”</p><p>Talk to Rowan again for the village quest, or follow the roads into the kingdoms.</p>'+(earned?'<p><b>Reward: 15 coins. Your starter sword, bow, staff, leather armor, boots and supplies are waiting in your bank.</b></p>':''));
  }
  renderTutorial();renderUI();save();
 }
@@ -113,7 +114,7 @@ const TUTORS={
  combat:{name:'Captain Vale',at:[51,56],look:1,text:'Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. Pick a weapon using the style buttons, then choose what to train. Defeat the dummy, try the rat south of the yard, and collect its drops. Banker Ada is your next stop, inside Briarhaven Bank to the southeast. Open the door and walk in.'},
  bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Briarhaven Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
  worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, Arcanist Elowen will teach you magic in the school west of this shrine.'},
- magic:{name:'Arcanist Elowen',at:[33,66],look:3,text:'Welcome to the village magic school. Equip your staff with the Magic button. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then return to Rowan to finish your apprenticeship.'}
+ magic:{name:'Arcanist Elowen',at:[33,66],look:3,text:'Welcome to the village magic school. Use the Magic button to practise casting without a staff. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then return to Rowan to finish your apprenticeship.'}
 };
 let tutorialVillageReady=false;
 function setupTutorialVillage(){
@@ -151,7 +152,7 @@ function talkTutor(o){
  if(expected==='talk-'+role)buttons.push(['Continue',()=>{close();tutorialEvent('talk-'+role);}]);
  if(role==='bank')buttons.push(['Open bank',()=>{close();openBank();}]);
  if(role==='worship'&&s.tutorial< tutorialSteps.length&&!(s.bag.bones>0))buttons.push(['Take practice bones',()=>{if(addToBag('bones')){close();save();toast('Bury the practice bones from your bag.');}}]);
- if(role==='magic'&&s.tutorial<tutorialSteps.length){if(!s.gear.oakStaff)buttons.push(['Borrow a staff',()=>{if(!canCarry('oakStaff')){toast('Make space in your bag.');return;}s.gear.oakStaff=1;close();}]);if(s.bag.airRunes<1)buttons.push(['Take 10 air runes',()=>{if(addToBag('airRunes',10))close();}]);if(s.bag.runes<1)buttons.push(['Take 5 practice runes',()=>{if(addToBag('runes',5))close();}]);}
+ if(role==='magic'&&s.tutorial<tutorialSteps.length){if(s.bag.airRunes<1)buttons.push(['Take 10 air runes',()=>{if(addToBag('airRunes',10))close();}]);if(s.bag.runes<1)buttons.push(['Take 5 practice runes',()=>{if(addToBag('runes',5))close();}]);}
  dialog(t.name,'<p>“'+t.text+'”</p>',buttons);
 }
 function handleTutorialInteraction(o){

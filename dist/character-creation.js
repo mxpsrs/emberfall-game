@@ -12,10 +12,9 @@ openCreator=function(edit=false){
 };
 renderLooks=function(){
  const c=$('characterPreview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);shadow(g,c.width/2,c.height-30,70);
- const previous=meshDetail3;meshDetail3=1;const scale=creatorFace?270:125,r=painter3(g,(a,b,c)=>{const p=project3(a,b,c,{yaw:creatorAngle,tilt:.18,zoom:scale},0,0,0,0);return {...p,x:p.x+192,y:p.y+(creatorFace?555:310)};});const gear=$('creatorGear').checked?s.equipment:{_frame:creatorDraft.frame,_appearance:creatorDraft};humanoid3(r,0,0,selectedLook,gear);r.flush();meshDetail3=previous;
- $('lookName').textContent=($('creatorGear').checked?'Starting equipment':'Clothing preview')+' · '+(creatorDraft?.frame==='female'?'Feminine':'Masculine');
+ const previous=meshDetail3;meshDetail3=1;const scale=creatorFace?270:125,r=painter3(g,(a,b,c)=>{const p=project3(a,b,c,{yaw:creatorAngle,tilt:.18,zoom:scale},0,0,0,0);return {...p,x:p.x+192,y:p.y+(creatorFace?555:310)};});const gear={_frame:creatorDraft.frame,_appearance:creatorDraft};humanoid3(r,0,0,selectedLook,gear);r.flush();meshDetail3=previous;
+ $('lookName').textContent='Clothing preview'+' · '+(creatorDraft?.frame==='female'?'Feminine':'Masculine');
 };
-$('creatorGear').onchange=renderLooks;
 $('creatorZoom').onclick=()=>{creatorFace=!creatorFace;$('creatorZoom').textContent=creatorFace?'Full body':'Face detail';renderLooks();};
 $('creatorLeft').onclick=()=>{creatorAngle-=Math.PI/4;renderLooks();};$('creatorRight').onclick=()=>{creatorAngle+=Math.PI/4;renderLooks();};
 $('creatorRandom').onclick=()=>{for(const [key,,options]of CREATOR_FIELDS){const i=Math.floor(Math.random()*options.length);creatorDraft[key]=key==='frame'?(i?'female':'male'):i;$('appearance-'+key).value=String(creatorDraft[key]);}renderLooks();};

@@ -3,7 +3,7 @@ function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle
 const els={},data={},ctx={assert,console,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v},document:{getElementById:id=>els[id]??=el(),querySelectorAll:()=>[],createElement:el,addEventListener:noop,body:el()},window:{addEventListener:noop,matchMedia:()=>({matches:false})}};vm.createContext(ctx);
 for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 vm.runInContext(`
-renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupLoot();s.gear={bronzeSword:1};s.equipment={};s.bag={fish:2,normalLogs:2};
+renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupLoot();s.tutorialReward=true;s.gear={bronzeSword:1};s.equipment={};s.bag={fish:2,normalLogs:2};
 let pending=null,menus=0;setTimeout=fn=>{pending=fn;return 1};clearTimeout=()=>{pending=null};itemDetails=()=>menus++;
 const handlers={},b={setAttribute:()=>{},addEventListener:(type,fn)=>handlers[type]=fn};bindItemPress(b,'bronzeSword',true);
 const e={button:0,clientX:10,clientY:10,preventDefault:()=>{}};

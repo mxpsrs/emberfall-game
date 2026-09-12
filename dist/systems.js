@@ -63,7 +63,7 @@ const SPELLS={
  ember:{name:'Ember bolt',level:3,cost:2,power:8,range:5,color:'#ffba63',desc:'A stronger bolt of flame.'},
  frost:{name:'Frost bind',level:5,cost:3,power:6,range:4,color:'#bfc7ff',slow:3,desc:'Slows the enemy’s approach for 3 seconds.'}
 };
-function equippedWeapon(){return ITEMS[s.equipment.weapon]||{name:'Unarmed',style:'melee',power:0,range:1.45};}
+function equippedWeapon(){if(s.tutorialCasting&&!s.tutorialReward)return {name:'Practice spell',style:'magic',power:0,range:4};return ITEMS[s.equipment.weapon]||{name:'Unarmed',style:'melee',power:0,range:1.45};}
 function combatStyle(){return equippedWeapon().style;}
 function currentSpell(){return SPELLS[s.spell]||SPELLS.spark;}
 function attackRange(){return combatStyle()==='magic'?currentSpell().range:equippedWeapon().range;}
@@ -71,16 +71,16 @@ function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Wors
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
- const item=ITEMS[id];if(!item?.slot||!owns(id))return false;const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
+ const item=ITEMS[id];if(!item?.slot||!owns(id))return false;if(!s.tutorialReward&&tutorialStep()){toast('Finish your apprenticeship before equipping gear.');return false;}const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
  if(item.defenseLevel&&lv('Defense')<item.defenseLevel){toast('Requires Defense '+item.defenseLevel+'.');return false;}
  if(item.attackLevel&&lv('Attack')<item.attackLevel){toast('Requires Attack '+item.attackLevel+'.');return false;}
  if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
  stop();s.equipment[item.slot]=id;tutorialEvent('gear');renderUI();save();return true;
 }
 function unequipItem(slot){if(!s.equipment[slot])return false;const count=slot==='head'&&s.equipment.crest?2:1;if(inventorySlots().length+count>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;if(slot==='head')s.equipment.crest=null;renderUI();save();return true;}
-function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
+function chooseStyle(style){if(!s.tutorialReward&&tutorialStep()){if(style==='melee'){s.tutorialCasting=false;s.equipment.weapon=null;tutorialEvent('gear');renderUI();save();return;}if(style==='magic'&&s.tutorial>=tutorialSteps.findIndex(t=>t.event==='magic')){s.tutorialCasting=true;s.equipment.weapon=null;renderUI();save();return;}toast('Starter weapons are awarded after your apprenticeship.');return;}s.tutorialCasting=false;const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
-function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
+function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawFoodIcon==='function'&&drawFoodIcon(g,id))return;if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
