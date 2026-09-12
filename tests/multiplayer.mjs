@@ -16,8 +16,9 @@ const saved=await (await handleSave(req('/api/character','GET',b),env)).json();a
 const kit={head:'iron_head',body:'bronze_body',shoulders:'gold_shoulders',hands:'mithril_hands',legs:'iron_legs',feet:'bronze_feet',weapon:'dragonslayer_weapon',shield:'iron_shield',crest:'helmet_crest_1',neck:'copperNecklace'};
 saved.state.equipment=kit;saved.state.toolBelt={axe:true,pickaxe:true,tinderbox:true};
 assert.equal((await handleSave(req('/api/character','PUT',b,{state:saved.state,revision:saved.revision}),env)).status,200);
-await presence(b);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,kit,'second player sees every equipment slot');
+const visibleKit=Object.fromEntries(Object.entries(kit).filter(([slot])=>!['shoulders','crest'].includes(slot)));
+await presence(b);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'second player sees the eight equipment slots; matching shoulders come from the chest piece');
 const persisted=await (await handleSave(req('/api/character','GET',b),env)).json();assert.deepEqual(persisted.state.toolBelt,saved.state.toolBelt);
-const spoof=await handlePlayers(req('/api/players','POST',b,{scene:'overworld',x:14,y:17,equipment:{body:'malicious-model'}}),env);assert.equal(spoof.status,200);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,kit,'presence body cannot override saved equipment');
+const spoof=await handlePlayers(req('/api/players','POST',b,{scene:'overworld',x:14,y:17,equipment:{body:'malicious-model'}}),env);assert.equal(spoof.status,200);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'presence body cannot override saved equipment');
 db.exec('UPDATE player_presence SET seen_at=0');assert.equal((await (await presence(b)).json()).players.length,0);
 console.log('PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry and rejected invalid writes.');

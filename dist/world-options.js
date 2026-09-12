@@ -21,5 +21,3 @@ function openWorldOptions(e){
 }
 document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#worldOptions'))closeWorldOptions();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorldOptions();});
-const foodIcons=new Image();foodIcons.src='assets/food-icons.png';foodIcons.onload=()=>paintItemIcons(document);
-function drawFoodIcon(g,id){const entries=Object.values(FISH_RESOURCES);let column=entries.findIndex(f=>f.raw===id),row=0;if(column<0){column=entries.findIndex(f=>f.food===id);row=1;}if(column<0&&id!=='burntFish')return false;if(!foodIcons.complete||!foodIcons.naturalWidth)return false;if(id==='burntFish'){column=1;row=1;g.filter='grayscale(1) brightness(.3)';}const w=foodIcons.naturalWidth/6,h=foodIcons.naturalHeight/2;g.drawImage(foodIcons,column*w,row*h,w,h,2,2,g.canvas.width-4,g.canvas.height-15);g.filter='none';g.font='bold '+Math.max(10,Math.round(g.canvas.width*.14))+'px sans-serif';g.textAlign='center';g.fillStyle=row===0?'#cceafa':'#f5ca8a';g.fillText(id==='burntFish'?'BURNT':row===0?'RAW':'COOKED',g.canvas.width/2,g.canvas.height-2);return true;}

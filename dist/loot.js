@@ -79,7 +79,7 @@ function drawGroundLoot(){
  for(const pile of s.groundLoot||[]){if(pile.scene!==currentScene)continue;const x=(pile.x+.5)*TILE-camera.x,y=(pile.y+.78)*TILE-camera.y;
  if(x<-35||x>screen.w+35||y<-35||y>screen.h+35)continue;
  const ids=Object.keys(pile.items).filter(id=>id!=='coins');groundRing(pile.x,pile.y,'#e8c88099',14);
- ids.slice(0,3).forEach((id,i)=>{const item=ITEMS[id];if(item)sprite(ctx,item.atlas||'items',item.icon,x+(i-1)*8,y-i*3,23,23);});
+ ids.slice(0,3).forEach((id,i)=>{const item=ITEMS[id];if(typeof drawFlatGroundItem==='function'&&drawFlatGroundItem(ctx,id,x+(i-1)*8,y-i*3,28))return;if(item)sprite(ctx,item.atlas||'items',item.icon,x+(i-1)*8,y-i*3,23,23);});
  if(!ids.length){ctx.fillStyle='#dcb65b';ctx.beginPath();ctx.ellipse(x,y-5,8,4,0,0,Math.PI*2);ctx.fill();}
  hitboxes.push({x:x-19,y:y-30,w:38,h:38,o:pile});
  if(Math.hypot(s.x-pile.x,s.y-pile.y)<3)label('Loot',x,y+10,'#f6dda1',11);

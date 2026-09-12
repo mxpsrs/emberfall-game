@@ -10,7 +10,7 @@ const defaults = () => ({
   spirits:{}, tutorial:0, tutorialVersion:2, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
   starterGearVersion:1,gear:{},
-  equipment:{weapon:null,head:null,crest:null,neck:null,shoulders:null,body:null,hands:null,legs:null,shield:null,feet:null},
+  equipment:{weapon:null,head:null,neck:null,body:null,hands:null,legs:null,shield:null,feet:null},
   toolBelt:{axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true}
 });
 let s = defaults();

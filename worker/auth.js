@@ -20,7 +20,9 @@ export async function handleAuth(request,env){
  const raw=await request.text();if(raw.length>2048)return reply({error:'Request too large'},413);
  let body;try{body=JSON.parse(raw);}catch{return reply({error:'Invalid request'},400);}
  const username=typeof body.username==='string'?body.username.trim():'',password=body.password;
- if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)||typeof password!=='string'||password.length<12||new TextEncoder().encode(password).length>72)return reply({error:'Use a 3–20 character username (letters, numbers, underscore) and a password of 12–72 bytes.'},400);
+ if(!/^[a-zA-Z0-9_]{3,20}$/.test(username))return reply({error:'Use a username of 3–20 letters, numbers, or underscores.'},400);
+ if(typeof password!=='string'||password.length<5)return reply({error:'Your password must be at least 5 characters.'},400);
+ if(new TextEncoder().encode(password).length>72)return reply({error:'That password is too long. Use 72 bytes or fewer.'},400);
  const normalized=username.toLowerCase(),now=Date.now(),window=Math.floor(now/900000),ip=request.headers.get('cf-connecting-ip')||'unknown';
  for(const [key,limit]of [[await tokenDigest('ip:'+ip),40],[await tokenDigest('user:'+normalized),12]]){
   const result=await env.DB.prepare('INSERT INTO auth_limits (key,window,attempts) VALUES (?,?,1) ON CONFLICT(key) DO UPDATE SET attempts=CASE WHEN window=excluded.window THEN attempts+1 ELSE 1 END,window=excluded.window RETURNING attempts').bind(key,window).first();

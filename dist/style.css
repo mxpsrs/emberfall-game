@@ -107,17 +107,28 @@ body.panels-open .legend{display:none}
 
 /* All armor pieces remain reachable on desktop and short mobile screens. */
 #panel:has(.equipment-slots),#panel:has(.tool-belt-contents){overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#8c805b #243229}
-.equipment-slots{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding-bottom:5px}
+.equipment-slots{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:". head ." ". neck ." "weapon body shield" "hands legs feet";gap:5px;padding-bottom:5px}
 .equipment-slots .gearslot{min-height:86px;justify-content:space-between;gap:2px;min-width:0;position:relative}
 .equipment-slots .gearslot small{font-size:10px;color:#c8cbb8;line-height:1.1;min-height:22px;display:flex;align-items:center;text-align:center}
 .equipment-slots .gearslot canvas{width:42px;height:42px;object-fit:contain}
-.equipment-slots .gearslot span{font-size:10px;line-height:1.1;text-align:center;overflow-wrap:anywhere}
+.equipment-slots .gearslot span{display:none}
+.equipment-slots .gearslot[data-equipment-slot="head"]{grid-area:head}
+.equipment-slots .gearslot[data-equipment-slot="neck"]{grid-area:neck}
+.equipment-slots .gearslot[data-equipment-slot="weapon"]{grid-area:weapon}
+.equipment-slots .gearslot[data-equipment-slot="body"]{grid-area:body}
+.equipment-slots .gearslot[data-equipment-slot="shield"]{grid-area:shield}
+.equipment-slots .gearslot[data-equipment-slot="hands"]{grid-area:hands}
+.equipment-slots .gearslot[data-equipment-slot="legs"]{grid-area:legs}
+.equipment-slots .gearslot[data-equipment-slot="feet"]{grid-area:feet}
+.equipment-slots .gearslot{min-height:64px;gap:0;padding:4px}
+.equipment-slots .gearslot small{font-size:12px;min-height:14px;line-height:1.2}
+.equipment-tools{display:block;margin:6px auto 0;min-height:36px;padding:5px 14px;font-size:14px}
 .equipment-slots .tool-belt-slot{grid-column:span 2;border-color:#b6a06a;background:radial-gradient(ellipse at top,#5b5235,#273128)}
 .tool-belt-contents{display:grid;gap:7px;padding:2px 0 8px}
 .tool-belt-entry{padding:10px;border:1px solid #657158;border-radius:5px;background:#202f27}
 .tool-belt-entry strong{display:block;color:#edddae;font-size:14px}.tool-belt-entry small{display:block;margin-top:3px;color:#b7c5ad;font-size:11px}.tool-belt-entry p{margin:5px 0 0;font-size:12px;line-height:1.35;color:#c7cabb}
 #backToEquipment{min-height:36px;padding:5px 10px;font-size:12px}
-@media(max-height:500px) and (orientation:landscape){.equipment-slots .gearslot{min-height:70px}.equipment-slots .gearslot canvas{width:32px;height:32px}}
+@media(max-height:500px) and (orientation:landscape){.equipment-slots .gearslot{min-height:52px}.equipment-slots .gearslot canvas{width:32px;height:32px}}
 
 .recipe-metals{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}.recipe-metals button{flex:1 0 76px;width:auto;margin:0;padding:8px;font-size:14px}.recipe-metals button[aria-pressed="true"]{background:#74623b;border-color:#dac58b}.recipe-list{display:grid;gap:6px;max-height:45vh;overflow:auto}.recipe-list button{text-align:left;font-size:14px;line-height:1.4;padding:12px}
 #connectionPause{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:#102020f5;color:#f0eadb}#connectionPause h2{font:28px Georgia,serif;color:#dfbe7e;margin:0 0 12px}#connectionPause p{font-size:16px;max-width:420px;line-height:1.5}#connectionPause button{min-width:160px}
@@ -131,3 +142,5 @@ body.panels-open .legend{display:none}
 #creator #characterForm{overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 #creator .creator-rotation #creatorZoom{width:auto;font:14px system-ui;padding:8px 12px}@media(max-height:520px){#creator #appearanceFields{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}#creator #appearanceFields select{margin:0;font-size:14px;padding:6px}#creator .creator-rotation #creatorZoom{padding:5px;font-size:12px}#creator .creator-rotation{gap:5px}}
 #worldOptions{position:fixed;z-index:10000;min-width:210px;max-width:min(360px,calc(100vw - 16px));max-height:calc(100dvh - 16px);overflow-y:auto;background:#17241ff5;border:1px solid #b7a471;box-shadow:0 8px 28px #0009;padding:5px;border-radius:5px}#worldOptions strong{display:block;padding:7px 10px;color:#daca9f;font-size:14px}#worldOptions button{display:block;width:100%;text-align:left;min-height:40px;padding:8px 10px;border:0;border-radius:2px;background:transparent;color:#f2ead4;font-size:14px}#worldOptions button:hover,#worldOptions button:focus-visible{background:#4a5036;outline:1px solid #b7a471}#world{touch-action:none;-webkit-touch-callout:none;user-select:none}
+
+#loginChoice{display:grid;gap:12px;margin:20px 0 8px}#loginChoice button{width:100%;min-height:48px;font-size:16px}#loginChoice[hidden],#loginForm[hidden],#loginSwitch[hidden],#loginNote[hidden]{display:none!important}

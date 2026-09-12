@@ -168,10 +168,10 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
  const moving=playerMotion.moving;if(moving){const delta=Math.atan2(Math.sin(playerMotion.heading-playerHeading),Math.cos(playerMotion.heading-playerHeading));playerHeading+=delta*.3;}else if(target)playerHeading=Math.atan2(target.x-px,target.y-py);
  const worldDetail=meshDetail3;meshDetail3=1;humanoid3(mesh,px+.5,py+.5,s.character?.look||0,s.equipment,playerHeading,moving?1:0,Math.max(0,Math.sin(Math.min(1,(time-lastAttack)/.65)*Math.PI)));meshDetail3=worldDetail;
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene&&near(pile.x,pile.y)){
-  const x=pile.x+.5,z=pile.y+.5,onlyAshes=pile.items?.ashes>0&&Object.keys(pile.items).every(id=>id==='ashes'||pile.items[id]<=0);
-  if(onlyAshes){oval3(mesh,x,.045,z,.58,.085,.43,'#676b62');oval3(mesh,x-.09,.085,z+.03,.25,.12,.23,'#a5a697');oval3(mesh,x+.13,.06,z-.05,.18,.08,.17,'#85887c');}
+  const x=pile.x+.5,z=pile.y+.5;
+  if(typeof drawGroundPileModels==='function')drawGroundPileModels(mesh,pile,x,z);
   else box3(mesh,x,.1,z,.3,.2,.26,'#d7b66b');
-  hit(pile,x,z,.35,.7);if(Math.hypot(px-pile.x,py-pile.y)<4)labels.push([groundItemLabel(pile),x,.55,z,'#f4daa0']);
+  hit(pile,x,z,.40,1);if(Math.hypot(px-pile.x,py-pile.y)<4)labels.push([groundItemLabel(pile),x,.65,z,'#f4daa0']);
  }
  if(typeof drawOnlinePlayers==='function')drawOnlinePlayers(mesh,labels);mesh.flush();
  // A full-height door target remains selectable with the roof cut away.

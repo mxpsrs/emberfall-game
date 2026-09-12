@@ -5,7 +5,48 @@ const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map((
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),rig:a.rig?{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)}:null,clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:c.m?briarDecode(c.m,Float32Array):null,trs:c.trs?briarDecode(c.trs,Float32Array):null}]))}]));
 const rebuiltTints=new WeakMap();
 const modularMeshes=new Map();
-function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Emberfall_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,rebuiltMesh(source));}}return modularMeshes.get(key);}
+function meshSliceDepth(mesh,y,width){
+ let lo=Infinity,hi=-Infinity;const p=mesh.p;
+ // Intersect real triangle surfaces; sparse low-poly belts may have no
+ // vertices at hip height even though a broad face crosses that height.
+ for(let i=0;i<mesh.i.length;i+=3){const hits=[];
+  for(let e=0;e<3;e++){const a=mesh.i[i+e]*3,b=mesh.i[i+(e+1)%3]*3,dy=p[b+1]-p[a+1];if(Math.abs(dy)<1e-8)continue;const t=(y-p[a+1])/dy;if(t>=0&&t<=1)hits.push([p[a]+(p[b]-p[a])*t,p[a+2]+(p[b+2]-p[a+2])*t]);}
+  if(hits.length<2)continue;const a=hits[0],b=hits[1],dx=b[0]-a[0];let t0=0,t1=1;
+  if(Math.abs(dx)<1e-8){if(Math.abs(a[0])>width)continue;}else{const u=(-width-a[0])/dx,v=(width-a[0])/dx;t0=Math.max(0,Math.min(u,v));t1=Math.min(1,Math.max(u,v));if(t0>t1)continue;}
+  for(const t of [t0,t1]){const z=a[1]+(b[1]-a[1])*t;lo=Math.min(lo,z);hi=Math.max(hi,z);}
+ }return [lo,hi];
+}
+function fitModularArmorMesh(sex,name,mesh){
+ // Bone retargeting compressed front/back volume at the chest and pelvis.
+ // Fit shells around the actual body, never scale or erase the body to fit them.
+ const chest=name.startsWith('Chestplate.'),legs=name.startsWith('Legguards.'),belt=name.startsWith('Belt.');
+ if(!chest&&!legs&&!belt&&!name.startsWith('BeltAttch.'))return mesh;
+ if(name.startsWith('BeltAttch.')){
+  const raw=rebuiltMesh(REALM_MODELS.armor[sex]['Belt.B.001']),fitted=modularMesh(sex,'Belt.B.001'),delta=fitted.bounds[1][2]-raw.bounds[1][2],p=Float32Array.from(mesh.p,(v,i)=>v+(i%3===2?delta:0));
+  return {...mesh,p,bounds:mesh.bounds.map(row=>row.map((v,k)=>v+(k===2?delta:0)))};
+ }
+ if(belt){
+  // The broad belt faces span the whole pelvis. A single volume transform
+  // preserves those faces and avoids pinching between sparse vertex rows.
+  const samples=[.84,.90,.96,1.02].map(y=>({source:meshSliceDepth(mesh,y,.34),body:meshSliceDepth(rebuiltAvatars[sex].mesh,y,.32)})).filter(s=>s.source.every(Number.isFinite)&&s.body.every(Number.isFinite));
+  const center=samples.reduce((sum,s)=>sum+(s.source[0]+s.source[1])/2,0)/samples.length,target=samples.reduce((sum,s)=>sum+(s.body[0]+s.body[1])/2,0)/samples.length;
+  let scale=1;for(const sample of samples){const [a,b]=sample.source,[c,d]=sample.body;if(b-center>.025)scale=Math.max(scale,(d+.035-target)/(b-center));if(center-a>.025)scale=Math.max(scale,(target-c+.035)/(center-a));}
+  const p=Float32Array.from(mesh.p,(v,i)=>i%3===2?target+(v-center)*scale:v),n=new Float32Array(mesh.n);
+  for(let i=0;i<n.length;i+=3){n[i+2]/=scale;const length=Math.hypot(n[i],n[i+1],n[i+2])||1;for(let k=0;k<3;k++)n[i+k]/=length;}
+  return {...mesh,p,n,bounds:mesh.bounds.map(row=>row.map((v,k)=>k===2?target+(v-center)*scale:v))};
+ }
+ const body=rebuiltAvatars[sex].mesh,source=mesh.p,rows=[];
+ const start=mesh.bounds[0][1]-.05,end=mesh.bounds[1][1]+.05,clearance=belt?.040:.024;
+ for(let y=start;y<=end+.025;y+=.025){const [a,b]=meshSliceDepth(mesh,y,chest?.28:.34),[c,d]=meshSliceDepth(body,y,chest?.24:.32);if(!Number.isFinite(a+b+c+d)||b-a<.04){rows.push({y,scale:1,offset:0});continue;}const lo=Math.min(a,c-clearance),hi=Math.max(b,d+clearance),scale=(hi-lo)/(b-a);rows.push({y,scale,offset:lo-a*scale});}
+ const fit=y=>{const v=Math.max(0,Math.min(rows.length-1,(y-rows[0].y)/.025)),i=Math.floor(v),a=rows[i],b=rows[Math.min(i+1,rows.length-1)],t=v-i;return {scale:a.scale+(b.scale-a.scale)*t,offset:a.offset+(b.offset-a.offset)*t};};
+ const p=new Float32Array(source),n=new Float32Array(mesh.n);
+ for(let i=0;i<p.length;i+=3){const y=source[i+1],z=source[i+2],f=fit(y),a=fit(y-.001),b=fit(y+.001),slope=((b.scale-a.scale)*z+b.offset-a.offset)/.002;
+  p[i+2]=z*f.scale+f.offset;const normal=[n[i],n[i+1]-slope*n[i+2]/f.scale,n[i+2]/f.scale],length=Math.hypot(...normal)||1;for(let k=0;k<3;k++)n[i+k]=normal[k]/length;
+ }
+ const bounds=[0,1,2].map(k=>{const values=Array.from(p).filter((_,i)=>i%3===k);return [Math.min(...values),Math.max(...values)];});
+ return {...mesh,p,n,bounds:[bounds.map(v=>v[0]),bounds.map(v=>v[1])]};
+}
+function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Emberfall_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,fitModularArmorMesh(sex,name,rebuiltMesh(source)));}}return modularMeshes.get(key);}
 function makeRealmNecklace(sex){
  const p=[],n=[],c=[],j=[],w=[],indices=[],cy=sex==='female'?1.46:1.50;
  for(let bead=0;bead<25;bead++){const a=bead/24*Math.PI*2,pendant=bead===24,center=pendant?[0,cy-.13,.09]:[Math.cos(a)*.118,cy-.025-Math.max(0,Math.sin(a))*.075,-.035+Math.sin(a)*.12],radius=pendant?.025:.008,color=pendant?[.25,.55,.43]:[.70,.43,.24],offset=p.length/3;
@@ -15,6 +56,7 @@ function makeRealmNecklace(sex){
  return {p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(c),f:new Float32Array(c),j:new Uint8Array(j),w:new Float32Array(w),i:new Uint16Array(indices),uv:new Float32Array(p.length/3*2),t:new Uint8Array(p.length/3).fill(20),bounds:[[-.13,cy-.16,-.16],[.13,cy,.11]]};
 }
 function modularModel(id){return ITEMS[id]?.model||(id==='ironHelm'?'Headgear.I.001':null);}
+function armorShoulderItem(id){const tier=ITEMS[id]?.armorSet;return ITEMS[id]?.slot==='body'&&tier?tier+'_shoulders':null;}
 function modularBelt(gear){const set=GEAR_TIERS.find(a=>a.id===ITEMS[gear.body]?.armorSet);return 'Belt.'+(set?.source||'B')+'.001';}
 const wornTintCache=new Map();
 function wornModularMesh(sex,id){const mesh=modularMesh(sex,modularModel(id)),tint=ITEMS[id]?.modelTint,scale=ITEMS[id]?.modelScale||1;if(!mesh||!tint&&scale===1)return mesh;const key=sex+':'+id;if(!wornTintCache.has(key)){const c=Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*(tint?.[i%3]||1)));wornTintCache.set(key,{...mesh,p:scale===1?mesh.p:Float32Array.from(mesh.p,v=>v*scale),bounds:mesh.bounds.map(v=>v.map(x=>x*scale)),c,f:c});}return wornTintCache.get(key);}
@@ -23,13 +65,14 @@ function mergeWornMeshes(base,sex,gear){
  const sources=[base],indices=[];
  if(gear._civilian){sources.splice(0);for(const name of ['Default_Male_Head_Medium','Default_Male_Arms_Medium','Default_Male_Feet_Medium','Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']){const part=modularMesh(sex,name);if(part)sources.push(part);}}
  const outfit=avatarIdentity(gear),wearShirt=outfit.topStyle===3&&!gear.body,wearPants=outfit.bottomStyle===2&&!gear.legs;
- const covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!modularModel(gear.shoulders)};
+ const shoulderId=armorShoulderItem(gear.body),covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!shoulderId};
  for(let i=0;i<base.i.length;i+=3){const ids=[base.i[i],base.i[i+1],base.i[i+2]],x=ids.reduce((n,v)=>n+Math.abs(base.p[v*3]),0)/3,y=ids.reduce((n,v)=>n+base.p[v*3+1],0)/3;
-  if(covered.head&&y>1.565||covered.body&&y>1.045&&y<1.48&&x<.29||covered.hands&&x>.53&&y>1.15||covered.legs&&y>.32&&y<1.02||covered.feet&&y<.34||covered.shoulders&&x>.24&&x<.43&&y>1.30)continue;
+  if(covered.head&&y>1.565||covered.body&&y>1.09&&y<1.43&&x<.25||covered.hands&&x>.53&&y>1.15||covered.legs&&y>.36&&y<.79||covered.feet&&y<.34)continue;
   indices.push(...ids);
  }
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
  for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
+ if(shoulderId){const shoulders=wornModularMesh(sex,shoulderId);if(shoulders)sources.push(shoulders);}
  for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&!gear.head,'Hair.007',null],[outfit.beard===2&&!gear.head,'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>v*tint[i%3]);sources.push({...part,c,f:c});}}
  if(!gear._civilian)for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
  let vertices=0,indexCount=0;for(const m of sources){vertices+=m.p.length/3;indexCount+=m.i.length;}if(vertices>=65536)throw new Error('Worn mesh exceeds index budget');
