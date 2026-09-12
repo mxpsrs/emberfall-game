@@ -4,6 +4,7 @@ const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishi
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
  if(o.tutor)return {kind:o.tutor==='bank'?'bank':'tutor',tags:['tutor',...(o.tutor==='bank'?['bank']:o.tutor==='magic'?['magic']:o.tutor==='worship'?['shrine']:[])],detail:MAP_TUTOR_SUBJECTS[o.tutor]+' tutor'};
+ if(o.type==='banker')return {kind:'bank',tags:['bank'],detail:'Deposit and withdraw supplies'};
  if(o.type==='shop')return {kind:'shop',tags:['shop','weapons','armour'],detail:'Supplies, weapons & armour'};
  if(o.type==='forge')return {kind:'forge',tags:['forge'],detail:'Smithing anvil'};
  if(o.type==='inn')return {kind:'inn',tags:['inn'],detail:'Rest & recover health'};

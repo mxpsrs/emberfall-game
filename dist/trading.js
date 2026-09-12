@@ -16,6 +16,8 @@ function endTrade(){
  syncPanelButton();
 }
 function openTrade(kind){
+ if(window.realmWorkbench)endWorkbench();
+ if(typeof clearUseItem==='function')clearUseItem(false);
  if(window.equipmentStatsOpen)endCombatStats();
  stop();if($('modal').open)$('modal').close();
  window.realmTrade={kind,quantity:1,custom:10,search:'',filter:'all',notice:''};

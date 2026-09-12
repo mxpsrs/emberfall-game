@@ -147,7 +147,11 @@ function itemActions(id,fromBag=false){
  if(!worn)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
  return actions;
 }
-function primaryItemAction(id,fromBag=false){itemActions(id,fromBag)[0]?.[1]();}
+function primaryItemAction(id,fromBag=false,index=null){
+ if(fromBag&&typeof selectedUseItem!=='undefined'&&selectedUseItem)return useItemOnItem(id);
+ if(fromBag&&typeof selectUseItem==='function'&&!ITEMS[id]?.slot&&!isAmmunition(id)&&!ITEMS[id]?.heal&&!ITEMS[id]?.beltTool&&!['bones','herbs'].includes(id))return selectUseItem(id,index);
+ itemActions(id,fromBag)[0]?.[1]();
+}
 function itemDetails(id,fromBag=false){
  const item=ITEMS[id];if(!item)return;
  const isEquipped=!fromBag&&s.equipment[isAmmunition(id)?'ammo':item.slot]===id;
@@ -157,7 +161,7 @@ function itemDetails(id,fromBag=false){
 }
 function bindItemPress(button,id,fromBag,tradeSide=null){
  let timer=null,start=null,suppressClick=false;
- const details=()=>tradeSide&&window.realmTrade?showTradeItemMenu(id,tradeSide,button):itemDetails(id,fromBag);
+ const details=()=>tradeSide&&window.realmTrade?showTradeItemMenu(id,tradeSide,button):typeof showItemOptions==='function'?showItemOptions(id,fromBag,button):itemDetails(id,fromBag);
  const clear=()=>{clearTimeout(timer);timer=null;};
  button.addEventListener('pointerdown',e=>{if(e.button!==0)return;clear();start={x:e.clientX,y:e.clientY};suppressClick=false;timer=setTimeout(()=>{timer=null;suppressClick=true;details();},500);});
  button.addEventListener('pointermove',e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>9){clear();suppressClick=true;}});
@@ -166,8 +170,8 @@ function bindItemPress(button,id,fromBag,tradeSide=null){
  button.addEventListener('pointerleave',()=>{clear();start=null;});
  button.addEventListener('contextmenu',e=>{e.preventDefault();clear();if(!suppressClick)details();suppressClick=true;});
  button.addEventListener('keydown',e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();clear();details();}});
- button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}if(tradeSide&&window.realmTrade)tradeItemAction(id,tradeSide);else primaryItemAction(id,fromBag);};
- button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+itemActions(id,fromBag)[0][0]+'. Hold for more options.');
+ button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}if(tradeSide&&window.realmTrade)tradeItemAction(id,tradeSide);else primaryItemAction(id,fromBag,Number(button.dataset?.inventoryIndex));};
+ button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+(fromBag&&!ITEMS[id].slot&&!isAmmunition(id)&&!ITEMS[id].heal&&!ITEMS[id].beltTool&&!['bones','herbs'].includes(id)?'Use':itemActions(id,fromBag)[0][0])+'. Hold for more options.');
 }
 function renderInventory(){
  pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="inventory-summary"><span>'+slots.length+' / 25</span>'+(window.realmTrade?'<span>Tap to '+(window.realmTrade.kind==='bank'?'deposit':'sell')+'</span>':'')+'</div><div id="inventoryGrid" class="inventorygrid bag25"></div>';

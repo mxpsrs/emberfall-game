@@ -97,6 +97,7 @@ function eatFood(id){if(!(s.bag[id]>0)||!ITEMS[id]?.heal)return false;if(s.hp>=m
 function nearbyWork(type){return objects.find(o=>(type==='fire'?['camp','range'].includes(o.type):type==='forge'?['forge','practiceForge'].includes(o.type):o.workstation===type)&&o.dead<=time&&Math.hypot(o.x-px,o.y-py)<2&&lineOfSight(s.x,s.y,o.x,o.y));}
 let pendingCooking=null;
 function requestCookFish(id){
+ if(typeof selectUseItem==='function')return selectUseItem(id);
  const fish=FISH_RESOURCES[ITEMS[id]?.rawFish],bread=id==='breadDough';if(!fish&&!bread||!(s.bag[id]>0))return false;
  if(!requireSkill('Cooking',fish?.cookLevel||1))return false;
  if(nearbyWork(bread?'range':'fire')){stop();return bread?bakeBread():cookFish(id);}
@@ -118,7 +119,7 @@ function lightLog(id=Object.keys(s.bag).find(id=>s.bag[id]>0&&ITEMS[id]?.logType
  const d=TREE_RESOURCES[ITEMS[id]?.logType];if(!d||!s.bag[id]){toast('You need logs.');return false;}
  if(!useBeltTool('tinderbox')||!requireSkill('Firemaking',d.level))return false;
  if(!inWorld()||buildings.some(b=>withinWalkIn(b,px,py))||water(s.x,s.y)||objects.some(o=>o.type==='camp'&&Math.hypot(o.x-px,o.y-py)<1)){toast('Find clear ground outdoors to light the fire.');return false;}
- stop();s.bag[id]--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',cooking:true,...(besideFishingTutor()?{tutorialRole:'fishing-fire'}:{}),x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,logType:ITEMS[id].logType,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};worldScenes.overworld.objects.push(o);objects.push(o);gain('Firemaking',d.fire);tutorialEvent('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');return true;
+ stop();s.bag[id]--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',cooking:true,...(besideFishingTutor()?{tutorialRole:'fishing-fire'}:{}),x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,logType:ITEMS[id].logType,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};worldScenes[currentScene].objects.push(o);objects.push(o);gain('Firemaking',d.fire);tutorialEvent('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');return true;
 }
 function cookFish(id=Object.keys(s.bag).find(id=>s.bag[id]>0&&ITEMS[id]?.rawFish)){
  const f=FISH_RESOURCES[ITEMS[id]?.rawFish];if(!f||!s.bag[id]){toast('Bring a raw catch to a hearth or fire.');return false;}
@@ -142,12 +143,13 @@ function smithMetal(key,part){
  consumeIngredients(ingredients);const bag=ITEMS[id].slot?s.gear:s.bag;bag[id]=(bag[id]||0)+p.count;gain('Smithing',m.smithXP*p.bars);tutorialEvent('smith');renderUI();save();toast(ITEMS[id].name+' made.');return true;
 }
 function openSmithing(kind='forge',metal='bronze'){
+ if(typeof openWorkbench==='function')return openWorkbench(kind,metal);
  const smelting=kind==='furnace',m=METAL_RECIPES[metal];dialog(smelting?'Smelting furnace':'Smithing anvil','<p>Smithing '+lv('Smithing')+' · '+(s.bag[m.bar]||0)+' '+m.name.toLowerCase()+' bars</p><div id="metalChoices" class="recipe-metals"></div><div id="smithChoices" class="recipe-list"></div>');
  for(const [id,row]of Object.entries(METAL_RECIPES)){if(!smelting&&id==='gold')continue;const b=document.createElement('button');b.textContent=row.name;b.setAttribute('aria-pressed',String(id===metal));b.onclick=()=>openSmithing(kind,id);$('metalChoices').appendChild(b);}
  const rows=smelting?[['bar',{name:m.name+' bar',offset:0}]]:Object.entries(smithPatterns);
  for(const [part,p]of rows){const level=smelting?m.level:smithingLevel(metal,part),b=document.createElement('button');b.disabled=lv('Smithing')<level;b.textContent=p.name+' · Smithing '+level+' · '+(smelting?Object.entries(m.ingredients).map(([id,n])=>n+' '+ITEMS[id].name).join(' + '):p.bars+' bars');b.onclick=()=>{if(smelting)smeltMetal(metal);else smithMetal(metal,part);openSmithing(kind,metal);};$('smithChoices').appendChild(b);}
 }
-function workPracticeForge(){if(tutorialStep()?.event==='smelt')return smeltMetal('bronze');if(tutorialStep()?.event==='smith')return smithMetal('bronze','dagger');openSmithing('forge');return true;}
+function workPracticeForge(){openSmithing('forge');return true;}
 function fletch(id){
  if(!useBeltTool('knife'))return false;let ingredients,result,count=15,xp,level=1;
  if(ITEMS[id]?.logType){const tree=TREE_RESOURCES[ITEMS[id].logType];level=tree.level;ingredients={[id]:1};result='arrowShafts';count=15*(Object.keys(TREE_RESOURCES).indexOf(ITEMS[id].logType)+1);xp=5*(count/15);}

@@ -146,13 +146,13 @@ function renderAction(){
   $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Tap Stop to cancel'):path.length?'Tap Stop or another spot to change course.':'Tap a resource, building, person, or monster.';
 }
 function dialog(title,html,buttons=[]){
-  if(window.realmTrade||window.equipmentStatsOpen)close();
+  if(window.realmTrade||window.equipmentStatsOpen||window.realmWorkbench)close();
   stop();$('modalBody').innerHTML='';const h=document.createElement('h2');h.textContent=title;$('modalBody').appendChild(h);
   const body=document.createElement('div');body.className='dialogcopy';body.innerHTML=html;$('modalBody').appendChild(body);
   for(const [label,fn,style] of buttons){const b=document.createElement('button');b.className=style||'primary';b.textContent=label;b.onclick=fn;$('modalBody').appendChild(b);}
   if(!$('modal').open)$('modal').showModal();
 }
-function close(){if(window.realmTrade)endTrade();if(window.equipmentStatsOpen)endCombatStats();$('modal').close();renderUI();save();}
+function close(){if(window.realmTrade)endTrade();if(window.equipmentStatsOpen)endCombatStats();if(window.realmWorkbench)endWorkbench();$('modal').close();renderUI();save();}
 const quests=[
   {title:'A village in need',desc:'Find Elder Rowan beside the village square to begin your adventure.'},
   {title:'Tools of the trade',desc:'Gather 5 oak logs, 5 iron ore, and 3 trout. Bring them to Elder Rowan.',checks:()=>[['Oak logs',s.bag.logs,5],['Iron ore',s.bag.ore,5],['Trout',s.bag.fish,3]]},
@@ -196,6 +196,7 @@ function renderUI(){
   renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
   if(window.realmTrade)renderTradeContents();
   if(window.equipmentStatsOpen)renderCombatStats();
+  if(window.realmWorkbench)renderWorkbench();
 }
 function renderPanel(){
   if(tab==='skills'&&!$('gameDock').hidden)tutorialEvent('skills');
@@ -234,9 +235,9 @@ async function finishCharacter(name,look){
   $('begin').disabled=true;$('begin').textContent='Saving character…';$('characterSaveError').textContent='';
   save();const saved=await flushCloudSave();$('begin').disabled=false;
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
-  $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
+  $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to '+(currentScene==='tutorial'?'Firstlight Isle':'Briarhaven')+', '+cleaned+'.');return true;
 }
-function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Swipe with one finger</b> to turn the camera; pinch to zoom. On a computer, drag or hold the arrow keys to turn and tilt; scroll to zoom. Tap or click the ground to move.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open it, then tap inside to walk through. Roofs disappear within five tiles so you can see and select the interior. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=4;s.tutorialActions={};tutorialCameraStart=null;renderTutorial();save();}]]);}
+function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Swipe with one finger</b> to turn the camera; pinch to zoom. On a computer, drag or hold the arrow keys to turn and tilt; scroll to zoom. Tap or click the ground to move.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open it, then tap inside to walk through. Roofs disappear within five tiles so you can see and select the interior. Doors keep their state when you return. Use the map to walk to a region.</p><p>Tap a material in your Bag to highlight it, then tap another item or a fire, range, furnace or anvil to use it. Hold or right-click an item for Use, Equip, Eat and other available actions. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)]]);}
 function worldMap(){expandedMap();}
 function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2,Math.sqrt(8294400/Math.max(1,r.width*r.height)));screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
@@ -361,7 +362,7 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
 $('runButton').onclick=toggleRun;
-$('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the tutorial from the help menu whenever you like.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length-1;close();tutorialEvent('talk-finish');$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
+$('skipTutorial').onclick=()=>dialog('Leave the apprenticeship early?','<p>Skipping teleports you to the mainland. You cannot return to Firstlight Isle.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length-1;close();tutorialEvent('talk-finish');$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});

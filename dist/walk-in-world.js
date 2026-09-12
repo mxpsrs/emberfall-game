@@ -82,7 +82,7 @@ function setWalkInDoor(o,open,restoring=false){
  const from=doorOpenFraction(o);if(open)o.openedAt=restoring?time-1:time;else delete o.openedAt;
  o.doorMotion=restoring?null:{from,to:open?1:0,start:time};
  const opened=new Set(Array.isArray(s.openDoors)?s.openDoors:[]);if(open)opened.add(o.destination);else opened.delete(o.destination);s.openDoors=[...opened];
- const nav=realmNavigation.get('overworld');if(nav){const [x,y]=doorThreshold(o);nav.cells[y*nav.w+x]=open?0:1;}if(!restoring)save();
+ const nav=realmNavigation.get(currentScene);if(nav){const [x,y]=doorThreshold(o);nav.cells[y*nav.w+x]=open?0:1;}if(!restoring)save();
 }
 function restoreWalkInDoors(world,position=null){
  const resume=position||{scene:s.sceneId,x:s.x,y:s.y},doors=world.buildings.filter(b=>b.walkIn),valid=new Set(doors.map(b=>b.service.destination)),legacy=s.doorStateVersion!==1;

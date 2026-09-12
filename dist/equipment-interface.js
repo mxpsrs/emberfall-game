@@ -41,6 +41,7 @@ function renderCombatStats(){
  groups.scrollTop=scroll;if(focusedSlot)grid.querySelector('[data-equipment-slot="'+focusedSlot+'"]').focus({preventScroll:true});paintEquipmentPreview();
 }
 function openCombatStats(){
+ if(window.realmWorkbench)endWorkbench();
  if(window.equipmentStatsOpen&&$('modal').open){openGamePanel('bag');return;}
  if(window.realmTrade)endTrade();if($('modal').open)$('modal').close();stop();tutorialEvent('combat-stats');openGamePanel('bag');
  window.equipmentStatsOpen=true;document.body.classList.add('equipment-stats-open');
