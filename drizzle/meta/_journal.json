@@ -43,6 +43,13 @@
       "when": 1789205237648,
       "tag": "0005_creator_account_reset",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1789210252171,
+      "tag": "0006_mxpsrs_character_reset",
+      "breakpoints": true
     }
   ]
 }
