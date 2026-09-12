@@ -1,0 +1,53 @@
+{
+  "note": "Source and license records for the commercially usable area music. All tracks use CC0; Cave Theme also offers OGA-BY, which is not the license selected here. No player-facing credit is required.",
+  "tracks": [
+    {
+      "file": "field-of-dreams",
+      "title": "The Field of Dreams",
+      "author": "pauliuw",
+      "area": "Tutorial refuge and wilderness",
+      "source": "https://opengameart.org/content/the-field-of-dreams",
+      "download": "https://opengameart.org/sites/default/files/the_field_of_dreams.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "commercial_use": true,
+      "attribution_required": false,
+      "verified_on": "2026-09-12",
+      "source_sha256": "103a7032a49be7e8399c5cb771f7759eac9ac1a0d2bf227f41fff42ad8d78194",
+      "asset_sha256": "9528ad43c89d43c1d6576b0481f8837f98267a0d60641465bed9f1fafe0ba2fe",
+      "processing": "Loudness normalized and encoded as 96 kbps MP3 for streaming."
+    },
+    {
+      "file": "old-tower-inn",
+      "title": "The Old Tower Inn",
+      "author": "RandomMind",
+      "area": "Towns and settlements",
+      "source": "https://opengameart.org/content/medieval-the-old-tower-inn",
+      "download": "https://opengameart.org/sites/default/files/Loop_The_Old_Tower_Inn.wav",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "commercial_use": true,
+      "attribution_required": false,
+      "verified_on": "2026-09-12",
+      "source_sha256": "e18b497fb0edde74a745c4b5a0b90b3fc346c44555f33e3a1485411bbcc171bc",
+      "asset_sha256": "c9b12e9058e3ce1ab990cd7eb611671f264173c4862346d5e54285c828fe015f",
+      "processing": "Loudness normalized and encoded as 96 kbps MP3 for streaming."
+    },
+    {
+      "file": "cave-theme",
+      "title": "Cave Theme",
+      "author": "Brandon Morris (HaelDB / Brandon75689)",
+      "area": "Mines, caves, crypts and ruins",
+      "source": "https://opengameart.org/content/cave-theme",
+      "download": "https://opengameart.org/sites/default/files/cave%20themeb4.ogg",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "commercial_use": true,
+      "attribution_required": false,
+      "verified_on": "2026-09-12",
+      "source_sha256": "1ddf7a0845c808136edfda7ea829e48fa2b7c57793e008d706dadbb5917dff9c",
+      "asset_sha256": "82aeba8281ae548fbcfbbc8864b83eb02e205656b25e1ab09020196bd1e11fd2",
+      "processing": "Loudness normalized and encoded as 96 kbps MP3 for streaming."
+    }
+  ]
+}

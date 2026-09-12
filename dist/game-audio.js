@@ -1,5 +1,5 @@
 'use strict';
-const AREA_MUSIC={refuge:{title:'Teller of the Tales',file:'teller-of-the-tales'},town:{title:'Lord of the Land',file:'lord-of-the-land'},danger:{title:'Drums of the Deep',file:'drums-of-the-deep'}};
+const AREA_MUSIC={refuge:{title:'The Field of Dreams',file:'field-of-dreams'},town:{title:'The Old Tower Inn',file:'old-tower-inn'},danger:{title:'Cave Theme',file:'cave-theme'}};
 const gameAudio={context:null,master:null,effects:null,music:null,ambience:null,noise:null,tracks:new Map(),current:null,blocked:false,voices:0,last:new Map(),steps:0,check:0,environment:null};
 function audioPreferences(){
  const defaults={effects:.65,music:.26,ambience:.23};s.audio=s.audio&&typeof s.audio==='object'?s.audio:{};
@@ -45,7 +45,7 @@ function updateAreaMusic(force=false){
  if(!track){const element=new Audio();element.preload='none';element.loop=true;element.src=realmAssetURL('assets/audio/'+AREA_MUSIC[key].file+'.mp3');element.playsInline=true;const gain=c.createGain();gain.gain.value=0;c.createMediaElementSource(element).connect(gain);gain.connect(gameAudio.music);track={element,gain};gameAudio.tracks.set(key,track);}
  clearTimeout(track.stopTimer);gameAudio.current=key;track.gain.gain.cancelScheduledValues(c.currentTime);track.gain.gain.setTargetAtTime(1,c.currentTime,.7);
  track.element.play()?.catch(()=>{gameAudio.blocked=true;});
- const label=$('nowPlaying');if(label)label.textContent=AREA_MUSIC[key].title+' — Kevin MacLeod';
+ const label=$('nowPlaying');if(label)label.textContent=AREA_MUSIC[key].title;
 }
 function audioTone(group,at,frequency,duration,volume=.1,type='sine',endFrequency=frequency){
  const c=gameAudio.context,osc=c.createOscillator(),gain=c.createGain();osc.type=type;osc.frequency.setValueAtTime(frequency,at);osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFrequency),at+duration);gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),at+.008);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);osc.connect(gain);gain.connect(group);osc.start(at);osc.stop(at+duration+.025);osc.onended=()=>{osc.disconnect();gain.disconnect();};
@@ -114,8 +114,8 @@ updatePlayerAction=function(){const before=s.bag.bones;burialBeforeAudio();if(s.
 const departureBeforeAudio=departTutorialIsland;
 departTutorialIsland=function(){const result=departureBeforeAudio();if(result){playGameSound('teleport');updateAreaMusic();}return result;};
 function openSoundSettings(){
- const p=audioPreferences();dialog('Sound & music','<div id="soundSettings"><button id="soundMaster" type="button"></button><div id="soundSliders"></div><p class="sound-track">Now playing<br><strong id="nowPlaying"></strong></p><details class="music-credits"><summary>Music credits</summary><p>“Teller of the Tales”, “Lord of the Land”, and “Drums of the Deep” by <a href="https://incompetech.com/music/packs.html" target="_blank" rel="noopener">Kevin MacLeod (incompetech.com)</a>. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Transcoded for streaming; in-game fades and volume adjustments.</p></details></div>');
+ const p=audioPreferences();dialog('Sound & music','<div id="soundSettings"><button id="soundMaster" type="button"></button><div id="soundSliders"></div><p class="sound-track">Now playing<br><strong id="nowPlaying"></strong></p></div>');
  const master=$('soundMaster'),label=()=>{master.textContent=s.sound===false?'Sound off · Enable':'Sound on · Mute';master.setAttribute('aria-pressed',String(s.sound!==false));};label();master.onclick=()=>{toggleAmbient();label();};
  for(const [key,title]of [['effects','Sound effects'],['music','Music'],['ambience','Environment']]){const row=document.createElement('label'),name=document.createElement('span'),input=document.createElement('input'),value=document.createElement('output');row.className='sound-slider';name.textContent=title;input.type='range';input.min=0;input.max=100;input.value=Math.round(p[key]*100);input.setAttribute('aria-label',title+' volume');value.textContent=input.value+'%';input.oninput=()=>{audioPreferences()[key]=Number(input.value)/100;value.textContent=input.value+'%';setAudioVolumes();if(key==='music')updateAreaMusic(true);};input.onchange=()=>{save();if(key==='effects')playGameSound('click');};row.append(name,input,value);$('soundSliders').appendChild(row);}
- $('nowPlaying').textContent=gameAudio.current?AREA_MUSIC[gameAudio.current].title+' — Kevin MacLeod':'Music starts when you enter the world with sound enabled.';
+ $('nowPlaying').textContent=gameAudio.current?AREA_MUSIC[gameAudio.current].title:'Music starts when you enter the world with sound enabled.';
 }
