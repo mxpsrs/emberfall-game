@@ -1,16 +1,44 @@
 {
-  "status": "Owner approved all six model designs and assigned four bosses plus two regular monsters; source files and combat clips still require inspection before integration",
+  "status": "All six designs approved. Forest Giant original model and ten native actions inspected and imported; five remaining original models and full lair integration are pending.",
   "checked": "2026-09-12",
   "design_approval": {
     "date": "2026-09-12",
-    "bosses": ["Runeforged Colossus", "Veyr the Mindbreaker", "Varkesh the Blightwing", "Xalith the Broodmother"],
-    "regular_monsters": {"Forest Giant": "Forests", "Ork": "Dungeons"},
-    "retired_shortlist_names": ["Old Bracken", "Borruk the Pitbreaker"],
+    "bosses": [
+      "Runeforged Colossus",
+      "Veyr the Mindbreaker",
+      "Varkesh the Blightwing",
+      "Xalith the Broodmother"
+    ],
+    "regular_monsters": {
+      "Forest Giant": "Forests",
+      "Ork": "Dungeons"
+    },
+    "retired_shortlist_names": [
+      "Old Bracken",
+      "Borruk the Pitbreaker"
+    ],
     "scope": "Model appearance, names and monster classification approved; source-file inspection and game integration remain pending"
   },
   "retained_name": "Runeforged Colossus",
-  "retired_draft_names": ["Mossfang", "Grik the Scrapchief", "Crypt Warden", "The Hollow King", "Ashwatch Sentinel", "Cindermaw", "The Briar Oracle", "Nightbloom Sovereign"],
-  "requirements": ["Free commercial use", "Existing rig and included animation", "Detailed anatomy and materials", "Boss silhouette readable at the game camera", "Review actual model and animation before publication", "Only a few bosses have phases or multiple attack styles", "Preserve misses and accurate zero-damage hits"],
+  "retired_draft_names": [
+    "Mossfang",
+    "Grik the Scrapchief",
+    "Crypt Warden",
+    "The Hollow King",
+    "Ashwatch Sentinel",
+    "Cindermaw",
+    "The Briar Oracle",
+    "Nightbloom Sovereign"
+  ],
+  "requirements": [
+    "Free commercial use",
+    "Existing rig and included animation",
+    "Detailed anatomy and materials",
+    "Boss silhouette readable at the game camera",
+    "Review actual model and animation before publication",
+    "Only a few bosses have phases or multiple attack styles",
+    "Preserve misses and accurate zero-damage hits"
+  ],
   "license_sources": {
     "CGTrader": "https://www.cgtrader.com/pages/terms-and-conditions",
     "CC0": "https://creativecommons.org/publicdomain/zero/1.0/",
@@ -39,10 +67,27 @@
       "encounter": {
         "status": "User-approved behavior; tuning values proposed",
         "movement": "Remains anchored in its arena; can turn and animate but cannot chase",
-        "styles": ["melee", "ranged", "magic"],
+        "styles": [
+          "melee",
+          "ranged",
+          "magic"
+        ],
         "phases": [
-          {"name": "Crystalbound", "health": "100% to 50%", "attacks": ["Close-range fist slam", "Thrown crystal barrage at a marked location", "Runic magic eruption"]},
-          {"name": "Crimson Overload", "health": "50% to defeat", "appearance": "Crystals and runes turn red", "tempo": "Proposed: 25% shorter attack cycle, with readable warnings"}
+          {
+            "name": "Crystalbound",
+            "health": "100% to 50%",
+            "attacks": [
+              "Close-range fist slam",
+              "Thrown crystal barrage at a marked location",
+              "Runic magic eruption"
+            ]
+          },
+          {
+            "name": "Crimson Overload",
+            "health": "50% to defeat",
+            "appearance": "Crystals and runes turn red",
+            "tempo": "Proposed: 25% shorter attack cycle, with readable warnings"
+          }
         ],
         "reset": "Leaving the arena restores health, the first phase, blue appearance, and normal speed"
       },
@@ -62,14 +107,28 @@
       "license": "CC0",
       "commercial_use": true,
       "rigged": "Creator explicitly confirms rigged FBX characters",
-      "animation_evidence": "Creator lists ten animations, including three attacks and three deaths",
+      "animation_evidence": "Original FBX inspected: 36 rig nodes, 33 skin joints, ten native animation stacks; three attacks and three deaths verified",
       "animation_badge": "10 animations | 3 attacks | CC0",
       "animation_count": 10,
-      "animations": ["Attack01", "Attack02", "Attack03", "Death01", "Death02", "Death03", "Idle", "Dance", "Run", "Taunt"],
+      "animations": [
+        "Attack01",
+        "Attack02",
+        "Attack03",
+        "Death01",
+        "Death02",
+        "Death03",
+        "Idle",
+        "Dance",
+        "Run",
+        "Taunt"
+      ],
       "triangles": 7340,
-      "asset_files_inspected": false,
+      "asset_files_inspected": true,
       "approved_role": "A standard Forest Giant found in forests, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
-      "note": "Owner reassigned the Old Bracken model to a regular monster named Forest Giant. The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials."
+      "note": "Owner reassigned the Old Bracken model to a regular monster named Forest Giant. The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials.",
+      "download_status": "Downloaded original Treant Package from creator; Tree02_FBX.fbx and light albedo imported",
+      "import_audit": "forestgiant-import.json",
+      "runtime_status": "Native asset loads in creature renderer. Forest habitat spawns and visual QA pending."
     },
     {
       "name": "Ork",
@@ -88,7 +147,19 @@
       "animation_evidence": "Creator lists eleven animations including attack, hit, and two deaths",
       "animation_badge": "11 animations | Attack, hit + 2 deaths",
       "animation_count": 11,
-      "animations": ["Idle", "Walk", "Run", "Jump", "Shout", "Get_Hit", "Death1", "Death2", "Attack", "Walk_Mecanim", "Run_Mecanim"],
+      "animations": [
+        "Idle",
+        "Walk",
+        "Run",
+        "Jump",
+        "Shout",
+        "Get_Hit",
+        "Death1",
+        "Death2",
+        "Attack",
+        "Walk_Mecanim",
+        "Run_Mecanim"
+      ],
       "triangles": 5637,
       "asset_files_inspected": false,
       "approved_role": "A regular dungeon monster displayed as Ork, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
@@ -110,7 +181,20 @@
       "animation_evidence": "Creator lists 25 animations plus a bonus A-pose; punches, shooting, telepathic actions, throwing, damage, and death are included",
       "animation_badge": "25 animations | Punch, shoot, throw + telepathy",
       "animation_count": 25,
-      "combat_animations": ["Punch1", "Punch2", "Punch3", "Shoot1", "Shoot2 (loop)", "Telepathic", "Telepathic-loop", "Throw", "Throw-catch", "Throw-loop", "Death", "Get-damage"],
+      "combat_animations": [
+        "Punch1",
+        "Punch2",
+        "Punch3",
+        "Shoot1",
+        "Shoot2 (loop)",
+        "Telepathic",
+        "Telepathic-loop",
+        "Throw",
+        "Throw-catch",
+        "Throw-loop",
+        "Death",
+        "Get-damage"
+      ],
       "triangles": 17244,
       "asset_files_inspected": false,
       "proposed_role": "An ancient psychic enemy. Strong candidate for one of the small number of fights using several attack styles, because the source includes corresponding actions.",

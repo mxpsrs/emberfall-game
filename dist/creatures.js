@@ -1,6 +1,6 @@
 'use strict';
 // Imported meshes and skeletal motion replace every procedural monster body.
-const creatureAssets=Object.fromEntries(Object.entries(REALM_CREATURES).map(([key,a])=>[key,{
+const creatureAssets=Object.fromEntries(Object.entries({...REALM_CREATURES,...(typeof APPROVED_CREATURES==='undefined'?{}:APPROVED_CREATURES)}).map(([key,a])=>[key,{
  ...a,mesh:rebuiltMesh(a.mesh),rig:{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)},
  clips:Object.fromEntries(Object.entries(a.clips).map(([key,c])=>[key,{...c,trs:briarDecode(c.trs,Float32Array)}]))
 }]));
