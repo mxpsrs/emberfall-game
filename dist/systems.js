@@ -71,20 +71,21 @@ function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Wors
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
- const item=ITEMS[id];if(!item?.slot||!owns(id))return false;
+ const item=ITEMS[id];if(!item?.slot||!owns(id))return false;const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
  if(item.defenseLevel&&lv('Defense')<item.defenseLevel){toast('Requires Defense '+item.defenseLevel+'.');return false;}
  if(item.attackLevel&&lv('Attack')<item.attackLevel){toast('Requires Attack '+item.attackLevel+'.');return false;}
  if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
  stop();s.equipment[item.slot]=id;tutorialEvent('gear');renderUI();save();return true;
 }
 function unequipItem(slot){if(!s.equipment[slot])return false;const count=slot==='head'&&s.equipment.crest?2:1;if(inventorySlots().length+count>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;if(slot==='head')s.equipment.crest=null;renderUI();save();return true;}
-function chooseStyle(style){const id=style==='magic'?'oakStaff':style==='ranged'?'shortbow':(s.gear.ironSword?'ironSword':'bronzeSword');if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
+function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const worn=!fromBag&&item.slot&&s.equipment[item.slot]===id,actions=[];
  if(item.slot)actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(item.slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
+ else if(skillItemActions(id))actions.push(...skillItemActions(id));
  else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(id==='fish')eat();else{if(s.hp>=maxhp()){toast('Your health is full.');return false;}s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
  else if(id==='bones')actions.push(['Bury',buryBones]);
  else if(id==='logs')actions.push(['Light fire',lightLog]);
@@ -130,15 +131,15 @@ function renderEquipment(){
 function renderToolBelt(){
  const owned=normalizeToolBelt(s),panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Tool belt</h2><button id="backToEquipment" type="button">Back</button></div><p class="desc">Your belt and attached pouch stay worn together. Tools are used automatically and take no bag space.</p><div id="toolBeltContents" class="tool-belt-contents"></div>';
  $('backToEquipment').onclick=()=>{toolBeltOpen=false;renderEquipment();panel.scrollTop=0;};
- for(const [id,tool]of Object.entries(TOOL_BELT_TOOLS)){const row=document.createElement('div');row.className='tool-belt-entry';row.dataset.tool=id;row.innerHTML='<strong>'+tool.name+'</strong><small>'+tool.skill+' · '+(owned[id]?'On belt':'Not on belt')+'</small><p>'+tool.description+'</p>';$('toolBeltContents').appendChild(row);}
+ for(const [id,tool]of Object.entries(TOOL_BELT_TOOLS)){const fitted=ITEMS[owned[id+'Item']],row=document.createElement('div');row.className='tool-belt-entry';row.dataset.tool=id;row.innerHTML='<strong>'+(fitted?.name||tool.name)+'</strong><small>'+tool.skill+' · '+(owned[id]?'On belt':'Not on belt')+'</small><p>'+tool.description+'</p>';$('toolBeltContents').appendChild(row);}
 }
 function renderSpells(){
- pageControls(3,2);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' rune stones · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
- for(const [id,spell]of pageItems(Object.entries(SPELLS),2)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+spell.cost+' rune'+(spell.cost>1?'s':'')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
+ pageControls(Object.keys(SPELLS).length,4);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' mind runes · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
+ for(const [id,spell]of pageItems(Object.entries(SPELLS),4)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+Object.entries(spell.ingredients).map(([id,n])=>n+' '+ITEMS[id].name).join(' + ')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
 }
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
- $('combatResource').textContent=combatStyle()==='ranged'?s.bag.arrows+' arrows':combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Armor '+armorValue()+' · '+equippedWeapon().name;
+ $('combatResource').textContent=combatStyle()==='ranged'?(selectedAmmo()?(s.bag[selectedAmmo()]+' '+ITEMS[selectedAmmo()].name):'No usable arrows'):combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Defense bonus '+armorValue()+' · '+equippedWeapon().name;
  const select=$('trainingFocus'),style=combatStyle(),focus=trainingFocus(style),key=style+':'+focus;
  if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
  select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
@@ -160,12 +161,12 @@ function awardDefeat(o,style){
 function performAttack(o){
  if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange());if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
  const style=combatStyle(),spell=currentSpell();
- if(style==='ranged'&&s.bag.arrows<1){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
- if(style==='magic'&&(lv('Magic')<spell.level||s.bag.runes<spell.cost)){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
- if(style==='ranged')s.bag.arrows--;if(style==='magic')s.bag.runes-=spell.cost;
- if(style==='magic'){gain('Magic',4,true);tutorialEvent('magic');}
+ const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
+ if(style==='magic'&&(lv('Magic')<spell.level||!hasIngredients(spell.ingredients))){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
- const damage=Math.random()<playerAccuracy(o,style)?1+Math.floor(Math.random()*Math.max(1,maxHit)):0;
+ if(style==='ranged')s.bag[ammo]--;if(style==='magic')consumeIngredients(spell.ingredients);
+ if(style==='magic'){gain('Magic',spell.baseXP,true);tutorialEvent('magic');}
+ const damage=Math.random()<playerAccuracy(o,style)?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
  lastAttack=time;facing=o.x<s.x?-1:1;
  if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
@@ -188,8 +189,8 @@ function updateCombat(dt){
  enemyClock+=dt;retaliationClock+=dt;
  if(Math.hypot(o.x-s.x,o.y-s.y)>1.45){
    if(o.type!=='dummy'&&enemyClock>=(o.slowUntil>time?.9:.38)){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
- }else if(retaliationClock>=1.3&&lineOfSight(o.x,o.y,s.x,s.y)){
-   retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(1,o.atk+Math.floor(Math.random()*(o.spread+1))-armorValue()):0;meleeImpacts.push({o,damage:hit,due:time+.30,enemy:true});
+ }else if(retaliationClock>=2.4&&lineOfSight(o.x,o.y,s.x,s.y)){
+   retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(0,Math.floor(Math.random()*((o.atk||0)+(o.spread||0)+1))-Math.floor(lv('Worship')/5)-spiritBonus('armor')):0;meleeImpacts.push({o,damage:hit,due:time+.30,enemy:true});
  }
 }
 function drawProjectiles(){

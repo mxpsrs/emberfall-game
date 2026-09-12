@@ -118,3 +118,5 @@ body.panels-open .legend{display:none}
 .tool-belt-entry strong{display:block;color:#edddae;font-size:14px}.tool-belt-entry small{display:block;margin-top:3px;color:#b7c5ad;font-size:11px}.tool-belt-entry p{margin:5px 0 0;font-size:12px;line-height:1.35;color:#c7cabb}
 #backToEquipment{min-height:36px;padding:5px 10px;font-size:12px}
 @media(max-height:500px) and (orientation:landscape){.equipment-slots .gearslot{min-height:70px}.equipment-slots .gearslot canvas{width:32px;height:32px}}
+
+.recipe-metals{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}.recipe-metals button{flex:1 0 76px;width:auto;margin:0;padding:8px;font-size:14px}.recipe-metals button[aria-pressed="true"]{background:#74623b;border-color:#dac58b}.recipe-list{display:grid;gap:6px;max-height:45vh;overflow:auto}.recipe-list button{text-align:left;font-size:14px;line-height:1.4;padding:12px}

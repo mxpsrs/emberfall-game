@@ -2,40 +2,61 @@
 // A village apprenticeship. Every task observes an actual player action.
 const tutorialObject=role=>worldScenes.overworld?.objects.find(o=>o.tutorialRole===role&&!o.collected);
 const tutorialTutor=role=>tutorialObject('tutor-'+role);
-const lesson=(event,title,desc,role=null)=>({event,title,desc,point:()=>role?tutorialObject(role):null});
+const lesson=(event,title,desc,role=null)=>({event,title,desc,point:()=>role?tutorialObject(role==='ore'&&s.bag.copperOre>0?'tin':role):null});
 const tutorialSteps=[
  lesson('camera','Look around','Rotate the camera with ↶ or ↷. On a phone, use two fingers; on a computer, drag the view.'),
  lesson('walk','Take your first steps','Tap any clear ground and walk a few steps. Tap Run to travel faster; your energy recovers while walking or resting.'),
  lesson('talk-guide','Meet Elder Rowan','Rowan is in Briarhaven’s village square. He will explain the controls and introduce your tutors.','tutor-guide'),
  lesson('bag','Your belongings','Open Bag & menus. Tap an item to use it; press and hold to see its other actions.'),
  lesson('skills','Your skills','Open the Skills tab. Each skill has its own level and XP, including Attack, Strength, Defense and Hitpoints.'),
- lesson('talk-woods','Find the woodland tutor','Rowan sends you to Forester Ash beside the village oak grove.','tutor-woods'),
- lesson('tree','Cut an oak log','Tap the marked oak. Your axe is carried with you; gathering trains Woodcutting.','tree'),
- lesson('fire','Make your first fire','Step onto clear ground outdoors. Open your bag and tap an oak log to light a fire and earn Firemaking XP.'),
+ lesson('talk-woods','Find the woodland tutor','Rowan sends you to Forester Ash beside the timber yard.','tutor-woods'),
+ lesson('tree','Cut your first log','Tap the marked tree. Your axe is carried with you; gathering trains Woodcutting.','tree'),
+ lesson('fire','Make your first fire','Step onto clear ground outdoors. Open your bag and tap a log to light a fire and earn Firemaking XP.'),
  lesson('talk-fishing','Follow Ash’s directions','Find Fisher Nell at Stillwater, just west of the village.','tutor-fishing'),
- lesson('fish','Catch a raw trout','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
+ lesson('fish','Net some shrimp','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
  lesson('talk-cooking','Meet the cooking tutor','Nell sends you to Cook Bram at the outdoor kitchen beside the inn.','tutor-cooking'),
- lesson('cook','Cook your catch','Tap the cooking hearth while carrying raw trout. Cooking turns it into food you can eat.','hearth'),
- lesson('eat','Food for the road','Tap Eat, or tap a cooked trout in your bag. Food restores health; raw fish must be cooked first.'),
+ lesson('cook','Cook your catch','Tap the cooking hearth while carrying raw shrimp. Cooking turns it into food you can eat.','hearth'),
+ lesson('eat','Food for the road','Tap Eat, or tap a cooked shrimp in your bag. Food restores health; raw fish must be cooked first.'),
  lesson('talk-mining','Visit the smith','Bram sends you to Smith Orin beside Briarhaven’s forge. He teaches both Mining and Smithing.','tutor-mining'),
- lesson('ore','Mine iron ore','Tap the iron deposit beside the smithy to gather one ore.','ore'),
- lesson('smelt','Smelt an iron bar','Return to the practice forge and tap it to smelt your ore.','practice-forge'),
- lesson('smith','Work the metal','Tap the practice forge again to hammer the bar into arrowheads. Both actions earn Smithing XP.','practice-forge'),
+ lesson('ore','Mine copper and tin','Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.','ore'),
+ lesson('smelt','Smelt a bronze bar','Tap the furnace to combine one copper ore and one tin ore into bronze.','furnace'),
+ lesson('smith','Work the metal','Tap the practice anvil to hammer your bronze bar into your first bronze dagger. Both actions earn Smithing XP.','practice-forge'),
  lesson('talk-combat','Meet the combat tutor','Orin sends you to Captain Vale at the training yard.','tutor-combat'),
  lesson('gear','Choose a fighting style','Tap Melee, Ranged or Magic to equip its weapon. The training selector chooses which combat skill gains XP.'),
  lesson('dummy','Practice your attacks','Tap the training dummy. Attack controls accuracy, Strength controls melee damage, Defense protects you, and Hitpoints gives health.','dummy'),
  lesson('monster','A small field test','Defeat the giant rat just south of the training yard. Tap Eat if your health gets low.','rat'),
  lesson('loot','Pick up the drops','Collect the coins and bones where the rat fell. Each tap takes the next item; keep the bones for Keeper Sera.'),
- lesson('talk-bank','Visit the banker','Vale sends you to Banker Ada, beside the general store.','tutor-bank'),
+ lesson('talk-bank','Visit the banker','Vale sends you to Banker Ada inside Briarhaven Bank, southeast of the training yard. Open the door, then walk inside.','tutor-bank'),
  lesson('deposit','Store a supply','Talk to Ada and open your bank. Deposit an item from your bag. Stored items persist with your character.','tutor-bank'),
  lesson('withdraw','Take it back','Withdraw an item from your bank. Worn equipment stays separate from stored supplies.','tutor-bank'),
  lesson('talk-worship','Meet the shrine keeper','Ada sends you to Keeper Sera at the village shrine. Worship and spirits are taught together.','tutor-worship'),
  lesson('bury','Honour the fallen','Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.'),
  lesson('spirit','Form a spiritual bond','Speak to Cinder beside Sera and form a bond. Worship grows through burial and first bonds; spirits grant their own bonuses.','cinder'),
- lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen at the practice circle.','tutor-magic'),
+ lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen inside the magic school. Open the door and walk in.','tutor-magic'),
  lesson('magic','Cast your first spell','Tap Magic to equip your staff, then attack the practice dummy. A cast uses runes and trains your own Magic level.','magic-dummy'),
  lesson('talk-finish','Ready for the realm','Return to Rowan in the square. Your apprenticeship is complete; the kingdoms and his first quest await.','tutor-guide')
 ];
+
+// Tutorial guidance is independent of the player's selected walking destination.
+let tutorialRouteCache={key:'',at:-1,points:[]};
+function tutorialGoal(){
+ if(!inWorld()||!s.character||!tutorialStep()||Math.hypot(px-43,py-52)>95)return null;
+ const step=tutorialStep();let goal=step.point();
+ if(step.event==='loot')goal=(s.groundLoot||[]).filter(o=>o.scene===currentScene&&o.items.bones>0).sort((a,b)=>Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py))[0]||null;
+ if(!goal||goal.collected||goal.dead>time)return null;
+ const inside=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py)),room=buildings.find(b=>b.walkIn&&(goal.interiorBuilding===b.service.destination||withinWalkIn(b,goal.x,goal.y)));
+ const closed=inside&&inside!==room&&inside.service.openedAt===undefined?inside:room&&inside!==room&&room.service.openedAt===undefined?room:null;
+ if(closed){const door=closed.service;return {...door,x:door.x,y:closed===inside?door.y-2:door.y,tutorialDoor:door};}
+ return goal;
+}
+function tutorialGuideRoute(){
+ const goal=tutorialGoal();if(!goal)return [];
+ const key=[s.tutorial,s.x,s.y,goal.id??'loot',goal.x,goal.y,(s.openDoors||[]).join(',')].join(':');
+ if(key===tutorialRouteCache.key&&time-tutorialRouteCache.at<.6)return tutorialRouteCache.points;
+ const reach=fighter(goal)?attackRange():1.45,points=route(goal.x,goal.y,!goal.tutorialDoor&&goal.type!=='loot',reach)||[];
+ tutorialRouteCache={key,at:time,points};return points;
+}
+
 let tutorialCameraStart=null,tutorialShownIndex=null;
 function tutorialStep(){return Number.isInteger(s.tutorial)?tutorialSteps[s.tutorial]||null:null;}
 function normalizeJourney(state,original=state){
@@ -68,9 +89,9 @@ function renderTutorial(){
  if(tutorialShownIndex!==s.tutorial&&s.tutorial<2){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}tutorialShownIndex=s.tutorial;
  $('tutCount').textContent='APPRENTICESHIP · '+(s.tutorial+1)+' / '+tutorialSteps.length;
  $('tutTitle').textContent=step.title;$('tutDesc').textContent=step.desc;
- const far=!inWorld()||Math.hypot(s.x-43,s.y-52)>90;
+ const far=!inWorld()||Math.hypot(s.x-43,s.y-52)>90,goal=tutorialGoal();
  $('guide').hidden=!far&&!step.point()&&!['bag','skills','loot','bury','fire','spirit'].includes(step.event);
- $('guide').textContent=far?'Return to the tutors':step.point()?'Go to '+step.point().name:['bag','skills','bury','fire'].includes(step.event)?'Open '+(step.event==='skills'?'Skills':'Bag'):step.event==='spirit'?'Open Spirits':'Find my loot';
+ $('guide').textContent=far?'Return to the tutors':goal?.tutorialDoor?'Open '+goal.name+' door':goal?'Go to '+goal.name:['bag','skills','bury','fire'].includes(step.event)?'Open '+(step.event==='skills'?'Skills':'Bag'):step.event==='spirit'?'Open Spirits':'Find my loot';
 }
 function openTutorialPanel(which){$('gameDock').hidden=false;document.body.classList.add('panels-open');$('togglePanels').setAttribute('aria-expanded','true');$('togglePanels').textContent='Close panels';tab=which;panelPage=0;syncTabs();tutorialEvent(which);renderPanel();}
 function guide(){
@@ -78,46 +99,48 @@ function guide(){
  if(!inWorld()||Math.hypot(s.x-43,s.y-52)>90){dialog('Continue in Briarhaven','<p>Your tutors are in the starting village. Return to Rowan’s square to continue this lesson. Your belongings, levels and bank come with you.</p>',[['Return to Briarhaven',()=>{close();activateScene('overworld',42,51);renderTutorial();}],['Stay here',close]]);return;}
  if(['bag','skills','bury','fire'].includes(step.event)){openTutorialPanel(step.event==='skills'?'skills':'bag');return;}
  if(step.event==='spirit'&&s.spirits.cinder){openSpirits();return;}
- let point=step.point();if(step.event==='loot')point=(s.groundLoot||[]).filter(o=>o.scene===currentScene).sort((a,b)=>Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py))[0];
- if(point){if(point.dead>time){toast('The practice target will be ready again shortly.');return;}engage(point);}
+ let point=tutorialGoal();
+ if(point){if(point.dead>time){toast('The practice target will be ready again shortly.');return;}engage(point.tutorialDoor||point);}
  else toast(step.event==='loot'?'Defeat another rat to find fresh drops.':'Follow the lesson above.');
 }
 
 const TUTORS={
  guide:{name:'Elder Rowan',at:[43,52],look:0,text:'Welcome to Briarhaven. The minimap moves you to a place when you tap it. The camera arrows turn your view. Bag & menus holds your belongings, equipment and skills. Tap an item for its usual action, and hold for its other options. Look at your bag and skills, then meet Forester Ash west of the square.'},
- woods:{name:'Forester Ash',at:[29,51],look:2,text:'Trees supply logs and Woodcutting experience. Tap the oak beside me to cut one, then tap that log in your bag on clear outdoor ground to light a fire. Firemaking has its own level. When your fire is lit, follow the path to Fisher Nell at Stillwater.'},
- fishing:{name:'Fisher Nell',at:[28,63],look:1,text:'Tap the fishing ripples at the shore. Your rod is already with you. Every catch trains Fishing, but raw trout needs cooking. Take your catch to Cook Bram by the inn.'},
- cooking:{name:'Cook Bram',at:[38,45],look:3,text:'A catch is only a meal after it is cooked. With raw trout in your bag, tap my cooking hearth to cook one and train Cooking. Try the food, then visit Smith Orin east of the square.'},
- mining:{name:'Smith Orin',at:[62,46],look:0,text:'Mine the iron beside the forge. At the practice forge, one tap smelts ore into a bar; the next works that bar into arrowheads. Mining and Smithing have separate levels. When you have made arrowheads, Captain Vale will teach you to fight.'},
- combat:{name:'Captain Vale',at:[52,54],look:1,text:'Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. Pick a weapon using the style buttons, then choose what to train. Defeat the dummy, try the rat south of the yard, and collect its drops. Banker Ada is your next stop.'},
- bank:{name:'Banker Ada',at:[59,44],look:3,text:'Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
- worship:{name:'Keeper Sera',at:[40,60],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, Arcanist Elowen will teach you magic.'},
- magic:{name:'Arcanist Elowen',at:[58,57],look:3,text:'Equip your staff with the Magic button. Wind spark uses one rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then return to Rowan to finish your apprenticeship.'}
+ woods:{name:'Forester Ash',at:[28,49],look:2,text:'Trees supply logs and Woodcutting experience. Tap the tree beside me to cut one, then tap that log in your bag on clear outdoor ground to light a fire. Firemaking has its own level. When your fire is lit, follow the path to Fisher Nell at Stillwater.'},
+ fishing:{name:'Fisher Nell',at:[28,63],look:1,text:'Tap the fishing ripples at the shore. Your net is already with you. Every catch trains Fishing, but raw shrimp needs cooking. Take your catch to Cook Bram by the inn.'},
+ cooking:{name:'Cook Bram',at:[38,45],look:3,text:'A catch is only a meal after it is cooked. With raw shrimp in your bag, tap my cooking hearth to cook one and train Cooking. Try the food, then visit Smith Orin east of the square.'},
+ mining:{name:'Smith Orin',at:[68,43],look:0,text:'Mine copper and tin in my yard. The furnace combines them into bronze. At the anvil, work a bronze bar into a dagger. Better ores and recipes need higher levels. Mining and Smithing have separate levels. When you have made your dagger, Captain Vale will teach you to fight.'},
+ combat:{name:'Captain Vale',at:[51,56],look:1,text:'Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. Pick a weapon using the style buttons, then choose what to train. Defeat the dummy, try the rat south of the yard, and collect its drops. Banker Ada is your next stop, inside Briarhaven Bank to the southeast. Open the door and walk in.'},
+ bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Briarhaven Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
+ worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, Arcanist Elowen will teach you magic in the school west of this shrine.'},
+ magic:{name:'Arcanist Elowen',at:[33,66],look:3,text:'Welcome to the village magic school. Equip your staff with the Magic button. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then return to Rowan to finish your apprenticeship.'}
 };
 let tutorialVillageReady=false;
 function setupTutorialVillage(){
  if(tutorialVillageReady)return;tutorialVillageReady=true;
  const world=worldScenes.overworld,place=(o,x,y)=>{Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});return o;};
+ setupTutorWorkplaces(world);
  const occupied=(x,y,except)=>expandedWater(x,y)||world.buildings.some(b=>x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h)||world.objects.some(o=>o!==except&&!o.walkThrough&&!fighter(o)&&!o.collected&&o.x===x&&o.y===y);
  const fit=(o,x,y)=>{for(let r=0;r<12;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.abs(dx)!==r&&Math.abs(dy)!==r)continue;const a=x+dx,b=y+dy;if(!occupied(a,b,o))return place(o,a,b);}throw new Error('No tutor position for '+o.name);};
  const make=(role,type,name,x,y,extra={})=>{const o={id:2800000+world.objects.filter(o=>o.id>=2800000).length,type,name,sprite:5,dead:0,hitAt:-100,attackAt:-100,tutorialRole:role,...extra};fit(o,x,y);world.objects.push(o);return o;};
  for(const [role,t]of Object.entries(TUTORS)){
-  if(role==='guide'){elderObj.tutorialRole='tutor-guide';elderObj.tutor='guide';continue;}
-  make('tutor-'+role,'tutor',t.name,...t.at,{tutor:role,characterSprite:true,look:t.look,sprite:t.look,_stationary:true});
+  if(role==='guide'){elderObj.tutorialRole='tutor-guide';elderObj.tutor='guide';elderObj._stationary=true;continue;}
+  const room=role==='bank'?'realm_briarhaven_4':role==='magic'?'realm_briarhaven_3':null;const o=make('tutor-'+role,'tutor',t.name,...t.at,{tutor:role,characterSprite:true,look:t.look,sprite:t.look,_stationary:true,...(room?{interiorBuilding:room}:{})});if(room)place(o,...t.at);
  }
- for(const [role,x,y]of [['tree',26,51],['ore',60,49]]){const o=tutorialObject(role);if(o)fit(o,x,y);}
+ for(const [role,x,y]of [['tree',24,48],['ore',73,46]]){const o=tutorialObject(role);if(o)fit(o,x,y);}
  // The fishing marker occupies a water cell beside a walkable eastern bank.
  const fishing=tutorialObject('fish');let fishingSpot=null;
  for(let y=60;y<71;y++)for(let x=18;x<28;x++)if(expandedWater(x,y)&&!expandedWater(x+1,y)&&!occupied(x+1,y,null)&&(!fishingSpot||Math.hypot(x-25,y-64)<Math.hypot(fishingSpot.x-25,fishingSpot.y-64)))fishingSpot={x,y};
  if(fishing&&fishingSpot)place(fishing,fishingSpot.x,fishingSpot.y);
- dummyObj.tutorialRole='dummy';fit(dummyObj,49,58);dummyObj.atk=0;
- const rat=world.objects.find(o=>o.kind==='rat');rat.tutorialRole='rat';fit(rat,47,78);
+ dummyObj.tutorialRole='dummy';fit(dummyObj,48,58);dummyObj.atk=0;
+ const rat=world.objects.find(o=>o.kind==='rat');rat.tutorialRole='rat';fit(rat,46,62);
  make('hearth','camp','Cooking hearth',39,46,{cooking:true});
- make('practice-forge','practiceForge','Practice forge',61,47);
+ make('practice-forge','practiceForge','Practice forge',66,44);
  make('town-resident','villager','Tobin the beggar',54,49,{characterSprite:true,civilianModel:'chosan',_stationary:true,talk:'“A warm meal and dry boots make a fine day. Mara’s store is just here, and the cooking hearth is west by the inn. If you find work, keep your tools on your belt—you’ll want room in your bag.”'});
- const dummy=make('magic-dummy','dummy','Spell practice dummy',61,57,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';
- const cinder=world.objects.find(o=>o.spiritId==='cinder');if(cinder){cinder.tutorialRole='cinder';fit(cinder,38,61);}SPIRITS.cinder.hint='Beside Keeper Sera at Briarhaven’s shrine.';
- if(inWorld())objects.splice(0,objects.length,...world.objects);realmNavigation.clear();miniTerrain=null;
+ const dummy=make('magic-dummy','dummy','Spell practice dummy',36,67,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';dummy.interiorBuilding='realm_briarhaven_3';place(dummy,36,67);
+ const cinder=world.objects.find(o=>o.spiritId==='cinder');if(cinder){cinder.tutorialRole='cinder';fit(cinder,44,64);}SPIRITS.cinder.hint='Beside Keeper Sera at Briarhaven’s shrine.';
+ dressTutorWorkplaces(world);setupSkillWorld(world);
+ if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
  normalizeJourney(s);renderTutorial();
 }
 function talkTutor(o){
@@ -128,19 +151,20 @@ function talkTutor(o){
  if(expected==='talk-'+role)buttons.push(['Continue',()=>{close();tutorialEvent('talk-'+role);}]);
  if(role==='bank')buttons.push(['Open bank',()=>{close();openBank();}]);
  if(role==='worship'&&s.tutorial< tutorialSteps.length&&!(s.bag.bones>0))buttons.push(['Take practice bones',()=>{if(addToBag('bones')){close();save();toast('Bury the practice bones from your bag.');}}]);
- if(role==='magic'&&s.tutorial<tutorialSteps.length){if(!s.gear.oakStaff)buttons.push(['Borrow a staff',()=>{if(!canCarry('oakStaff')){toast('Make space in your bag.');return;}s.gear.oakStaff=1;close();}]);if(s.bag.runes<1)buttons.push(['Take 5 practice runes',()=>{if(addToBag('runes',5))close();}]);}
+ if(role==='magic'&&s.tutorial<tutorialSteps.length){if(!s.gear.oakStaff)buttons.push(['Borrow a staff',()=>{if(!canCarry('oakStaff')){toast('Make space in your bag.');return;}s.gear.oakStaff=1;close();}]);if(s.bag.airRunes<1)buttons.push(['Take 10 air runes',()=>{if(addToBag('airRunes',10))close();}]);if(s.bag.runes<1)buttons.push(['Take 5 practice runes',()=>{if(addToBag('runes',5))close();}]);}
  dialog(t.name,'<p>“'+t.text+'”</p>',buttons);
 }
 function handleTutorialInteraction(o){
  if(o.tutor){stop();talkTutor(o);return true;}
+ if(o.workstation==='furnace'){stop();if(tutorialStep()?.event==='smelt')smeltMetal('bronze');else openSmithing('furnace');return true;}
  if(o.type==='practiceForge'){stop();workPracticeForge();return true;}
- if(o.type==='camp'&&o.cooking&&s.bag.rawTrout>0){stop();cookTrout();return true;}
+ if(o.type==='camp'&&o.cooking&&Object.keys(s.bag).some(id=>s.bag[id]>0&&ITEMS[id]?.rawFish)){stop();cookTrout();return true;}
  return false;
 }
 
-ITEMS.rawTrout={name:'Raw trout',icon:10,desc:'Cook beside a fire or hearth to make a meal.'};
+ITEMS.rawShrimp={name:'Raw trout',icon:10,desc:'Cook beside a fire or hearth to make a meal.'};
 ITEMS.ironBar={name:'Iron bar',icon:9,desc:'Smelted iron. Work it at a forge to make arrowheads.'};
-ITEMS.arrowheads={name:'Iron arrowheads',icon:12,desc:'Combine ten arrowheads with an oak log to make ten arrows.'};
+ITEMS.arrowheads={name:'Iron arrowheads',icon:12,desc:'Combine ten arrowheads with a log to make ten arrows.'};
 STACKABLE.add('arrowheads');
 let practiceFireSerial=2900000;
 function lightLog(){
@@ -151,9 +175,9 @@ function lightLog(){
  s.bag.logs--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,expires:time+PLAYER_FIRE_LIFETIME/1000,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};worldScenes.overworld.objects.push(o);objects.push(o);gain('Firemaking',20);tutorialEvent('fire');renderUI();save();toast('Fire lit · +20 Firemaking XP');return true;
 }
 function cookTrout(){
- if(!s.bag.rawTrout){toast('Catch a raw trout first.');return false;}
+ if(!s.bag.rawShrimp){toast('Net some shrimp first.');return false;}
  if(!objects.some(o=>o.type==='camp'&&o.dead<=time&&Math.hypot(o.x-px,o.y-py)<=2)){toast('Stand beside a campfire or cooking hearth to cook.');return false;}
- s.bag.rawTrout--;s.bag.fish=(s.bag.fish||0)+1;gain('Cooking',20);tutorialEvent('cook');renderUI();save();toast('Trout cooked · +20 Cooking XP');return true;
+ s.bag.rawShrimp--;s.bag.fish=(s.bag.fish||0)+1;gain('Cooking',20);tutorialEvent('cook');renderUI();save();toast('Trout cooked · +20 Cooking XP');return true;
 }
 function workPracticeForge(){
  if(!useBeltTool('hammer'))return false;
@@ -163,7 +187,7 @@ function workPracticeForge(){
  else{toast('Bring iron ore or an iron bar to the forge.');return false;}
  renderUI();save();return true;
 }
-function finishArrows(){if((s.bag.arrowheads||0)<10||s.bag.logs<1){toast('You need 10 arrowheads and an oak log.');return false;}s.bag.arrowheads-=10;s.bag.logs--;s.bag.arrows=(s.bag.arrows||0)+10;gain('Smithing',10);renderUI();save();return true;}
+function finishArrows(){if((s.bag.arrowheads||0)<10||s.bag.logs<1){toast('You need 10 arrowheads and a log.');return false;}s.bag.arrowheads-=10;s.bag.logs--;s.bag.arrows=(s.bag.arrows||0)+10;gain('Smithing',10);renderUI();save();return true;}
 function transferBank(id,withdraw=false,quantity=1,refresh=true){
  const item=ITEMS[id];if(!item)return false;const bag=item.slot?s.gear:s.bag;
  if(!(quantity>0)||(!Number.isFinite(quantity)&&quantity!==Infinity))return false;quantity=quantity===Infinity?quantity:Math.floor(quantity);s.bank=s.bank||{};
@@ -176,4 +200,48 @@ function transferBank(id,withdraw=false,quantity=1,refresh=true){
 }
 function openBank(){
  openTrade('bank');
+}
+
+// Permanent village workplaces. Their supplies and entrances remain after the course.
+const tutorialWorkplaces=[
+ {id:'square',name:'Briarhaven square',x:43,y:52,rx:4,ry:3,paved:true},
+ {id:'woodland',name:'Ash’s timber yard',x:27,y:49,rx:5,ry:4},
+ {id:'fishing',name:'Stillwater landing',x:28,y:64,rx:2.7,ry:3.7},
+ {id:'kitchen',name:'Wayfarer’s outdoor kitchen',x:36,y:46,rx:4.5,ry:3,paved:true},
+ {id:'smithy',name:'Orin’s smithing yard',x:68,y:44,rx:5,ry:4,paved:true},
+ {id:'training',name:'Briarhaven training yard',x:49,y:59,rx:4.3,ry:4.5},
+ {id:'shrine',name:'Shrine of the First Flame',x:42,y:64,rx:2.8,ry:3,paved:true},
+ {id:'bank',name:'Briarhaven Bank',x:58,y:74,rx:3,ry:2,paved:true},
+ {id:'school',name:'Briarhaven magic school',x:34,y:73,rx:3,ry:2,paved:true}
+];
+function setupTutorWorkplaces(world){
+ for(const [id,name]of [['realm_briarhaven_4','Briarhaven Bank'],['realm_briarhaven_3','Briarhaven magic school']]){
+  const b=world.buildings.find(b=>b.service?.destination===id);if(!b)continue;b.name=name;b.service.name=name;
+  world.objects=world.objects.filter(o=>o.interiorBuilding!==id);if(worldScenes[id])worldScenes[id].title=name;
+ }
+ // Clear incidental scenery from work areas before placing the authored arrangement.
+ world.objects=world.objects.filter(o=>o.tutorialRole||o.type==='door'||fighter(o)||o.interiorBuilding||!['tree','ore','prop','crop'].includes(o.type)||!tutorialWorkplaces.some(a=>Math.hypot((o.x-a.x)/a.rx,(o.y-a.y)/a.ry)<1.15));
+}
+function dressTutorWorkplaces(world){
+ let id=3700000;
+ const prop=(name,x,y,extra={})=>{const o={id:id++,type:'prop',name,x,y,homeX:x,homeY:y,drawX:x,drawY:y,sprite:12,dead:0,...extra};world.objects.push(o);return o;};
+ for(const a of tutorialWorkplaces){prop(a.name,a.x,a.y,{workplace:a.id,walkThrough:true});}
+ for(const [name,x,y]of [
+  ['Village noticeboard',45,50],['Bench',46,52],['Flower planter',41,54],
+  ['Log pile',25,45],['Log pile',23,46],['Woodcutter’s tool table',29,46],['Axe chopping block',26,47],['Supplies',30,48],
+  ['Fishing supplies',28,61],['Barrel',29,65],['Bench',29,67],
+  ['Cooking table',35,44],['Barrel',32,44],['Fresh produce crate',33,46],['Bench',34,48],
+  ['Smith’s tool table',72,42],['Log pile',64,42],['Ore supplies',72,44],['Forge furnace',66,42],
+  ['Weapon rack',52,58],['Arrow target',47,56],['Training supplies',51,61],
+  ['Stone altar',41,64],['Offering bowl',40,62],['Bench',43,67]
+ ])prop(name,x,y);
+ for(const [name,x,y,room]of [
+  ['Bank counter',56,69,'realm_briarhaven_4'],['Bank chest',60,67,'realm_briarhaven_4'],['Bank chest',60,69,'realm_briarhaven_4'],['Ledger table',56,66,'realm_briarhaven_4'],
+  ['Bookcase',31,64,'realm_briarhaven_3'],['Bookcase',32,64,'realm_briarhaven_3'],['Study table',31,67,'realm_briarhaven_3'],['Rune supplies',37,64,'realm_briarhaven_3']
+ ])prop(name,x,y,{interiorBuilding:room});
+ // Short open fence runs frame the yard; the north/south paths stay two tiles wide.
+ for(const [x,y,h]of [[45,57,0],[45,59,0],[53,60,0],[47,64,Math.PI/2],[49,64,Math.PI/2]])prop('Training yard fence',x,y,{heading:h});
+ for(const [x,y,h]of [[22,47,0],[22,49,0],[25,44,Math.PI/2],[27,44,Math.PI/2]])prop('Timber yard fence',x,y,{heading:h});
+ const lanes=[[[43,52],[28,50]],[[28,50],[28,63]],[[28,63],[36,48]],[[43,52],[68,45]],[[43,52],[50,55]],[[50,62],[58,74]],[[43,64],[34,73]],[[43,64],[58,74]]];
+ for(const [a,b]of lanes)curveRoad(a[0]+.5,a[1]+.5,b[0]+.5,b[1]+.5,.72);
 }

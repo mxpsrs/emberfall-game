@@ -33,7 +33,7 @@ function drawMinimap(){
   g.drawImage(tile,(x*32-bounds.x)*sx,(z*32-bounds.y)*sy,32*sx,32*sy);
  }
  const point=(x,y)=>[(x+.5-bounds.x)*sx,(y+.5-bounds.y)*sy];
- if(path.length){g.strokeStyle='#e6d8a0';g.lineWidth=1.5;g.beginPath();for(const [i,p]of [[px,py],...path].entries()){const q=point(...p);if(i)g.lineTo(...q);else g.moveTo(...q);}g.stroke();}
+ const guidePath=tutorialGuideRoute();if(guidePath.length){g.strokeStyle='#e6d8a0';g.lineWidth=1.5;g.beginPath();for(const [i,p]of [[px,py],...guidePath].entries()){const q=point(...p);if(i)g.lineTo(...q);else g.moveTo(...q);}g.stroke();}
  for(const o of objects){if(o.dead>time||o.collected||(o.type==='boss'&&s.boss)||['tree','prop','crop'].includes(o.type)||o.x<bounds.x||o.x>bounds.x+bounds.w||o.y<bounds.y||o.y>bounds.y+bounds.h)continue;const q=point(o.x,o.y);g.fillStyle=fighter(o)?'#e2836c':o.tutor?'#ffe1a0':'#d8d3b5';g.beginPath();g.arc(...q,o.tutor?2.5:2,0,Math.PI*2);g.fill();}
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene){const q=point(pile.x,pile.y);g.fillStyle='#f4d45e';g.fillRect(q[0]-1.5,q[1]-1.5,3,3);}
  const [x,y]=point(px,py);g.fillStyle='#fff5d0';g.strokeStyle='#16271e';g.lineWidth=2;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.stroke();

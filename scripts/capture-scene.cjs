@@ -9,13 +9,14 @@ const sandbox={processCaptureClip:process.env.EMBERFALL_CAPTURE_CLIP||'idle',con
  captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',captureIsolated:process.env.EMBERFALL_CAPTURE_ISOLATED==='1',captureGear:process.env.EMBERFALL_CAPTURE_GEAR?JSON.parse(process.env.EMBERFALL_CAPTURE_GEAR):null,
  capture(data){fs.writeFileSync(path.join(output,motionFrames>1?'scene-'+String(captureIndex++).padStart(3,'0')+'.json':'scene.json'),JSON.stringify(data));},motionFrames,captureYaw:Number(process.env.EMBERFALL_CAPTURE_YAW||-.55),captureTilt:Number(process.env.EMBERFALL_CAPTURE_TILT||.85),captureZoom:Number(process.env.EMBERFALL_CAPTURE_ZOOM||0),captureSex:process.env.EMBERFALL_CAPTURE_SEX||'male',choice:process.argv[3]||'willow-inside',posePhase:Number(process.argv[4]||0),captureWidth:Number(process.env.EMBERFALL_CAPTURE_WIDTH||1112),captureHeight:Number(process.env.EMBERFALL_CAPTURE_HEIGHT||512)};
 vm.createContext(sandbox);
-for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
+for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();screen={w:captureWidth,h:captureHeight};s.character={name:'Adventurer',look:0,frame:captureSex,hair:0,race:'human'};s.equipment={weapon:'bronzeSword',body:'leatherArmor'};s.worldClock=120;time=1;assetsReady=true;
 if(captureGear)s.equipment=captureGear;
 const captureInn=buildings.find(b=>b.service?.destination==='willowInn');
 if(choice==='willow-inside')activateScene('overworld',captureInn.service.x,captureInn.service.y-2);
 else if(choice==='willow-outside')activateScene('overworld',captureInn.service.x,captureInn.service.y+7);
+else if(choice.startsWith('tutor-')){const o=tutorialTutor(choice.slice(6));const b=o.interiorBuilding&&buildings.find(b=>b.service?.destination===o.interiorBuilding);if(b)setWalkInDoor(b.service,true,true);const p=route(o.x,o.y,true,1.45);const end=p?.at(-1)||[o.x+1,o.y];activateScene('overworld',...end);}
 else if(choice==='briarhaven')activateScene('overworld',42,51);
 else if(choice==='hills')activateScene('overworld',575,230);
 else if(choice==='river')activateScene('overworld',119,61);

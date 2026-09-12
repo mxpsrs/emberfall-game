@@ -48,21 +48,22 @@ function quadrupedArt(r,o,x,z,heading=Math.atan2(px-x,py-z),phase=time*9){
 };
 // Item silhouettes use the same materials and lighting as worn equipment.
 function drawRealmItem(g,id){const w=g.canvas?.width||96,h=g.canvas?.height||96,v={yaw:-.45,tilt:.4,zoom:Math.min(w,h)*.55},project=(x,y,z)=>{const p=project3(x,y,z,v,0,0,0,0);p.x+=w/2;p.y+=h*.86;return p;},r=painter3(g,project),m=realmMaterials,prev=meshDetail3;meshDetail3=1;
- if(id==='copperNecklace'){briarEmit(r,modularMesh('male','Emberfall_Necklace'),briarTransform(0,-5.05,.14,4));}
+ if(ITEMS[id]?.modelTint||ITEMS[id]?.modelScale){const mesh=wornModularMesh('male',id);if(mesh){const [lo,hi]=mesh.bounds,k=1.3/Math.max(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2]);briarEmit(r,mesh,briarTransform(-(lo[0]+hi[0])*k/2,.78-(lo[1]+hi[1])*k/2,-(lo[2]+hi[2])*k/2,k));}}
+ else if(id==='copperNecklace'){briarEmit(r,modularMesh('male','Emberfall_Necklace'),briarTransform(0,-5.05,.14,4));}
  else if(/Sword/.test(id)){beamArt(r,[0,.05,0],[0,.35,0],.055,m.leather);beamArt(r,[-.23,.35,0],[.23,.35,0],.045,m.gold);const metal=id==='bronzeSword'?'#c9a16b':m.iron;r.face([[-.095,.4,0],[0,1.48,0],[0,.4,.05]],metal);r.face([[0,.4,.05],[0,1.48,0],[.095,.4,0]],shade3(metal,1.18));}
- else if(id==='shortbow'){const pts=Array.from({length:9},(_,i)=>[Math.sin(i/8*Math.PI)*.38,.1+i/8*1.25,0]);for(let i=0;i<8;i++)beamArt(r,pts[i],pts[i+1],.033,m.oak);beamArt(r,[0,.1,0],[0,1.35,0],.01,'#cfc3a0');}
- else if(id==='oakStaff'){beamArt(r,[0,0,0],[0,1.3,0],.047,m.oak);crownArt(r,0,1.4,0,.26,.3,.26,'#91b9b7',2);}
+ else if(ITEMS[id]?.style==='ranged'&&ITEMS[id]?.slot==='weapon'){const pts=Array.from({length:9},(_,i)=>[Math.sin(i/8*Math.PI)*.38,.1+i/8*1.25,0]);for(let i=0;i<8;i++)beamArt(r,pts[i],pts[i+1],.033,m.oak);beamArt(r,[0,.1,0],[0,1.35,0],.01,'#cfc3a0');}
+ else if(ITEMS[id]?.style==='magic'&&ITEMS[id]?.slot==='weapon'){beamArt(r,[0,0,0],[0,1.3,0],.047,m.oak);crownArt(r,0,1.4,0,.26,.3,.26,'#91b9b7',2);}
  else if(id==='ironHelm'){oval3(r,0,.72,0,.8,.85,.7,m.iron);box3(r,0,.69,.33,.59,.09,.04,'#344649');}
  else if(id==='ironShield'){const pts=[[-.46,1.16,0],[.46,1.16,0],[.4,.62,0],[0,.1,0],[-.4,.62,0]],center=[0,.8,.17];for(let i=0;i<5;i++)surface3(r,[pts[i],pts[(i+1)%5],center],m.iron);oval3(r,0,.81,.18,.2,.2,.07,m.gold);}
  else if(id==='leatherBoots'){for(const x of [-.21,.21]){limb3(r,x,.59,0,.33,.8,.36,m.leather);oval3(r,x,.19,.12,.34,.31,.62,m.leather);}}
- else if(id==='leatherArmor'||id==='mageRobe'){profile3(r,0,.82,0,.89,.95,.52,[[-.5,.66],[-.2,.7],[.3,1],[.5,.78]],id==='mageRobe'?'#695d82':m.leather);for(const side of [-1,1])oval3(r,side*.47,1.08,0,.29,.32,.4,id==='mageRobe'?'#695d82':m.leather);box3(r,0,.48,.23,.65,.09,.025,m.gold);}
+ else if(ITEMS[id]?.slot==='body'){profile3(r,0,.82,0,.89,.95,.52,[[-.5,.66],[-.2,.7],[.3,1],[.5,.78]],ITEMS[id]?.magicAccuracy>0?'#695d82':m.leather);for(const side of [-1,1])oval3(r,side*.47,1.08,0,.29,.32,.4,ITEMS[id]?.magicAccuracy>0?'#695d82':m.leather);box3(r,0,.48,.23,.65,.09,.025,m.gold);}
 
- else if(id==='logs'){for(const [x,y]of [[-.2,.35],[.2,.35],[0,.66]]){beamArt(r,[x,y,-.35],[x,y,.4],.19,m.timber,10);profile3(r,x,y,.41,.35,.015,.35,[[-.5,1],[.5,1]],m.oak,a=>[a[0],y+(a[2]-.41),.41+(a[1]-y)],10);}}
- else if(id==='ore'){crownArt(r,-.15,.55,0,.85,.75,.7,'#7c8582',2);crownArt(r,.27,.35,.1,.55,.45,.5,'#abb1a5',5);}
+ else if(ITEMS[id]?.logType){for(const [x,y]of [[-.2,.35],[.2,.35],[0,.66]]){beamArt(r,[x,y,-.35],[x,y,.4],.19,m.timber,10);profile3(r,x,y,.41,.35,.015,.35,[[-.5,1],[.5,1]],m.oak,a=>[a[0],y+(a[2]-.41),.41+(a[1]-y)],10);}}
+ else if(ITEMS[id]?.resource||ITEMS[id]?.metal){crownArt(r,-.15,.55,0,.85,.75,.7,'#7c8582',2);crownArt(r,.27,.35,.1,.55,.45,.5,'#abb1a5',5);}
  else if(id==='ashes'){crownArt(r,0,.18,0,1.25,.23,.85,'#8f9187',5);crownArt(r,-.22,.26,.1,.48,.18,.4,'#b4b3a5',3);crownArt(r,.22,.19,.15,.3,.11,.3,'#5e655d',2);}
- else if(id==='fish'){oval3(r,0,.68,0,1.05,.36,.3,'#86a5a1');r.face([[.48,.7,0],[.78,.95,0],[.76,.43,0]],'#647f7d');r.face([[-.1,.83,0],[.1,1.08,0],[.29,.81,0]],'#78918a');oval3(r,-.38,.73,.14,.065,.065,.03,'#283c3c');}
+ else if(ITEMS[id]?.heal||ITEMS[id]?.rawFish){oval3(r,0,.68,0,1.05,.36,.3,'#86a5a1');r.face([[.48,.7,0],[.78,.95,0],[.76,.43,0]],'#647f7d');r.face([[-.1,.83,0],[.1,1.08,0],[.29,.81,0]],'#78918a');oval3(r,-.38,.73,.14,.065,.065,.03,'#283c3c');}
  else if(id==='fang'){profile3(r,0,.72,0,.44,1.1,.35,[[-.5,.03],[-.2,.5],[.25,1],[.5,.8]],'#dfd5b3',a=>[a[0]+(a[1]-.5)*.2,a[1],a[2]]);}
  else if(id==='bones'){beamArt(r,[-.3,.3,0],[.3,1.12,0],.085,'#d8d1b1');for(const [x,y]of [[-.3,.3],[.3,1.12]])for(const dx of [-.07,.07])oval3(r,x+dx,y,0,.17,.2,.2,'#e1d9bc');}
- else if(id==='arrows'){for(const x of [-.18,0,.18]){beamArt(r,[x,.15,0],[x,1.3,0],.022,m.oak);r.face([[x-.065,1.25,0],[x,1.48,0],[x+.065,1.25,0]],m.iron);r.face([[x,.18,0],[x-.1,.05,0],[x-.1,.29,0],[x,.4,0]],'#d3cdb7');}}
- else if(id==='runes'){crownArt(r,0,.6,0,.85,.9,.3,'#99a5a1',2);beamArt(r,[-.18,.43,.17],[.06,.94,.17],.035,'#a8e4dc',4);beamArt(r,[.06,.94,.17],[.22,.62,.17],.035,'#a8e4dc',4);beamArt(r,[-.07,.62,.17],[.22,.62,.17],.035,'#a8e4dc',4);}
+ else if(ITEMS[id]?.rangedStrength||id.includes('Arrow')||id==='arrowheads'){for(const x of [-.18,0,.18]){beamArt(r,[x,.15,0],[x,1.3,0],.022,m.oak);r.face([[x-.065,1.25,0],[x,1.48,0],[x+.065,1.25,0]],m.iron);r.face([[x,.18,0],[x-.1,.05,0],[x-.1,.29,0],[x,.4,0]],'#d3cdb7');}}
+ else if(id==='runes'||id.endsWith('Runes')){crownArt(r,0,.6,0,.85,.9,.3,'#99a5a1',2);beamArt(r,[-.18,.43,.17],[.06,.94,.17],.035,'#a8e4dc',4);beamArt(r,[.06,.94,.17],[.22,.62,.17],.035,'#a8e4dc',4);beamArt(r,[-.07,.62,.17],[.22,.62,.17],.035,'#a8e4dc',4);}
  else {meshDetail3=prev;return false;}r.flush();meshDetail3=prev;return true;}

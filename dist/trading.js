@@ -7,7 +7,7 @@ function spareItemCount(id){const item=ITEMS[id];return Math.max(0,(item?.slot?s
 function shopUnitPrice(id){const row=shopStock.find(row=>row[0]===id);return row?Math.max(1,Math.ceil(row[2]/row[1])):null;}
 function shopSalePrice(id){
  if(shopPrices[id])return shopPrices[id];const buy=shopUnitPrice(id);if(buy)return Math.max(1,Math.floor(buy/2));
- return {bronzeSword:3,ironSword:24,shortbow:8,oakStaff:10,leatherArmor:12,leatherBoots:5,rawTrout:1,ironBar:6,arrowheads:1,ashes:1}[id]||0;
+ return ITEMS[id]?.value||{bronzeSword:3,ironSword:24,shortbow:8,oakStaff:10,leatherArmor:12,leatherBoots:5,rawTrout:1,ironBar:6,arrowheads:1,ashes:1}[id]||0;
 }
 function endTrade(){
  if(!window.realmTrade)return;window.realmTrade=null;document.body.classList.remove('trade-open');$('modal').classList.remove('trade-window');
@@ -46,7 +46,7 @@ function renderTradeContents(){
  for(const [id,count]of rows){
   const button=document.createElement('button');button.type='button';button.className='trade-slot';button.appendChild(itemCanvas(id));
   const qty=document.createElement('b');qty.textContent=bank?formatTradeCount(count):'∞';button.appendChild(qty);
-  if(!bank){const cost=document.createElement('small');cost.textContent=shopUnitPrice(id)+' gp';button.appendChild(cost);}
+  if(!bank){const cost=document.createElement('small');cost.textContent=shopUnitPrice(id)+' gp'+(ITEMS[id].requirements?' · '+Object.entries(ITEMS[id].requirements).map(([k,n])=>k.slice(0,3)+' '+n).join(' / '):'');button.appendChild(cost);}
   button.title=ITEMS[id].name+(bank?' · '+count:' · '+shopUnitPrice(id)+' coins each');bindItemPress(button,id,false,'stock');grid.appendChild(button);
  }
  const emptyCount=Math.max(0,(bank?40:24)-rows.length);for(let i=0;i<emptyCount;i++){const empty=document.createElement('span');empty.className='trade-slot trade-empty-slot';empty.setAttribute('aria-hidden','true');grid.appendChild(empty);}

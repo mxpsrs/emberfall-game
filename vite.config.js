@@ -17,6 +17,7 @@ export default defineConfig({
  server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
  plugins:[{name:'emberfall-local-api',configureServer(server){server.middlewares.use(async(req,res,next)=>{
   const path=req.url?.split('?')[0];
+  if(path==='/__skills-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/skills-layout.html','utf8'));return;}
   if(path==='/__armor-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/armor-layout.html','utf8'));return;}
   if(path==='/__trade-layout__/'){
    res.setHeader('Content-Type','text/html; charset=utf-8');
@@ -29,6 +30,7 @@ export default defineConfig({
    const worker=await import(pathToFileURL(workerPath).href+'?build='+fs.statSync(workerPath).mtimeMs);
    const url=new URL(request.url);url.pathname=url.pathname.slice('/__build__'.length);
    const response=await worker.default.fetch(new Request(url,request),env);
+   if(url.pathname==='/'&&url.searchParams.get('skillsQA')==='smith'){const fixture=fs.readFileSync('tests/skills-preview.js','utf8');return new Response((await response.text()).replace('</body>','<script>'+fixture+'</script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});}
    if(url.pathname==='/'&&['bronze','iron','gold','mithril','dragonslayer'].includes(url.searchParams.get('armorQA'))){const fixture=fs.readFileSync('tests/armor-preview.js','utf8');return new Response((await response.text()).replace('</body>','<script>'+fixture+'</script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});}
    if(url.pathname==='/'&&['bank','shop'].includes(url.searchParams.get('tradeQA'))){
     const fixture=fs.readFileSync('tests/trade-preview.js','utf8');

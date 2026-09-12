@@ -388,3 +388,40 @@ drawRealmWall=function(r,x,z){
   return height;
  }));
 };
+
+const propBeforeWorkplaces=prop3;
+prop3=function(r,o,x,z){
+ const q=groundedPainter(r,x,z),wood=materialRealm(q,5),stone=materialRealm(q,18),name=o.name||'';
+ if(o.workplace){
+  if(['woodland','kitchen','smithy'].includes(o.workplace)){
+   const w=o.workplace==='kitchen'?7:5,d=2.7,zz=z-2.5;
+   for(const side of [-1,1]){box3(wood,x+side*w/2,1.4,zz-.9,.16,2.8,.16,'#705639');box3(wood,x+side*w/2,1.4,zz+1,.16,2.8,.16,'#705639');beamArt(wood,[x+side*w/2,2.25,zz+1],[x+side*(w/2-.65),2.8,zz+1],.05,'#816345',6);}
+   worldRoof(q,x,2.85,zz,w,d,.9,o.workplace==='smithy'?'#586169':o.workplace==='woodland'?'#726447':'#8b694e');
+  }
+  if(o.workplace==='shrine'){
+   for(const side of [-1,1]){profile3(stone,x+side*2.3,1.5,z, .48,3,.48,[[-.5,1.4],[-.4,1],[.4,1],[.5,1.3]],'#a5a58f',a=>a,10);worldModel(q,'CandleStick',x+side*2.3,3,z,.35);}
+   for(let i=0;i<12;i++){const a=i*Math.PI/12,b=(i+1)*Math.PI/12;beamArt(stone,[x+Math.cos(a)*2.3,3+Math.sin(a)*1.1,z],[x+Math.cos(b)*2.3,3+Math.sin(b)*1.1,z],.15,'#a5a58f',8);}
+  }
+  if(o.workplace==='fishing'){
+   worldModel(q,'Stall_Cart_Empty',x+1.1,0,z-2.1,1.1);worldModel(q,'Bucket_Wooden_1',x-.45,0,z-.6,.42);
+  }
+  return .1;
+ }
+ if(/yard fence/.test(name)){const f=worldLocal(q,x,0,z,o.heading||0);for(const side of [-1,1])box3(materialRealm(f,5),0,.55,side*.82,.13,1.1,.13,'#776143');for(const yy of [.35,.79])beamArt(materialRealm(f,5),[0,yy,-.9],[0,yy,.9],.055,'#8d7754',5);return 1.1;}
+ if(name==='Village noticeboard'){
+  for(const side of [-1,1])box3(wood,x+side*.55,1,z,.12,2,.12,'#665037');box3(wood,x,1.45,z,1.4,.95,.12,'#785d40');
+  for(const side of [-1,1])box3(q,x+side*.28,1.48,z+.08,.45,.58,.02,'#d8c49a');return 2;
+ }
+ if(name==='Forge furnace'){
+  profile3(stone,x,.9,z,1.45,1.8,1.2,[[-.5,1],[-.28,1],[.2,.8],[.5,.65]],'#8d8b7a',a=>a,8);box3(stone,x,2.25,z,.65,1.2,.65,'#777c72');box3(q,x,.68,z+.62,.70,.68,.02,'#332821');box3(materialRealm(q,19),x,.45,z+.64,.45,.2,.025,'#d8994d');return 2.9;
+ }
+ if(name==='Axe chopping block'){worldModel(q,'Anvil_Log',x,0,z,.5);worldModel(q,'Pickaxe_Bronze',x,.35,z,.45,Math.PI/2);return .8;}
+ if(name==='Flower planter'){worldModel(q,'Crate_Wooden',x,0,z,.43);rebuiltPlace(q,'Flower_3_Group',x,.3,z,.5,0,.5);return .8;}
+ if(name==='Offering bowl'){worldModel(q,'Bucket_Wooden_1',x,0,z,.38);worldModel(q,'CandleStick',x,.38,z,.28);return .7;}
+ if(name==='Arrow target'){return drawPracticeDummy(q,{tutorialRole:'dummy'},x,z);}
+ if(name==='Bank counter'){worldModel(q,'Workbench',x,0,z,.93);worldModel(q,'BookStand',x,.93,z,.25);return 1.2;}
+ if(name==='Study table'||name==='Ledger table'){worldModel(q,'Table_Large',x,0,z,.8);worldModel(q,'BookStand',x,.8,z,.27);worldModel(q,'CandleStick',x+.4,.8,z,.28);return 1.15;}
+ return propBeforeWorkplaces(r,o,x,z);
+};
+const roadBeforeWorkplaces=roadInfluence;
+roadInfluence=function(x,z){const result=roadBeforeWorkplaces(x,z);if(!inWorld()||x<18||x>80||z<40||z>80)return result;for(const a of tutorialWorkplaces){const d=Math.hypot((x-a.x)/a.rx,(z-a.y)/a.ry),edge=1+.035*Math.sin(x*2.5+z*1.4),t=Math.max(0,Math.min(1,(edge-d)/.25)),blend=t*t*(3-2*t);result[0]=Math.max(result[0],blend);if(a.paved)result[1]=Math.max(result[1],blend);}return result;};

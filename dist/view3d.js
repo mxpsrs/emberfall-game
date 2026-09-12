@@ -176,9 +176,9 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
  if(typeof drawOnlinePlayers==='function')drawOnlinePlayers(mesh,labels);mesh.flush();
  // A full-height door target remains selectable with the roof cut away.
  for(const b of visibleBuildings)if(b.walkIn){const o=b.service,seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,m=briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-doorOpenFraction(o)*Math.PI*.52,scale*.85);hitboxes.push({polygon:[[-.05,0,0],[1.08,0,0],[1.08,2.36,0],[-.05,2.36,0]].map(p=>project3(...briarPoint(p,0,m))),o,door:true,depth:project3(xx,0,b.y+b.h).depth});}
- if(path.length){ctx.beginPath();for(const [i,p]of [[px,py],...path].entries()){const q=project3(p[0]+.5,.035+walkSurfaceHeight(p[0]+.5,p[1]+.5)-landHeight(p[0]+.5,p[1]+.5),p[1]+.5);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);}ctx.strokeStyle='#e9dba6';ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);}
+ const guidePath=tutorialGuideRoute();if(guidePath.length){ctx.beginPath();for(const [i,p]of [[px,py],...guidePath].entries()){const q=project3(p[0]+.5,.035+walkSurfaceHeight(p[0]+.5,p[1]+.5)-landHeight(p[0]+.5,p[1]+.5),p[1]+.5);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);}ctx.strokeStyle='#e9dba6';ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);}
  groundShadow3(ctx,px+.5,py+.5,.38,.27,.23);ring3(ctx,px+.5,py+.5,'#e4d6a2',.33);if(target)ring3(ctx,target.x+.5,target.y+.5,fighter(target)?'#e79580':'#e4d6a2');
- const tp=inWorld()&&s.character&&tutorialStep()?tutorialStep().point():null;if(tp)ring3(ctx,tp.x+.5,tp.y+.5,'#f3d280',.58);
+ const tp=tutorialGoal();if(tp)ring3(ctx,tp.x+.5,tp.y+.5,'#f3d280',.58);
 
  drawWorldMood3();hitboxes.sort((a,b)=>a.depth-b.depth);
  if(!target||!fighter(target))labels.push([s.character?.name||'Adventurer',px+.5,2.3+walkSurfaceHeight(px+.5,py+.5)-landHeight(px+.5,py+.5),py+.5,'#ffedbd']);
