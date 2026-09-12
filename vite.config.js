@@ -17,12 +17,22 @@ export default defineConfig({
  server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
  plugins:[{name:'emberfall-local-api',configureServer(server){server.middlewares.use(async(req,res,next)=>{
   const path=req.url?.split('?')[0];
+  if(path==='/__trade-layout__/'){
+   res.setHeader('Content-Type','text/html; charset=utf-8');
+   res.end(fs.readFileSync('tests/trade-layout.html','utf8'));return;
+  }
   // Browser QA can exercise the exact packaged Worker at /__build__/ instead
   // of accidentally testing only Vite's unbundled source delivery.
   const handler=path?.startsWith('/__build__/')?async request=>{
-   const worker=await import(pathToFileURL(fs.realpathSync('dist/server/index.js')).href);
+   const workerPath=fs.realpathSync('dist/server/index.js');
+   const worker=await import(pathToFileURL(workerPath).href+'?build='+fs.statSync(workerPath).mtimeMs);
    const url=new URL(request.url);url.pathname=url.pathname.slice('/__build__'.length);
-   return worker.default.fetch(new Request(url,request),env);
+   const response=await worker.default.fetch(new Request(url,request),env);
+   if(url.pathname==='/'&&['bank','shop'].includes(url.searchParams.get('tradeQA'))){
+    const fixture=fs.readFileSync('tests/trade-preview.js','utf8');
+    return new Response((await response.text()).replace('</body>','<script>'+fixture+'</script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
+   }
+   return response;
   }:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
   if(!handler)return next();
   try{

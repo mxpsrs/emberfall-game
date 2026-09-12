@@ -140,12 +140,13 @@ function renderAction(){
   $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':{tree:'Chopping oak · Woodcutting XP',ore:'Mining iron · Mining XP',fish:'Catching trout · Fishing XP'}[a.type]||'Tap Stop to cancel'):path.length?'Tap Stop or another spot to change course.':'Tap a resource, building, person, or monster.';
 }
 function dialog(title,html,buttons=[]){
+  if(window.realmTrade)close();
   stop();$('modalBody').innerHTML='';const h=document.createElement('h2');h.textContent=title;$('modalBody').appendChild(h);
   const body=document.createElement('div');body.className='dialogcopy';body.innerHTML=html;$('modalBody').appendChild(body);
   for(const [label,fn,style] of buttons){const b=document.createElement('button');b.className=style||'primary';b.textContent=label;b.onclick=fn;$('modalBody').appendChild(b);}
   if(!$('modal').open)$('modal').showModal();
 }
-function close(){$('modal').close();renderUI();save();}
+function close(){if(window.realmTrade)endTrade();$('modal').close();renderUI();save();}
 const quests=[
   {title:'A village in need',desc:'Find Elder Rowan beside the village square to begin your adventure.'},
   {title:'Tools of the trade',desc:'Gather 5 oak logs, 5 iron ore, and 3 trout. Bring them to Elder Rowan.',checks:()=>[['Oak logs',s.bag.logs,5],['Iron ore',s.bag.ore,5],['Trout',s.bag.fish,3]]},
@@ -165,22 +166,13 @@ function elder(){
 }
 const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65]];
 const shopPrices={herbs:3,logs:3,ore:4,fang:6,bones:4};
-function shop(mode='buy',message=''){
- dialog('Mara’s General Store','<div class="shopheading"><span>Coins <b>'+s.gold+'</b></span><span>Bag '+inventorySlots().length+' / '+BAG_SIZE+'</span></div><div class="shoptabs"><button id="shopBuy" aria-pressed="'+(mode==='buy')+'">Buy</button><button id="shopSell" aria-pressed="'+(mode==='sell')+'">Sell</button></div><p id="shopNotice" role="status">'+message+'</p><div id="shopItems" class="shopitems"></div>');
- $('shopBuy').onclick=()=>shop('buy');$('shopSell').onclick=()=>shop('sell');
- const rows=mode==='buy'?shopStock:Object.entries(shopPrices).filter(([id])=>(s.bag[id]||0)>0).map(([id,price])=>[id,s.bag[id],price]);
- if(!rows.length){$('shopNotice').textContent=(message?message+' ':'')+'You have no items Mara can buy.';return;}
- for(const [id,count,price]of rows){
-  const item=ITEMS[id],row=document.createElement('button');row.className='shopitem';row.appendChild(itemCanvas(id));
-  const copy=document.createElement('span');copy.className='shopitemcopy';const cost=mode==='buy'?price:price*count;
-  const reason=mode==='sell'?'':item.slot&&owns(id)?'Already owned':s.gold<price?'Need '+(price-s.gold)+' more coins':!canCarry(id,count)?'Bag full':'';
-  copy.innerHTML='<strong>'+item.name+(count>1?' ×'+count:'')+'</strong><small>'+cost+' coins'+(reason?' · '+reason:'')+'</small>';row.appendChild(copy);row.disabled=!!reason;
-  row.setAttribute('aria-label',(mode==='buy'?'Buy ':'Sell ')+item.name+' ×'+count+' for '+cost+' coins'+(reason?'. '+reason:''));
-  row.onclick=()=>{if(mode==='buy'){if(buySupply(id,count,price))shop('buy','Bought '+item.name+(count>1?' ×'+count:'')+'.');}else sell(id,price);};$('shopItems').appendChild(row);
- }
- paintItemIcons($('shopItems'));
+function shop(){openTrade('shop');}
+function sell(id,price,quantity=1){
+ const item=ITEMS[id];if(!item||!(price>0)||!(quantity>0))return false;
+ const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0),count=Math.min(spare,quantity===Infinity?quantity:Math.floor(quantity));
+ if(!(count>0)||!Number.isFinite(count))return false;
+ bag[id]-=count;s.gold+=count*price;renderUI();save();return count;
 }
-function sell(item,price){const quantity=s.bag[item]||0;if(!quantity){shop('sell','You have none of that item to sell.');return false;}s.gold+=quantity*price;s.bag[item]=0;renderUI();save();shop('sell','Sold '+ITEMS[item].name+' ×'+quantity+' for '+quantity*price+' coins.');return true;}
 
 function forge(){
  const buttons=[];
@@ -208,6 +200,7 @@ function renderUI(){
   $('hp').textContent=s.hp+' / '+maxhp();$('hpbar').style.width=(s.hp/maxhp()*100)+'%';$('hpbar').parentElement?.classList.toggle('critical',s.hp/maxhp()<=.25);
   $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=s.bag.fish;
   renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
+  if(window.realmTrade)renderTradeContents();
 }
 function renderPanel(){
   if(tab==='skills'&&!$('gameDock').hidden)tutorialEvent('skills');
@@ -350,6 +343,7 @@ function frame(now){
   const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;
+  if(assetsReady&&!cloudConflict)updateWorldTimers();
   if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
@@ -358,7 +352,7 @@ function frame(now){
     }
     updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
-    for(const o of objects){if(o.dead&&o.dead<=time){o.dead=0;o.hp=o.maxhp;o.x=o.homeX;o.y=o.homeY;o.drawX=o.x;o.drawY=o.y;}o.drawX+=(o.x-o.drawX)*Math.min(1,dt*10);o.drawY+=(o.y-o.drawY)*Math.min(1,dt*10);}
+    for(const o of objects){o.drawX+=(o.x-o.drawX)*Math.min(1,dt*10);o.drawY+=(o.y-o.drawY)*Math.min(1,dt*10);}
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
     saveClock+=dt;if(saveClock>10){saveClock=0;save();}
@@ -374,7 +368,7 @@ $('skipTutorial').onclick=()=>dialog('Skip first steps?','<p>You can replay the 
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});
-$('modal').addEventListener('close',()=>{renderUI();save();});
+$('modal').addEventListener('close',()=>{if(!$('modal').open&&window.realmTrade)endTrade();renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
   if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;

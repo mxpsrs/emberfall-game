@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');const root=__dirname+'/../dist/';const noop=()=>{};
-function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},children:[],appendChild(child){this.children.push(child)},querySelectorAll:()=>[],set innerHTML(value){this.children=[]},listeners:{},addEventListener(type,fn){const before=this.listeners[type];this.listeners[type]=before?e=>{before(e);fn(e)}:fn},setPointerCapture:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
+function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},children:[],appendChild(child){this.children.push(child)},replaceChildren(...children){this.children=children},removeAttribute:noop,show(){this.open=true},querySelectorAll:()=>[],set innerHTML(value){this.children=[]},listeners:{},addEventListener(type,fn){const before=this.listeners[type];this.listeners[type]=before?e=>{before(e);fn(e)}:fn},setPointerCapture:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
 const els={},data={},ctx={assert,console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v},document:{getElementById:id=>els[id]??=el(),querySelectorAll:()=>[],createElement:el,addEventListener:noop,body:el()},window:{addEventListener:noop,matchMedia:()=>({matches:false})}};vm.createContext(ctx);
-for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
+for(const f of ['cloud','loot','spirits','hud','systems','trading','frontier','world','tutorial','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
@@ -12,7 +12,7 @@ for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven
 vm.runInContext(`
 renderAction=()=>{};draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 s.character={name:'Fresh apprentice',look:0};s.tutorial=0;s.tutorialVersion=2;s.runEnabled=false;s.runEnergy=100;assetsReady=true;activateScene('overworld',42,51);
-let testNow=0;function tick(){testNow+=50;frame(testNow);}
+let testNow=0;Date.now=()=>testNow;function tick(){testNow+=50;frame(testNow);}
 function until(predicate,label){for(let i=0;i<3000;i++){if(predicate())return;tick();}throw new Error('Timed out: '+label+' @ '+s.x+','+s.y+' '+tutorialStep()?.event+' target '+target?.name+' path '+path.length);}
 function current(event){assert.equal(tutorialStep()?.event,event);}
 function clickDialog(label){const button=$('modalBody').children.find(b=>b.textContent===label&&b.onclick);assert(button,'dialog button '+label);button.onclick();}

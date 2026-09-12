@@ -40,6 +40,7 @@ const ITEMS={
  arrows:{name:'Arrows',icon:12,desc:'One consumed per bow shot. Buy at Mara’s store or craft at the forge.'},
  runes:{name:'Rune stones',icon:13,desc:'Fuel for magic. Buy at Mara’s store or find on monsters.'},
  bones:{name:'Bones',icon:14,desc:'Tap to bury one for 18 Worship XP. Dropped by creatures throughout the realm. Can also be sold for 4 coins.'},
+ ashes:{name:'Ashes',icon:9,desc:'Cool ashes left after a log fire burns out.'},
  mageRobe:{name:'Mage robe',icon:15,slot:'body',magic:2,desc:'Adds 2 magic damage. Offers no armor protection.'}
 };
 const SPELLS={
@@ -84,23 +85,24 @@ function itemDetails(id,fromBag=false){
  dialog(item.name,'<div class="itemhero" id="itemhero"></div><p>'+item.desc+'</p>'+(item.slot?'<p class="desc">'+(item.power?'Attack bonus +'+item.power+' · ':'')+(item.armor?'Armor +'+item.armor+' · ':'')+(isEquipped?'Equipped':'In your inventory')+'</p>':'<p>In your bag: <b>'+(s.bag[id]||0)+'</b></p>'),buttons);
  $('itemhero').appendChild(itemCanvas(id,160));paintItemIcons($('itemhero'));
 }
-function bindItemPress(button,id,fromBag){
+function bindItemPress(button,id,fromBag,tradeSide=null){
  let timer=null,start=null,suppressClick=false;
+ const details=()=>tradeSide&&window.realmTrade?showTradeItemMenu(id,tradeSide,button):itemDetails(id,fromBag);
  const clear=()=>{clearTimeout(timer);timer=null;};
- button.addEventListener('pointerdown',e=>{if(e.button!==0)return;clear();start={x:e.clientX,y:e.clientY};suppressClick=false;timer=setTimeout(()=>{timer=null;suppressClick=true;itemDetails(id,fromBag);},500);});
+ button.addEventListener('pointerdown',e=>{if(e.button!==0)return;clear();start={x:e.clientX,y:e.clientY};suppressClick=false;timer=setTimeout(()=>{timer=null;suppressClick=true;details();},500);});
  button.addEventListener('pointermove',e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>9){clear();suppressClick=true;}});
  button.addEventListener('pointerup',()=>{clear();start=null;});
  button.addEventListener('pointercancel',()=>{clear();start=null;suppressClick=true;});
  button.addEventListener('pointerleave',()=>{clear();start=null;});
- button.addEventListener('contextmenu',e=>{e.preventDefault();clear();if(!suppressClick)itemDetails(id,fromBag);suppressClick=true;});
- button.addEventListener('keydown',e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();clear();itemDetails(id,fromBag);}});
- button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}primaryItemAction(id,fromBag);};
- button.setAttribute('aria-label',ITEMS[id].name+'. '+itemActions(id,fromBag)[0][0]+'. Hold for more options.');
+ button.addEventListener('contextmenu',e=>{e.preventDefault();clear();if(!suppressClick)details();suppressClick=true;});
+ button.addEventListener('keydown',e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();clear();details();}});
+ button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}if(tradeSide&&window.realmTrade)tradeItemAction(id,tradeSide);else primaryItemAction(id,fromBag);};
+ button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+itemActions(id,fromBag)[0][0]+'. Hold for more options.');
 }
 function renderInventory(){
- pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Inventory</h2><small>'+slots.length+' / 25</small></div><div id="inventoryGrid" class="inventorygrid bag25"></div>';
+ pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Inventory</h2><small>'+slots.length+' / 25</small></div>'+(window.realmTrade?'<p class="trade-bag-hint">Tap to '+(window.realmTrade.kind==='bank'?'deposit':'sell')+' · Hold for options</p>':'')+'<div id="inventoryGrid" class="inventorygrid bag25"></div>';
  const grid=$('inventoryGrid');
- for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}bindItemPress(b,slot.id,true);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
+ for(let i=0;i<25;i++){const slot=slots[i],b=document.createElement('button');b.className='bagslot';if(slot){const item=ITEMS[slot.id];b.setAttribute('aria-label',item.name+' ×'+slot.count);b.title=item.name;b.appendChild(itemCanvas(slot.id));if(STACKABLE.has(slot.id)){const qty=document.createElement('b');qty.textContent=slot.count;b.appendChild(qty);}bindItemPress(b,slot.id,true,window.realmTrade?'bag':null);}else{b.disabled=true;b.setAttribute('aria-label','Empty slot '+(i+1));}grid.appendChild(b);}paintItemIcons(panel);
 }
 function renderEquipment(){
  pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Worn equipment</h2><small>Armor '+armorValue()+'</small></div><div id="equipmentGrid" class="equipmentgrid"></div>';
@@ -117,14 +119,14 @@ function renderCombatBar(){
  if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
  select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
 }
-function buySupply(id,count,cost){if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(ITEMS[id].slot&&owns(id)){toast('You already own this item.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=1;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
+function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&&lineOfSight(s.x,s.y,o.x,o.y);}
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100;
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
- o.dead=time+(o.type==='dummy'?8:25);o.deathAt=time;monsterDrop(o);
+ const respawnSeconds=o.type==='dummy'?8:25;o.dead=time+respawnSeconds;o.respawnAt=Date.now()+respawnSeconds*1000;o.deathAt=time;monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt Warden falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The Hollow King falls! Return to Elder Rowan.');}
  else if(o.kind==='dummy'){tutorialEvent('dummy');toast('Training complete.');}

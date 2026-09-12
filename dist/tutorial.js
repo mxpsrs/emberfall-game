@@ -146,7 +146,7 @@ function lightLog(){
  if(!s.bag.logs)return false;stop();
  if(!inWorld()||buildings.some(b=>b.walkIn?withinWalkIn(b,px,py):px>=b.x&&px<b.x+b.w&&py>=b.y&&py<b.y+b.h)||water(s.x,s.y)){toast('Light a fire on clear ground outdoors.');return false;}
  if(objects.some(o=>o.type==='camp'&&Math.hypot(o.x-px,o.y-py)<1)){toast('There is already a fire here.');return false;}
- s.bag.logs--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,expires:time+90};worldScenes.overworld.objects.push(o);objects.push(o);gain('Firemaking',20);tutorialEvent('fire');renderUI();save();toast('Fire lit · +20 Firemaking XP');return true;
+ s.bag.logs--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,expires:time+PLAYER_FIRE_LIFETIME/1000,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};worldScenes.overworld.objects.push(o);objects.push(o);gain('Firemaking',20);tutorialEvent('fire');renderUI();save();toast('Fire lit · +20 Firemaking XP');return true;
 }
 function cookTrout(){
  if(!s.bag.rawTrout){toast('Catch a raw trout first.');return false;}
@@ -161,13 +161,16 @@ function workPracticeForge(){
  renderUI();save();return true;
 }
 function finishArrows(){if((s.bag.arrowheads||0)<10||s.bag.logs<1){toast('You need 10 arrowheads and an oak log.');return false;}s.bag.arrowheads-=10;s.bag.logs--;s.bag.arrows=(s.bag.arrows||0)+10;gain('Smithing',10);renderUI();save();return true;}
-function transferBank(id,withdraw=false){
+function transferBank(id,withdraw=false,quantity=1,refresh=true){
  const item=ITEMS[id];if(!item)return false;const bag=item.slot?s.gear:s.bag;
- if(withdraw){if(!(s.bank[id]>0)||!canCarry(id)){toast('Make space in your bag to withdraw.');return false;}s.bank[id]--;bag[id]=(bag[id]||0)+1;}
- else{const spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;s.bank[id]=(s.bank[id]||0)+1;}
- tutorialEvent(withdraw?'withdraw':'deposit');renderUI();save();return true;
+ if(!(quantity>0)||(!Number.isFinite(quantity)&&quantity!==Infinity))return false;quantity=quantity===Infinity?quantity:Math.floor(quantity);s.bank=s.bank||{};
+ const available=withdraw?s.bank[id]||0:(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);
+ const room=withdraw?(STACKABLE.has(id)?(canCarry(id)?Infinity:0):bagSpaceFor(id)):Infinity;
+ const count=Math.min(quantity,available,room);if(count<1){if(withdraw)toast('Make space in your bag to withdraw.');return false;}
+ if(withdraw){s.bank[id]-=count;bag[id]=(bag[id]||0)+count;}
+ else{bag[id]-=count;s.bank[id]=(s.bank[id]||0)+count;}
+ tutorialEvent(withdraw?'withdraw':'deposit');if(refresh){renderUI();save();}return count;
 }
 function openBank(){
- dialog('Briarhaven Bank','<p>Tap an item to move one. Your worn gear stays equipped.</p><div class="bankcolumns"><section><h3>Your bag</h3><div id="bankDeposit"></div></section><section><h3>Stored</h3><div id="bankWithdraw"></div></section></div>');
- for(const [id,item]of Object.entries(ITEMS))for(const withdraw of [false,true]){const count=withdraw?s.bank[id]||0:(item.slot?s.gear[id]||0:s.bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(count<1)continue;const b=document.createElement('button');b.textContent=(withdraw?'Withdraw ':'Deposit ')+item.name+' · '+count;b.onclick=()=>{if(transferBank(id,withdraw))openBank();};$(withdraw?'bankWithdraw':'bankDeposit').appendChild(b);}
+ openTrade('bank');
 }
