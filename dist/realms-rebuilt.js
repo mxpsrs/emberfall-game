@@ -22,13 +22,15 @@ function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot
 function mergeWornMeshes(base,sex,gear){
  const sources=[base],indices=[];
  if(gear._civilian){sources.splice(0);for(const name of ['Default_Male_Head_Medium','Default_Male_Arms_Medium','Default_Male_Feet_Medium','Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']){const part=modularMesh(sex,name);if(part)sources.push(part);}}
- const covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body),hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs),feet:!!modularModel(gear.feet),shoulders:!!modularModel(gear.shoulders)};
+ const outfit=avatarIdentity(gear),wearShirt=outfit.topStyle===3&&!gear.body,wearPants=outfit.bottomStyle===2&&!gear.legs;
+ const covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!modularModel(gear.shoulders)};
  for(let i=0;i<base.i.length;i+=3){const ids=[base.i[i],base.i[i+1],base.i[i+2]],x=ids.reduce((n,v)=>n+Math.abs(base.p[v*3]),0)/3,y=ids.reduce((n,v)=>n+base.p[v*3+1],0)/3;
   if(covered.head&&y>1.565||covered.body&&y>1.045&&y<1.48&&x<.29||covered.hands&&x>.53&&y>1.15||covered.legs&&y>.32&&y<1.02||covered.feet&&y<.34||covered.shoulders&&x>.24&&x<.43&&y>1.30)continue;
   indices.push(...ids);
  }
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
  for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
+ for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&!gear.head,'Hair.007',null],[outfit.beard===2&&!gear.head,'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>v*tint[i%3]);sources.push({...part,c,f:c});}}
  if(!gear._civilian)for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
  let vertices=0,indexCount=0;for(const m of sources){vertices+=m.p.length/3;indexCount+=m.i.length;}if(vertices>=65536)throw new Error('Worn mesh exceeds index budget');
  const result={...base};for(const [key,width,Type]of [['p',3,Float32Array],['n',3,Float32Array],['c',3,Float32Array],['f',3,Float32Array],['uv',2,Float32Array],['t',1,Uint8Array],['j',4,Uint8Array],['w',4,Float32Array]]){const data=new Type(vertices*width);let offset=0;for(const m of sources){data.set(m[key],offset);offset+=m[key].length;}result[key]=data;}
@@ -154,6 +156,11 @@ drawRealmCrossings=function(r){crossingsBeforeRebuild(r);drawWorldUnderstory(r);
 drawRealmWall=function(r,x,z){const id=currentScene+':'+x+':'+z;let key=realmArtWalls.get(id);if(!key){key={};realmArtWalls.set(id,key);if(realmArtWalls.size>400)realmArtWalls.delete(realmArtWalls.keys().next().value);}emitMesh3(r,cachedMesh3(key,'prop',q=>{rebuiltPlace(q,'Wall_UnevenBrick_Straight',x+.5,0,z+.5,.5,worldWall(x-1,z)||worldWall(x+1,z)?0:Math.PI/2,.44);return 1.4;}));};
 
 let creatorDraft=null;
+const APPEARANCE_COLORS=[[.24,.39,.51],[.51,.22,.22],[.25,.40,.29],[.39,.27,.51],[.69,.55,.30],[.21,.22,.24],[.68,.65,.53],[.37,.25,.19]];
+const APPEARANCE_SKINS=[[1.67,1.48,1.23],[1.48,1.36,1.17],[1.22,1.09,.94],[1.02,.84,.70],[.78,.62,.51],[.55,.43,.36]];
+const APPEARANCE_HAIR=[[.10,.10,.11],[.30,.20,.12],[.45,.22,.12],[.69,.51,.25],[.67,.68,.65],[.85,.83,.72]];
+function avatarIdentity(gear){return gear===s.equipment?(creatorDraft||s.character||{}):gear._appearance||{};}
+
 const rebuiltPoses=new Map();
 const avatarMaterials=new Map(),avatarRigPoses=new Map();
 function sampleRealmJoint(motion,frame,bone,joints,out){
@@ -179,13 +186,17 @@ function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame){
  return pose;
 }
 function avatarMaterial(sex,gear,look){
- const key=[sex,look,armorAppearanceKey(gear),gear._cloth].join(':');if(avatarMaterials.has(key))return avatarMaterials.get(key);
+ const identity=avatarIdentity(gear),key=[sex,look,armorAppearanceKey(gear),gear._cloth,JSON.stringify(identity)].join(':');if(avatarMaterials.has(key))return avatarMaterials.get(key);
  const mesh=(rebuiltAvatars[sex]||rebuiltAvatars.male).mesh,p=new Float32Array(mesh.p),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t);
- const cloth=[[.22,.38,.50],[.47,.20,.20],[.23,.39,.26],[.36,.26,.46]][look%4],skin=[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
+ const cloth=APPEARANCE_COLORS[identity.topColor]||APPEARANCE_COLORS[look%4],skin=APPEARANCE_SKINS[identity.skin]||[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
   const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
   if(torso){const color=gear._cloth|| (modularModel(gear.body)?[.15,.13,.10]:ITEMS[gear.body]?.magicAccuracy>0?(gear.body==='mysticRobe'?[.20,.34,.57]:gear.body==='adeptRobe'?[.42,.22,.48]:[.30,.24,.40]):ITEMS[gear.body]?.rangedAccuracy>0?(gear.body==='blackHideBody'?[.14,.17,.18]:gear.body==='redHideBody'?[.48,.20,.16]:gear.body==='blueHideBody'?[.19,.34,.50]:gear.body==='greenHideBody'?[.25,.39,.22]:[.38,.24,.14]):cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
   else if(y>1.49||Math.abs(x)>.70){for(let j=0;j<3;j++){c[i+j]*=skin[j];f[i+j]*=skin[j];}}
+  if(identity.topStyle===1&&Math.abs(x)>.42&&y>1.0&&y<1.55){for(let j=0;j<3;j++)c[i+j]=f[i+j]=mesh.c[i+j]*skin[j];t[v]=mesh.t[v];}
+  if(identity.topStyle===2&&torso&&Math.abs(x)<.07&&y>1.05){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.72,.56,.30][j];}
+  if(y>.24&&y<.89&&identity.bottomColor!==undefined){const color=APPEARANCE_COLORS[identity.bottomColor]||APPEARANCE_COLORS[5];for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
+  if(identity.bottomStyle===1&&y>.25&&y<.48){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.55,.50,.39][j];}
   if(feet&&gear.feet){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.20,.13,.08][j];t[v]=20;}
   if(y>.89&&y<.96){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.19,.14,.085][j];t[v]=20;}
   const expand=torso?(y<1.02?.020:.010):feet&&gear.feet?.012:0;
@@ -195,7 +206,7 @@ function avatarMaterial(sex,gear,look){
 }
 function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)*2)/2)),baseFrame=Math.min(a.clips[baseClip].frames-1,Math.max(0,Math.round(basePhase*(a.clips[baseClip].frames-1)*2)/2));blend=Math.round(blend*16)/16;
- const key=[sex,clip,frame,look,armorAppearanceKey(gear),gear._cloth,blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
+ const key=[sex,clip,frame,look,armorAppearanceKey(gear),gear._cloth,JSON.stringify(avatarIdentity(gear)),blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
  const mesh=avatarMaterial(sex,gear,look),p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame);
  for(let v=0;v<p.length/3;v++){const i=v*3;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*mesh.p[i]+pose[k+1]*mesh.p[i+1]+pose[k+2]*mesh.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*mesh.n[i]+pose[k+1]*mesh.n[i+1]+pose[k+2]*mesh.n[i+2]);}}
@@ -215,12 +226,12 @@ function avatarHelmet(mesh,a){
 }
 function affineMultiply(a,b){const m=new Float32Array(12);for(let row=0;row<3;row++)for(let col=0;col<4;col++){m[row*4+col]=(col===3?a[row*4+3]:0);for(let k=0;k<3;k++)m[row*4+col]+=a[row*4+k]*b[k*4+col];}return m;}
 const hairPalette=[[.30,.20,.12],[.45,.22,.12],[.10,.10,.11],[.67,.68,.65]],hairTintCache=new Map();
-function tintedHair(name,look){const key=name+':'+look%4;if(!hairTintCache.has(key)){const m=rebuiltModels[name],t=hairPalette[look%4];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
+function tintedHair(name,look){const key=name+':'+look%6;if(!hairTintCache.has(key)){const m=rebuiltModels[name],t=APPEARANCE_HAIR[look%6];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  r=groundedPainter(r,x,z);
  if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
- const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3},race=identity.race||gear._race||'human',sex=identity.frame||'male';
+ const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3,...(gear._appearance||{})},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
  const attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':ITEMS[gear.weapon]?.style==='ranged'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=age>=0&&age<duration;
  // Small, distant NPCs retain the authored resting pose. Updating every finger
@@ -234,7 +245,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3),headTransform);
  if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
- if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];briarEmit(r,tintedHair(hair,look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){

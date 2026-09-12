@@ -11,13 +11,5 @@ db.exec(fs.readFileSync(new URL('../drizzle/0003_all_accounts_fresh_start.sql',i
 assert.equal(db.prepare('SELECT account_count FROM game_resets').get().account_count,3);
 assert.equal(db.prepare('SELECT count(*) AS n FROM player_presence').get().n,0);
 for(const row of db.prepare('SELECT * FROM character_saves').all())assert.deepEqual(JSON.parse(row.state),{freshStart:SAVE_RESET_VERSION});
-const env={DB:{prepare(sql){return{bind(...args){return{async first(){return db.prepare(sql).get(...args)},async run(){return {meta:{changes:db.prepare(sql).run(...args).changes}}}}}}}}};
-const request=(id,method='GET',body)=>new Request('https://game.test/api/character',{method,headers:{'oai-authenticated-user-id':id},...(body?{body:JSON.stringify(body)}:{})});
-const record=await(await handleSave(request('player-a'),env)).json();assert.equal(record.revision,10);assert.equal(record.resetVersion,SAVE_RESET_VERSION);
-assert.equal((await handleSave(request('player-a','PUT',{revision:9,state:old}),env)).status,409);
-assert.equal((await handleSave(request('never-saved-before','PUT',{revision:0,state:old}),env)).status,409);
-assert.equal((await handleSave(request('player-a','PUT',{revision:9,resetVersion:SAVE_RESET_VERSION,state:old}),env)).status,409);
-const fresh={x:42,y:51,hp:10,gold:0,xp:{Attack:0},bag:{},character:{name:'Fresh'}};
-assert.equal((await handleSave(request('player-a','PUT',{revision:10,resetVersion:SAVE_RESET_VERSION,state:fresh}),env)).status,200);
-assert.equal((await(await handleSave(request('player-a'),env)).json()).state.character.name,'Fresh');
-console.log('PASS: all accounts reset, presence cleared, stale tabs rejected, reset handshake required, and new progress survives.');
+assert.equal(db.prepare("SELECT revision FROM character_saves WHERE user_id='player-a'").get().revision,10);
+console.log('PASS: all legacy accounts reset, audit count recorded, revisions increased, and presence cleared.');

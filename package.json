@@ -8,11 +8,13 @@
     "dev": "vite"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "0.45.2"
   },
   "devDependencies": {
     "@napi-rs/canvas": "0.1.80",
     "drizzle-kit": "0.31.10",
+    "esbuild": "^0.28.2",
     "vite": "^8.3.0"
   }
 }

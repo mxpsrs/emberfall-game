@@ -1,22 +1,7 @@
-// Identity comes only from Sites' authenticated request headers, never the save body.
+import {authenticatedPlayer,handleAuth} from './auth.js';
+export {handleAuth};
 export const SAVE_RESET_VERSION='2026-09-12-all-accounts-1';
-async function accountKeys(request){
- const id=request.headers.get('oai-authenticated-user-id')?.trim();
- const email=request.headers.get('oai-authenticated-user-email')?.trim().toLowerCase();
- const keys=[];if(id)keys.push(id);
- if(email&&/^[^\s@]+@[^\s@]+$/.test(email)){
-  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(email));
-  keys.push('email:'+Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join(''));
- }
- return keys;
-}
-async function resolvePlayer(request,env,headers){
- let keys=await accountKeys(request);
- if(!keys.length){let token=request.headers.get('cookie')?.match(/(?:^|;\s*)ember_guest=([a-f0-9]{64})(?:;|$)/)?.[1];
- if(!token){if(request.method!=='GET')return null;token=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');headers['Set-Cookie']='ember_guest='+token+'; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax';}
- const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token));keys=['guest:'+Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('')];}
- let user=keys[0],row=null;for(const key of keys){const found=await env.DB.prepare('SELECT state, revision, updated_at FROM character_saves WHERE user_id = ?').bind(key).first();if(found){user=key;row=found;break;}}return {user,row};
-}
+async function resolvePlayer(request,env){const account=await authenticatedPlayer(request,env);if(!account)return null;const user='account:'+account.id;const row=await env.DB.prepare('SELECT state,revision,updated_at FROM character_saves WHERE user_id=?').bind(user).first();return {user,row,username:account.username};}
 export async function handleSave(request,env){
  const headers={'Content-Type':'application/json','Cache-Control':'no-store'};
  const reply=(body,status=200)=>new Response(JSON.stringify({...body,resetVersion:SAVE_RESET_VERSION}),{status,headers});
@@ -24,7 +9,7 @@ export async function handleSave(request,env){
  try{
  const player=await resolvePlayer(request,env,headers);if(!player)return reply({error:'Open the game to reconnect your character.'},401);
  const {user,row}=player;
- if(request.method==='GET'){return reply(row?{account:user,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,state:null,revision:0});}
+ if(request.method==='GET'){return reply(row?{account:user,username:player.username,state:JSON.parse(row.state),revision:row.revision,updatedAt:row.updated_at}:{account:user,username:player.username,state:null,revision:0});}
  if(request.method!=='PUT')return reply({error:'Method not allowed'},405);
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
  const raw=await request.text();if(raw.length>500000)return reply({error:'Save is too large'},413);
@@ -48,7 +33,7 @@ export async function handlePlayers(request,env){
  if(!size||!Number.isFinite(input.x)||!Number.isFinite(input.y)||input.x<0||input.y<0||input.x>=size[0]||input.y>=size[1])return reply({error:'Invalid position'},400);
  const state=JSON.parse(player.row.state);if(!state.character)return reply({error:'Create your character first.'},400);
  const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('public-player:'+player.user));const id=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
- const allowed={weapon:['bronzeSword','ironSword','shortbow','oakStaff','oakShortbow','willowShortbow','mapleShortbow','yewShortbow','magicShortbow'],head:['ironHelm'],body:['leatherArmor','mageRobe','wizardRobe','adeptRobe','mysticRobe','studdedBody','greenHideBody','blueHideBody','redHideBody','blackHideBody'],feet:['leatherBoots'],shield:['ironShield'],shoulders:[],hands:[],legs:[],neck:['copperNecklace'],crest:[1,2,3,4,5].map(i=>'helmet_crest_'+i)},equipment={};for(const set of ['bronze','iron','steel','black','gold','mithril','adamant','rune','dragonslayer'])for(const slot of ['head','body','feet','shield','shoulders','hands','legs','weapon'])allowed[slot].push(set+'_'+slot);allowed.weapon.push(...['bronze','iron','steel','mithril','adamant','rune'].map(t=>t+'_dagger'));for(const [slot,ids]of Object.entries(allowed))equipment[slot]=ids.includes(state.equipment?.[slot])?state.equipment[slot]:null;const now=Date.now(),payload={id,name:String(state.character.name||'Adventurer').slice(0,18),look:Number.isInteger(state.character.look)&&state.character.look>=0&&state.character.look<=3?state.character.look:0,race:'human',frame:state.character.frame==='female'?'female':'male',hair:[0,1,2].includes(state.character.hair)?state.character.hair:0,equipment,x:input.x,y:input.y,heading:Number.isFinite(input.heading)?input.heading:0,emote:['Hello!','Follow me!','Nice gear!'].includes(input.emote)?input.emote:null};
+ const allowed={weapon:['bronzeSword','ironSword','shortbow','oakStaff','oakShortbow','willowShortbow','mapleShortbow','yewShortbow','magicShortbow'],head:['ironHelm'],body:['leatherArmor','mageRobe','wizardRobe','adeptRobe','mysticRobe','studdedBody','greenHideBody','blueHideBody','redHideBody','blackHideBody'],feet:['leatherBoots'],shield:['ironShield'],shoulders:[],hands:[],legs:[],neck:['copperNecklace'],crest:[1,2,3,4,5].map(i=>'helmet_crest_'+i)},equipment={};for(const set of ['bronze','iron','steel','black','gold','mithril','adamant','rune','dragonslayer'])for(const slot of ['head','body','feet','shield','shoulders','hands','legs','weapon'])allowed[slot].push(set+'_'+slot);allowed.weapon.push(...['bronze','iron','steel','mithril','adamant','rune'].map(t=>t+'_dagger'));for(const [slot,ids]of Object.entries(allowed))equipment[slot]=ids.includes(state.equipment?.[slot])?state.equipment[slot]:null;const now=Date.now(),payload={id,name:String(state.character.name||'Adventurer').slice(0,18),look:Number.isInteger(state.character.look)&&state.character.look>=0&&state.character.look<=3?state.character.look:0,race:'human',frame:state.character.frame==='female'?'female':'male',hair:[0,1,2,3,4].includes(state.character.hair)?state.character.hair:0,appearance:Object.fromEntries(['skin','hair','hairColor','beard','topStyle','topColor','bottomStyle','bottomColor'].map(k=>[k,Number.isInteger(state.character[k])&&state.character[k]>=0&&state.character[k]<=7?state.character[k]:0])),equipment,x:input.x,y:input.y,heading:Number.isFinite(input.heading)?input.heading:0,emote:['Hello!','Follow me!','Nice gear!'].includes(input.emote)?input.emote:null};
  await env.DB.prepare('INSERT INTO player_presence (player_id,scene,payload,seen_at) VALUES (?,?,?,?) ON CONFLICT(player_id) DO UPDATE SET scene=excluded.scene,payload=excluded.payload,seen_at=excluded.seen_at').bind(id,input.scene,JSON.stringify(payload),now).run();
  const result=await env.DB.prepare('SELECT payload FROM player_presence WHERE scene = ? AND seen_at > ? AND player_id <> ? ORDER BY seen_at DESC LIMIT 60').bind(input.scene,now-12000,id).all();
  return reply({players:result.results.map(row=>JSON.parse(row.payload))});
