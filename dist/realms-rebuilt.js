@@ -1,6 +1,6 @@
 'use strict';
 // Human-scale modular architecture and textured, articulated characters.
-function rebuiltMesh(m){const result={bounds:m.bounds};result.p=m.pScale?Float32Array.from(briarDecode(m.p,Int16Array),v=>v*m.pScale):briarDecode(m.p,Float32Array);result.uv=m.uv?briarDecode(m.uv,Float32Array):new Float32Array(result.p.length/3*2);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);result.c=Float32Array.from(briarDecode(m.c,Uint8Array),v=>v/255);result.f=m.f?Float32Array.from(briarDecode(m.f,Uint8Array),v=>v/255):result.c;result.t=m.t?briarDecode(m.t,Uint8Array):new Uint8Array(result.p.length/3).fill(20);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}result.i=briarDecode(m.i,Uint16Array);return result;}
+function rebuiltMesh(m){const result={bounds:m.bounds};result.p=m.pScale?Float32Array.from(briarDecode(m.p,Int16Array),v=>v*m.pScale):briarDecode(m.p,Float32Array);result.uv=m.uv?briarDecode(m.uv,Float32Array):new Float32Array(result.p.length/3*2);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);result.c=Float32Array.from(briarDecode(m.c,Uint8Array),v=>v/255);result.f=m.f?Float32Array.from(briarDecode(m.f,Uint8Array),v=>v/255):result.c;result.t=m.t?briarDecode(m.t,Uint8Array):new Uint8Array(result.p.length/3).fill(20);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}if(m.skin)result.skin=briarDecode(m.skin,Uint8Array);if(m.dye)result.dye=briarDecode(m.dye,Uint8Array);result.i=briarDecode(m.i,Uint16Array);return result;}
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),rig:a.rig?{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)}:null,clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:c.m?briarDecode(c.m,Float32Array):null,trs:c.trs?briarDecode(c.trs,Float32Array):null}]))}]));
 const rebuiltTints=new WeakMap();
@@ -19,6 +19,15 @@ function meshSliceDepth(mesh,y,width){
 function fitModularArmorMesh(sex,name,mesh){
  // Bone retargeting compressed front/back volume at the chest and pelvis.
  // Fit shells around the actual body, never scale or erase the body to fit them.
+ if(name==='Hair.007'){
+  const scale=[sex==='female'?1.12:1.07,1,1.70],top=rebuiltAvatars[sex].mesh.bounds[1][1],p=new Float32Array(mesh.p),n=new Float32Array(mesh.n);
+  for(let i=0;i<p.length;i+=3){p[i]*=scale[0];p[i+2]*=p[i+2]<0?scale[2]:1.05;
+   // Keep the fringe above the eyes while retaining the author's uneven tips.
+   if(p[i+2]>.018&&Math.abs(p[i])<.07&&p[i+1]<top-.055)p[i+1]=top-.055+(p[i+1]-(top-.055))*.35;
+   n[i]/=scale[0];n[i+2]/=mesh.p[i+2]<0?scale[2]:1.05;const length=Math.hypot(n[i],n[i+1],n[i+2])||1;for(let k=0;k<3;k++)n[i+k]/=length;
+  }
+  return {...mesh,p,n};
+ }
  const chest=name.startsWith('Chestplate.'),legs=name.startsWith('Legguards.'),belt=name.startsWith('Belt.');
  if(!chest&&!legs&&!belt&&!name.startsWith('BeltAttch.'))return mesh;
  if(name.startsWith('BeltAttch.')){
@@ -64,20 +73,48 @@ function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot
 function mergeWornMeshes(base,sex,gear){
  const sources=[base],indices=[];
  if(gear._civilian){sources.splice(0);for(const name of ['Default_Male_Head_Medium','Default_Male_Arms_Medium','Default_Male_Feet_Medium','Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']){const part=modularMesh(sex,name);if(part)sources.push(part);}}
- const outfit=avatarIdentity(gear),wearShirt=outfit.topStyle===3&&!gear.body,wearPants=outfit.bottomStyle===2&&!gear.legs;
- const shoulderId=armorShoulderItem(gear.body),covered={head:!!modularModel(gear.head),body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!shoulderId};
+ const outfit=avatarIdentity(gear),wearShirt=outfit.topStyle===3&&!gear.body,wearPants=outfit.bottomStyle===2&&!gear.legs,outfitTop=!gear.body?['Peasant','Ranger'][outfit.topStyle-4]:null,outfitBottom=!gear.legs?['Peasant','Ranger'][outfit.bottomStyle-3]:null;
+ const shoulderId=armorShoulderItem(gear.body),covered={head:!!modularModel(gear.head)&&!ITEMS[gear.head]?.openFace,body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!shoulderId};
  for(let i=0;i<base.i.length;i+=3){const ids=[base.i[i],base.i[i+1],base.i[i+2]],x=ids.reduce((n,v)=>n+Math.abs(base.p[v*3]),0)/3,y=ids.reduce((n,v)=>n+base.p[v*3+1],0)/3;
+  if(outfitTop&&y>1.02&&y<1.535||outfitBottom&&y<1.02&&(!gear.feet||y>.34))continue;
   if(covered.head&&y>1.565||covered.body&&y>1.09&&y<1.43&&x<.25||covered.hands&&x>.53&&y>1.15||covered.legs&&y>.36&&y<.79||covered.feet&&y<.34)continue;
   indices.push(...ids);
  }
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
  for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
  if(shoulderId){const shoulders=wornModularMesh(sex,shoulderId);if(shoulders)sources.push(shoulders);}
- for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&!gear.head,'Hair.007',null],[outfit.beard===2&&!gear.head,'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>v*tint[i%3]);sources.push({...part,c,f:c});}}
- if(!gear._civilian)for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
+ for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&!gear.head,'Hair.007',null],[outfit.beard===2&&!gear.head,'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>(color===null?Math.max(.70,v):v)*tint[i%3]);sources.push({...part,c,f:c});}}
+ if(!gear._civilian&&!gear.head&&outfit.hair===4)sources.push(avatarHairCap(sex,outfit.hairColor??0));
+ if(outfitTop)for(const part of ['Body','Arms'])sources.push(outfitClothingMesh(sex,outfitTop,part,outfit.topColor,outfit.skin));
+ if(outfitBottom)for(const part of ['Legs',...(!gear.feet?['Feet']:[])])sources.push(outfitClothingMesh(sex,outfitBottom,part,outfit.bottomColor,outfit.skin));
+ if(!gear._civilian&&(!outfitTop&&!outfitBottom||gear.body||gear.legs))for(const name of [modularBelt(gear),'BeltAttch.001']){const part=modularMesh(sex,name);if(part)sources.push(part);}
  let vertices=0,indexCount=0;for(const m of sources){vertices+=m.p.length/3;indexCount+=m.i.length;}if(vertices>=65536)throw new Error('Worn mesh exceeds index budget');
  const result={...base};for(const [key,width,Type]of [['p',3,Float32Array],['n',3,Float32Array],['c',3,Float32Array],['f',3,Float32Array],['uv',2,Float32Array],['t',1,Uint8Array],['j',4,Uint8Array],['w',4,Float32Array]]){const data=new Type(vertices*width);let offset=0;for(const m of sources){data.set(m[key],offset);offset+=m[key].length;}result[key]=data;}
  result.i=new Uint16Array(indexCount);let offset=0,count=0;for(const m of sources){for(const index of m.i)result.i[count++]=index+offset;offset+=m.p.length/3;}return result;
+}
+const avatarHairCaps=new Map();
+function avatarHairCap(sex,color){
+ const key=sex+':'+color;if(avatarHairCaps.has(key))return avatarHairCaps.get(key);
+ const base=rebuiltAvatars[sex].mesh,top=base.bounds[1][1],tint=APPEARANCE_HAIR[color]||APPEARANCE_HAIR[0],vertices=[],indices=[],mapped=new Map();
+ for(let t=0;t<base.i.length;t+=3){const ids=Array.from(base.i.subarray(t,t+3));
+  if(!ids.every(id=>{const yy=base.p[id*3+1],zz=base.p[id*3+2];return yy>top-(zz>.025?.078:zz<-.025?.17:.12);}))continue;for(const id of ids){if(!mapped.has(id)){mapped.set(id,vertices.length);vertices.push(id);}indices.push(mapped.get(id));}
+ }
+ const result={bounds:base.bounds,i:new Uint16Array(indices)};
+ for(const [key,width,Type]of [['p',3,Float32Array],['n',3,Float32Array],['c',3,Float32Array],['f',3,Float32Array],['uv',2,Float32Array],['t',1,Uint8Array],['j',4,Uint8Array],['w',4,Float32Array]]){
+  result[key]=new Type(vertices.length*width);vertices.forEach((id,v)=>{for(let k=0;k<width;k++)result[key][v*width+k]=key==='p'?base.p[id*3+k]+base.n[id*3+k]*.007:key==='c'||key==='f'?tint[k]*.78:key==='t'?20:base[key][id*width+k];});
+ }
+ avatarHairCaps.set(key,result);return result;
+}
+const outfitClothingCache=new Map();
+function outfitClothingMesh(sex,outfit,part,color=0,skin=1){
+ const key=[sex,outfit,part,color,skin].join(':');if(outfitClothingCache.has(key))return outfitClothingCache.get(key);
+ const mesh=modularMesh(sex,'Outfit_'+outfit+'_'+part),tint=APPEARANCE_COLORS[color]||APPEARANCE_COLORS[0],skinTint=APPEARANCE_SKINS[skin]||APPEARANCE_SKINS[1],c=new Float32Array(mesh.c);
+ for(let v=0;v<c.length/3;v++){
+  const i=v*3,light=Math.max(.30,Math.min(1.25,(mesh.c[i]+mesh.c[i+1]+mesh.c[i+2])/3*2.1));
+  if(mesh.skin?.[v])for(let k=0;k<3;k++)c[i+k]=[.66,.44,.31][k]*skinTint[k];
+  else if(mesh.dye?.[v]||part==='Legs')for(let k=0;k<3;k++)c[i+k]=tint[k]*light;
+ }
+ const result={...mesh,c,f:c};outfitClothingCache.set(key,result);if(outfitClothingCache.size>96)outfitClothingCache.delete(outfitClothingCache.keys().next().value);return result;
 }
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){let mesh=rebuiltModels[name];if(!mesh)return;
  if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
@@ -269,7 +306,22 @@ function avatarHelmet(mesh,a){
 }
 function affineMultiply(a,b){const m=new Float32Array(12);for(let row=0;row<3;row++)for(let col=0;col<4;col++){m[row*4+col]=(col===3?a[row*4+3]:0);for(let k=0;k<3;k++)m[row*4+col]+=a[row*4+k]*b[k*4+col];}return m;}
 const hairPalette=[[.30,.20,.12],[.45,.22,.12],[.10,.10,.11],[.67,.68,.65]],hairTintCache=new Map();
-function tintedHair(name,look){const key=name+':'+look%6;if(!hairTintCache.has(key)){const m=rebuiltModels[name],t=APPEARANCE_HAIR[look%6];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
+const fittedHairCache=new Map();
+function fittedHairMesh(name,sex='male'){
+ const key=sex+':'+name;if(fittedHairCache.has(key))return fittedHairCache.get(key);
+ const mesh=rebuiltModels[name],sourceSex=name==='Hair_Long'?'female':'male',source=rebuiltAvatars[sourceSex],target=rebuiltAvatars[sex]||rebuiltAvatars.male;
+ const crown=a=>a.mesh.bounds[1][1],sourceTop=crown(source),targetTop=crown(target);
+ const skullWidth=(a,y)=>{let width=0;for(let i=0;i<a.mesh.p.length;i+=3)if(a.mesh.p[i+1]>y&&a.mesh.p[i+1]<y+.10)width=Math.max(width,Math.abs(a.mesh.p[i]));return width;};
+ const sx=skullWidth(target,targetTop-.16)/skullWidth(source,sourceTop-.16),sy=(targetTop-(sex==='female'?1.549:1.599))/(sourceTop-(sourceSex==='female'?1.549:1.599));
+ const p=new Float32Array(mesh.p),n=new Float32Array(mesh.n),clearance=name==='Hair_Beard'?0:.009,sz=sex==='female'&&['Hair_SimpleParted','Hair_Buzzed'].includes(name)?1.18:1.035;
+ for(let i=0;i<p.length;i+=3){p[i]*=sx;p[i+1]=targetTop+(mesh.p[i+1]-sourceTop)*sy+clearance;p[i+2]*=sz;
+  n[i]/=sx;n[i+1]/=sy;n[i+2]/=sz;const len=Math.hypot(n[i],n[i+1],n[i+2])||1;for(let k=0;k<3;k++)n[i+k]/=len;
+ }
+ const bounds=[0,1].map(side=>[0,1,2].map(k=>{let value=side?-Infinity:Infinity;for(let i=k;i<p.length;i+=3)value=side?Math.max(value,p[i]):Math.min(value,p[i]);return value;}));
+ const fitted={...mesh,p,n,bounds};fittedHairCache.set(key,fitted);return fitted;
+}
+function tintedHair(name,look,sex='male'){const key=sex+':'+name+':'+look%6;if(!hairTintCache.has(key)){const m=fittedHairMesh(name,sex),t=APPEARANCE_HAIR[look%6]||APPEARANCE_HAIR[0];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
+
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  r=groundedPainter(r,x,z);
@@ -285,10 +337,10 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
  if(r.skinned)r.skinned(mesh.gpuMesh,root,mesh.pose);else briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
- if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3),headTransform);
+ if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3,sex),headTransform);
  if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
- if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
+ if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  // Weapon meshes are attached to the new rig's actual palms.
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){

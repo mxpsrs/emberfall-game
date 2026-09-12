@@ -25,3 +25,6 @@ https://poly.pizza/m/iltq5bVNaV
 https://poly.pizza/m/yq5ATpujSt
 https://poly.pizza/m/LyjSUKHKnh
 Source hashes, rig hierarchy and animation names are recorded in monsters.js.
+
+Peasant and Ranger clothing: Quaternius Modular Character Outfits - Fantasy (Standard), CC0 1.0.
+https://quaternius.itch.io/modular-character-outfits-fantasy

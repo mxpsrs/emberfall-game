@@ -1,0 +1,81 @@
+{
+  "author": "Quaternius",
+  "pack": "Modular Character Outfits - Fantasy (Standard)",
+  "url": "https://quaternius.itch.io/modular-character-outfits-fantasy",
+  "license": "CC0 1.0 Universal",
+  "parts": [
+    {
+      "file": "Male_Peasant_Body.gltf",
+      "sha256": "daaa452abe8762c3bee7b1b30066c76d62077873c72cbf826de1a0f575ac3cb0"
+    },
+    {
+      "file": "Male_Peasant_Arms.gltf",
+      "sha256": "4eb0fff5637cb65909103fee86c799f13883c9fa18a0118cc5233a77b67db1d2"
+    },
+    {
+      "file": "Male_Peasant_Legs.gltf",
+      "sha256": "207933393b7a2ef436c0ffea65b70e35feaee084992e798c3eb31e0c771fabb0"
+    },
+    {
+      "file": "Male_Peasant_Feet.gltf",
+      "sha256": "191a2d70d6c2e550669bb7b1fc1c07be650d7168512e18eb2acb0e55d0535c52"
+    },
+    {
+      "file": "Male_Ranger_Body.gltf",
+      "sha256": "c5bb520006116222bad30533bd39e0f215abbf8d44e3fa1769ebad12043eac57"
+    },
+    {
+      "file": "Male_Ranger_Arms.gltf",
+      "sha256": "437d71553d79dbf4583351718b5cb5c6d342f5e0682b287a7cd806630ed2b349"
+    },
+    {
+      "file": "Male_Ranger_Legs.gltf",
+      "sha256": "c415a01384d34b77a98ff4b0d01d42453dfe98bee259e58a328a803d36ac9df2"
+    },
+    {
+      "file": "Male_Ranger_Feet_Boots.gltf",
+      "sha256": "e71cd92792aeabca0dd1621556c54945dd97d154147790a5cb1afd75415a4e02"
+    },
+    {
+      "file": "Male_Ranger_Head_Hood.gltf",
+      "sha256": "57affa34c145d2c1a02a3d9b17066e22b84eb4ce2bb79c6c7b90588af00846b6"
+    },
+    {
+      "file": "Female_Peasant_Body.gltf",
+      "sha256": "9c4edd8d18a028ee721fbaa5431a42e6ae1b579ac3bd756604bf888b387d4529"
+    },
+    {
+      "file": "Female_Peasant_Arms.gltf",
+      "sha256": "7f2446a7bab93b882e4095a9583219de3f381962551e8a7d451c287d74a8987e"
+    },
+    {
+      "file": "Female_Peasant_Legs.gltf",
+      "sha256": "1369d75a8197e9e9fdbaf9491b276e7a31c08944377145ff5e497a7c1ac81ea3"
+    },
+    {
+      "file": "Female_Peasant_Feet.gltf",
+      "sha256": "1c8cfde62c44e578d10194f769a568dd40a7f0523d0d286661660141704715de"
+    },
+    {
+      "file": "Female_Ranger_Body.gltf",
+      "sha256": "7215f19c1c31fa8f19286357f93e6e043b0dd162d4418fdc73f530a88717db35"
+    },
+    {
+      "file": "Female_Ranger_Arms.gltf",
+      "sha256": "98a1b7a5d5d98b6de2f914f810cf75b359d7e11c62f33197948cf4c17c2c95eb"
+    },
+    {
+      "file": "Female_Ranger_Legs.gltf",
+      "sha256": "804932b0e0b49601a565aef57422bc7ca17e526656518e399ef5d72f7134db6c"
+    },
+    {
+      "file": "Female_Ranger_Feet.gltf",
+      "sha256": "11fef23ffa6099722f44f7411622f24db8728e9b7b5c028d5c40f980f5f97501"
+    },
+    {
+      "file": "Female_Ranger_Head_Hood.gltf",
+      "sha256": "3ac6867e32cba7793d9393d4844cc21f38c53e833d468d7d5adebfb42bba7d0e"
+    }
+  ],
+  "adaptation": "Retargeted to both Emberfall rigs; texture colours baked into vertices; hood remains separate head equipment."
+}
