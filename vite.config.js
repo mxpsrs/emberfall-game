@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite';
 import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
+import {pathToFileURL} from 'node:url';
 import {handleSave,handlePlayers} from './worker/api.js';
 
 // Isolated local gameplay saves; production continues to use the Sites D1 binding.
@@ -16,7 +17,13 @@ export default defineConfig({
  server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
  plugins:[{name:'emberfall-local-api',configureServer(server){server.middlewares.use(async(req,res,next)=>{
   const path=req.url?.split('?')[0];
-  const handler=path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
+  // Browser QA can exercise the exact packaged Worker at /__build__/ instead
+  // of accidentally testing only Vite's unbundled source delivery.
+  const handler=path?.startsWith('/__build__/')?async request=>{
+   const worker=await import(pathToFileURL(fs.realpathSync('dist/server/index.js')).href);
+   const url=new URL(request.url);url.pathname=url.pathname.slice('/__build__'.length);
+   return worker.default.fetch(new Request(url,request),env);
+  }:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
   if(!handler)return next();
   try{
    const chunks=[];for await(const chunk of req)chunks.push(chunk);
