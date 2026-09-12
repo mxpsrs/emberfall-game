@@ -1,17 +1,18 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');const root=__dirname+'/../dist/';const noop=()=>{};
-function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},children:[],appendChild(child){this.children.push(child)},replaceChildren(...children){this.children=children},removeAttribute:noop,show(){this.open=true},querySelectorAll:()=>[],set innerHTML(value){this.children=[]},listeners:{},addEventListener(type,fn){const before=this.listeners[type];this.listeners[type]=before?e=>{before(e);fn(e)}:fn},setPointerCapture:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
+function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},children:[],append(...children){this.children.push(...children)},appendChild(child){this.children.push(child)},replaceChildren(...children){this.children=children},removeAttribute:noop,show(){this.open=true},querySelectorAll:()=>[],set innerHTML(value){this.children=[]},listeners:{},addEventListener(type,fn){const before=this.listeners[type];this.listeners[type]=before?e=>{before(e);fn(e)}:fn},setPointerCapture:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
 const els={},data={},ctx={assert,console,atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v},document:{getElementById:id=>els[id]??=el(),querySelectorAll:()=>[],createElement:el,addEventListener:noop,body:el()},window:{addEventListener:noop,matchMedia:()=>({matches:false})}};vm.createContext(ctx);
 for(const f of ['cloud','loot','spirits','hud','systems','trading','frontier','world','tutorial','skills','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
 vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
-for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
-
+for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','tree-identity','world-depth','organic-world','walk-in-world','world-style','building-orientation','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
+vm.runInContext(fs.readFileSync(root+'game-icons.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync(root+'equipment-interface.js','utf8'),ctx);
 
 vm.runInContext(`
 renderAction=()=>{};draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
-s.character={name:'Fresh apprentice',look:0};s.tutorial=0;s.tutorialVersion=2;s.runEnabled=false;s.runEnergy=100;assetsReady=true;activateScene('overworld',42,51);
+s.character={name:'Fresh apprentice',look:0};s.tutorial=0;s.tutorialVersion=3;s.runEnabled=false;s.runEnergy=100;assetsReady=true;activateScene('overworld',42,51);
 let testNow=0;Date.now=()=>testNow;function tick(){testNow+=50;frame(testNow);}
 function until(predicate,label){for(let i=0;i<3000;i++){if(predicate())return;tick();}throw new Error('Timed out: '+label+' @ '+s.x+','+s.y+' '+tutorialStep()?.event+' target '+target?.name+' path '+path.length);}
 function current(event){assert.equal(tutorialStep()?.event,event);}
@@ -23,11 +24,11 @@ talk('guide');current('bag');openTutorialPanel('bag');current('skills');openTuto
 talk('woods');gather('tree');current('fire');assert(lightLog());
 talk('fishing');gather('fish');assert(s.bag.rawShrimp>0);talk('cooking');gather('cook');assert((s.xp.Cooking||0)>0);current('eat');eat();
 talk('mining');gather('ore');gather('smelt');gather('smith');assert(s.gear.bronze_dagger===1);
-talk('combat');current('gear');chooseStyle('melee');gather('dummy');gather('monster');current('loot');guide();until(()=>!path.length&&!target,'coins');guide();until(()=>tutorialStep()?.event!=='loot','bones');
+talk('combat');current('equip-dagger');tutorialEvent('equip-dagger');current('equip-dagger');assert(equipItem('bronze_dagger'));current('combat-stats');openTutorialPanel('gear');current('combat-stats');paintEquipmentPreview=()=>{};openCombatStats();current('training-kit');close();guide();until(()=>$('modal').open,'training equipment');clickDialog('Take sword and shield');current('training-gear');assert(equipItem('woodenSword'));current('training-gear');assert(equipItem('woodenShield'));current('dummy');assert(s.gear.bronze_dagger===1);assert(s.tutorialGifts.combat);assert(grantTutorialItems('combat',{woodenSword:1,woodenShield:1}));assert.equal(s.gear.woodenSword,1);gather('dummy');gather('monster');current('loot');guide();until(()=>!path.length&&!target,'coins');guide();until(()=>tutorialStep()?.event!=='loot','bones');
 talk('bank');current('deposit');openBank();const bagBefore=s.gear.bronze_dagger;assert(transferBank('bronze_dagger'));current('withdraw');assert.equal(s.bank.bronze_dagger,1);assert(transferBank('bronze_dagger',true));assert.equal(s.gear.bronze_dagger,bagBefore);close();
 talk('worship');current('bury');if(!s.bag.bones)s.bag.bones=1;assert(buryBones());current('spirit');guide();until(()=>$('modal').open,'Cinder');clickDialog('Form a bond');assert(s.spirits.cinder);assert(s.xp.Worship>=38);
-talk('magic');current('magic');chooseStyle('magic');const runesBefore=s.bag.runes;gather('magic');assert(s.bag.runes<runesBefore);assert(s.xp.Magic>0);
-current('talk-finish');guide();until(()=>{if(!path.length&&!target&&!pendingWalkInDoor&&!$('modal').open)guide();return $('modal').open;},'Rowan finish');clickDialog('Finish apprenticeship');assert.equal(tutorialStep(),null);assert(s.tutorialReward);close();
+talk('magic');current('magic');assert(s.gear.oakStaff===1);assert(s.tutorialGifts.magic);chooseStyle('magic');assert.equal(s.equipment.weapon,'oakStaff');const runesBefore=s.bag.runes;gather('magic');assert(s.bag.runes<runesBefore);assert(s.xp.Magic>0);
+current('talk-finish');guide();until(()=>{if(!path.length&&!target&&!pendingWalkInDoor&&!$('modal').open)guide();return $('modal').open;},'Rowan finish');clickDialog('Finish apprenticeship');assert.equal(tutorialStep(),null);assert(s.tutorialReward);assert.equal(s.gear.woodenSword,1);assert.equal(s.gear.woodenShield,1);assert.equal(s.gear.oakStaff,1);assert(!s.bank.oakStaff,'earned staff is retained without duplication');close();
 const completed=s.tutorial;s=JSON.parse(JSON.stringify(s));normalizeJourney(s);assert.equal(s.tutorial,completed);assert(s.spirits.cinder);assert.equal(s.gear.bronze_dagger,1);
 // The recorded old save gets the new course without losing belongings or levels.
 const legacy={...s,tutorial:0,tutorialVersion:undefined,x:14,y:18};const legacyXP=JSON.stringify(legacy.xp),legacyBag=JSON.stringify(legacy.bag);normalizeJourney(legacy,legacy);assert.equal(legacy.tutorial,0);assert.equal(JSON.stringify(legacy.xp),legacyXP);assert.equal(JSON.stringify(legacy.bag),legacyBag);
@@ -37,5 +38,5 @@ s.tutorial=tutorialSteps.length;activateScene('overworld',45,90);s.runEnabled=fa
 activateScene('overworld',45,90);s.runEnabled=true;s.runEnergy=100;walkTo(45,100);for(let i=0;i<10;i++)advanceMovement(.05);assert(Math.abs(py-90-walking*2)<.001,'run covers twice the distance');assert(s.runEnergy<100);
 stop();px=s.x;py=s.y;const energy=s.runEnergy;advanceMovement(.05);assert(s.runEnergy>energy,'rest recovers energy');
 s.runEnergy=.001;walkTo(45,100);advanceMovement(.05);assert(!s.runEnabled,'empty energy switches to walking');assert(s.runEnergy>=0);s=JSON.parse(JSON.stringify(s));normalizeJourney(s);assert(!s.runEnabled);assert(s.runEnergy<1);
-console.log('PASS: all 31 tutor-led lessons through real routes, conversations, gathering, crafting, combat, bank and spirit actions; recovery, saves, walking and running.');
+console.log('PASS: all 34 tutor-led lessons through real routes, conversations, gathering, crafting, combat, bank and spirit actions; recovery, saves, walking and running.');
 `,ctx);

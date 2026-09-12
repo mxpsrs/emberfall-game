@@ -7,9 +7,9 @@ const defaults = () => ({
   skillProgressionVersion:1,combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
   bag:{logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
   sword:0, quest:0, kills:0, boss:false, character:null,
-  spirits:{}, tutorial:0, tutorialVersion:2, tutorialReward:false, spell:"spark",
+  spirits:{}, tutorial:0, tutorialVersion:3, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
-  starterGearVersion:1,gear:{},
+  starterGearVersion:1,tutorialGifts:{},gear:{},
   equipment:{weapon:null,head:null,neck:null,body:null,hands:null,legs:null,shield:null,feet:null},
   toolBelt:{axe:true,pickaxe:true,fishingRod:true,tinderbox:true,hammer:true}
 });
@@ -190,7 +190,7 @@ function renderUI(){
 }
 function renderPanel(){
   if(tab==='skills'&&!$('gameDock').hidden)tutorialEvent('skills');
-  if(tab==='bag'){renderInventory();return;}if(tab==='gear'){renderEquipment();return;}if(tab==='spells'){renderSpells();return;}
+  if(tab==='skills'&&typeof renderSkillInterface==='function'){renderSkillInterface();return;}if(tab==='bag'){renderInventory();return;}if(tab==='gear'){renderEquipment();return;}if(tab==='spells'){renderSpells();return;}
   let html='';
   if(tab==='quests'){
     pageControls(2,1);if(panelPage===1){renderFrontierQuest();return;}
@@ -227,7 +227,7 @@ async function finishCharacter(name,look){
   if(!saved){$('begin').textContent='Retry saving character';$('characterSaveError').textContent='Your character has not saved to your account yet. Check your connection and retry.';return true;}
   $('creator').close();renderUI();renderTutorial();save();if(!editingCharacter)toast('Welcome to Briarhaven, '+cleaned+'.');return true;
 }
-function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=2;tutorialCameraStart=null;renderTutorial();save();}]]);}
+function showHelp(){dialog('The adventurer’s handbook','<p><b>Tap the ground</b> to walk. Tap resources to gather. Tap monsters to fight automatically. Tap a villager to talk. Right-click or long press for all actions, including Attack.</p><p><b>Swipe with one finger</b> to turn the camera; pinch to zoom. On a computer, drag or hold the arrow keys to turn and tilt; scroll to zoom. Tap or click the ground to move.</p><p><b>Eat trout</b> to heal during battle. Tap elsewhere to retreat. The inn and campfire restore all health.</p><p>Tap a door to open or close it, then tap the ground to walk through. Doors keep their state when you return. Use the map to walk to a region.</p><p>Use Bag to inspect and equip items. Gear shows your armor. Ranged consumes arrows; Magic consumes rune stones. Choose spells in the spellbook. Mara sells ammunition, and the forge makes arrows.</p><p>Tap Run to move faster while energy lasts. Energy recovers while walking or resting. On a computer, R toggles running.</p><p>Progress saves to your account, with a backup on this device.</p>',[['Log out',logoutGame],['Edit character',()=>openCreator(true)],['Replay opening tutorial',()=>{close();s.tutorial=0;s.tutorialVersion=3;tutorialCameraStart=null;renderTutorial();save();}]]);}
 function worldMap(){expandedMap();}
 function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2,Math.sqrt(8294400/Math.max(1,r.width*r.height)));screen={w:r.width,h:r.height};canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
 function shadow(g,x,y,size){g.fillStyle='#0a17274a';g.beginPath();g.ellipse(x,y,size,size*.29,0,0,Math.PI*2);g.fill();}
@@ -309,7 +309,7 @@ function advanceMovement(dt){
  while(remaining>1e-7){
   let distance=Math.hypot(s.x-px,s.y-py);
   if(distance<1e-6){
-   px=s.x;py=s.y;if(!path.length)break;
+   px=s.x;py=s.y;if(target&&fighter(target)&&inAttackRange(target))path=[];if(!path.length)break;
    const next=path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
@@ -329,17 +329,18 @@ let nextFrameAt=0;
 function frame(now){
   const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
-  const dt=Math.min((now-last)/1000||0,.05);last=now;
+  const dt=Math.min((now-last)/1000||0,.05);last=now;if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
   if(assetsReady&&!cloudConflict&&!cloudDisconnected)updateWorldTimers();
   if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}
-      else{elapsed+=dt;const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[target.type]||'Combat';const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
+      else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
+      else{elapsed+=dt;const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
     updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
-    for(const o of objects){o.drawX+=(o.x-o.drawX)*Math.min(1,dt*10);o.drawY+=(o.y-o.drawY)*Math.min(1,dt*10);}
+    for(const o of objects)advanceActorMovement(o,dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
     saveClock+=dt;if(saveClock>10){saveClock=0;save();}
@@ -347,7 +348,7 @@ function frame(now){
   if($('modal').open||$('creator').open||$('spiritsDialog').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
   if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
 }
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(c=>c.classList.toggle('selected',c===b));renderPanel();});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));
 $('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
 $('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
 $('runButton').onclick=toggleRun;
@@ -359,8 +360,8 @@ $('modal').addEventListener('close',()=>{if(!$('modal').open&&window.realmTrade)
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
   if(!assetsReady||$('modal').open||$('creator').open||$('spiritsDialog').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
-  const key=e.key.toLowerCase();const d={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key]||({w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]})[key];
-  if(d){e.preventDefault();const x=s.x+d[0],y=s.y+d[1],o=objects.find(o=>o.x===x&&o.y===y&&o.dead<=time);if(o)select(o);else if(land(x,y))walkTo(x,y);}if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
+  if(typeof cameraKeyDown==='function')cameraKeyDown(e);
+  const key=e.key.toLowerCase();if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
 });
 async function boot(){
   if(window.realmStartup?.failed)return;

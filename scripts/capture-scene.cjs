@@ -9,7 +9,7 @@ const sandbox={processCaptureClip:process.env.EMBERFALL_CAPTURE_CLIP||'idle',con
  captureSkinning:process.env.EMBERFALL_CAPTURE_SKINNING==='1',captureIsolated:process.env.EMBERFALL_CAPTURE_ISOLATED==='1',captureGear:process.env.EMBERFALL_CAPTURE_GEAR?JSON.parse(process.env.EMBERFALL_CAPTURE_GEAR):null,captureAppearance:JSON.parse(process.env.EMBERFALL_CAPTURE_APPEARANCE||'{}'),
  capture(data){fs.writeFileSync(path.join(output,motionFrames>1?'scene-'+String(captureIndex++).padStart(3,'0')+'.json':'scene.json'),JSON.stringify(data));},motionFrames,captureYaw:Number(process.env.EMBERFALL_CAPTURE_YAW||-.55),captureTilt:Number(process.env.EMBERFALL_CAPTURE_TILT||.85),captureZoom:Number(process.env.EMBERFALL_CAPTURE_ZOOM||0),captureSex:process.env.EMBERFALL_CAPTURE_SEX||'male',choice:process.argv[3]||'willow-inside',posePhase:Number(process.argv[4]||0),captureWidth:Number(process.env.EMBERFALL_CAPTURE_WIDTH||1112),captureHeight:Number(process.env.EMBERFALL_CAPTURE_HEIGHT||512)};
 vm.createContext(sandbox);
-for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
+for(const name of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game','view3d','art-direction','renderer-gl','kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','tree-identity','world-depth','organic-world','walk-in-world','world-style','building-orientation','assets/realms/monsters','creatures','item-models'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',name+'.js'),'utf8'),sandbox,{filename:name});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();screen={w:captureWidth,h:captureHeight};s.character={name:'Adventurer',look:0,frame:captureSex,hair:0,race:'human'};s.equipment={weapon:'bronzeSword',body:'leatherArmor'};s.worldClock=120;time=1;assetsReady=true;
 if(captureGear)s.equipment=captureGear;Object.assign(s.character,captureAppearance);
@@ -29,6 +29,14 @@ else if(['crownreach','ironhollow','aelindor','deepforge','moonwillow'].includes
 else if(choice.endsWith('-castle')){const race=choice.split('-')[0],b=buildings.find(b=>b.race===race&&b.archetype==='castle');activateScene('overworld',b.x+b.w/2,b.y+b.h+12);}
 else if(choice==='mine')activateScene('mine',10,12);
 else if(choice==='forge-detail')activateScene('overworld',69,45);
+else if(choice==='tree-lineup'){
+ activateScene('overworld',50,81);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
+ for(const [i,resourceId]of ['normal','oak','willow','maple','yew','magic'].entries())objects.push({id:4000002+i,type:'tree',resourceId,name:resourceId,x:36+i*6,y:78,drawX:36+i*6,drawY:78,dead:0});
+}
+else if(['chopping','mining','fishing'].includes(choice)){
+ activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
+ const type=choice==='chopping'?'tree':choice==='mining'?'ore':'fish';target={id:4000000,type,resourceId:type==='tree'?'normal':type==='ore'?'copper':'shrimp',name:choice,x:44,y:75,drawX:44,drawY:75,dead:0};objects.push(target);elapsed=posePhase*actionDuration(target);playerHeading=Math.PI/2;s.tutorial=tutorialSteps.length;
+}
 else if(choice==='props'){
  activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
  for(const [i,name]of ['forge','Bed','Dining table','Barrel','Bookcase','Merchant wagon','Altar','camp'].entries())objects.push({id:4000000+i,type:['forge','camp'].includes(name)?name:'prop',name,x:36+(i%4)*4,y:69+Math.floor(i/4)*4,dead:0});

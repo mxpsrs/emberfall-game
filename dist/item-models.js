@@ -3,6 +3,23 @@
 // equipment keeps its authored mesh; supplies use small, flat-colored solids.
 const itemVisualCache=new Map(),itemIconCache=new Map();
 const ITEM_METALS={copper:'#c37c48',tin:'#b8bdba',bronze:'#b69358',iron:'#858e99',steel:'#c1cbd0',black:'#414852',coal:'#30343c',gold:'#dfb94b',mithril:'#788ac5',adamant:'#65976c',rune:'#61b8c9',dragonslayer:'#b95643'};
+function drawGatheringTool(r,m,tool){
+ const id=s.toolBelt?.[tool+'Item']||(tool==='axe'?'bronzeAxe':'bronzePickaxe');
+ const build=q=>{
+  if(tool==='axe'||tool==='pickaxe')buildToolItem({face:(p,c)=>q.face(p.map(([x,y,z])=>[x*.70,y*.70+.24,z*.70]),c)},id,ITEMS[id]||{beltTool:tool});
+  else if(tool==='fishingNet'||tool==='lobsterPot'){
+   itemRod(q,[0,-.12,0],[0,.70,0],.025,'#97764c');
+   const ring=Array.from({length:17},(_,i)=>[Math.cos(i*Math.PI/8)*.25,.86+Math.sin(i*Math.PI/8)*.25,0]);itemPath(q,ring,.018,'#a38d60');
+   for(let i=0;i<16;i+=2)itemRod(q,ring[i],[0,.72,-.28],.008,'#b2ae8c');
+  }else{
+   itemRod(q,[0,-.1,0],[0,1.55,.20],.018,'#a18152');
+   itemRod(q,[0,1.55,.20],[0,.75,.70],.003,'#c9c5ad');
+   itemOval(q,0,.76,.70,.06,.10,.06,'#c06648',6);
+  }return 1.8;
+ };
+ if(r.indexed)cachedRealmShape(r,'held-tool:'+tool+':'+id,m,build);
+ else build({face:(p,c)=>r.face(p.map(v=>briarPoint(v,0,m)),c)});
+}
 const ITEM_WOODS={normal:['#866042','#d8b982'],oak:['#785237','#b9965c'],willow:['#6a7a50','#c4c492'],maple:['#9d5237','#e2aa69'],yew:['#58463f','#bb8877'],magic:['#536981','#9ebeda']};
 function itemFace(r,points,color){r.face(points,color);}
 function itemProfile(r,x,y,z,w,h,d,rings,color,sides=8){

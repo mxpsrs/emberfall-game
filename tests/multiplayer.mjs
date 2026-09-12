@@ -13,7 +13,7 @@ assert.equal((await presence(a,'overworld',1100)).status,200);
 for(const [scene,x,y]of [['realm_aelindor_25',12,10],['realm_ironhollow_5',22,18],['realm_deepforge_0',8,10],['realm_crownreach_25',12,18]])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x,y}),env)).status,200,scene);
 for(const scene of ['realm_aelindor_26','realm_unknown_0','realm_crownreach_999','__proto__'])assert.equal((await handlePlayers(req('/api/players','POST',a,{scene,x:5,y:5}),env)).status,400,scene);
 const saved=await (await handleSave(req('/api/character','GET',b),env)).json();assert.equal(saved.state.character.name,'Player B');
-const kit={head:'rangerHood',body:'bronze_body',shoulders:'gold_shoulders',hands:'mithril_hands',legs:'iron_legs',feet:'bronze_feet',weapon:'dragonslayer_weapon',shield:'iron_shield',crest:'helmet_crest_1',neck:'copperNecklace'};
+const kit={head:'rangerHood',body:'bronze_body',shoulders:'gold_shoulders',hands:'mithril_hands',legs:'iron_legs',feet:'bronze_feet',weapon:'woodenSword',shield:'woodenShield',crest:'helmet_crest_1',neck:'copperNecklace'};
 saved.state.character={...saved.state.character,frame:'female',hair:1,topStyle:5,bottomStyle:4,topColor:2,bottomColor:7};saved.state.equipment=kit;saved.state.toolBelt={axe:true,pickaxe:true,tinderbox:true};
 assert.equal((await handleSave(req('/api/character','PUT',b,{state:saved.state,revision:saved.revision}),env)).status,200);
 const visibleKit=Object.fromEntries(Object.entries(kit).filter(([slot])=>!['shoulders','crest'].includes(slot)));

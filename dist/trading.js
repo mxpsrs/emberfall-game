@@ -13,14 +13,14 @@ function endTrade(){
  if(!window.realmTrade)return;window.realmTrade=null;document.body.classList.remove('trade-open');$('modal').classList.remove('trade-window');
  $('closeModal').textContent='Back to adventure';$('closeModal').setAttribute('aria-label','Back to adventure');$('modal').removeAttribute('aria-label');
  document.querySelectorAll('[data-tab]').forEach(b=>b.disabled=false);
- $('togglePanels').textContent=$('gameDock').hidden?'Bag & menus':'Close panels';
+ syncPanelButton();
 }
 function openTrade(kind){
  stop();if($('modal').open)$('modal').close();
  window.realmTrade={kind,quantity:1,custom:10,search:'',filter:'all',notice:''};
  document.body.classList.add('panels-open','trade-open');$('gameDock').hidden=false;tab='bag';panelPage=0;syncTabs();
  document.querySelectorAll('[data-tab]').forEach(b=>b.disabled=b.dataset.tab!=='bag');
- $('togglePanels').setAttribute('aria-expanded','true');$('togglePanels').textContent=kind==='bank'?'Close bank':'Close shop';
+ syncPanelButton();
  $('modal').classList.add('trade-window');$('modal').setAttribute('aria-label',kind==='bank'?'Briarhaven Bank':'Mara’s General Store');
  $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label',kind==='bank'?'Close bank window':'Close shop window');
  const title=kind==='bank'?'Bank of Briarhaven':'Mara’s General Store';

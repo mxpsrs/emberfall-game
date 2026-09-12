@@ -72,6 +72,12 @@ function creatureDying(o){const a=creatureAsset(o);return !!a&&o.dead>time&&Numb
 const creatureBeforeImports=creature3;
 creature3=function(r,o,x,z){
  if(o.civilianModel){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02;humanoid3(r,x,z,1,{_civilian:o.civilianModel,_frame:'male',_race:'human'},Math.atan2(px-x,py-z),moving?time*9:0);return 1.9;}
+ if(!o.tutor&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type))){
+  const state=creatureMotion(o,x,z),gear=npcEquipment(o);gear._attackAt=o.attackAt;
+  gear._frame=o.kind==='man'?'male':o.frame||((o.sprite||0)%3===2?'female':'male');
+  gear._appearance={topStyle:4,bottomStyle:3,topColor:(o.id||0)%8,bottomColor:7,hair:(o.id||0)%4,hairColor:(o.id||0)%4};
+  humanoid3(r,x,z,(o.sprite||0)%4,gear,state.heading,state.blend>.015?state.phase*7.5:0);return gear._race==='dwarf'?1.8:2;
+ }
  const kind=creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
  const dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height>65,near=Math.hypot(x-px-.5,z-py-.5)<8;
  const idlePhase=near?((Math.floor(time*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0;

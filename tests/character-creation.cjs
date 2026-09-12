@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{createCanvas}=require('@napi-rs/canvas');
 const {ctx,els}=require('../scripts/benchmark-desktop.cjs');
-function element(){const e={children:[],attributes:{},dataset:{},style:{setProperty(){}},classList:{add(){}},append(...children){this.children.push(...children)},appendChild(child){this.children.push(child)},replaceChildren(...children){this.children=children},setAttribute(key,value){this.attributes[key]=value},addEventListener(){},setPointerCapture(){},showModal(){this.open=true},close(){this.open=false}};Object.defineProperty(e,'id',{get(){return this._id},set(value){this._id=value;els[value]=this}});return e;}
+function element(){const e={children:[],attributes:{},dataset:{},style:{setProperty(){}},classList:{add(){}},append(...children){this.children.push(...children)},appendChild(child){this.children.push(child)},replaceChildren(...children){this.children=children},setAttribute(key,value){this.attributes[key]=value},listeners:{},addEventListener(type,fn){this.listeners[type]=fn},setPointerCapture(){},showModal(){this.open=true},close(){this.open=false}};Object.defineProperty(e,'id',{get(){return this._id},set(value){this._id=value;els[value]=this}});return e;}
 ctx.document.createElement=element;for(const id of ['appearanceFields','clothingFields','creatorBody'])els[id]=element();
 const canvas=createCanvas(480,560);Object.assign(els.characterPreview??=element(),{width:480,height:560,getContext:()=>canvas.getContext('2d')});
 vm.runInContext('startRebuiltRealm=()=>{};accountUsername="Learner";stop=()=>{};',ctx);vm.runInContext(fs.readFileSync('dist/character-creation.js','utf8'),ctx);
@@ -12,7 +12,8 @@ $('choice-frame-1').onclick();assert.equal(creatorDraft.frame,'female');assert.e
 setCreatorChoice('topStyle',5);creatorStep('topStyle',1);assert.equal(creatorDraft.topStyle,0,'next wraps');creatorStep('topStyle',-1);assert.equal(creatorDraft.topStyle,5,'previous wraps');
 $('choice-hairColor-3').onclick();assert.equal(creatorDraft.hairColor,3);assert.equal($('choice-hairColor-3').attributes['aria-pressed'],'true');
 setCreatorChoice('bottomStyle',4);assert.equal($('appearance-bottomStyle').textContent,'Ranger trousers');
-creatorAngle=0;$('creatorRight').onclick();assert.equal(creatorAngle,Math.PI/4);$('creatorLeft').onclick();assert.equal(creatorAngle,0);
+creatorAngle=0;$('characterPreview').listeners.keydown({key:'ArrowRight',preventDefault(){}});assert.equal(creatorAngle,Math.PI/4);$('characterPreview').listeners.keydown({key:'ArrowLeft',preventDefault(){}});assert.equal(creatorAngle,0);
+$('characterPreview').listeners.pointerdown({pointerId:1,button:0,clientX:100,preventDefault(){}});$('characterPreview').listeners.pointermove({pointerId:1,clientX:160});assert.equal(creatorAngle,.84);$('characterPreview').listeners.pointerup({pointerId:1});assert.equal(creatorDrag,null);
 $('creatorZoom').onclick();assert.equal(creatorFace,true);$('creatorZoom').onclick();assert.equal(creatorFace,false);
 s.character={name:'Original',frame:'male',hair:1,topStyle:2,bottomStyle:1};openCreator(true);assert.equal(creatorDraft.topStyle,2,'old appearance retained');setCreatorChoice('topStyle',5);assert.equal(s.character.topStyle,2,'draft changes do not modify saved character');
 assert.equal(ITEMS.rangerHood.slot,'head');assert(ITEMS.rangerHood.openFace);assert(SKILL_SHOP_STOCK.some(row=>row[0]==='rangerHood'),'hood can be obtained');

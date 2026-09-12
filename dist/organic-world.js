@@ -18,7 +18,7 @@ function planVillageLane(start,end){const sx=Math.floor(start[0]),sz=Math.floor(
  let result=raw;for(let pass=0;pass<2;pass++){const next=[result[0]];for(let i=0;i<result.length-1;i++){const a=result[i],b=result[i+1];for(const t of [.25,.75]){const p=[a[0]*(1-t)+b[0]*t,a[1]*(1-t)+b[1]*t];if(!laneBlocked(Math.floor(p[0]),Math.floor(p[1])))next.push(p);}}next.push(result[result.length-1]);result=next;}
  const spaced=[result[0]];for(let i=1;i<result.length-1;i++)if(Math.hypot(result[i][0]-spaced.at(-1)[0],result[i][1]-spaced.at(-1)[1])>.8)spaced.push(result[i]);spaced.push(result.at(-1));return spaced;
 }
-function arrangeBriarhaven(world){const plan={inn:[30,32,11,10],shop:[49,35,9,8],forge:[63,30,11,10],realm_briarhaven_3:[30,63,9,8],realm_briarhaven_4:[54,65,9,7]};for(const b of world.buildings){const p=plan[b.service?.destination];if(p)Object.assign(b,{x:p[0],y:p[1],w:p[2],h:p[3]});}
+function arrangeBriarhaven(world){const plan={inn:[30,32,11,10],shop:[49,35,9,8],forge:[63,30,11,10],realm_briarhaven_3:[73,62,9,8],realm_briarhaven_4:[54,65,9,7]};for(const b of world.buildings){const p=plan[b.service?.destination];if(p)Object.assign(b,{x:p[0],y:p[1],w:p[2],h:p[3]});}
  for(const o of world.objects){if(o.type==='elder'){Object.assign(o,{x:43,y:52,homeX:43,homeY:52,drawX:43,drawY:52});}if(['enemy','boss'].includes(o.type)&&o.x>28&&o.x<78&&o.y>28&&o.y<79){const x=83+(o.id%5)*4,y=65+(o.id%4)*5;Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});}}
 }
 const terrainBeforeOrganic=expandedTerrain;
@@ -37,7 +37,7 @@ function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','
 function roadSegmentDistance(x,z,seg){const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],t=Math.max(0,Math.min(1,((x-seg.a[0])*dx+(z-seg.a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-seg.a[0]-dx*t,z-seg.a[1]-dz*t);}
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
 drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
- for(const b of buildings){if(!b.service||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85);}
+ for(const b of buildings){if(!b.service||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);if(typeof buildingDoorTransform==='function')briarEmit(r,rebuiltModels.Door_1_Round,buildingDoorTransform(b));else rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85);}
 };
 let doorReturnUntil=0;
 const engageBeforeDoors=engage;

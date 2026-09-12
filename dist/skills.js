@@ -69,6 +69,10 @@ normalizeToolBelt=function(state){const belt=normalizeOriginalBelt(state);for(co
 
 function resourceDefinition(o){return o.type==='tree'?TREE_RESOURCES[o.resourceId||'normal']:o.type==='ore'?ORE_RESOURCES[o.resourceId||'copper']:o.type==='fish'?FISH_RESOURCES[o.resourceId||'shrimp']:null;}
 function resourceRequirement(o){const d=resourceDefinition(o),skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type];if(!d)return false;if(lv(skill)<d.level){toast('Requires '+skill+' '+d.level+'.');return false;}return true;}
+function gatheringActivity(){
+ const o=target;if(!o||!resourceDefinition(o)||path.length||Math.hypot(s.x-px,s.y-py)>.02||Math.hypot(o.x-px,o.y-py)>1.46||o.dead>time)return null;
+ return {object:o,tool:o.type==='tree'?'axe':o.type==='ore'?'pickaxe':resourceDefinition(o).tool,phase:Math.min(.999,elapsed/actionDuration(o))};
+}
 function harvestResource(o){
  const d=resourceDefinition(o);if(!d||!resourceRequirement(o)){stop();return false;}
  const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type],tool=o.type==='tree'?'axe':o.type==='ore'?'pickaxe':d.tool,item=d.item||d.raw;
@@ -76,7 +80,7 @@ function harvestResource(o){
  if(!canCarry(item)){stop();toast('Your bag is full.');return false;}
  const chance=Math.min(.95,.4+(lv(skill)-d.level)*.009+gatheringToolRank(tool)*.025);if(Math.random()>chance)return false;
  if(!addToBag(item))return false;if(d.bait)s.bag[d.bait]--;
- gain(skill,d.xp);floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;lastAttack=time;
+ gain(skill,d.xp);floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
  if(o.type==='ore'||o.type==='tree'&&(o.resourceId==='normal'||Math.random()<.125)){o.dead=time+d.respawn;o.respawnAt=Date.now()+d.respawn*1000;stop();}
  if(o.tutorialRole==='ore'||o.tutorialRole==='tin'){if(s.bag.copperOre>0&&s.bag.tinOre>0)tutorialEvent('ore');}else tutorialEvent(o.type);
  renderUI();save();return true;
@@ -150,6 +154,8 @@ for(const tier of GEAR_TIERS){
  }
 }
 for(const [id,template]of [['bronzeSword','bronze_weapon'],['ironSword','iron_weapon'],['ironHelm','iron_head'],['ironShield','iron_shield']])ITEMS[id]={...ITEMS[template],name:ITEMS[id].name};
+addSkillItem('woodenSword',{name:'Wooden training sword',icon:0,slot:'weapon',style:'melee',model:'Emberfall_WoodenSword',range:1.45,power:0,attackBonus:4,strengthBonus:4,attackTicks:4,requirements:{Attack:1},desc:'Captain Vale’s wooden practice sword. A broader grip and reach than your first dagger; yours to keep.'});
+addSkillItem('woodenShield',{name:'Wooden training shield',icon:6,slot:'shield',style:'melee',model:'Emberfall_WoodenShield',armor:3,requirements:{Defense:1},desc:'A wooden practice shield from Captain Vale. Offers modest protection with a melee weapon.'});
 Object.assign(ITEMS.leatherArmor,{armor:8,rangedAccuracy:2,magicAccuracy:-2,requirements:{Defense:1},desc:'Light leather body armor. Defense 1; suitable for early ranged training.'});
 Object.assign(ITEMS.leatherBoots,{armor:1,requirements:{Defense:1},desc:'Light leather boots. Requires Defense 1.'});
 Object.assign(ITEMS.mageRobe,{armor:0,magic:0,magicAccuracy:5,requirements:{Magic:1},desc:'Light robes that improve magic accuracy.'});
@@ -202,10 +208,10 @@ function setupSkillWorld(world){
  const place=(type,key,x,y,extra={})=>{const o={id:id++,type,x,y,homeX:x,homeY:y,drawX:x,drawY:y,sprite:type==='tree'?4:type==='ore'?6:9,dead:0,hitAt:-100,attackAt:-100,...extra};setResource(o,key);world.objects.push(o);return o;};
  place('ore','tin',75,46,{tutorialRole:'tin'});place('ore','iron',76,43);place('ore','coal',75,49);
  for(const [key,x,y]of [['normal',24,51],['normal',26,53],['oak',21,52],['oak',22,55],['willow',30,58]])place('tree',key,x,y);
- let ti=0,oi=0,fi=0;
+ let oi=0,fi=0;
  for(const scene of Object.values(worldScenes))for(const o of scene.objects){
   if(assigned.has(o))continue;
-  if(o.type==='tree'){const near=Math.hypot(o.x-43,o.y-52)<90,elf=o.race==='elf';setResource(o,near?(ti++%3?'normal':'oak'):elf?['maple','yew','magic'][ti++%3]:['normal','oak','willow','maple','yew'][ti++%5]);}
+  if(o.type==='tree'){const near=Math.hypot(o.x-43,o.y-52)<90,elf=o.race==='elf',grove=Math.abs(Math.imul(Math.floor(o.x/20),31)+Math.imul(Math.floor(o.y/20),17));setResource(o,near?(grove%3?'normal':'oak'):elf?['maple','yew','magic'][grove%3]:['normal','oak','willow','maple','yew'][grove%5]);}
   if(o.type==='ore')setResource(o,['copper','tin','iron','coal','gold','mithril','adamant','rune'][oi++%8]);
   if(o.type==='fish')setResource(o,['shrimp','trout','salmon','lobster','swordfish','shark'][fi++%6]);
   if(o.type==='prop'&&o.name==='Forge furnace')o.workstation='furnace';

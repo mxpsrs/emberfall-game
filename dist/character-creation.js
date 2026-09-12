@@ -79,12 +79,11 @@ renderLooks=function(){
  $('lookName').textContent=creatorFace?'Face detail':'Drag to turn your character';
 };
 $('creatorZoom').onclick=()=>{creatorFace=!creatorFace;$('creatorZoom').textContent=creatorFace?'Full body':'Face detail';renderLooks();};
-$('creatorLeft').onclick=()=>{creatorAngle-=Math.PI/4;renderLooks();};$('creatorRight').onclick=()=>{creatorAngle+=Math.PI/4;renderLooks();};
 $('creatorRandom').onclick=()=>{for(const [key,,options]of CREATOR_FIELDS)creatorDraft[key]=creatorChoiceValue(key,Math.floor(Math.random()*options.length));syncCreatorControls();renderLooks();};
 const creatorCanvas=$('characterPreview');
-creatorCanvas.addEventListener('pointerdown',e=>{creatorDrag={x:e.clientX,angle:creatorAngle};creatorCanvas.setPointerCapture(e.pointerId);});
-creatorCanvas.addEventListener('pointermove',e=>{if(!creatorDrag)return;creatorAngle=creatorDrag.angle+(e.clientX-creatorDrag.x)*.014;if(!creatorRenderQueued){creatorRenderQueued=true;requestAnimationFrame(()=>{creatorRenderQueued=false;renderLooks();});}});
-for(const event of ['pointerup','pointercancel','lostpointercapture'])creatorCanvas.addEventListener(event,()=>{creatorDrag=null;});
+creatorCanvas.addEventListener('pointerdown',e=>{if(creatorDrag||e.button!==0)return;e.preventDefault();creatorDrag={id:e.pointerId,x:e.clientX,angle:creatorAngle};creatorCanvas.setPointerCapture(e.pointerId);});
+creatorCanvas.addEventListener('pointermove',e=>{if(!creatorDrag||e.pointerId!==creatorDrag.id)return;creatorAngle=creatorDrag.angle+(e.clientX-creatorDrag.x)*.014;if(!creatorRenderQueued){creatorRenderQueued=true;requestAnimationFrame(()=>{creatorRenderQueued=false;renderLooks();});}});
+for(const event of ['pointerup','pointercancel','lostpointercapture'])creatorCanvas.addEventListener(event,e=>{if(e.pointerId===creatorDrag?.id)creatorDrag=null;});
 creatorCanvas.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();creatorAngle+=(e.key==='ArrowLeft'?-1:1)*Math.PI/4;renderLooks();}});
 $('creator').addEventListener('close',()=>{creatorDraft=null;creatorDrag=null;});
 startRebuiltRealm();

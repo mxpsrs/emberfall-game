@@ -13,28 +13,28 @@ function setupSpirits(){
   if(s.spirits[id])continue;const o=add('spirit',def.x,def.y,def.name,def.icon,{spiritId:id});objects.pop();worldScenes[def.scene].objects.push(o);if(currentScene===def.scene)objects.push(o);
  }
  $('spiritButton').onclick=openSpirits;$('closeSpirits').onclick=()=>{$('spiritsDialog').close();save();};
- $('summonSpirits').onclick=summonSpirits;
+ $('summonSpirits').onclick=summonSpirits;$('spiritsDialog').addEventListener('close',()=>{$('spiritButton').setAttribute('aria-pressed','false');});
 }
 function collectSpirit(o){
  const id=o.spiritId,def=SPIRITS[id];stop();if(s.spirits[id])return;
  if(def.skill&&lv(def.skill)<2){dialog(def.name+' · '+def.element+' spirit','<p>This spirit is curious about your '+def.skill.toLowerCase()+'. Reach <b>'+def.skill+' level 2</b> to form a bond.</p>');return;}
- dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to travel with you.</p><p><b>Equipped bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power a summon.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};gain('Worship',20);o.collected=true;o.dead=Infinity;tutorialEvent('spirit');close();toast(def.name+' joined you. Open Spirits beside your combat controls.');renderUI();save();}]]);
+ dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to travel with you.</p><p><b>Active bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power a summon.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};gain('Worship',20);o.collected=true;o.dead=Infinity;tutorialEvent('spirit');close();toast(def.name+' joined you. Open the follower icon to manage your spirits.');renderUI();save();}]]);
 }
-function openSpirits(){if(s.spirits.cinder)tutorialEvent('spirit');path=[];if(target&&!fighter(target))stop();$('spiritsDialog').showModal();renderSpirits();}
+function openSpirits(){if(s.spirits.cinder)tutorialEvent('spirit');path=[];if(target&&!fighter(target))stop();$('spiritsDialog').showModal();$('spiritButton').setAttribute('aria-pressed','true');renderSpirits();}
 function spiritOpponent(){return target&&fighter(target)&&target.hp>0&&target.dead<=time&&Math.hypot(target.x-s.x,target.y-s.y)<=6&&lineOfSight(s.x,s.y,target.x,target.y)?target:null;}
 function renderSpirits(){
  const choices=$('spiritChoices');choices.innerHTML='';
- for(const [id,def]of Object.entries(SPIRITS)){const b=document.createElement('button');b.className=id===selectedSpirit?'chosen':'';b.textContent=def.name;b.onclick=()=>{selectedSpirit=id;renderSpirits();};choices.appendChild(b);}
+ for(const [id,def]of Object.entries(SPIRITS)){const b=document.createElement('button');b.className=id===selectedSpirit?'chosen':'';b.textContent=def.name;b.setAttribute('aria-pressed',String(id===selectedSpirit));const state=document.createElement('small');state.textContent=!s.spirits[id]?'Undiscovered':s.spirits[id].state==='set'?'Active':s.spirits[id].state==='standby'?'Standby':'Recovering';b.appendChild(state);b.onclick=()=>{selectedSpirit=id;renderSpirits();};choices.appendChild(b);}
  const def=SPIRITS[selectedSpirit],owned=s.spirits[selectedSpirit];$('spiritName').textContent=def.name+' · '+def.element;
  const g=$('spiritPortrait').getContext('2d');g.clearRect(0,0,160,160);if(assetsReady)sprite(g,'spirits',def.icon,80,155,140,140);
  $('spiritDescription').textContent=owned?def.bonus+' '+def.ability+'.':def.hint;
- $('spiritState').textContent=!owned?'Not discovered':owned.state==='set'?'Equipped · bonus active':owned.state==='standby'?'Standby · ready for a summon':'Recovering · '+Math.ceil(owned.recovery)+' seconds of adventuring';
+ $('spiritState').textContent=!owned?'Not discovered':owned.state==='set'?'Active · bonus applied':owned.state==='standby'?'Standby · ready for a summon':'Recovering · '+Math.ceil(owned.recovery)+' seconds of adventuring';
  const actions=$('spiritActions');actions.innerHTML='';
  if(owned?.state==='set'){
   const b=document.createElement('button');b.textContent='Unleash';b.onclick=()=>unleashSpirit(selectedSpirit);actions.appendChild(b);
-  const standby=document.createElement('button');standby.textContent='Put on standby';standby.onclick=()=>{owned.state='standby';s.hp=Math.min(s.hp,maxhp());renderUI();renderSpirits();save();};actions.appendChild(standby);
+  const standby=document.createElement('button');standby.textContent='Standby';standby.onclick=()=>{owned.state='standby';s.hp=Math.min(s.hp,maxhp());renderUI();renderSpirits();save();};actions.appendChild(standby);
  }else if(owned?.state==='standby'){
-  const reset=document.createElement('button');reset.textContent='Re-equip after 12s';reset.onclick=()=>{owned.state='recovery';owned.recovery=12;renderSpirits();save();};actions.appendChild(reset);
+  const reset=document.createElement('button');reset.textContent='Activate · 12s recovery';reset.onclick=()=>{owned.state='recovery';owned.recovery=12;renderSpirits();save();};actions.appendChild(reset);
  }
  const n=Object.values(s.spirits).filter(x=>x.state==='standby').length;$('summonSpirits').disabled=n<2;$('summonSpirits').textContent='Elemental convergence · '+n+' / 2+ standby';
 }
@@ -61,7 +61,7 @@ function updateSpirits(dt){
  stoneWard=Math.max(0,stoneWard-dt);let changed=false;
  for(const value of Object.values(s.spirits||{}))if(value.state==='recovery'){value.recovery=Math.max(0,value.recovery-dt);if(value.recovery===0){value.state='set';changed=true;}}
  if(spiritEffect){spiritEffect.age+=dt;if(spiritEffect.age>=spiritEffect.duration)spiritEffect=null;}
- spiritTick+=dt;if(changed){renderUI();save();toast('A spirit recovered and is equipped again.');}if(spiritTick>1){spiritTick=0;if($('spiritsDialog').open)renderSpirits();}
+ spiritTick+=dt;if(changed){renderUI();save();toast('A spirit recovered and is active again.');}if(spiritTick>1){spiritTick=0;if($('spiritsDialog').open)renderSpirits();}
 }
 function drawSpiritEffect(){
  if(!spiritEffect)return;const e=spiritEffect,t=e.age/e.duration,x=(e.x+.5)*TILE-camera.x,y=(e.y+.5)*TILE-camera.y;

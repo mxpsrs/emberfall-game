@@ -78,15 +78,15 @@ function armorValue(){return Math.floor((lv('Defense')-1)/6)+Math.floor(lv('Wors
 function magicBonus(){return Object.values(s.equipment).reduce((n,id)=>n+(ITEMS[id]?.magic||0),0);}
 function owns(id){return ITEMS[id]?.slot?!!s.gear[id]:(s.bag[id]||0)>0;}
 function equipItem(id){
- const item=ITEMS[id];if(!item?.slot||!owns(id))return false;if(!s.tutorialReward&&tutorialStep()){toast('Finish your apprenticeship before equipping gear.');return false;}const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
+ const item=ITEMS[id];if(!item?.slot||!owns(id))return false;const required=equipmentRequirement(item);if(required){toast('Requires '+required+'.');return false;}
  if(!EQUIPMENT_SLOTS.some(([slot])=>slot===item.slot)){toast(item.slot==='shoulders'?'Shoulder armor is included with the matching chest piece.':'This ornament is a keepsake. Headgear uses one equipment slot.');return false;}
  if(item.defenseLevel&&lv('Defense')<item.defenseLevel){toast('Requires Defense '+item.defenseLevel+'.');return false;}
  if(item.attackLevel&&lv('Attack')<item.attackLevel){toast('Requires Attack '+item.attackLevel+'.');return false;}
  if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
- stop();s.equipment[item.slot]=id;tutorialEvent('gear');renderUI();save();return true;
+ stop();s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');renderUI();save();return true;
 }
 function unequipItem(slot){if(!s.equipment[slot])return false;if(inventorySlots().length+1>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
-function chooseStyle(style){if(!s.tutorialReward&&tutorialStep()){if(style==='melee'){s.tutorialCasting=false;s.equipment.weapon=null;tutorialEvent('gear');renderUI();save();return;}if(style==='magic'&&s.tutorial>=tutorialSteps.findIndex(t=>t.event==='magic')){s.tutorialCasting=true;s.equipment.weapon=null;renderUI();save();return;}toast('Starter weapons are awarded after your apprenticeship.');return;}s.tutorialCasting=false;const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(equipItem(id))toast(ITEMS[id].name+' equipped.');}
+function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(id){if(equipItem(id))toast(ITEMS[id].name+' equipped.');return;}if(style==='melee'){s.tutorialCasting=false;if(s.equipment.weapon&&!unequipItem('weapon'))return;renderUI();save();return;}toast(style==='magic'&&tutorialStep()?'Speak to Arcanist Elowen for your practice staff and runes.':'You need a '+(style==='ranged'?'bow':'staff')+' to use this combat style.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawItemModelIcon==='function'&&drawItemModelIcon(g,id))return;if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
@@ -155,8 +155,14 @@ function renderCombatBar(){
 function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.type==='tree'&&o.x===x&&o.y===y))return false;}return true;}
-function inAttackRange(o){return Math.hypot(o.x-s.x,o.y-s.y)<=attackRange()+.01&&lineOfSight(s.x,s.y,o.x,o.y);}
-let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100;
+function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange()+.01&&lineOfSight(px,py,o.x,o.y);}
+let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100,playerAttackReadyAt=0;
+function actorWalkSpeed(o){return o.type==='man'||o.type==='villager'?.75:['wolf','ridgewolf'].includes(o.kind)?1.6:o.kind==='slime'?.85:1.25;}
+function advanceActorMovement(o,dt){
+ if(!Number.isFinite(o.drawX+o.drawY)){o.drawX=o.x;o.drawY=o.y;return;}
+ const dx=o.x-o.drawX,dy=o.y-o.drawY,distance=Math.hypot(dx,dy),speed=actorWalkSpeed(o)*(o.slowUntil>time?.45:1),step=Math.min(distance,speed*dt);
+ if(distance>0){o.drawX+=dx/distance*step;o.drawY+=dy/distance*step;}
+}
 function awardDefeat(o,style){
  frontierKill(o);if(o.type!=='dummy')tutorialEvent('monster');
  const respawnSeconds=o.type==='dummy'?8:25;o.dead=time+respawnSeconds;o.respawnAt=Date.now()+respawnSeconds*1000;o.deathAt=time;monsterDrop(o);
@@ -167,6 +173,7 @@ function awardDefeat(o,style){
  stop();
 }
 function performAttack(o){
+ if(time+.0001<playerAttackReadyAt||o.dead>time||o.hp<=0)return false;
  if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange());if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
  const style=combatStyle(),spell=currentSpell();
  const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast('Out of arrows. Switch to melee, buy arrows, or craft them.');return false;}
@@ -175,7 +182,7 @@ function performAttack(o){
  if(style==='ranged')s.bag[ammo]--;if(style==='magic')consumeIngredients(spell.ingredients);
  if(style==='magic'){gain('Magic',spell.baseXP,true);tutorialEvent('magic');}
  const damage=Math.random()<playerAccuracy(o,style)?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
- lastAttack=time;facing=o.x<s.x?-1:1;
+ lastAttack=time;playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
  if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:0,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
@@ -187,7 +194,7 @@ function applyEnemyHit(o,hit){
 }
 function updateCombat(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
- for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot(hit.o.x-s.x,hit.o.y-s.y)>1.75||!lineOfSight(s.x,s.y,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
  for(const p of projectiles)p.age+=dt;
  const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
  for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
@@ -195,16 +202,16 @@ function updateCombat(dt){
  const o=target;
  if(o.dead>time){stop();return;}
  enemyClock+=dt;retaliationClock+=dt;
- if(Math.hypot(o.x-s.x,o.y-s.y)>1.45){
-   if(o.type!=='dummy'&&enemyClock>=(o.slowUntil>time?.9:.38)){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
- }else if(retaliationClock>=2.4&&lineOfSight(o.x,o.y,s.x,s.y)){
+ if(Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py)>1.45){
+   if(o.type!=='dummy'&&enemyClock>=.3&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.01){enemyClock=0;const p=route(s.x,s.y,true,1.45,o.x,o.y);if(p?.length){[o.x,o.y]=p[0];}}
+ }else if(o.type!=='dummy'&&retaliationClock>=2.4&&lineOfSight(o.x,o.y,px,py)){
    retaliationClock=0;o.attackAt=time;const hit=Math.random()<enemyAccuracy(o)?Math.max(0,Math.floor(Math.random()*((o.atk||0)+(o.spread||0)+1))-Math.floor(lv('Worship')/5)-spiritBonus('armor')):0;meleeImpacts.push({o,damage:hit,due:time+.30,enemy:true});
  }
 }
 function drawProjectiles(){
  for(const p of projectiles){const t=Math.min(1,p.age/p.duration),x=(p.x+(p.tx-p.x)*t+.5)*TILE-camera.x,y=(p.y+(p.ty-p.y)*t+.2)*TILE-camera.y;ctx.save();if(p.style==='ranged'){ctx.translate(x,y);ctx.rotate(Math.atan2(p.ty-p.y,p.tx-p.x)+Math.PI/4);sprite(ctx,'items',12,0,8,29,24);}else{ctx.shadowColor=p.color;ctx.shadowBlur=16;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(x,y,5+Math.sin(t*12),0,Math.PI*2);ctx.fill();ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-(p.tx-p.x)*5,y-(p.ty-p.y)*5);ctx.stroke();}ctx.restore();}
 }
-function syncTabs(){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('selected',b.dataset.tab===tab));}
+function syncTabs(){document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab&&!$('gameDock').hidden;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));b.setAttribute('aria-expanded',String(active));});const title=$('dockTitle');if(title)title.textContent={bag:'Bag',gear:'Equipment',quests:'Quests',skills:'Skills',spells:'Spells'}[tab]||'Adventurer';}
 // Decode opaque atlas matte pixels into a canvas texture at load time. The source
 // artwork stays untouched; the game renderer uses the texture's transparency mask.
 function prepareAnimationAtlases(){

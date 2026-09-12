@@ -70,15 +70,18 @@ function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn
  const b=world.buildings.find(b=>b.walkIn&&b.service.destination===s.sceneId);if(b){const [w,h]=sceneSizes[s.sceneId]||[16,14],x=Math.round(b.x+1+s.x/(w-1)*(b.w-3)),y=Math.round(b.y+1+s.y/(h-1)*(b.h-3));activateScene('overworld',x,y,false);}
 }
 const solidBuildingBefore=inBuilding;
-inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const perimeter=x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1;if(!perimeter)return false;return !(y===b.y+b.h-1&&x===b.service.x&&b.service.openedAt!==undefined);};
+inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const perimeter=x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1;if(!perimeter)return false;const [dx,dy]=doorThreshold(b.service);return !(y===dy&&x===dx&&b.service.openedAt!==undefined);};
 // Door state is persistent. Clicking operates the leaf; ground clicks move.
 function withinWalkIn(b,x,y){return x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h;}
+function doorNormal(o){return ({south:[0,1],east:[1,0],north:[0,-1],west:[-1,0]})[o.building?.doorFacing||'south'];}
+function doorThreshold(o){const [dx,dy]=doorNormal(o);return [o.x-dx,o.y-dy];}
+function doorApproach(o,inside=false){const [dx,dy]=doorNormal(o);return [o.x-dx*(inside?2:0),o.y-dy*(inside?2:0)];}
 function doorOpenFraction(o){const m=o.doorMotion;if(!m)return o.openedAt===undefined?0:1;const t=Math.min(1,Math.max(0,(time-m.start)/.28)),e=t*t*(3-2*t);return m.from+(m.to-m.from)*e;}
 function setWalkInDoor(o,open,restoring=false){
  const from=doorOpenFraction(o);if(open)o.openedAt=restoring?time-1:time;else delete o.openedAt;
  o.doorMotion=restoring?null:{from,to:open?1:0,start:time};
  const opened=new Set(Array.isArray(s.openDoors)?s.openDoors:[]);if(open)opened.add(o.destination);else opened.delete(o.destination);s.openDoors=[...opened];
- const nav=realmNavigation.get('overworld');if(nav)nav.cells[(o.y-1)*nav.w+o.x]=open?0:1;if(!restoring)save();
+ const nav=realmNavigation.get('overworld');if(nav){const [x,y]=doorThreshold(o);nav.cells[y*nav.w+x]=open?0:1;}if(!restoring)save();
 }
 function restoreWalkInDoors(world,position=null){
  const resume=position||{scene:s.sceneId,x:s.x,y:s.y},doors=world.buildings.filter(b=>b.walkIn),valid=new Set(doors.map(b=>b.service.destination)),legacy=s.doorStateVersion!==1;
@@ -88,24 +91,24 @@ function restoreWalkInDoors(world,position=null){
  s.doorStateVersion=1;
 }
 const engageBeforeWalkIn=engage;
-let pendingWalkInDoor=null,pendingDoorApproachY=null;
+let pendingWalkInDoor=null,pendingDoorApproachY=null,pendingDoorApproachX=null;
 const stopBeforeWalkIn=stop;
-stop=function(){pendingWalkInDoor=null;pendingDoorApproachY=null;stopBeforeWalkIn();};
+stop=function(){pendingWalkInDoor=null;pendingDoorApproachY=null;pendingDoorApproachX=null;stopBeforeWalkIn();};
 function operateWalkInDoor(o){
- pendingWalkInDoor=null;pendingDoorApproachY=null;
- if(o.openedAt!==undefined&&Math.abs(px-o.x)<.7&&Math.abs(py-(o.y-1))<.8){toast('Step clear of the doorway to close it.');return;}
+ pendingWalkInDoor=null;pendingDoorApproachY=null;pendingDoorApproachX=null;
+ const [dx,dy]=doorThreshold(o);if(o.openedAt!==undefined&&Math.hypot(px-dx,py-dy)<.8){toast('Step clear of the doorway to close it.');return;}
  setWalkInDoor(o,o.openedAt===undefined);renderAction();
 }
 engage=function(o){
  if(!o.building?.walkIn)return engageBeforeWalkIn(o);
- const approachY=withinWalkIn(o.building,px,py)?o.y-2:o.y;stop();
- if(Math.hypot(px-o.x,py-approachY)<1.5){operateWalkInDoor(o);return;}
- const p=route(o.x,approachY,false);if(p===null){toast('There is no clear path to the door.');return;}
- path=p;pendingWalkInDoor=o;pendingDoorApproachY=approachY;renderAction();
+ const [approachX,approachY]=doorApproach(o,withinWalkIn(o.building,px,py));stop();
+ if(Math.hypot(px-approachX,py-approachY)<1.5){operateWalkInDoor(o);return;}
+ const p=route(approachX,approachY,false);if(p===null){toast('There is no clear path to the door.');return;}
+ path=p;pendingWalkInDoor=o;pendingDoorApproachX=approachX;pendingDoorApproachY=approachY;renderAction();
 };
 updateDoorThreshold=function(){
  if(!inWorld())return;
- if(pendingWalkInDoor&&!path.length&&Math.hypot(px-pendingWalkInDoor.x,py-pendingDoorApproachY)<.2)operateWalkInDoor(pendingWalkInDoor);
+ if(pendingWalkInDoor&&!path.length&&Math.hypot(px-pendingDoorApproachX,py-pendingDoorApproachY)<.2)operateWalkInDoor(pendingWalkInDoor);
  const b=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py));
  if(b&&s.insideBuilding!==b.service.destination){s.insideBuilding=b.service.destination;if(b.archetype==='inn')tutorialEvent('inn');}
  else if(!b)s.insideBuilding=null;

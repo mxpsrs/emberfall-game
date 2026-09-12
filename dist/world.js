@@ -93,7 +93,7 @@ function handleWorldInteraction(o){
 function livingWorld(dt){
  s.worldClock=(s.worldClock+dt)%480;
  for(const o of objects){
-  if(o===target||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden')continue;
+  if(o===target||o._stationary||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden'||Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.01)continue;
   if(Math.hypot(o.x-s.x,o.y-s.y)>18)continue;
   o.roamClock=(o.roamClock||0)+dt;if(o.roamClock<3+(o.id%5))continue;o.roamClock=0;
   const atHome=Math.hypot(o.x-o.homeX,o.y-o.homeY)<3;
@@ -136,9 +136,9 @@ function expandedMap(page=0){
 function startAmbient(){
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const context=new AC(),master=context.createGain();master.gain.value=.08;master.connect(context.destination);
  const buffer=context.createBuffer(1,context.sampleRate*3,context.sampleRate),data=buffer.getChannelData(0);let value=0;for(let i=0;i<data.length;i++){value=(value+(Math.random()*2-1)*.02)/1.02;data[i]=value*3;}
- const wind=context.createBufferSource();wind.buffer=buffer;wind.loop=true;const filter=context.createBiquadFilter();filter.type='lowpass';filter.frequency.value=450;wind.connect(filter);filter.connect(master);wind.start();ambient={context,master,filter};ambientEnabled=true;s.sound=true;context.resume();$('ambientButton').textContent='Sound on';save();}catch{$('ambientButton').textContent='Sound unavailable';}
+ const wind=context.createBufferSource();wind.buffer=buffer;wind.loop=true;const filter=context.createBiquadFilter();filter.type='lowpass';filter.frequency.value=450;wind.connect(filter);filter.connect(master);wind.start();ambient={context,master,filter};ambientEnabled=true;s.sound=true;context.resume();syncAmbientIcon();save();}catch{setHudButton('ambientButton','Sound unavailable','mute');}
 }
-function toggleAmbient(){if(!ambient){startAmbient();return;}ambientEnabled=!ambientEnabled;s.sound=ambientEnabled;if(ambientEnabled)ambient.context.resume();else ambient.context.suspend();$('ambientButton').textContent=ambientEnabled?'Sound on':'Sound off';save();}
+function toggleAmbient(){if(!ambient){startAmbient();return;}ambientEnabled=!ambientEnabled;s.sound=ambientEnabled;if(ambientEnabled)ambient.context.resume();else ambient.context.suspend();syncAmbientIcon();save();}
 function ambientChirp(){
  if(!ambient||!ambientEnabled)return;const {context,master,filter}=ambient;filter.frequency.setTargetAtTime(!inWorld()?140:expandedWater(s.x-2,s.y)||expandedWater(s.x+2,s.y)?800:450,context.currentTime,.5);
  const night=(s.worldClock/480*24+4)%24;const osc=context.createOscillator(),gain=context.createGain(),now=context.currentTime;osc.type='sine';const frequency=!inWorld()?100:night>=20||night<5?3200:1800+Math.random()*700;

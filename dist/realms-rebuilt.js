@@ -55,7 +55,25 @@ function fitModularArmorMesh(sex,name,mesh){
  const bounds=[0,1,2].map(k=>{const values=Array.from(p).filter((_,i)=>i%3===k);return [Math.min(...values),Math.max(...values)];});
  return {...mesh,p,n,bounds:[bounds.map(v=>v[0]),bounds.map(v=>v[1])]};
 }
-function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Emberfall_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,fitModularArmorMesh(sex,name,rebuiltMesh(source)));}}return modularMeshes.get(key);}
+function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Emberfall_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else if(name==='Emberfall_WoodenSword'||name==='Emberfall_WoodenShield')modularMeshes.set(key,makeTrainingMesh(name));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,fitModularArmorMesh(sex,name,rebuiltMesh(source)));}}return modularMeshes.get(key);}
+function makeTrainingMesh(name){
+ const p=[],n=[],colors=[],indices=[];
+ const r={face(points,color){const a=points[0],b=points[1],c=points[2],u=b.map((v,k)=>v-a[k]),v=c.map((v,k)=>v-a[k]),normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...normal)||1,rgb=parseInt(color.slice(1),16),base=p.length/3;for(const point of points){p.push(...point);n.push(...normal.map(v=>v/length));colors.push((rgb>>16)/255,(rgb>>8&255)/255,(rgb&255)/255);}for(let i=1;i<points.length-1;i++)indices.push(base,base+i,base+i+1);}};
+ const plank=(outline,depth,color)=>{const front=outline.map(([x,y,z=0])=>[x,y,z+depth/2]),back=outline.map(([x,y,z=0])=>[x,y,z-depth/2]);r.face(front,color);r.face([...back].reverse(),color);for(let i=0;i<front.length;i++){const j=(i+1)%front.length;r.face([front[i],back[i],back[j],front[j]],'#795737');}};
+ if(name==='Emberfall_WoodenSword'){
+  plank([[-.047,.08],[.047,.08],[.047,.56],[.018,.66],[-.018,.66],[-.047,.56]],.045,'#b68e54');
+  beamArt(r,[-.10,.07,0],[.10,.07,0],.03,'#785235',6);beamArt(r,[0,-.11,0],[0,.065,0],.019,'#624531',8);beamArt(r,[0,-.12,0],[0,-.10,0],.032,'#a27a46',8);
+  for(const x of [-.026,.012])beamArt(r,[x,.13,.024],[x+.006,.53,.024],.002,'#916b3f',4);
+ }else{
+  // Shield face lies in the palm's Y/Z plane, like the other held shields.
+  const shield={face(points,color){r.face(points.map(([x,y,z])=>[z+.045,x,y]),color);}};
+  const outline=[[-.25,.26],[.25,.26],[.29,.07],[.21,-.20],[0,-.34],[-.21,-.20],[-.29,.07]],front=outline.map(([x,y])=>[x,y,.024]),back=outline.map(([x,y])=>[x,y,-.024]);shield.face(front,'#a77b46');shield.face([...back].reverse(),'#795435');
+  for(let i=0;i<7;i++){const j=(i+1)%7;shield.face([front[i],back[i],back[j],front[j]],'#574a35');beamArt(shield,front[i],front[j],.018,'#6f644a',5);}
+  for(const x of [-.15,0,.15])beamArt(shield,[x,.23,.026],[x,-.20,.026],.004,'#765333',4);
+  oval3(shield,0,0,.047,.13,.13,.045,'#8b8769',p=>p,8);beamArt(shield,[-.1,-.07,-.056],[.1,.07,-.056],.021,'#4d392a',6);
+ }
+ const bounds=[0,1,2].map(k=>Array.from({length:p.length/3},(_,i)=>p[i*3+k]));return {p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(colors),f:new Float32Array(colors),i:new Uint16Array(indices),t:new Uint8Array(p.length/3).fill(12),uv:new Float32Array(p.length/3*2),bounds:[bounds.map(v=>Math.min(...v)),bounds.map(v=>Math.max(...v))]};
+}
 function makeRealmNecklace(sex){
  const p=[],n=[],c=[],j=[],w=[],indices=[],cy=sex==='female'?1.46:1.50;
  for(let bead=0;bead<25;bead++){const a=bead/24*Math.PI*2,pendant=bead===24,center=pendant?[0,cy-.13,.09]:[Math.cos(a)*.118,cy-.025-Math.max(0,Math.sin(a))*.075,-.035+Math.sin(a)*.12],radius=pendant?.025:.008,color=pendant?[.25,.55,.43]:[.70,.43,.24],offset=p.length/3;
@@ -117,7 +135,7 @@ function outfitClothingMesh(sex,outfit,part,color=0,skin=1){
  const result={...mesh,c,f:c};outfitClothingCache.set(key,result);if(outfitClothingCache.size>96)outfitClothingCache.delete(outfitClothingCache.keys().next().value);return result;
 }
 function rebuiltPlace(r,name,x,y,z,scale=1,heading=0,vertical=scale,tint){let mesh=rebuiltModels[name];if(!mesh)return;
- if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
+ if(tint){let variants=rebuiltTints.get(mesh);if(!variants){variants=new Map();rebuiltTints.set(mesh,variants);}const key=tint.join(':');if(!variants.has(key))variants.set(key,{...mesh,c:Float32Array.from(mesh.c,(c,i)=>c*tint[i%3]),f:Float32Array.from(mesh.f,(c,i)=>c*tint[i%3])});mesh=variants.get(key);}
  briarEmit(r,mesh,briarTransform(x,y,z,scale,heading,vertical));
 }
 function rebuiltRoof(r,x,y,z,w,d,rise,color){
@@ -145,14 +163,14 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  for(let floor=0;floor<floors;floor++){
   for(const side of [-1,1])for(let i=0;i<segments;i++){
    const xx=b.x+(i+.5)*w/segments,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&(i+floor)%2===0;
-   if(b._cutaway&&side*Math.cos(view3d.yaw)>.05&&!door){box3(r,xx,.32,z+d/2,w/segments,.64,.16,'#938675');continue;}
+   if(b._cutaway&&side*Math.cos(view3d.yaw-(b._orientationYaw||0))>.05&&!door){box3(r,xx,.32,z+side*d/2,w/segments,.64,.16,'#938675');continue;}
    const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale,tint);
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale);
    if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale,0,wallScale);}
   }
   for(const side of [-1,1])for(let i=0;i<sideSegments;i++){
    const zz=b.y+(i+.5)*d/sideSegments,angle=side===1?Math.PI/2:-Math.PI/2,window=(i+floor)%2===0;
-   if(b._cutaway&&side*Math.sin(view3d.yaw)>.05){box3(r,x+side*w/2,.32,zz,.16,.64,d/sideSegments,'#938675');continue;}
+   if(b._cutaway&&side*Math.sin(view3d.yaw-(b._orientationYaw||0))>.05){box3(r,x+side*w/2,.32,zz,.16,.64,d/sideSegments,'#938675');continue;}
    rebuiltPlace(r,'Wall_'+wall+'_'+(window?'Window_Wide_Flat':'Straight'),x+side*w/2,floor*level,zz,sideScale,angle,wallScale,tint);
    if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,wallScale);
   }
@@ -224,7 +242,7 @@ prop3=function(r,o,x,z){
  }
  if(o.name==='Merchant wagon'){name='Prop_Wagon';height=1.45;r=groundedPainter(r,x,z);}
  else if(o.type==='practiceForge')return propBeforeRebuild(r,{...o,type:'forge'},x,z);
- else if(o.type==='tree'){const race=o.race||realmArtRace(x,z);name=race==='elf'?'TwistedTree_1':o.treeArt==='pine'||/pine/i.test(o.name)?(o.id%2?'Pine_1':'Pine_3'):(o.id%2?'CommonTree_1':'CommonTree_4');height=race==='elf'?7:5+(o.id%4)*.4;}
+ else if(o.type==='tree'){if(typeof drawSpeciesTree==='function')return drawSpeciesTree(r,o,x,z);const race=o.race||realmArtRace(x,z);name=race==='elf'?'TwistedTree_1':o.treeArt==='pine'||/pine/i.test(o.name)?(o.id%2?'Pine_1':'Pine_3'):(o.id%2?'CommonTree_1':'CommonTree_4');height=race==='elf'?7:5+(o.id%4)*.4;}
  else if(o.type==='ore'||o.name==='Mountain outcrop'){name=o.id%2?'Rock_Medium_1':'Rock_Medium_3';height=o.type==='ore'?.65:3;}
  else if(o.type==='prop'&&/fence/i.test(o.name)){name='Prop_WoodenFence_Single';height=1;}
  else if(o.type==='prop'&&/crate|supplies/i.test(o.name)){name='Prop_Crate';height=.8;}
@@ -328,12 +346,13 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear._bones){if(!r.indexed)return humanoidBeforeRebuild(r,x,z,look,gear,heading,walk,attack,size);const phase=Math.round((walk%(Math.PI*2))*24)/24,swing=Math.round(attack*32)/32,key=['skeleton',meshDetail3,look,gear.weapon,gear.shield,phase,swing].join(':');return cachedRealmShape(r,key,briarTransform(x,0,z,size,heading),q=>{humanoidBeforeRebuild(q,0,0,look,gear,0,phase,swing,1);return 2;});}
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3,...(gear._appearance||{})},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
- const attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':ITEMS[gear.weapon]?.style==='ranged'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=age>=0&&age<duration;
+ const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,poseGear=gathering?{...gear,weapon:null,shield:null}:gear;
+ const attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':ITEMS[gear.weapon]?.style==='ranged'?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!gathering&&age>=0&&age<duration;
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
- const idleClip=gear.weapon&&ITEMS[gear.weapon]?.style==='melee'?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
- const phase=attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
- const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,gear,look,blend,idleClip,idlePhase);
+ const idleClip=poseGear.weapon&&ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=gathering?(gathering.object.type==='fish'?'ranged':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?'walk':idleClip;
+ const phase=gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(walk/10/.75)%1:idlePhase,blend=gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
+ const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,poseGear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
  if(r.skinned)r.skinned(mesh.gpuMesh,root,mesh.pose);else briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
@@ -343,7 +362,8 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(!gear._civilian&&!gear.head&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  // Weapon meshes are attached to the new rig's actual palms.
- for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(gear[slot]){
+ if(gathering&&typeof drawGatheringTool==='function')drawGatheringTool(r,affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),gathering.tool);
+ for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(!gathering&&gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:ITEMS[gear.weapon]?.style==='magic'?briarRigs.Mage.meshes['2H_Staff']:ITEMS[gear.weapon]?.style==='ranged'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
   const modular=wornModularMesh(sex,gear[slot]);
