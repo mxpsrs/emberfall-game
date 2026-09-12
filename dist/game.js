@@ -333,8 +333,8 @@ function frame(now){
   const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(assetsReady&&!cloudConflict)updateWorldTimers();
-  if(assetsReady&&!cloudConflict&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
+  if(assetsReady&&!cloudConflict&&!cloudDisconnected)updateWorldTimers();
+  if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange());if(p===null)stop();else path=p;}

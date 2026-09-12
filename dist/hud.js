@@ -40,7 +40,7 @@ function drawMinimap(){
 }
 
 function walkFromMinimap(e){
- if(!assetsReady||cloudConflict||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
+ if(!assetsReady||cloudConflict||cloudDisconnected||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
  const rect=$('minimap').getBoundingClientRect(),bounds=minimapBounds();
  if(!rect.width||!rect.height)return;
  const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
