@@ -4,11 +4,12 @@ const creatureAssets=Object.fromEntries(Object.entries(REALM_CREATURES).map(([ke
  ...a,mesh:rebuiltMesh(a.mesh),rig:{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)},
  clips:Object.fromEntries(Object.entries(a.clips).map(([key,c])=>[key,{...c,trs:briarDecode(c.trs,Float32Array)}]))
 }]));
+if(typeof BOSS_MODELS!=='undefined')for(const [key,model]of Object.entries(BOSS_MODELS))creatureAssets[key]={...creatureAssets[model.base],base:model.base,mesh:rebuiltMesh(model.mesh),height:model.height,scale:model.scale};
 const creaturePoses=new Map();
 const creatureRigPoses=new Map();
 const creatureKinds={goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
-function creatureSize(o){return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
-function creatureAsset(o){return creatureAssets[creatureKinds[o.kind]];}
+function creatureSize(o){if(o.size)return o.size;return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
+function creatureAsset(o){return creatureAssets[o.creatureLook||creatureKinds[o.kind]];}
 function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
  const a=creatureAssets[kind],motion=a.clips[clip],frame=Math.max(0,Math.min(motion.frames-1,phase*(motion.frames-1)));
  const baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
@@ -61,9 +62,9 @@ function creatureMotion(o,x,z){
   const walking=distance>.0003&&distance<2;
   state.speed+=(walking?distance/dt-state.speed:-state.speed)*Math.min(1,dt*8);
   state.blend+=(walking?1-state.blend:-state.blend)*Math.min(1,dt*12);
-  if(walking)state.phase=(state.phase+distance/(o.kind==='rat'?.52*creatureSize(o):['wolf','ridgewolf'].includes(o.kind)?1.6:1.15))%1;
+  if(walking)state.phase=(state.phase+distance/((o.creatureLook||creatureKinds[o.kind])==='rat'?.52*creatureSize(o):(o.creatureLook||creatureKinds[o.kind])==='wolf'?1.6:1.15))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
-  if(!walking&&target===o&&Math.hypot(px+.5-x,py+.5-z)<3)desired=Math.atan2(px+.5-x,py+.5-z);
+  if(!walking&&(target===o||o._inCombat)&&Math.hypot(px+.5-x,py+.5-z)<12)desired=Math.atan2(px+.5-x,py+.5-z);
   const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
   state.time=time;state.x=x;state.z=z;
  }
@@ -79,17 +80,17 @@ creature3=function(r,o,x,z){
   gear._appearance={topStyle:4,bottomStyle:3,topColor:(o.id||0)%8,bottomColor:7,hair:(o.id||0)%4,hairColor:(o.id||0)%4};
   humanoid3(r,x,z,(o.sprite||0)%4,gear,state.heading,state.blend>.015?state.phase*7.5:0);return gear._race==='dwarf'?1.8:2;
  }
- const kind=creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
+ const kind=o.creatureLook||creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
  const variant=creatureSize(o),dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height*variant>65,near=Math.hypot(x-px-.5,z-py-.5)<8;
  const idlePhase=near?((Math.floor(time*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0;
  let clip='idle',phase=idlePhase,blend=1,baseClip='idle',basePhase=idlePhase;
  const gait=state.speed>3.2?'run':'walk';
- const attackAge=time-(o.attackAt??-100),hitAge=time-(o.hitAt??-100);
+ const attackAge=time-(o.attackAt??-100),hitAge=time-(o.hitAt??-100),attack=creatureAttackAnimation(o,a,attackAge);
  if(dying){clip='death';phase=Math.min(1,(time-o.deathAt)/a.clips.death.duration);blend=Math.min(1,(time-o.deathAt)/.12);baseClip=state.lastClip||'idle';basePhase=state.lastPhase||0;}
- else if(attackAge>=0&&attackAge<a.clips.attack.duration){clip='attack';phase=attackAge/a.clips.attack.duration;blend=Math.min(1,attackAge/.10,(a.clips.attack.duration-attackAge)/.14);}
+ else if(attack){({clip,phase,blend}=attack);}
  else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}
  else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}
- if(!dying&&['attack','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
+ if(!dying&&['attack','cast','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
  const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
  phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
  if(!dying){state.lastClip=clip;state.lastPhase=phase;}
@@ -98,7 +99,39 @@ creature3=function(r,o,x,z){
  // Imported motion can dip below the original bind-pose floor. Keep the
  // lowest contact above the terrain while preserving genuine airborne steps.
  const floor=dying?mesh.floorY:Math.min(mesh.floorY,a.mesh.bounds[0][1]);
- const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink,z,k,state.heading);
- if(painter.skinned)painter.skinned(a.mesh,transform,mesh.palette);else briarEmit(painter,mesh,transform);
+ const hop=o.attackMove==='pounce'&&attack?Math.sin(Math.PI*Math.max(0,Math.min(1,(attackAge/(o.attackWindup||1.8)-.6)/.4)))*.55:0;
+ const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink+hop,z,k,state.heading);
+ if(painter.skinned)painter.skinned(creatureTint(o,a.mesh),transform,mesh.palette);else briarEmit(painter,creatureTint(o,mesh),transform);
  return a.height*variant;
 };
+
+const creatureTints=new WeakMap();
+function creatureTint(o,mesh){
+ if(!o.tint)return mesh;let variants=creatureTints.get(mesh);if(!variants){variants=new Map();creatureTints.set(mesh,variants);}
+ const key=o.tint.join();if(variants.has(key))return variants.get(key);
+ const tinted={...mesh,c:Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*o.tint[i%3])),f:Float32Array.from(mesh.f,(v,i)=>Math.min(1,v*o.tint[i%3]))};variants.set(key,tinted);return tinted;
+}
+function creatureAttackAnimation(o,a,age){
+ const style=o.attackVisualStyle,clip=style==='magic'&&a.clips.cast?'cast':style==='ranged'&&a.clips.throw?'throw':'attack';
+ const windup=o.attackWindup;if(!windup)return age>=0&&age<a.clips.attack.duration?{clip:'attack',phase:age/a.clips.attack.duration,blend:Math.min(1,age/.1,(a.clips.attack.duration-age)/.14)}:null;
+ const duration=windup+.55;if(age<0||age>=duration)return null;
+ const release=clip==='cast'?.51:clip==='throw'?.48:.38,phase=age<windup?age/windup*release:release+(age-windup)/.55*(1-release);
+ return {clip,phase,blend:Math.min(1,age/.1,(duration-age)/.14)};
+}
+// Reuse the authored human casting and punch motions on matching upper-body
+// bones. Relative rotations preserve each monster's proportions and rest pose.
+function addCreatureStyleClips(){
+ const source=rebuiltAvatars.male,multiply=(a,b)=>[a[3]*b[0]+a[0]*b[3]+a[1]*b[2]-a[2]*b[1],a[3]*b[1]-a[0]*b[2]+a[1]*b[3]+a[2]*b[0],a[3]*b[2]+a[0]*b[1]-a[1]*b[0]+a[2]*b[3],a[3]*b[3]-a[0]*b[0]-a[1]*b[1]-a[2]*b[2]];
+ const aliases={'Abdomen':'spine_01','Torso':'spine_03','Neck':'neck_01','Shoulder.L':'clavicle_l','Shoulder.R':'clavicle_r','UpperArm.L':'upperarm_l','UpperArm.R':'upperarm_r','LowerArm.L':'lowerarm_l','LowerArm.R':'lowerarm_r'};
+ for(const kind of ['king','goblin','skeleton']){const a=creatureAssets[kind];for(const [name,original,rest]of [['cast','magic','staffIdle'],['throw','unarmed','idle']]){
+  const motion=source.clips[original],trs=new Float32Array(motion.frames*a.joints*10);
+  for(let f=0;f<motion.frames;f++)for(let j=0;j<a.joints;j++){
+   const target=new Float32Array(10);sampleRealmJoint(a.clips.idle,0,j,a.joints,target);const bone=aliases[a.rig.names[j]]||a.rig.names[j],from=source.rig.names.indexOf(bone);
+   if(from>=0&&!/^(root|pelvis|thigh|calf|foot|ball)/.test(bone)){
+    const pose=new Float32Array(10),base=new Float32Array(10);sampleRealmJoint(motion,f,from,source.joints,pose);sampleRealmJoint(source.clips[rest],0,from,source.joints,base);
+    const q=multiply(target.subarray(3,7),multiply([-base[3],-base[4],-base[5],base[6]],pose.subarray(3,7))),length=Math.hypot(...q)||1;for(let axis=0;axis<4;axis++)target[3+axis]=q[axis]/length;
+   }trs.set(target,(f*a.joints+j)*10);
+  }a.clips[name]={frames:motion.frames,duration:motion.duration,trs};
+ }}
+}
+addCreatureStyleClips();

@@ -30,7 +30,7 @@ assert.equal((await request('/creatures.js?v=outdated')).status,409,'mismatched 
 assert.equal((await request('/creatures.js')).headers.get('Cache-Control'),'no-cache');
 const musicSources=JSON.parse(readFileSync(new URL('../docs/music-sources.json',import.meta.url)));
 for(const track of musicSources.tracks){
- assert.equal(track.license,'CC0-1.0');assert.equal(track.commercial_use,true);assert.equal(track.attribution_required,false);
+ assert(['CC0-1.0','Pixabay Content License'].includes(track.license));assert.equal(track.commercial_use,true);assert.equal(track.attribution_required,false);
  const path='assets/audio/'+track.file+'.mp3',original=readFileSync(new URL('../dist/'+path,import.meta.url));
  assert.equal(createHash('sha256').update(original).digest('hex'),track.asset_sha256);
  const full=await request('/'+versions[path]);assert.equal(full.status,200);assert.equal(full.headers.get('Content-Type'),'audio/mpeg');assert.deepEqual(await body(full),original);
@@ -38,5 +38,5 @@ for(const track of musicSources.tracks){
  assert.equal(partial.status,206);assert.equal(partial.headers.get('Content-Range'),'bytes 0-63/'+original.length);assert.deepEqual(await body(partial),original.subarray(0,64));
 }
 for(const file of ['teller-of-the-tales.mp3','lord-of-the-land.mp3','drums-of-the-deep.mp3','CREDITS.txt'])assert.equal((await request('/assets/audio/'+file)).status,404,'old music must not ship');
-console.log('PASS: three CC0 music assets match source records, stream partial responses, and replace all previous tracks.');
+const sounds=JSON.parse(readFileSync(new URL('../docs/sound-sources.json',import.meta.url)));assert.equal(sounds.license,'CC0-1.0');for(const sample of sounds.samples){const path='assets/audio/sfx/'+sample.file,r=await request('/'+versions[path]);assert.equal(r.status,200);assert.equal(r.headers.get('Content-Type'),'audio/mpeg');assert.equal(createHash('sha256').update(await body(r)).digest('hex'),sample.asset_sha256);}console.log('PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.');
 console.log(`PASS: readable home page, all ${urls.length} startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. ${(totalBytes/1048576).toFixed(2)} MiB before hosting compression.`);

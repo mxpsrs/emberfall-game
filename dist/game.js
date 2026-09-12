@@ -112,7 +112,7 @@ function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null)
   if(!end)return null;const out=[];while(end[0]!==start[0]||end[1]!==start[1]){out.unshift(end);end=prev.get(end.join(','));}return out;
 }
 function select(o){
-  if(o.dead>time||(o.type==='boss'&&s.boss)){toast(o.type==='boss'?'The Hollow King has fallen.':'They will return shortly.');return;}
+  if(o.dead>time||(o.kind==='king'&&s.boss&&!o.repeatable)){toast(o.dead>time?'They will return shortly.':'The Hollow King has fallen.');return;}
   if(o.type==='man'){
     talkVillager(o);return;
   }
@@ -136,7 +136,7 @@ function arrive(){
     if(o.type==='shop')shop();
     if(o.type==='forge')forge();
     if(o.type==='inn')inn();
-  }else if(o.type==='boss'&&(!s.sword||lv('Combat')<3)){stop();toast('Bring an iron sword and reach Combat level 3 first.');}
+  }else if(o.kind==='king'&&!o.encounter&&(!s.sword||lv('Combat')<3)){stop();toast('Bring an iron sword and reach Combat level 3 first.');}
   renderAction();
 }
 function renderAction(){
@@ -268,7 +268,7 @@ function draw(){
   const tutPoint=tutorialGoal();
   if(tutPoint){groundRing(tutPoint.x,tutPoint.y,'#ffd98b',22+Math.sin(time*3)*3);const tx=(tutPoint.x+.5)*TILE-camera.x,ty=(tutPoint.y+.5)*TILE-camera.y;if(tx<20||tx>w-20||ty<65||ty>h-25){const dx=tx-w/2,dy=ty-h/2,t=Math.min((w/2-25)/Math.max(1,Math.abs(dx)),(h/2-70)/Math.max(1,Math.abs(dy)));const ex=w/2+dx*t,ey=h/2+dy*t;ctx.save();ctx.translate(ex,ey);ctx.rotate(Math.atan2(dy,dx));ctx.fillStyle='#ffe1a2';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-5,-6);ctx.lineTo(-5,6);ctx.closePath();ctx.fill();ctx.restore();}}
   const renderables=buildings.map(b=>({b,depth:b.y+b.h-.2}));
-  for(const o of objects)if(o.dead<=time&&!(o.type==='boss'&&s.boss))renderables.push({o,depth:o.y+.9});
+  for(const o of objects)if(o.dead<=time&&!(o.kind==='king'&&s.boss&&!o.repeatable))renderables.push({o,depth:o.y+.9});
   renderables.push({player:true,depth:py+.91});renderables.sort((a,b)=>a.depth-b.depth);
   for(const entry of renderables){
     if(entry.b){
