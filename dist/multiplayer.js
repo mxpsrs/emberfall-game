@@ -17,7 +17,7 @@ async function syncOnlineWorld(){
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
  const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);const old=onlinePeers.get(peer.id),stamp=received-Math.max(0,(data.serverTime||peer.stamp)-peer.stamp),samples=old?.samples||[];
  if(!samples.length||peer.stamp!==old?.stamp){samples.push({x:peer.x,y:peer.y,at:stamp});while(samples.length>12)samples.shift();}
- onlinePeers.set(peer.id,{...peer,samples,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,drawHeading:old?.drawHeading??peer.heading,phase:old?.phase||0,drawAt:old?.drawAt??received,seen:Date.now(),sampleAt:stamp});}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
+ onlinePeers.set(peer.id,{...peer,samples,trailTile:old?.trailTile,followTile:old?.followTile,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,drawHeading:old?.drawHeading??peer.heading,phase:old?.phase||0,drawAt:old?.drawAt??received,seen:Date.now(),sampleAt:stamp});}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
  $('onlineStatus').textContent=currentScene==='tutorial'?'Firstlight Isle · '+(onlinePeers.size+1)+' online':(onlinePeers.size+1)+' online here';
  }catch{if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}$('onlineStatus').textContent='Connection lost';pauseForServer();return;}
  setTimeout(syncOnlineWorld,Math.max(20,250-(performance.now()-started)));
@@ -46,14 +46,19 @@ function updatePlayerFollow(){
  if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.15;
  const peer=onlinePeers.get(followedPlayerId);
  if(!peer||onlineScene!==currentScene||Date.now()-peer.seen>12000){stop();return;}
- // Follow the same bounded route prediction used to draw peers, without the
- // rendering buffer. Never extrapolate through terrain or beyond their route.
- const destination=Number.isFinite(peer.sampleAt)?samplePeerPosition(peer,performance.now()+250):peer;
- const distance=Math.hypot(destination.x-px,destination.y-py),reach=peer.moving?1:1.45;
- if(distance<=(peer.moving?1.05:1.6)){path=[];followDestination=null;return;}
- // Keep the existing path while the destination is unchanged: mobile devices
- // should not run a new path search on every frame or identical presence poll.
- if(path.length&&followDestination&&followDestination.moving===peer.moving&&Math.hypot(destination.x-followDestination.x,destination.y-followDestination.y)<.25)return;
- const next=route(destination.x,destination.y,true,reach);
- if(next!==null){path=next;followDestination={x:destination.x,y:destination.y,moving:peer.moving};}
+ // Follow the leader's previous occupied tile, not an arbitrary point within
+ // an interaction radius. Retain that tile while the leader stands still.
+ const tile={x:Math.round(peer.x),y:Math.round(peer.y)};
+ if(!peer.trailTile){
+  const previous=[...(peer.samples||[])].reverse().find(p=>Math.round(p.x)!==tile.x||Math.round(p.y)!==tile.y);
+  peer.followTile=previous?{x:Math.round(previous.x),y:Math.round(previous.y)}:{x:tile.x-Math.round(Math.sin(peer.heading||0)),y:tile.y-Math.round(Math.cos(peer.heading||0))};
+ }else if(tile.x!==peer.trailTile.x||tile.y!==peer.trailTile.y)peer.followTile={...peer.trailTile};
+ peer.trailTile=tile;
+ const destination=peer.followTile;
+ if(!destination||!land(destination.x,destination.y))return;
+ if(Math.hypot(destination.x-px,destination.y-py)<.02){path=[];followDestination=null;return;}
+ // Reuse an unchanged route instead of pathfinding every frame on mobile.
+ if(path.length&&followDestination&&destination.x===followDestination.x&&destination.y===followDestination.y)return;
+ const next=route(destination.x,destination.y,false);
+ if(next!==null){path=next;followDestination={...destination};}
 }
