@@ -1,5 +1,5 @@
 {
-  "status": "Native Forest Giants, Orks, Runeforged Colossus and Veyr the Mindbreaker are integrated with their habitats. Varkesh and Xalith remain gated until their original packages are available and reviewed.",
+  "status": "Native Forest Giants, Orks, Runeforged Colossus, Veyr and Xalith are integrated with their habitats. Varkesh remains gated in this checkout pending original-package inspection.",
   "checked": "2026-09-13",
   "design_approval": {
     "date": "2026-09-12",
@@ -246,15 +246,17 @@
       "license": "CC BY 4.0",
       "commercial_use": true,
       "rigged": "Creator explicitly describes an original insectoid rig",
-      "animation_evidence": "Public Sketchfab metadata confirms one animation entry; action content and attack coverage have not been verified",
-      "animation_badge": "1 animation entry | Attack clips unverified",
+      "animation_evidence": "Original Bugoid2.blend opened safely in Blender. PoseLib: frames 1\u201335, landing/settling. PoseLib.001: one static frame. Seven gameplay motions newly authored on the original rig.",
+      "animation_badge": "Inspected original rig | 7 Emberfall-authored gameplay clips",
       "animation_count": 1,
       "triangles": 13156,
-      "asset_files_inspected": false,
+      "asset_files_inspected": true,
       "proposed_role": "A large chitin-armored boss for an underground hive. Keep the default fight to a single phase; only a few selected bosses should use phases or multiple styles.",
-      "note": "Credit DM-913 and link CC BY 4.0. Animated preview is not proof of attack, death, or locomotion coverage. Keep conditional until the source action is inspected.",
+      "note": "CC BY 4.0 attribution is in game credits and docs. Original 13,156 triangles retained; curved B-bones are baked into 157 weighted runtime joints across three 80-joint-or-smaller draws. New game motions are not claimed as supplied native clips.",
       "creator_fab_url": "https://www.fab.com/listings/ff1306d9-c968-4745-8437-0388a8d7aa5a",
-      "download_status": "Official Fab listing verified from the creator profile. Fab is blocked by its security check in the current browser; no original package recovered."
+      "download_status": "Owner supplied insectoid-monster-rig.zip; source Blender file and all six texture files verified.",
+      "import_audit": "boss_xalith-import.json",
+      "runtime_status": "Single-phase level 62 melee boss in the Brood Hollow. Alternating scythe strikes, clear warning, hit/death motion, reachable ground loot, retreat reset and 60-second respawn."
     }
   ]
 }

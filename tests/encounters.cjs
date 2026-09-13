@@ -7,12 +7,12 @@ renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 let testWallTime=Date.now();Date.now=()=>testWallTime;
 s.character={name:'Combat test'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.sceneId='overworld';setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 assert.equal(Object.keys(HUNT_ENCOUNTERS).length,4,'only the four approved boss designs remain');
-assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'veyr,colossus','only the fully integrated bosses are released');
+assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'veyr,colossus,xalith','only the fully integrated bosses are released');
 assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'only selected future bosses have phases');
 assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
 assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
 assert(Object.values(worldScenes).every(w=>w.objects.every(o=>!o.encounter||encounterReleased(o.encounter))),'no rejected or unfinished bosses ship');
-assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus,lair_veyr','unfinished lairs stay closed');
+assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus,lair_veyr,lair_xalith','unfinished lairs stay closed');
 assert.equal(worldScenes.ork_warrens.objects.filter(o=>o.kind==='ork').length,4,'four ordinary Orks populate their dungeon');
 const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
@@ -101,6 +101,34 @@ activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const be
 assert.equal(s.gold-beforeVeyrGold,80);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
 const veyrLoot=s.groundLoot.find(p=>p.scene==='lair_veyr'&&p.items.huntersMark);assert.equal(veyrLoot.items.huntersMark,3);assert(!blocked(veyrLoot.x,veyrLoot.y));assert(route(veyrLoot.x,veyrLoot.y),'Veyr loot is reachable');
 time+=60;testWallTime=veyr.respawnAt+1;updateWorldTimers();assert.equal(veyr.hp,veyr.maxhp);assert.equal(veyr.dead,0);assert.equal(JSON.stringify([veyr.x,veyr.y]),JSON.stringify(veyrHome));
+leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
+const hollow=CREATURE_LAIRS.lair_xalith,hiveDoor=objects.find(o=>o.destination==='lair_xalith');
+assert(hiveDoor,'the hive entrance is visible');
+assert(seen[hollow.returnPoint[1]*nav.w+hollow.returnPoint[0]],'the hive return point connects to the mainland');
+assert(route(hiveDoor.x,hiveDoor.y,true,1.45,...hollow.returnPoint),'the hive entrance is reachable');
+activateScene('lair_xalith',...hollow.entry);const xalith=objects.find(o=>o.encounter==='xalith');
+assert(xalith);assert(!blocked(px,py));assert(!blocked(xalith.x,xalith.y),'Xalith spawns clear of the nest scenery');
+assert(route(xalith.x,xalith.y,true,attackRange(xalith)),'melee can approach Xalith');
+assert(route(worldScenes.lair_xalith.exit.x,worldScenes.lair_xalith.exit.y,true),'the visible hive exit is reachable');
+for(const point of [[27,25],[22,20],[32,20],[27,15]])assert(route(...point),'the arena has space around the boss');
+const approach=route(xalith.x,xalith.y,true,attackRange(xalith));[s.x,s.y]=approach.at(-1);px=s.x;py=s.y;assert(inAttackRange(xalith));
+s.hp=maxhp();beginEncounter(xalith);
+for(const health of [1,.4]){
+ xalith.hp=Math.max(1,Math.floor(xalith.maxhp*health));updateEncounterAI(0);assert.equal(activeEncounter.phase,0,'Xalith stays a single-phase boss');
+ for(let i=0;i<2;i++){
+  activeEncounter.move=i;scheduleEnemyMove(activeEncounter,'bite');const h=activeEncounter.hazards.at(-1);
+  assert.equal(xalith.attackClip,i?'attack2':'attack');assert.equal(h.style,'melee');assert.equal(h.shape,'circle');
+  assert.equal(creatureAttackAnimation(xalith,creatureAssets.boss_xalith,h.windup).phase,.53,'the blade impact matches the warning end');
+  assert(hazardContains(h,xalith.x+2,xalith.y));assert(!hazardContains(h,xalith.x+4,xalith.y),'the cleave has a clear safe area');
+  activeEncounter.hazards=[];
+ }
+}
+resetEncounter();assert.equal(xalith.hp,xalith.maxhp);assert(!xalith.attackMove);
+beginEncounter(xalith);xalith.hp=35;leaveInterior();assert.equal(activeEncounter,null);assert.equal(xalith.hp,xalith.maxhp);
+activateScene('lair_xalith',xalith.homeX+2,xalith.homeY);beginEncounter(xalith);const beforeXalithGold=s.gold;resolveHit(xalith,xalith.hp,'melee');
+assert.equal(s.gold-beforeXalithGold,248);assert(creatureDying(xalith));assert.equal(xalith.dead,time+60);
+const hiveLoot=s.groundLoot.find(p=>p.scene==='lair_xalith'&&p.items.huntersMark);assert(hiveLoot);assert.equal(hiveLoot.items.huntersMark,5);assert.equal(hiveLoot.items.coins,240);assert(!blocked(hiveLoot.x,hiveLoot.y));assert(route(hiveLoot.x,hiveLoot.y),'hive loot remains reachable');
+time+=60;testWallTime=xalith.respawnAt+1;updateWorldTimers();assert.equal(xalith.hp,xalith.maxhp);assert.equal(xalith.dead,0);assert.equal(xalith.x,xalith.homeX);assert.equal(xalith.y,xalith.homeY);
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
 const rat=objects.find(o=>o.kind==='rat'),ratStats=JSON.stringify([rat.maxhp,rat.maxHit,rat.level]);for(const skill of COMBAT_SKILLS)s.xp[skill]=skillThreshold(skill,70);setupEncounters();assert.equal(JSON.stringify([rat.maxhp,rat.maxHit,rat.level]),ratStats,'enemies never grow to match the player');
 const originalSight=lineOfSight;lineOfSight=()=>true;

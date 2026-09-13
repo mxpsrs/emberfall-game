@@ -7,6 +7,29 @@ const creatureAssets=Object.fromEntries(Object.entries({...REALM_CREATURES,...(t
 const creaturePoses=new Map();
 const creatureRigPoses=new Map();
 const creatureKinds={forestgiant:'forestgiant',ork:'ork',goblin:'goblin',wolf:'wolf',ridgewolf:'wolf',rat:'rat',slime:'slime',skeleton:'skeleton',warden:'skeleton',sentinel:'skeleton',king:'king'};
+// Curved Blender bones can exceed one WebGL 1 uniform palette. Partition the
+// original triangles once; each draw keeps at most 80 joints and every weight.
+function creatureSkinBatches(asset){
+ if(asset.skinBatches)return asset.skinBatches;
+ const mesh=asset.mesh,batches=[];let triangles=[],bones=new Set();
+ function flush(){
+  if(!triangles.length)return;
+  const joints=Array.from(bones),boneMap=new Map(joints.map((id,i)=>[id,i])),vertices=Array.from(new Set(triangles)),vertexMap=new Map(vertices.map((id,i)=>[id,i])),part={bounds:mesh.bounds};
+  for(const [field,width]of [['p',3],['n',3],['uv',2],['t',1],['c',3],['f',3],['j',4],['w',4]]){
+   if(!mesh[field])continue;const source=mesh[field],data=new source.constructor(vertices.length*width);
+   for(let i=0;i<vertices.length;i++)for(let j=0;j<width;j++)data[i*width+j]=field==='j'?(boneMap.get(source[vertices[i]*width+j])??0):source[vertices[i]*width+j];
+   part[field]=data;
+  }
+  part.i=Uint16Array.from(triangles,id=>vertexMap.get(id));batches.push({mesh:part,joints});triangles=[];bones=new Set();
+ }
+ for(let i=0;i<mesh.i.length;i+=3){
+  const ids=Array.from(mesh.i.subarray(i,i+3)),needed=new Set();
+  for(const id of ids)for(let j=0;j<4;j++)if(mesh.w[id*4+j]>0)needed.add(mesh.j[id*4+j]);
+  if(new Set([...bones,...needed]).size>80)flush();
+  for(const id of needed)bones.add(id);triangles.push(...ids);
+ }
+ flush();return asset.skinBatches=batches;
+}
 function creatureSize(o){if(o.size)return o.size;return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
 function creatureAsset(o){return creatureAssets[o.creatureLook||creatureKinds[o.kind]];}
 function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
@@ -102,7 +125,13 @@ creature3=function(r,o,x,z){
  const hop=o.attackMove==='pounce'&&attack?Math.sin(Math.PI*Math.max(0,Math.min(1,(attackAge/(o.attackWindup||1.8)-.6)/.4)))*.55:0;
  const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink+hop,z,k,state.heading);
  const style=crystal?{bossColor:o.enraged?2:1,dissolve}:{};
- if(painter.skinned)painter.skinned(creatureTint(o,a.mesh),transform,mesh.palette,style);else if(painter.indexed)painter.indexed(creatureTint(o,mesh),transform,style);else if(dissolve<.8)briarEmit(painter,creatureTint(o,mesh),transform);
+ if(painter.skinned){
+  if(a.splitSkinPalette){
+   const batches=creatureSkinBatches(a);
+   mesh.batchPalettes??=batches.map(batch=>{const palette=new Float32Array(batch.joints.length*12);batch.joints.forEach((joint,i)=>palette.set(mesh.palette.subarray(joint*12,joint*12+12),i*12));return palette;});
+   batches.forEach((batch,i)=>painter.skinned(creatureTint(o,batch.mesh),transform,mesh.batchPalettes[i],style));
+  }else painter.skinned(creatureTint(o,a.mesh),transform,mesh.palette,style);
+ }else if(painter.indexed)painter.indexed(creatureTint(o,mesh),transform,style);else if(dissolve<.8)briarEmit(painter,creatureTint(o,mesh),transform);
  if(crystal&&dying&&typeof drawColossusShatter==='function')drawColossusShatter(painter,x,z,dissolve,o.enraged);
  return a.height*variant;
 };

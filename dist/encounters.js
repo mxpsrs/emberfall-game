@@ -30,7 +30,7 @@ const HUNT_ENCOUNTERS={
  veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:true,combatRadius:.7,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
  varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:false,rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
  colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
- xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:false,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
+ xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:true,combatRadius:1.05,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
 };
 function encounterReleased(kind){const e=HUNT_ENCOUNTERS[kind];return !!(e?.released&&creatureAssets[e.look]?.source);}
 const HUNT_ZONES=[
@@ -139,6 +139,10 @@ function scheduleEnemyMove(fight,key){
   Object.assign(move,key==='sweep'?{name:fight.phase?'Shattering blow':'Orb strike',radius:3.2}:key==='ring'?{name:'Mindbreak pulse',inner:2.1,radius:4.6}:{name:'Rift eruption'});
   o.attackClip=key==='sweep'?(fight.phase?'attack3':fight.move%4===0?'attack':'attack2'):key==='ring'?'cast2':'cast';
   o.attackRecovery=key==='sweep'?.85:1.0;
+ }
+ if(o.encounter==='xalith'){
+  Object.assign(move,{name:'Scythe cleave',shape:'circle',origin:'enemy',radius:3.2,windup:1.15,hint:'Step outside the circle'});
+  o.attackClip=fight.move%2?'attack2':'attack';o.attackRecovery=.70;
  }
  move.windup*=speed;const near=move.origin==='enemy';
  const h={...move,key,o,x:near?(o.drawX??o.x):px,y:near?(o.drawY??o.y):py,fromX:o.drawX??o.x,fromY:o.drawY??o.y,started:time,due:time+move.windup};

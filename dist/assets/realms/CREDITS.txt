@@ -57,3 +57,12 @@ CGTrader Royalty Free License (no AI). Original body, orb weapon, default color 
 Twenty-six source takes inspected, including the A-pose. Ten runtime clips retain reviewed single-cycle
 windows for idle, walking, running, three strikes, two casts, damage and death. Ground effects and lair by Emberfall.
 Incorporated game data only; original FBX and texture archives are not distributed or used for model training.
+
+Xalith the Broodmother: Insectoid Monster Rig by DM-913 (SuperKapoo913), CC BY 4.0.
+https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176
+https://creativecommons.org/licenses/by/4.0/
+Original BOOG geometry, body/wing color maps and rig converted from the owner-supplied Bugoid2.blend.
+Curved B-bone segments baked for the game renderer; textures atlased, scale and skinning adapted.
+The source contains one landing/settling take and one static pose. Idle, walk, run, left/right
+scythe strikes, hit reaction and death are new Emberfall-authored motions on the original rig.
+Cavern scenery, gameplay, warning timing and effects by Emberfall. No artist endorsement implied.

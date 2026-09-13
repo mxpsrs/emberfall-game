@@ -2,7 +2,7 @@
 
 The owner authorized asset selection/downloads and incremental publication of
 tested work. Version 52 published the sound/combat/Forest Giant batch. Version
-53 published native Orks and their dungeon. Versions 55–57 published Firstlight, the Colossus, the direct account-reset protocol and the tutorial-video follow-up. The current source also integrates Veyr and the Shattered Sanctum.
+53 published native Orks and their dungeon. Versions 55–57 published Firstlight, the Colossus, the direct account-reset protocol and the tutorial-video follow-up. The current source also integrates Veyr and the Shattered Sanctum, and Xalith and the Brood Hollow.
 
 Firstlight now owns its roads and building plans. Its square has cobbles, a
 well, two market stalls, benches, planters, lanterns and a noticeboard. The bank,
@@ -40,7 +40,10 @@ and misses: median 15 seconds, p95 29.7 seconds, zero deaths in that sample.
   orb and default color maps imported; 26 source takes inspected, with ten
   reviewed runtime clips. The rig has 44 genuinely weighted skin clusters;
   unused per-mesh cluster entries are pruned. See `veyr-integration.md`.
-- Varkesh and Xalith: original packages remain unavailable. Both models now have
+- Xalith: owner-supplied `insectoid-monster-rig.zip` inspected and integrated.
+  Full original mesh, body/wing color maps and curved rig retained. Missing
+  gameplay clips were authored on that rig; see `xalith-integration.md`.
+- Varkesh: original package remains uninspected in this checkout. Both models have
   verified official Fab listings in `boss-candidates/roster.json`. Normal Fab
   navigation encountered an Epic security check. The earlier owner-approved
   Epic verification failed; stop retries and do not work around the challenge.
@@ -49,7 +52,7 @@ and misses: median 15 seconds, p95 29.7 seconds, zero deaths in that sample.
   transfers. A browser security restriction blocked a download-status check;
   do not probe internal download-manager pages or alternative control channels.
 
-The remaining dragon and insect lairs stay gated. Native Forest Giants and Orks remain
+The remaining dragon lair stays gated. Native Forest Giants and Orks remain
 ordinary monsters without boss phases, marks or boss music. Only selected
 bosses get multiple styles/phases. Do not revive rejected procedural bosses or
 retired names. Continue with commercially usable originals when available;

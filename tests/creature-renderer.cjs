@@ -24,7 +24,7 @@ assert.equal(creaturePoses.size,0,'GPU animation does not allocate deformed CPU 
 assert(creatureRigPoses.size<=80,'bone cache stays bounded');
 frameCosts.sort((a,b)=>a-b);console.log('Creature CPU preparation, '+monsters.length+' simultaneous attacks: median '+frameCosts[45].toFixed(2)+' ms, p95 '+frameCosts[85].toFixed(2)+' ms. GPU execution is not included.');
 `,ctx);
-if(palettes!==90*vm.runInContext('monsters.length',ctx)*2)throw new Error('Both shadows and color must receive every creature palette');
+if(palettes!==90*vm.runInContext('monsters.reduce((n,o)=>n+(creatureAssets[o.kind].splitSkinPalette?creatureSkinBatches(creatureAssets[o.kind]).length:1),0)',ctx)*2)throw new Error('Both shadows and color must receive every creature palette, including split B-bone draws');
 vm.runInContext(`
 const crystal=monsters.find(o=>o.creatureLook==='boss_colossus');crystal.enraged=true;crystal.dead=time+60;crystal.deathAt=time-.6;
 const deathPainter=painter3(ctx,project3);creature3(deathPainter,crystal,11,12);creature3(deathPainter,monsters[0],9,12);deathPainter.flush();
@@ -44,5 +44,5 @@ const actorPainter=painter3(ctx,project3);humanoid3(actorPainter,10.5,12.5,0,{..
 assert(avatarRigPoses.size<=128);assert(avatarMaterials.size<=64);
 `,ctx);
 gl.getParameter=key=>key===gl.MAX_VERTEX_UNIFORM_VECTORS?128:parameters(key);
-vm.runInContext(`realmGPU=null;const fallback=painter3(ctx,project3);assert(!fallback.skinned,'limited hardware retains CPU animation');creature3(fallback,monsters[0],10.5,12.5);fallback.flush();assert(creaturePoses.size>0);`,ctx);
+vm.runInContext(`realmGPU=null;const fallback=painter3(ctx,project3);assert(!fallback.skinned,'limited hardware retains CPU animation');creature3(fallback,monsters[0],10.5,12.5);creature3(fallback,monsters.find(o=>o.kind==='boss_xalith'),11.5,12.5);fallback.flush();assert(creaturePoses.size>0);`,ctx);
 console.log('PASS: stable creature and avatar geometry, fitted armor, finite bone palettes, animated shadows, bounded caches, and low-capability fallback.');

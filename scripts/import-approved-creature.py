@@ -105,7 +105,8 @@ def build(config):
     vertices = np.concatenate(chunks)
     # Index vertices by all skin/material attributes, keeping authored hard edges.
     vertices, inverse = np.unique(vertices, axis=0, return_inverse=True)
-    if len(vertices) >= 65536 or len(order) >= 256 or len(deforms) > 80:
+    palette_limit = 255 if config.get('splitSkinPalette') else 80
+    if len(vertices) >= 65536 or len(order) >= 256 or len(deforms) > palette_limit:
         raise ValueError('Model exceeds the current vertex or GPU skeleton budget')
     p, normal, uv = vertices[:,:3].copy(), vertices[:,3:6], vertices[:,6:8].copy()
     joints, weights = vertices[:,9:13].astype(int), vertices[:,13:17]
@@ -189,6 +190,11 @@ def build(config):
                        'animationFiles':animation_files,'sourceNodes':len(nodes),'materials':material_sources,
                        'meshes':[{'name':m['name'],'triangles':len(m['vertices'])//3,'activeSkinJoints':len(active)}
                                  for m,active in zip(data['meshes'],mesh_joints)]}}
+    if config.get('splitSkinPalette'):
+        model['splitSkinPalette'] = True
+    if config.get('sourceActions') is not None:
+        model['source']['nativeActions'] = config['sourceActions']
+        model['source']['authoredActions'] = list(native)
     if config.get('reviewDir'):
         review = Path(config['reviewDir']); review.mkdir(parents=True,exist_ok=True)
         (review/'creature.json').write_text(json.dumps({'key':config['key'],'model':model},separators=(',',':')))
@@ -204,6 +210,6 @@ def build(config):
     audit = {k:v for k,v in model.items() if k not in ('mesh','rig','clips')}
     audit.update({'vertices':len(p),'triangles':len(inverse)//3,'deforms':len(deforms),'clips':{k:{field:value for field,value in clip.items() if field!='trs'} for k,clip in clips.items()}})
     (ROOT/'docs/boss-candidates'/(config['key']+'-import.json')).write_text(json.dumps(audit,indent=2)+'\n')
-    print(config['key'],len(p),'vertices;',len(deforms),'skin joints;',len(native),'native actions;',list(clips))
+    print(config['key'],len(p),'vertices;',len(deforms),'skin joints;',len(model['source']['nativeActions']),'source actions;',list(clips))
 
 if __name__ == '__main__': build(json.loads(Path(sys.argv[1]).read_text()))
