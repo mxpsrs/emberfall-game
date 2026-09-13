@@ -18,6 +18,9 @@ export default defineConfig({
  server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
  plugins:[{name:'veldren-local-api',configureServer(server){server.middlewares.use(async(req,res,next)=>{
   const path=req.url?.split('?')[0];
+  if(path==='/')req.url='/landing.html'+(req.url.includes('?')?'?'+req.url.split('?').slice(1).join('?'):'');
+  if(path==='/donate'||path==='/donate/')req.url='/donate.html';
+  if(path==='/play'||path==='/play/')req.url='/index.html'+(req.url.includes('?')?'?'+req.url.split('?').slice(1).join('?'):'');
   if(path==='/__creator-layout__/'){const token='a'.repeat(64),hash=createHash('sha256').update(token).digest('hex');db.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').run('creator-qa','CreatorTest','creatortest','not-a-login-hash',Date.now());db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'creator-qa',Date.now()+3600000);res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/creator-layout.html','utf8'));return;}
   if(path==='/__skills-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/skills-layout.html','utf8'));return;}
   if(path==='/__armor-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/armor-layout.html','utf8'));return;}

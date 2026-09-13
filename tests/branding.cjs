@@ -13,6 +13,6 @@ assert.equal(lock.packages[''].name, 'veldren');
 assert(read('dist/game.js').includes("'emberfall-save-v1'"));
 assert(read('dist/cloud.js').includes("'emberfall-cloud-backup-v1'"));
 assert(read('dist/view3d.js').includes("'emberfall-camera-v1'"));
-assert(read('emberfall-android/app/src/main/AndroidManifest.xml').includes('android:label="Veldren Beta"'));
+assert(read('emberfall-android/app/src/main/AndroidManifest.xml').includes('android:label="Veldren"'));
 assert(read('emberfall-android/app/src/main/AndroidManifest.xml').includes('package="games.emberfall.beta"'));
 console.log('PASS: Veldren display branding, package consistency, and legacy save/Android identity compatibility.');

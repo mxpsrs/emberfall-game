@@ -31,7 +31,7 @@ import android.widget.TextView;
 /** Online Android client. Authentication and game state stay on Veldren's server. */
 public final class MainActivity extends Activity {
     private static final String GAME_URL = "https://emberfall-realms.rayfgarrison97.chatgpt.site/";
-    private static final String GAME_HOST = "emberfall-realms.rayfgarrison97.chatgpt.site";
+    private static final String GAME_HOST = "veldren-realms.rayfgarrison97.chatgpt.site";
     private FrameLayout root;
     private WebView web;
     private ProgressBar progress;

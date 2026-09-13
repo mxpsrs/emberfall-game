@@ -11,10 +11,10 @@ if(values.help){
   console.log('Usage: npm run accounts:reset -- --archive --reason "Fresh beta playthrough"\nRestore: npm run accounts:reset -- --restore CHECKPOINT_ID --reason "Restore beta"\nRetry an interrupted request: npm run accounts:reset -- --retry\nArchives every character before starting fresh or restoring a checkpoint. Keeps logins and older checkpoints. Requires locked maintenance.');
   process.exit(0);
 }
-const token=process.env.EMBERFALL_RESET_TOKEN;
-if(!token||token.length<32)throw new Error('Set EMBERFALL_RESET_TOKEN in .env.reset.local or the operator environment.');
-const origin=new URL(process.env.EMBERFALL_SITE_URL||'https://emberfall-realms.rayfgarrison97.chatgpt.site');
-if(origin.protocol!=='https:'||origin.username||origin.password||origin.pathname!=='/'||origin.search||origin.hash)throw new Error('EMBERFALL_SITE_URL must be the HTTPS game origin.');
+const token=(process.env.VELDREN_RESET_TOKEN||process.env.EMBERFALL_RESET_TOKEN);
+if(!token||token.length<32)throw new Error('Set VELDREN_RESET_TOKEN in .env.reset.local or the operator environment.');
+const origin=new URL((process.env.VELDREN_SITE_URL||process.env.EMBERFALL_SITE_URL)||'https://emberfall-realms.rayfgarrison97.chatgpt.site');
+if(origin.protocol!=='https:'||origin.username||origin.password||origin.pathname!=='/'||origin.search||origin.hash)throw new Error('VELDREN_SITE_URL must be the HTTPS game origin.');
 const directory=path.join(root,'.reset-requests'),receiptPath=path.join(directory,'beta-latest.json');
 const previous=fs.existsSync(receiptPath)?JSON.parse(fs.readFileSync(receiptPath,'utf8')):null;
 let receipt;

@@ -82,7 +82,7 @@ function setupExpandedWorld(){
  buildings.push({x:53,y:4,w:4,h:4,sprite:3,name:'Pinewatch Mine',service:mineDoor},{x:56,y:41,w:4,h:4,sprite:3,name:'Sunken Crypt',service:cryptDoor});
  add('prop',35,16,'Willowcross sign',13);add('prop',39,35,'Southern crossing sign',13);
  setupFrontier();
- worldScenes.overworld={objects:objects.slice(),buildings:buildings.slice(),title:'The Border Realms',entry:[14,17]};
+ worldScenes.overworld={objects:objects.slice(),buildings:buildings.slice(),title:'Veldren',entry:[14,17]};
  for(const [id,kind,title]of [['stoneInn','inn','Stoneford Lodge'],['stoneShop','shop','Stoneford Supplies'],['inn','inn','Wayfarer’s Rest'],['shop','shop','Mara’s General Store'],['forge','forge','Briarhaven Smithy'],['willowInn','inn','Willowcross Inn'],['willowShop','shop','Willowcross Market'],['mine','mine','Pinewatch Mine'],['dungeon','dungeon','Sunken Crypt']])makeInterior(id,kind,title);
  const savedScene=s.sceneId||'overworld',savedX=s.x,savedY=s.y;activateScene(worldScenes[savedScene]?savedScene:'overworld',savedX,savedY,false);
  $('ambientButton').onclick=toggleAmbient;

@@ -49,7 +49,7 @@ function quadrupedArt(r,o,x,z,heading=Math.atan2(px-x,py-z),phase=time*9){
 // Item silhouettes use the same materials and lighting as worn equipment.
 function drawRealmItem(g,id){const w=g.canvas?.width||96,h=g.canvas?.height||96,v={yaw:-.45,tilt:.4,zoom:Math.min(w,h)*.55},project=(x,y,z)=>{const p=project3(x,y,z,v,0,0,0,0);p.x+=w/2;p.y+=h*.86;return p;},r=painter3(g,project),m=realmMaterials,prev=meshDetail3;meshDetail3=1;
  if(ITEMS[id]?.modelTint||ITEMS[id]?.modelScale){const mesh=wornModularMesh('male',id);if(mesh){const [lo,hi]=mesh.bounds,k=1.3/Math.max(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2]);briarEmit(r,mesh,briarTransform(-(lo[0]+hi[0])*k/2,.78-(lo[1]+hi[1])*k/2,-(lo[2]+hi[2])*k/2,k));}}
- else if(id==='copperNecklace'){briarEmit(r,modularMesh('male','Emberfall_Necklace'),briarTransform(0,-5.05,.14,4));}
+ else if(id==='copperNecklace'){briarEmit(r,modularMesh('male','Veldren_Necklace'),briarTransform(0,-5.05,.14,4));}
  else if(/Sword/.test(id)){beamArt(r,[0,.05,0],[0,.35,0],.055,m.leather);beamArt(r,[-.23,.35,0],[.23,.35,0],.045,m.gold);const metal=id==='bronzeSword'?'#c9a16b':m.iron;r.face([[-.095,.4,0],[0,1.48,0],[0,.4,.05]],metal);r.face([[0,.4,.05],[0,1.48,0],[.095,.4,0]],shade3(metal,1.18));}
  else if(ITEMS[id]?.style==='ranged'&&ITEMS[id]?.slot==='weapon'){const pts=Array.from({length:9},(_,i)=>[Math.sin(i/8*Math.PI)*.38,.1+i/8*1.25,0]);for(let i=0;i<8;i++)beamArt(r,pts[i],pts[i+1],.033,m.oak);beamArt(r,[0,.1,0],[0,1.35,0],.01,'#cfc3a0');}
  else if(ITEMS[id]?.style==='magic'&&ITEMS[id]?.slot==='weapon'){beamArt(r,[0,0,0],[0,1.3,0],.047,m.oak);crownArt(r,0,1.4,0,.26,.3,.26,'#91b9b7',2);}

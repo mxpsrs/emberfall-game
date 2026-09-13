@@ -204,8 +204,8 @@ for(const tier of GEAR_TIERS){
  }
 }
 for(const [id,template]of [['bronzeSword','bronze_weapon'],['ironSword','iron_weapon'],['ironHelm','iron_head'],['ironShield','iron_shield']])ITEMS[id]={...ITEMS[template],name:ITEMS[id].name};
-addSkillItem('woodenSword',{name:'Wooden training sword',icon:0,slot:'weapon',style:'melee',model:'Emberfall_WoodenSword',range:1.45,power:0,attackBonus:4,strengthBonus:4,attackTicks:4,requirements:{Attack:1},desc:'Captain Vale’s wooden practice sword. A broader grip and reach than your first dagger; yours to keep.'});
-addSkillItem('woodenShield',{name:'Wooden training shield',icon:6,slot:'shield',style:'melee',model:'Emberfall_WoodenShield',armor:3,requirements:{Defense:1},desc:'A wooden practice shield from Captain Vale. Offers modest protection with a melee weapon.'});
+addSkillItem('woodenSword',{name:'Wooden training sword',icon:0,slot:'weapon',style:'melee',model:'Veldren_WoodenSword',range:1.45,power:0,attackBonus:4,strengthBonus:4,attackTicks:4,requirements:{Attack:1},desc:'Captain Vale’s wooden practice sword. A broader grip and reach than your first dagger; yours to keep.'});
+addSkillItem('woodenShield',{name:'Wooden training shield',icon:6,slot:'shield',style:'melee',model:'Veldren_WoodenShield',armor:3,requirements:{Defense:1},desc:'A wooden practice shield from Captain Vale. Offers modest protection with a melee weapon.'});
 Object.assign(ITEMS.leatherArmor,{armor:8,rangedAccuracy:2,magicAccuracy:-2,requirements:{Defense:1},desc:'Light leather body armor. Defense 1; suitable for early ranged training.'});
 Object.assign(ITEMS.leatherBoots,{armor:1,requirements:{Defense:1},desc:'Light leather boots. Requires Defense 1.'});
 Object.assign(ITEMS.mageRobe,{armor:0,magic:0,magicAccuracy:5,requirements:{Magic:1},desc:'Light robes that improve magic accuracy.'});

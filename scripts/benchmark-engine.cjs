@@ -2,7 +2,7 @@
 // this does not execute browser layout or measure a physical device's GPU FPS.
 const fs=require('fs'),vm=require('vm'),path=require('path'),{performance}=require('perf_hooks');
 const started=performance.now(),{ctx,counters}=require('./benchmark-desktop.cjs');
-const root=process.env.EMBERFALL_BENCH_ROOT||path.join(__dirname,'../dist/');
+const root=(process.env.VELDREN_BENCH_ROOT||process.env.EMBERFALL_BENCH_ROOT)||path.join(__dirname,'../dist/');
 for(const f of ['multiplayer','trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),ctx,{filename:f});
 if(fs.existsSync(path.join(root,'engine-world.js')))vm.runInContext(fs.readFileSync(path.join(root,'engine-world.js'),'utf8'),ctx,{filename:'engine-world'});
 ctx.measureNow=()=>performance.now();ctx.bootstrapMs=performance.now()-started;ctx.heapUsed=()=>process.memoryUsage().heapUsed;

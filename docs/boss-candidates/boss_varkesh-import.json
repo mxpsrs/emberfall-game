@@ -39,11 +39,11 @@
       }
     ],
     "authoredActions": [
-      "Emberfall/idle",
-      "Emberfall/attack",
-      "Emberfall/cast",
-      "Emberfall/hit",
-      "Emberfall/death"
+      "Veldren/idle",
+      "Veldren/attack",
+      "Veldren/cast",
+      "Veldren/hit",
+      "Veldren/death"
     ]
   },
   "splitSkinPalette": true,
@@ -63,7 +63,7 @@
   "deforms": 234,
   "clips": {
     "idle": {
-      "source": "Emberfall/idle",
+      "source": "Veldren/idle",
       "duration": 3.2,
       "frames": 78,
       "note": "Veldren-authored motion on the original Blender rig"
@@ -81,27 +81,27 @@
       "note": "Complete original Walk Loop, frames 1\u2013118, retaining its three steps and matching loop endpoints; retimed for running"
     },
     "attack": {
-      "source": "Emberfall/attack",
+      "source": "Veldren/attack",
       "duration": 1.55,
       "frames": 39,
       "note": "Veldren-authored motion on the original Blender rig",
       "release": 0.53
     },
     "cast": {
-      "source": "Emberfall/cast",
+      "source": "Veldren/cast",
       "duration": 2.3,
       "frames": 57,
       "note": "Veldren-authored motion on the original Blender rig",
       "release": 0.52
     },
     "hit": {
-      "source": "Emberfall/hit",
+      "source": "Veldren/hit",
       "duration": 0.55,
       "frames": 15,
       "note": "Veldren-authored motion on the original Blender rig"
     },
     "death": {
-      "source": "Emberfall/death",
+      "source": "Veldren/death",
       "duration": 2.8,
       "frames": 69,
       "note": "Veldren-authored motion on the original Blender rig"

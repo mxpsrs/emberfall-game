@@ -99,9 +99,15 @@ function playGameSound(kind,x=px,y=py,delay=0){
  else tone(690,.045,.035,'triangle',440);
  setTimeout(()=>{group.disconnect();pan?.disconnect();gameAudio.voices=Math.max(0,gameAudio.voices-1);},2200+delay*1000);
 }
+// Called by the action clock before the harvest roll or target reset. Every
+// visible tool swing crosses this contact point, including unsuccessful rolls.
+function soundGatheringSwing(object,previous,current,duration){
+ if(!object||!['tree','ore','fish'].includes(object.type)||!(duration>0))return;
+ const impact=duration*.42;
+ if(previous<impact&&current>=impact)playGameSound(object.type==='tree'?'wood':object.type==='ore'?'mine':'fishCast',object.x,object.y);
+}
 function tickGameAudio(dt){
  const c=gameAudio.context;if(!c||c.state!=='running'||s.sound===false||document.hidden)return;
- const action=gatheringActivity();if(action){const before=gameAudio.gather;if(!before||before.object!==action.object||action.phase<before.phase)gameAudio.gather={object:action.object,phase:action.phase,played:false};const g=gameAudio.gather;g.phase=action.phase;if(!g.played&&action.phase>=.42){g.played=true;playGameSound(action.object.type==='tree'?'wood':action.object.type==='ore'?'mine':'fishCast',action.object.x,action.object.y);}}else gameAudio.gather=null;
  gameAudio.check+=dt;if(gameAudio.check<1)return;gameAudio.check=0;updateAreaMusic();
  if(gameAudio.environment){const underground=/mine|crypt|dungeon/.test(currentScene),nearFire=objects.some(o=>o.type==='camp'&&o.dead<=time&&Math.hypot(px-o.x,py-o.y)<6),nearWater=typeof worldWaterDistance==='function'&&inWorld()&&worldWaterDistance(px,py)<6;gameAudio.environment.filter.frequency.setTargetAtTime(underground?110:nearWater?850:nearFire?1300:260,c.currentTime,1);gameAudio.environment.gain.gain.setTargetAtTime(underground?.011:nearWater?.035:nearFire?.025:.018,c.currentTime,1);}
  if(s.hp<=maxhp()*.25&&c.currentTime-(gameAudio.last.get('lowHealth')??-100)>6)playGameSound('lowHealth');

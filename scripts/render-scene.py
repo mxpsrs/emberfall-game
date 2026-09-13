@@ -25,7 +25,7 @@ def make_program(vertex):
  link(program);ok=I();getprogram(program,0x8B82,C.byref(ok));assert ok.value
  return program
 program=make_program(scene['vertex'])
-instance_program=make_program(scene['instancedVertex']) if any(d.get('instances') for d in scene['draws']) and os.environ.get('EMBERFALL_REVIEW_INSTANCING')!='0' else None
+instance_program=make_program(scene['instancedVertex']) if any(d.get('instances') for d in scene['draws']) and os.environ.get('VELDREN_REVIEW_INSTANCING', os.environ.get('EMBERFALL_REVIEW_INSTANCING'))!='0' else None
 gl('glUseProgram',None,[U])(program)
 location=gl('glGetUniformLocation',I,[U,C.c_char_p]);uniforms={}
 def uniform(key,value):
@@ -39,7 +39,7 @@ def texture(w,h,data=None,linear=False):
  tex=U();gl('glGenTextures',None,[I,P])(1,C.byref(tex));bindtex(0x0DE1,tex);teximage(0x0DE1,0,0x1908,w,h,0,0x1908,0x1401,data)
  for key,value in [(0x2801,0x2601 if linear else 0x2600),(0x2800,0x2601 if linear else 0x2600),(0x2802,0x812F),(0x2803,0x812F)]:texparam(0x0DE1,key,value)
  return tex.value
-active(0x84C1);atlas=Image.open(os.environ.get('EMBERFALL_REVIEW_ATLAS') or Path(__file__).resolve().parent.parent/'dist/assets/realms/atlas.png').convert('RGBA');atlasbytes=atlas.tobytes();atlastex=texture(atlas.width,atlas.height,C.c_char_p(atlasbytes),True)
+active(0x84C1);atlas=Image.open(os.environ.get('VELDREN_REVIEW_ATLAS', os.environ.get('EMBERFALL_REVIEW_ATLAS')) or Path(__file__).resolve().parent.parent/'dist/assets/realms/atlas.png').convert('RGBA');atlasbytes=atlas.tobytes();atlastex=texture(atlas.width,atlas.height,C.c_char_p(atlasbytes),True)
 bone_texture=None
 if 'uBoneTexture' in scene['vertex']:
  active(0x84C2);bone_texture=texture(240,1)

@@ -10,7 +10,7 @@ const env={DB:{prepare(sql){
   return {async first(){return database.prepare(sql).get(...args)||null;},async run(){return {meta:{changes:database.prepare(sql).run(...args).changes}};}};
  }};
 }}};
-const auth=(action,body,cookie)=>handleAuth(new Request('https://emberfall.test/api/auth/'+action,{method:body?'POST':'GET',headers:{Origin:'https://emberfall.test',...(body?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{})},...(body?{body:JSON.stringify(body)}:{})}),env);
+const auth=(action,body,cookie)=>handleAuth(new Request('https://veldren.test/api/auth/'+action,{method:body?'POST':'GET',headers:{Origin:'https://veldren.test',...(body?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{})},...(body?{body:JSON.stringify(body)}:{})}),env);
 let response=await auth('register',{username:'NewHero',password:'1234'});assert.equal(response.status,400);assert.match((await response.json()).error,/5 characters/);
 response=await auth('register',{username:'NewHero',password:'12345'});assert.equal(response.status,200);const first=await response.json(),cookie=response.headers.get('set-cookie').split(';')[0];assert.equal(first.account.username,'NewHero');assert.match(response.headers.get('set-cookie'),/HttpOnly/);
 assert.notEqual(database.prepare('SELECT password_hash FROM game_accounts').get().password_hash,'12345');

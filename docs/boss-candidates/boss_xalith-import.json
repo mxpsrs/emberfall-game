@@ -37,13 +37,13 @@
       }
     ],
     "authoredActions": [
-      "Emberfall/idle",
-      "Emberfall/walk",
-      "Emberfall/run",
-      "Emberfall/attack",
-      "Emberfall/attack2",
-      "Emberfall/hit",
-      "Emberfall/death"
+      "Veldren/idle",
+      "Veldren/walk",
+      "Veldren/run",
+      "Veldren/attack",
+      "Veldren/attack2",
+      "Veldren/hit",
+      "Veldren/death"
     ]
   },
   "splitSkinPalette": true,
@@ -52,45 +52,45 @@
   "deforms": 157,
   "clips": {
     "idle": {
-      "source": "Emberfall/idle",
+      "source": "Veldren/idle",
       "duration": 2.8,
       "frames": 35,
       "note": "Veldren-authored on the original rig"
     },
     "walk": {
-      "source": "Emberfall/walk",
+      "source": "Veldren/walk",
       "duration": 1.1,
       "frames": 28,
       "note": "Veldren-authored on the original rig"
     },
     "run": {
-      "source": "Emberfall/run",
+      "source": "Veldren/run",
       "duration": 0.78,
       "frames": 20,
       "note": "Veldren-authored on the original rig"
     },
     "attack": {
-      "source": "Emberfall/attack",
+      "source": "Veldren/attack",
       "duration": 1.45,
       "frames": 36,
       "note": "Veldren-authored on the original rig",
       "release": 0.53
     },
     "attack2": {
-      "source": "Emberfall/attack2",
+      "source": "Veldren/attack2",
       "duration": 1.45,
       "frames": 36,
       "note": "Veldren-authored on the original rig",
       "release": 0.53
     },
     "hit": {
-      "source": "Emberfall/hit",
+      "source": "Veldren/hit",
       "duration": 0.5,
       "frames": 13,
       "note": "Veldren-authored on the original rig"
     },
     "death": {
-      "source": "Emberfall/death",
+      "source": "Veldren/death",
       "duration": 2.3,
       "frames": 57,
       "note": "Veldren-authored on the original rig"

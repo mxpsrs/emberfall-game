@@ -1,7 +1,7 @@
 const vm=require('node:vm'),assert=require('node:assert/strict');const {ctx}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};save=()=>{};
-assert.deepEqual(EQUIPMENT_SLOTS.map(([slot])=>slot),['head','neck','weapon','body','shield','hands','legs','feet']);
+assert.deepEqual(EQUIPMENT_SLOTS.map(([slot])=>slot),['head','neck','ammo','weapon','body','shield','hands','legs','feet']);
 const saved={gear:{iron_body:1,iron_shoulders:2,helmet_crest_1:1},bag:{logs:25},equipment:{body:'iron_body',shoulders:'iron_shoulders',crest:'helmet_crest_1'},bank:{iron_shoulders:3}};
 normalizeEquipmentSlots(saved);assert.equal(saved.equipment.body,'iron_body');assert(!('crest' in saved.equipment));assert(!('shoulders' in saved.equipment));assert.equal(saved.gear.iron_shoulders,1);assert.equal(saved.bank.iron_shoulders,4);assert.equal(saved.bank.helmet_crest_1,1);assert.equal(saved.bag.logs,25);const once=JSON.stringify(saved);normalizeEquipmentSlots(saved);assert.equal(JSON.stringify(saved),once,'migration preserves every copy exactly once');
 s=defaults();s.tutorialReward=true;s.tutorial=tutorialSteps.length;s.xp.Defense=s.xp.Attack=400000;s.gear={iron_body:1,iron_shoulders:1};assert(equipItem('iron_body'));assert.equal(equipItem('iron_shoulders'),false);assert.equal(s.equipment.body,'iron_body');
@@ -17,5 +17,5 @@ for(const sex of ['male','female']){
   for(const clip of ['idle','walk','run','melee'])for(const phase of [0,.35,.7]){const pose=avatarPose(sex,clip,phase,gear,0);assert(Array.from(pose.p).every(Number.isFinite),'fitted armor follows '+sex+' '+clip);}
  }
 }
-console.log('PASS: eight wearable slots; legacy gear preserved; complete chest pieces; chest, hip and belt volume for both body types and five armor shapes through idle, walking, running and attacks.');
+console.log('PASS: nine equipment slots; legacy gear preserved; complete chest pieces; chest, hip and belt volume for both body types and five armor shapes through idle, walking, running and attacks.');
 `,ctx);

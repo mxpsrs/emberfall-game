@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Build an APK using official Android tools, without Gradle or third-party SDKs.
 ANDROID_TOOLS_DIR must contain android.jar (API 35), aapt2, r8.jar and apksig.jar.
-EMBERFALL_SIGNING_DIR must contain emberfall-beta.p12 and password.txt.
+VELDREN_SIGNING_DIR (or legacy EMBERFALL_SIGNING_DIR) must contain emberfall-beta.p12 and password.txt.
 """
 from pathlib import Path
 import os, shutil, struct, subprocess, zipfile, hashlib, json
 root = Path(__file__).resolve().parent
 tools = Path(os.environ['ANDROID_TOOLS_DIR']).resolve()
-keys = Path(os.environ['EMBERFALL_SIGNING_DIR']).resolve()
+signing_dir = os.environ.get('VELDREN_SIGNING_DIR') or os.environ.get('EMBERFALL_SIGNING_DIR')
+if not signing_dir:
+    raise SystemExit('Set VELDREN_SIGNING_DIR to the existing private signing backup directory.')
+keys = Path(signing_dir).resolve()
 out = root / 'build'
 out.mkdir(exist_ok=True)
 for name in ['classes', 'generated', 'dex', 'signclasses']:
@@ -30,7 +33,7 @@ with zipfile.ZipFile(out/'resources.apk') as resources, zipfile.ZipFile(out/'uns
         apk.writestr(info, resources.read(info.filename))
     for p in (out/'dex').glob('*.dex'): apk.write(p, p.name, compress_type=zipfile.ZIP_DEFLATED)
 run('java', 'com.sun.tools.javac.Main', '-cp', tools/'apksig.jar', '-d', out/'signclasses', root/'SignApk.java')
-artifact = root / 'Veldren-Beta-0.1.0.apk'
+artifact = root / 'Veldren-Beta-0.1.1.apk'
 cp = str(tools/'apksig.jar') + os.pathsep + str(out/'signclasses')
 run('java', '-cp', cp, 'SignApk', out/'unsigned.apk', artifact, keys/'emberfall-beta.p12', keys/'password.txt')
 run('java', '-cp', cp, 'SignApk', 'verify', artifact)
@@ -44,6 +47,6 @@ with zipfile.ZipFile(artifact) as z:
                 namesize, extrasize = struct.unpack('<HH', stream.read(4))
             assert (info.header_offset + 30 + namesize + extrasize) % 4 == 0, info.filename
 hashvalue = hashlib.sha256(artifact.read_bytes()).hexdigest()
-(root/'Veldren-Beta-0.1.0.sha256').write_text(hashvalue+'  '+artifact.name+'\n')
+(root/'Veldren-Beta-0.1.1.sha256').write_text(hashvalue+'  '+artifact.name+'\n')
 print('APK alignment, archive integrity and signatures verified.')
 print(artifact)
