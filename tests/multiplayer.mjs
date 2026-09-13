@@ -22,9 +22,10 @@ const appearance=peers.find(p=>p.name==='Player B');assert.equal(appearance.fram
 const persisted=await (await handleSave(req('/api/character','GET',b),env)).json();assert.deepEqual(persisted.state.toolBelt,saved.state.toolBelt);
 const spoof=await handlePlayers(req('/api/players','POST',b,{scene:'overworld',x:14,y:17,equipment:{body:'malicious-model'}}),env);assert.equal(spoof.status,200);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'presence body cannot override saved equipment');
 // Tutorial presence and saves stay separate, including forged attempts to return.
-const apprentice=await guest('Island Apprentice');
+for(const layoutVersion of [1,2]){
+const apprentice=await guest('Apprentice '+layoutVersion);
 let lesson=await (await handleSave(req('/api/character','GET',apprentice),env)).json();
-lesson.state={...lesson.state,sceneId:'tutorial',x:42,y:51,tutorial:4,tutorialVersion:4,tutorialIslandVersion:1};
+lesson.state={...lesson.state,sceneId:'tutorial',x:42,y:51,tutorial:4,tutorialVersion:4,tutorialIslandVersion:layoutVersion};
 let savedLesson=await handleSave(req('/api/character','PUT',apprentice,{state:lesson.state,revision:lesson.revision}),env);assert.equal(savedLesson.status,200);lesson.revision=(await savedLesson.json()).revision;
 let island=await presence(apprentice,'tutorial',42);assert.equal(island.status,200);assert.deepEqual((await island.json()).players,[],'mainland players never appear in the tutorial');
 assert.equal((await presence(apprentice,'overworld',42)).status,403);
@@ -35,6 +36,7 @@ assert.equal((await presence(apprentice,'overworld',42)).status,200);
 assert.equal((await presence(apprentice,'tutorial',42)).status,403,'completed players cannot publish tutorial presence');
 assert.equal((await handleSave(req('/api/character','PUT',apprentice,{state:{...complete,sceneId:'tutorial'},revision:lesson.revision}),env)).status,400);
 assert.equal((await handleSave(req('/api/character','PUT',apprentice,{state:lesson.state,revision:lesson.revision}),env)).status,400,'completion cannot be rolled back to reopen the island');
+}
 db.exec('UPDATE player_presence SET seen_at=0');assert.equal((await (await presence(b)).json()).players.length,0);
 console.log('PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.');
 
