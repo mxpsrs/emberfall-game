@@ -1,7 +1,6 @@
-// Updated by npm run accounts:reset -- --reason "...".
-export const GLOBAL_ACCOUNT_RESET=Object.freeze({
-  "id": "2026-09-13-002255-all-accounts-7ed28a4c",
-  "reason": "Owner requested all accounts start fresh after the Firstlight Isle expansion",
-  "migration": "0008_global_account_reset.sql"
-});
-export const SAVE_RESET_VERSION=GLOBAL_ACCOUNT_RESET.id;
+// Compatibility version until the first direct reset. Later versions live in D1.
+export const SAVE_RESET_VERSION='2026-09-12-character-creator-2';
+export const RESET_VERSION_SQL=`COALESCE((SELECT id FROM global_resets WHERE completed = 1 ORDER BY rowid DESC LIMIT 1),'${SAVE_RESET_VERSION}')`;
+export async function currentResetVersion(env){
+  return (await env.DB.prepare(`SELECT ${RESET_VERSION_SQL} AS version`).bind().first()).version;
+}

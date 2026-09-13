@@ -1,26 +1,39 @@
 # Global account reset protocol
 
-Use this only when the owner explicitly requests a global reset. The standard reset means all character progress, including character appearance, skills, inventory, equipment, bank, currency, quests, tutorial progress and boss progress. Usernames and password hashes remain intact. Active sessions and multiplayer presence are cleared, so everyone signs in again and creates a new character on Firstlight Isle.
+A global reset directly deletes every row from `character_saves`, `game_sessions` and `player_presence`. It preserves usernames, password hashes and login rate limits. Players reload, sign in with their existing credentials, and create a new character at the beginning of Firstlight Isle.
 
-## Prepare one reset
+## Run an authorized reset
+
+Use only for an explicitly requested global reset. Run from the Emberfall checkout:
 
 ```sh
 npm run accounts:reset -- --reason "Owner requested a fresh tutorial playthrough"
-npm run accounts:reset:check
 ```
 
-The first command generates a new custom Drizzle migration, its snapshot and journal entry, and the matching server reset version. It records the reason in source. It does not contact production. The check exercises the latest reset against real SQLite and account/save handlers, including replay, stale tabs and a fresh character save.
+This command calls the live administrator endpoint immediately. It does not edit source, generate a migration, build the game or publish a version. Ordinary builds and publications never run it.
 
-Run the command once per requested reset. It refuses to stack a second reset on uncommitted migrations. Never add it to the normal build or startup scripts. Do not run it again merely because publication is still pending or needs a retry.
+The operator key is loaded from the ignored `.env.reset.local` file or `EMBERFALL_RESET_TOKEN` in the operator environment. It must match the `ACCOUNT_RESET_TOKEN` secret in Sites. The local file is restricted to its owner and must never be committed or shared. `.env.reset.example` contains configuration names only. `EMBERFALL_SITE_URL` selects the HTTPS game origin.
 
-## Publish and verify
+## Interrupted or uncertain response
 
-1. Review the new migration and `worker/reset-policy.js`. Leave all previously applied migrations unchanged.
-2. Use the existing Sites build helper, then run `node tests/built-assets.mjs`.
-3. Commit and push this exact source, package the build, save a version and publish it to the existing Emberfall Site. Preserve its audience. Follow the Sites publishing workflow; do not run arbitrary production SQL or add a public reset endpoint.
-4. Wait for the deployment's terminal status. Inspect the live `game_resets` table for this exact reset ID, its affected save count and timestamp. Verify character saves contain the reset marker, sessions and presence were cleared, and login accounts remain. Players may already have signed in and created new saves by the time verification runs; compare their update times with the reset timestamp.
-5. Tell players to reload and sign in with their existing credentials. They will return to character creation and the beginning of the tutorial.
+```sh
+npm run accounts:reset -- --retry
+```
 
-The migration ledger applies each reset once. Every reset statement also checks its audit ID, so replaying the same batch leaves subsequent progress and new sessions intact. Save revisions increase and the server reset version changes, preventing old tabs from restoring wiped characters even after another tab signs back in. The client always loads the server save; device backups are never restored over it.
+The command stores its request ID before sending anything. A retry reuses that ID; the server returns the original receipt without deleting subsequent characters or sessions. A pending request blocks creation of another reset request until it is resolved. Do not discard a pending receipt to retry with a new ID.
 
-If publication fails, first inspect deployment status and the reset audit. Database migrations can finish before the new Worker publishes. Continue the same saved version after resolving a transient failure; do not create another reset batch. If the state is uncertain, inspect it before changing anything. A character reset is not reversed by republishing an old application version.
+Each completed receipt in `global_resets` records the reason, completion time, deleted character count, revoked session count and cleared presence count. The receipt and all deletions commit in one [D1 batch transaction](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch). If any statement fails, none of them commit. A retry of an older completed request cannot change the current reset version.
+
+## Verification
+
+The command reports the server's completed receipt. Use the Sites database reader to verify the exact request ID in `global_resets`, the emptied save/session/presence tables and preserved login accounts. If a player has already rejoined, compare their new save's timestamp against the reset time instead of expecting the tables to remain empty. Tell players to reload and sign in again.
+
+A small server reset version changes with each completed receipt. Both save validation and the final database write check it, so a request already in flight cannot recreate a deleted save. An old tab also cannot overwrite a new character merely because its revision number matches. The client always loads the server save; device backups cannot replace it.
+
+## Maintenance
+
+`npm run accounts:reset:check` exercises authorization, physical deletion, transaction rollback, fresh character creation, command replay and saves racing a reset against real SQLite. The protocol's schema is installed once. Future resets need only the command above.
+
+If the operator key is lost or compromised, generate a new random key, replace the Sites secret, update the local operator environment and apply that environment change through the normal Sites deployment workflow. This is credential maintenance, not part of a routine reset. The endpoint rejects requests when no valid key is configured.
+
+Resetting character progress is not undone by republishing an older application version. Keep past, applied migrations immutable. Historical reset migrations remain for the database's existing history; new resets use this direct protocol.

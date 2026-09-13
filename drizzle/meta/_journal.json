@@ -61,8 +61,8 @@
     {
       "idx": 8,
       "version": "6",
-      "when": 1789258975052,
-      "tag": "0008_global_account_reset",
+      "when": 1789259782590,
+      "tag": "0008_global_reset_protocol",
       "breakpoints": true
     }
   ]

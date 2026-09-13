@@ -5,3 +5,5 @@ dist/.openai/
 .asset-cache/
 
 __pycache__/
+.env.reset.local
+.reset-requests/
