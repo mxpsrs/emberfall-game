@@ -74,11 +74,19 @@ void main(){
   skinNormal=skinPoint(aJoints.x,vec4(aNormal,0.0))*aWeights.x+skinPoint(aJoints.y,vec4(aNormal,0.0))*aWeights.y+skinPoint(aJoints.z,vec4(aNormal,0.0))*aWeights.z+skinPoint(aJoints.w,vec4(aNormal,0.0))*aWeights.w;
  }
 `).replace('uModel*vec4(aPosition,1.0)','uModel*vec4(skinPosition,1.0)').replace('uNormal*aNormal','uNormal*normalize(skinNormal)');
+// Three affine rows keep static instancing within WebGL 1's eight-attribute
+// minimum. This is a separate shader, independent of Android bone palettes.
+const realmInstancedVertexShader=realmVertexShader
+ .replace('void main(){','attribute vec4 aInstance0;attribute vec4 aInstance1;attribute vec4 aInstance2;\nvoid main(){')
+ .replace('(uModel*vec4(aPosition,1.0)).xyz','vec3(dot(aInstance0,vec4(aPosition,1.0)),dot(aInstance1,vec4(aPosition,1.0)),dot(aInstance2,vec4(aPosition,1.0)))')
+ .replace('vNormal=uNormal*aNormal;',`vec3 ca=vec3(aInstance0.x,aInstance1.x,aInstance2.x),cb=vec3(aInstance0.y,aInstance1.y,aInstance2.y),cc=vec3(aInstance0.z,aInstance1.z,aInstance2.z);float determinant=dot(ca,cross(cb,cc));vNormal=(cross(cb,cc)*aNormal.x+cross(cc,ca)*aNormal.y+cross(ca,cb)*aNormal.z)/determinant;`);
 let realmGPU=null,realmGPUUnavailable=false;
 const realmResolution={scale:1,samples:0,total:0};
 function observeRenderTime(milliseconds){
- if(milliseconds<1||milliseconds>120)return;
- realmResolution.total+=milliseconds;if(++realmResolution.samples<60)return;
+ if(!Number.isFinite(milliseconds)||milliseconds<1||milliseconds>1000||document.hidden)return;
+ // Sustained severe stalls must lower the render load too. Previously every
+ // frame below 8 FPS was discarded, so the slowest devices could never adapt.
+ realmResolution.total+=Math.min(milliseconds,120);if(++realmResolution.samples<30)return;
  const average=realmResolution.total/realmResolution.samples;
  if(average>27)realmResolution.scale=Math.max(.65,realmResolution.scale*.85);else if(average<18)realmResolution.scale=Math.min(1,realmResolution.scale+.05);
  realmResolution.samples=0;realmResolution.total=0;
@@ -86,28 +94,58 @@ function observeRenderTime(milliseconds){
 function realmPixelScale(){return Math.min(window.devicePixelRatio||1,1.5,Math.sqrt(2073600/Math.max(1,screen.w*screen.h)))*realmResolution.scale;}
 const realmIdentityNormal=new Float32Array([1,0,0,0,1,0,0,0,1]);
 function realmNormalMatrix(m){return m?new Float32Array([...briarNormal([1,0,0],0,m),...briarNormal([0,1,0],0,m),...briarNormal([0,0,1],0,m)]):realmIdentityNormal;}
+const realmTopologies=new WeakMap();
+function realmMeshTopology(mesh){
+ let variants=realmTopologies.get(mesh.i);if(!variants){variants=new Map();realmTopologies.set(mesh.i,variants);}
+ const key=mesh.t||(mesh.uv?'atlas':'plain');if(variants.has(key))return variants.get(key);
+ const refs=[],mapped=new Map(),indices=new Uint16Array(mesh.i.length);
+ // A vertex only needs a second copy where a triangle crosses atlas slots.
+ // Keep that triangle's fallback colour and material exactly as before.
+ for(let j=0;j<mesh.i.length;j+=3){const a=mesh.i[j],b=mesh.i[j+1],c=mesh.i[j+2],fallback=mesh.uv?20:12,ta=mesh.t?.[a]||fallback,tb=mesh.t?.[b]||fallback,tc=mesh.t?.[c]||fallback,mixed=ta!==tb||tb!==tc;
+  for(let k=0;k<3;k++){const ref=mesh.i[j+k]*2+Number(mixed);let v=mapped.get(ref);if(v===undefined){v=refs.length;if(v>=65536){variants.set(key,null);return null;}mapped.set(ref,v);refs.push(ref);}indices[j+k]=v;}
+ }
+ const topology={refs:new Uint32Array(refs),indices};variants.set(key,topology);return topology;
+}
+function realmVertexData(mesh,topology,skinned=false){
+ const stride=skinned?20:12,data=new Float32Array(topology.refs.length*stride);
+ for(let v=0;v<topology.refs.length;v++){const ref=topology.refs[v],id=ref>>>1,p=id*3,j=id*4,o=v*stride,mixed=ref&1,colors=mixed&&mesh.f?mesh.f:mesh.c;
+  for(let k=0;k<3;k++){data[o+k]=mesh.p[p+k];data[o+3+k]=mesh.n[p+k];data[o+6+k]=colors[p+k];}
+  data[o+9]=mixed?20:mesh.t?.[id]||(mesh.uv?20:12);data[o+10]=mesh.uv?.[id*2]||0;data[o+11]=mesh.uv?.[id*2+1]||0;
+  if(skinned)for(let k=0;k<4;k++){data[o+12+k]=mesh.j[j+k];data[o+16+k]=mesh.w[j+k];}
+ }
+ return data;
+}
+function realmUploadIndexed(gpu,mesh,skinned=false){
+ const topology=realmMeshTopology(mesh);if(!topology)return null;
+ gpu.indexMeshes??=new WeakMap();let index=gpu.indexMeshes.get(topology);
+ if(!index){const buffer=gpu.gl.createBuffer();gpu.gl.bindBuffer(gpu.gl.ELEMENT_ARRAY_BUFFER,buffer);gpu.gl.bufferData(gpu.gl.ELEMENT_ARRAY_BUFFER,topology.indices,gpu.gl.STATIC_DRAW);index={buffer,refs:0,bytes:topology.indices.byteLength,topology};gpu.indexMeshes.set(topology,index);gpu.meshBytes=(gpu.meshBytes||0)+index.bytes;}
+ index.refs++;const data=realmVertexData(mesh,topology,skinned);
+ return {...gpu.upload(data),count:topology.indices.length,stride:skinned?80:48,bytes:data.byteLength,index,uniqueVertices:topology.refs.length};
+}
 // Mesh vertices remain on the GPU; moving actors change their model matrix.
 // A byte budget bounds animated pose storage without evicting anything used this frame.
 function realmMeshEntry(gpu,mesh){
  let entry=gpu.sharedMeshes.get(mesh);gpu.meshUse??=new Map();
- if(!entry){let data=mesh.packed;if(!data){data=[];if(typeof packingLocalMesh!=='undefined')packingLocalMesh=true;
+ if(!entry){entry=!mesh.packed&&realmUploadIndexed(gpu,mesh);if(!entry){let data=mesh.packed;if(!data){data=[];if(typeof packingLocalMesh!=='undefined')packingLocalMesh=true;
   try{realmIndexedData(data,mesh,[1,0,0,0,0,1,0,0,0,0,1,0]);}finally{if(typeof packingLocalMesh!=='undefined')packingLocalMesh=false;}data=new Float32Array(data);}
-  entry=gpu.upload(data);entry.bytes=data.byteLength;gpu.meshBytes=(gpu.meshBytes||0)+entry.bytes;gpu.sharedMeshes.set(mesh,entry);
+  entry=gpu.upload(data);entry.bytes=data.byteLength;}gpu.meshBytes=(gpu.meshBytes||0)+entry.bytes;gpu.sharedMeshes.set(mesh,entry);
  }
  gpu.meshUse.delete(mesh);gpu.meshUse.set(mesh,entry);entry.used=gpu.frameId||0;return entry;
 }
 const realmShapeCache=new Map();
 function cachedRealmShape(r,key,matrix,build){
  let mesh=realmShapeCache.get(key);
- if(!mesh){const data=[],height=build({face:(p,c,n,mat,colors,uvs)=>(typeof flatFaceData==='function'?flatFaceData:realmFaceData)(data,p,c,n,mat,colors,uvs)});mesh={packed:new Float32Array(data),height};realmShapeCache.set(key,mesh);if(realmShapeCache.size>128)realmShapeCache.delete(realmShapeCache.keys().next().value);}
+ if(!mesh){const data=[],height=build({face:(p,c,n,mat,colors,uvs)=>(typeof flatFaceData==='function'?flatFaceData:realmFaceData)(data,p,c,n,mat,colors,uvs)});mesh={packed:new Float32Array(data),height};}
+ realmShapeCache.delete(key);realmShapeCache.set(key,mesh);if(realmShapeCache.size>256)realmShapeCache.delete(realmShapeCache.keys().next().value);
  r.indexed(mesh,matrix);return mesh.height;
 }
 function trimRealmMeshes(gpu){
  if(!gpu.meshUse)return;
- for(const [mesh,entry]of gpu.meshUse){if(gpu.meshBytes<=48*1024*1024)break;if(entry.used===gpu.frameId)continue;gpu.gl.deleteBuffer(entry.buffer);gpu.meshUse.delete(mesh);gpu.sharedMeshes.delete(mesh);gpu.meshBytes-=entry.bytes;}
+ for(const [mesh,entry]of gpu.meshUse){if(gpu.meshBytes<=48*1024*1024)break;if(entry.used===gpu.frameId)continue;gpu.gl.deleteBuffer(entry.buffer);gpu.meshUse.delete(mesh);gpu.sharedMeshes.delete(mesh);gpu.meshBytes-=entry.bytes;if(entry.index&&--entry.index.refs===0){gpu.gl.deleteBuffer(entry.index.buffer);gpu.indexMeshes.delete(entry.index.topology);gpu.meshBytes-=entry.index.bytes;}}
 }
 function realmSkinnedEntry(gpu,mesh){
  let entry=gpu.skinnedMeshes.get(mesh);if(entry)return entry;
+ entry=realmUploadIndexed(gpu,mesh,true);if(entry){gpu.skinnedMeshes.set(mesh,entry);return entry;}
  const data=new Float32Array(mesh.i.length*20);let offset=0;
  for(let triangle=0;triangle<mesh.i.length;triangle+=3){
   const ids=[mesh.i[triangle],mesh.i[triangle+1],mesh.i[triangle+2]],materials=ids.map(v=>mesh.t?.[v]||20),mixed=materials.some(m=>m!==materials[0]),colors=mixed&&mesh.f?mesh.f:mesh.c;
@@ -122,6 +160,18 @@ function realmAllowsGpuSkinning(uniformVectors,userAgent=typeof navigator==='und
  // This compatibility path avoids relying on the large, dynamically indexed bone palette.
  return !/Android/i.test(userAgent)&&Number(uniformVectors)>=256;
 }
+const realmIdentityModel=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
+function realmGroundedMatrix(model){const m=Array.from(model);if(typeof landHeight==='function')m[7]+=landHeight(m[3],m[11]);return m;}
+function realmPrepareDraws(entries,instancing){
+ const singles=[],groups=new Map(),batches=[];
+ for(const entry of entries){if(!instancing||!entry.model||entry.palette||entry.bossColor||entry.dissolve||entry.terrain){singles.push(entry);continue;}let group=groups.get(entry.buffer);if(!group){group=[];groups.set(entry.buffer,group);}group.push(entry);}
+ let count=0;
+ for(const group of groups.values()){if(group.length<3){singles.push(...group);continue;}batches.push({...group[0],instances:group.length,instanceOffset:count*48,group});count+=group.length;}
+ const transforms=new Float32Array(count*12);let offset=0;
+ for(const batch of batches){for(const entry of batch.group){transforms.set(realmGroundedMatrix(entry.model),offset);offset+=12;}delete batch.group;}
+ for(const entry of singles){entry.normal=realmNormalMatrix(entry.model);const m=entry.model&&realmGroundedMatrix(entry.model);entry.matrix=m?new Float32Array([m[0],m[4],m[8],0,m[1],m[5],m[9],0,m[2],m[6],m[10],0,m[3],m[7],m[11],1]):realmIdentityModel;}
+ return {singles,batches,transforms};
+}
 function createRealmGPU(){
  const surface=document.createElement('canvas');const gl=surface.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'high-performance'});
  if(!gl||typeof gl.getParameter(gl.VERSION)!=='string')return null;
@@ -130,29 +180,47 @@ function createRealmGPU(){
  let skinning=realmAllowsGpuSkinning(gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS)),program;
  try{program=link(skinning?realmSkinnedVertexShader:realmVertexShader);}catch(error){if(!skinning)throw error;skinning=false;program=link(realmVertexShader);}
  gl.useProgram(program);
- const attrs=['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights'].map(n=>gl.getAttribLocation(program,n));const uniforms=Object.fromEntries(['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera','uSkinning','uBones[0]','uMood','uFogColor','uGlowColor','uBossColor','uDissolve'].map(n=>[n,gl.getUniformLocation(program,n)]));
+ const uniformNames=['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera','uSkinning','uBones[0]','uMood','uFogColor','uGlowColor','uBossColor','uDissolve'];
+ const shaderState=(program,skinning,instanced=false)=>({program,skinning,instanced,attrs:['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights'].map(n=>gl.getAttribLocation(program,n)),instanceAttrs:instanced?['aInstance0','aInstance1','aInstance2'].map(n=>gl.getAttribLocation(program,n)):[],uniforms:Object.fromEntries(uniformNames.map(n=>[n,gl.getUniformLocation(program,n)]))});
+ const mainState=shaderState(program,skinning),instancing=gl.getExtension('ANGLE_instanced_arrays');let instanceState=null;
+ if(instancing&&typeof instancing.drawElementsInstancedANGLE==='function'){try{instanceState=shaderState(link(realmInstancedVertexShader),false,true);}catch(error){console.warn('Using individual scenery draws:',error.message);}}
+
  const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1024,1024,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
  const framebuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);const depth=gl.createRenderbuffer();gl.bindRenderbuffer(gl.RENDERBUFFER,depth);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,1024,1024);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,depth);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Shadow target unavailable');gl.bindFramebuffer(gl.FRAMEBUFFER,null);
  const atlas=gl.createTexture();gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,atlas);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([255,255,255,255]));if(typeof REALM_ATLAS_IMAGE!=='undefined'&&REALM_ATLAS_IMAGE?.width>0&&REALM_ATLAS_IMAGE.complete!==false){gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,REALM_ATLAS_IMAGE);}gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.activeTexture(gl.TEXTURE0);
- const sharedMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map(),dynamicBuffer=gl.createBuffer();
+ const sharedMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map(),dynamicBuffer=gl.createBuffer(),instanceBuffer=gl.createBuffer();
  const upload=data=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);return {buffer,count:data.length/12};};
- const bind=entry=>{gl.uniform1f(uniforms.uBossColor,entry.bossColor||0);gl.uniform1f(uniforms.uDissolve,entry.dissolve||0);gl.uniformMatrix3fv(uniforms.uNormal,false,realmNormalMatrix(entry.model));const a=entry.model?Array.from(entry.model):null;if(a&&typeof landHeight==='function')a[7]+=landHeight(a[3],a[11]);gl.uniformMatrix4fv(uniforms.uModel,false,a?new Float32Array([a[0],a[4],a[8],0,a[1],a[5],a[9],0,a[2],a[6],a[10],0,a[3],a[7],a[11],1]):new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]));gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);for(let i=0;i<5;i++){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],i===4?2:i===3?1:3,gl.FLOAT,false,entry.stride||48,i===4?40:i*12);}
+ const bind=(entry,state)=>{
+  const {attrs,uniforms,skinning,instanced}=state;
+  gl.uniform1f(uniforms.uBossColor,entry.bossColor||0);gl.uniform1f(uniforms.uDissolve,entry.dissolve||0);
+  if(!instanced){gl.uniformMatrix3fv(uniforms.uNormal,false,entry.normal);gl.uniformMatrix4fv(uniforms.uModel,false,entry.matrix);}
+  gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);
+  for(let i=0;i<5;i++){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],i===4?2:i===3?1:3,gl.FLOAT,false,entry.stride||48,i===4?40:i*12);}
   if(skinning){gl.uniform1f(uniforms.uSkinning,entry.palette?1:0);if(entry.palette)gl.uniform4fv(uniforms['uBones[0]'],entry.palette);for(let i=5;i<7;i++){if(entry.palette){gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],4,gl.FLOAT,false,80,i===5?48:64);}else{gl.disableVertexAttribArray(attrs[i]);gl.vertexAttrib4f(attrs[i],0,0,0,0);}}}
-  gl.drawArrays(gl.TRIANGLES,0,entry.count);
+  if(instanced){gl.bindBuffer(gl.ARRAY_BUFFER,instanceBuffer);for(let i=0;i<3;i++){const attr=state.instanceAttrs[i];gl.enableVertexAttribArray(attr);gl.vertexAttribPointer(attr,4,gl.FLOAT,false,48,entry.instanceOffset+i*16);instancing.vertexAttribDivisorANGLE(attr,1);}}
+  if(entry.index){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,entry.index.buffer);if(instanced)instancing.drawElementsInstancedANGLE(gl.TRIANGLES,entry.count,gl.UNSIGNED_SHORT,0,entry.instances);else gl.drawElements(gl.TRIANGLES,entry.count,gl.UNSIGNED_SHORT,0);}
+  else if(instanced)instancing.drawArraysInstancedANGLE(gl.TRIANGLES,0,entry.count,entry.instances);else gl.drawArrays(gl.TRIANGLES,0,entry.count);
+  if(instanced)for(const attr of state.instanceAttrs){instancing.vertexAttribDivisorANGLE(attr,0);gl.disableVertexAttribArray(attr);}
  };
  const presented=!!canvas.parentElement?.insertBefore;if(presented){surface.className='realm-surface';surface.setAttribute('aria-hidden','true');canvas.parentElement.insertBefore(surface,canvas);}
  surface.addEventListener('webglcontextlost',e=>{e.preventDefault();surface.hidden=true;realmGPU=null;realmGPUUnavailable=true;});surface.addEventListener('webglcontextrestored',()=>{surface.remove?.();realmGPUUnavailable=false;});
- return {surface,presented,gl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),skinning,terrain,upload,frameId:0,render(entries,dynamic,g){
+ return {surface,presented,gl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),skinning,instancing:!!instanceState,terrain,upload,frameId:0,render(entries,dynamic,g){
   if(gl.isContextLost())return;
   const dpr=realmPixelScale(),width=Math.round(screen.w*dpr),height=Math.round(screen.h*dpr);if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;}
-  gl.useProgram(program);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
-  const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null;
-  gl.uniform3f(uniforms.uMood,...(lair?.ambient||[1,1,1]));gl.uniform3f(uniforms.uFogColor,...(lair?.fog||[.28,.39,.40]));gl.uniform3f(uniforms.uGlowColor,...(lair?.light||[.20,.10,.025]));
-  gl.uniform4f(uniforms.uCamera,px+.5,py+.5,view3d.yaw,view3d.tilt);gl.uniform4f(uniforms.uView,screen.w,screen.h,cameraZoom3(),0);gl.uniform3f(uniforms.uOrigin,px+.5,0,py+.5);gl.uniform1f(uniforms.uLightRange,Math.max(20,Math.min(85,Math.hypot(screen.w,screen.h)/cameraZoom3()*.65)));gl.uniform1f(uniforms.uTime,time);gl.uniform1f(uniforms.uInterior,inWorld()||lair?.openAir?0:1);
-  gl.uniform1f(uniforms.uLandCamera,typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0);const hours=(s.worldClock/480*24+4)%24;gl.uniform1f(uniforms.uNight,inWorld()?(hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0):.25);gl.uniform3f(uniforms.uEye,Math.sin(view3d.yaw)*Math.cos(view3d.tilt),Math.sin(view3d.tilt),Math.cos(view3d.yaw)*Math.cos(view3d.tilt));
+  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
+  const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,hours=(s.worldClock/480*24+4)%24;
+  const configure=(state,shadowPass)=>{
+   const {uniforms}=state;gl.useProgram(state.program);
+   gl.uniform1f(uniforms.uShadowPass,shadowPass);gl.uniform3f(uniforms.uMood,...(lair?.ambient||[1,1,1]));gl.uniform3f(uniforms.uFogColor,...(lair?.fog||[.28,.39,.40]));gl.uniform3f(uniforms.uGlowColor,...(lair?.light||[.20,.10,.025]));
+   gl.uniform4f(uniforms.uCamera,px+.5,py+.5,view3d.yaw,view3d.tilt);gl.uniform4f(uniforms.uView,screen.w,screen.h,cameraZoom3(),0);gl.uniform3f(uniforms.uOrigin,px+.5,0,py+.5);gl.uniform1f(uniforms.uLightRange,Math.max(20,Math.min(85,Math.hypot(screen.w,screen.h)/cameraZoom3()*.65)));gl.uniform1f(uniforms.uTime,time);gl.uniform1f(uniforms.uInterior,inWorld()||lair?.openAir?0:1);
+   gl.uniform1f(uniforms.uLandCamera,typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0);gl.uniform1f(uniforms.uNight,inWorld()?(hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0):.25);gl.uniform3f(uniforms.uEye,Math.sin(view3d.yaw)*Math.cos(view3d.tilt),Math.sin(view3d.tilt),Math.cos(view3d.yaw)*Math.cos(view3d.tilt));gl.uniform1i(uniforms.uShadow,0);gl.uniform1i(uniforms.uAtlas,1);
+  };
   const drawEntries=[...entries];if(dynamic.length){const data=new Float32Array(dynamic);gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);drawEntries.push({buffer:dynamicBuffer,count:data.length/12});}
-  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,1024,1024);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.uniform1f(uniforms.uShadowPass,1);for(const entry of drawEntries)if(!entry.terrain)bind(entry);
-  gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);gl.clearColor(...(lair?.fog||[.14,.23,.25]),1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.uniform1f(uniforms.uShadowPass,0);gl.bindTexture(gl.TEXTURE_2D,texture);gl.uniform1i(uniforms.uShadow,0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,atlas);gl.uniform1i(uniforms.uAtlas,1);gl.activeTexture(gl.TEXTURE0);for(const entry of drawEntries)bind(entry);if(!presented)g.drawImage(surface,0,0,screen.w,screen.h);
+  const {singles,batches,transforms}=realmPrepareDraws(drawEntries,!!instanceState);
+  if(transforms.length){gl.bindBuffer(gl.ARRAY_BUFFER,instanceBuffer);gl.bufferData(gl.ARRAY_BUFFER,transforms,gl.DYNAMIC_DRAW);}
+  const drawPass=shadow=>{configure(mainState,shadow);for(const entry of singles)if(!shadow||!entry.terrain)bind(entry,mainState);if(batches.length){configure(instanceState,shadow);for(const entry of batches)bind(entry,instanceState);}};
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,null);gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,1024,1024);gl.clearColor(1,1,1,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);drawPass(1);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);gl.clearColor(...(lair?.fog||[.14,.23,.25]),1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.bindTexture(gl.TEXTURE_2D,texture);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,atlas);gl.activeTexture(gl.TEXTURE0);drawPass(0);if(!presented)g.drawImage(surface,0,0,screen.w,screen.h);
  }};
 }
 function realmFaceData(data,points,color,normals,material=0,colors,uvs){
@@ -170,15 +238,16 @@ function realmGroundCover(data,x,z){
 }
 function realmTerrainEntries(gpu){
  let chunks=gpu.terrain.get(currentScene);const [mw,mh]=sceneSize();if(!chunks){chunks=new Map();gpu.terrain.set(currentScene,chunks);}
+ const wide=inWorld()&&view3d.zoom<24,cell=wide?16:8,detail=inWorld()&&!wide?2:1;
  const corners=realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>unproject3(...p)),edge=inWorld()?128:0;
- const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/8)*8),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/8)*8),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/8)*8),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/8)*8),visible=[],margin=cameraZoom3()*7;
- for(let z=minZ;z<maxZ;z+=8)for(let x=minX;x<maxX;x+=8){const p=project3(x+4,0,z+4);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=x+':'+z;let c=chunks.get(key);if(!c){c={x:x+4,z:z+4,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
+ const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/cell)*cell),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/cell)*cell),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/cell)*cell),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/cell)*cell),visible=[],margin=cameraZoom3()*cell*.9;
+ for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=project3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+detail+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
  gpu.terrainTick=(gpu.terrainTick||0)+1;
- for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-4,z=c.z-4,samples=new Map(),sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),road:roadInfluence(a,b),shore:[shoreDistance(a,b),1]};samples.set(key,v);}return v;};
-  for(let zz=z;zz<Math.min(z+8,inWorld()?mh+128:mh);zz++)for(let xx=x;xx<Math.min(x+8,inWorld()?mw+128:mw);xx++){
+ for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-cell/2,z=c.z-cell/2,samples=new Map(),sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),road:roadInfluence(a,b),shore:[shoreDistance(a,b),1]};samples.set(key,v);}return v;};
+  for(let zz=z;zz<Math.min(z+cell,inWorld()?mh+128:mh);zz++)for(let xx=x;xx<Math.min(x+cell,inWorld()?mw+128:mw);xx++){
    if(typeof CREATURE_LAIRS!=='undefined'&&CREATURE_LAIRS[currentScene]&&worldWall(xx,zz))continue;
    const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=inWorld()&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
-   if(type!==3||shore){const detail=inWorld()?2:1;for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2]));flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),1,vertices.map(v=>v.road),vertices.map(v=>v.shore));}else realmFaceData(data,points,'#808080',null,type+1);}}
+   if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2]));flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),1,vertices.map(v=>v.road),vertices.map(v=>v.shore));}else realmFaceData(data,points,'#808080',null,type+1);}}
    if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,inWorld()?corners.map(([a,b])=>[worldWaterDistance(a,b),0]):null);}
   }
   Object.assign(c,gpu.upload(new Float32Array(data)));

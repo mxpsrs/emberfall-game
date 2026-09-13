@@ -26,7 +26,7 @@ for(const [w,h]of [[1920,1080],[3840,2160]]){
 }
 screen={w:1920,h:1080};
 const inn=buildings.find(b=>b.service?.destination==='willowInn');
-activateScene('overworld',inn.service.x,inn.service.y+3);draw3d();
+activateScene('overworld',inn.service.x,inn.service.y+7);draw3d();
 assert(!hitboxes.some(h=>h.o.interiorBuilding==='willowInn'),'hidden occupants cannot be selected through the building');
 activateScene('overworld',inn.service.x,inn.service.y-2);setWalkInDoor(inn.service,true,true);draw3d();
 assert(hitboxes.some(h=>h.o.interiorBuilding==='willowInn'),'occupants appear and are selectable when inside');
@@ -35,7 +35,8 @@ walkTo(inn.service.x,inn.service.y+2);assert(path.length>0);
 for(let i=0;i<120&&path.length;i++)advanceMovement(.05);
 assert.equal(path.length,0,'movement can leave the building');updateDoorThreshold();
 assert(inn.service.openedAt!==undefined,'the door remains open after leaving');
-draw3d();assert(!inn._cutaway,'roof is restored after leaving');
+draw3d();assert(inn._cutaway,'the roof stays hidden while within five tiles');
+activateScene('overworld',inn.service.x,inn.service.y+7);draw3d();assert(!inn._cutaway,'roof is restored beyond five tiles');
 // A nonuniformly scaled model must keep its normal perpendicular to its surface.
 const m=briarTransform(0,0,0,2,.7,.5),n=realmNormalMatrix(m),edge=[m[0]-m[1],m[4]-m[5],m[8]-m[9]],normal=[n[0]+n[3],n[1]+n[4],n[2]+n[5]];
 assert(Math.abs(edge.reduce((sum,x,i)=>sum+x*normal[i],0))<1e-6,'cached models retain correct surface lighting');

@@ -18,9 +18,14 @@ context=create(display,config,None,(I*3)(0x3098,2,0x3038));assert context
 surf=surface(display,config,(I*5)(0x3057,width,0x3056,height,0x3038));assert make(display,surf,surf,context)
 def gl(name,ret,args):return C.CFUNCTYPE(ret,*args)(proc(name.encode()))
 shader=gl('glCreateShader',U,[U]);source=gl('glShaderSource',None,[U,I,P,P]);compile=gl('glCompileShader',None,[U]);getshader=gl('glGetShaderiv',None,[U,U,P]);shaderlog=gl('glGetShaderInfoLog',None,[U,I,P,P]);program=gl('glCreateProgram',U,[])();attach=gl('glAttachShader',None,[U,U]);link=gl('glLinkProgram',None,[U]);getprogram=gl('glGetProgramiv',None,[U,U,P])
-for key,kind in [('vertex',0x8B31),('fragment',0x8B30)]:
- sh=shader(kind);code=C.c_char_p(scene[key].encode());source(sh,1,C.byref(code),None);compile(sh);ok=I();getshader(sh,0x8B81,C.byref(ok));buf=C.create_string_buffer(8192);shaderlog(sh,8192,None,buf);assert ok.value,buf.value;attach(program,sh)
-link(program);ok=I();getprogram(program,0x8B82,C.byref(ok));assert ok.value
+def make_program(vertex):
+ program=gl('glCreateProgram',U,[])()
+ for code,kind in [(vertex,0x8B31),(scene['fragment'],0x8B30)]:
+  sh=shader(kind);code=C.c_char_p(code.encode());source(sh,1,C.byref(code),None);compile(sh);ok=I();getshader(sh,0x8B81,C.byref(ok));buf=C.create_string_buffer(8192);shaderlog(sh,8192,None,buf);assert ok.value,buf.value;attach(program,sh)
+ link(program);ok=I();getprogram(program,0x8B82,C.byref(ok));assert ok.value
+ return program
+program=make_program(scene['vertex'])
+instance_program=make_program(scene['instancedVertex']) if any(d.get('instances') for d in scene['draws']) and os.environ.get('EMBERFALL_REVIEW_INSTANCING')!='0' else None
 gl('glUseProgram',None,[U])(program)
 location=gl('glGetUniformLocation',I,[U,C.c_char_p]);uniforms={}
 def uniform(key,value):
@@ -39,27 +44,63 @@ active(0x84C0);shadow=texture(1024,1024);fbo=U();gl('glGenFramebuffers',None,[I,
 depth=U();gl('glGenRenderbuffers',None,[I,P])(1,C.byref(depth));gl('glBindRenderbuffer',None,[U,U])(0x8D41,depth);gl('glRenderbufferStorage',None,[U,U,I,I])(0x8D41,0x81A5,1024,1024);gl('glFramebufferRenderbuffer',None,[U,U,U,U])(0x8D40,0x8D00,0x8D41,depth);assert gl('glCheckFramebufferStatus',U,[U])(0x8D40)==0x8CD5
 bindbuffer=gl('glBindBuffer',None,[U,U]);buffers={}
 for draw in scene['draws']:
- if draw['file'] in buffers:continue
- data=(root/draw['file']).read_bytes();b=U();gl('glGenBuffers',None,[I,P])(1,C.byref(b));bindbuffer(0x8892,b);gl('glBufferData',None,[U,C.c_ssize_t,P,U])(0x8892,len(data),C.c_char_p(data),0x88E4);buffers[draw['file']]=b.value
+ for key in ['file','indexFile','instanceFile']:
+  name=draw.get(key)
+  if not name or name in buffers:continue
+  data=(root/name).read_bytes();b=U();gl('glGenBuffers',None,[I,P])(1,C.byref(b));bindbuffer(0x8892,b);gl('glBufferData',None,[U,C.c_ssize_t,P,U])(0x8892,len(data),C.c_char_p(data),0x88E4);buffers[name]=b.value
 attribute=gl('glGetAttribLocation',I,[U,C.c_char_p]);attributes=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights']];enableattr=gl('glEnableVertexAttribArray',None,[U]);attrpointer=gl('glVertexAttribPointer',None,[U,I,U,U,I,P]);matrix=gl('glUniformMatrix4fv',None,[I,I,U,P]);model=location(program,b'uModel');drawarrays=gl('glDrawArrays',None,[U,I,I])
 normalmatrix=gl('glUniformMatrix3fv',None,[I,I,U,P]);normal=location(program,b'uNormal')
 def drawentry(draw):
+ global program,uniforms
+ previous=program;instanced=bool(draw.get('instances') and instance_program)
+ if instanced:
+  program=instance_program;uniforms={};gl('glUseProgram',None,[U])(program)
+  for key,value in scene['uniforms'].items():uniform(key,value)
+  uniform('uShadowPass',shadow_pass)
+  for key,unit in [('uShadow',0),('uAtlas',1)]:gl('glUniform1i',None,[I,I])(location(program,key.encode()),unit)
+ attrs=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights']]
  uniform('uBossColor',draw.get('bossColor',0));uniform('uDissolve',draw.get('dissolve',0))
  palette=draw.get('palette');uniform('uSkinning',1 if palette else 0)
  if palette:gl('glUniform4fv',None,[I,I,P])(location(program,b'uBones[0]'),len(palette)//4,(F*len(palette))(*palette))
- normalmatrix(normal,1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
- matrix(model,1,0,(F*16)(*draw['model']));bindbuffer(0x8892,buffers[draw['file']])
- for i,a in enumerate(attributes):
+ normalmatrix(location(program,b'uNormal'),1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
+ matrix(location(program,b'uModel'),1,0,(F*16)(*draw['model']));bindbuffer(0x8892,buffers[draw['file']])
+ for i,a in enumerate(attrs):
   if a<0:continue
   if i>=5 and not palette:
    gl('glDisableVertexAttribArray',None,[U])(a);gl('glVertexAttrib4f',None,[U,F,F,F,F])(a,0,0,0,0);continue
   enableattr(a);attrpointer(a,4 if i>=5 else 2 if i==4 else 1 if i==3 else 3,0x1406,0,draw.get('stride',48),P(48 if i==5 else 64 if i==6 else 40 if i==4 else i*12))
- drawarrays(4,0,draw['count'])
+ if draw.get('indexFile'):bindbuffer(0x8893,buffers[draw['indexFile']])
+ def submit():
+  if draw.get('indexFile'):gl('glDrawElements',None,[U,I,U,P])(4,draw['count'],0x1403,None)
+  else:drawarrays(4,0,draw['count'])
+ if instanced:
+  bindbuffer(0x8892,buffers[draw['instanceFile']]);instance_attrs=[attribute(program,('aInstance'+str(i)).encode()) for i in range(3)]
+  divisor=gl('glVertexAttribDivisor',None,[U,U])
+  for i,a in enumerate(instance_attrs):enableattr(a);attrpointer(a,4,0x1406,0,48,P(draw['instanceOffset']+i*16));divisor(a,1)
+  if draw.get('indexFile'):gl('glDrawElementsInstanced',None,[U,I,U,P,I])(4,draw['count'],0x1403,None,draw['instances'])
+  else:gl('glDrawArraysInstanced',None,[U,I,I,I])(4,0,draw['count'],draw['instances'])
+  for a in instance_attrs:divisor(a,0);gl('glDisableVertexAttribArray',None,[U])(a)
+ elif draw.get('instances'):
+  import struct
+  raw=(root/draw['instanceFile']).read_bytes()
+  for i in range(draw['instances']):
+   m=struct.unpack_from('12f',raw,draw['instanceOffset']+i*48)
+   # Inverse-transpose for nonuniformly scaled reference instances.
+   import numpy as np
+   affine=np.array(m).reshape(3,4);norm=np.linalg.inv(affine[:,:3]).T
+   normalmatrix(location(program,b'uNormal'),1,0,(F*9)(*norm.flatten(order='F')))
+   mat=[m[0],m[4],m[8],0,m[1],m[5],m[9],0,m[2],m[6],m[10],0,m[3],m[7],m[11],1]
+   matrix(location(program,b'uModel'),1,0,(F*16)(*mat));submit()
+ else:submit()
+ if instanced:program=previous;uniforms={};gl('glUseProgram',None,[U])(program)
+
 enable=gl('glEnable',None,[U]);disable=gl('glDisable',None,[U]);enable(0x0B71);gl('glDepthFunc',None,[U])(0x0203);disable(0x0B44);disable(0x0BE2)
 viewport=gl('glViewport',None,[I,I,I,I]);clearcolor=gl('glClearColor',None,[F,F,F,F]);clear=gl('glClear',None,[U])
+shadow_pass=1
 bindtex(0x0DE1,0);viewport(0,0,1024,1024);clearcolor(1,1,1,1);clear(0x4100);uniform('uShadowPass',1)
 for draw in scene['draws']:
  if not draw['terrain']:drawentry(draw)
+shadow_pass=0
 bindfb(0x8D40,0);viewport(0,0,width,height);clearcolor(.14,.23,.25,1);clear(0x4100);bindtex(0x0DE1,shadow);active(0x84C1);bindtex(0x0DE1,atlastex);active(0x84C0);uniform('uShadowPass',0)
 for draw in scene['draws']:drawentry(draw)
 gl('glFinish',None,[])();error=gl('glGetError',U,[])();assert error==0,hex(error)

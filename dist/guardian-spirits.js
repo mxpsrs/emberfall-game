@@ -17,7 +17,12 @@ function spiritPetal(r,root,x,y,z,angle,length,width,color,bend=0){
  spiritLoft(r,[[0,width*.45,width*.22],[length*.35,width,width*.30],[length*.75,width*.6,width*.16,bend],[length,.005,.005,bend*1.6]],color,part,8);
 }
 function drawGuardian(r,id,x,z,clip='idle',phase=null,heading=0,portrait=false){
- const age=phase===null?time:phase*4,beat=Math.sin(age*2.5+SPIRITS[id].icon),q=portrait?r:groundedPainter(r,x,z),cy=Math.cos(heading),sy=Math.sin(heading),bob=.045*beat;
+ const age=phase===null?time:phase*4,beat=Math.sin(age*2.5+SPIRITS[id].icon);
+ if(!portrait&&r.indexed){const step=Math.round(beat*16);return cachedRealmShape(groundedPainter(r,x,z),'guardian:'+id+':'+meshDetail3+':'+step,briarTransform(x,0,z,1,heading),q=>buildGuardian(q,id,0,0,step/16,0,true));}
+ return buildGuardian(r,id,x,z,beat,heading,portrait);
+}
+function buildGuardian(r,id,x,z,beat,heading,portrait){
+ const q=portrait?r:groundedPainter(r,x,z),cy=Math.cos(heading),sy=Math.sin(heading),bob=.045*beat;
  const root=p=>[x+p[0]*cy+p[2]*sy,p[1]+bob,z-p[0]*sy+p[2]*cy];
  if(id==='cinder'){
   spiritLoft(q,[[.2,.02,.02],[.36,.21,.16],[.64,.26,.19],[.85,.18,.14],[1.04,.07,.05,.08],[1.2,.005,.005,.15+beat*.025]],'#e97737',root);
