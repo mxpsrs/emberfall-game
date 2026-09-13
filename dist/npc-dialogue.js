@@ -10,16 +10,15 @@ function dialoguePages(html){
 function withNpcSpeaker(o,action){const previous=npcConversationSpeaker;npcConversationSpeaker=o;try{return action();}finally{npcConversationSpeaker=previous;}}
 function findDialogueSpeaker(title){
  if(npcConversationSpeaker)return npcConversationSpeaker;
- return objects.find(o=>o.name===title&&(o.tutor||o.characterSprite||['elder','villager','questgiver','inn','banker'].includes(o.type)))||Object.entries(TUTORS).map(([tutor,o])=>({...o,tutor,sprite:o.look})).find(o=>o.name===title)||null;
+ return objects.find(o=>o.name===title&&(o.tutor||o.characterSprite||['elder','villager','questgiver','inn','banker'].includes(o.type)))||Object.entries(TUTORS).map(([tutor,o])=>tutorialTutor(tutor)||({...o,tutor,sprite:o.look})).find(o=>o.name===title)||null;
 }
 function endNpcDialogue(){npcDialogueState=null;$('modal').classList.remove('npc-dialogue');document.body.classList.remove('npc-talking');$('modal').removeAttribute('aria-labelledby');$('closeModal').textContent='Back to adventure';$('closeModal').setAttribute('aria-label','Back to adventure');}
 function drawNpcPortrait(){
  const state=npcDialogueState,c=$('npcPortrait');if(!state||!c||typeof creatorPainter!=='function'||!assetsReady)return;
- const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);const speaker=state.speaker,look=speaker.sprite??speaker.look??0,gear={...npcEquipment(speaker),_portrait:true};
- if(!speaker.tutor&&!speaker.appearanceRole){gear._frame=speaker.kind==='man'?'male':speaker.frame||((look%3===2)?'female':'male');gear._appearance={topStyle:4,bottomStyle:3,topColor:(speaker.id||0)%8,bottomColor:7,hair:(speaker.id||0)%4,hairColor:(speaker.id||0)%4};}
- if(speaker.civilianModel)gear._civilian=speaker.civilianModel;
+ const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);const speaker=state.speaker,look=npcLook(speaker),gear={...npcEquipment(speaker),_portrait:true};
+ const crown=(rebuiltAvatars[gear._frame].mesh.bounds[1][1]+.10)*(gear._race==='dwarf'?.77:gear._race==='elf'?1.1:1);
  const scale=275,angle=-.18,cy=Math.cos(angle),sy=Math.sin(angle),before=meshDetail3;meshDetail3=1;
- try{const painter=creatorPainter(g,(x,y,z)=>({x:c.width/2+(x*cy-z*sy)*scale,y:32+(1.91-y)*scale+(x*sy+z*cy)*scale*.035,depth:x*sy+z*cy+y*.035}),c.width,c.height);humanoid3(painter,0,0,look,gear,0);painter.flush();}finally{meshDetail3=before;}
+ try{const painter=creatorPainter(g,(x,y,z)=>({x:c.width/2+(x*cy-z*sy)*scale,y:32+(crown-y)*scale+(x*sy+z*cy)*scale*.035,depth:x*sy+z*cy+y*.035}),c.width,c.height);humanoid3(painter,0,0,look,gear,0);painter.flush();}finally{meshDetail3=before;}
 }
 function renderNpcDialogue(){
  const state=npcDialogueState;if(!state)return;

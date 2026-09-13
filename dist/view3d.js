@@ -94,19 +94,37 @@ function humanoid3(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
   }
  }
 }
+// One appearance definition is shared by world characters and dialogue portraits.
+function npcLook(o){return Math.abs(Number(o.look??o.sprite)||0)%4;}
+function npcAppearance(o){
+ const role=o.tutor||o.appearanceRole;
+ const styles={guide:[5,4,5,5,2,3,1],woods:[5,3,2,7,2,1,2],fishing:[4,4,0,7,1,1,1],cooking:[4,3,6,7,0,0,2],mining:[4,4,7,5,2,2,3],combat:[5,4,5,5,2,0,2],bank:[4,3,3,5,1,2,1],worship:[4,4,6,2,0,3,2],magic:[5,3,3,5,1,3,1]};
+ let seed=2166136261;for(const c of String(role||o.id||o.name||'resident'))seed=Math.imul(seed^c.charCodeAt(0),16777619)>>>0;
+ const preset=styles[role],pick=n=>Math.floor(seed/n),frame=role?(['fishing','bank','worship','magic'].includes(role)?'female':'male'):o.frame||(o.kind==='man'||o.type==='man'||o.civilianModel?'male':npcLook(o)%3===2?'female':'male');
+ const [topStyle,bottomStyle,topColor,bottomColor,hair,hairColor,skin]=preset||[4+seed%2,3+pick(2)%2,seed%8,pick(8)%8,pick(64)%5,pick(320)%6,pick(1920)%5];
+ return {race:o.race||'human',frame,look:npcLook(o),topStyle,bottomStyle,topColor,bottomColor,hair,hairColor,skin,beard:frame==='male'?(role==='guide'?1:pick(9600)%3):0};
+}
 function npcEquipment(o){
- if(o.tutor||o.appearanceRole){const role=o.tutor||o.appearanceRole,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]};return {_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:null,body:role==='combat'?'iron_body':null,feet:'leatherBoots',_castAt:o._castAt,_castDuration:o._castDuration};}
- const duty=/\b(guard|captain|knight|soldier|sentinel)\b/i.test(o.name||'')||o.tutor==='combat';
- if(duty)return {body:'iron_body',head:'iron_head',weapon:'ironSword',shield:'ironShield',_race:o.race||'human'};
- if(o.type==='man'||o.type==='villager'||!fighter(o))return {_race:o.race||'human'};
- const kind=o.kind;return {body:kind==='skeleton'?null:'leatherArmor',weapon:'ironSword',_kind:kind,_race:kind==='goblin'?'goblin':o.race||'human',_bones:kind==='skeleton',_skin:kind==='skeleton'?'#d3d1b5':kind==='goblin'?'#789568':null};
+ const role=o.tutor||o.appearanceRole,appearance=npcAppearance(o),gear={_appearance:appearance,_frame:appearance.frame,_race:appearance.race,_castAt:o._castAt,_castDuration:o._castDuration};
+ if(role){
+  if(role==='guide')Object.assign(gear,{head:'rangerHood',_hoodColor:5});
+  if(role==='combat')Object.assign(gear,{body:'iron_body',weapon:'bronzeSword',feet:'leatherBoots'});
+  if(role==='magic')gear.weapon='oakStaff';
+  return gear;
+ }
+ const duty=/\b(guard|captain|knight|soldier|sentinel)\b/i.test(o.name||'');
+ if(duty)return {...gear,body:'iron_body',head:'iron_head',weapon:'ironSword',shield:'ironShield'};
+ if(o.civilianModel||o.type==='man'||o.type==='villager'||o.characterSprite||!fighter(o))return gear;
+ const kind=o.kind;
+ if(['bandit','warden','sentinel'].includes(kind))return {...gear,weapon:'ironSword'};
+ return {body:kind==='skeleton'?null:'leatherArmor',weapon:'ironSword',_kind:kind,_race:kind==='goblin'?'goblin':o.race||'human',_bones:kind==='skeleton',_skin:kind==='skeleton'?'#d3d1b5':kind==='goblin'?'#789568':null};
 }
 function creature3(r,o,x,z){const kind=o.kind,walk=Math.hypot(o.drawX-o.x,o.drawY-o.y)>.02?time*(o.type==='man'||o.type==='villager'?3.8:6):0;
  if(['wolf','ridgewolf','rat'].includes(kind)){const rat=kind==='rat',k=rat?.58:1,col=rat?'#807369':kind==='ridgewolf'?'#a9b4b6':'#707e83';oval3(r,x,.48*k,z,.44*k,.48*k,.95*k,col);oval3(r,x,.7*k,z+.42*k,.35*k,.37*k,.38*k,col);oval3(r,x,.64*k,z+.64*k,.2*k,.16*k,.3*k,'#44464b');for(const side of [-1,1])cone3(r,x+side*.12*k,.81*k,z+.36*k,.08*k,.19*k,col,5);for(const a of [-1,1])for(const b of [-1,1])limb3(r,x+a*.16*k,.19*k,z+b*.29*k,.105*k,.38*k,.13*k,col);return .95*k;}
  if(kind==='slime'){oval3(r,x,.29,z,.87,.6,.76,'#77a987');oval3(r,x-.13,.39,z+.32,.07,.08,.03,'#293f3b');oval3(r,x+.13,.39,z+.32,.07,.08,.03,'#293f3b');return .75;}
  if(o.type==='spirit'){cone3(r,x,.45+Math.sin(time*3)*.08,z,.24,.52,['#db9764','#83baca','#d7c379','#a0b98a'][o.sprite%4]);return 1.3;}
  const gear=npcEquipment(o),heading=walk?Math.atan2(o.x-(o.drawX??o.x),o.y-(o.drawY??o.y)):target===o?Math.atan2(px-x,py-z):(o.id||0)*2.399;
- gear._attackAt=o.attackAt;humanoid3(r,x,z,(o.sprite||0)%4,gear,heading,walk,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)),kind==='warden'||o.type==='boss'?1.35:1);return o.type==='boss'?2.6:2;
+ gear._attackAt=o.attackAt;humanoid3(r,x,z,npcLook(o),gear,heading,walk,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)),kind==='warden'||o.type==='boss'?1.35:1);return o.type==='boss'?2.6:2;
 }
 function prop3(r,o,x,z){
  if(o.type==='tree'){

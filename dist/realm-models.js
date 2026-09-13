@@ -109,7 +109,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  }
 };
 const oldRealmCreature=creature3;
-creature3=function(r,o,x,z){if(o.race){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02;humanoid3(r,x,z,(o.sprite||0)%4,{body:o.race==='elf'?'mageRobe':'leatherArmor',_race:o.race},Math.atan2(px-x,py-z),moving?time*8:0);return o.race==='dwarf'?1.8:2.3;}return oldRealmCreature(r,o,x,z);};
+creature3=function(r,o,x,z){if(o.race){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02;humanoid3(r,x,z,npcLook(o),npcEquipment(o),Math.atan2(px-x,py-z),moving?time*8:0);return o.race==='dwarf'?1.8:2.3;}return oldRealmCreature(r,o,x,z);};
 const oldRealmProp=prop3;
 prop3=function(r,o,x,z){
  if(o.type==='tree'){

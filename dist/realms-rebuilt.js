@@ -87,7 +87,7 @@ function armorShoulderItem(id){const tier=ITEMS[id]?.armorSet;return ITEMS[id]?.
 function modularBelt(gear){const set=GEAR_TIERS.find(a=>a.id===ITEMS[gear.body]?.armorSet);return 'Belt.'+(set?.source||'B')+'.001';}
 const wornTintCache=new Map();
 function wornModularMesh(sex,id){const mesh=modularMesh(sex,modularModel(id)),tint=ITEMS[id]?.modelTint,scale=ITEMS[id]?.modelScale||1;if(!mesh||!tint&&scale===1)return mesh;const key=sex+':'+id;if(!wornTintCache.has(key)){const c=Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*(tint?.[i%3]||1)));wornTintCache.set(key,{...mesh,p:scale===1?mesh.p:Float32Array.from(mesh.p,v=>v*scale),bounds:mesh.bounds.map(v=>v.map(x=>x*scale)),c,f:c});}return wornTintCache.get(key);}
-function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot]||'').join('/')+':'+(gear._civilian||'');}
+function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot]||'').join('/')+':'+(gear._civilian||'')+':'+(gear._hoodColor??'');}
 function mergeWornMeshes(base,sex,gear){
  const sources=[base],indices=[];
  if(gear._civilian){sources.splice(0);for(const name of ['Default_Male_Head_Medium','Default_Male_Arms_Medium','Default_Male_Feet_Medium','Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']){const part=modularMesh(sex,name);if(part)sources.push(part);}}
@@ -99,7 +99,7 @@ function mergeWornMeshes(base,sex,gear){
   indices.push(...ids);
  }
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
- for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
+ for(const [slot]of EQUIPMENT_SLOTS){if(['weapon','shield'].includes(slot)||slot==='crest'&&!gear.head)continue;const model=modularModel(gear[slot]);if(model){const mesh=slot==='head'&&gear.head==='rangerHood'&&Number.isInteger(gear._hoodColor)?outfitClothingMesh(sex,'Ranger','Head_Hood',gear._hoodColor,outfit.skin):wornModularMesh(sex,gear[slot]);if(mesh)sources.push(mesh);}}
  if(shoulderId){const shoulders=wornModularMesh(sex,shoulderId);if(shoulders)sources.push(shoulders);}
  for(const [enabled,name,color]of [[wearShirt,'Male_Shirt.002',outfit.topColor],[wearPants,'Male_Pants.002',outfit.bottomColor],[outfit.hair===4&&(!gear.head||gear.head==='rangerCap'),'Hair.007',null],[outfit.beard===2&&(!gear.head||gear.head==='rangerCap'),'Beard.007',null]])if(enabled){const part=modularMesh(sex,name);if(part){const tint=color===null?APPEARANCE_HAIR[outfit.hairColor||0]:APPEARANCE_COLORS[color||0],c=Float32Array.from(part.c,(v,i)=>(color===null?Math.max(.70,v):v)*tint[i%3]);sources.push({...part,c,f:c});}}
  if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&outfit.hair===4)sources.push(avatarHairCap(sex,outfit.hairColor??0));
@@ -130,7 +130,7 @@ function outfitClothingMesh(sex,outfit,part,color=0,skin=1){
  for(let v=0;v<c.length/3;v++){
   const i=v*3,light=Math.max(.30,Math.min(1.25,(mesh.c[i]+mesh.c[i+1]+mesh.c[i+2])/3*2.1));
   if(mesh.skin?.[v])for(let k=0;k<3;k++)c[i+k]=[.66,.44,.31][k]*skinTint[k];
-  else if(mesh.dye?.[v]||part==='Legs')for(let k=0;k<3;k++)c[i+k]=tint[k]*light;
+  else if(mesh.dye?.[v]||part==='Legs'||part==='Head_Hood')for(let k=0;k<3;k++)c[i+k]=tint[k]*light;
  }
  const result={...mesh,c,f:c};outfitClothingCache.set(key,result);if(outfitClothingCache.size>96)outfitClothingCache.delete(outfitClothingCache.keys().next().value);return result;
 }
@@ -356,8 +356,6 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
  if(r.skinned)r.skinned(mesh.gpuMesh,root,mesh.pose);else briarEmit(r,mesh,root);
  const head=mesh.pose.subarray(mesh.avatar.head*12,mesh.avatar.head*12+12),headTransform=affineMultiply(root,affineMultiply(head,mesh.avatar.headBind));
- if(gear._role==='guide')briarEmit(r,tintedHair('Hair_Beard',3,sex),headTransform);
- if(gear._role==='cooking'){const hat={face(p,c){r.face(p.map(v=>briarPoint(v,0,headTransform)),c);}};profile3(hat,0,1.84,-.01,.39,.19,.36,[[-.5,.85],[.1,1],[.5,.85]],'#d1c9ad',p=>p,12);}
  if(typeof npcDressRealm==='function')npcDressRealm(r,headTransform,root,gear);
  if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
