@@ -50,3 +50,12 @@ for(const [scene,width] of [['lair_veyr',44],['lair_varkesh',58],['lair_xalith',
  await presence(a,scene,19);const other=await presence(b,scene,20);const peers=(await other.json()).players;assert(peers.some(p=>p.name==='Player A'),'players can see one another in '+scene);
 }
 assert.equal((await presence(a,'lair_unreleased',19)).status,400,'unknown lairs remain unavailable');
+const move={scene:'overworld',x:16.3,y:17,heading:Math.PI/2,running:true,moving:true,trailEpoch:123,trail:[[1,14,17,500],[2,15,17,250],[3,16,17,0]],route:[[17,17],[17,18]]};
+assert.equal((await handlePlayers(req('/api/players','POST',a,move),env)).status,200);
+let motionPeer=(await (await presence(b)).json()).players.find(p=>p.name==='Player A');
+assert.deepEqual(motionPeer.trail,move.trail);assert.equal(motionPeer.trailEpoch,123);assert.deepEqual(motionPeer.route,move.route);
+for(const trail of [[[1,14,17,0],[2,30,17,0]],[[1,14.2,17,0]],[[1,14,17,0],[3,15,17,0]],[[1,14,17,-1]],[[1,1,1,0]]]){
+ await handlePlayers(req('/api/players','POST',a,{...move,trail}),env);
+ motionPeer=(await (await presence(b)).json()).players.find(p=>p.name==='Player A');assert.deepEqual(motionPeer.trail,[],'invalid movement trails cannot become follow waypoints');
+}
+console.log('PASS: complete ordered movement trails survive the server; invalid, distant, fractional and discontinuous trails are excluded.');

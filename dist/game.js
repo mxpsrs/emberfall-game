@@ -321,6 +321,7 @@ function advanceMovement(dt){
   if(distance<1e-6){
    px=s.x;py=s.y;if(target&&fighter(target)&&inAttackRange(target)&&!crossingTrainingGate())path=[];if(!path.length)break;
    const next=path[0];if(!prepareTrainingGateStep(next))break;path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
+   if(typeof recordPlayerDeparture==='function')recordPlayerDeparture(s.x,s.y);
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
   const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25;

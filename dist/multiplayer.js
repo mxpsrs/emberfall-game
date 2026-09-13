@@ -1,5 +1,13 @@
 'use strict';
 const onlinePeers=new Map();let onlineScene=null,onlineEmote=null,onlineEmoteUntil=0;
+// Capture tile departures in the movement loop, before a network poll can skip
+// them. Sequence IDs distinguish real turns, including revisiting the same tile.
+let movementTrail=[],movementTrailScene=null,movementTrailEpoch=0,movementTrailSequence=0;
+function recordPlayerDeparture(x,y){
+ if(movementTrailScene!==currentScene||movementTrail.length&&Math.hypot(x-movementTrail.at(-1)[1],y-movementTrail.at(-1)[2])>1.5){movementTrail=[];movementTrailScene=currentScene;movementTrailEpoch=Math.max(Date.now(),movementTrailEpoch+1);movementTrailSequence=0;}
+ movementTrail.push([++movementTrailSequence,x,y,Date.now()]);if(movementTrail.length>24)movementTrail.shift();
+}
+function outgoingMovementTrail(){return movementTrailScene===currentScene&&movementTrail.length&&Math.hypot(px-movementTrail.at(-1)[1],py-movementTrail.at(-1)[2])<=2?movementTrail.map(([seq,x,y,at])=>[seq,x,y,Math.min(60000,Math.max(0,Date.now()-at))]):[];}
 async function syncOnlineWorld(){
  if(cloudDisconnected||cloudConflict)return;
  if(!assetsReady||!s.character||!cloudReady||$('creator').open||document.hidden){setTimeout(syncOnlineWorld,1200);return;}
@@ -9,18 +17,24 @@ async function syncOnlineWorld(){
  if(cloudDisconnected||cloudConflict)return;
  if(onlineScene!==currentScene&&(cloudDirty||cloudBusy)){setTimeout(syncOnlineWorld,1200);return;}
  const requestedScene=currentScene,started=performance.now();
- try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json'},body:JSON.stringify({scene:requestedScene,x:px,y:py,heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null,running:playerMotion.running,moving:playerMotion.moving,route:playerMotion.moving?[[s.x,s.y],...path.slice(0,7)]:[]})});
+ try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json'},body:JSON.stringify({scene:requestedScene,x:px,y:py,trailEpoch:movementTrailEpoch,trail:outgoingMovementTrail(),heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null,running:playerMotion.running,moving:playerMotion.moving,route:playerMotion.moving?[[s.x,s.y],...path.slice(0,7)]:[]})});
  // An island request can still be in flight when Rowan finishes the crossing.
  if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
  if(!response.ok)throw new Error('offline');const data=await response.json();
  if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
- const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);const old=onlinePeers.get(peer.id),stamp=received-Math.max(0,(data.serverTime||peer.stamp)-peer.stamp),samples=old?.samples||[];
- if(!samples.length||peer.stamp!==old?.stamp){samples.push({x:peer.x,y:peer.y,at:stamp});while(samples.length>12)samples.shift();}
- onlinePeers.set(peer.id,{...peer,samples,trailTile:old?.trailTile,followTile:old?.followTile,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,drawHeading:old?.drawHeading??peer.heading,phase:old?.phase||0,drawAt:old?.drawAt??received,seen:Date.now(),sampleAt:stamp});}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
+ const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);acceptPeerSnapshot(peer,received,data.serverTime,received-started);}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
  $('onlineStatus').textContent=currentScene==='tutorial'?'Firstlight Isle · '+(onlinePeers.size+1)+' online':(onlinePeers.size+1)+' online here';
  }catch{if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}$('onlineStatus').textContent='Connection lost';pauseForServer();return;}
  setTimeout(syncOnlineWorld,Math.max(20,250-(performance.now()-started)));
+}
+function acceptPeerSnapshot(peer,received,serverTime,roundTrip=0){
+ const old=onlinePeers.get(peer.id),samples=old?.samples||[];
+ let stamp=received-Math.max(0,(serverTime||peer.stamp)-peer.stamp)-roundTrip/2;
+ if(old&&peer.stamp<old.stamp)return;
+ if(peer.stamp===old?.stamp)stamp=old.sampleAt;
+ else {stamp=Math.max(stamp,(samples.at(-1)?.at??-Infinity)+.01);samples.push({x:peer.x,y:peer.y,at:stamp});while(samples.length>12)samples.shift();}
+ onlinePeers.set(peer.id,{...peer,samples,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,drawHeading:old?.drawHeading??peer.heading,phase:old?.phase||0,drawAt:old?.drawAt??received,seen:Date.now(),sampleAt:stamp});
 }
 function samplePeerPosition(peer,now){
  const at=now-250,samples=peer.samples||[];
@@ -29,8 +43,18 @@ function samplePeerPosition(peer,now){
  if(peer.moving)for(const node of peer.route||[]){const dx=node[0]-x,dy=node[1]-y,d=Math.hypot(dx,dy);if(!d)continue;const step=Math.min(budget,d);x+=dx/d*step;y+=dy/d*step;budget-=step;if(budget<=0)break;}
  return {x,y};
 }
+// A late packet can revise the predicted position. Converge over frames rather
+// than snapping the model backwards or several tiles forward in a single frame.
+function advancePeerVisual(peer,now){
+ const dt=Math.max(0,Math.min(.1,(now-(peer.drawAt??now))/1000)),pos=samplePeerPosition(peer,now);
+ const dx=pos.x-peer.drawX,dy=pos.y-peer.drawY,distance=Math.hypot(dx,dy);
+ const limit=(peer.running?4.5:2.25)*1.35*dt,step=Math.min(distance,limit);
+ if(distance>8){peer.drawX=pos.x;peer.drawY=pos.y;}
+ else if(distance>0){peer.drawX+=dx/distance*step;peer.drawY+=dy/distance*step;}
+ peer.drawAt=now;return {dt,distance:distance>8?0:step};
+}
 function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for(const peer of onlinePeers.values()){
- if(Date.now()-peer.seen>12000)continue;const now=performance.now(),dt=Math.min(.1,(now-peer.drawAt)/1000),pos=samplePeerPosition(peer,now),distance=Math.hypot(pos.x-peer.drawX,pos.y-peer.drawY),moving=distance>.001;peer.drawAt=now;peer.drawX=pos.x;peer.drawY=pos.y;peer.phase=(peer.phase+distance/(peer.running?3.2:1.4))%1;peer.drawHeading+=Math.atan2(Math.sin(peer.heading-peer.drawHeading),Math.cos(peer.heading-peer.drawHeading))*(1-Math.exp(-14*dt));
+ if(Date.now()-peer.seen>12000)continue;const now=performance.now(),{dt,distance}=advancePeerVisual(peer,now),moving=distance>.001;peer.phase=(peer.phase+distance/(peer.running?3.2:1.4))%1;peer.drawHeading+=Math.atan2(Math.sin(peer.heading-peer.drawHeading),Math.cos(peer.heading-peer.drawHeading))*(1-Math.exp(-14*dt));
  const p=project3(peer.drawX+.5,1,peer.drawY+.5);if(p.x< -80||p.x>screen.w+80||p.y< -120||p.y>screen.h+100)continue;
  humanoid3(mesh,peer.drawX+.5,peer.drawY+.5,peer.look,{...peer.equipment,_race:peer.race||'human',_frame:peer.frame,_hair:peer.hair,_appearance:peer.appearance,_ammoCount:peer.visibleArrows||0,_peerMotion:{moving,running:peer.running,phase:peer.phase}},peer.drawHeading,moving?1:0,peer.emote==='Hello!'?.6:0);
  const feet=project3(peer.drawX+.5,0,peer.drawY+.5),head=project3(peer.drawX+.5,2,peer.drawY+.5),width=Math.max(24,cameraZoom3()*.75);
@@ -40,25 +64,29 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
 $('waveButton').onclick=()=>{onlineEmote='Hello!';onlineEmoteUntil=Date.now()+5000;toast('You wave to nearby players.');};
 setTimeout(syncOnlineWorld,1000);
 
-let followedPlayerId=null,followRouteAt=0,followDestination=null;
-function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;followDestination=null;toast('Following '+peer.name);updatePlayerFollow();}
+let followedPlayerId=null,followRouteAt=0,followSequence=null,followEpoch=null,followRetryAt=0;
+function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;followSequence=null;followEpoch=null;followRetryAt=0;toast('Following '+peer.name);updatePlayerFollow();}
 function updatePlayerFollow(){
- if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.15;
+ if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.05;
  const peer=onlinePeers.get(followedPlayerId);
  if(!peer||onlineScene!==currentScene||Date.now()-peer.seen>12000){stop();return;}
- // Follow the leader's previous occupied tile, not an arbitrary point within
- // an interaction radius. Retain that tile while the leader stands still.
- const tile={x:Math.round(peer.x),y:Math.round(peer.y)};
- if(!peer.trailTile){
-  const previous=[...(peer.samples||[])].reverse().find(p=>Math.round(p.x)!==tile.x||Math.round(p.y)!==tile.y);
-  peer.followTile=previous?{x:Math.round(previous.x),y:Math.round(previous.y)}:{x:tile.x-Math.round(Math.sin(peer.heading||0)),y:tile.y-Math.round(Math.cos(peer.heading||0))};
- }else if(tile.x!==peer.trailTile.x||tile.y!==peer.trailTile.y)peer.followTile={...peer.trailTile};
- peer.trailTile=tile;
- const destination=peer.followTile;
- if(!destination||!land(destination.x,destination.y))return;
- if(Math.hypot(destination.x-px,destination.y-py)<.02){path=[];followDestination=null;return;}
- // Reuse an unchanged route instead of pathfinding every frame on mobile.
- if(path.length&&followDestination&&destination.x===followDestination.x&&destination.y===followDestination.y)return;
- const next=route(destination.x,destination.y,false);
- if(next!==null){path=next;followDestination={...destination};}
+ const trail=peer.trail||[];
+ if(peer.trailEpoch!==followEpoch){path=[];followSequence=null;followEpoch=peer.trailEpoch;}
+ if(time<followRetryAt)return;
+ // Join the latest known departed tile, then append every subsequent tile in
+ // order. Do not round interpolated poses or replace an unfinished route.
+ let nodes=followSequence===null?trail.slice(-1):trail.filter(n=>n[0]>followSequence);
+ if(!nodes.length){
+  if(followSequence!==null)return;
+  // A newly spawned, stationary leader has no movement history yet.
+  if(!peer.moving&&!path.length){const next=route(Math.round(peer.x),Math.round(peer.y),false);if(next!==null)path=next;followRetryAt=time+.5;}
+  return;
+ }
+ let nextPath=path.slice(),start=nextPath.at(-1)||[s.x,s.y];
+ for(const node of nodes){
+  const leg=route(node[1],node[2],false,1.45,start[0],start[1]);
+  if(leg===null){followRetryAt=time+.5;break;}
+  nextPath.push(...leg);start=[node[1],node[2]];followSequence=node[0];
+ }
+ path=nextPath;
 }
