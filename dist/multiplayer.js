@@ -40,12 +40,20 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
 $('waveButton').onclick=()=>{onlineEmote='Hello!';onlineEmoteUntil=Date.now()+5000;toast('You wave to nearby players.');};
 setTimeout(syncOnlineWorld,1000);
 
-let followedPlayerId=null,followRouteAt=0;
-function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;toast('Following '+peer.name);updatePlayerFollow();}
+let followedPlayerId=null,followRouteAt=0,followDestination=null;
+function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;followDestination=null;toast('Following '+peer.name);updatePlayerFollow();}
 function updatePlayerFollow(){
- if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.6;
+ if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.15;
  const peer=onlinePeers.get(followedPlayerId);
  if(!peer||onlineScene!==currentScene||Date.now()-peer.seen>12000){stop();return;}
- if(Math.hypot(peer.x-px,peer.y-py)<=1.6){path=[];return;}
- const next=route(peer.x,peer.y,true,1.45);if(next!==null)path=next;
+ // Follow the same bounded route prediction used to draw peers, without the
+ // rendering buffer. Never extrapolate through terrain or beyond their route.
+ const destination=Number.isFinite(peer.sampleAt)?samplePeerPosition(peer,performance.now()+250):peer;
+ const distance=Math.hypot(destination.x-px,destination.y-py),reach=peer.moving?1:1.45;
+ if(distance<=(peer.moving?1.05:1.6)){path=[];followDestination=null;return;}
+ // Keep the existing path while the destination is unchanged: mobile devices
+ // should not run a new path search on every frame or identical presence poll.
+ if(path.length&&followDestination&&followDestination.moving===peer.moving&&Math.hypot(destination.x-followDestination.x,destination.y-followDestination.y)<.25)return;
+ const next=route(destination.x,destination.y,true,reach);
+ if(next!==null){path=next;followDestination={x:destination.x,y:destination.y,moving:peer.moving};}
 }
