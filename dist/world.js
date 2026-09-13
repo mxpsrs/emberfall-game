@@ -1,5 +1,26 @@
 'use strict';
 let currentScene='overworld',worldScenes={},ambient=null,ambientEnabled=false,ambientTimer=0,miniTerrain=null;
+// Static scenery lives in spatial buckets; only actors enter movement updates.
+// Array mutations invalidate the index, while actor positions remain live.
+let worldObjectRevision=0,worldObjectIndex=null,worldObjectArrayObserved=false;
+function worldIndex(){
+ if(!worldObjectArrayObserved){worldObjectArrayObserved=true;for(const name of ['push','pop','shift','unshift','splice','sort','reverse','copyWithin','fill'])Object.defineProperty(objects,name,{configurable:true,writable:true,value:function(...args){worldObjectRevision++;return Array.prototype[name].apply(this,args);}});}
+ if(worldObjectIndex?.revision===worldObjectRevision&&worldObjectIndex.scene===currentScene&&worldObjectIndex.length===objects.length)return worldObjectIndex;
+ const actors=[],buckets=new Map(),order=new Map();
+ for(let i=0;i<objects.length;i++){const o=objects[i];order.set(o,i);if(fighter(o)||o.characterSprite||o.penId||['elder','shop','questgiver','spirit','villager','inn','tutor'].includes(o.type)){actors.push(o);continue;}
+  const key=Math.floor(o.x/16)+':'+Math.floor(o.y/16);let bucket=buckets.get(key);if(!bucket){bucket=[];buckets.set(key,bucket);}bucket.push(o);
+ }
+ return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,order};
+}
+function worldActors(){return worldIndex().actors;}
+function worldObjectsAt(x,y){const index=worldIndex(),bucket=index.buckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[];return [...bucket,...index.actors].filter(o=>o.x===x&&o.y===y);}
+function worldObjectsInBounds(minX,maxX,minY,maxY){
+ const index=worldIndex(),visible=[];
+ for(let by=Math.floor(minY/16);by<=Math.floor(maxY/16);by++)for(let bx=Math.floor(minX/16);bx<=Math.floor(maxX/16);bx++)for(const o of index.buckets.get(bx+':'+by)||[])if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)visible.push(o);
+ for(const o of index.actors)if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)visible.push(o);
+ return visible.sort((a,b)=>index.order.get(a)-index.order.get(b));
+}
+function advanceWorldActors(dt){for(const o of worldActors())advanceActorMovement(o,dt);}
 const sceneSizes={overworld:[96,84],stoneInn:[14,12],stoneShop:[14,12],inn:[14,12],shop:[14,12],forge:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25]};
 function sceneSize(){return sceneSizes[currentScene]||sceneSizes.overworld;}
 function worldWall(x,y){const [w,h]=sceneSize();if(x<1||y<1||x>=w-1||y>=h-1)return true;if(currentScene==='mine')return (x===10&&y>2&&y<18&&![7,8,15].includes(y))||(y===12&&x>10&&x<23&&x!==18);if(currentScene==='dungeon')return (x===9&&y>1&&y<22&&![5,6,17,18].includes(y))||(x===18&&y>3&&y<24&&![10,11,20].includes(y));return false;}
@@ -92,14 +113,14 @@ function handleWorldInteraction(o){
 }
 function livingWorld(dt){
  s.worldClock=(s.worldClock+dt)%480;
- for(const o of objects){
+ for(const o of worldActors()){
   if(o===target||o._inCombat||o._returning||o._stationary||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden'||Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.01)continue;
   if(Math.hypot(o.x-s.x,o.y-s.y)>18)continue;
   o.roamClock=(o.roamClock||0)+dt;if(o.roamClock<3+(o.id%5))continue;o.roamClock=0;
   const atHome=Math.hypot(o.x-o.homeX,o.y-o.homeY)<3;
   const dirs=atHome?[[1,0],[-1,0],[0,1],[0,-1]]:[[Math.sign(o.homeX-o.x),0],[0,Math.sign(o.homeY-o.y)]];
   const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)],nx=o.x+dx,ny=o.y+dy;
-  if(land(nx,ny)&&trainingRatCanMove(o,nx,ny)&&!(nx===s.x&&ny===s.y)&&!objects.some(other=>other!==o&&other.dead<=time&&other.x===nx&&other.y===ny)){o.x=nx;o.y=ny;}
+  if(land(nx,ny)&&trainingRatCanMove(o,nx,ny)&&!(nx===s.x&&ny===s.y)&&!worldObjectsAt(nx,ny).some(other=>other!==o&&other.dead<=time)){o.x=nx;o.y=ny;}
  }
  ambientTimer+=dt;if(ambientTimer>5){ambientTimer=0;ambientChirp();}
 }

@@ -353,7 +353,7 @@ function frame(now){
     }
     updatePlayerAction();updateTrainingGate();updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
-    for(const o of objects)advanceActorMovement(o,dt);
+    advanceWorldActors(dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
     saveClock+=dt;if(saveClock>10){saveClock=0;save();}

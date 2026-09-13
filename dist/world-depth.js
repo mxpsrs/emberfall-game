@@ -2,7 +2,7 @@
 // Continuous heightfield: geometry, camera, picking and characters share one surface.
 const landHeights=new Map();
 let foundationLevels=new WeakMap(),foundationBuckets=null;
-function resetLandSurface(){landHeights.clear();foundationLevels=new WeakMap();foundationBuckets=null;}
+function resetLandSurface(){worldObjectRevision++;worldObjectIndex=null;landHeights.clear();foundationLevels=new WeakMap();foundationBuckets=null;}
 function shoreDistance(x,z){return Math.max(0,worldWaterDistance(x,z));}
 function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}

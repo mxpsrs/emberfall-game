@@ -94,17 +94,20 @@ expandedMap=function(page=0){
 function borderlandMap(){const places=[['Pinewatch Mine',55,9],['Sunken Crypt',58,46],['Stillwater',9,21],['Ashwatch',89,35],['Riverbend Farms',44,25]];dialog('Borderland landmarks','<div id="oldAtlas" class="mapgrid"></div>',[['Kingdoms',()=>expandedMap()]]);for(const [name,x,y]of places){const b=document.createElement('button');b.textContent=name;b.onclick=()=>{close();walkTo(x*3,y*3);};$('oldAtlas').appendChild(b);}}
 function realmNav(){
  let nav=realmNavigation.get(currentScene);if(nav)return nav;const [w,h]=sceneSize(),cells=new Uint8Array(w*h),moving=[];
- for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(worldWall(x,y)||water(x,y))cells[y*w+x]=1;
+ // Terrain collision is resolved when a route first visits a tile. Loading a
+ // village should not evaluate water and walls across the entire continent.
+ cells.fill(2);
  for(const b of buildings)for(let y=Math.floor(b.y);y<b.y+b.h;y++)for(let x=Math.floor(b.x);x<b.x+b.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;
  for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){cells[o.y*w+o.x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
+function realmCellBlocked(nav,id){let value=nav.cells[id];if(value===2){const x=id%nav.w,y=Math.floor(id/nav.w);value=Number(!!(worldWall(x,y)||water(x,y)));nav.cells[id]=value;}return value;}
 const beforeRealmBlocked=blocked;
-blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=realmNav();return x<0||y<0||x>=n.w||y>=n.h||n.cells[y*n.w+x]||trainingGateClosedAt(x,y)||n.moving.some(o=>!o.collected&&o.x===x&&o.y===y);};
+blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=realmNav();return x<0||y<0||x>=n.w||y>=n.h||realmCellBlocked(n,y*n.w+x)||trainingGateClosedAt(x,y)||n.moving.some(o=>!o.collected&&o.x===x&&o.y===y);};
 const borderRoute=route;
 route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
  if(!kingdomsReady)return borderRoute(tx,ty,adjacent,reach,startX,startY,actor);const nav=realmNav(),{w,h}=nav;if(tx<0||ty<0||tx>=w||ty>=h)return null;
- const cells=nav.cells,moving=new Set(nav.moving.filter(o=>!o.collected).map(o=>o.y*w+o.x)),isSolid=id=>cells[id]||moving.has(id)||actor&&!trainingRatCanMove(actor,id%w,Math.floor(id/w));
+ const moving=new Set(nav.moving.filter(o=>!o.collected).map(o=>o.y*w+o.x)),isSolid=id=>realmCellBlocked(nav,id)||moving.has(id)||actor&&!trainingRatCanMove(actor,id%w,Math.floor(id/w));
  const start=startY*w+startX,goal=ty*w+tx;if(!adjacent&&isSolid(goal))return null;const costs=new Map(),previous=new Map();const heap=[];
  const push=o=>{heap.push(o);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].f<=o.f)break;heap[i]=heap[p];i=p;}heap[i]=o;};
  const pop=()=>{const out=heap[0],last=heap.pop();if(heap.length){let i=0;while(i*2+1<heap.length){let c=i*2+1;if(c+1<heap.length&&heap[c+1].f<heap[c].f)c++;if(heap[c].f>=last.f)break;heap[i]=heap[c];i=c;}heap[i]=last;}return out;};

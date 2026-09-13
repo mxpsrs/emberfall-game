@@ -40,6 +40,10 @@ def texture(w,h,data=None,linear=False):
  for key,value in [(0x2801,0x2601 if linear else 0x2600),(0x2800,0x2601 if linear else 0x2600),(0x2802,0x812F),(0x2803,0x812F)]:texparam(0x0DE1,key,value)
  return tex.value
 active(0x84C1);atlas=Image.open(os.environ.get('EMBERFALL_REVIEW_ATLAS') or Path(__file__).resolve().parent.parent/'dist/assets/realms/atlas.png').convert('RGBA');atlasbytes=atlas.tobytes();atlastex=texture(atlas.width,atlas.height,C.c_char_p(atlasbytes),True)
+bone_texture=None
+if 'uBoneTexture' in scene['vertex']:
+ active(0x84C2);bone_texture=texture(240,1)
+ gl('glUniform1i',None,[I,I])(location(program,b'uBoneTexture'),2)
 active(0x84C0);shadow=texture(1024,1024);fbo=U();gl('glGenFramebuffers',None,[I,P])(1,C.byref(fbo));bindfb=gl('glBindFramebuffer',None,[U,U]);bindfb(0x8D40,fbo);gl('glFramebufferTexture2D',None,[U,U,U,U,I])(0x8D40,0x8CE0,0x0DE1,shadow,0)
 depth=U();gl('glGenRenderbuffers',None,[I,P])(1,C.byref(depth));gl('glBindRenderbuffer',None,[U,U])(0x8D41,depth);gl('glRenderbufferStorage',None,[U,U,I,I])(0x8D41,0x81A5,1024,1024);gl('glFramebufferRenderbuffer',None,[U,U,U,U])(0x8D40,0x8D00,0x8D41,depth);assert gl('glCheckFramebufferStatus',U,[U])(0x8D40)==0x8CD5
 bindbuffer=gl('glBindBuffer',None,[U,U]);buffers={}
@@ -61,7 +65,10 @@ def drawentry(draw):
  attrs=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights']]
  uniform('uBossColor',draw.get('bossColor',0));uniform('uDissolve',draw.get('dissolve',0))
  palette=draw.get('palette');uniform('uSkinning',1 if palette else 0)
- if palette:gl('glUniform4fv',None,[I,I,P])(location(program,b'uBones[0]'),len(palette)//4,(F*len(palette))(*palette))
+ if palette:
+  if bone_texture:
+   active(0x84C2);bindtex(0x0DE1,bone_texture);data=(F*(240*4))(*palette);teximage(0x0DE1,0,0x1908,240,1,0,0x1908,0x1406,data);uniform('uBoneRow',.5);active(0x84C0)
+  else:gl('glUniform4fv',None,[I,I,P])(location(program,b'uBones[0]'),len(palette)//4,(F*len(palette))(*palette))
  normalmatrix(location(program,b'uNormal'),1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
  matrix(location(program,b'uModel'),1,0,(F*16)(*draw['model']));bindbuffer(0x8892,buffers[draw['file']])
  for i,a in enumerate(attrs):

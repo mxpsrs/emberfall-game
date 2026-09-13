@@ -121,7 +121,7 @@ function resetEncounter(recover=true){
  activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
 }
 function updateEnemyRecovery(dt){
- for(const o of objects){if(!o._recovering||o._inCombat)continue;if(o.hp<=0||o.dead>time){delete o._recovering;delete o._returning;continue;}
+ for(const o of worldActors()){if(!o._recovering||o._inCombat)continue;if(o.hp<=0||o.dead>time){delete o._recovering;delete o._returning;continue;}
   if(o._returning&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
    if(o.x===o.homeX&&o.y===o.homeY){delete o._returning;o._returnPath=null;}
    else if(time>=o._returnAt){
