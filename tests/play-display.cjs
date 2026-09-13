@@ -6,3 +6,14 @@ return {context,el,document,events,stats:()=>({entered,exited,rotated})};}
 s=await scenario({touch:true});await vm.runInContext('enterPlayFullscreen()',s.context);assert.equal(s.stats().entered,1);assert.equal(s.stats().rotated,1);assert.equal(s.el('fullscreenButton').textContent,'Exit fullscreen');
 s=await scenario({touch:true,support:false});await vm.runInContext('enterPlayFullscreen()',s.context);assert.equal(s.el('displayNotice').hidden,false);assert.match(s.el('displayNotice').textContent,/available screen/);
 s=await scenario({touch:true,reject:true});await vm.runInContext('enterPlayFullscreen()',s.context);assert.equal(s.el('displayNotice').hidden,false);assert.equal(s.document.fullscreenElement,null);console.log('PASS: desktop portrait, explicit fullscreen/exit, mobile activation, landscape request, unsupported and denied fallbacks.');})().catch(e=>{console.error(e);process.exitCode=1});
+// Rotation listeners must be installed before initHud (asset/login completion).
+{
+ let portrait=true;const events={},media={},rotate={hidden:false};
+ const c={window:{addEventListener:(name,fn)=>events[name]=fn,matchMedia:q=>({get matches(){return q==='(pointer: coarse)'||portrait;},addEventListener:(name,fn)=>media[q]=fn})},document:{body:{classList:{toggle(){}}}},$:()=>rotate,resize(){}};
+ vm.createContext(c);vm.runInContext(fs.readFileSync('dist/hud.js','utf8'),c);
+ vm.runInContext('updateOrientation()',c);assert.equal(rotate.hidden,false);
+ portrait=false;events.resize();assert.equal(rotate.hidden,true,'landscape unlocks before game initialization');
+ portrait=true;events.orientationchange();assert.equal(rotate.hidden,false);
+ portrait=false;media['(orientation: portrait)']();assert.equal(rotate.hidden,true,'orientation media changes also unlock');
+ console.log('PASS: mobile rotation responds during startup without initHud.');
+}

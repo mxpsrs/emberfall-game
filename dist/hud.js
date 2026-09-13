@@ -7,6 +7,10 @@ function syncAmbientIcon(){const on=typeof ambientEnabled!=='undefined'&&ambient
 function pageItems(items,size){const pages=Math.max(1,Math.ceil(items.length/size));panelPage=Math.min(panelPage,pages-1);return items.slice(panelPage*size,(panelPage+1)*size);}
 function pageControls(total,size){const pages=Math.max(1,Math.ceil(total/size));$('pageLabel').textContent=(panelPage+1)+' / '+pages;$('prevPage').disabled=panelPage===0;$('nextPage').disabled=panelPage>=pages-1;$('panelPager').hidden=pages<=1;}
 function updateOrientation(){const portrait=window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(orientation: portrait)').matches;$('rotateScreen').hidden=!portrait;document.body.classList.toggle('portrait-mode',portrait);if(typeof resize==='function')resize();}
+// Orientation must keep working even before game assets finish loading.
+window.addEventListener('resize',updateOrientation);
+window.addEventListener('orientationchange',updateOrientation);
+window.matchMedia('(orientation: portrait)').addEventListener?.('change',updateOrientation);
 function initHud(){
  $('minimapButton').onclick=walkFromMinimap;
  setHudButton('minimapCompass','Face north','compass');$('minimapCompass').onclick=()=>{view3d.yaw=0;rememberView();miniMapLastYaw=null;drawMinimap();};
@@ -15,7 +19,7 @@ function initHud(){
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
  if(window.matchMedia('(pointer: coarse)').matches){$('tutorial').classList.add('collapsed');$('tutCollapse').textContent='Expand';}
  $('tutCollapse').onclick=()=>{$('tutorial').classList.toggle('collapsed');renderTutorial();};
- window.addEventListener('resize',updateOrientation);window.addEventListener('orientationchange',updateOrientation);updateOrientation();
+ updateOrientation();
 }
 
 function minimapBounds(){

@@ -8,6 +8,13 @@ vm.runInContext(fs.readFileSync('dist/game-messages.js','utf8'),ctx);vm.runInCon
 vm.runInContext(fs.readFileSync('dist/multiplayer.js','utf8'),ctx);vm.runInContext(fs.readFileSync('dist/social.js','utf8'),ctx);
 // Use movable elements for controls created by the fixture before the shell mounts.
 for(const id of ['combatbar','friendsPane','fullscreenButton','ambientButton','waveButton','journal','tutorial','gameTabs','mapHud','panel','gameDock','hitpointOrb','worshipOrb','specialOrb'])els[id]=movable();
+// Mirror the real document: spiritButton starts inside gameTabs, and an ID
+// lookup cannot find a node after replaceChildren disconnects it.
+const spiritControl=els.spiritButton||movable();els.spiritButton=spiritControl;
+els.gameTabs.appendChild(spiritControl);
+els.gameTabs.replaceChildren=()=>{for(const child of els.gameTabs.children)child.parentElement=null;els.gameTabs.children=[];};
+const lookup=ctx.document.getElementById;
+ctx.document.getElementById=id=>id==='spiritButton'&&!spiritControl.parentElement?null:lookup(id);
 vm.runInContext(fs.readFileSync('dist/classic-ui.js','utf8'),ctx);
 vm.runInContext(\`
 assert($('chatMessages').children.some(p=>p.textContent==='Message before chat loads'),'early game notices retained');
