@@ -18,7 +18,7 @@ function setupSpirits(){
 function collectSpirit(o){
  const id=o.spiritId,def=SPIRITS[id];stop();if(s.spirits[id])return;
  if(def.skill&&lv(def.skill)<2){dialog(def.name+' · '+def.element+' spirit','<p>This spirit is curious about your '+def.skill.toLowerCase()+'. Reach <b>'+def.skill+' level 2</b> to form a bond.</p>');return;}
- dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to travel with you.</p><p><b>Active bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power a summon.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};gain('Worship',20);o.collected=true;o.dead=Infinity;tutorialEvent('spirit');close();toast(def.name+' joined you. Open the follower icon to manage your spirits.');renderUI();save();}]]);
+ dialog(def.name+' · '+def.element+' spirit','<p>'+def.name+' offers to form an elemental bond with you.</p><p><b>Active bonus:</b> '+def.bonus+'</p><p>Unleash its ability to put it on standby. Two or more standby spirits can power your elemental convergence.</p>',[['Form a bond',()=>{if(s.spirits[id])return;s.spirits[id]={state:'set',recovery:0};gain('Worship',20);o.collected=true;o.dead=Infinity;tutorialEvent('spirit');close();toast(def.name+' bonded with you. Open the spirits icon to manage your spirits.');renderUI();save();}]]);
 }
 function openSpirits(){if(s.spirits.cinder)tutorialEvent('spirit');path=[];if(target&&!fighter(target))stop();$('spiritsDialog').showModal();$('spiritButton').setAttribute('aria-pressed','true');renderSpirits();}
 function spiritOpponent(){return target&&fighter(target)&&target.hp>0&&target.dead<=time&&Math.hypot(target.x-s.x,target.y-s.y)<=6&&lineOfSight(s.x,s.y,target.x,target.y)?target:null;}
@@ -28,7 +28,7 @@ function renderSpirits(){
  const def=SPIRITS[selectedSpirit],owned=s.spirits[selectedSpirit];$('spiritName').textContent=def.name+' · '+def.element;
  const g=$('spiritPortrait').getContext('2d');g.clearRect(0,0,160,160);if(assetsReady)sprite(g,'spirits',def.icon,80,155,140,140);
  $('spiritDescription').textContent=owned?def.bonus+' '+def.ability+'.':def.hint;
- $('spiritState').textContent=!owned?'Not discovered':owned.state==='set'?'Active · bonus applied':owned.state==='standby'?'Standby · ready for a summon':'Recovering · '+Math.ceil(owned.recovery)+' seconds of adventuring';
+ $('spiritState').textContent=!owned?'Not discovered':owned.state==='set'?'Active · bonus applied':owned.state==='standby'?'Standby · ready for convergence':'Recovering · '+Math.ceil(owned.recovery)+' seconds of adventuring';
  const actions=$('spiritActions');actions.innerHTML='';
  if(owned?.state==='set'){
   const b=document.createElement('button');b.textContent='Unleash';b.onclick=()=>unleashSpirit(selectedSpirit);actions.appendChild(b);

@@ -344,8 +344,8 @@ function frame(now){
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
   if(!crossing&&!window.playerTrade&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
-    time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
-    if(!moving&&!path.length&&target){
+    time+=dt;observeTutorialCamera();const moving=spiritEffect?.ids?false:advanceMovement(dt);
+    if(!moving&&!path.length&&target&&!spiritEffect?.ids){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{elapsed+=dt;const duration=actionDuration(target);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}

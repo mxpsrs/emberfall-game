@@ -24,7 +24,7 @@ else if(choice.startsWith('firstlight-')){s.tutorial=0;s.tutorialReward=false;ac
 else if(choice==='hills')activateScene('overworld',575,230);
 else if(choice==='river')activateScene('overworld',119,61);
 else if(choice==='lake')activateScene('overworld',28,64);
-else if(choice==='guardians'){activateScene('overworld',55,66);s.spirits=Object.fromEntries(Object.keys(SPIRITS).map(id=>[id,{state:'set'}]));updateSpirits(.1);}
+else if(choice==='guardians'){activateScene('overworld',55,66);s.spirits={};for(const [i,id]of Object.keys(SPIRITS).entries())objects.push({id:'spirit-review-'+id,type:'spirit',spiritId:id,name:SPIRITS[id].name,x:52+i*1.6,y:64,drawX:52+i*1.6,drawY:64,heading:.3,dead:0});}
 else if(choice==='sky')activateScene('overworld',55,61);
 else if(choice==='edge')activateScene('overworld',14,18);
 else if(choice==='bridge')activateScene('overworld',111,52);

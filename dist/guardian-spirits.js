@@ -1,40 +1,57 @@
 'use strict';
-// Four distinct licensed rigs, scaled as companions and shared by world and portrait rendering.
+// Original elemental forms. These meshes exist only at discovery sites and in
+// spirit portraits; bonded spirits never spawn a companion actor.
 const GUARDIAN_FORMS={
- cinder:{model:'boss_varkesh',height:1.05,tint:[1.65,.78,.38],special:'cast',form:'Ember drake'},
- brook:{model:'boss_veyr',height:1.12,tint:[.65,1.35,1.8],special:'cast2',form:'Tide guardian'},
- zephyr:{model:'wolf',height:.8,tint:[1.35,1.65,1.7],special:'attack',form:'Wind wolf'},
- cairn:{model:'boss_colossus',height:1.12,tint:[1.4,1.15,.65],special:'attack',form:'Stone guardian'}
+ cinder:{height:1.2,form:'Ember bloom'},brook:{height:1.15,form:'Water sprite'},
+ zephyr:{height:1.1,form:'Wind sylph'},cairn:{height:1.12,form:'Geode spirit'}
 };
-const guardianFollowers=new Map();let guardianPortraitAt=-1;
-const guardianWaterMeshes=new WeakMap();
-function guardianMesh(id,look,mesh){
- if(id!=='brook')return creatureTint(look,mesh);
- if(guardianWaterMeshes.has(mesh))return guardianWaterMeshes.get(mesh);
- const colors=source=>Float32Array.from(source,(v,i)=>{const start=i-i%3,light=.55+.45*Math.max(source[start],source[start+1],source[start+2]);return [.23,.72,.92][i%3]*light;});
- const water={...mesh,c:colors(mesh.c),f:colors(mesh.f||mesh.c),t:new Float32Array(mesh.p.length/3).fill(19)};guardianWaterMeshes.set(mesh,water);return water;
+let guardianPortraitAt=-1;
+// Closed, faceted lofts give every form its own authored silhouette.
+function spiritLoft(r,rings,color,transform,sides=10){
+ const rows=rings.map(([y,rx,rz,cx=0,cz=0])=>Array.from({length:sides},(_,i)=>{const a=i*Math.PI*2/sides;return transform([cx+Math.cos(a)*rx,y,cz+Math.sin(a)*rz]);}));
+ for(let j=1;j<rows.length;j++)for(let i=0;i<sides;i++){const k=(i+1)%sides;r.face([rows[j-1][i],rows[j][i],rows[j][k],rows[j-1][k]],shade3(color,.84+.16*Math.sin(i/sides*Math.PI*2+.7)));}
+ r.face(rows[0],shade3(color,.7));r.face([...rows.at(-1)].reverse(),color);
+}
+function spiritPetal(r,root,x,y,z,angle,length,width,color,bend=0){
+ const c=Math.cos(angle),s=Math.sin(angle),part=p=>root([x+p[0]*c-p[1]*s,y+p[0]*s+p[1]*c,z+p[2]]);
+ spiritLoft(r,[[0,width*.45,width*.22],[length*.35,width,width*.30],[length*.75,width*.6,width*.16,bend],[length,.005,.005,bend*1.6]],color,part,8);
 }
 function drawGuardian(r,id,x,z,clip='idle',phase=null,heading=0,portrait=false){
- const form=GUARDIAN_FORMS[id],a=creatureAssets[form.model];clip=a.clips[clip]?clip:'idle';
- phase=phase??((time+(SPIRITS[id].icon*.37))/a.clips[clip].duration)%1;
- phase=Math.round(phase*48)/48;
- const pose=r.skinned?creatureRigPose(form.model,clip,phase):creaturePose(form.model,clip,phase),k=a.scale*form.height/a.height;
- const q=portrait?r:groundedPainter(r,x,z),root=briarTransform(x,-Math.min(pose.floorY,a.mesh.bounds[0][1])*k,z,k,heading),look={tint:form.tint};
- if(q.skinned){if(a.splitSkinPalette){const batches=creatureSkinBatches(a);pose.batchPalettes??=batches.map(batch=>{const palette=new Float32Array(batch.joints.length*12);batch.joints.forEach((joint,i)=>palette.set(pose.palette.subarray(joint*12,joint*12+12),i*12));return palette;});batches.forEach((batch,i)=>q.skinned(guardianMesh(id,look,batch.mesh),root,pose.batchPalettes[i]));}else q.skinned(guardianMesh(id,look,a.mesh),root,pose.palette);}
- else briarEmit(q,guardianMesh(id,look,pose),root);
- return form.height;
+ const age=phase===null?time:phase*4,beat=Math.sin(age*2.5+SPIRITS[id].icon),q=portrait?r:groundedPainter(r,x,z),cy=Math.cos(heading),sy=Math.sin(heading),bob=.045*beat;
+ const root=p=>[x+p[0]*cy+p[2]*sy,p[1]+bob,z-p[0]*sy+p[2]*cy];
+ if(id==='cinder'){
+  spiritLoft(q,[[.2,.02,.02],[.36,.21,.16],[.64,.26,.19],[.85,.18,.14],[1.04,.07,.05,.08],[1.2,.005,.005,.15+beat*.025]],'#e97737',root);
+  spiritLoft(q,[[.32,.02,.02],[.46,.14,.045,0,.16],[.68,.12,.04,0,.185],[.82,.01,.01,.04,.17]],'#ffdc82',root);
+  for(const side of [-1,1]){spiritPetal(q,root,side*.18,.54,0,-side*(.72+beat*.09),.40,.105,'#f6a94e',side*.02);spiritPetal(q,root,side*.12,.75,-.025,side*.32,.38,.09,'#d85132');}
+ }else if(id==='brook'){
+  spiritLoft(q,[[.18,.02,.02],[.31,.20,.16],[.56,.27,.20],[.76,.20,.16],[.92,.10,.09],[1.12,.008,.008,-.12+beat*.02]],'#469dc0',root,12);
+  spiritLoft(q,[[.29,.015,.01],[.44,.16,.035,0,.18],[.66,.15,.035,0,.195],[.78,.01,.01,0,.16]],'#a4e6e8',root);
+  for(const side of [-1,1])spiritPetal(q,root,side*.20,.65,0,-side*(1.0+beat*.12),.32,.14,'#76ccd7',side*.05);
+  spiritPetal(q,root,0,.3,-.1,Math.PI+.3+beat*.12,.26,.10,'#79dce0');
+ }else if(id==='zephyr'){
+  spiritLoft(q,[[.25,.015,.015,.10],[.4,.16,.12],[.63,.21,.16],[.79,.16,.13],[.91,.03,.025]],'#dce9d8',root);
+  for(const side of [-1,1])for(let i=0;i<3;i++)spiritPetal(q,root,side*(.16+i*.04),.58-i*.075,-i*.035,-side*(1.02+i*.19+beat*.13),.44-i*.06,.08,'#a6c9bd',side*.05);
+  for(let i=0;i<2;i++)spiritPetal(q,root,.03-i*.09,.8,-.07,-.6+i*.3+beat*.08,.29,.07,'#b6d7c5',.12);
+ }else{
+  spiritLoft(q,[[.23,.11,.1],[.33,.25,.19],[.65,.28,.21],[.83,.18,.14],[.91,.07,.06]],'#8b8179',root,7);
+  spiritLoft(q,[[.34,.06,.02,0,.19],[.48,.15,.05,0,.22],[.69,.10,.03,0,.20],[.78,.015,.01,0,.15]],'#c7ab76',root,6);
+  for(const side of [-1,1]){spiritPetal(q,root,side*.13,.77,-.05,-side*.28,.32,.10,'#83b2a1');spiritPetal(q,root,side*(.34+beat*.015),.38+side*beat*.025,0,-side*.25,.23,.13,'#9a9081');}
+  spiritPetal(q,root,0,.87,-.05,.12,.26,.08,'#b5d4b9');
+ }
+ const eyey=id==='zephyr'?.67:id==='cairn'?.63:.69,eyez=id==='zephyr'?.175:id==='cairn'?.27:.245;
+ for(const side of [-1,1]){oval3(q,side*.075,eyey,eyez,.034,.052,.021,'#213c42',root,8);oval3(q,side*.075-.009,eyey+.018,eyez+.020,.009,.012,.006,'#f8f4d8',root,6);}
+ return GUARDIAN_FORMS[id].height;
 }
 const creatureBeforeGuardians=creature3;
 creature3=function(r,o,x,z){if(o.type==='spirit'&&GUARDIAN_FORMS[o.spiritId])return drawGuardian(r,o.spiritId,x,z,'idle',null,o.heading||0);return creatureBeforeGuardians(r,o,x,z);};
-function drawGuardianFollowers(r){
- for(const [id,owned]of Object.entries(s.spirits||{})){if(!GUARDIAN_FORMS[id]||owned.state!=='set'||spiritEffect?.ids?.includes(id))continue;const f=guardianFollowers.get(id);if(f)drawGuardian(r,id,f.x,f.z,f.moving?'walk':'idle',null,f.heading);}
+function drawGuardianSpecial(r){
  const e=spiritEffect;if(!e?.ids||e.scene!==currentScene)return;
- for(const [i,id]of e.ids.entries()){
-  const p=e.positions[i],phase=Math.min(1,e.age/e.duration);drawGuardian(r,id,p.x,p.z,GUARDIAN_FORMS[id].special,phase,p.heading);
-  const color=SPIRITS[id].color,t=Math.min(1,e.age/e.commitAt),end=e.enemy?{x:e.enemy.drawX+.5,z:e.enemy.drawY+.5}:{x:px+.5,z:py+.5};
-  if(t>.25&&t<1){const progress=(t-.25)/.75,q=groundedPainter(r,p.x,p.z),x=p.x+(end.x-p.x)*progress,z=p.z+(end.z-p.z)*progress,y=.65+Math.sin(progress*Math.PI)*.35;
-   for(let n=0;n<4;n++){const angle=e.age*11+n*Math.PI/2;oval3(q,x+Math.cos(angle)*.13,y+Math.sin(angle)*.13,z,.065,.065,.065,color,a=>a,6);}
-  }
+ const progress=Math.min(1,e.age/e.commitAt),q=groundedPainter(r,px+.5,py+.5);
+ // Elemental light travels from the caster; no spirit creature is summoned.
+ for(const [i,id]of e.ids.entries())for(let n=0;n<5;n++){
+  const a=e.age*6+n*Math.PI*2/5+i,travel=Math.max(0,(progress-.45)/.55),end=e.enemy?{x:(e.enemy.drawX??e.enemy.x)+.5,z:(e.enemy.drawY??e.enemy.y)+.5}:{x:px+.5,z:py+.5};
+  const x=px+.5+(end.x-px-.5)*travel+Math.cos(a)*.15,z=py+.5+(end.z-py-.5)*travel+Math.sin(a)*.15;
+  if(e.age<e.commitAt)oval3(q,x,1.0+Math.sin(a)*.12,z,.045,.065,.045,SPIRITS[id].color,p=>p,6);
  }
 }
 function drawGuardianPortrait(){
@@ -46,8 +63,10 @@ function drawGuardianPortrait(){
 const renderBeforeGuardians=renderSpirits;
 renderSpirits=function(){renderBeforeGuardians();drawGuardianPortrait();};
 function startGuardianSpecial(ids,enemy,large=false){
- const duration=Math.max(1.4,...ids.map(id=>Math.min(3,creatureAssets[GUARDIAN_FORMS[id].model].clips[GUARDIAN_FORMS[id].special].duration)));
- spiritEffect={ids,scene:currentScene,enemy,age:0,duration,commitAt:duration*.58,committed:false,large,x:enemy?.x??px,y:enemy?.y??py,color:SPIRITS[ids[0]].color,positions:ids.map((id,i)=>{const f=guardianFollowers.get(id),x=f?.x??px+.5+(i-.5)*.7,z=f?.z??py+1.5;return {x,z,heading:enemy?Math.atan2(enemy.x+.5-x,enemy.y+.5-z):playerHeading};})};
+ const motion=combatMotion('worship'),duration=motion.duration;
+ stop();target=enemy;playerAttackReadyAt=time+duration;
+ if(enemy)playerHeading=Math.atan2(enemy.x-px,enemy.y-py);
+ spiritEffect={ids,scene:currentScene,enemy,started:time,age:0,duration,commitAt:motion.releaseAt,committed:false,large,x:enemy?.x??px,y:enemy?.y??py,color:SPIRITS[ids[0]].color};
  $('spiritsDialog').close();renderUI();save();
 }
 unleashSpirit=function(id){
@@ -73,10 +92,5 @@ const updateBeforeGuardians=updateSpirits;
 updateSpirits=function(dt){
  if(spiritEffect?.ids){if(spiritEffect.scene!==currentScene)spiritEffect=null;else if(spiritEffect.age+dt>=spiritEffect.commitAt)commitGuardianSpecial(spiritEffect);}
  updateBeforeGuardians(dt);
- for(const [id,owned]of Object.entries(s.spirits||{})){if(!GUARDIAN_FORMS[id]||owned.state!=='set')continue;const index=SPIRITS[id].icon,side=(index%2?1:-1)*(.7+Math.floor(index/2)*.5),back=1.2+Math.floor(index/2)*.9;
-  let x=px+.5-Math.sin(playerHeading)*back+Math.cos(playerHeading)*side,z=py+.5-Math.cos(playerHeading)*back-Math.sin(playerHeading)*side;if(!land(Math.floor(x),Math.floor(z))){x=px+.5;z=py+.5;}let f=guardianFollowers.get(id);
-  if(!f||f.scene!==currentScene){f={x,z,heading:playerHeading,scene:currentScene};guardianFollowers.set(id,f);}
-  const dx=x-f.x,dz=z-f.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*(s.runEnabled?5:2.8));f.moving=d>.1;if(d>.02){f.heading=Math.atan2(dx,dz);f.x+=dx/d*step;f.z+=dz/d*step;}
- }
  if(time>=guardianPortraitAt&&$('spiritsDialog').open){guardianPortraitAt=time+1/12;drawGuardianPortrait();}
 };

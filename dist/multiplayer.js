@@ -24,6 +24,8 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
  if(Date.now()-peer.seen>12000)continue;const moving=Math.hypot(peer.drawX-peer.x,peer.drawY-peer.y)>.04;peer.drawX+=(peer.x-peer.drawX)*.16;peer.drawY+=(peer.y-peer.drawY)*.16;
  const p=project3(peer.drawX+.5,1,peer.drawY+.5);if(p.x< -80||p.x>screen.w+80||p.y< -120||p.y>screen.h+100)continue;
  humanoid3(mesh,peer.drawX+.5,peer.drawY+.5,peer.look,{...peer.equipment,_race:peer.race||'human',_frame:peer.frame,_hair:peer.hair,_appearance:peer.appearance,_ammoCount:peer.visibleArrows||0},peer.heading,moving?time*10:0,peer.emote==='Hello!'?.6:0);
+ const feet=project3(peer.drawX+.5,0,peer.drawY+.5),head=project3(peer.drawX+.5,2,peer.drawY+.5),width=Math.max(24,cameraZoom3()*.75);
+ hitboxes.push({x:feet.x-width/2,y:Math.min(feet.y,head.y)-6,w:width,h:Math.abs(feet.y-head.y)+12,depth:feet.depth,o:{type:'player',id:peer.id,name:peer.name,username:peer.username,x:peer.x,y:peer.y}});
  labels.push([peer.name,peer.drawX+.5,2.15,peer.drawY+.5,'#bce2ee']);if(peer.emote)labels.push([peer.emote,peer.drawX+.5,2.6,peer.drawY+.5,'#f6e6b5']);
 }}
 $('waveButton').onclick=()=>{onlineEmote='Hello!';onlineEmoteUntil=Date.now()+5000;toast('You wave to nearby players.');};

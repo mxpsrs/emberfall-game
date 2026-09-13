@@ -5,6 +5,7 @@ function closeWorldOptions(){const menu=$('worldOptions');if(menu)menu.remove();
 function worldOptionsFor(o){
  if(o.dead>time||o.collected)return [];
  const name=o.name||'Ground loot',actions=[];
+ if(o.type==='player'){if(!o.username)return [];return [['Trade with '+name,()=>requestPlayerTrade(o.username)],['Add friend '+name,()=>friendAction('friend',o.username)],['Message '+name,()=>selectChat(o.username)]];}
  if(o.type==='man'){actions.push(['Talk-to '+name,()=>talkVillager(o)],['Attack '+name+' (level '+o.level+')',()=>engage(o)]);}
  else if(o.type==='loot')actions.push(['Take '+groundItemLabel(o),()=>select(o)]);
  else if(o.type==='door')actions.push([(o.openedAt===undefined?'Open ':'Close ')+name,()=>select(o)]);
