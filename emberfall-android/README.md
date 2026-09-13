@@ -1,10 +1,10 @@
-# Emberfall Android beta 0.1.0
+# Veldren Android beta 0.1.0
 
-An installable landscape Android WebView client for the live Emberfall game.
+An installable landscape Android WebView client for the live Veldren game.
 
 ## Install and play
 
-Open `Emberfall-Beta-0.1.0.apk` on Android 8.0 or newer. If Android asks, allow your chosen browser or file manager to install this APK. Sign in with your existing Emberfall username and password. Browser login cookies do not automatically transfer into the app.
+Open `Veldren-Beta-0.1.0.apk` on Android 8.0 or newer. If Android asks, allow your chosen browser or file manager to install this APK. Sign in with your existing Veldren username and password. Browser login cookies do not automatically transfer into the app.
 
 Internet is required. The game and its assets load from https://emberfall-realms.rayfgarrison97.chatgpt.site/. Website updates appear in the app when it reloads; the APK does not include a separate offline game or change server capacity. This is a beta APK for direct installation, not a Google Play release.
 

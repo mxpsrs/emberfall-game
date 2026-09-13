@@ -1,4 +1,4 @@
-"""Fit CH0SAN's modular meshes to Emberfall's existing male/female animation rigs.
+"""Fit CH0SAN's modular meshes to Veldren's existing male/female animation rigs.
 
 python scripts/import-modular-armor.py /path/to/ModularWarior1.glb
 The source is obtained from https://ch0san.itch.io/modular-warrior.
@@ -104,7 +104,7 @@ def build(path):
                 center=socket[:3,3]
                 if left:
                     p=(p-center)*.63
-                    # Socket-local axes are shared with Emberfall's palm frame.
+                    # Socket-local axes are shared with Veldren's palm frame.
                     p=p@np.linalg.inv(socket[:3,:3]).T
                     normal=normal@np.linalg.inv(socket[:3,:3]).T
                     p=p[:,[0,2,1]]*[1,-1,1]
@@ -178,7 +178,7 @@ def build(path):
               'permission':'Author explicitly permits free commercial use in the product page comments. No bundled license text in GLB/Unity documentation.',
               'animations':'No animations in GLB. Uses existing retargeted Quaternius UAL character clips.',
               'parts':parts+rigid,'jointMap':joint_map,
-              'names':'Source uses B/I/G/M/DS. Iron and Dragonslayer are named in author-page comments; Bronze, Gold and Mithril are Emberfall display names for the other material families.'}
+              'names':'Source uses B/I/G/M/DS. Iron and Dragonslayer are named in author-page comments; Bronze, Gold and Mithril are Veldren display names for the other material families.'}
     (ROOT/'dist/assets/realms/CH0SAN-provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
 

@@ -1,4 +1,4 @@
-"""Import a reviewed native FBX rig export into Emberfall, preserving source actions.
+"""Import a reviewed native FBX rig export into Veldren, preserving source actions.
 
 python scripts/import-approved-creature.py CONFIG.json
 The JSON points to export-rigged-fbx output and an explicitly selected texture.

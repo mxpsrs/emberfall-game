@@ -13,7 +13,7 @@ On September 12, 2026, the owner approved the six model designs with two role ch
 
 Forest Giants populate forests. Orks populate dungeons. Both use the ordinary monster system, repeatable spawns, normal combat and ground drops. Neither has a named boss encounter, phase system, boss marks or boss music. Preserve the owner's spelling **Ork** in the game; the original asset title remains Animated Minotaur in the credits.
 
-Both ordinary monsters have since been imported and verified in Emberfall. Their import audits record the original files, native motions and material handling.
+Both ordinary monsters have since been imported and verified in Veldren. Their import audits record the original files, native motions and material handling.
 
 ## Approved bosses
 
@@ -34,7 +34,7 @@ The owner's approved fight direction is stationary, with melee/ranged/magic styl
 | Approved name | Actual model / artist | Verified evidence | Remaining check |
 | --- | --- | --- | --- |
 | **Varkesh the Blightwing** | [Prowler Dragon Variant Rig — DM-913](https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9) | Original Blender rig received from owner; CC BY 4.0. 19,436 triangles and five action records inspected. | Native walk retained; five new gameplay motions authored on the original rig. Curved segments and preserve-volume approximation verified; see `varkesh-integration.md`. |
-| **Xalith the Broodmother** | [Insectoid Monster Rig — DM-913](https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176) | Original insectoid rig received from owner; CC BY 4.0. 13,156 triangles and two original actions inspected. | Original take is a landing/settling motion plus a static pose. Seven new Emberfall gameplay motions are built on the same rig; see `xalith-integration.md`. |
+| **Xalith the Broodmother** | [Insectoid Monster Rig — DM-913](https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176) | Original insectoid rig received from owner; CC BY 4.0. 13,156 triangles and two original actions inspected. | Original take is a landing/settling motion plus a static pose. Seven new Veldren gameplay motions are built on the same rig; see `xalith-integration.md`. |
 
 Both approved originals are integrated. Source motion and new gameplay motion are distinguished in their audits; creator, model links, licenses and modification notices are in the game credits.
 
@@ -48,7 +48,7 @@ Both approved originals are integrated. Source motion and new gameplay motion ar
 
 ## License and publication handling
 
-[CGTrader terms](https://www.cgtrader.com/pages/terms-and-conditions), sections 21A and 21B, permit commercial game incorporation and require reasonable measures to prevent access to the original asset. Convert approved models to Emberfall's runtime representation; do not distribute the original FBX, Blender/Maya files, or source archives as public game assets. The no-AI restriction excludes model-training use.
+[CGTrader terms](https://www.cgtrader.com/pages/terms-and-conditions), sections 21A and 21B, permit commercial game incorporation and require reasonable measures to prevent access to the original asset. Convert approved models to Veldren's runtime representation; do not distribute the original FBX, Blender/Maya files, or source archives as public game assets. The no-AI restriction excludes model-training use.
 
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) permits commercial adaptation with attribution and change notices. [CC0](https://creativecommons.org/publicdomain/zero/1.0/) permits commercial use without required attribution. Keep voluntary artist credits regardless.
 

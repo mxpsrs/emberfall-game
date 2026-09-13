@@ -1,7 +1,7 @@
-"""Build dedicated boss geometry on Emberfall's existing, licensed skeletons.
+"""Build dedicated boss geometry on Veldren's existing, licensed skeletons.
 
-node scripts/export-boss-rigs.cjs /tmp/emberfall-boss-rigs
-python scripts/build-boss-models.py /tmp/emberfall-boss-rigs
+node scripts/export-boss-rigs.cjs /tmp/veldren-boss-rigs
+python scripts/build-boss-models.py /tmp/veldren-boss-rigs
 The Colossus and Sovereign have entirely new bodies. Other bosses retain their
 source anatomy under new fitted armor, crowns, mantles, weapons and growths.
 """

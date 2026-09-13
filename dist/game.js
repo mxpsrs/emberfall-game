@@ -397,6 +397,6 @@ async function boot(){
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();
     realmLoadComplete();save();requestAnimationFrame(frame);
   }catch(error){
-    assetsReady=false;realmLoadFailure(error.status===401?'Your account connection expired. Reopen Emberfall and retry.':'Please retry loading. Your saved character has been kept.',error);
+    assetsReady=false;realmLoadFailure(error.status===401?'Your account connection expired. Reopen Veldren and retry.':'Please retry loading. Your saved character has been kept.',error);
   }
 }

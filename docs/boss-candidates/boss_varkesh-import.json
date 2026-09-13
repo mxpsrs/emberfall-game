@@ -7,7 +7,7 @@
     "artist": "DM-913",
     "url": "https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9",
     "license": "CC BY 4.0",
-    "modifications": "Original topology and source colors; Blender curved bones baked, bind compensation for preserve-volume skinning, native walk cycle and new Emberfall combat motions. Full Blender PBR is not reproduced.",
+    "modifications": "Original topology and source colors; Blender curved bones baked, bind compensation for preserve-volume skinning, native walk cycle and new Veldren combat motions. Full Blender PBR is not reproduced.",
     "sha256": "31fbc6a9711e6e1f0e2678be1fd174f6b1ffc39f8d701bfd95a2d60c2b1a1b45",
     "file": "DragoTST.blend",
     "nativeActions": [
@@ -66,7 +66,7 @@
       "source": "Emberfall/idle",
       "duration": 3.2,
       "frames": 78,
-      "note": "Emberfall-authored motion on the original Blender rig"
+      "note": "Veldren-authored motion on the original Blender rig"
     },
     "walk": {
       "source": "Native/Walk Loop",
@@ -84,27 +84,27 @@
       "source": "Emberfall/attack",
       "duration": 1.55,
       "frames": 39,
-      "note": "Emberfall-authored motion on the original Blender rig",
+      "note": "Veldren-authored motion on the original Blender rig",
       "release": 0.53
     },
     "cast": {
       "source": "Emberfall/cast",
       "duration": 2.3,
       "frames": 57,
-      "note": "Emberfall-authored motion on the original Blender rig",
+      "note": "Veldren-authored motion on the original Blender rig",
       "release": 0.52
     },
     "hit": {
       "source": "Emberfall/hit",
       "duration": 0.55,
       "frames": 15,
-      "note": "Emberfall-authored motion on the original Blender rig"
+      "note": "Veldren-authored motion on the original Blender rig"
     },
     "death": {
       "source": "Emberfall/death",
       "duration": 2.8,
       "frames": 69,
-      "note": "Emberfall-authored motion on the original Blender rig"
+      "note": "Veldren-authored motion on the original Blender rig"
     }
   }
 }

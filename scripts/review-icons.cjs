@@ -1,14 +1,14 @@
 // Offline contact sheets at inventory/HUD sizes. Does not start a browser.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {createCanvas,loadImage,Path2D}=require('@napi-rs/canvas');
-const out=path.resolve(process.argv[2]||'/tmp/emberfall-icon-review');fs.mkdirSync(out,{recursive:true});
+const out=path.resolve(process.argv[2]||'/tmp/veldren-icon-review');fs.mkdirSync(out,{recursive:true});
 const {ctx}=require('./benchmark-desktop.cjs');ctx.Path2D=Path2D;
 ctx.document.createElement=()=>createCanvas(96,96);
 vm.runInContext(fs.readFileSync('dist/item-models.js','utf8'),ctx);
 vm.runInContext('setupExpandedWorld();',ctx);
 async function sheet(entries,file){
  const columns=8,rows=Math.ceil(entries.length/columns),c=createCanvas(columns*150,rows*106+48),g=c.getContext('2d');
- g.fillStyle='#22221c';g.fillRect(0,0,c.width,c.height);g.font='17px sans-serif';g.fillStyle='#eee0bc';g.fillText('Emberfall · '+file+' · 48px and 25px',12,30);
+ g.fillStyle='#22221c';g.fillRect(0,0,c.width,c.height);g.font='17px sans-serif';g.fillStyle='#eee0bc';g.fillText('Veldren · '+file+' · 48px and 25px',12,30);
  for(const [i,{label,render}]of entries.entries()){
   const x=i%columns*150,y=Math.floor(i/columns)*106+46;g.fillStyle='#403b30';g.fillRect(x+4,y+2,142,100);
   const icon=await render();g.drawImage(icon,x+12,y+8,48,48);g.drawImage(icon,x+91,y+23,25,25);

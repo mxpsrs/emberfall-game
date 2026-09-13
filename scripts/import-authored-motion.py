@@ -263,7 +263,7 @@ def build(cache):
     credits = ROOT/'dist/assets/realms/CREDITS.txt'
     text = credits.read_text()
     if 'Universal Animation Library' not in text:
-        credits.write_text(text+'\nCharacter motion: Quaternius Universal Animation Library (Standard), CC0 1.0.\nhttps://quaternius.itch.io/universal-animation-library\nRetargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Emberfall.\n')
+        credits.write_text(text+'\nCharacter motion: Quaternius Universal Animation Library (Standard), CC0 1.0.\nhttps://quaternius.itch.io/universal-animation-library\nRetargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Veldren.\n')
 
 
 if __name__ == '__main__':

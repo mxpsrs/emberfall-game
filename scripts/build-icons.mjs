@@ -29,11 +29,11 @@ defs.ignore=[...defs.person.map(([d])=>[d,'#b9b2a2']),['M72 440L440 72','none','
 const generated='// BEGIN GENERATED ICONS — npm run icons:build\nconst GAME_ICON_DEFS='+JSON.stringify(defs)+';\n// END GENERATED ICONS';
 const file=path.join(root,'dist/game-icons.js');
 fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace(/\/\/ BEGIN GENERATED ICONS[\s\S]*?\/\/ END GENERATED ICONS/,generated));
-const credits=['EMBERFALL — INTERFACE ICON CREDITS','','Icons by '+[...new Set(Object.values(manifest.icons).map(i=>i.author))].join(', ')+'.',
+const credits=['VELDREN — INTERFACE ICON CREDITS','','Icons by '+[...new Set(Object.values(manifest.icons).map(i=>i.author))].join(', ')+'.',
  'Available on https://game-icons.net','Licensed under Creative Commons Attribution 3.0: '+manifest.licenseUrl,
  'Changes: recoloured for the game palette; backgrounds removed; elemental spell tier indicators added; Ignore combines a person with a prohibition mark.',
  'Original source: '+manifest.source+' at '+manifest.revision,
- 'Close, fullscreen, resize, paging and zoom controls are simple geometric marks authored for Emberfall.','',
+ 'Close, fullscreen, resize, paging and zoom controls are simple geometric marks authored for Veldren.','',
  ...Object.entries(manifest.icons).map(([id,i])=>i.label+' ('+id+') — '+i.author+' — '+i.url)];
 fs.mkdirSync(path.join(root,'dist/assets/ui'),{recursive:true});
 fs.writeFileSync(path.join(root,'dist/assets/ui/CREDITS.txt'),credits.join('\n')+'\n');

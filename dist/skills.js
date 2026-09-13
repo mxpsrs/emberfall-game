@@ -1,5 +1,5 @@
 'use strict';
-// OSRS-style core progression. Worship, spirits and the permanent tool belt are Emberfall rules.
+// OSRS-style core progression. Worship, spirits and the permanent tool belt are Veldren rules.
 const SKILL_XP=[0,0];let cumulativeSkillXP=0;
 for(let level=1;level<99;level++){cumulativeSkillXP+=Math.floor(level+300*Math.pow(2,level/7));SKILL_XP[level+1]=Math.floor(cumulativeSkillXP/4);}
 function skillLevel(skill,xp=s.xp[skill]){xp=Math.max(0,Number(xp)||0);if(skill==='Worship')return Math.min(99,1+Math.floor(Math.sqrt(xp/35)));let lo=1,hi=99;while(lo<hi){const mid=Math.ceil((lo+hi)/2);if(xp>=SKILL_XP[mid])lo=mid;else hi=mid-1;}return lo;}

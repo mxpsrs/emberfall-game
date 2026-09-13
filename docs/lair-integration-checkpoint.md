@@ -1,4 +1,4 @@
-# Emberfall release checkpoint — September 13, 2026
+# Veldren release checkpoint — September 13, 2026
 
 The owner authorized asset selection/downloads and incremental publication of
 tested work. Version 52 published the sound/combat/Forest Giant batch. Version

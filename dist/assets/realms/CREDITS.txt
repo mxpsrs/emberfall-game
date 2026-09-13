@@ -2,11 +2,11 @@ Quaternius: Medieval Village MegaKit, Universal Base Characters, Stylized Nature
 https://quaternius.itch.io/medieval-village-megakit
 https://quaternius.itch.io/universal-base-characters
 https://quaternius.itch.io/stylized-nature-megakit
-Converted and adapted for Emberfall.
+Converted and adapted for Veldren.
 
 Character motion: Quaternius Universal Animation Library (Standard), CC0 1.0.
 https://quaternius.itch.io/universal-animation-library
-Retargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Emberfall.
+Retargeted to the Universal Base Characters; runtime interpolation and equipment sockets adapted for Veldren.
 
 Quaternius Fantasy Props MegaKit, Standard edition, CC0 1.0.
 https://quaternius.itch.io/fantasy-props-megakit
@@ -31,7 +31,7 @@ https://quaternius.itch.io/modular-character-outfits-fantasy
 
 Archery motions, bow, arrow, quiver and Ranger cap: Kevin Iglesias, Human Archer Animations 2.0 FREE.
 https://kevdev.itch.io/human-archer-animations-free
-Standard Asset Store EULA. Incorporated and adapted for Emberfall; not a standalone asset redistribution.
+Standard Asset Store EULA. Incorporated and adapted for Veldren; not a standalone asset redistribution.
 Magic casting and kneeling: Quaternius Universal Animation Library (Standard), CC0 1.0.
 FBX conversion uses ufbx (MIT); source hashes and retargeting provenance are recorded in action-motion-provenance.json.
 
@@ -42,12 +42,12 @@ Original skin and native actions preserved; texture atlas and game scale adapted
 Ork: Animated Minotaur by vsify, CGTrader Royalty Free License (no AI).
 https://www.cgtrader.com/free-3d-models/character/fantasy-character/minotaur-cda47223-1a94-4f7d-bc2b-82344547726d
 Incorporated game data only; original FBX and texture source files are not distributed.
-Original body, clothing, skin and six native actions converted for Emberfall.
+Original body, clothing, skin and six native actions converted for Veldren.
 
 Runeforged Colossus: Icebronze - Golem by melikovfuad7, CGTrader Royalty Free License (no AI).
 https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze
 Original mesh, base color, skin, idle and anima takes retained; unused DCC controllers removed.
-The three attack styles reuse the original anima gesture with Emberfall effects.
+The three attack styles reuse the original anima gesture with Veldren effects.
 The package has no native death take: a held native pose uses game-authored crystal shatter/dissolve.
 Incorporated game data only; original source files are not distributed or used for model training.
 
@@ -55,7 +55,7 @@ Veyr the Mindbreaker: Demon Creature with Weapon - 25 animations, 2 skins by and
 https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins
 CGTrader Royalty Free License (no AI). Original body, orb weapon, default color maps and rig retained.
 Twenty-six source takes inspected, including the A-pose. Ten runtime clips retain reviewed single-cycle
-windows for idle, walking, running, three strikes, two casts, damage and death. Ground effects and lair by Emberfall.
+windows for idle, walking, running, three strikes, two casts, damage and death. Ground effects and lair by Veldren.
 Incorporated game data only; original FBX and texture archives are not distributed or used for model training.
 
 Xalith the Broodmother: Insectoid Monster Rig by DM-913 (SuperKapoo913), CC BY 4.0.
@@ -64,8 +64,8 @@ https://creativecommons.org/licenses/by/4.0/
 Original BOOG geometry, body/wing color maps and rig converted from the owner-supplied Bugoid2.blend.
 Curved B-bone segments baked for the game renderer; textures atlased, scale and skinning adapted.
 The source contains one landing/settling take and one static pose. Idle, walk, run, left/right
-scythe strikes, hit reaction and death are new Emberfall-authored motions on the original rig.
-Cavern scenery, gameplay, warning timing and effects by Emberfall. No artist endorsement implied.
+scythe strikes, hit reaction and death are new Veldren-authored motions on the original rig.
+Cavern scenery, gameplay, warning timing and effects by Veldren. No artist endorsement implied.
 
 Varkesh the Blightwing: Prowler Dragon Variant Rig by DM-913, CC BY 4.0.
 https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9
@@ -74,5 +74,5 @@ Original DragoTST.blend and its supplied texture maps provided by the owner.
 Changes: curved Blender bones baked into runtime skin segments; preserve-volume
 stance compensated for linear skinning; original color and alpha maps atlased.
 The complete native Walk Loop supplies locomotion, retimed for running.
-Idle, fangs, breath, hit reaction and collapse are Emberfall-authored motions.
+Idle, fangs, breath, hit reaction and collapse are Veldren-authored motions.
 The original model and rig are retained; full Blender PBR is not reproduced.

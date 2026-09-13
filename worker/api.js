@@ -21,14 +21,14 @@ export async function handleSave(request,env){
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
  const raw=await request.text();if(raw.length>500000)return reply({error:'Save is too large'},413);
  let body;try{body=JSON.parse(raw);}catch{return reply({error:'Invalid save'},400);}
- if(body.resetVersion!==resetVersion)return reply({code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Emberfall to create your new character.'},409);
+ if(body.resetVersion!==resetVersion)return reply({code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'},409);
  const st=body.state;if(!Number.isInteger(body.revision)||body.revision<0||!st||typeof st!=='object'||!st.xp||!st.bag||!Number.isFinite(st.x)||!Number.isFinite(st.y)||!Number.isFinite(st.hp)||!Number.isFinite(st.gold))return reply({error:'Invalid character data'},400);
  const previous=row?JSON.parse(row.state):null;
  if(completedApprenticeship(previous)&&(!completedApprenticeship(st)||st.sceneId==='tutorial'))return reply({error:'The apprenticeship is complete. Tutorial re-entry is unavailable.'},400);
  if(st.tutorialIslandVersion>=1&&((st.sceneId==='tutorial')===completedApprenticeship(st)))return reply({error:'Invalid apprenticeship destination.'},400);
  const stamp=new Date().toISOString(),data=JSON.stringify(st);
  const result=body.revision===0?await env.DB.prepare(`INSERT INTO character_saves (user_id,state,revision,updated_at) SELECT ?,?,1,? WHERE ${RESET_VERSION_SQL}=? ON CONFLICT(user_id) DO NOTHING`).bind(user,data,stamp,body.resetVersion).run():await env.DB.prepare(`UPDATE character_saves SET state = ?, revision = revision + 1, updated_at = ? WHERE user_id = ? AND revision = ? AND ${RESET_VERSION_SQL}=?`).bind(data,stamp,user,body.revision,body.resetVersion).run();
- if(!result.meta.changes){resetVersion=await currentResetVersion(env);return reply(resetVersion!==body.resetVersion?{code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Emberfall to create your new character.'}:{error:'Your character was saved in another tab or device. Reload to continue with that save.'},409);}
+ if(!result.meta.changes){resetVersion=await currentResetVersion(env);return reply(resetVersion!==body.resetVersion?{code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'}:{error:'Your character was saved in another tab or device. Reload to continue with that save.'},409);}
  return reply({revision:body.revision+1,updatedAt:stamp});
  }catch(error){console.error('character_save_failed',error.message);return reply({error:'Could not reach character storage. Your local backup is safe.'},503);}
 }

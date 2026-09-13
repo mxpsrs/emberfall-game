@@ -1,4 +1,4 @@
-/* Device-specific OSRS layout, using Emberfall's existing icons and controls. */
+/* Device-specific OSRS layout, using Veldren's existing icons and controls. */
 body.classic-ui{--ui-stone:#514b3e;--ui-paper:#c8b892;--ui-edge:#262319;--ui-highlight:#92856a;--ui-yellow:#ffff00;--text:#eee0b2;--muted:#cabd9b;--side-panel-width:228px;--side-panel-right:8px;--side-panel-height:306px;--chat-width:510px;--chat-height:174px;--dock:0px;font-family:Arial,Helvetica,sans-serif}
 .classic-ui button{border-radius:0;color:#ffff00;border:1px solid #29271e;background:#514b3e;box-shadow:inset 1px 1px #8d8064,inset -1px -1px #252218;text-shadow:1px 1px #000}
 .classic-ui button:hover{color:#fff;border-color:#c3af81}.classic-ui button:disabled{cursor:default}.classic-ui button[aria-pressed=true],.classic-ui button.selected{background:#743b2e!important;border-color:#c59154!important}

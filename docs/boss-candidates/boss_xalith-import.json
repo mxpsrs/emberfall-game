@@ -8,7 +8,7 @@
     "url": "https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-    "motionNote": "The supplied PoseLib is a landing/settling take and PoseLib.001 is static. Gameplay clips are authored by Emberfall on this exact rig; all curved B-bone segments are baked.",
+    "motionNote": "The supplied PoseLib is a landing/settling take and PoseLib.001 is static. Gameplay clips are authored by Veldren on this exact rig; all curved B-bone segments are baked.",
     "sha256": "30e664009204c1ee29d9dc54c8289578d93d9b05599cf66d94619ca7501c8b1e",
     "file": "Bugoid2.blend",
     "nativeActions": [
@@ -55,45 +55,45 @@
       "source": "Emberfall/idle",
       "duration": 2.8,
       "frames": 35,
-      "note": "Emberfall-authored on the original rig"
+      "note": "Veldren-authored on the original rig"
     },
     "walk": {
       "source": "Emberfall/walk",
       "duration": 1.1,
       "frames": 28,
-      "note": "Emberfall-authored on the original rig"
+      "note": "Veldren-authored on the original rig"
     },
     "run": {
       "source": "Emberfall/run",
       "duration": 0.78,
       "frames": 20,
-      "note": "Emberfall-authored on the original rig"
+      "note": "Veldren-authored on the original rig"
     },
     "attack": {
       "source": "Emberfall/attack",
       "duration": 1.45,
       "frames": 36,
-      "note": "Emberfall-authored on the original rig",
+      "note": "Veldren-authored on the original rig",
       "release": 0.53
     },
     "attack2": {
       "source": "Emberfall/attack2",
       "duration": 1.45,
       "frames": 36,
-      "note": "Emberfall-authored on the original rig",
+      "note": "Veldren-authored on the original rig",
       "release": 0.53
     },
     "hit": {
       "source": "Emberfall/hit",
       "duration": 0.5,
       "frames": 13,
-      "note": "Emberfall-authored on the original rig"
+      "note": "Veldren-authored on the original rig"
     },
     "death": {
       "source": "Emberfall/death",
       "duration": 2.3,
       "frames": 57,
-      "note": "Emberfall-authored on the original rig"
+      "note": "Veldren-authored on the original rig"
     }
   }
 }

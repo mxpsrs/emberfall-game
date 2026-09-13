@@ -157,7 +157,7 @@ for sex in ['Male','Female']:
 dest=ROOT/'dist/assets/realms';dest.mkdir(exist_ok=True,parents=True)
 (dest/'models.js').write_text('const REALM_MODELS='+json.dumps(out,separators=(',',':'))+';\n')
 atlas.save(dest/'atlas.png',optimize=True)
-(dest/'CREDITS.txt').write_text('Quaternius: Medieval Village MegaKit, Universal Base Characters, Stylized Nature MegaKit. Standard editions, CC0 1.0.\nhttps://quaternius.itch.io/medieval-village-megakit\nhttps://quaternius.itch.io/universal-base-characters\nhttps://quaternius.itch.io/stylized-nature-megakit\nConverted and adapted for Emberfall.\n')
+(dest/'CREDITS.txt').write_text('Quaternius: Medieval Village MegaKit, Universal Base Characters, Stylized Nature MegaKit. Standard editions, CC0 1.0.\nhttps://quaternius.itch.io/medieval-village-megakit\nhttps://quaternius.itch.io/universal-base-characters\nhttps://quaternius.itch.io/stylized-nature-megakit\nConverted and adapted for Veldren.\n')
 print('Converted',len(out['models']),'models,',len(textures),'textures and two human avatars.')
 subprocess.run([sys.executable,str(ROOT/'scripts/import-authored-motion.py'),str(SOURCE)],check=True)
 subprocess.run([sys.executable,str(ROOT/'scripts/import-world-props.py'),str(SOURCE)],check=True)

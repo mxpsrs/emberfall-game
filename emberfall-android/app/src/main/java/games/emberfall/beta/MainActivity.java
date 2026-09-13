@@ -28,7 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-/** Online Android client. Authentication and game state stay on Emberfall's server. */
+/** Online Android client. Authentication and game state stay on Veldren's server. */
 public final class MainActivity extends Activity {
     private static final String GAME_URL = "https://emberfall-realms.rayfgarrison97.chatgpt.site/";
     private static final String GAME_HOST = "emberfall-realms.rayfgarrison97.chatgpt.site";
@@ -80,7 +80,7 @@ public final class MainActivity extends Activity {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setSafeBrowsingEnabled(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " EmberfallAndroid/0.1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " VeldrenAndroid/0.1.0");
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(web, false);
         root.addView(web, new FrameLayout.LayoutParams(-1, -1));
@@ -115,10 +115,10 @@ public final class MainActivity extends Activity {
                 }
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (request.isForMainFrame()) showError("Could not connect to Emberfall. Check your internet connection, then retry.");
+                if (request.isForMainFrame()) showError("Could not connect to Veldren. Check your internet connection, then retry.");
             }
             @Override public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse response) {
-                if (request.isForMainFrame()) showError(response.getStatusCode() == 503 ? "Emberfall is temporarily unavailable or under maintenance. Try again shortly." : "Emberfall could not load. Please retry.");
+                if (request.isForMainFrame()) showError(response.getStatusCode() == 503 ? "Veldren is temporarily unavailable or under maintenance. Try again shortly." : "Veldren could not load. Please retry.");
             }
             @Override public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
                 root.removeView(view); view.destroy(); web = null;
@@ -140,7 +140,7 @@ public final class MainActivity extends Activity {
 
     private void showError(String message) {
         failed = true; progress.setVisibility(View.GONE); errorPanel.removeAllViews();
-        TextView title = new TextView(this); title.setText("Emberfall"); title.setTextSize(26); title.setTextColor(Color.rgb(223, 190, 126)); title.setGravity(Gravity.CENTER); errorPanel.addView(title);
+        TextView title = new TextView(this); title.setText("Veldren"); title.setTextSize(26); title.setTextColor(Color.rgb(223, 190, 126)); title.setGravity(Gravity.CENTER); errorPanel.addView(title);
         TextView text = new TextView(this); text.setText(message); text.setTextSize(16); text.setTextColor(Color.WHITE); text.setGravity(Gravity.CENTER); text.setPadding(0, dp(14), 0, dp(14)); errorPanel.addView(text);
         Button retry = new Button(this); retry.setText("Retry"); retry.setOnClickListener(v -> createWebView()); errorPanel.addView(retry);
         errorPanel.setVisibility(View.VISIBLE);
@@ -186,7 +186,7 @@ public final class MainActivity extends Activity {
     @Override public void onWindowFocusChanged(boolean focus) { super.onWindowFocusChanged(focus); if (focus) immerse(); }
     @Override public void onBackPressed() {
         if (fullscreenContent != null) { hideCustomView(); return; }
-        new AlertDialog.Builder(this).setTitle("Leave Emberfall?").setMessage("Return to your home screen?").setNegativeButton("Keep playing", (d,w) -> immerse()).setPositiveButton("Leave", (d,w) -> { saveProgress(); moveTaskToBack(true); }).show();
+        new AlertDialog.Builder(this).setTitle("Leave Veldren?").setMessage("Return to your home screen?").setNegativeButton("Keep playing", (d,w) -> immerse()).setPositiveButton("Leave", (d,w) -> { saveProgress(); moveTaskToBack(true); }).show();
     }
     @Override protected void onDestroy() { if (web != null) { root.removeView(web); web.destroy(); web = null; } super.onDestroy(); }
 }

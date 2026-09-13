@@ -1,11 +1,11 @@
-EMBERFALL — INTERFACE ICON CREDITS
+VELDREN — INTERFACE ICON CREDITS
 
 Icons by Lorc, Delapouite, Lucas, sbed, Skoll, Carl Olsen.
 Available on https://game-icons.net
 Licensed under Creative Commons Attribution 3.0: https://creativecommons.org/licenses/by/3.0/
 Changes: recoloured for the game palette; backgrounds removed; elemental spell tier indicators added; Ignore combines a person with a prohibition mark.
 Original source: https://github.com/game-icons/icons at 82d948812bfe3f269ef8f731dcdb07b08160edc4
-Close, fullscreen, resize, paging and zoom controls are simple geometric marks authored for Emberfall.
+Close, fullscreen, resize, paging and zoom controls are simple geometric marks authored for Veldren.
 
 Inventory (bag) — Lorc — https://game-icons.net/1x1/lorc/knapsack.html
 Worn equipment (gear) — Delapouite — https://game-icons.net/1x1/delapouite/chest-armor.html

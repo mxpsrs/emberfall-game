@@ -18,7 +18,7 @@ def label(x, y, text, size=24, color='#dce3dd', bold=False):
     font = ImageFont.truetype(BOLD if bold else FONT, size)
     d.text((x, y), text, font=font, fill=color)
 
-label(MARGIN, 35, 'EMBERFALL  /  APPROVED CREATURE ROSTER', 39, '#f2e8cc', True)
+label(MARGIN, 35, 'VELDREN  /  APPROVED CREATURE ROSTER', 39, '#f2e8cc', True)
 label(MARGIN, 92, '4 bosses  •  2 regular monsters  •  Original artist previews', 25)
 models = sorted(DATA['models'], key=lambda model: model['encounter_kind'] != 'boss')
 for i, model in enumerate(models):

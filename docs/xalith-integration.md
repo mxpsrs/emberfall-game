@@ -28,7 +28,7 @@ The CPU fallback deforms the complete rig directly.
 The source actions are **PoseLib**, frames 1–35 at 24 fps, showing landing and
 settling, and **PoseLib.001**, a static one-frame pose. They do not constitute a
 walk/attack/death set. The grounded final PoseLib pose supplies the starting
-stance for seven new **Emberfall-authored** motions on that same skeleton:
+stance for seven new **Veldren-authored** motions on that same skeleton:
 
 | Motion | Duration | Purpose |
 | --- | --- | --- |

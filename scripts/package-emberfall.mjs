@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-// Emberfall's Worker embeds every browser asset. Packaging the raw art again
+// Veldren's Worker embeds every browser asset. Packaging the raw art again
 // doubles the payload without adding a runtime dependency.
-const output=path.resolve(process.argv[2]||'../emberfall-release.tar.gz');
+const output=path.resolve(process.argv[2]||'../veldren-release.tar.gz');
 for(const file of ['dist/server/index.js','dist/.openai/hosting.json'])if(!fs.statSync(file).isFile())throw new Error('Missing build: '+file);
 const source=JSON.parse(fs.readFileSync('.openai/hosting.json','utf8')),built=JSON.parse(fs.readFileSync('dist/.openai/hosting.json','utf8'));
 if(source.project_id!==built.project_id)throw new Error('Built Site identity does not match source');

@@ -5,7 +5,7 @@ from PIL import Image,ImageDraw,ImageFont
 root=pathlib.Path(sys.argv[1]);dest=pathlib.Path(sys.argv[2]);im=Image.new('RGB',(1500,1340),'#171e22');d=ImageDraw.Draw(im)
 font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',19)
 title=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',25)
-d.text((28,23),'EMBERFALL  /  BOSS DESIGN DRAFTS',font=title,fill='#ead7ab')
+d.text((28,23),'VELDREN  /  BOSS DESIGN DRAFTS',font=title,fill='#ead7ab')
 d.text((28,59),'Actual 3D meshes · Standing poses · Pending your design feedback',font=font,fill='#a6b5b6')
 items=[('boss_king','The Hollow King'),('boss_mossfang','Mossfang'),('boss_colossus','Runeforged Colossus'),('boss_warden','Crypt Warden'),('boss_sentinel','Ashwatch Sentinel'),('boss_cindermaw','Cindermaw'),('boss_scrapchief','Grik the Scrapchief'),('boss_briaroracle','Briar Oracle'),('boss_nightbloom','Nightbloom Sovereign')]
 c=math.cos(.25);s=math.sin(.25);light=np.array([-.5,.8,1.]);light/=np.linalg.norm(light)

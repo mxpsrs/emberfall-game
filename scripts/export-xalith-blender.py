@@ -1,7 +1,7 @@
 """Bake the supplied Bugoid2 Blender rig, including its curved B-bone segments.
 
 Run with Blender's bpy Python and pass the original .blend and an output folder.
-The original two actions remain identified separately from Emberfall-authored
+The original two actions remain identified separately from Veldren-authored
 motions. No embedded scripts run, and the source .blend is never overwritten.
 """
 import json
@@ -258,7 +258,7 @@ def main(source, output):
                 original.to_mesh_clear()
                 worst = max(worst,float(np.linalg.norm(converted-golden,axis=1).max()))
         errors[clip] = worst
-        animations.append({'name':'Emberfall/'+clip,'duration':duration,'frames':frames})
+        animations.append({'name':'Veldren/'+clip,'duration':duration,'frames':frames})
         print(clip,'frames',count,'max skin error',round(worst,6),flush=True)
 
     result = {

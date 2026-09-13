@@ -249,7 +249,7 @@
       "commercial_use": true,
       "rigged": "Creator explicitly describes an original insectoid rig",
       "animation_evidence": "Original Bugoid2.blend opened safely in Blender. PoseLib: frames 1\u201335, landing/settling. PoseLib.001: one static frame. Seven gameplay motions newly authored on the original rig.",
-      "animation_badge": "Inspected original rig | 7 Emberfall-authored gameplay clips",
+      "animation_badge": "Inspected original rig | 7 Veldren-authored gameplay clips",
       "animation_count": 1,
       "triangles": 13156,
       "asset_files_inspected": true,

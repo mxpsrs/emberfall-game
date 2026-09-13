@@ -1,7 +1,7 @@
 """Bake the supplied DragoTST Blender rig, including its curved B-bone segments.
 
 Run with Blender's bpy Python and pass the original .blend and an output folder.
-The original actions remain identified separately from Emberfall-authored
+The original actions remain identified separately from Veldren-authored
 motions. No embedded scripts run, and the source .blend is never overwritten.
 """
 import json
@@ -271,7 +271,7 @@ def main(source, output):
                 worst = max(worst,float(distances.max()))
         errors[clip] = worst
         error_percentiles[clip] = dict(zip(["mean","p95","p99"], [float(np.mean(sampled_errors)),float(np.percentile(sampled_errors,95)),float(np.percentile(sampled_errors,99))]))
-        animations.append({'name':('Native/Walk Loop' if clip=='walk' else 'Native/Walk Loop (faster)' if clip=='run' else 'Emberfall/'+clip),'duration':duration,'frames':frames})
+        animations.append({'name':('Native/Walk Loop' if clip=='walk' else 'Native/Walk Loop (faster)' if clip=='run' else 'Veldren/'+clip),'duration':duration,'frames':frames})
         print(clip,'frames',count,'max skin error',round(worst,6),flush=True)
 
     result = {

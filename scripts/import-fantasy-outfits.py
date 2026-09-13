@@ -1,4 +1,4 @@
-"""Import the CC0 Standard fantasy outfits onto Emberfall's two existing rigs.
+"""Import the CC0 Standard fantasy outfits onto Veldren's two existing rigs.
 Usage: python scripts/import-fantasy-outfits.py /path/to/extracted/pack
 The optional hood is exported independently; no headgear is baked into clothing.
 """
@@ -36,7 +36,7 @@ def build(cache):
     out={k:motion.packed(v,dtype)for k,v,dtype in [('p',np.rint(a['p']*10000),'<i2'),('n',np.rint(a['n']*127),'i1'),('c',np.rint(a['c']*255),'u1'),('j',a['j'],'u1'),('w',np.rint(a['w']*255),'u1'),('i',a['i'],'<u2'),('skin',a['skin'],'u1'),('dye',a['dye'],'u1')]};out['pScale']=.0001;out['bounds']=[a['p'].min(0).tolist(),a['p'].max(0).tolist()];out['outfitPart']=part
     key='Outfit_'+outfit+'_'+part;world['armor'][sex][key]=out;print(sex,key,count,'vertices',flush=True);provenance.append({'file':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
  dest.write_text('const REALM_MODELS='+json.dumps(world,separators=(',',':'))+';\n')
- (ROOT/'dist/assets/realms/fantasy-outfits-provenance.json').write_text(json.dumps({'author':'Quaternius','pack':'Modular Character Outfits - Fantasy (Standard)','url':'https://quaternius.itch.io/modular-character-outfits-fantasy','license':'CC0 1.0 Universal','parts':provenance,'adaptation':'Retargeted to both Emberfall rigs; texture colours baked into vertices; hood remains separate head equipment.'},indent=2)+'\n')
+ (ROOT/'dist/assets/realms/fantasy-outfits-provenance.json').write_text(json.dumps({'author':'Quaternius','pack':'Modular Character Outfits - Fantasy (Standard)','url':'https://quaternius.itch.io/modular-character-outfits-fantasy','license':'CC0 1.0 Universal','parts':provenance,'adaptation':'Retargeted to both Veldren rigs; texture colours baked into vertices; hood remains separate head equipment.'},indent=2)+'\n')
  credits=ROOT/'dist/assets/realms/CREDITS.txt';text=credits.read_text()
  if 'Modular Character Outfits - Fantasy'not in text:credits.write_text(text+'\nPeasant and Ranger clothing: Quaternius Modular Character Outfits - Fantasy (Standard), CC0 1.0.\nhttps://quaternius.itch.io/modular-character-outfits-fantasy\n')
 if __name__=='__main__':build(pathlib.Path(sys.argv[1]))
