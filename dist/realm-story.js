@@ -11,6 +11,9 @@ const FREEDOM_FIGHTER_STORIES={
  magic:'Calling someone across worlds takes more than magic. It takes trust that the person who answers will choose to help. Rowan made that choice. Now yours begins.\nTake this staff and these runes. Equip the staff with the Magic icon, then cast at my practice dummy. Wind strike uses an air rune and a mind rune. Your Magic skill grows with practice.\nWhen you have made your first cast, return to Rowan in the square. The crossing to the mainland is ready. Once you leave this refuge, there is no road back.'
 };
 for(const [role,text]of Object.entries(FREEDOM_FIGHTER_STORIES))TUTORS[role].text=text;
+TUTORS.woods.text=TUTORS.woods.text.replace('Tap the marked tree to cut a log.','The grove behind my shack supplies this whole refuge. Tap the marked tree to cut a log; every young tree along the timber trail can be chopped with your starting axe.');
+TUTORS.bank.text=TUTORS.bank.text.replace('at the shrine south of the square','at the shrine in the southwest of the island');
+TUTORS.worship.text=TUTORS.worship.text.replace('in the school east of the bank','in the school along the southeast lane, beyond the training yard');
 const openingStep=tutorialSteps.find(t=>t.event==='talk-guide');openingStep.title='Answer the stranger’s call';openingStep.desc='A mysterious man is calling you over from the square. Find out where you are—and why he brought you here.';
 const lastLesson=tutorialSteps.find(t=>t.event==='talk-finish');lastLesson.title='Cross into the threatened world';lastLesson.desc='Return to Rowan. The freedom fighters have prepared you. Ask him to open the one-way crossing to Briarhaven on the mainland.';
 function applyStoryIdentity(){const guide=tutorialTutor('guide');if(!guide)return;const met=s.metRowan||s.tutorial>tutorialSteps.findIndex(t=>t.event==='talk-guide');guide.name=met?'Elder Rowan':'Mysterious man';TUTORS.guide.name=guide.name;if(met)s.metRowan=true;}

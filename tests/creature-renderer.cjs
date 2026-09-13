@@ -3,13 +3,14 @@ const vm=require('node:vm');
 const parameters=gl.getParameter;
 gl.getParameter=key=>key===gl.MAX_VERTEX_UNIFORM_VECTORS?256:parameters(key);
 gl.getAttribLocation=(program,name)=>['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights'].indexOf(name);
-let palettes=0;
+let palettes=0;const bossColors=new Set(),dissolves=new Set();
+gl.uniform1f=(name,value)=>{if(name==='uBossColor')bossColors.add(value);if(name==='uDissolve')dissolves.add(value);};
 gl.uniform4fv=(name,data)=>{if(name==='uBones[0]'){if(!data.every(Number.isFinite)||data.length>960)throw new Error('Invalid skin palette');palettes++;}};
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assetsReady=true;
 activateScene('mine',10,12);screen={w:1112,h:512};view3d.zoom=90;
-const monsters=Object.keys(creatureAssets).map((kind,id)=>({type:'enemy',kind,id,x:10+id%2,y:12+Math.floor(id/2),dead:0,attackAt:-100,hitAt:-100}));
+const monsters=Object.keys(creatureAssets).map((kind,id)=>({type:'enemy',kind,creatureLook:kind,id,x:10+id%2,y:12+Math.floor(id/2),dead:0,attackAt:-100,hitAt:-100}));
 const frameCosts=[];let uploaded;
 for(let frame=0;frame<90;frame++){
  time=1+frame/60;const painter=painter3(ctx,project3);assert(painter.skinned,'supported hardware uses GPU skinning');
@@ -24,6 +25,11 @@ assert(creatureRigPoses.size<=80,'bone cache stays bounded');
 frameCosts.sort((a,b)=>a-b);console.log('Creature CPU preparation, '+monsters.length+' simultaneous attacks: median '+frameCosts[45].toFixed(2)+' ms, p95 '+frameCosts[85].toFixed(2)+' ms. GPU execution is not included.');
 `,ctx);
 if(palettes!==90*vm.runInContext('monsters.length',ctx)*2)throw new Error('Both shadows and color must receive every creature palette');
+vm.runInContext(`
+const crystal=monsters.find(o=>o.creatureLook==='boss_colossus');crystal.enraged=true;crystal.dead=time+60;crystal.deathAt=time-.6;
+const deathPainter=painter3(ctx,project3);creature3(deathPainter,crystal,11,12);creature3(deathPainter,monsters[0],9,12);deathPainter.flush();
+`,ctx);
+if(!bossColors.has(2)||!bossColors.has(0)||![...dissolves].some(v=>v>0&&v<1)||!dissolves.has(0))throw new Error('Boss recolor/dissolve must be applied and reset for ordinary geometry');
 vm.runInContext(`
 const walkingGear={body:'leatherArmor',feet:'leatherBoots',head:'ironHelm',weapon:'ironSword',shield:'ironShield'};
 for(const sex of ['male','female']){

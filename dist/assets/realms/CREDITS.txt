@@ -43,3 +43,10 @@ Ork: Animated Minotaur by vsify, CGTrader Royalty Free License (no AI).
 https://www.cgtrader.com/free-3d-models/character/fantasy-character/minotaur-cda47223-1a94-4f7d-bc2b-82344547726d
 Incorporated game data only; original FBX and texture source files are not distributed.
 Original body, clothing, skin and six native actions converted for Emberfall.
+
+Runeforged Colossus: Icebronze - Golem by melikovfuad7, CGTrader Royalty Free License (no AI).
+https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze
+Original mesh, base color, skin, idle and anima takes retained; unused DCC controllers removed.
+The three attack styles reuse the original anima gesture with Emberfall effects.
+The package has no native death take: a held native pose uses game-authored crystal shatter/dissolve.
+Incorporated game data only; original source files are not distributed or used for model training.

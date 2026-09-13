@@ -10,7 +10,12 @@ const ork=creatureAssets.ork;assert(ork,'approved Ork imported');
 assert.equal(ork.mesh.i.length/3,4655,'all four original body meshes retained');
 assert.equal(new Set(ork.mesh.t).size,2,'body and clothing keep separate original materials');
 assert.equal(ork.source.animationFiles.length,5,'separate native FBX actions have source provenance');
-for(const kind of ['forestgiant','ork'])for(const clip of Object.keys(creatureAssets[kind].clips)){
+const colossus=creatureAssets.boss_colossus;assert(colossus);
+assert.equal(colossus.mesh.i.length/3,10344,'Colossus keeps the complete original geometry');
+assert.equal(colossus.rig.deforms.length,45,'unused DCC controllers are pruned without losing deforming bones');
+assert.equal(colossus.source.nativeActions.length,2,'only two native takes are claimed');
+assert.equal(colossus.clips.death.frames,1,'held death pose is explicitly paired with game-authored shatter effects');
+for(const kind of ['forestgiant','ork','boss_colossus'])for(const clip of Object.keys(creatureAssets[kind].clips)){
  const asset=creatureAssets[kind];
  let moved=false,first=null;
  for(const phase of [0,.25,.5,.75,1]){
@@ -22,7 +27,7 @@ for(const kind of ['forestgiant','ork'])for(const clip of Object.keys(creatureAs
   if(first&&pose.p.some((v,i)=>Math.abs(v-first[i])>.001))moved=true;
   if(!first)first=pose.p;
  }
- assert(moved,'source action produces real skeletal motion: '+clip);
+ if(kind==='boss_colossus'&&clip==='death')assert(!moved,'held pose remains still for the crystal shatter');else assert(moved,'source action produces real skeletal motion: '+clip);
 }
-console.log('PASS: Forest Giant and Ork preserve original geometry, materials and native actions; all imported poses deform and remain finite.');
+console.log('PASS: Forest Giant, Ork and Colossus preserve original geometry and materials; native actions remain finite; Colossus held-pose death is explicitly documented.');
 `,ctx);

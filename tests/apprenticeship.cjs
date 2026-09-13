@@ -16,6 +16,12 @@ vm.runInContext(`
 let randomSeed=91482;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
 renderAction=()=>{};draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 s.character={name:'Fresh apprentice',look:0};s.tutorial=0;s.tutorialVersion=4;s.runEnabled=false;s.runEnergy=100;assetsReady=true;activateScene('tutorial',42,51);assert.equal(currentScene,'tutorial');assert(!worldScenes.overworld.objects.some(o=>o.tutor),'mainland has no tutorial tutors');assert(objects.some(o=>o.tutor==='cooking'));
+const grove=objects.filter(o=>o.firstlightGrove);assert(grove.length>=15,'Ash has a substantial working woodland');
+for(const tree of grove){assert.equal(tree.resourceId,'normal');assert(route(tree.x,tree.y,true),'each new starter tree is reachable');}
+assert(tutorialTutor('bank').y<45&&tutorialTutor('magic').y>85&&tutorialTutor('worship').y>85,'tutors occupy the north and south of the island');
+assert(roadInfluence(43,57)[1]>.95&&roadInfluence(49,54)[1]>.95,'the square has a broad paved civic area');
+const islandKitchen=buildings.find(b=>b.service?.destination==='village_kitchen'),mainlandKitchen=worldScenes.overworld.buildings.find(b=>b.service?.destination==='village_kitchen');assert.equal(mainlandKitchen.x,54);assert.equal(islandKitchen.x,75);assert.notEqual(islandKitchen.southPlan,mainlandKitchen.southPlan,'relocated island plans do not mutate mainland buildings');
+const oldApprentice={...s,tutorial:17,tutorialIslandVersion:1,x:58,y:52,bag:{...s.bag},xp:{...s.xp}};const preserved=JSON.stringify([oldApprentice.bag,oldApprentice.xp]);normalizeJourney(oldApprentice,oldApprentice);assert.equal(oldApprentice.tutorial,17);assert.equal(JSON.stringify([oldApprentice.bag,oldApprentice.xp]),preserved);assert.equal(JSON.stringify([oldApprentice.x,oldApprentice.y]),JSON.stringify(TUTORIAL_ENTRY),'old island saves resume safely in the square without losing lesson progress');
 let testNow=0;Date.now=()=>testNow;function tick(){testNow+=50;if(tutorialStep()?.event==='monster'&&s.hp<=4&&s.bag.shrimp>0)eat();frame(testNow);}
 function until(predicate,label){for(let i=0;i<3000;i++){if(predicate())return;tick();}throw new Error('Timed out: '+label+' @ '+s.x+','+s.y+' '+tutorialStep()?.event+' target '+target?.name+' path '+path.length);}
 function current(event){assert.equal(tutorialStep()?.event,event);}

@@ -33,7 +33,7 @@ function updateWorldTimers(now=Date.now()){
   const due=Number.isFinite(o.respawnAt)?now>=o.respawnAt:o.dead<=time;
   if(!due)continue;
   o.dead=0;o.respawnAt=null;o.deathAt=-100;o.attackAt=-100;o.hitAt=-100;o.slowUntil=0;o.hp=o.maxhp;
-  o.x=Number.isFinite(o.homeX)?o.homeX:o.x;o.y=Number.isFinite(o.homeY)?o.homeY:o.y;o.drawX=o.x;o.drawY=o.y;delete o._creatureMotion;
+  o.x=Number.isFinite(o.homeX)?o.homeX:o.x;o.y=Number.isFinite(o.homeY)?o.homeY:o.y;o.drawX=o.x;o.drawY=o.y;delete o._creatureMotion;delete o.enraged;delete o.attackRecovery;delete o.attackWindup;delete o.attackMove;
   projectiles=projectiles.filter(p=>p.o!==o);meleeImpacts=meleeImpacts.filter(p=>p.o!==o);
  }
  if(expiredObjects.size){for(const scene of Object.values(worldScenes))scene.objects=scene.objects.filter(o=>!expiredObjects.has(o));const active=objects.filter(o=>!expiredObjects.has(o));objects.splice(0,objects.length,...active);}

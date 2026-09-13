@@ -29,7 +29,7 @@ const ENEMY_TIERS={
 const HUNT_ENCOUNTERS={
  veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:false,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
  varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:false,rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
- colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:false,anchored:true,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
+ colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
  xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:false,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
 };
 function encounterReleased(kind){const e=HUNT_ENCOUNTERS[kind];return !!(e?.released&&creatureAssets[e.look]?.source);}
@@ -77,9 +77,9 @@ function applyEnemyTier(o,row){
  Object.assign(o,row,{maxhp:row.hp,hp:Math.max(1,Math.ceil(row.hp*hp)),atk:row.maxHit,spread:0,defenseLevel:Math.max(1,Math.floor(row.level*.65)),attackLevel:Math.max(1,Math.floor(row.level*.7)),attackStyle:row.style||'melee'});
  if(row.look){o.creatureLook=row.look;MONSTER_ART[o.kind]=MONSTER_ART[row.look]||MONSTER_ART[creatureAssets[row.look]?.base];}
 }
-function encounterSpawnPoint(scene,x,y,radius=12){
+function encounterSpawnPoint(scene,x,y,radius=12,allowPlinth=false){
  const saved=currentScene;currentScene=scene;const world=worldScenes[scene],[w,h]=sceneSize();
- const free=(a,b)=>a>2&&b>2&&a<w-3&&b<h-3&&!worldWall(a,b)&&!water(a,b)&&!lairDecorBlocked(scene,a,b)&&!world.buildings.some(o=>a>=o.x-2&&a<=o.x+o.w+2&&b>=o.y-2&&b<=o.y+o.h+2)&&!world.objects.some(o=>Math.hypot(a-o.x,b-o.y)<1.5);
+ const free=(a,b)=>a>2&&b>2&&a<w-3&&b<h-3&&!worldWall(a,b)&&!water(a,b)&&!lairDecorBlocked(scene,a,b,allowPlinth)&&!world.buildings.some(o=>a>=o.x-2&&a<=o.x+o.w+2&&b>=o.y-2&&b<=o.y+o.h+2)&&!world.objects.some(o=>Math.hypot(a-o.x,b-o.y)<1.5);
  try{for(let r=0;r<=radius;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r&&free(x+dx,y+dy))return [x+dx,y+dy];return null;}finally{currentScene=saved;}
 }
 function setupEncounters(){
@@ -91,7 +91,7 @@ function setupEncounters(){
   const encounter=HUNT_ENCOUNTERS[o.kind];if(encounter&&encounterReleased(o.kind)){applyEnemyTier(o,encounter);o.encounter=o.kind;o.repeatable=true;o._stationary=true;o.type=encounter.rank==='Boss'?'boss':'enemy';}
  }
  const spawnOne=(kind,scene,x,y)=>{
-  const row=HUNT_ENCOUNTERS[kind]||ENEMY_TIERS[kind];if(!row||row.look&&!creatureAssets[row.look])return null;const point=encounterSpawnPoint(scene,x,y);if(!point)return null;
+  const row=HUNT_ENCOUNTERS[kind]||ENEMY_TIERS[kind];if(!row||row.look&&!creatureAssets[row.look])return null;const point=encounterSpawnPoint(scene,x,y,12,!!row.anchored);if(!point)return null;
   const [a,b]=point,o={id:serial++,kind,type:row.rank==='Boss'?'boss':'enemy',x:a,y:b,homeX:a,homeY:b,drawX:a,drawY:b,dead:0,attackAt:-100,hitAt:-100,coins:Math.max(4,Math.round(row.level*1.6)),sprite:species[row.look]?.sprite||11};
   applyEnemyTier(o,row);if(row.rank){o.encounter=kind;o.repeatable=true;o._stationary=true;}worldScenes[scene].objects.push(o);return o;
  };
@@ -105,12 +105,12 @@ const villageBeforeEncounters=setupTutorialVillage;
 setupTutorialVillage=function(){villageBeforeEncounters();setupEncounters();};
 function resetEncounter(heal=true){
  const fight=activeEncounter;if(fight&&heal&&fight.o.hp>0){const o=fight.o;o.hp=o.maxhp;o.x=o.drawX=o.homeX;o.y=o.drawY=o.homeY;o.attackAt=-100;delete o._creatureMotion;}
- if(fight)delete fight.o._inCombat;activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
+ if(fight){delete fight.o._inCombat;if(heal){delete fight.o.enraged;delete fight.o.attackRecovery;delete fight.o.attackWindup;delete fight.o.attackMove;}}activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
 }
 function beginEncounter(o){
  if(!fighter(o)||o.kind==='dummy'||o.hp<=0||o.dead>time)return;
  if(activeEncounter?.o===o)return;
- resetEncounter();o._inCombat=true;activeEncounter={o,scene:currentScene,phase:0,move:0,nextAttack:time+(o.encounter?2.5:o.interval||3.2),nextMove:time,started:time,hazards:[]};encounterHealClock=0;
+ resetEncounter();delete o.enraged;delete o.attackRecovery;o._inCombat=true;activeEncounter={o,scene:currentScene,phase:0,move:0,nextAttack:time+(o.encounter?2.5:o.interval||3.2),nextMove:time,started:time,hazards:[]};encounterHealClock=0;
 }
 const attackBeforeEncounters=performAttack;
 performAttack=function(o){const ok=attackBeforeEncounters(o);if(ok)beginEncounter(o);return ok;};
@@ -128,7 +128,13 @@ function hazardContains(h,x,y){
  return d<=h.radius;
 }
 function scheduleEnemyMove(fight,key){
- const o=fight.o,move=o.kind==='forestgiant'?{...ENCOUNTER_MOVES[key],windup:1}:ENCOUNTER_MOVES[key],near=move.origin==='enemy';
+ const o=fight.o,definition=HUNT_ENCOUNTERS[o.encounter],speed=definition?.phases?.[fight.phase]?.speed||1,move={...ENCOUNTER_MOVES[key]};
+ if(o.kind==='forestgiant')move.windup=1;
+ if(o.encounter==='colossus'){
+  Object.assign(move,key==='sweep'?{name:'Crystal cleave',radius:4.2}:key==='shot'?{name:'Crystal barrage'}:{name:'Runic eruption'});
+  o.attackRecovery=1.35*speed;
+ }
+ move.windup*=speed;const near=move.origin==='enemy';
  o.attackClip=o.kind==='forestgiant'?['attack','attack2','attack3'][fight.move%3]:null;
  const h={...move,key,o,x:near?(o.drawX??o.x):px,y:near?(o.drawY??o.y):py,fromX:o.drawX??o.x,fromY:o.drawY??o.y,started:time,due:time+move.windup};
  fight.hazards.push(h);o.attackAt=time;o.attackMove=key;o.attackVisualStyle=move.style;o.attackWindup=move.windup;
@@ -143,7 +149,7 @@ function updateEncounterAI(dt){
  const o=fight.o,definition=HUNT_ENCOUNTERS[o.encounter];
  if(fight.scene!==currentScene||o.hp<=0||o.dead>time){resetEncounter(false);return;}
  if(Math.hypot(px-o.homeX,py-o.homeY)>(definition?16:11)||Math.hypot(px-o.x,py-o.y)>18){if(target===o)stop();resetEncounter();toast('You escaped. The enemy returns to its territory.');return;}
- if(definition?.mechanics){const phase=definition.phases.reduce((n,p,i)=>o.hp/o.maxhp<=p.at?i:n,0);if(phase!==fight.phase){fight.phase=phase;fight.move=0;fight.hazards=[];fight.nextAttack=time+2;toast(o.name+' · '+definition.phases[phase].name);if(typeof playGameSound==='function')playGameSound('phase',o.x,o.y);}}
+ if(definition?.mechanics){const phase=definition.phases.reduce((n,p,i)=>o.hp/o.maxhp<=p.at?i:n,0);if(phase!==fight.phase){fight.phase=phase;fight.move=0;fight.hazards=[];fight.nextAttack=time+2;o.attackAt=-100;delete o.attackMove;toast(o.name+' · '+definition.phases[phase].name);if(typeof playGameSound==='function')playGameSound('phase',o.x,o.y);}if(o.encounter==='colossus')o.enraged=phase===1;}
  for(const h of fight.hazards)if(h.key==='pounce'&&time>=h.started+h.windup*.6&&!blocked(Math.round(h.x),Math.round(h.y))&&lineOfSight(h.fromX,h.fromY,h.x,h.y)){
   const progress=Math.max(0,Math.min(1,(time-h.started-h.windup*.6)/(h.windup*.4)));o.x=Math.round(h.x);o.y=Math.round(h.y);o.drawX=h.fromX+(o.x-h.fromX)*progress;o.drawY=h.fromY+(o.y-h.fromY)*progress;
  }
@@ -162,7 +168,7 @@ function updateEncounterAI(dt){
   let key=definition?.mechanics?definition.phases[fight.phase].moves[fight.move%definition.phases[fight.phase].moves.length]:style==='magic'?'spell':style==='ranged'?'arrow':'bite';
   if(key==='bite'&&distance>1.7+(o.combatRadius||0)){if(definition?.mechanics)key=definition.phases[fight.phase].moves.find(k=>k!=='bite')||'shot';else return;}
   if(distance>10)return;
-  scheduleEnemyMove(fight,key);fight.move++;fight.nextAttack=time+o.attackWindup+(definition?.mechanics?2.3:o.interval||3.2);
+  scheduleEnemyMove(fight,key);fight.move++;fight.nextAttack=time+o.attackWindup+(definition?.mechanics?2.3*(definition.phases[fight.phase].speed||1):o.interval||3.2);
  }
  renderEncounterHud();
 }
@@ -184,7 +190,7 @@ awardDefeat=function(o,style){
 };
 const lootBeforeEncounters=monsterDrop;
 monsterDrop=function(o){
- const e=HUNT_ENCOUNTERS[o.encounter];if(e){const drops=Object.fromEntries(Object.entries(e.drops||{}).filter(([id])=>ITEMS[id]));groundDrop({coins:e.coins,huntersMark:e.marks,...drops},o.x,o.y);return;}
+ const e=HUNT_ENCOUNTERS[o.encounter];if(e){const drops=Object.fromEntries(Object.entries(e.drops||{}).filter(([id])=>ITEMS[id])),point=e.anchored?encounterSpawnPoint(currentScene,o.homeX,o.homeY+4,6)||[s.x,s.y]:[o.x,o.y];groundDrop({coins:e.coins,huntersMark:e.marks,...drops},...point);return;}
  if(ENEMY_TIERS[o.kind]?.look){const bonus=o.kind==='forestgiant'?{bones:2,logs:3}:o.attackStyle==='magic'?{runes:3+Math.floor(o.level/5),airRunes:5+o.level}:o.attackStyle==='ranged'?{arrows:5+Math.floor(o.level/3)}:{bones:1};groundDrop({coins:o.coins,...bonus},o.x,o.y);return;}
  lootBeforeEncounters(o);
 };
@@ -208,15 +214,17 @@ function drawEncounterWarnings(){
 const drawBeforeEncounters=draw3d;
 draw3d=function(){drawBeforeEncounters();drawEncounterWarnings();};
 const HUNT_REWARDS=[['iron_weapon',3],['willowBow',3],['oakStaff',2],['steel_weapon',7],['steel_body',8],['mithril_weapon',16],['mithril_body',20],['adamant_weapon',28],['rune_weapon',40]];
+let huntingGroundsOpen=false;
+function huntSectionLink(label,grounds){const b=document.createElement('button');b.className='hunt-section';b.textContent=label;b.onclick=()=>{huntingGroundsOpen=grounds;panelPage=0;renderHunts();};$('panel').appendChild(b);}
 function renderHunts(){
- const rows=Object.entries(HUNT_ENCOUNTERS).filter(([kind])=>encounterReleased(kind)).sort((a,b)=>a[1].level-b[1].level),p=huntProgress(),panel=$('panel');if(!rows.length)return renderHuntingGrounds();pageControls(rows.length+1,3);
+ const rows=Object.entries(HUNT_ENCOUNTERS).filter(([kind])=>encounterReleased(kind)).sort((a,b)=>a[1].level-b[1].level),p=huntProgress(),panel=$('panel');if(!rows.length||huntingGroundsOpen)return renderHuntingGrounds();pageControls(rows.length+1,3);
  panel.innerHTML='<div class="questhead"><h2>Hunter’s journal</h2><small>Combat '+combatLevel()+'</small></div><p class="desc">Choose your next challenge. Levels are recommendations. Bosses return after one minute.</p><div id="huntCards"></div>';
  for(const [kind,e]of pageItems([...rows,['rewards',null]],3)){
   const card=document.createElement('section');card.className='hunt-card';
   if(kind==='rewards'){card.innerHTML='<h3>Mark exchange</h3><p>'+(s.bag.huntersMark||0)+' marks carried · Earn more from named encounters.</p>';for(const [id,cost]of HUNT_REWARDS){if(!ITEMS[id])continue;const b=document.createElement('button');b.textContent=ITEMS[id].name+' · '+cost+' marks';b.disabled=(s.bag.huntersMark||0)<cost;b.onclick=()=>{if((s.bag.huntersMark||0)<cost||!canCarry(id)){toast('Bring enough marks and make space in your bag.');return;}s.bag.huntersMark-=cost;s.gear[id]=(s.gear[id]||0)+1;save();renderUI();};card.appendChild(b);}}
   else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+(e.level*4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
   $('huntCards').appendChild(card);
- }
+ }huntSectionLink('Browse ordinary hunting grounds',true);
 }
 function renderHuntingGrounds(){
  const grounds=[{name:'Elderwood giant grove',at:FOREST_GIANT_HABITAT.entry,kinds:['forestgiant']},...HUNT_ZONES];
@@ -225,7 +233,7 @@ function renderHuntingGrounds(){
  for(const zone of pageItems(grounds,3)){
   const rows=zone.kinds.map(k=>ENEMY_TIERS[k]),low=Math.min(...rows.map(e=>e.level)),high=Math.max(...rows.map(e=>e.level)),card=document.createElement('section');card.className='hunt-card';card.innerHTML='<h3>'+zone.name+'</h3><small>Creature levels '+low+(high!==low?'–'+high:'')+'</small><p>'+rows.map(e=>e.name).join(' · ')+'</p>';
   const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find hunting ground';b.disabled=currentScene==='tutorial';b.onclick=()=>{if(currentScene!=='overworld'){toast('Return to the mainland to follow this trail.');return;}if(zone.scene){const door=objects.find(o=>o.destination===zone.scene);if(door){openGamePanel('hunts',true);select(door);}return;}const point=encounterSpawnPoint('overworld',...zone.at,12);if(point){openGamePanel('hunts',true);walkTo(...point);}};card.appendChild(b);$('huntCards').appendChild(card);
- }
+ }if(Object.keys(HUNT_ENCOUNTERS).some(encounterReleased))huntSectionLink('Bosses and mark exchange',false);
 }
 const panelBeforeEncounters=renderPanel;
 renderPanel=function(){if(tab==='hunts')return renderHunts();return panelBeforeEncounters();};

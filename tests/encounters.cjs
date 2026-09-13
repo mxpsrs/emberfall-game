@@ -6,12 +6,12 @@ vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 s.character={name:'Combat test'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.sceneId='overworld';setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 assert.equal(Object.keys(HUNT_ENCOUNTERS).length,4,'only the four approved boss designs remain');
-assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).length,0,'unverified boss assets stay out of this staged release');
+assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'colossus','only the fully integrated boss is released');
 assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'only selected future bosses have phases');
 assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
 assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
-assert(!Object.values(worldScenes).some(w=>w.objects.some(o=>o.encounter)),'no rejected or unverified boss encounters ship');
-assert(!Object.keys(worldScenes).some(id=>id.startsWith('lair_')),'unreleased boss lairs stay closed');
+assert(Object.values(worldScenes).every(w=>w.objects.every(o=>!o.encounter||o.encounter==='colossus')),'no rejected or unfinished bosses ship');
+assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus','unfinished lairs stay closed');
 assert.equal(worldScenes.ork_warrens.objects.filter(o=>o.kind==='ork').length,4,'four ordinary Orks populate their dungeon');
 const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
@@ -40,6 +40,33 @@ assert(!blocked(19,22),'central fighting corridor stays open');
 s.sceneId='ork_warrens';s.x=12;s.y=13;setupExpandedWorld();setupTutorialVillage();
 assert.equal(currentScene,'ork_warrens','saved characters restore to the dungeon');
 leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py),'leaving the dungeon lands on a clear tile');
+const crucible=CREATURE_LAIRS.lair_colossus,crucibleDoor=objects.find(o=>o.destination==='lair_colossus');
+assert(crucibleDoor);assert(seen[crucible.returnPoint[1]*nav.w+crucible.returnPoint[0]],'crucible return point connects to the mainland');
+assert(route(crucibleDoor.x,crucibleDoor.y,true,1.45,...crucible.returnPoint),'crucible entrance is reachable');
+activateScene('lair_colossus',...crucible.entry);const colossus=objects.find(o=>o.encounter==='colossus');
+assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(crucible.spawn),'anchored Colossus stands on its original pedestal');
+assert(blocked(colossus.x,colossus.y),'players cannot walk through the pedestal or boss');
+assert(!blocked(px,py));assert(route(worldScenes.lair_colossus.exit.x,worldScenes.lair_colossus.exit.y,true),'crucible exit is reachable');
+for(const [x,y]of [[23,23],[18,18],[28,18],[23,13]])assert(route(x,y),'arena permits dodging around each side');
+s.equipment.weapon='bronze_dagger';const meleeApproach=route(colossus.x,colossus.y,true,attackRange(colossus));assert(meleeApproach?.length,'melee can reach the boss edge');[s.x,s.y]=meleeApproach.at(-1);px=s.x;py=s.y;assert(inAttackRange(colossus));assert(!blocked(s.x,s.y));
+beginEncounter(colossus);const home=[colossus.x,colossus.y];
+for(const phase of [0,1]){
+ colossus.hp=phase?Math.floor(colossus.maxhp*.49):colossus.maxhp;updateEncounterAI(0);assert.equal(activeEncounter.phase,phase);assert.equal(!!colossus.enraged,phase===1);
+ const f=activeEncounter;f.hazards=[];f.move=0;
+ for(const [i,key]of ['sweep','shot','hex'].entries()){
+  px=s.x=home[0]+(i===1?5:-5);py=s.y=home[1]+i;time=f.nextAttack;updateEncounterAI(.05);
+  const h=f.hazards[0];assert.equal(h.key,key);assert.equal(h.style,['melee','ranged','magic'][i]);
+  const speed=phase?.75:1;assert(Math.abs(h.windup-ENCOUNTER_MOVES[key].windup*speed)<.00001,'phase two shortens the warning by 25 percent');
+  assert(Math.abs(f.nextAttack-time-(ENCOUNTER_MOVES[key].windup+2.3)*speed)<.00001,'complete attack cycle is 25 percent shorter');
+  if(key==='sweep')assert(h.radius>colossus.combatRadius+1.5,'melee ground attack covers the weapon engagement distance');
+  time=h.due+.01;updateEncounterAI(.01);assert.equal(JSON.stringify([colossus.x,colossus.y,colossus.drawX,colossus.drawY]),JSON.stringify([...home,...home]),'Colossus never chases in either phase');
+ }
+}
+resetEncounter();assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);assert(!colossus.attackRecovery);
+beginEncounter(colossus);colossus.hp=Math.floor(colossus.maxhp*.45);updateEncounterAI(0);const firstGold=s.gold;resolveHit(colossus,colossus.hp,'melee');assert.equal(activeEncounter,null);assert.equal(colossus.dead,time+60);assert.equal(s.gold-firstGold,42*4);
+const bossLoot=s.groundLoot.find(p=>p.scene==='lair_colossus'&&p.items.huntersMark);assert(bossLoot);assert.equal(bossLoot.items.huntersMark,4);assert(!blocked(bossLoot.x,bossLoot.y));assert(route(bossLoot.x,bossLoot.y),'boss loot is on an accessible tile outside the solid pedestal');
+time+=60;updateWorldTimers(colossus.respawnAt+1);assert.equal(colossus.hp,colossus.maxhp);assert.equal(colossus.dead,0);assert(!colossus.enraged,'respawn is blue again');assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(home));
+beginEncounter(colossus);colossus.hp=40;updateEncounterAI(0);leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py));assert.equal(activeEncounter,null);assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);
 activateScene('overworld',42,51);
 const rat=objects.find(o=>o.kind==='rat'),ratStats=JSON.stringify([rat.maxhp,rat.maxHit,rat.level]);for(const skill of COMBAT_SKILLS)s.xp[skill]=skillThreshold(skill,70);setupEncounters();assert.equal(JSON.stringify([rat.maxhp,rat.maxHit,rat.level]),ratStats,'enemies never grow to match the player');
 const originalSight=lineOfSight;lineOfSight=()=>true;
@@ -70,5 +97,5 @@ o=fresh('warden');resolveHit(o,o.hp,'melee');assert(s.wardenClear,'crypt cache f
 o=fresh('forestgiant');beginEncounter(o);o.hp=5;px=s.x=o.homeX+20;updateEncounterAI(.05);assert.equal(activeEncounter,null);assert.equal(o.hp,o.maxhp);assert(!o._inCombat);
 o=fresh('forestgiant');beginEncounter(o);activateScene('mine',10,12);assert.equal(activeEncounter,null,'scene change clears fight');assert.equal(o.hp,o.maxhp);
 
-lineOfSight=originalSight;console.log('PASS: 45 reachable ordinary monsters, native giant attacks, melee body reach, ordinary rewards, legacy quest flags, retreat, and zero-inclusive combat. Unverified bosses and empty lairs are not released.');
+lineOfSight=originalSight;console.log('PASS: reachable ordinary monsters and Ork Warrens; stationary Colossus with exactly two phases, three styles, faster red phase, accessible loot, reset and respawn; original quest flags and zero-inclusive combat preserved.');
 `,ctx);

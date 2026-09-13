@@ -40,4 +40,6 @@ console.log('PASS: two separate username accounts, durable saves, real player di
 
 assert.equal((await presence(a,'ork_warrens',19)).status,200,'released Ork dungeon accepts player presence');
 assert.equal((await presence(a,'ork_warrens',38)).status,400,'dungeon presence remains inside its actual map');
-assert.equal((await presence(a,'lair_colossus',19)).status,400,'unreleased boss lairs stay unavailable');
+assert.equal((await presence(a,'lair_colossus',19)).status,200,'released Colossus lair accepts player presence');
+assert.equal((await presence(a,'lair_colossus',46)).status,400,'Colossus presence respects the actual map bounds');
+assert.equal((await presence(a,'lair_veyr',19)).status,400,'unfinished boss lairs remain unavailable');

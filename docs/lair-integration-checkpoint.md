@@ -1,40 +1,55 @@
-# Lair integration checkpoint
+# Emberfall release checkpoint — September 13, 2026
 
-The owner authorized incremental publication. The sound/combat/Forest Giant
-batch is live. The Ork/warrens batch is verified and ready for publication.
+The owner authorized asset selection/downloads and incremental publication of
+tested work. Version 52 published the sound/combat/Forest Giant batch. Version
+53 published native Orks and their dungeon. The current source adds Firstlight's
+new town layout and the fully integrated Runeforged Colossus.
 
-Forest Giant is fully imported from the original CC0 Tree02 FBX and light
-albedo by Tennessippi Studios. Its Elderwood grove and three ordinary spawns are
-active. Ork is now imported with original body and clothing materials and six
-native actions. Four ordinary Orks inhabit the fully navigable Ork Warrens.
+Firstlight now owns its roads and building plans. Its square has cobbles, a
+well, two market stalls, benches, planters, lanterns and a noticeboard. The bank,
+kitchen, smithy, school, shrine and training yard occupy distinct parts of the
+island. Ash has an expanded grove of level-one trees around the timber trail. Original
+mainland lots remain independent. Layout version 2 moves old apprentices safely
+to the square while preserving their current lesson and belongings. All 36
+lessons pass through actual routes and interactions, ending with the one-way
+crossing to Briarhaven. Mainland characters cannot re-enter Firstlight.
 
-lairs.js retains the planned Crystal Crucible, Shattered Sanctum, Blightwing
-Roost, Brood Hollow, and Ork Warrens. A scene only opens after its approved
-creature is released. No unfinished lairs are accessible on the mainland.
+The Colossus retains Icebronze's 10,344 triangles, original texture and skin,
+and its two native takes (idle and anima). A single native action gesture is
+used for melee, ranged and magic with distinct game effects. The package does
+not contain separate style clips or a death take. Death uses a held native pose
+with game-authored crystal shatter and dissolve. No extra native clips are claimed.
 
-## Remaining work
+The boss stays on a solid pedestal in the Crystal Crucible. Below half health
+it turns red and its attack cycles become 25% shorter. Exactly two phases are
+enabled. The lair has stone columns, runes, crystals, rock boundaries and a
+clear approach. Tests cover all styles, dodging space, melee reach, accessible
+loot, first-clear rewards, retreat/scene resets and a blue 60-second respawn.
+The hunting journal still links to ordinary hunting grounds.
 
-- Obtain the remaining original packages; inspect skins and authored actions.
-- Finish safe lair approaches and return points, room collision, mood lighting,
-  and saved-character navigation; visually review against the actual models.
-- Complete the stationary Colossus's two phases, blue-to-red materials, faster
-  second phase, native attack-style coverage, range, reset, and rewards.
-- Release only selected boss phase mechanics. Ork remains an ordinary dungeon
-  enemy. Preserve misses and accurate zero damage.
-- Publish each finished batch as requested. Do not ask again for the six
-  approved model designs or for ordinary publication approval.
+Native render checks use the production geometry, textures, shaders and
+animation palettes in an offscreen ES2 context. They verify graphics output,
+not browser input or device GPU performance. A 9-creature animation check also
+verifies buffer reuse, both shadow/color palettes, recolor/dissolve resets and
+fallback deformation. All 1,000 seeded starter-rat fights retain zero damage
+and misses: median 15 seconds, p95 29.7 seconds, zero deaths in that sample.
 
-## Access state
+## Remaining assets and access
 
-The owner authorized an Epic human-verification attempt for Sketchfab. The
-checkbox was submitted, but Epic returned to the same challenge. The failed
-CAPTCHA was reported. Do not loop or work around that block.
+- Veyr: original Demon.fbx and orb materials downloaded. The 26 takes (25
+  actions plus A-pose) are inspected. Demon_tex.rar body textures are missing;
+  the FBX contains no embedded textures. Several takes contain repeated cycles
+  that need a reviewed single-cycle trim. Do not publish incomplete materials.
+- Varkesh and Xalith: original Sketchfab packages remain unavailable. Epic
+  verification failed after the owner's approved attempt and was reported.
+  Stop retries and do not work around the challenge.
+- CGTrader sign-in succeeded after the owner explicitly approved Google profile
+  sharing. Its downloads emitted browser protocol errors despite some completed
+  transfers. A browser security restriction blocked a download-status check;
+  do not probe internal download-manager pages or alternative control channels.
 
-The owner explicitly approved CGTrader's Google sharing of name, profile
-picture and email. Sign-in succeeded. Icebronze's ice.rar, Minotaur.rar and
-Veyr's Demon.fbx were downloaded through CGTrader's signed-in file controls.
-Browser download events reported protocol errors despite successful file
-transfers; completed files were verified in the shared download directory.
-Veyr's body/orb textures remain pending due to an unresponsive download page.
-The Colossus archive contains separate idle and anima FBX takes; the actual
-attack coverage still requires visual review.
+The remaining three lairs stay gated. Native Forest Giants and Orks remain
+ordinary monsters without boss phases, marks or boss music. Only selected
+bosses get multiple styles/phases. Do not revive rejected procedural bosses or
+retired names. Continue with commercially usable originals when available;
+the owner's asset and publication authorization persists.

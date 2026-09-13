@@ -94,27 +94,30 @@ creature3=function(r,o,x,z){
  phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
  if(!dying){state.lastClip=clip;state.lastPhase=phase;}
  const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase):creaturePose(kind,clip,phase,blend,baseClip,basePhase),k=a.scale*variant;
- const sink=dying?Math.max(0,time-o.deathAt-a.clips.death.duration)*.3:0;
+ const crystal=kind==='boss_colossus',dissolve=crystal&&dying?Math.min(1,(time-o.deathAt)/a.clips.death.duration):0;
+ const sink=dying?(crystal?dissolve*dissolve*1.2:Math.max(0,time-o.deathAt-a.clips.death.duration)*.3):0;
  // Imported motion can dip below the original bind-pose floor. Keep the
  // lowest contact above the terrain while preserving genuine airborne steps.
  const floor=dying?mesh.floorY:Math.min(mesh.floorY,a.mesh.bounds[0][1]);
  const hop=o.attackMove==='pounce'&&attack?Math.sin(Math.PI*Math.max(0,Math.min(1,(attackAge/(o.attackWindup||1.8)-.6)/.4)))*.55:0;
  const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink+hop,z,k,state.heading);
- if(painter.skinned)painter.skinned(creatureTint(o,a.mesh),transform,mesh.palette);else briarEmit(painter,creatureTint(o,mesh),transform);
+ const style=crystal?{bossColor:o.enraged?2:1,dissolve}:{};
+ if(painter.skinned)painter.skinned(creatureTint(o,a.mesh),transform,mesh.palette,style);else if(painter.indexed)painter.indexed(creatureTint(o,mesh),transform,style);else if(dissolve<.8)briarEmit(painter,creatureTint(o,mesh),transform);
+ if(crystal&&dying&&typeof drawColossusShatter==='function')drawColossusShatter(painter,x,z,dissolve,o.enraged);
  return a.height*variant;
 };
 
 const creatureTints=new WeakMap();
 function creatureTint(o,mesh){
- if(!o.tint)return mesh;let variants=creatureTints.get(mesh);if(!variants){variants=new Map();creatureTints.set(mesh,variants);}
- const key=o.tint.join();if(variants.has(key))return variants.get(key);
- const tinted={...mesh,c:Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*o.tint[i%3])),f:Float32Array.from(mesh.f,(v,i)=>Math.min(1,v*o.tint[i%3]))};variants.set(key,tinted);return tinted;
+ if(!o.tint&&!o.enraged)return mesh;let variants=creatureTints.get(mesh);if(!variants){variants=new Map();creatureTints.set(mesh,variants);}
+ const tint=o.tint||[1,1,1],key=tint.join()+':'+!!o.enraged;if(variants.has(key))return variants.get(key);
+ const tinted={...mesh,c:Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*tint[i%3])),f:Float32Array.from(mesh.f,(v,i)=>Math.min(1,v*tint[i%3]))};if(o.enraged)for(let i=0;i<tinted.f.length;i+=3){const red=tinted.f[i],green=tinted.f[i+1],blue=tinted.f[i+2];tinted.f[i]=Math.max(blue,green*.95);tinted.f[i+1]=red*.45;tinted.f[i+2]=red*.35;}variants.set(key,tinted);return tinted;
 }
 function creatureAttackAnimation(o,a,age){
  const style=o.attackVisualStyle,clip=o.attackClip&&a.clips[o.attackClip]?o.attackClip:style==='magic'&&a.clips.cast?'cast':style==='ranged'&&a.clips.throw?'throw':'attack';
  const windup=o.attackWindup;if(!windup)return age>=0&&age<a.clips.attack.duration?{clip:'attack',phase:age/a.clips.attack.duration,blend:Math.min(1,age/.1,(a.clips.attack.duration-age)/.14)}:null;
- const duration=windup+.55;if(age<0||age>=duration)return null;
- const release=clip==='cast'?.51:clip==='throw'?.48:.38,phase=age<windup?age/windup*release:release+(age-windup)/.55*(1-release);
+ const recovery=o.attackRecovery||.55,duration=windup+recovery;if(age<0||age>=duration)return null;
+ const release=a.clips[clip].release??(clip==='cast'?.51:clip==='throw'?.48:.38),phase=age<windup?age/windup*release:release+(age-windup)/recovery*(1-release);
  return {clip,phase,blend:Math.min(1,age/.1,(duration-age)/.14)};
 }
 // Reuse the authored human casting and punch motions on matching upper-body

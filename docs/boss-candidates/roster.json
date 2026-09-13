@@ -1,6 +1,6 @@
 {
-  "status": "Owner authorized staged publication. Forest Giant native model and forest habitat are complete; four approved bosses and the ordinary dungeon Ork remain gated pending original model files and review.",
-  "checked": "2026-09-12",
+  "status": "The integrated roster contains native Forest Giants, Orks and the Runeforged Colossus with their habitats. Three approved bosses remain gated until their original assets are complete and reviewed.",
+  "checked": "2026-09-13",
   "design_approval": {
     "date": "2026-09-12",
     "bosses": [
@@ -58,14 +58,14 @@
       "license": "CGTrader Royalty Free License (no AI)",
       "commercial_use": true,
       "rigged": "Listing marks Rigged",
-      "animation_evidence": "Listing marks Animated; individual clips are not listed",
-      "animation_badge": "Rigged + animated listing | Clip audit pending",
-      "animation_count": null,
+      "animation_evidence": "Original package has exactly two native takes: idle and anima. One original action gesture is used for all three attack styles with distinct game effects; there are no separate native magic, ranged or death takes.",
+      "animation_badge": "2 native takes | Anchored boss | Game-authored attack effects",
+      "animation_count": 2,
       "triangles": 10344,
-      "asset_files_inspected": false,
-      "download_status": "Original ice.rar downloaded; iceidle.fbx and iceanima.fbx inspected. Full combat animation coverage is under review.",
+      "asset_files_inspected": true,
+      "download_status": "Original idle/attack FBX files and original base-color texture imported from ice.rar.",
       "encounter": {
-        "status": "User-approved behavior; tuning values proposed",
+        "status": "Implemented and verified",
         "movement": "Remains anchored in its arena; can turn and animate but cannot chase",
         "styles": [
           "melee",
@@ -86,12 +86,14 @@
             "name": "Crimson Overload",
             "health": "50% to defeat",
             "appearance": "Crystals and runes turn red",
-            "tempo": "Proposed: 25% shorter attack cycle, with readable warnings"
+            "tempo": "25% shorter warnings and full attack cycles"
           }
         ],
         "reset": "Leaving the arena restores health, the first phase, blue appearance, and normal speed"
       },
-      "note": "Commercial game incorporation is permitted by CGTrader sections 21A/21B. Ship converted game data with reasonable asset protection, never the original FBX or source bundle. No model-training use. Source attack clips must be inspected before claiming the three styles are animated."
+      "note": "CGTrader Royalty Free (no AI), incorporated game data only. Original geometry, skin, base color and two native takes retained. Unused DCC controllers pruned. Idle aliases serve the anchored gait; death uses a held native pose plus game-authored crystal shatter/dissolve. No model-training use or source-bundle redistribution.",
+      "import_audit": "boss_colossus-import.json",
+      "runtime_status": "Stationary boss in the Crystal Crucible. Melee cleave, ranged crystal barrage and runic magic eruption. Exactly two phases; red below 50% health, with 25% shorter attack cycles. Reachable loot, fixed pedestal, retreat reset and 60-second respawn verified."
     },
     {
       "name": "Forest Giant",
@@ -128,7 +130,7 @@
       "note": "Owner reassigned the Old Bracken model to a regular monster named Forest Giant. The pack also includes a second distinct tree body (5,438 triangles) and light/dark materials.",
       "download_status": "Downloaded original Treant Package from creator; Tree02_FBX.fbx and light albedo imported",
       "import_audit": "forestgiant-import.json",
-      "runtime_status": "Ready for staged publication: three ordinary level-18 Forest Giants in the Elderwood giant grove, three native melee actions, ordinary drops and respawns, no boss music, marks, or phases."
+      "runtime_status": "Three ordinary level-18 Forest Giants in the Elderwood giant grove, three native melee actions, ordinary drops and respawns, no boss music, marks or phases. Published in version 52."
     },
     {
       "name": "Ork",
@@ -160,13 +162,13 @@
         "Walk_Mecanim",
         "Run_Mecanim"
       ],
-      "triangles": 5637,
+      "triangles": 4655,
       "asset_files_inspected": true,
       "approved_role": "A regular dungeon monster displayed as Ork, using ordinary repeatable monster combat and drops. No boss title, encounter phase system, boss marks or boss music.",
       "note": "Owner reassigned the Borruk model to an ordinary dungeon Ork. Retain Animated Minotaur as the original asset title in credits only. No new weapon attachment is needed.",
       "download_status": "Original Minotaur.rar downloaded from the signed-in CGTrader Free Download page",
       "import_audit": "ork-import.json",
-      "runtime_status": "Four ordinary level-26 Orks in the Ork Warrens; native idle, walk, run, attack, hit and death; no phases or boss rewards."
+      "runtime_status": "Four ordinary level-26 Orks in the Ork Warrens; native idle, walk, run, attack, hit and death; no phases or boss rewards. Published in version 53."
     },
     {
       "name": "Veyr the Mindbreaker",
@@ -199,10 +201,10 @@
         "Get-damage"
       ],
       "triangles": 17244,
-      "asset_files_inspected": false,
+      "asset_files_inspected": true,
       "proposed_role": "An ancient psychic enemy. Strong candidate for one of the small number of fights using several attack styles, because the source includes corresponding actions.",
-      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose.",
-      "download_status": "Original Demon.fbx downloaded; 26 animation takes inspected. Body and orb texture packages still needed."
+      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose. Body texture download did not complete; do not publish with a placeholder material. Several takes contain repeated action cycles and need a reviewed single-cycle trim.",
+      "download_status": "Original Demon.fbx and Ball_tex.rar received; all 26 takes (25 actions plus A-pose) inspected. Demon_tex.rar body materials are still missing. The FBX has no embedded textures."
     },
     {
       "name": "Varkesh the Blightwing",

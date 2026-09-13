@@ -60,13 +60,18 @@ def build(config):
     order = sorted(used, key=lambda i:(depth(i),i))
     node_index = {old:new for new,old in enumerate(order)}
     parents = [node_index.get(nodes[i]['parent'], -1) for i in order]
-    deforms, binds, chunks = [], [], []
+    deforms, binds, chunks, deform_index = [], [], [], {}
     for mesh in data['meshes']:
         vertices = np.asarray(mesh['vertices'], dtype=float)
-        offset = len(deforms)
+        remap = []
         for deform in mesh['deforms']:
-            deforms.append(node_index[deform['node']]); binds.append(matrix(deform['bind']))
-        vertices[:,9:13] += offset
+            node = node_index[deform['node']]
+            key = (node, *np.round(deform['bind'],7))
+            if key not in deform_index:
+                deform_index[key] = len(deforms)
+                deforms.append(node); binds.append(matrix(deform['bind']))
+            remap.append(deform_index[key])
+        vertices[:,9:13] = np.asarray(remap)[vertices[:,9:13].astype(int)]
         chunks.append(vertices)
     vertices = np.concatenate(chunks)
     # Index vertices by all skin/material attributes, keeping authored hard edges.
@@ -121,8 +126,12 @@ def build(config):
         if source not in native: raise ValueError('Missing source action '+source)
         animation = native[source]
         duration = animation['duration'] if isinstance(entry,str) else entry.get('duration',animation['duration'])
+        source_frames = animation['frames']
+        if isinstance(entry,dict) and 'holdAt' in entry:
+            index = round(entry['holdAt']/animation['duration']*(len(source_frames)-1))
+            source_frames = [source_frames[index]]
         frames = []
-        for frame in animation['frames']:
+        for frame in source_frames:
             world_pose = np.asarray([matrix(frame[i]) for i in order])
             world_pose[:,:3,3] -= center
             local = []
@@ -136,12 +145,21 @@ def build(config):
                 local.append([*m[:3,3],*q,*scale])
             frames.append(local)
         clips[target] = {'source':source,'duration':duration,'frames':len(frames),'trs':packed(np.asarray(frames))}
-    required = {'idle','walk','run','attack','death'}
+        if isinstance(entry,dict):
+            for field in ('holdAt','note','release'):
+                if field in entry: clips[target][field]=entry[field]
+    required = {'idle','attack'} if config.get('reviewDir') else {'idle','walk','run','attack','death'}
     if not required <= clips.keys(): raise ValueError('Missing required motions '+str(required-clips.keys()))
     model = {'mesh':mesh,'rig':{'names':[nodes[i]['name'] for i in order],'parents':parents,'deforms':deforms,'bind':packed(bind[:,:3])},
              'joints':len(order),'clips':clips,'scale':config['height']/(hi[1]-lo[1]),'height':config['height'],
              'source':{**config['source'],'sha256':hashlib.sha256(Path(config['fbx']).read_bytes()).hexdigest(),'file':Path(config['fbx']).name,'nativeActions':list(native),
                        'animationFiles':animation_files,'sourceNodes':len(nodes)}}
+    if config.get('reviewDir'):
+        review = Path(config['reviewDir']); review.mkdir(parents=True,exist_ok=True)
+        (review/'creature.json').write_text(json.dumps({'key':config['key'],'model':model},separators=(',',':')))
+        temporary=review/'atlas.writing'; atlas.save(temporary,format='PNG'); temporary.replace(review/'atlas.png')
+        print('Review only:',config['key'],len(p),'vertices;',len(deforms),'skin joints;',list(clips))
+        return
     target_path = DEST/'approved-creatures.js'
     result = json.loads(target_path.read_text().split('=',1)[1].rstrip(';\n')) if target_path.exists() else {}
     result[config['key']] = model

@@ -1,0 +1,62 @@
+{
+  "joints": 48,
+  "scale": 1.3496506523443452,
+  "height": 5.4,
+  "source": {
+    "title": "Icebronze - Golem",
+    "author": "melikovfuad7",
+    "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze",
+    "license": "CGTrader Royalty Free (no AI)",
+    "notes": "The package contains two native takes: idle and anima. All three combat styles use the original anima gesture with game-authored attack effects. The boss is stationary. Death uses a held native pose with game-authored crystal shatter/dissolve; no native death animation is claimed.",
+    "sha256": "959591e8e723973e16d276dce45e09728b29f1c86755a87c314a1d4f27337394",
+    "file": "iceidle.fbx",
+    "nativeActions": [
+      "idle",
+      "anima"
+    ],
+    "animationFiles": [
+      {
+        "file": "iceanima.fbx",
+        "action": "anima",
+        "take": "anima",
+        "sha256": "fff1b0b8e09ed0cc0e72957df69b476aadc23da3fc2d9e7ea0d994ac343b8328"
+      }
+    ],
+    "sourceNodes": 542
+  },
+  "vertices": 6973,
+  "triangles": 10344,
+  "deforms": 45,
+  "clips": {
+    "idle": {
+      "source": "idle",
+      "duration": 3.79166667,
+      "frames": 92
+    },
+    "walk": {
+      "source": "idle",
+      "duration": 3.79166667,
+      "frames": 92,
+      "note": "Anchored boss: native idle is the stationary gait alias."
+    },
+    "run": {
+      "source": "idle",
+      "duration": 3.79166667,
+      "frames": 92,
+      "note": "Anchored boss: native idle is the stationary gait alias."
+    },
+    "attack": {
+      "source": "anima",
+      "duration": 2.91666667,
+      "frames": 71,
+      "release": 0.55
+    },
+    "death": {
+      "source": "idle",
+      "duration": 1.25,
+      "frames": 1,
+      "holdAt": 0,
+      "note": "Held native pose with Emberfall crystal shatter and dissolve; the package has no authored death take."
+    }
+  }
+}

@@ -44,8 +44,9 @@ realmIndexedData=function(data,mesh,m){if(packingLocalMesh)return flatIndexedDat
 // Sampling terrain separately for a hand or hair mesh made equipment float on hills.
 function groundedPainter(r,x,z){
  const base=walkSurfaceHeight(x,z),out={face(points,color,normals,material,colors,uvs){r.face(points.map(p=>[p[0],p[1]+base-landHeight(p[0],p[2]),p[2]]),color,normals,material,colors,uvs);}};
- if(r.indexed)out.indexed=(mesh,m)=>{const matrix=Array.from(m);matrix[7]+=base-landHeight(m[3],m[11]);r.indexed(mesh,matrix);};
- if(r.skinned)out.skinned=(mesh,m,palette)=>{const matrix=Array.from(m);matrix[7]+=base-landHeight(m[3],m[11]);r.skinned(mesh,matrix,palette);};
+ if(r.indexed)out.indexed=(mesh,m,style)=>{const matrix=Array.from(m);matrix[7]+=base-landHeight(m[3],m[11]);r.indexed(mesh,matrix,style);};
+ if(r.skinned)out.skinned=(mesh,m,palette,style)=>{const matrix=Array.from(m);matrix[7]+=base-landHeight(m[3],m[11]);r.skinned(mesh,matrix,palette,style);};
+ out.software=r.software;
  return out;
 }
 // Fallback rendering uses the same raised terrain instead of a flat bitmap.

@@ -15,7 +15,7 @@ const tutorialSteps=[
  lesson('fish','Net some shrimp','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
  lesson('fire','Light a fire beside Nell','Stay beside Fisher Nell. Hold a log in your bag and choose Light fire on clear ground. If you need another log, chop the tree beside her.'),
  lesson('cook-shrimp','Cook with Nell','Tap raw shrimp in your bag to highlight it, then tap the fire you lit beside Nell. You will walk to that fire and cook one shrimp.','fishing-fire'),
- lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the village kitchen east of the square. He will supply a new recipe.','tutor-cooking'),
+ lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the kitchen on the island’s eastern lane. He will supply a new recipe.','tutor-cooking'),
  lesson('mix-dough','Mix your bread dough','Bram has given you flour and water. Tap the flour to highlight it, then tap the jug of water to mix bread dough.'),
  lesson('bake-bread','Bake at the range','Tap bread dough in your bag to highlight it, then tap the range inside the kitchen to bake bread.','range'),
  lesson('eat','Food for the road','Tap Eat, or tap your cooked bread or shrimp in your bag. Food restores health; raw food must be cooked first.'),
@@ -34,10 +34,10 @@ const tutorialSteps=[
  lesson('talk-bank','Visit the banker','Leave the pen through its gate, then visit Banker Ada inside Firstlight Bank to the north. Open the bank door and walk inside.','tutor-bank'),
  lesson('deposit','Store a supply','Talk to Ada and open your bank. Deposit an item from your bag. Stored items persist with your character.','tutor-bank'),
  lesson('withdraw','Take it back','Withdraw an item from your bank. Worn equipment stays separate from stored supplies.','tutor-bank'),
- lesson('talk-worship','Meet the shrine keeper','Ada sends you to Keeper Sera at the village shrine. Worship and spirits are taught together.','tutor-worship'),
+ lesson('talk-worship','Meet the shrine keeper','Ada sends you to Keeper Sera at the shrine in the island’s southwest. Worship and spirits are taught together.','tutor-worship'),
  lesson('bury','Honour the fallen','Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.'),
  lesson('spirit','Form a spiritual bond','Speak to Cinder beside Sera and form a bond. Worship grows through burial and first bonds; spirits grant their own bonuses.','cinder'),
- lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen inside the magic school. Open the door and walk in.','tutor-magic'),
+ lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
  lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses runes and trains your Magic level.','magic-dummy'),
  lesson('talk-finish','Ready for the realm','Return to Rowan in the square. Finish your apprenticeship with him to teleport to Briarhaven on the mainland. You cannot return to this island.','tutor-guide')
 ];

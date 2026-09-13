@@ -34,7 +34,7 @@ def texture(w,h,data=None,linear=False):
  tex=U();gl('glGenTextures',None,[I,P])(1,C.byref(tex));bindtex(0x0DE1,tex);teximage(0x0DE1,0,0x1908,w,h,0,0x1908,0x1401,data)
  for key,value in [(0x2801,0x2601 if linear else 0x2600),(0x2800,0x2601 if linear else 0x2600),(0x2802,0x812F),(0x2803,0x812F)]:texparam(0x0DE1,key,value)
  return tex.value
-active(0x84C1);atlas=Image.open(Path(__file__).resolve().parent.parent/'dist/assets/realms/atlas.png').convert('RGBA');atlasbytes=atlas.tobytes();atlastex=texture(atlas.width,atlas.height,C.c_char_p(atlasbytes),True)
+active(0x84C1);atlas=Image.open(os.environ.get('EMBERFALL_REVIEW_ATLAS') or Path(__file__).resolve().parent.parent/'dist/assets/realms/atlas.png').convert('RGBA');atlasbytes=atlas.tobytes();atlastex=texture(atlas.width,atlas.height,C.c_char_p(atlasbytes),True)
 active(0x84C0);shadow=texture(1024,1024);fbo=U();gl('glGenFramebuffers',None,[I,P])(1,C.byref(fbo));bindfb=gl('glBindFramebuffer',None,[U,U]);bindfb(0x8D40,fbo);gl('glFramebufferTexture2D',None,[U,U,U,U,I])(0x8D40,0x8CE0,0x0DE1,shadow,0)
 depth=U();gl('glGenRenderbuffers',None,[I,P])(1,C.byref(depth));gl('glBindRenderbuffer',None,[U,U])(0x8D41,depth);gl('glRenderbufferStorage',None,[U,U,I,I])(0x8D41,0x81A5,1024,1024);gl('glFramebufferRenderbuffer',None,[U,U,U,U])(0x8D40,0x8D00,0x8D41,depth);assert gl('glCheckFramebufferStatus',U,[U])(0x8D40)==0x8CD5
 bindbuffer=gl('glBindBuffer',None,[U,U]);buffers={}
@@ -44,6 +44,7 @@ for draw in scene['draws']:
 attribute=gl('glGetAttribLocation',I,[U,C.c_char_p]);attributes=[attribute(program,key.encode()) for key in ['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights']];enableattr=gl('glEnableVertexAttribArray',None,[U]);attrpointer=gl('glVertexAttribPointer',None,[U,I,U,U,I,P]);matrix=gl('glUniformMatrix4fv',None,[I,I,U,P]);model=location(program,b'uModel');drawarrays=gl('glDrawArrays',None,[U,I,I])
 normalmatrix=gl('glUniformMatrix3fv',None,[I,I,U,P]);normal=location(program,b'uNormal')
 def drawentry(draw):
+ uniform('uBossColor',draw.get('bossColor',0));uniform('uDissolve',draw.get('dissolve',0))
  palette=draw.get('palette');uniform('uSkinning',1 if palette else 0)
  if palette:gl('glUniform4fv',None,[I,I,P])(location(program,b'uBones[0]'),len(palette)//4,(F*len(palette))(*palette))
  normalmatrix(normal,1,0,(F*9)(*draw.get('normal',[1,0,0,0,1,0,0,0,1])))
