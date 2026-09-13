@@ -223,9 +223,7 @@ function updateEncounterAI(dt){
 updateCombat=function(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
  for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
- for(const p of projectiles){p.age+=dt;p.tx=p.o.drawX??p.o.x;p.ty=p.o.drawY??p.o.y;}
- const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
- for(const p of hits)if(p.o.hp>0&&p.o.dead<=time)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
+ updatePlayerProjectiles(dt);
  updateEncounterAI(dt);
 };
 const defeatBeforeEncounters=awardDefeat;

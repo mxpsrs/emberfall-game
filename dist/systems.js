@@ -232,9 +232,10 @@ function performAttack(o){
  if(style==='ranged'&&--s.equippedAmmoCount<=0){s.equippedAmmoCount=0;s.equipment.ammo=null;}if(style==='magic')consumeIngredients(spell.ingredients);
  if(style==='magic'){gain('Magic',spell.baseXP,true);showExperienceDrop({Magic:spell.baseXP});tutorialEvent('magic');}
  const accurate=Math.random()<playerAccuracy(o,style),rolled=accurate||o.type==='dummy'?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
- const damage=o.type==='dummy'?Math.max(1,rolled):rolled;
+ const damage=o.type==='dummy'||style==='ranged'&&accurate?Math.max(1,rolled):rolled;
+ if(typeof playerHeading!=='undefined')playerHeading=Math.atan2(o.x-px,o.y-py);
  lastAttack=time;playerAttackMotion={...combatMotion(style),style,weapon:s.equipment.weapon,ammo,started:time,color:spell.color};playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
- if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,ammo,slow:style==='magic'?spell.slow||0:0});
+ if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,ammo,scene:currentScene,frame:s.character?.frame||'male',heading:Math.atan2(o.x-px,o.y-py),targetHeight:o.kind==='rat'?.32:o.combatRadius?Math.max(.7,o.combatRadius):.8,recoverable:style==='ranged'&&Math.random()>=.2,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
 function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
@@ -243,12 +244,26 @@ function applyEnemyHit(o,hit){
  if(s.hp<=0){spendCoins(Math.min(5,carriedCoins()));returnToVillage();s.hp=maxhp();o.hp=o.maxhp;projectiles=[];meleeImpacts=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}
  renderUI();save();
 }
+function updatePlayerProjectiles(dt){
+ for(const p of projectiles){
+  p.age+=dt;
+  if(p.o.dead<=time&&p.o.hp>0){p.tx=p.o.drawX??p.o.x;p.ty=p.o.drawY??p.o.y;}
+  if(p.style==='ranged'&&p.age>=0&&!p.releasePose&&typeof rangedReleasePose==='function')p.releasePose=rangedReleasePose(p);
+ }
+ const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
+ for(const p of hits){
+  if(p.style==='ranged'&&p.recoverable&&p.ammo){
+   let point=[Math.round(p.tx),Math.round(p.ty)];
+   if(blocked(...point)){let found=null;for(let radius=1;radius<=4&&!found;radius++)for(let y=-radius;y<=radius&&!found;y++)for(let x=-radius;x<=radius;x++)if(Math.max(Math.abs(x),Math.abs(y))===radius&&!blocked(point[0]+x,point[1]+y)){found=[point[0]+x,point[1]+y];break;}if(found)point=found;}
+   groundDrop({[p.ammo]:1},...point,p.scene||currentScene);save();
+  }
+  if(p.o.hp>0&&p.o.dead<=time)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
+ }
+}
 function updateCombat(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
  for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
- for(const p of projectiles){p.age+=dt;p.tx=p.o.drawX??p.o.x;p.ty=p.o.drawY??p.o.y;}
- const hits=projectiles.filter(p=>p.age>=p.duration);projectiles=projectiles.filter(p=>p.age<p.duration);
- for(const p of hits)resolveHit(p.o,p.damage,p.style,p.slow,p.focus);
+ updatePlayerProjectiles(dt);
  if(!target||!fighter(target))return;
  const o=target;
  if(o.dead>time){stop();return;}

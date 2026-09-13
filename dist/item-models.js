@@ -190,7 +190,7 @@ function buildMiscItem(r,id){
 }
 function buildSupplyItem(r,id,item){
  if(id==='rangerCap'){briarEmit(r,rebuiltModels.Ranger_Cap,briarTransform(0,0,0));return {lie:false,authored:true};}
- if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,rebuiltModels.Archer_Bow,briarTransform(0,0,0));return {lie:true,authored:true};}
+ if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,rebuiltModels.Archer_Bow,briarTransform(0,0,0));beamArt(r,ARCHER_BOW.top,ARCHER_BOW.bottom,.0054,'#d4c9ac',4);return {lie:true,authored:true};}
  if(typeof isAmmunition==='function'&&isAmmunition(id)){for(let i=0;i<3;i++)briarEmit(r,rebuiltModels.Archer_Arrow,briarTransform((i-1)*.14,(i%2)*.1,0));return {lie:true,authored:true};}
  const food=itemFoodInfo(id);if(food){buildFoodItem(r,food);return {lie:true,food};}
  if(item.logType){buildLogItem(r,item.logType);return {lie:false};}

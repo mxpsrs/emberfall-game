@@ -348,7 +348,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
  const worship=player&&spiritEffect?.ids&&spiritEffect.scene===currentScene,castAt=worship?spiritEffect.started:gear._castAt,castDuration=worship?spiritEffect.duration:gear._castDuration||2.6;
  const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,burying=player&&['bury','cook','firemaking'].includes(playerAction?.kind),firemaking=burying&&playerAction.kind==='firemaking',casting=Number.isFinite(castAt)&&time>=castAt&&time-castAt<castDuration,busy=gathering||burying||casting,poseGear=busy?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
- const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!locomotion&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
+ const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!(player?playerMotion.moving:walk)&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
  const idleClip=gear._portrait?'idle':poseGear.weapon?(bow?'bowIdle':ITEMS[poseGear.weapon]?.style==='magic'?'staffIdle':ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle'):'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=casting?'magic':firemaking?'firemaking':burying?'bury':gathering?(gathering.object.type==='fish'?'fishing':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?(gear._peerMotion?.running?'run':'walk'):idleClip;
@@ -367,7 +367,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(firemaking&&!playerAction.committed){for(const [bone,left]of [[mesh.avatar.left,true],[mesh.avatar.right,false]]){const hand=affineMultiply(root,mesh.pose.subarray(bone*12,bone*12+12));box3(r,0,.01,0,left?.13:.075,.045,left?.085:.045,left?'#695341':'#9d9e93',p=>briarPoint(p,0,hand));}const age=time-playerAction.started,p=briarPoint([0,.08,.35],0,root);if(age>.4&&Math.sin(age*18)>.3)for(let i=0;i<3;i++)oval3(r,p[0]+Math.sin(i*3+age)*.08,p[1]+i*.04,p[2]+Math.cos(i+age)*.06,.025,.025,.025,'#ffd789',p=>p,5);}
  // Weapon meshes are attached to the new rig's actual palms.
  if(gathering&&typeof drawGatheringTool==='function')drawGatheringTool(r,affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),gathering.tool);
- if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(playerAttackMotion?.ammo||s.equippedAmmoCount>0));
+ if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(player?playerAttackMotion?.ammo:gear._ammoCount>0));
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(!busy&&!bow&&gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:ITEMS[gear.weapon]?.style==='magic'?briarRigs.Mage.meshes['2H_Staff']:ITEMS[gear.weapon]?.style==='ranged'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
@@ -381,26 +381,34 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
 };
 
 // Imported props share the same meshes in the world, bag and equipment view.
-let fittedBowMesh=null;
-function archerBowMesh(){
- if(fittedBowMesh)return fittedBowMesh;const mesh=rebuiltModels.Archer_Bow,indices=[];
- // The original straight string is replaced by a string attached to the draw hand.
- for(let i=0;i<mesh.i.length;i+=3){const ids=Array.from(mesh.i.subarray(i,i+3)),xs=ids.map(v=>mesh.p[v*3]),ys=ids.map(v=>mesh.p[v*3+1]);if(Math.min(...xs)>-.025&&Math.max(...ys)-Math.min(...ys)>.35)continue;indices.push(...ids);}
- return fittedBowMesh={...mesh,i:new Uint16Array(indices)};
-}
+// The imported mesh has its grip at x=0 and its limb tips at x=-.318.
+// Its origin is already the palm: no extra half-turn or hand offset is needed.
+const ARCHER_BOW={grip:[.0075,0,0],top:[-.317, .994,0],bottom:[-.317,-.994,0],scale:.65};
+function archerBowMesh(){return rebuiltModels.Archer_Bow;}
 function arrowTransform(start,end,width=1){
  const y=end.map((v,i)=>v-start[i]),length=Math.hypot(...y)||1;for(let i=0;i<3;i++)y[i]/=length;
  const x=Math.abs(y[1])<.9?[y[2],0,-y[0]]:[1,0,0],xl=Math.hypot(...x)||1;for(let i=0;i<3;i++)x[i]/=xl;
  const z=[x[1]*y[2]-x[2]*y[1],x[2]*y[0]-x[0]*y[2],x[0]*y[1]-x[1]*y[0]];
  return [x[0]*width,y[0]*length,z[0]*width,start[0],x[1]*width,y[1]*length,z[1]*width,start[1],x[2]*width,y[2]*length,z[2]*width,start[2]];
 }
-function drawFittedBow(r,root,mesh,age,loaded){
- const rig=mesh.avatar.rig,hand=affineMultiply(root,affineMultiply(mesh.pose.subarray(rig.left*12,rig.left*12+12),rig.bowBind)),m=affineMultiply(hand,[-.65,0,0,-.20,0,.65,0,0,0,0,-.65,0]);
- briarEmit(r,archerBowMesh(),m);
- const top=briarPoint([0,1,0],0,m),bottom=briarPoint([0,-1,0],0,m),rest=briarPoint([0,0,0],0,m),right=affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),draw=briarPoint([0,0,0],0,right),release=mesh.avatar.clips.ranged.releaseAt;
+function fittedBowPose(root,mesh,age){
+ const rig=mesh.avatar.rig,hand=affineMultiply(root,affineMultiply(mesh.pose.subarray(rig.left*12,rig.left*12+12),rig.bowBind)),k=ARCHER_BOW.scale;
+ const m=affineMultiply(hand,[k,0,0,-ARCHER_BOW.grip[0]*k,0,k,0,0,0,0,k,0]);
+ const top=briarPoint(ARCHER_BOW.top,0,m),bottom=briarPoint(ARCHER_BOW.bottom,0,m),rest=top.map((v,i)=>(v+bottom[i])/2),grip=briarPoint(ARCHER_BOW.grip,0,m);
+ const right=affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),draw=briarPoint([0,0,0],0,right),release=mesh.avatar.clips.ranged.releaseAt;
  const pull=age<0?0:age<release?Math.min(1,Math.max(0,(age-.12)/.32)):Math.max(0,1-(age-release)/.07),nock=rest.map((v,i)=>v+(draw[i]-v)*pull);
- beamArt(r,top,nock,.0035,'#d4c9ac',4);beamArt(r,nock,bottom,.0035,'#d4c9ac',4);
- if(loaded&&age>=.15&&age<release){const grip=briarPoint([-.30,0,0],0,m),d=grip.map((v,i)=>v-nock[i]),length=Math.hypot(...d)||1,end=nock.map((v,i)=>v+d[i]/length*.78);briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(nock,end,.75));}
+ const d=grip.map((v,i)=>v-nock[i]),distance=Math.hypot(...d)||1,length=Math.max(.78,distance+.16),tip=nock.map((v,i)=>v+d[i]/distance*length);
+ return {m,top,bottom,grip,nock,tip,length,release};
+}
+function drawFittedBow(r,root,mesh,age,loaded){
+ const pose=fittedBowPose(root,mesh,age);briarEmit(r,archerBowMesh(),pose.m);
+ beamArt(r,pose.top,pose.nock,.0035,'#d4c9ac',4);beamArt(r,pose.nock,pose.bottom,.0035,'#d4c9ac',4);
+ if(loaded&&age>=.15&&age<pose.release)briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(pose.nock,pose.tip,.75));
+}
+function rangedReleasePose(shot){
+ const a=rebuiltAvatars[shot.frame||'male'],clip=a.clips.ranged,age=clip.releaseAt-.0001;
+ const pose=realmSkeletonPose(a,'ranged',age/clip.duration*(clip.frames-1),1,'bowIdle',0),root=briarTransform(shot.x+.5,0,shot.y+.5,1,shot.heading||0);
+ return fittedBowPose(root,{avatar:a,pose},age);
 }
 function visibleQuiverArrows(count){return Math.min(5,Math.max(0,Math.ceil(Number(count)||0)));}
 function drawArcherQuiver(r,root,mesh,count){
@@ -418,7 +426,12 @@ function drawCastingLight(r,root,mesh,phase,color){
  for(let i=0;i<3;i++){const angle=phase*8+i*Math.PI*2/3;oval3(r,p[0]+Math.cos(angle)*.12,p[1]+Math.sin(angle)*.10,p[2],.027,.027,.027,'#e6f5df',p=>p,5);}
 }
 function drawCombatProjectiles3(r){
- for(const p of projectiles){if(p.style!=='ranged'||p.age<0)continue;const t=Math.min(1,p.age/p.duration),x=p.x+(p.tx-p.x)*t+.5,z=p.y+(p.ty-p.y)*t+.5,y=1.3+Math.sin(t*Math.PI)*.15,d=[p.tx-p.x,0,p.ty-p.y],length=Math.hypot(...d)||1,tip=[x,y,z],tail=tip.map((v,i)=>v-d[i]/length*.78);briarEmit(groundedPainter(r,x,z),rebuiltModels.Archer_Arrow,arrowTransform(tail,tip,.75));}
+ for(const p of projectiles){if(p.style!=='ranged'||p.age<0)continue;
+  const t=Math.min(1,p.age/p.duration),start=p.releasePose?.tip||[p.x+.5,1.3,p.y+.5],end=[p.tx+.5,p.targetHeight||.7,p.ty+.5];
+  const tip=start.map((v,i)=>v+(end[i]-v)*t);tip[1]+=Math.sin(t*Math.PI)*.15;
+  const d=end.map((v,i)=>v-start[i]),distance=Math.hypot(...d)||1,length=p.releasePose?.length||.78,tail=tip.map((v,i)=>v-d[i]/distance*length);
+  briarEmit(groundedPainter(r,tip[0],tip[2]),rebuiltModels.Archer_Arrow,arrowTransform(tail,tip,.75));
+ }
 }
 
 // A tapered blade with a narrow grip and guard, built around the palm socket.
