@@ -71,8 +71,8 @@ function startGuardianSpecial(ids,enemy,large=false){
 }
 unleashSpirit=function(id){
  const owned=s.spirits[id],def=SPIRITS[id];if(spiritEffect||!owned||owned.state!=='set')return false;
- const enemy=spiritOpponent();if(def.power&&!enemy){$('spiritState').textContent='Select an enemy within spirit range first.';return false;}
- if(id==='brook'&&s.hp>=maxhp()){$('spiritState').textContent='Your health is already full.';return false;}
+ const enemy=spiritOpponent();if(def.power&&!enemy){$('spiritState').textContent='Select an enemy within spirit range first.';toast($('spiritState').textContent);return false;}
+ if(id==='brook'&&s.hp>=maxhp()){$('spiritState').textContent='Your health is already full.';toast($('spiritState').textContent);return false;}
  owned.state='standby';s.hp=Math.min(s.hp,maxhp());startGuardianSpecial([id],enemy);return true;
 };
 summonSpirits=function(){

@@ -1,6 +1,8 @@
 'use strict';
 // Original 32-unit silhouettes, shared by the HUD and both canvas maps.
 const GAME_ICON_DEFS={
+ friends:[['M4 16Q0 28 3 29H17Q19 23 15 16Z','#ba8058'],['M6 4Q13 0 15 8Q15 15 9 15Q3 13 4 8Z','#d8b68b'],['M19 17Q14 23 18 29H30Q33 21 27 16Z','#649d88'],['M20 6Q26 1 29 9Q30 16 24 17Q18 15 19 10Z','#e0bc8e']],
+ ignore:[['M4 16Q0 28 3 29H17Q19 23 15 16Z','#8b7771'],['M6 4Q13 0 15 8Q15 15 9 15Q3 13 4 8Z','#bead91'],['M19 13L29 27M29 13L19 27','none','#c94f3e']],
  ammo:[['M7 11L24 13L21 29L10 28Z','#9c724b'],['M11 13L13 3M17 14L21 2M21 15L27 6','none','#d7c193'],['M10 3L14 7L16 2M18 2L21 6L24 2M24 6L27 10L30 6','none','#b2c7b5'],['M9 17L23 19','none','#d8af6a']],
  followers:[['M14 5Q8 10 12 16Q4 18 5 25L15 29L24 24Q25 19 20 16Q24 9 19 7L16 10Z','#b0c4a9'],['M23 3Q18 9 24 13L29 10L28 5Z','#d2c393'],['M11 12H13M16 12H18','none','#354c3c']],
  stats:[['M3 4H21V28H3Z','#b3a682'],['M7 10H17M7 16H14M7 22H15','none','#5c624c'],['M23 12L29 15V28H18V19Z','#8caa9b']],
@@ -52,7 +54,7 @@ function drawGameIcon(g,name,x,y,size){const shapes=GAME_ICON_DEFS[name]||GAME_I
 function initGameIcons(){
  for(const [id,name,label]of [['togglePanels','close','Close panel'],['spiritButton','followers','Elemental Spirits'],['mapBtn','map','World map'],['journal','help','Help and settings'],['waveButton','wave','Wave to nearby players'],['stop','stop','Stop action'],['cameraReset','compass','Reset camera'],['zoomIn','zoomIn','Zoom in'],['zoomOut','zoomOut','Zoom out'],['leaveInterior','exit','Leave interior']])setHudButton(id,label,name);
  const tabs={bag:['bag','Bag'],skills:['skills','Skills'],gear:['gear','Equipment'],quests:['quests','Quests'],spells:['spells','Spells'],hunts:['melee','Hunts']};
- document.querySelectorAll('[data-tab]').forEach(b=>{const [icon,label]=tabs[b.dataset.tab];setHudButton(b,label,icon);b.setAttribute('aria-controls','gameDock');});
+ document.querySelectorAll('[data-tab]').forEach(b=>{const [icon,label]=tabs[b.dataset.tab]||[CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[1]||'help',CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[2]||b.dataset.tab];setHudButton(b,label,icon);b.setAttribute('aria-controls','gameDock');});
  document.querySelectorAll('[data-style]').forEach(b=>setHudButton(b,b.dataset.style[0].toUpperCase()+b.dataset.style.slice(1)+' combat',b.dataset.style));
  for(const [id,icon,label]of [['eat','eat','Eat food'],['runButton','run','Toggle running']]){const b=$(id),mark=document.createElement('span');mark.innerHTML=gameIcon(icon);mark.className='hud-symbol';b.prepend(mark);b.classList.add('hud-icon');b.title=label;if(id==='eat'){for(const n of [...b.childNodes])if(n.nodeType===3)n.remove();b.setAttribute('aria-label',label);}}
  syncTabs();syncAmbientIcon();if(typeof syncPlayDisplay==='function')syncPlayDisplay();

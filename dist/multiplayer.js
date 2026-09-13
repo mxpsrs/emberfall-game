@@ -14,7 +14,7 @@ async function syncOnlineWorld(){
  if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
  if(!response.ok)throw new Error('offline');const data=await response.json();
  if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
- if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;}
+ if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
  const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);const old=onlinePeers.get(peer.id),stamp=received-Math.max(0,(data.serverTime||peer.stamp)-peer.stamp),samples=old?.samples||[];
  if(!samples.length||peer.stamp!==old?.stamp){samples.push({x:peer.x,y:peer.y,at:stamp});while(samples.length>12)samples.shift();}
  onlinePeers.set(peer.id,{...peer,samples,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,drawHeading:old?.drawHeading??peer.heading,phase:old?.phase||0,drawAt:old?.drawAt??received,seen:Date.now(),sampleAt:stamp});}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);

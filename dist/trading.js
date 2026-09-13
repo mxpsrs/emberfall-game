@@ -65,7 +65,7 @@ function tradeItemAction(id,side,amount=tradeAmount()){
  const t=window.realmTrade;if(!t)return false;const verb=tradeVerb(side),item=ITEMS[id];if(!item)return false;
  let moved=0,price=0;
  if(t.kind==='bank')moved=transferBank(id,side==='stock',amount);
- else if(side==='bag'){price=shopSalePrice(id);if(!price){t.notice='Mara does not buy '+item.name+'.';renderTradeContents();return false;}moved=sell(id,price,amount);}
+ else if(side==='bag'){price=shopSalePrice(id);if(!price){t.notice='Mara does not buy '+item.name+'.';if(typeof gameMessage==='function')gameMessage(t.notice);renderTradeContents();return false;}moved=sell(id,price,amount);}
  else{
   price=shopUnitPrice(id);if(!price)return false;
   const room=STACKABLE.has(id)?(canCarry(id)?Infinity:0):bagSpaceFor(id),quantity=Math.min(amount,Math.floor(s.gold/price),room);
@@ -74,11 +74,11 @@ function tradeItemAction(id,side,amount=tradeAmount()){
  }
  if(moved){t.notice=({Deposit:'Deposited',Withdraw:'Withdrew',Buy:'Bought',Sell:'Sold'})[verb]+' '+moved+' × '+item.name+(price?' for '+(moved*price)+' coins':'')+'.';}
  else if(t.kind==='bank')t.notice=side==='stock'?'Make room in your bag to withdraw this item.':'There are no unworn items of that type in your bag.';
- $('tradeItemMenu').hidden=true;renderTradeContents();return moved||false;
+ if(t.notice&&typeof gameMessage==='function')gameMessage(t.notice);$('tradeItemMenu').hidden=true;renderTradeContents();return moved||false;
 }
 function depositInventory(){
  let moved=0;for(const id of Object.keys(ITEMS))moved+=transferBank(id,false,Infinity,false)||0;
- if(!moved)return;window.realmTrade.notice='Deposited '+moved+' items from your bag.';renderUI();save();
+ if(!moved)return;window.realmTrade.notice='Deposited '+moved+' items from your bag.';if(typeof gameMessage==='function')gameMessage(window.realmTrade.notice);renderUI();save();
 }
 function showTradeItemMenu(id,side,anchor){
  const t=window.realmTrade;if(!t)return;const menu=$('tradeItemMenu');menu.replaceChildren();

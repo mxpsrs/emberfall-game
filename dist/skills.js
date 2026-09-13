@@ -84,7 +84,7 @@ function harvestResource(o){
  if(!canCarry(item)){stop();toast('Your bag is full.');return false;}
  const chance=Math.min(.95,.4+(lv(skill)-d.level)*.009+gatheringToolRank(tool)*.025);if(Math.random()>chance)return false;
  if(!addToBag(item))return false;if(d.bait)s.bag[d.bait]--;
- gain(skill,d.xp);floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
+ gain(skill,d.xp);if(typeof gameMessage==='function')gameMessage((o.type==='fish'?'You catch ':o.type==='ore'?'You mine ':'You get ')+ITEMS[item].name.toLowerCase()+'.');floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
  if(o.type==='ore'||o.type==='tree'&&(o.resourceId==='normal'||Math.random()<.125)){o.dead=time+d.respawn;o.respawnAt=Date.now()+d.respawn*1000;stop();}
  if(o.tutorialRole==='ore'||o.tutorialRole==='tin'){if(s.bag.copperOre>0&&s.bag.tinOre>0)tutorialEvent('ore');}else tutorialEvent(o.type);
  renderUI();save();return true;
@@ -93,7 +93,7 @@ function hasIngredients(ingredients){return Object.entries(ingredients).every(([
 function consumeIngredients(ingredients){for(const [id,n]of Object.entries(ingredients))s.bag[id]-=n;}
 function canMake(ingredients,result,count=1){const freed=Object.entries(ingredients).reduce((n,[id,q])=>n+(STACKABLE.has(id)?(s.bag[id]===q?1:0):q),0);return inventorySlots().length-freed+(STACKABLE.has(result)&&s.bag[result]>0?0:STACKABLE.has(result)?1:count)<=BAG_SIZE;}
 function requireSkill(skill,level){if(lv(skill)>=level)return true;toast('Requires '+skill+' '+level+'.');return false;}
-function eatFood(id){if(!(s.bag[id]>0)||!ITEMS[id]?.heal)return false;if(s.hp>=maxhp()){tutorialEvent('eat');toast('Your health is already full.');return false;}s.bag[id]--;const n=Math.min(ITEMS[id].heal,maxhp()-s.hp);s.hp+=n;floating('+'+n,px,py,'#b9efad');tutorialEvent('eat');renderUI();save();return true;}
+function eatFood(id){if(!(s.bag[id]>0)||!ITEMS[id]?.heal)return false;if(s.hp>=maxhp()){tutorialEvent('eat');toast('Your health is already full.');return false;}s.bag[id]--;const n=Math.min(ITEMS[id].heal,maxhp()-s.hp);s.hp+=n;if(typeof gameMessage==='function')gameMessage('You eat the '+ITEMS[id].name.toLowerCase()+'. It heals '+n+' Hitpoints.');floating('+'+n,px,py,'#b9efad');tutorialEvent('eat');renderUI();save();return true;}
 function nearbyWork(type){return objects.find(o=>(type==='fire'?['camp','range'].includes(o.type):type==='forge'?['forge','practiceForge'].includes(o.type):o.workstation===type)&&o.dead<=time&&Math.hypot(o.x-px,o.y-py)<2&&lineOfSight(s.x,s.y,o.x,o.y));}
 let pendingCooking=null;
 function requestCookFish(id){

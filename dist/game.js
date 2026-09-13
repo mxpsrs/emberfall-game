@@ -88,7 +88,7 @@ function save() {
   queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));$('saveStatus').textContent='Progress saved on this device';}
   catch{$('saveStatus').textContent='Saving unavailable in this browser';}
 }
-function toast(text){if(typeof addChatLine==='function')addChatLine(text,'game');$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
+function toast(text){if(typeof gameMessage==='function')gameMessage(text);else if(typeof addChatLine==='function')addChatLine(text,'game');else $('toast').textContent=text;}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
 function showExperienceDrop(rewards){
@@ -140,10 +140,10 @@ function arrive(){
   renderAction();
 }
 function renderAction(){
-  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking over the fire':'Burying bones';$('targetSub').textContent='Tap Stop or move to cancel.';return;}
+  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking over the fire':'Burying bones';$('targetSub').textContent='Click or tap the ground to cancel.';return;}
   const a=target;
   $('targetTitle').textContent=a?(path.length?'Walking to '+a.name:a.name):path.length?'Following the path':'Explore the borderlands';
-  $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Tap Stop to cancel'):path.length?'Tap Stop or another spot to change course.':'Tap a resource, building, person, or monster.';
+  $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Click or tap the ground to cancel'):path.length?'Click or tap another spot to change course.':'Tap a resource, building, person, or monster.';
 }
 function dialog(title,html,buttons=[]){
   if(window.realmTrade||window.equipmentStatsOpen||window.realmWorkbench)close();
@@ -195,7 +195,7 @@ function renderUI(){
   $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=Object.entries(s.bag).reduce((n,[id,q])=>n+(ITEMS[id]?.heal?q:0),0);
   renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
   if(window.realmTrade)renderTradeContents();
-  if(window.equipmentStatsOpen)renderCombatStats();
+  if(window.equipmentStatsOpen)renderCombatStats();if(typeof updateClassicVitals==='function')updateClassicVitals();
   if(window.realmWorkbench)renderWorkbench();
 }
 function renderPanel(){

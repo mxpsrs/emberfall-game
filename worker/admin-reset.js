@@ -32,6 +32,8 @@ export async function handleGlobalReset(request,env){
     const pending='EXISTS (SELECT 1 FROM global_resets WHERE id=? AND completed=0)';
     const result=await env.DB.batch([
       env.DB.prepare("INSERT INTO global_resets (id,reason,character_count,session_count,presence_count,reset_at,completed) SELECT ?,?,(SELECT count(*) FROM character_saves),(SELECT count(*) FROM game_sessions),(SELECT count(*) FROM player_presence),strftime('%Y-%m-%dT%H:%M:%fZ','now'),0 ON CONFLICT(id) DO NOTHING").bind(id,reason.trim()),
+      env.DB.prepare("UPDATE player_trades SET status='cancelled',revision=revision+1 WHERE status IN ('pending','active') AND "+pending).bind(id),
+      env.DB.prepare('DELETE FROM social_messages WHERE '+pending).bind(id),
       env.DB.prepare('DELETE FROM character_saves WHERE '+pending).bind(id),
       env.DB.prepare('DELETE FROM game_sessions WHERE '+pending).bind(id),
       env.DB.prepare('DELETE FROM player_presence WHERE '+pending).bind(id),

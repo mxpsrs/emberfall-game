@@ -120,6 +120,7 @@ function observeTutorialCamera(){
 function renderTutorial(){
  const step=tutorialStep();$('tutorial').hidden=!s.character||!step||!inWorld();$('eat').classList.toggle('tutorialfocus',step?.event==='eat');
  if(!step)return;
+ if(tutorialShownIndex!==s.tutorial&&typeof gameMessage==='function')gameMessage(step.title+': '+step.desc,{action:()=>guide()});
  if(tutorialShownIndex!==s.tutorial&&s.tutorial<2){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}tutorialShownIndex=s.tutorial;
  $('tutCount').textContent='APPRENTICESHIP · '+(s.tutorial+1)+' / '+tutorialSteps.length;
  $('tutTitle').textContent=step.title;$('tutDesc').textContent=step.desc;

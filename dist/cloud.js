@@ -3,14 +3,14 @@ let cloudReady=false,cloudRevision=0,cloudDirty=false,cloudBusy=false,cloudTimer
 let cloudResetVersion=null;
 let cloudDisconnected=false;
 function pauseForServer(title='Connection lost',message='Gameplay is paused. Reconnect to load your latest server save.'){
- if(cloudDisconnected)return;cloudDisconnected=true;cloudStatus('Connection lost · gameplay paused');
+ if(cloudDisconnected)return;if(typeof gameMessage==='function')gameMessage(title+': '+message,{service:true});cloudDisconnected=true;cloudStatus('Connection lost · gameplay paused');
  if(typeof assetsReady!=='undefined'&&assetsReady)stop();
  document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());
  const overlay=document.createElement('div');overlay.id='connectionPause';overlay.setAttribute('role','alertdialog');overlay.setAttribute('aria-modal','true');overlay.innerHTML='<h2>'+title+'</h2><p>'+message+'</p><button id="reconnectGame">Reconnect</button>';document.body.appendChild(overlay);$('reconnectGame').onclick=()=>location.reload();$('reconnectGame').focus?.();
 }
 window.addEventListener('offline',()=>pauseForServer());
 for(const event of ['pointerdown','pointerup','click','keydown','wheel'])document.addEventListener(event,e=>{if(cloudDisconnected&&!e.target.closest?.('#connectionPause')){e.preventDefault();e.stopImmediatePropagation();}},{capture:true,passive:false});
-function cloudStatus(text){const el=$('cloudStatus');if(el)el.textContent=text;}
+function cloudStatus(text){const el=$('cloudStatus');if(el)el.textContent=text;if(typeof gameMessage==='function')gameMessage(text,{key:'save-status'});}
 async function initializeCloud(){
  cloudStatus('Loading character…');const response=await fetch('/api/character',{cache:'no-store'});if(!response.ok){const error=new Error('Could not load your account save.');error.status=response.status;throw error;}const record=await response.json();
  cloudAccount=record.account;cloudResetVersion=record.resetVersion||null;let restored=record.state;

@@ -1,5 +1,5 @@
 'use strict';
-let maintenanceNotice=null,maintenancePollBusy=false,maintenanceFinalSave=false;
+let maintenanceNotice=null,maintenancePollBusy=false,maintenanceFinalSave=false,maintenanceChatSecond=-1;
 const maintenanceBanner=document.createElement('div');maintenanceBanner.id='maintenanceNotice';maintenanceBanner.hidden=true;maintenanceBanner.setAttribute('role','status');document.body.appendChild(maintenanceBanner);
 async function pollMaintenance(){
  if(maintenancePollBusy)return;maintenancePollBusy=true;
@@ -9,6 +9,7 @@ async function pollMaintenance(){
 async function renderMaintenance(){
  const m=maintenanceNotice;maintenanceBanner.hidden=!m||m.status==='open';if(!m||m.status==='open')return;
  const remaining=Math.max(0,Math.ceil((m.kickAt-Date.now()-m.offset)/1000));maintenanceBanner.textContent='System maintenance · '+Math.floor(remaining/60)+':'+String(remaining%60).padStart(2,'0');
+ if(remaining!==maintenanceChatSecond){maintenanceChatSecond=remaining;if(typeof gameMessage==='function')gameMessage(maintenanceBanner.textContent,{key:'maintenance-countdown',service:true});}
  if(remaining<=5&&!maintenanceFinalSave){maintenanceFinalSave=true;window.maintenancePreparing=true;if(cloudReady&&!cloudDisconnected){stop();queueCloudSave();await flushCloudSave();}}
  if(!remaining||m.status==='locked')pauseForServer('System maintenance','Your session has ended for the update. Reconnect when maintenance is complete.');
 }
