@@ -8,4 +8,4 @@ Bootstrap completed: the user explicitly approved a one-time exception for v64, 
 
 Maintenance operator: use `node --env-file-if-exists=.env.maintenance.local scripts/maintenance.mjs start|check|finish REQUEST_ID`. The ignored operator file contains the dedicated maintenance key; never print or commit it.
 
-Recovery pending: after v64, the previous reset operator key was unavailable locally and cannot be read back from Sites. A dedicated MAINTENANCE_TOKEN has been prepared in Sites and retained in the ignored local operator file. It takes effect only after deployment. The spirit and player-menu correction must stay unpublished until the user explicitly authorizes one recovery deployment without a countdown, or the existing live operator key is recovered. No recovery exception has been granted.
+Recovery completed: the user explicitly approved one recovery deployment without a countdown. v65 was published successfully on 2026-09-13 with environment revision 2, activating the dedicated MAINTENANCE_TOKEN retained in the ignored local operator file. This exception is consumed. Every future production deployment must use the countdown and disconnect procedure.
