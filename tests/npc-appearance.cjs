@@ -19,6 +19,7 @@ assert(combinations.size>12,'residents have varied creator clothing combinations
 const guide=tutorialTutor('guide'),gear=npcEquipment(guide);assert.equal(gear.head,'rangerHood');assert.equal(gear._hoodColor,5);assert.equal(gear._appearance.topStyle,5);assert.equal(gear._appearance.bottomStyle,4);assert.equal(gear._appearance.topColor,5);assert.equal(gear._appearance.bottomColor,5);
 assert.deepEqual(npcEquipment({...guide,name:'Mysterious man'}),npcEquipment({...guide,name:'Elder Rowan'}),'revealing his name does not replace his outfit');
 for(const frame of ['male','female']){const normal=avatarMaterial(frame,{head:'rangerHood',_appearance:{...gear._appearance,frame}},0),black=avatarMaterial(frame,{...gear,_appearance:{...gear._appearance,frame}},0);assert.notDeepEqual(normal.c,black.c,'black hood tint has a separate material cache');assert.deepEqual(normal.p,black.p,'dye does not alter body proportions');}
+const captain=npcEquipment(tutorialTutor('combat'));for(const slot of ['body','legs','hands','feet','shield','weapon'])assert.equal(captain[slot],'mithril_'+slot);assert.equal(captain.head,null,'Captain Vale has no helmet');
 assert(npcEquipment({name:'Town guard',type:'villager'}).weapon,'guards retain their duty equipment');
 console.log('PASS: '+people.length+' NPCs share world/portrait identity, creator outfits, stable variation, black hooded Ranger guide and duty equipment.');
 }`,ctx);
