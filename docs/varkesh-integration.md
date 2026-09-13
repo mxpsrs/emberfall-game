@@ -75,3 +75,11 @@ respawn also pass the existing Xalith checks. The server's presence whitelist
 now includes Veyr, Varkesh and Xalith alongside the Colossus; two-account checks
 confirm player discovery inside each lair and rejection outside its map bounds.
 No account reset or save-schema change is part of this update.
+
+Large text assets are stored with lossless gzip compression inside the Worker,
+then decompressed into ordinary response streams before delivery. Transport
+compression remains the host's responsibility. The module is about 38.9 MiB,
+under the 64 MiB hosting limit, without reducing dragon geometry or animation
+samples. Build-response tests compare served scripts and creature data byte for
+byte with their source, and check cache versions, conditional requests, HEAD
+responses and unchanged audio ranges.

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import worker from '../dist/server/index.js';
@@ -13,16 +13,25 @@ const html=(await body(page)).toString();assert.match(html,/^<!doctype html>/i,'
 const urls=[...html.matchAll(/(?:src|href)="([^"?#]+\?v=[a-f0-9]+)"/g)].map(m=>m[1]);
 assert(urls.some(url=>url.startsWith('startup.js?')));assert(html.indexOf('window.REALM_ASSET_VERSIONS=')<html.indexOf('src="startup.js?'));
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
+assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
 for(const path of ['assets/realms/atlas.png','assets/bounds.json','assets/items.png','assets/environment.png','assets/spirits.png'])urls.push(versions[path]);
 let totalBytes=0;
 for(const url of urls){
  const response=await request('/'+url);assert.equal(response.status,200,url);assert(response.headers.get('Cache-Control').includes('immutable'),url);
  const content=await body(response);totalBytes+=content.length;assert(content.length>0,url);
  if(url.split('?')[0].endsWith('.js'))new Script(content.toString(),{filename:url});
+ if(/\.(js|json|css|txt)\?/.test(url))assert.deepEqual(content,readFileSync(new URL('../dist/'+url.split('?')[0],import.meta.url)),'Stored compression must preserve every response byte: '+url);
  if(/\.(json|webmanifest)\?/.test(url))JSON.parse(content.toString());
  if(url.startsWith('assets/realms/monsters.js?'))assert.deepEqual(content,readFileSync(new URL('../dist/assets/realms/monsters.js',import.meta.url)));
  const cached=await worker.fetch(new Request('https://emberfall.test/'+url,{headers:{'If-None-Match':response.headers.get('ETag')}}),{});assert.equal(cached.status,304);assert.equal((await cached.arrayBuffer()).byteLength,0);
 }
+// This is the largest compressed asset and carries both original creature rigs.
+const creatureUrl='/'+versions['assets/realms/approved-creatures.js'];
+const creatures=await request(creatureUrl);assert.equal(creatures.status,200);
+assert.deepEqual(await body(creatures),readFileSync(new URL('../dist/assets/realms/approved-creatures.js',import.meta.url)));
+const creatureHead=await worker.fetch(new Request('https://emberfall.test'+creatureUrl,{method:'HEAD'}),{});
+assert.equal(creatureHead.status,200);assert.equal((await creatureHead.arrayBuffer()).byteLength,0);
+for(const header of ['Content-Type','Cache-Control','ETag','Content-Encoding'])assert.equal(creatureHead.headers.get(header),creatures.headers.get(header));
 const legacyVersion=createHash('sha256').update(readFileSync(new URL('../dist/creatures.js',import.meta.url))).digest('hex').slice(0,16);
 assert.notEqual(versions['creatures.js'],'creatures.js?v='+legacyVersion,'Fresh URLs must bypass any incorrectly cached compressed assets');
 const launch=await worker.fetch(new Request('https://emberfall.test/',{headers:{'Accept-Encoding':'gzip, deflate, br'}}),{});assert.match((await body(launch)).toString(),/^<!doctype html>/i);
