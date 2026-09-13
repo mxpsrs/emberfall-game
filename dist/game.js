@@ -88,7 +88,7 @@ function save() {
   queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));$('saveStatus').textContent='Progress saved on this device';}
   catch{$('saveStatus').textContent='Saving unavailable in this browser';}
 }
-function toast(text){$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
+function toast(text){if(typeof addChatLine==='function')addChatLine(text,'game');$('toast').textContent=text;$('toast').style.opacity=1;toastUntil=time+3.8;}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
 function showExperienceDrop(rewards){
@@ -97,7 +97,7 @@ function showExperienceDrop(rewards){
  floaters.push({text:'',experience:{...rewards},started:time,x:px,y:py,life:1.4,color:'#ecd590'});
 }
 function drawExperienceDrop(f,x,y){const entries=Object.entries(f.experience);entries.forEach(([skill,xp],i)=>label('+'+(Math.round(xp*10)/10)+' '+skill+' XP',x,y-(entries.length-1-i)*15,f.color,12));}
-function stop(){if(typeof followedPlayerId!=='undefined')followedPlayerId=null;if(typeof playerAction!=='undefined')playerAction=null;if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
+function stop(){if(typeof tradeWalkingTo!=='undefined')tradeWalkingTo=null;if(typeof followedPlayerId!=='undefined')followedPlayerId=null;if(typeof playerAction!=='undefined')playerAction=null;if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
 function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
   const start=[startX,startY],open=[{x:startX,y:startY,g:0,f:0}],cost=new Map([[start.join(','),0]]),prev=new Map();let end=null;
   while(open.length){
@@ -344,7 +344,7 @@ function frame(now){
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
   if(!crossing&&!window.playerTrade&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
-    time+=dt;observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();const moving=spiritEffect?.ids?false:advanceMovement(dt);
+    time+=dt;observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=spiritEffect?.ids?false:advanceMovement(dt);
     if(!moving&&!path.length&&target&&!spiritEffect?.ids){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}

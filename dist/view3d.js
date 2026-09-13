@@ -209,6 +209,7 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
  const tp=tutorialGoal();if(tp){ring3(ctx,tp.x+.5,tp.y+.5,'#f3d280',.58);if(tutorialStep()?.event==='talk-finish')labels.push(['Finish apprenticeship · Elder Rowan',tp.x+.5,3.2,tp.y+.5,'#ffdb8d']);}
 
  drawWorldMood3();for(const o of objects){if(o.type!=='fish'||o.dead>time||!near(o.x,o.y))continue;const q=project3(o.x+.5,.14,o.y+.5);ctx.save();ctx.strokeStyle='#bceafa';ctx.lineWidth=2;for(let i=0;i<3;i++){const phase=(time*.5+i/3)%1;ctx.globalAlpha=1-phase;ctx.beginPath();ctx.ellipse(q.x,q.y,7+phase*15,3+phase*6,0,0,Math.PI*2);ctx.stroke();}ctx.restore();}hitboxes.sort((a,b)=>a.depth-b.depth);
+ if(typeof socialOverheads!=='undefined'){const chat=socialOverheads.get(accountUsername?.toLowerCase());if(chat&&Date.now()<chat.until)pushOverheadChat(labels,chat.text,px,py);}
  if(!target||!fighter(target))labels.push([s.character?.name||'Adventurer',px+.5,2.3+walkSurfaceHeight(px+.5,py+.5)-landHeight(px+.5,py+.5),py+.5,'#ffedbd']);
  const occupiedLabels=[];
  for(const [text,x,y,z,color,o]of labels){const p=project3(x,y,z),width=Math.max(40,text.length*6.5);let yy=p.y;
