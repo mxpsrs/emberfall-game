@@ -1,4 +1,4 @@
-import { sqliteTable,text,integer,index } from 'drizzle-orm/sqlite-core';
+import { sqliteTable,text,integer,index,primaryKey } from 'drizzle-orm/sqlite-core';
 export const characterSaves=sqliteTable('character_saves',{userId:text('user_id').primaryKey(),state:text('state').notNull(),revision:integer('revision').notNull().default(1),updatedAt:text('updated_at').notNull()});
 
 export const playerPresence=sqliteTable('player_presence',{playerId:text('player_id').primaryKey(),scene:text('scene').notNull(),payload:text('payload').notNull(),seenAt:integer('seen_at').notNull()},table=>[index('idx_presence_scene_seen').on(table.scene,table.seenAt)]);
@@ -13,3 +13,6 @@ export const playerTrades=sqliteTable('player_trades',{id:text('id').primaryKey(
 
 export const socialSettings=sqliteTable('social_settings',{accountId:text('account_id').primaryKey(),publicMode:text('public_mode').notNull().default('on'),privateMode:text('private_mode').notNull().default('on'),tradeMode:text('trade_mode').notNull().default('on')});
 export const ignoredPlayers=sqliteTable('ignored_players',{owner:text('owner').notNull(),target:text('target').notNull()},t=>[index('idx_ignored_owner').on(t.owner,t.target)]);
+
+export const betaCheckpoints=sqliteTable('beta_checkpoints',{id:text('id').primaryKey().references(()=>globalResets.id),restoreFrom:text('restore_from')});
+export const archivedCharacters=sqliteTable('archived_characters',{checkpointId:text('checkpoint_id').notNull().references(()=>betaCheckpoints.id),userId:text('user_id').notNull(),state:text('state').notNull(),revision:integer('revision').notNull(),updatedAt:text('updated_at').notNull()},t=>[primaryKey({columns:[t.checkpointId,t.userId]})]);

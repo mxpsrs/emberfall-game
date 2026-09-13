@@ -24,22 +24,32 @@ export async function handleGlobalReset(request,env){
     if(request.method!=='POST')return reply({error:'Method not allowed.'},405);
     const raw=await request.text();if(raw.length>2048)return reply({error:'Request too large.'},413);
     let body;try{body=JSON.parse(raw);}catch{return reply({error:'Invalid request.'},400);}
-    const {requestId,reason}=body;
+    const {requestId,reason,mode,restoreFrom}=body;
+    if(!['archive','restore'].includes(mode))return reply({error:'Permanent deletion is disabled. Select archive or restore.'},400);
     if(typeof requestId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(requestId)||typeof reason!=='string'||!reason.trim()||reason.length>200||/[\x00-\x1f\x7f]/.test(reason))return reply({error:'Supply a request ID and a one-line reason of 1–200 characters.'},400);
     const id=requestId.toLowerCase();
-    // D1 batch is transactional: the receipt, deletes and version change commit together.
-    // A completed receipt makes any retry, including an older request, a no-op.
+    const existing=await env.DB.prepare('SELECT * FROM global_resets WHERE id=? AND completed=1').bind(id).first();
+    if(existing)return reply({reset:existing,replayed:true});
+    if(mode==='restore'&&(!restoreFrom||!await env.DB.prepare('SELECT id FROM beta_checkpoints WHERE id=?').bind(restoreFrom).first()))return reply({error:'Choose an existing archived checkpoint.'},400);
+    // A database guard is repeated in the transaction to reject races with reopening.
+    const locked="EXISTS (SELECT 1 FROM game_maintenance WHERE id=1 AND status='locked')";
+    if(!await env.DB.prepare('SELECT 1 AS ready WHERE '+locked).first())return reply({error:'Maintenance must be locked before a beta reset or restoration.'},409);
     const pending='EXISTS (SELECT 1 FROM global_resets WHERE id=? AND completed=0)';
+    // Archive every byte and revision before replacing the active saves. D1 batch
+    // rolls the entire operation back if any snapshot or restoration write fails.
     const result=await env.DB.batch([
-      env.DB.prepare("INSERT INTO global_resets (id,reason,character_count,session_count,presence_count,reset_at,completed) SELECT ?,?,(SELECT count(*) FROM character_saves),(SELECT count(*) FROM game_sessions),(SELECT count(*) FROM player_presence),strftime('%Y-%m-%dT%H:%M:%fZ','now'),0 ON CONFLICT(id) DO NOTHING").bind(id,reason.trim()),
+      env.DB.prepare("INSERT INTO global_resets (id,reason,character_count,session_count,presence_count,reset_at,completed) SELECT ?,?,(SELECT count(*) FROM character_saves),(SELECT count(*) FROM game_sessions),(SELECT count(*) FROM player_presence),strftime('%Y-%m-%dT%H:%M:%fZ','now'),0 WHERE "+locked+" ON CONFLICT(id) DO NOTHING").bind(id,reason.trim()),
+      env.DB.prepare('INSERT INTO beta_checkpoints (id,restore_from) SELECT ?,? WHERE '+pending+' ON CONFLICT(id) DO NOTHING').bind(id,mode==='restore'?restoreFrom:null,id),
+      env.DB.prepare('INSERT INTO archived_characters (checkpoint_id,user_id,state,revision,updated_at) SELECT ?,user_id,state,revision,updated_at FROM character_saves WHERE '+pending).bind(id,id),
       env.DB.prepare("UPDATE player_trades SET status='cancelled',revision=revision+1 WHERE status IN ('pending','active') AND "+pending).bind(id),
-      env.DB.prepare('DELETE FROM social_messages WHERE '+pending).bind(id),
       env.DB.prepare('DELETE FROM character_saves WHERE '+pending).bind(id),
+      ...(mode==='restore'?[env.DB.prepare('INSERT INTO character_saves (user_id,state,revision,updated_at) SELECT user_id,state,revision,updated_at FROM archived_characters WHERE checkpoint_id=? AND '+pending).bind(restoreFrom,id)]:[]),
       env.DB.prepare('DELETE FROM game_sessions WHERE '+pending).bind(id),
       env.DB.prepare('DELETE FROM player_presence WHERE '+pending).bind(id),
       env.DB.prepare('UPDATE global_resets SET completed=1 WHERE id=? AND completed=0').bind(id)
     ]);
     const reset=await env.DB.prepare('SELECT * FROM global_resets WHERE id=? AND completed=1').bind(id).first();
-    return reply({reset,replayed:result[0].meta.changes===0});
+    if(!reset)return reply({error:'Maintenance changed; no reset was performed.'},409);
+    return reply({reset,checkpointId:id,restoredFrom:mode==='restore'?restoreFrom:null,replayed:result[0].meta.changes===0});
   }catch{console.error('global_reset_failed');return reply({error:'Reset could not be confirmed. Retry the same request ID.'},503);}
 }
