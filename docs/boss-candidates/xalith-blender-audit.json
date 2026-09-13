@@ -33,7 +33,7 @@
   "triangles": 13156,
   "maxDiscardedWeight": 0.1825031306409045,
   "skinErrorSourceUnits": {
-    "idle": 0.1351271361529495,
+    "idle": 0.13511008034353356,
     "walk": 0.1906073135847812,
     "run": 0.2200399307535936,
     "attack": 0.13831903558262498,
@@ -497,7 +497,7 @@
   ],
   "skinConversion": "Blender preserve-volume (dual quaternion) converted to the runtime four-weight linear skinning; original B-bone segments retained. Error compares evaluated source vertices with runtime matrices before byte weight quantization.",
   "skinErrorGameUnits": {
-    "idle": 0.071987,
+    "idle": 0.071978,
     "walk": 0.101544,
     "run": 0.117224,
     "attack": 0.073688,

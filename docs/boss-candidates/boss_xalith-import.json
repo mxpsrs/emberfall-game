@@ -54,7 +54,7 @@
     "idle": {
       "source": "Emberfall/idle",
       "duration": 2.8,
-      "frames": 69,
+      "frames": 35,
       "note": "Emberfall-authored on the original rig"
     },
     "walk": {

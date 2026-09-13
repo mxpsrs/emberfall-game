@@ -233,7 +233,10 @@ def main(source, output):
     source_positions = np.array([list(axis @ body.matrix_world @ v.co) for v in mesh.vertices])
     for clip,duration in durations.items():
         frames = []
-        count = math.ceil(duration*24)+1
+        # The slow 2.8-second breathing loop needs fewer samples than strikes.
+        # Runtime interpolation keeps it smooth without duplicating idle data.
+        sample_rate = 12 if clip == 'idle' else 24
+        count = math.ceil(duration*sample_rate)+1
         worst = 0.0
         for frame in range(count):
             pose(clip,frame/(count-1))
