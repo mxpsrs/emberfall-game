@@ -15,8 +15,8 @@ function findDialogueSpeaker(title){
 function endNpcDialogue(){npcDialogueState=null;$('modal').classList.remove('npc-dialogue');document.body.classList.remove('npc-talking');$('modal').removeAttribute('aria-labelledby');$('closeModal').textContent='Back to adventure';$('closeModal').setAttribute('aria-label','Back to adventure');}
 function drawNpcPortrait(){
  const state=npcDialogueState,c=$('npcPortrait');if(!state||!c||typeof creatorPainter!=='function'||!assetsReady)return;
- const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);const speaker=state.speaker,look=speaker.sprite??speaker.look??0,gear=npcEquipment(speaker);
- if(!speaker.tutor){gear._frame=speaker.frame||((look%3===2)?'female':'male');gear._appearance={topStyle:4,bottomStyle:3,topColor:(speaker.id||0)%8,bottomColor:7,hair:(speaker.id||0)%4,hairColor:(speaker.id||0)%4};}
+ const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);const speaker=state.speaker,look=speaker.sprite??speaker.look??0,gear={...npcEquipment(speaker),_portrait:true};
+ if(!speaker.tutor&&!speaker.appearanceRole){gear._frame=speaker.kind==='man'?'male':speaker.frame||((look%3===2)?'female':'male');gear._appearance={topStyle:4,bottomStyle:3,topColor:(speaker.id||0)%8,bottomColor:7,hair:(speaker.id||0)%4,hairColor:(speaker.id||0)%4};}
  if(speaker.civilianModel)gear._civilian=speaker.civilianModel;
  const scale=275,angle=-.18,cy=Math.cos(angle),sy=Math.sin(angle),before=meshDetail3;meshDetail3=1;
  try{const painter=creatorPainter(g,(x,y,z)=>({x:c.width/2+(x*cy-z*sy)*scale,y:32+(1.91-y)*scale+(x*sy+z*cy)*scale*.035,depth:x*sy+z*cy+y*.035}),c.width,c.height);humanoid3(painter,0,0,look,gear,0);painter.flush();}finally{meshDetail3=before;}

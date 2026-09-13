@@ -5,6 +5,20 @@ let tutorialIslandReady=false,tutorialResume=null;
 const tutorialComplete=state=>state.tutorialReward===true||state.tutorial>=tutorialSteps.length;
 const insideTutorialArea=(x,y)=>Number.isFinite(x+y)&&x>=10&&x<=94&&y>=30&&y<=101;
 const FIRSTLIGHT_LAYOUT_VERSION=2;
+// The square and its civic lots were graded together before being paved.
+// Keep a single finished elevation through the well, stalls and door aprons;
+// broad earth banks meet the island's natural hills outside the developed area.
+const FIRSTLIGHT_TOWN_LEVEL=.75;
+const FIRSTLIGHT_TOWN_PADS=[[32,43,57,64],[29,31,42,43],[51,32,62,43],[57,49,70,62]];
+const gradeBeforeFirstlight=gradeLand;
+gradeLand=function(x,z,height){
+ if(currentScene!==TUTORIAL_SCENE)return gradeBeforeFirstlight(x,z,height);
+ let distance=Infinity;
+ for(const [left,top,right,bottom]of FIRSTLIGHT_TOWN_PADS)distance=Math.min(distance,Math.hypot(Math.max(left-x,0,x-right),Math.max(top-z,0,z-bottom)));
+ if(distance>=12)return height;
+ const t=distance/12,blend=1-t*t*(3-2*t);
+ return height*(1-blend)+FIRSTLIGHT_TOWN_LEVEL*blend;
+};
 const FIRSTLIGHT_COURTS=[
  {id:'square',x:43.5,y:53,rx:10,ry:8,paved:true,rect:true},
  {id:'woodland',x:24,y:47,rx:5,ry:4},
@@ -135,7 +149,7 @@ setupTutorialVillage=function(){
  trainingPenGate=islandObjects.find(o=>o.type==='gate'&&o.penFence)||null;
  // Keep normal mainland services, but remove every tutor, lesson marker and practice target.
  mainland.objects=mainland.objects.flatMap(o=>{
-  if(o.tutor==='guide'){const elder={...o};delete elder.tutor;delete elder.tutorialRole;return [elder];}
+  if(o.tutor==='guide'){const elder={...o,appearanceRole:'guide'};delete elder.tutor;delete elder.tutorialRole;return [elder];}
   if(o.tutor==='bank'){const banker={...o,type:'banker',name:'Briarhaven banker'};delete banker.tutor;delete banker.tutorialRole;return [banker];}
   if(o.tutor||o.penId||o.penFence||o.tutorialRole==='cinder'||['dummy','magic-dummy','practice-forge'].includes(o.tutorialRole)||o.workplace)return [];
   const copy={...o};delete copy.tutorialRole;return [copy];
@@ -177,6 +191,64 @@ function departTutorialIsland(){
  s.groundLoot=(s.groundLoot||[]).filter(p=>p.scene!==TUTORIAL_SCENE);
  return activateScene('overworld',...MAINLAND_ENTRY,false);
 }
+// This sequence is deliberately transient: a reload during the cast resumes the
+// final lesson; completion, belongings and the destination are saved together.
+let tutorialCrossing=null;
+function beginTutorialCrossing(){
+ if(tutorialCrossing||currentScene!==TUTORIAL_SCENE||tutorialComplete(s)||tutorialStep()?.event!=='talk-finish')return false;
+ if($('modal').open)close();stop();clearUseItem(false);closeWorldOptions();
+ const rowan=tutorialTutor('guide'),remote=Math.hypot(rowan.x-px,rowan.y-py)>7;
+ const caster=remote?{...rowan,x:px-2,y:py-1,drawX:px-2,drawY:py-1}:rowan;
+ caster._castAt=time;caster._castDuration=2.6;
+ tutorialCrossing={phase:'casting',age:0,caster,remote,committing:false,earned:false};
+ playerHeading=Math.atan2(caster.x-px,caster.y-py);
+ document.body.classList.add('tutorial-crossing');
+ const veil=document.createElement('div');veil.id='tutorialCrossing';veil.setAttribute('role','status');veil.setAttribute('aria-live','polite');
+ veil.innerHTML='<div class="crossing-veil"></div><p id="crossingCaption">Rowan opens the crossing…</p>';document.body.appendChild(veil);
+ if(typeof playGameSound==='function')playGameSound('magic');return true;
+}
+function updateTutorialCrossing(dt){
+ const crossing=tutorialCrossing;if(!crossing)return;
+ crossing.age+=dt;
+ if(crossing.phase==='casting'&&crossing.age>=2.6){
+  crossing.committing=true;crossing.phase='saving';crossing.age=0;
+  delete crossing.caster._castAt;delete crossing.caster._castDuration;
+  tutorialEvent('talk-finish');
+  $('crossingCaption').textContent='Crossing to Briarhaven…';
+ }
+ if(crossing.phase==='saving'){
+  if(cloudReady&&(cloudBusy||cloudDirty)){if(!cloudBusy&&cloudDirty)flushCloudSave();}
+  else{crossing.phase='arrival';crossing.age=0;$('crossingCaption').textContent='Briarhaven · The mainland';}
+ }
+ const opacity=crossing.phase==='casting'?Math.max(0,(crossing.age-2.15)/.45):crossing.phase==='saving'?1:Math.max(0,1-crossing.age/.6);
+ $('tutorialCrossing')?.style.setProperty?.('--crossing-opacity',String(opacity));
+ if(crossing.phase==='arrival'&&crossing.age>=1.1){
+  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');showTutorialArrival(crossing.earned);
+ }
+}
+function drawTutorialCrossing3(mesh){
+ const crossing=tutorialCrossing;if(!crossing||crossing.phase==='saving')return;
+ const arriving=crossing.phase==='arrival',t=crossing.age,fade=arriving?Math.max(0,1-t/1.1):Math.min(1,t/.4),x=px+.5,z=py+.5;
+ const r=groundedPainter(mesh,x,z),glow=materialRealm(r,19),radius=arriving?.75+t*.8:.65+Math.min(1,t/2.6)*.35;
+ for(const radiusScale of [1,1.25])for(let i=0;i<48;i++){
+  const a=i*Math.PI/24,b=(i+1)*Math.PI/24,rr=radius*radiusScale,w=.025*fade;
+  glow.face([[x+Math.cos(a)*(rr-w),.035,z+Math.sin(a)*(rr-w)],[x+Math.cos(a)*(rr+w),.035,z+Math.sin(a)*(rr+w)],[x+Math.cos(b)*(rr+w),.035,z+Math.sin(b)*(rr+w)],[x+Math.cos(b)*(rr-w),.035,z+Math.sin(b)*(rr-w)]],'#b0ead6');
+ }
+ for(let i=0;i<12;i++){
+  const angle=i*Math.PI/6+t*.7,p=[x+Math.cos(angle)*radius,.05,z+Math.sin(angle)*radius];
+  beamArt(glow,p,[p[0],.08+fade*.18,p[2]],.022*fade,'#e5dca2',5);
+  const rise=(t*.8+i/12)%1,rr=radius*(1-rise*.55),size=(.02+Math.sin(rise*Math.PI)*.03)*fade;
+  oval3(glow,x+Math.cos(angle)*rr,.1+rise*2.2,z+Math.sin(angle)*rr,size,size*1.6,size,'#cff6e1',p=>p,6);
+ }
+ if(!arriving){
+  if(crossing.remote)creature3(mesh,crossing.caster,crossing.caster.x+.5,crossing.caster.y+.5);
+  const c=crossing.caster,ground=walkSurfaceHeight(c.x+.5,c.y+.5)-walkSurfaceHeight(x,z);
+  for(let i=0;i<7;i++){const u=(t*.65+i/7)%1;oval3(glow,(c.x+.5)*(1-u)+x*u,ground*(1-u)+1.35+Math.sin(u*Math.PI)*.4,(c.y+.5)*(1-u)+z*u,.045*fade,.045*fade,.045*fade,'#e0f2d6',p=>p,6);}
+ }
+}
+for(const event of ['pointerdown','pointerup','click','keydown','wheel'])document.addEventListener(event,e=>{
+ if(tutorialCrossing&&!cloudDisconnected){e.preventDefault();e.stopImmediatePropagation();}
+},{capture:true,passive:false});
 const atlasBeforeIsland=expandedMap;
 expandedMap=function(page=0){if(currentScene===TUTORIAL_SCENE){openLocalMap();return;}return atlasBeforeIsland(page);};
 const mapBeforeIsland=openLocalMap;

@@ -73,7 +73,7 @@ function creatureDying(o){const a=creatureAsset(o);return !!a&&o.dead>time&&Numb
 const creatureBeforeImports=creature3;
 creature3=function(r,o,x,z){
  if(o.civilianModel){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02;humanoid3(r,x,z,1,{_civilian:o.civilianModel,_frame:'male',_race:'human'},Math.atan2(px-x,py-z),moving?time*9:0);return 1.9;}
- if(!o.tutor&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type))){
+ if(!o.tutor&&!o.appearanceRole&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type))){
   const state=creatureMotion(o,x,z),gear=npcEquipment(o);gear._attackAt=o.attackAt;
   gear._frame=o.kind==='man'?'male':o.frame||((o.sprite||0)%3===2?'female':'male');
   gear._appearance={topStyle:4,bottomStyle:3,topColor:(o.id||0)%8,bottomColor:7,hair:(o.id||0)%4,hairColor:(o.id||0)%4};

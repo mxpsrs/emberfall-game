@@ -16,6 +16,7 @@ function endTrade(){
  syncPanelButton();
 }
 function openTrade(kind){
+ if(typeof npcDialogueState!=='undefined'&&npcDialogueState)endNpcDialogue();
  if(window.realmWorkbench)endWorkbench();
  if(typeof clearUseItem==='function')clearUseItem(false);
  if(window.equipmentStatsOpen)endCombatStats();
@@ -24,9 +25,9 @@ function openTrade(kind){
  document.body.classList.add('panels-open','trade-open');$('gameDock').hidden=false;tab='bag';panelPage=0;syncTabs();
  document.querySelectorAll('[data-tab]').forEach(b=>b.disabled=b.dataset.tab!=='bag');
  syncPanelButton();
- $('modal').classList.add('trade-window');$('modal').setAttribute('aria-label',kind==='bank'?'Briarhaven Bank':'Mara’s General Store');
+ const title=kind==='bank'?(currentScene==='tutorial'?'Bank of Firstlight':'Bank of Briarhaven'):'Mara’s General Store';
+ $('modal').classList.add('trade-window');$('modal').setAttribute('aria-label',title);
  $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label',kind==='bank'?'Close bank window':'Close shop window');
- const title=kind==='bank'?'Bank of Briarhaven':'Mara’s General Store';
  $('modalBody').innerHTML='<div class="trade-heading"><span class="trade-emblem" aria-hidden="true">'+(kind==='bank'?'▣':'◈')+'</span><div><h2>'+title+'</h2><p id="tradeSummary"></p></div></div>'+
   '<div class="trade-tools"><div class="trade-tabs" aria-label="Item category">'+[['all','All items'],['equipment','Equipment'],['supplies','Supplies']].map(([id,label])=>'<button type="button" data-trade-filter="'+id+'" aria-pressed="'+(id==='all')+'">'+label+'</button>').join('')+'</div><input id="tradeSearch" type="search" placeholder="Search '+kind+'…" aria-label="Search '+kind+'" autocomplete="off"></div>'+
   '<div class="trade-scroll"><div id="tradeGrid" class="trade-grid" aria-label="'+(kind==='bank'?'Stored items':'Shop stock')+'"></div><p id="tradeEmpty" hidden></p></div>'+

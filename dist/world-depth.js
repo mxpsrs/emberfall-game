@@ -6,7 +6,8 @@ function resetLandSurface(){landHeights.clear();foundationLevels=new WeakMap();f
 function shoreDistance(x,z){return Math.max(0,worldWaterDistance(x,z));}
 function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}
-function shoreHeight(x,z){return Math.max(0,Math.min(landBase(x,z),shoreDistance(x,z)*.33));}
+function gradeLand(x,z,height){return height;}
+function shoreHeight(x,z){return Math.max(0,Math.min(gradeLand(x,z,landBase(x,z)),shoreDistance(x,z)*.33));}
 function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);let level=Infinity;for(let z=Math.floor(b.y-.7);z<=Math.ceil(b.y+b.h+.7);z++)for(let x=Math.floor(b.x-.7);x<=Math.ceil(b.x+b.w+.7);x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
  if(!inWorld())return 0;const key=x+z*2048;if(landHeights.has(key))return landHeights.get(key);
@@ -18,7 +19,7 @@ function landNode(x,z){
   const t=d/12,blend=1-t*t*(3-2*t),w=blend/Math.max(.0001,d*d);weight+=w;total+=w*foundation;strength=Math.max(strength,blend);
  }
  if(weight)h=h*(1-strength)+total/weight*strength;
- h=Math.min(h,water*.45);landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
+ h=Math.min(gradeLand(x,z,h),water*.45);landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
 }
 function landNormal(x,z){const a=landHeight(x-.2,z)-landHeight(x+.2,z),b=landHeight(x,z-.2)-landHeight(x,z+.2),length=Math.hypot(a,.4,b);return [a/length,.4/length,b/length];}
 function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return v>=u?landNode(ix,iz)*(1-v)+landNode(ix,iz+1)*(v-u)+landNode(ix+1,iz+1)*u:landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*(u-v)+landNode(ix+1,iz+1)*v;}
@@ -94,7 +95,7 @@ const distinctCreatureBefore=creature3;
 creature3=function(r,o,x,z){
  if(['wolf','ridgewolf','rat'].includes(o.kind)&&r.indexed){const moving=Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02,phase=moving?Math.round((time*9%(Math.PI*2))*24)/24:0;return cachedRealmShape(groundedPainter(r,x,z),[o.kind,meshDetail3,moving,phase].join(':'),briarTransform(x,0,z,1,Math.atan2(px-x,py-z)),q=>quadrupedArt(q,{...o,x:0,y:0,drawX:moving?1:0,drawY:0},0,0,0,phase));}
  if(o.kind==='dummy'){r=groundedPainter(r,x,z);return r.indexed?cachedRealmShape(r,'dummy:'+meshDetail3+':'+o.tutorialRole,briarTransform(x,0,z),q=>drawPracticeDummy(q,o,0,0)):drawPracticeDummy(r,o,x,z);}
- if(o.tutor){const role=o.tutor,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]},gear={_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:role==='combat'?'ironHelm':null,feet:'leatherBoots'};humanoid3(r,x,z,o.sprite%4,gear,Math.atan2(px-x,py-z),0,0);return 1.9;}
+ if(o.tutor||o.appearanceRole){humanoid3(r,x,z,o.sprite%4,npcEquipment(o),Math.atan2(px-x,py-z),0,0);return 1.9;}
  if(o.kind==='goblin')return goblinRealm3(groundedPainter(r,x,z),x,z,Math.atan2(px-x,py-z),Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.02?time*8:0,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt??-9))/.65)*Math.PI)),1,Math.max(0,Math.sin(Math.min(1,(time-(o.hitAt??-9))/.3)*Math.PI)));return distinctCreatureBefore(['wolf','ridgewolf','rat','slime'].includes(o.kind)?groundedPainter(r,x,z):r,o,x,z);};
 
 function drawPracticeDummy(r,o,x,z){const wood=materialRealm(r,5),straw=materialRealm(r,13);beamArt(wood,[x,.02,z],[x,1.65,z],.09,'#6c5034',8);beamArt(wood,[x-.62,1.15,z],[x+.62,1.15,z],.07,'#81613d',8);

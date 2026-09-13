@@ -341,7 +341,9 @@ function frame(now){
   if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
   if(assetsReady&&!cloudConflict&&!cloudDisconnected)updateWorldTimers();
-  if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
+  const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
+  if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
+  if(!crossing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}

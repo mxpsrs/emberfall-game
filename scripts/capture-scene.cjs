@@ -58,6 +58,7 @@ else if(choice==='combat'){const enemy=objects.find(o=>o.kind==='goblin');activa
 else if(['walk','run','idle','sword','transition','ranged','magic','bury','bow-idle'].includes(choice)){activateScene('overworld',43,75);playerMotion.moving=['walk','run','transition'].includes(choice);playerMotion.blend=playerMotion.moving?1:0;playerMotion.running=choice==='run';playerMotion.phase=posePhase;playerMotion.heading=1.5;playerHeading=1.5;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;}
 function captureAction(){if(['ranged','magic'].includes(choice)){lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips[choice].duration;playerAttackMotion={...combatMotion(choice),weapon:s.equipment.weapon,ammo:'arrows',started:lastAttack,color:'#76c7ed'};}if(choice==='bury')playerAction={kind:'bury',started:time-posePhase*1.8,duration:1.8,commitAt:.95,committed:posePhase>.53};}
 captureAction();
+if(choice==='firstlight-crossing'){s.tutorial=tutorialSteps.length-1;beginTutorialCrossing();tutorialCrossing.age=posePhase*2.6;time+=tutorialCrossing.age;}
 if(captureIsolated){objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};}
 if(choice==='willow-inside')setWalkInDoor(captureInn.service,true,true);
 view3d.zoom=captureZoom||(['walk','run','combat','idle','sword','transition','ranged','magic','bury','bow-idle'].includes(choice)?110:choice==='willow-inside'?40:choice==='shop'?38:choice==='briarhaven'?28:22);view3d.yaw=captureYaw;view3d.tilt=captureTilt;updateDoorThreshold();

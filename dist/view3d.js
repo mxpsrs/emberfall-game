@@ -95,6 +95,7 @@ function humanoid3(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  }
 }
 function npcEquipment(o){
+ if(o.tutor||o.appearanceRole){const role=o.tutor||o.appearanceRole,colors={guide:[.29,.34,.29],woods:[.26,.37,.21],fishing:[.23,.37,.46],cooking:[.61,.54,.39],mining:[.29,.20,.13],combat:[.31,.33,.34],bank:[.31,.27,.40],worship:[.45,.47,.33],magic:[.35,.25,.45]};return {_role:role,_cloth:colors[role],_frame:['fishing','bank','worship','magic'].includes(role)?'female':'male',_hair:['fishing','bank','magic'].includes(role)?1:2,weapon:role==='combat'?'bronzeSword':role==='magic'?'oakStaff':null,head:null,body:role==='combat'?'iron_body':null,feet:'leatherBoots',_castAt:o._castAt,_castDuration:o._castDuration};}
  const duty=/\b(guard|captain|knight|soldier|sentinel)\b/i.test(o.name||'')||o.tutor==='combat';
  if(duty)return {body:'iron_body',head:'iron_head',weapon:'ironSword',shield:'ironShield',_race:o.race||'human'};
  if(o.type==='man'||o.type==='villager'||!fighter(o))return {_race:o.race||'human'};
@@ -181,6 +182,7 @@ function draw3d(){meshFrame3++;meshDetail3=view3d.zoom<24?.5:view3d.zoom<36?.75:
   hit(pile,x,z,.40,1);if(Math.hypot(px-pile.x,py-pile.y)<4)labels.push([groundItemLabel(pile),x,.65,z,'#f4daa0']);
  }
  if(typeof drawCombatProjectiles3==='function')drawCombatProjectiles3(mesh);
+ if(typeof drawTutorialCrossing3==='function')drawTutorialCrossing3(mesh);
  if(typeof drawOnlinePlayers==='function')drawOnlinePlayers(mesh,labels);mesh.flush();
  // A full-height door target remains selectable with the roof cut away.
  for(const b of visibleBuildings)if(b.walkIn){const o=b.service,seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,m=typeof buildingDoorTransform==='function'?buildingDoorTransform(b):briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-doorOpenFraction(o)*Math.PI*.52,scale*.85);hitboxes.push({polygon:[[-.05,0,0],[1.08,0,0],[1.08,2.36,0],[-.05,2.36,0]].map(p=>project3(...briarPoint(p,0,m))),o,door:true,depth:project3(o.x+.5,0,o.y+.5).depth});}

@@ -3,12 +3,21 @@ const onlinePeers=new Map();let onlineScene=null,onlineEmote=null,onlineEmoteUnt
 async function syncOnlineWorld(){
  if(cloudDisconnected||cloudConflict)return;
  if(!assetsReady||!s.character||!cloudReady||cloudBusy||$('creator').open||document.hidden){setTimeout(syncOnlineWorld,1200);return;}
- if(s.tutorialIslandVersion===1&&onlineScene!==currentScene&&cloudDirty){await flushCloudSave();if(cloudDirty||cloudBusy){setTimeout(syncOnlineWorld,1200);return;}}
- try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json'},body:JSON.stringify({scene:currentScene,x:px,y:py,heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null})});if(!response.ok)throw new Error('offline');const data=await response.json();
+ // Presence must follow the saved journey, for every island layout version.
+ // Otherwise the server correctly rejects a mainland arrival as unfinished.
+ if(onlineScene!==currentScene&&cloudDirty)await flushCloudSave();
+ if(cloudDisconnected||cloudConflict)return;
+ if(cloudDirty&&onlineScene!==currentScene||cloudBusy){setTimeout(syncOnlineWorld,1200);return;}
+ const requestedScene=currentScene;
+ try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json'},body:JSON.stringify({scene:requestedScene,x:px,y:py,heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null})});
+ // An island request can still be in flight when Rowan finishes the crossing.
+ if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
+ if(!response.ok)throw new Error('offline');const data=await response.json();
+ if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;}
  const present=new Set();for(const peer of data.players){present.add(peer.id);const old=onlinePeers.get(peer.id);onlinePeers.set(peer.id,{...peer,drawX:old?.drawX??peer.x,drawY:old?.drawY??peer.y,seen:Date.now()});}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
  $('onlineStatus').textContent=currentScene==='tutorial'?'Firstlight Isle · '+(onlinePeers.size+1)+' online':(onlinePeers.size+1)+' online here';
- }catch{$('onlineStatus').textContent='Connection lost';pauseForServer();return;}
+ }catch{if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}$('onlineStatus').textContent='Connection lost';pauseForServer();return;}
  setTimeout(syncOnlineWorld,1000);
 }
 function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for(const peer of onlinePeers.values()){

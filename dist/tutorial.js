@@ -18,7 +18,7 @@ const tutorialSteps=[
  lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the kitchen on the island’s eastern lane. He will supply a new recipe.','tutor-cooking'),
  lesson('mix-dough','Mix your bread dough','Bram has given you flour and water. Tap the flour to highlight it, then tap the jug of water to mix bread dough.'),
  lesson('bake-bread','Bake at the range','Tap bread dough in your bag to highlight it, then tap the range inside the kitchen to bake bread.','range'),
- lesson('eat','Food for the road','Tap Eat, or tap your cooked bread or shrimp in your bag. Food restores health; raw food must be cooked first.'),
+ lesson('eat','Food for the road','Try Eat with your cooked bread or shrimp. Food restores health. If your health is full, keep that food for a fight.'),
  lesson('talk-mining','Visit the smith','Bram sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.','tutor-mining'),
  lesson('ore','Mine copper and tin','Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.','ore'),
  lesson('smelt','Smelt a bronze bar','Tap copper or tin ore in your bag, then tap the furnace. Choose the bronze bar recipe to combine both ores.','furnace'),
@@ -87,6 +87,7 @@ function tutorialEvent(event){
  if(event==='cook-shrimp'&&(!besideFishingTutor()||!s.tutorialActions?.fire))return;
  if(REMEMBERED_LESSONS.includes(event)){s.tutorialActions??={};s.tutorialActions[event]=true;}
  if(tutorialStep().event!==event)return;
+ if(event==='talk-finish'&&typeof beginTutorialCrossing==='function'&&currentScene==='tutorial'&&!tutorialCrossing?.committing)return beginTutorialCrossing();
  if(event==='loot'&&!(s.bag.bones>0))return;
  if(event==='equip-dagger'&&s.equipment.weapon!=='bronze_dagger')return;
  if(event==='combat-stats'&&s.equipment.weapon!=='bronze_dagger')return;
@@ -96,11 +97,14 @@ function tutorialEvent(event){
  if(!tutorialStep()){
   const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
   if(typeof departTutorialIsland==='function')departTutorialIsland();
-  dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and runes in your bank.</b> Your worn items and bag stay with you.</p>':''));
+  if(typeof tutorialCrossing!=='undefined'&&tutorialCrossing)tutorialCrossing.earned=earned;else showTutorialArrival(earned);
  }
  renderTutorial();renderUI();save();
  if(tutorialStep()?.event==='equip-dagger'&&s.equipment.weapon==='bronze_dagger')tutorialEvent('equip-dagger');
  else if(s.tutorialActions?.[tutorialStep()?.event])tutorialEvent(tutorialStep().event);
+}
+function showTutorialArrival(earned){
+ dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and runes in your bank.</b> Your worn items and bag stay with you.</p>':''));
 }
 function observeTutorialCamera(){
  if(tutorialStep()?.event!=='camera')return;

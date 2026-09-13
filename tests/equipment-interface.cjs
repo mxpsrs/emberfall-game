@@ -24,8 +24,9 @@ let previewWeapon=null,previewRenders=0;paintEquipmentPreview=()=>{previewWeapon
 s=defaults();s.character={name:'Tester'};s.tutorial=tutorialSteps.length;s.gear={bronzeSword:1,shortbow:1};s.bag={arrows:20};s.equipment={};
 const clickBag=id=>{const button=$('inventoryGrid').children.find(b=>b.title===ITEMS[id].name);assert(button,'Bag contains '+id);button.onclick({preventDefault:()=>{}});};
 const statsText=()=>$('combatStatGroups').children.flatMap(section=>section.children[1].children.map(el=>el.textContent));
-openGamePanel('gear');openCombatStats();
+openGamePanel('gear');assert(window.equipmentStatsOpen,'the main equipment button opens the paired window directly');openCombatStats();
 assert.equal(tab,'bag');assert.equal($('gameDock').hidden,false);assert.equal($('modal').presentation,'nonmodal');assert(window.equipmentStatsOpen);
+$('pairedEquipmentTools').onclick();assert.equal(tab,'bag');assert($('inventoryGrid').children.some(b=>b.title===ITEMS.bronzeSword.name),'tool belt keeps the bag visible');$('pairedEquipmentTools').onclick();
 clickBag('bronzeSword');assert.equal(s.equipment.weapon,'bronzeSword');assert.equal(previewWeapon,'bronzeSword');assert(statsText().includes('melee'));
 clickBag('shortbow');assert.equal(s.equipment.weapon,'shortbow');assert.equal(previewWeapon,'shortbow');assert(statsText().includes('ranged'));
 assert($('inventoryGrid').children.some(b=>b.title===ITEMS.bronzeSword.name),'previous weapon returns to the visible bag');

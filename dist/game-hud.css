@@ -77,3 +77,8 @@ body.equipment-stats-open #gameDock{z-index:22;border-color:#bc9f67}body.equipme
 @media(max-width:720px){.combat-stats-window #modalBody{overflow-y:auto}.combat-stats-window h2{font-size:16px;line-height:20px;min-height:28px}.combat-stats-layout{grid-template-columns:106px minmax(0,1fr);flex:none;min-height:230px}.combat-stat-groups{grid-column:1/-1;overflow:visible}.combat-stats-layout .equipment-character{min-height:210px}.trade-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.trade-window #modalBody{overflow-y:auto}.trade-scroll{min-height:100px;flex:1 0 100px}.trade-heading h2{font-size:16px}}
 
 .paper-equipment [data-equipment-slot="ammo"]{grid-area:ammo;position:relative}.equipment-quantity{position:absolute;top:0;left:1px;color:#ffe281;font:12px/14px system-ui;text-shadow:0 1px 2px #000;pointer-events:none}
+
+/* Paired windows use the rail's space; their close buttons restore the rail. */
+body.trade-open,body.workbench-open,body.equipment-stats-open{--side-panel-right:8px}
+body.trade-open #gameTabs,body.workbench-open #gameTabs,body.equipment-stats-open #gameTabs{visibility:hidden}
+.combat-stat-groups>button{width:100%;min-height:32px;font-size:12px;padding:4px 6px;margin:0 0 6px}.combat-stat-groups section>p{font-size:12px;margin:3px 0 7px}
