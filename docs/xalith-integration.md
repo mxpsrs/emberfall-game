@@ -45,7 +45,10 @@ Blender's preserve-volume skinning. The largest sampled positional difference
 before byte-weight quantization is 0.1173 game units, in running; source-space
 and per-clip figures are recorded in `boss-candidates/xalith-blender-audit.json`.
 This is an approximation, not a claim of identical Blender shading/deformation.
-Gameplay loops return to their starting poses, and split GPU deformation
+The slow idle cycle samples at 12 fps with runtime interpolation; the six
+action/movement clips retain 24 fps sampling. This keeps the embedded Worker
+below the observed 64 MiB hosting limit. The build now enforces that limit
+before packaging. Gameplay loops return to their starting poses, and split GPU deformation
 matches the full CPU reference. The exporter script reproduces the authored
 motion and does not overwrite the original upload.
 
