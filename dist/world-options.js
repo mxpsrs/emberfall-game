@@ -5,7 +5,7 @@ function closeWorldOptions(){const menu=$('worldOptions');if(menu)menu.remove();
 function worldOptionsFor(o){
  if(o.dead>time||o.collected)return [];
  const name=o.name||'Ground loot',actions=[];
- if(o.type==='player'){if(!o.username)return [];return [['Trade with '+name,()=>requestPlayerTrade(o.username)],['Add friend '+name,()=>friendAction('friend',o.username)],['Message '+name,()=>selectChat(o.username)]];}
+ if(o.type==='player'){if(!o.username)return [];return [['Trade with '+name,()=>requestPlayerTrade(o.username)],['Follow '+name,()=>followPlayer(o.id)]];}
  if(o.type==='man'){actions.push(['Talk-to '+name,()=>talkVillager(o)],['Attack '+name+' (level '+o.level+')',()=>engage(o)]);}
  else if(o.type==='loot')actions.push(['Take '+groundItemLabel(o),()=>select(o)]);
  else if(o.type==='door')actions.push([(o.openedAt===undefined?'Open ':'Close ')+name,()=>select(o)]);
@@ -16,7 +16,7 @@ function worldOptionsFor(o){
 function openWorldOptions(e){
  if(!assetsReady||cloudDisconnected||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
  closeWorldOptions();const pick=worldPick(e),menu=document.createElement('div');menu.id='worldOptions';menu.setAttribute('role','menu');menu.setAttribute('aria-label','Choose option');const title=document.createElement('strong');title.textContent='Choose option';menu.appendChild(title);
- const entries=pick.objects.flatMap(worldOptionsFor);entries.push(['Walk here',()=>walkTo(pick.x,pick.y)],['Cancel',()=>{}]);
+ const entries=pick.objects.flatMap(worldOptionsFor);entries.push(['Walk here',()=>walkTo(pick.x,pick.y)]);if(!pick.objects.some(o=>o.type==='player'))entries.push(['Cancel',()=>{}]);
  for(const [text,action]of entries){const button=document.createElement('button');button.type='button';button.setAttribute('role','menuitem');button.textContent=text;button.onclick=()=>{closeWorldOptions();action();};menu.appendChild(button);}
  document.body.appendChild(menu);const box=menu.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(e.clientX,window.innerWidth-box.width-8))+'px';menu.style.top=Math.max(8,Math.min(e.clientY,window.innerHeight-box.height-8))+'px';menu.querySelector('button')?.focus();
 }

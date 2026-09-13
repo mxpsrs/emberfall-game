@@ -30,3 +30,13 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
 }}
 $('waveButton').onclick=()=>{onlineEmote='Hello!';onlineEmoteUntil=Date.now()+5000;toast('You wave to nearby players.');};
 setTimeout(syncOnlineWorld,1000);
+
+let followedPlayerId=null,followRouteAt=0;
+function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;toast('Following '+peer.name);updatePlayerFollow();}
+function updatePlayerFollow(){
+ if(!followedPlayerId||time<followRouteAt)return;followRouteAt=time+.6;
+ const peer=onlinePeers.get(followedPlayerId);
+ if(!peer||onlineScene!==currentScene||Date.now()-peer.seen>12000){stop();return;}
+ if(Math.hypot(peer.x-px,peer.y-py)<=1.6){path=[];return;}
+ const next=route(peer.x,peer.y,true,1.45);if(next!==null)path=next;
+}
