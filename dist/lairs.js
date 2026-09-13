@@ -163,7 +163,33 @@ function drawCreatureLair(r,minx,maxx,minz,maxz){
  const lair=CREATURE_LAIRS[currentScene];if(!lair)return;const world=worldScenes[currentScene];
  for(let z=Math.floor(minz/8)*8;z<=maxz;z+=8)for(let x=Math.floor(minx/8)*8;x<=maxx;x+=8){const key=x+':'+z;let tile=world.floorChunks.get(key);if(!tile){tile={};world.floorChunks.set(key,tile);}emitMesh3(r,cachedMesh3(tile,'prop',q=>{for(let zz=z;zz<z+8;zz++)for(let xx=x;xx<x+8;xx++)if(!worldWall(xx,zz)){const color=shade3(lair.floor,.94+.06*Math.sin(xx*3.7+zz*1.3));q.face([[xx,.025,zz],[xx+1,.025,zz],[xx+1,.025,zz+1],[xx,.025,zz+1]],color,null,['crystal','arcane','ork'].includes(lair.theme)?18:7);}return .03;}));}
  for(const o of world.decor){if(o.x<minx-8||o.x>maxx+8||o.z<minz-8||o.z>maxz+8)continue;if(o.kind==='model')lairModel(r,o.model,o.x,0,o.z,o.height,o.heading,o.tint);else drawLairFeature(r,o,lair);}
- drawColossusEffects(r);drawVeyrEffects(r);
+ drawColossusEffects(r);drawVeyrEffects(r);drawVarkeshEffects(r);
+}
+function drawVarkeshEffects(r){
+ const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='varkesh')return;
+ for(const h of f.hazards){
+  if(h.shape!=='cone')continue;
+  const x=h.fromX+.5,z=h.fromY+.5,progress=Math.max(0,Math.min(1,(time-h.started)/(h.due-h.started))),color=h.key==='blight'?'#9cc65d':'#d99c73';
+  for(let i=0;i<16;i++){
+   const a=h.heading-h.halfAngle+i/16*h.halfAngle*2,b=h.heading-h.halfAngle+(i+1)/16*h.halfAngle*2;
+   const point=(angle,radius)=>[x+Math.sin(angle)*radius,.085,z+Math.cos(angle)*radius];
+   r.face([point(a,h.length-.075),point(a,h.length),point(b,h.length),point(b,h.length-.075)],color,null,19);
+   r.face([point(a,.05),point(a,h.length-.08),point(b,h.length-.08),point(b,.05)],shade3(color,.32+.10*progress),null,19);
+  }
+  for(const side of [-1,1]){const a=h.heading+side*h.halfAngle;beamArt(materialRealm(r,19),[x,.10,z],[x+Math.sin(a)*h.length,.10,z+Math.cos(a)*h.length],.035,color,4);}
+  if(h.key==='blight'){
+   const mouth=f.o._creatureSockets?.mouth||{x:x+Math.sin(h.heading)*3,y:3.3,z:z+Math.cos(h.heading)*3},glow=materialRealm(r,19);
+   if(progress>.38){
+    const ready=Math.min(1,(progress-.38)/.28);
+    profile3(glow,mouth.x,mouth.y,mouth.z,.17+ready*.18,.25+ready*.22,.17+ready*.18,[[-.5,0],[0,1],[.5,0]],'#c1e981',p=>p,7);
+   }
+   if(progress>.65)for(let i=0;i<9;i++){
+    const t=(progress-.65)/.35*(i+1)/9,endX=x+Math.sin(h.heading)*h.length,endZ=z+Math.cos(h.heading)*h.length,wave=Math.sin(i*2.3+time*12)*t*.18;
+    const xx=mouth.x+(endX-mouth.x)*t+Math.cos(h.heading)*wave,zz=mouth.z+(endZ-mouth.z)*t-Math.sin(h.heading)*wave,yy=mouth.y*(1-t)+.12;
+    const k=.10+t*.30;profile3(glow,xx,yy,zz,k,k*1.6,k,[[-.5,0],[0,1],[.5,0]],i%2?'#a6d65f':'#d1e997',p=>p,6);
+   }
+  }
+ }
 }
 function drawVeyrEffects(r){
  const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='veyr')return;

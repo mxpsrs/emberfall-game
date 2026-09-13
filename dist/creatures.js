@@ -78,15 +78,16 @@ function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
  return result;
 }
 function creatureMotion(o,x,z){
- const state=o._creatureMotion??={time,x,z,phase:0,blend:0,speed:0,heading:((o.id||0)*2.399)% (Math.PI*2)};
+ const state=o._creatureMotion??={time,x,z,phase:0,blend:0,speed:0,heading:Number.isFinite(o.attackHeading)?o.attackHeading:o._inCombat?Math.atan2(px+.5-x,py+.5-z):((o.id||0)*2.399)% (Math.PI*2)};
  const dt=Math.min(.1,Math.max(0,time-state.time)),dx=x-state.x,dz=z-state.z,distance=Math.hypot(dx,dz);
  if(dt>0){
   const walking=distance>.0003&&distance<2;
   state.speed+=(walking?distance/dt-state.speed:-state.speed)*Math.min(1,dt*8);
   state.blend+=(walking?1-state.blend:-state.blend)*Math.min(1,dt*12);
-  if(walking)state.phase=(state.phase+distance/((o.creatureLook||creatureKinds[o.kind])==='rat'?.52*creatureSize(o):(o.creatureLook||creatureKinds[o.kind])==='wolf'?1.6:1.15))%1;
+  if(walking)state.phase=(state.phase+distance/(creatureAsset(o)?.gaitDistance||((o.creatureLook||creatureKinds[o.kind])==='rat'?.52*creatureSize(o):(o.creatureLook||creatureKinds[o.kind])==='wolf'?1.6:1.15)))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
   if(!walking&&(target===o||o._inCombat)&&Math.hypot(px+.5-x,py+.5-z)<12)desired=Math.atan2(px+.5-x,py+.5-z);
+  if(o.lockAttackHeading&&Number.isFinite(o.attackHeading)&&time<(o.attackAt||0)+(o.attackWindup||0)+(o.attackRecovery||0))desired=o.attackHeading;
   const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
   state.time=time;state.x=x;state.z=z;
  }
@@ -124,6 +125,15 @@ creature3=function(r,o,x,z){
  const floor=dying?mesh.floorY:Math.min(mesh.floorY,a.mesh.bounds[0][1]);
  const hop=o.attackMove==='pounce'&&attack?Math.sin(Math.PI*Math.max(0,Math.min(1,(attackAge/(o.attackWindup||1.8)-.6)/.4)))*.55:0;
  const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink+hop,z,k,state.heading);
+ if(a.sockets){
+  const palette=r.skinned?mesh.palette:creatureRigPose(kind,clip,phase,blend,baseClip,basePhase).palette,c=Math.cos(state.heading),s=Math.sin(state.heading);
+  o._creatureSockets??={};
+  for(const [name,socket]of Object.entries(a.sockets)){
+   const p=socket.point,b=socket.joint*12,q=[0,0,0];
+   for(let axis=0;axis<3;axis++){const row=b+axis*4;q[axis]=(palette[row]*p[0]+palette[row+1]*p[1]+palette[row+2]*p[2]+palette[row+3])*k;}
+   o._creatureSockets[name]={x:x+c*q[0]+s*q[2],y:q[1]-floor*k-sink+hop,z:z-s*q[0]+c*q[2]};
+  }
+ }
  const style=crystal?{bossColor:o.enraged?2:1,dissolve}:{};
  if(painter.skinned){
   if(a.splitSkinPalette){

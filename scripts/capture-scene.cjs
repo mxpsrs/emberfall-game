@@ -35,6 +35,7 @@ else if(choice==='ork-warrens')activateScene('ork_warrens',19,22);
 else if(choice.startsWith('colossus-lair')){activateScene('lair_colossus',23,25);const boss=objects.find(o=>o.encounter==='colossus');beginEncounter(boss);if(choice.includes('red'))boss.hp=Math.floor(boss.maxhp*.45);updateEncounterAI(0);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,processCaptureClip==='attack'?'shot':processCaptureClip);time+=posePhase;}
 else if(choice.startsWith('veyr-lair')){activateScene('lair_veyr',22,25);const boss=objects.find(o=>o.encounter==='veyr');beginEncounter(boss);if(choice.includes('phase2'))boss.hp=Math.floor(boss.maxhp*.45);updateEncounterAI(0);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,processCaptureClip==='attack'?'sweep':processCaptureClip);time+=posePhase;}
 else if(choice.startsWith('xalith-lair')){activateScene('lair_xalith',27,26);const boss=objects.find(o=>o.encounter==='xalith');beginEncounter(boss);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,'bite');time+=posePhase;}
+else if(choice.startsWith('varkesh-lair')){activateScene('lair_varkesh',29,28);const boss=objects.find(o=>o.encounter==='varkesh');beginEncounter(boss);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,processCaptureClip==='attack'?'blight':processCaptureClip);time+=posePhase;}
 else if(choice==='giant-grove')activateScene('overworld',40,143);
 else if(choice==='rat-pen')activateScene('overworld',54,82);
 else if(choice==='tree-lineup'){
@@ -49,7 +50,7 @@ else if(choice==='props'){
  activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
  for(const [i,name]of ['forge','Bed','Dining table','Barrel','Bookcase','Merchant wagon','Altar','camp'].entries())objects.push({id:4000000+i,type:['forge','camp'].includes(name)?name:'prop',name,x:36+(i%4)*4,y:69+Math.floor(i/4)*4,dead:0});
 }
-else if(['boss_colossus','boss_veyr','boss_xalith','ork','forestgiant','goblin','king','wolf','ridgewolf','rat','skeleton','slime','creature-lineup'].includes(choice)){
+else if(Object.hasOwn(creatureAssets,choice)||choice==='creature-lineup'){
  activateScene('overworld',43,75);objects.splice(0);buildings.splice(0);resetLandSurface();drawRealmCrossings=()=>{};
  for(const [i,kind]of (choice==='creature-lineup'?['goblin','wolf','rat','skeleton','slime','king']:[choice]).entries()){
   const x=choice==='creature-lineup'?38+(i%3)*4:44,y=choice==='creature-lineup'?71+Math.floor(i/3)*5:75;

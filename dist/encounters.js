@@ -28,7 +28,7 @@ const ENEMY_TIERS={
 // The four designs are approved; unreleased entries never spawn or expose empty lairs.
 const HUNT_ENCOUNTERS={
  veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:true,combatRadius:.7,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
- varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:false,rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
+ varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:true,combatRadius:2.1,lockAttackHeading:true,interval:4.3,attackLabel:'Fangs and blighted breath',rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{bones:3,steelBar:2,chaosRunes:15}},
  colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
  xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:true,combatRadius:1.05,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
 };
@@ -43,6 +43,7 @@ const HUNT_ZONES=[
 const ENCOUNTER_MOVES={
  bite:{name:'Strike',style:'melee',shape:'strike',windup:.55,range:1.65,hint:'Melee attack'},
  arrow:{name:'Arrow',style:'ranged',shape:'projectile',windup:.7,range:6,hint:'Ranged attack'},
+ blight:{name:'Blighted breath',style:'ranged',shape:'cone',windup:2.1,length:9.4,halfAngle:.34,hint:'Step sideways out of the green cone'},
  spell:{name:'Spell',style:'magic',shape:'projectile',windup:.85,range:6,hint:'Magic attack'},
  sweep:{name:'Sweeping blow',style:'melee',shape:'circle',windup:1.8,radius:2.5,origin:'enemy',hint:'Step outside the circle'},
  pounce:{name:'Pounce',style:'melee',shape:'line',windup:1.8,radius:.85,hint:'Step aside from the marked path'},
@@ -105,7 +106,7 @@ const villageBeforeEncounters=setupTutorialVillage;
 setupTutorialVillage=function(){villageBeforeEncounters();setupEncounters();};
 function resetEncounter(heal=true){
  const fight=activeEncounter;if(fight&&heal&&fight.o.hp>0){const o=fight.o;o.hp=o.maxhp;o.x=o.drawX=o.homeX;o.y=o.drawY=o.homeY;o.attackAt=-100;delete o._creatureMotion;}
- if(fight){delete fight.o._inCombat;if(heal){delete fight.o.enraged;delete fight.o.attackRecovery;delete fight.o.attackWindup;delete fight.o.attackMove;}}activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
+ if(fight){delete fight.o._inCombat;if(heal){delete fight.o.enraged;delete fight.o.attackRecovery;delete fight.o.attackWindup;delete fight.o.attackMove;delete fight.o.attackHeading;}}activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
 }
 function beginEncounter(o){
  if(!fighter(o)||o.kind==='dummy'||o.hp<=0||o.dead>time)return;
@@ -122,6 +123,10 @@ function hazardContains(h,x,y){
  const dx=x-h.x,dy=y-h.y,d=Math.hypot(dx,dy);
  if(h.shape==='projectile')return Math.hypot(x-h.fromX,y-h.fromY)<=h.range+1;
  if(h.shape==='strike')return Math.hypot(x-(h.o.drawX??h.o.x),y-(h.o.drawY??h.o.y))<=1.8+(h.o.combatRadius||0);
+ if(h.shape==='cone'){
+  const vx=x-h.fromX,vy=y-h.fromY,range=Math.hypot(vx,vy);
+  return range<=h.length&&(range<.01||(vx*Math.sin(h.heading)+vy*Math.cos(h.heading))/range>=Math.cos(h.halfAngle));
+ }
  if(h.shape==='ring')return d>=h.inner&&d<=h.radius;
  if(h.shape==='cross')return Math.abs(dx)<=h.radius&&Math.abs(dy)<=h.length||Math.abs(dy)<=h.radius&&Math.abs(dx)<=h.length;
  if(h.shape==='line'){const ax=h.x-h.fromX,ay=h.y-h.fromY,length=ax*ax+ay*ay,t=length?Math.max(0,Math.min(1,((x-h.fromX)*ax+(y-h.fromY)*ay)/length)):0;return Math.hypot(x-h.fromX-t*ax,y-h.fromY-t*ay)<=h.radius;}
@@ -140,12 +145,17 @@ function scheduleEnemyMove(fight,key){
   o.attackClip=key==='sweep'?(fight.phase?'attack3':fight.move%4===0?'attack':'attack2'):key==='ring'?'cast2':'cast';
   o.attackRecovery=key==='sweep'?.85:1.0;
  }
+ if(o.encounter==='varkesh'){
+  if(key==='bite')Object.assign(move,{name:'Fang strike',shape:'cone',length:4.6,halfAngle:.78,windup:1.2,hint:'Move behind or away from its jaws'});
+  o.attackClip=key==='bite'?'attack':'cast';o.attackRecovery=key==='bite'?.8:1.05;
+ }
  if(o.encounter==='xalith'){
   Object.assign(move,{name:'Scythe cleave',shape:'circle',origin:'enemy',radius:3.2,windup:1.15,hint:'Step outside the circle'});
   o.attackClip=fight.move%2?'attack2':'attack';o.attackRecovery=.70;
  }
  move.windup*=speed;const near=move.origin==='enemy';
  const h={...move,key,o,x:near?(o.drawX??o.x):px,y:near?(o.drawY??o.y):py,fromX:o.drawX??o.x,fromY:o.drawY??o.y,started:time,due:time+move.windup};
+ if(o.encounter==='varkesh'){h.heading=Math.atan2(h.x-h.fromX,h.y-h.fromY);o.attackHeading=h.heading;}
  fight.hazards.push(h);o.attackAt=time;o.attackMove=key;o.attackVisualStyle=move.style;o.attackWindup=move.windup;
  if(typeof playGameSound==='function')playGameSound(move.style==='magic'?'magic':move.style==='ranged'?'bow':'sword',o.x,o.y);
 }
@@ -170,11 +180,13 @@ function updateEncounterAI(dt){
  if(activeEncounter!==fight)return;
  fight.hazards=fight.hazards.filter(h=>h.due>time);
  const distance=Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py),style=o.attackStyle||'melee',range=definition?.mechanics?1.6+(o.combatRadius||0):style==='melee'?1.5+(o.combatRadius||0):5.5;
- if(!definition?.anchored&&!fight.hazards.length&&distance>range&&time>=fight.nextMove&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
+ const recovering=o.encounter==='varkesh'&&time<(o.attackAt||0)+(o.attackWindup||0)+(o.attackRecovery||0);
+ if(!definition?.anchored&&!recovering&&!fight.hazards.length&&distance>range&&time>=fight.nextMove&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
   fight.nextMove=time+.35;const p=route(Math.round(px),Math.round(py),true,range,o.x,o.y,o);if(p?.length){[o.x,o.y]=p[0];}
  }
  if(time>=fight.nextAttack&&!fight.hazards.length&&lineOfSight(o.x,o.y,px,py)){
   let key=definition?.mechanics?definition.phases[fight.phase].moves[fight.move%definition.phases[fight.phase].moves.length]:style==='magic'?'spell':style==='ranged'?'arrow':'bite';
+  if(o.encounter==='varkesh')key=distance<3.7?'bite':'blight';
   if(key==='bite'&&distance>1.7+(o.combatRadius||0)){if(definition?.mechanics)key=definition.phases[fight.phase].moves.find(k=>k!=='bite')||'shot';else return;}
   if(distance>10)return;
   scheduleEnemyMove(fight,key);fight.move++;fight.nextAttack=time+o.attackWindup+(definition?.mechanics?2.3*(definition.phases[fight.phase].speed||1):o.interval||3.2);
@@ -205,7 +217,7 @@ monsterDrop=function(o){
 };
 function renderEncounterHud(){
  const box=$('encounterHud');if(!box)return;const f=activeEncounter;if(!f){box.hidden=true;return;}const o=f.o,e=HUNT_ENCOUNTERS[o.encounter],h=f.hazards[0];
- const title=o.name+' · Lv. '+o.level,phase=e?.mechanics?e.rank+' · '+e.phases[f.phase].name:(e?e.rank+' · ':'')+(o.attackStyle||'melee')+' attacks',tell=h?h.name+' · '+h.hint:(o.weak?'Weak to '+o.weak+' · ':'')+(e?.mechanics?'Watch the ground. Move to dodge.':'Eat to heal, or move away to retreat.'),key=[title,phase,tell].join('|');
+ const title=o.name+' · Lv. '+o.level,phase=e?.mechanics?e.rank+' · '+e.phases[f.phase].name:(e?e.rank+' · ':'')+(o.attackLabel||(o.attackStyle||'melee')+' attacks'),tell=h?h.name+' · '+h.hint:(o.weak?'Weak to '+o.weak+' · ':'')+(e?.mechanics?'Watch the ground. Move to dodge.':'Eat to heal, or move away to retreat.'),key=[title,phase,tell].join('|');
  box.hidden=false;if(key!==encounterHudKey){$('encounterName').textContent=title;$('encounterPhase').textContent=phase;$('encounterTell').textContent=tell;encounterHudKey=key;}
  $('encounterHealth').style.width=Math.max(0,o.hp/o.maxhp*100)+'%';$('encounterHP').textContent=Math.max(0,o.hp)+' / '+o.maxhp;$('encounterCast').style.width=h?Math.min(100,(time-h.started)/(h.due-h.started)*100)+'%':'0%';box.dataset.style=h?.style||o.attackStyle||'melee';
 }
@@ -214,7 +226,8 @@ function drawEncounterWarnings(){
  const point=(x,y)=>project3(x+.5,.07+walkSurfaceHeight(x+.5,y+.5)-landHeight(x+.5,y+.5),y+.5);
  const line=(a,b,width)=>{const p=point(...a),q=point(...b);ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();};
  for(const h of f.hazards){if(h.shape==='strike')continue;if(h.shape==='projectile'){const t=Math.min(1,(time-h.started)/(h.due-h.started)),p=point(h.fromX+(px-h.fromX)*t,h.fromY+(py-h.fromY)*t);ctx.fillStyle=h.style==='magic'?'#bb94ee':'#e7c781';ctx.beginPath();ctx.arc(p.x,p.y-10,h.style==='magic'?5:3,0,Math.PI*2);ctx.fill();continue;}const color=h.style==='magic'?'#ba8fff':h.style==='ranged'?'#e7bb66':'#ee8c70';ctx.strokeStyle=color;ctx.fillStyle=color;ctx.globalAlpha=.5+.15*Math.sin(time*12);
-  if(h.shape==='line'){line([h.fromX,h.fromY],[h.x,h.y],Math.max(8,cameraZoom3()*h.radius));}
+  if(h.shape==='cone'){/* The lair renderer draws the exact ground sector. */}
+  else if(h.shape==='line'){line([h.fromX,h.fromY],[h.x,h.y],Math.max(8,cameraZoom3()*h.radius));}
   else if(h.shape==='cross'){line([h.x-h.length,h.y],[h.x+h.length,h.y],Math.max(8,cameraZoom3()*h.radius));line([h.x,h.y-h.length],[h.x,h.y+h.length],Math.max(8,cameraZoom3()*h.radius));}
   else{ring3(ctx,h.x+.5,h.y+.5,color,h.radius);if(h.inner)ring3(ctx,h.x+.5,h.y+.5,color,h.inner);else{ctx.globalAlpha=.15;ctx.beginPath();for(let i=0;i<=32;i++){const a=i/32*Math.PI*2,p=point(h.x+Math.cos(a)*h.radius,h.y+Math.sin(a)*h.radius);if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);}ctx.closePath();ctx.fill();}}
   ctx.globalAlpha=1;const p=point(h.x,h.y);label(Math.max(0,h.due-time).toFixed(1)+'s',p.x,p.y-8,color,12);

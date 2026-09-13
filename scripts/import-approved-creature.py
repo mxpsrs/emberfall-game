@@ -120,7 +120,7 @@ def build(config):
             m = rest[deforms[joint]] @ bind[joint]
             posed[ids] += (m @ np.c_[p[ids],np.ones(len(ids))].T).T[:,:3] * weights[ids,influence,None]
     lo, hi = posed.min(0), posed.max(0)
-    center = np.array([(lo[0]+hi[0])/2, lo[1], (lo[2]+hi[2])/2])
+    center = np.array(config.get('origin', [(lo[0]+hi[0])/2, lo[1], (lo[2]+hi[2])/2]), dtype=float)
     to_world = np.eye(4); to_world[:3,3] = center
     bind = bind @ to_world
     p -= center; lo -= center; hi -= center
@@ -192,9 +192,17 @@ def build(config):
                                  for m,active in zip(data['meshes'],mesh_joints)]}}
     if config.get('splitSkinPalette'):
         model['splitSkinPalette'] = True
+    if config.get('gaitDistance'):
+        model['gaitDistance'] = config['gaitDistance']
     if config.get('sourceActions') is not None:
         model['source']['nativeActions'] = config['sourceActions']
-        model['source']['authoredActions'] = list(native)
+        model['source']['authoredActions'] = config.get('authoredActions', list(native))
+    if config.get('sockets'):
+        model['sockets'] = {}
+        for name, socket in config['sockets'].items():
+            node = next(i for i, old in enumerate(order) if nodes[old]['name'] == socket['bone'])
+            joint = deforms.index(node)
+            model['sockets'][name] = {'joint':joint, 'point':(np.array(socket['point'])-center).tolist()}
     if config.get('reviewDir'):
         review = Path(config['reviewDir']); review.mkdir(parents=True,exist_ok=True)
         (review/'creature.json').write_text(json.dumps({'key':config['key'],'model':model},separators=(',',':')))

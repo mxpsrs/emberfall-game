@@ -1,6 +1,6 @@
 # Approved creature roster
 
-On September 12, 2026, the owner approved the six model designs with two role changes: the treant formerly called Old Bracken becomes a standard **Forest Giant**, and the minotaur formerly called Borruk the Pitbreaker becomes a regular dungeon monster named **Ork**. The remaining four retain their selected boss names. All earlier draft boss names except **Runeforged Colossus** remain retired. The model selections, names and roles are approved. Forest Giants, Orks, the Colossus and Veyr now have inspected original assets and complete integrations. Xalith’s supplied original Blender rig is now integrated with authored game motions. The dragon remains pending in this checkout; the current status is in `lair-integration-checkpoint.md`.
+On September 12, 2026, the owner approved the six model designs with two role changes: the treant formerly called Old Bracken becomes a standard **Forest Giant**, and the minotaur formerly called Borruk the Pitbreaker becomes a regular dungeon monster named **Ork**. The remaining four retain their selected boss names. All earlier draft boss names except **Runeforged Colossus** remain retired. The model selections, names and roles are approved. Forest Giants, Orks, the Colossus and Veyr now have inspected original assets and complete integrations. Xalith’s supplied original Blender rig is now integrated with authored game motions. Varkesh’s supplied Blender rig is also integrated with its native walk and authored combat motions; the current status is in `lair-integration-checkpoint.md`.
 
 ![Approved models and monster roles using actual artist previews](boss-candidates/boss-shortlist.jpg)
 
@@ -29,14 +29,14 @@ The four bosses are **Runeforged Colossus**, **Veyr the Mindbreaker**, **Varkesh
 
 The owner's approved fight direction is stationary, with melee/ranged/magic styles and two phases. Proposed tuning: phase two begins at 50% health, turns the crystals and runes red, and shortens the attack cycle by 25% while retaining visible warnings. It remains anchored in the arena, can face the player, and cannot chase. Leaving its arena resets health, color, phase, and timing. These behaviors were implemented and published in version 55, with subsequent tutorial improvements in versions 56–57.
 
-### Dragon pending; insect original inspected and integrated
+### Dragon and insect originals inspected and integrated
 
 | Approved name | Actual model / artist | Verified evidence | Remaining check |
 | --- | --- | --- | --- |
-| **Varkesh the Blightwing** | [Prowler Dragon Variant Rig — DM-913](https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9) | Original Blender rig; public Sketchfab metadata reports three animations, free download, CC BY 4.0. | Attack coverage is unverified. The artist notes that Blender bendy bones lose fidelity outside Blender; bake and inspect wing, tail, and neck deformation. |
+| **Varkesh the Blightwing** | [Prowler Dragon Variant Rig — DM-913](https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9) | Original Blender rig received from owner; CC BY 4.0. 19,436 triangles and five action records inspected. | Native walk retained; five new gameplay motions authored on the original rig. Curved segments and preserve-volume approximation verified; see `varkesh-integration.md`. |
 | **Xalith the Broodmother** | [Insectoid Monster Rig — DM-913](https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176) | Original insectoid rig received from owner; CC BY 4.0. 13,156 triangles and two original actions inspected. | Original take is a landing/settling motion plus a static pose. Seven new Emberfall gameplay motions are built on the same rig; see `xalith-integration.md`. |
 
-The owner approved these two designs as bosses. Attack and death coverage still need file inspection before integration. Their creator, model URLs, license, and modification notices must be credited if incorporated.
+Both approved originals are integrated. Source motion and new gameplay motion are distinguished in their audits; creator, model links, licenses and modification notices are in the game credits.
 
 ## Art review decisions
 

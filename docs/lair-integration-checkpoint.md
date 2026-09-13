@@ -2,7 +2,7 @@
 
 The owner authorized asset selection/downloads and incremental publication of
 tested work. Version 52 published the sound/combat/Forest Giant batch. Version
-53 published native Orks and their dungeon. Versions 55–57 published Firstlight, the Colossus, the direct account-reset protocol and the tutorial-video follow-up. The current source also integrates Veyr and the Shattered Sanctum, and Xalith and the Brood Hollow.
+53 published native Orks and their dungeon. Versions 55–57 published Firstlight, the Colossus, the direct account-reset protocol and the tutorial-video follow-up. The current source also integrates Veyr and the Shattered Sanctum, Xalith and the Brood Hollow, and Varkesh and Blightwing Roost.
 
 Firstlight now owns its roads and building plans. Its square has cobbles, a
 well, two market stalls, benches, planters, lanterns and a noticeboard. The bank,
@@ -43,16 +43,20 @@ and misses: median 15 seconds, p95 29.7 seconds, zero deaths in that sample.
 - Xalith: owner-supplied `insectoid-monster-rig.zip` inspected and integrated.
   Full original mesh, body/wing color maps and curved rig retained. Missing
   gameplay clips were authored on that rig; see `xalith-integration.md`.
-- Varkesh: original package remains uninspected in this checkout. Both models have
-  verified official Fab listings in `boss-candidates/roster.json`. Normal Fab
-  navigation encountered an Epic security check. The earlier owner-approved
-  Epic verification failed; stop retries and do not work around the challenge.
+- Varkesh: owner-supplied `prowler-dragon-variant-rig.zip` opened and integrated.
+  Original 19,436 triangles, native complete walk cycle, original color/alpha
+  maps and 234 weighted curved segments retained. Five gameplay actions were
+  authored on the original rig; see `varkesh-integration.md`.
+- The Blender runtime installed during the insect work also opens the dragon.
+  Do not ask the owner to replace the uploaded originals with FBX files.
+  Earlier failed Epic security verification must not be retried or bypassed.
 - CGTrader sign-in succeeded after the owner explicitly approved Google profile
   sharing. Its downloads emitted browser protocol errors despite some completed
   transfers. A browser security restriction blocked a download-status check;
   do not probe internal download-manager pages or alternative control channels.
 
-The remaining dragon lair stays gated. Native Forest Giants and Orks remain
+All four selected boss lairs are open. The server accepts player presence in
+all four, with scene bounds checked. Native Forest Giants and Orks remain
 ordinary monsters without boss phases, marks or boss music. Only selected
 bosses get multiple styles/phases. Do not revive rejected procedural bosses or
 retired names. Continue with commercially usable originals when available;

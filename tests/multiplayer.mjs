@@ -44,4 +44,9 @@ assert.equal((await presence(a,'ork_warrens',19)).status,200,'released Ork dunge
 assert.equal((await presence(a,'ork_warrens',38)).status,400,'dungeon presence remains inside its actual map');
 assert.equal((await presence(a,'lair_colossus',19)).status,200,'released Colossus lair accepts player presence');
 assert.equal((await presence(a,'lair_colossus',46)).status,400,'Colossus presence respects the actual map bounds');
-assert.equal((await presence(a,'lair_veyr',19)).status,400,'unfinished boss lairs remain unavailable');
+for(const [scene,width] of [['lair_veyr',44],['lair_varkesh',58],['lair_xalith',54]]){
+ assert.equal((await presence(a,scene,19)).status,200,'released lair accepts presence: '+scene);
+ assert.equal((await presence(a,scene,width)).status,400,'lair bounds are enforced: '+scene);
+ await presence(a,scene,19);const other=await presence(b,scene,20);const peers=(await other.json()).players;assert(peers.some(p=>p.name==='Player A'),'players can see one another in '+scene);
+}
+assert.equal((await presence(a,'lair_unreleased',19)).status,400,'unknown lairs remain unavailable');

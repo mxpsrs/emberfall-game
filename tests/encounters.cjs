@@ -7,12 +7,12 @@ renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 let testWallTime=Date.now();Date.now=()=>testWallTime;
 s.character={name:'Combat test'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.sceneId='overworld';setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 assert.equal(Object.keys(HUNT_ENCOUNTERS).length,4,'only the four approved boss designs remain');
-assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'veyr,colossus,xalith','only the fully integrated bosses are released');
+assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'veyr,varkesh,colossus,xalith','all four integrated bosses are released');
 assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'only selected future bosses have phases');
 assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
 assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
 assert(Object.values(worldScenes).every(w=>w.objects.every(o=>!o.encounter||encounterReleased(o.encounter))),'no rejected or unfinished bosses ship');
-assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus,lair_veyr,lair_xalith','unfinished lairs stay closed');
+assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus,lair_veyr,lair_varkesh,lair_xalith','all four reviewed lairs are open');
 assert.equal(worldScenes.ork_warrens.objects.filter(o=>o.kind==='ork').length,4,'four ordinary Orks populate their dungeon');
 const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
@@ -20,6 +20,7 @@ activateScene('overworld',42,51);
 const nav=realmNav(),seen=new Uint8Array(nav.cells.length),queue=new Int32Array(nav.cells.length);let head=0,tail=0;
 const start=51*nav.w+42;queue[tail++]=start;seen[start]=1;
 while(head<tail){const id=queue[head++],x=id%nav.w,y=Math.floor(id/nav.w);for(const [dx,dy]of [[0,-1],[0,1],[-1,0],[1,0]]){const nx=x+dx,ny=y+dy,next=ny*nav.w+nx;if(nx<1||ny<1||nx>=nav.w-1||ny>=nav.h-1||nav.cells[next]||seen[next])continue;seen[next]=1;queue[tail++]=next;}}
+const dragonDoor=objects.find(o=>o.destination==='lair_varkesh');assert(dragonDoor&&seen[CREATURE_LAIRS.lair_varkesh.returnPoint[1]*nav.w+CREATURE_LAIRS.lair_varkesh.returnPoint[0]],'dragon entrance joins the mainland landmass');
 for(const o of objects.filter(o=>ENEMY_TIERS[o.kind]?.look)){
  assert(!blocked(o.x,o.y),'clear spawn: '+o.kind+' '+o.x+','+o.y);assert(seen[o.y*nav.w+o.x],'reachable mainland spawn: '+o.kind+' '+o.x+','+o.y);
  const a=creatureAsset(o);assert(a,'renderable creature '+o.kind);const variant=creatureTint(o,a.mesh);assert(variant.c.every(Number.isFinite));assert.equal(variant.p,a.mesh.p,'variants reuse geometry');

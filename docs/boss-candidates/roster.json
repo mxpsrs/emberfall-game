@@ -1,5 +1,5 @@
 {
-  "status": "Native Forest Giants, Orks, Runeforged Colossus, Veyr and Xalith are integrated with their habitats. Varkesh remains gated in this checkout pending original-package inspection.",
+  "status": "All six approved native creature designs are integrated: Forest Giants and Orks as ordinary monsters; Runeforged Colossus, Veyr, Varkesh and Xalith in their reviewed lairs.",
   "checked": "2026-09-13",
   "design_approval": {
     "date": "2026-09-12",
@@ -222,15 +222,17 @@
       "license": "CC BY 4.0",
       "commercial_use": true,
       "rigged": "Creator describes an original Blender dragon rig",
-      "animation_evidence": "Public Sketchfab metadata confirms three animation entries; clip names and attack coverage have not been verified",
-      "animation_badge": "3 animation entries | Attack clips unverified",
+      "animation_evidence": "Five source action records inspected: Action.001 and Action.002 show flight/landing, PoseLib is a static pose, and Walk Loop plus Walk Loop.001 show ground locomotion. The complete Walk Loop supplies runtime locomotion; five new gameplay motions were authored on the same rig.",
+      "animation_badge": "Native walk | 5 authored gameplay motions",
       "animation_count": 3,
       "triangles": 19766,
-      "asset_files_inspected": false,
+      "asset_files_inspected": true,
       "proposed_role": "A dragon guarding a blighted pass; green-fire identity is a proposed encounter direction, not a verified supplied animation.",
-      "note": "Credit DM-913 and link CC BY 4.0. Creator notes Blender bendy bones lose fidelity outside Blender. Bake and inspect neck, tail, and wing deformation before considering this ready for Emberfall. Do not imply a full combat set is included.",
+      "note": "Original 19,436 mesh triangles retained. Curved bones bake to 234 weighted segment joints in cached GPU batches. Original color/alpha maps combined for the diffuse renderer; Blender full PBR is not reproduced. Preserve-volume stance compensated in bind data and animated approximation measured in varkesh-blender-audit.json. CC BY 4.0 attribution and change notices retained.",
       "creator_fab_url": "https://www.fab.com/listings/ffa5098e-a41f-45d0-873b-de7230b28d78",
-      "download_status": "Official Fab listing verified; browser navigation encounters an Epic security check. No original package recovered. Do not retry the failed verification or bypass its challenge."
+      "download_status": "Owner supplied prowler-dragon-variant-rig.zip; original DragoTST.blend opened in Blender with embedded scripts disabled.",
+      "import_audit": "boss_varkesh-import.json",
+      "runtime_status": "Level 30 single-phase boss in Blightwing Roost, with aimed fangs and blighted breath, locked warnings, original head-bound effects, reachable ground drops, retreat reset and 60-second respawn."
     },
     {
       "name": "Xalith the Broodmother",
