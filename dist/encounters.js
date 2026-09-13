@@ -1,6 +1,7 @@
 'use strict';
 // Enemy tiers are authored once. They never scale against the current player.
 const ENEMY_TIERS={
+ man:{level:1,hp:10,maxHit:1,interval:3.6,accuracy:.30},
  forestgiant:{name:'Forest Giant',look:'forestgiant',level:18,hp:34,maxHit:4,interval:3.8,weak:'magic',combatRadius:.7},
  ork:{name:'Ork',look:'ork',level:26,hp:46,maxHit:5,interval:3.5,weak:'magic',combatRadius:.45},
  warden:{name:'Crypt guard',level:12,hp:28,maxHit:3,interval:3.5},
@@ -55,27 +56,35 @@ const ENCOUNTER_MOVES={
 let activeEncounter=null,encountersReady=false,encounterHealClock=0,encounterHudKey='';
 ITEMS.huntersMark={name:'Hunter’s mark',icon:11,desc:'Earned from minibosses and bosses. Trade marks for equipment in the Hunts panel.'};STACKABLE.add('huntersMark');
 function huntProgress(){const p=s.combatProgress=s.combatProgress||{};p.kills=p.kills||{};p.firstClears=p.firstClears||{};return p;}
-const accuracyBeforeEncounters=playerAccuracy,maxHitBeforeEncounters=playerMaxHit,durationBeforeEncounters=actionDuration;
+const durationBeforeEncounters=actionDuration;
+// Opposed attack/defence rolls for every enemy, including bosses and civilians.
+// Enemy stats are fixed by their tier, never by the current player's level.
 playerAccuracy=function(o,style=combatStyle()){
- const base=accuracyBeforeEncounters(o,style),weak=(o.weak||HUNT_ENCOUNTERS[o.kind]?.weak)===style;
- return Math.max(.08,Math.min(.96,base+(1-base)*.18+(o.level<=5?.04:0)+(weak?.07:0)));
+ const skill={melee:'Attack',ranged:'Ranged',magic:'Magic',worship:'Worship'}[style]||'Attack',focus=trainingFocus(style);
+ const bonus=style==='magic'?equipmentBonus('magicAccuracy'):style==='ranged'?(equippedWeapon().attackBonus||0)+equipmentBonus('rangedAccuracy'):style==='worship'?0:equipmentBonus('attackBonus');
+ const stance=style==='melee'?(focus==='accurate'?3:focus==='balanced'?1:0):focus==='focused'?3:0;
+ const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64),defenceStyle=style==='worship'?'magic':style;
+ const weak=(o.weak||HUNT_ENCOUNTERS[o.kind]?.weak)===defenceStyle;
+ const defense=((o.defenseLevel??o.level??1)+9)*Math.max(1,64+(o.defenseBonuses?.[defenceStyle]||0))*(weak?.8:1);
+ return attackRollChance(attack,defense);
 };
-// Keep the zero-inclusive damage roll in performAttack. Improve the small starting maximum instead.
-playerMaxHit=function(style=combatStyle()){return maxHitBeforeEncounters(style)+(style==='melee'?2:style==='ranged'?1:0);};
 enemyAccuracy=function(o,style='melee'){
- const gear=equipmentBonus('armor')*(style==='magic'?.35:1),focus=trainingFocus()==='defensive'?.05:0;
- return Math.max(.12,Math.min(.78,(o.accuracy??.53)+((o.attackLevel||o.level||1)-lv('Defense'))*.005-gear*.0015-focus));
+ const focus=trainingFocus(),stance=focus==='defensive'?3:focus==='balanced'?1:0;
+ const level=style==='magic'?lv('Magic')*.7+lv('Defense')*.3:lv('Defense');
+ const armor=style==='magic'?Math.max(0,equipmentBonus('magicAccuracy')):equipmentBonus('armor');
+ const defense=(level+8+stance)*(64+armor+Math.floor(lv('Worship')/5)+spiritBonus('armor'));
+ const attack=((o.attackLevel??o.level??1)+8)*(64+(o.attackBonus||0))*(o.accuracy===undefined?1:o.accuracy/.53);
+ return attackRollChance(attack,defense);
 };
-actionDuration=function(o){return fighter(o)?Math.max(1.7,.525*(combatStyle()==='magic'?5:equippedWeapon().attackTicks||4)):durationBeforeEncounters(o);};
+actionDuration=function(o){return fighter(o)?.6*(combatStyle()==='magic'?5:equippedWeapon().attackTicks||4):durationBeforeEncounters(o);};
 function enemyDamage(o,style='melee',special=false){
  if(Math.random()>=enemyAccuracy(o,style))return 0;
- const max=o.maxHit||Math.max(1,(o.atk||0)+(o.spread||0)),rolled=Math.floor(Math.random()*(max+1));
- const reduction=Math.min(Math.floor(max*.35),Math.floor(equipmentBonus('armor')/(style==='magic'?100:55))+Math.floor(lv('Worship')/15)+spiritBonus('armor'));
- return Math.max(0,rolled-reduction);
+ const max=o.maxHit??Math.max(1,(o.atk||0)+(o.spread||0));
+ return Math.floor(Math.random()*(max+1));
 }
 function applyEnemyTier(o,row){
- const hp=o.hp>0?Math.min(1,o.hp/(o.maxhp||o.hp)):1;
- Object.assign(o,row,{maxhp:row.hp,hp:Math.max(1,Math.ceil(row.hp*hp)),atk:row.maxHit,spread:0,defenseLevel:Math.max(1,Math.floor(row.level*.65)),attackLevel:Math.max(1,Math.floor(row.level*.7)),attackStyle:row.style||'melee'});
+ const hp=o.hp>0?Math.min(1,o.hp/(o.maxhp||o.hp)):1,level=Math.max(1,row.level||1);
+ Object.assign(o,row,{maxhp:row.hp,hp:Math.max(1,Math.ceil(row.hp*hp)),atk:row.maxHit,spread:0,defenseLevel:row.defenseLevel??Math.max(1,Math.floor(level*.65)),attackLevel:row.attackLevel??Math.max(1,Math.floor(level*.7)),attackStyle:row.style||'melee'});
  if(row.look){o.creatureLook=row.look;MONSTER_ART[o.kind]=MONSTER_ART[row.look]||MONSTER_ART[creatureAssets[row.look]?.base];}
 }
 function encounterSpawnPoint(scene,x,y,radius=12,allowPlinth=false){
@@ -86,8 +95,8 @@ function encounterSpawnPoint(scene,x,y,radius=12,allowPlinth=false){
 function setupEncounters(){
  if(encountersReady)return;encountersReady=true;let serial=4700000;
  for(const [scene,world]of Object.entries(worldScenes))for(const o of world.objects){
-  if(!fighter(o)||o.kind==='dummy'||o.kind==='man')continue;
-  const row=ENEMY_TIERS[o.kind];if(row)applyEnemyTier(o,row);if(['king','warden','sentinel'].includes(o.kind)){o.type='enemy';o.repeatable=true;}
+  if(!fighter(o)||o.kind==='dummy')continue;
+  const row=ENEMY_TIERS[o.kind]||{level:Math.max(1,o.level||1),hp:o.maxhp||o.hp||10,maxHit:o.maxHit??Math.max(1,Math.ceil((o.level||1)/7)),interval:o.interval||3.6};applyEnemyTier(o,row);if(['king','warden','sentinel'].includes(o.kind)){o.type='enemy';o.repeatable=true;}
   if(scene==='tutorial')continue;
   const encounter=HUNT_ENCOUNTERS[o.kind];if(encounter&&encounterReleased(o.kind)){applyEnemyTier(o,encounter);o.encounter=o.kind;o.repeatable=true;o._stationary=true;o.type=encounter.rank==='Boss'?'boss':'enemy';}
  }
@@ -223,7 +232,7 @@ const defeatBeforeEncounters=awardDefeat;
 awardDefeat=function(o,style){
  const p=huntProgress();p.kills[o.kind]=(p.kills[o.kind]||0)+1;
  const first=!!o.encounter&&!p.firstClears[o.kind];if(first)p.firstClears[o.kind]=true;
- defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){s.gold+=Math.round(o.level*4);toast(o.name+' first clear · +'+Math.round(o.level*4)+' coins. Marks are in the loot.');}if(typeof playGameSound==='function')playGameSound('quest');}
+ defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){receiveCoins(Math.round(o.level*4));toast(o.name+' first clear · +'+Math.round(o.level*4)+' coins. Marks are in the loot.');}if(typeof playGameSound==='function')playGameSound('quest');}
  if(activeEncounter?.o===o)resetEncounter(false);save();
 };
 const lootBeforeEncounters=monsterDrop;

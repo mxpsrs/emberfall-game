@@ -1,4 +1,9 @@
 {
+  "coins": {
+    "name": "Coins",
+    "slot": null,
+    "stackable": true
+  },
   "bronzeSword": {
     "name": "Bronze sword",
     "slot": "weapon",

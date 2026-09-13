@@ -5,7 +5,7 @@ const defaults = () => ({
   x:14, y:17, hp:10, gold:0,
   xp:{Hitpoints:1154,Attack:0,Strength:0,Defense:0,Worship:0,Magic:0,Ranged:0,Woodcutting:0,Mining:0,Fishing:0,Smithing:0,Firemaking:0,Cooking:0,Fletching:0,Farming:0},
   skillProgressionVersion:1,combatSkillsVersion:1,meleeTraining:'balanced',rangedTraining:'focused',magicTraining:'focused',
-  bag:{logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
+  bag:{coins:0,logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
   equippedAmmoCount:0,
   sword:0, quest:0, kills:0, boss:false, character:null,
   spirits:{}, tutorial:0, tutorialVersion:4, tutorialReward:false, spell:"spark",
@@ -167,7 +167,7 @@ function elder(){
   if(s.quest===5){dialog('Elder Rowan','<p>“Briarhaven will remember your name, Guardian. There will always be a place for you beside our fire.”</p>');return;}
   if(ready()){
     const reward=[0,45,70,50,200][s.quest];
-    dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;}s.gold+=reward;s.quest++;close();toast(s.quest===5?'You are the Guardian of Briarhaven!':'Quest complete! Check your journal for the next quest.');}]]);
+    dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;}receiveCoins(reward);s.quest++;close();toast(s.quest===5?'You are the Guardian of Briarhaven!':'Quest complete! Check your journal for the next quest.');}]]);
   }else dialog('Elder Rowan','<p>'+quests[s.quest].desc+'</p><p>“Rest by the campfire when you need to heal. Watch for goblins on the eastern road.”</p>');
 }
 const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65],...modularShopStock,...SKILL_SHOP_STOCK];
@@ -177,7 +177,7 @@ function sell(id,price,quantity=1){
  const item=ITEMS[id];if(!item||!(price>0)||!(quantity>0))return false;
  const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0),count=Math.min(spare,quantity===Infinity?quantity:Math.floor(quantity));
  if(!(count>0)||!Number.isFinite(count))return false;
- bag[id]-=count;s.gold+=count*price;renderUI();save();return count;
+ bag[id]-=count;receiveCoins(count*price);renderUI();save();return count;
 }
 
 function forge(){openSmithing('forge');}

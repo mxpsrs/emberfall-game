@@ -27,7 +27,7 @@ function renderSpirits(){
  for(const [id,def]of Object.entries(SPIRITS)){const b=document.createElement('button');b.className=id===selectedSpirit?'chosen':'';b.textContent=def.name;b.setAttribute('aria-pressed',String(id===selectedSpirit));const state=document.createElement('small');state.textContent=!s.spirits[id]?'Undiscovered':s.spirits[id].state==='set'?'Active':s.spirits[id].state==='standby'?'Standby':'Recovering';b.appendChild(state);b.onclick=()=>{selectedSpirit=id;renderSpirits();};choices.appendChild(b);}
  const def=SPIRITS[selectedSpirit],owned=s.spirits[selectedSpirit];$('spiritName').textContent=def.name+' · '+def.element;
  const g=$('spiritPortrait').getContext('2d');g.clearRect(0,0,160,160);if(assetsReady)sprite(g,'spirits',def.icon,80,155,140,140);
- $('spiritDescription').textContent=owned?def.bonus+' '+def.ability+'.':def.hint;
+ $('spiritDescription').textContent=owned?def.bonus+' '+(def.power?def.ability.split(' · ')[0]+' · maximum hit '+spiritMaxHit(def.power)+'; accuracy scales with Worship.':def.ability+'.'):def.hint;
  $('spiritState').textContent=!owned?'Not discovered':owned.state==='set'?'Active · bonus applied':owned.state==='standby'?'Standby · ready for convergence':'Recovering · '+Math.ceil(owned.recovery)+' seconds of adventuring';
  const actions=$('spiritActions');actions.innerHTML='';
  if(owned?.state==='set'){
@@ -38,6 +38,8 @@ function renderSpirits(){
  }
  const n=Object.values(s.spirits).filter(x=>x.state==='standby').length;$('summonSpirits').disabled=n<2;$('summonSpirits').textContent='Elemental convergence · '+n+' / 2+ standby';
 }
+function spiritMaxHit(power,convergence=false){return power+Math.floor(lv('Worship')*(convergence?.4:.2));}
+function spiritDamage(enemy,maxHit){return Math.random()<playerAccuracy(enemy,'worship')?Math.floor(Math.random()*(maxHit+1)):0;}
 function unleashSpirit(id){
  const owned=s.spirits[id],def=SPIRITS[id];if(!owned||owned.state!=='set')return false;
  const enemy=spiritOpponent();if(def.power&&!enemy){$('spiritState').textContent='Close this panel and select a nearby enemy first.';return false;}
@@ -45,16 +47,16 @@ function unleashSpirit(id){
  owned.state='standby';s.hp=Math.min(s.hp,maxhp());
  if(id==='brook'){const healed=Math.min(20,maxhp()-s.hp);s.hp+=healed;floating('+'+healed,px,py,'#9ee5ff');}
  if(id==='cairn')stoneWard=8;
- if(def.power)resolveHit(enemy,def.power+lv('Worship'),'worship',id==='zephyr'?3:0);
+ if(def.power)resolveHit(enemy,spiritDamage(enemy,spiritMaxHit(def.power)),'worship',id==='zephyr'?3:0);
  spiritEffect={icon:def.icon,color:def.color,age:0,duration:1.3,large:false,x:px,y:py};$('spiritsDialog').close();renderUI();save();return true;
 }
 function summonSpirits(){
  const ready=Object.entries(s.spirits).filter(([,v])=>v.state==='standby'),enemy=spiritOpponent();
  if(ready.length<2)return false;if(!enemy){$('spiritState').textContent='Select a nearby enemy before summoning.';return false;}
  for(const [,value]of ready){value.state='recovery';value.recovery=30;}
- const x=enemy.x,y=enemy.y,damage=ready.length*12+lv('Worship')*2;
+ const x=enemy.x,y=enemy.y,damage=spiritMaxHit(ready.length*12,true);
  const victims=objects.filter(o=>fighter(o)&&o.hp>0&&o.dead<=time&&(o===enemy||o.type==='enemy')&&Math.hypot(o.x-x,o.y-y)<=2.5&&lineOfSight(x,y,o.x,o.y));
- for(const o of victims)resolveHit(o,damage,'worship');
+ for(const o of victims)resolveHit(o,spiritDamage(o,damage),'worship');
  spiritEffect={icon:SPIRITS[ready[0][0]].icon,color:'#e5c8ff',age:0,duration:2,large:true,x,y};$('spiritsDialog').close();renderUI();save();return true;
 }
 function updateSpirits(dt){

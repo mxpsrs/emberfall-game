@@ -187,9 +187,9 @@ function departTutorialIsland(){
  if(!tutorialComplete(s)||currentScene!==TUTORIAL_SCENE)return false;
  s.openDoors=[];s.returnPoint=null;s.insideBuilding=null;s.tutorialIslandVersion=FIRSTLIGHT_LAYOUT_VERSION;
  // Recover any protected overflow before leaving the one-way scene.
- for(const pile of s.groundLoot||[])if(pile.scene===TUTORIAL_SCENE&&pile.protectedDrop){for(const [id,n]of Object.entries(pile.items)){if(id==='coins')s.gold+=n;else s.bank[id]=(s.bank[id]||0)+n;}pile.items={};}
+ let recoveredCoins=0;for(const pile of s.groundLoot||[])if(pile.scene===TUTORIAL_SCENE&&pile.protectedDrop){for(const [id,n]of Object.entries(pile.items)){if(id==='coins')recoveredCoins+=n;else s.bank[id]=(s.bank[id]||0)+n;}pile.items={};}
  s.groundLoot=(s.groundLoot||[]).filter(p=>p.scene!==TUTORIAL_SCENE);
- return activateScene('overworld',...MAINLAND_ENTRY,false);
+ const arrived=activateScene('overworld',...MAINLAND_ENTRY,false);if(recoveredCoins)receiveCoins(recoveredCoins);return arrived;
 }
 // This sequence is deliberately transient: a reload during the cast resumes the
 // final lesson; completion, belongings and the destination are saved together.

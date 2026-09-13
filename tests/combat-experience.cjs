@@ -16,10 +16,10 @@ for(const [style,focus,expected]of [
 }
 fresh();let defeats=0;awardDefeat=o=>{defeats++;o.dead=time+25;};const enemy={type:'enemy',hp:2,maxhp:2,dead:0,x:1,y:1};
 resolveHit(enemy,999,'worship');near(s.xp.Worship,8);near(s.xp.Hitpoints,8/3);resolveHit(enemy,999,'worship');assert.equal(defeats,1);near(s.xp.Worship,8);
-fresh();s.x=px=10;s.y=py=10;lineOfSight=()=>true;const victim={type:'enemy',hp:100,maxhp:100,dead:0,x:12,y:10};target=victim;s.spirits={cinder:{state:'set'}};
-assert(unleashSpirit('cinder'));near(s.xp.Worship,15*4);near(s.xp.Magic,0);assert.equal(s.spirits.cinder.state,'standby');assert(!unleashSpirit('cinder'));near(s.xp.Worship,60);
+fresh();let rollIndex=0;Math.random=()=>rollIndex++%2===0?0:.999999;s.x=px=10;s.y=py=10;lineOfSight=()=>true;const victim={type:'enemy',hp:100,maxhp:100,dead:0,x:12,y:10};target=victim;s.spirits={cinder:{state:'set'}};
+assert(unleashSpirit('cinder'));near(s.xp.Worship,14*4);near(s.xp.Magic,0);assert.equal(s.spirits.cinder.state,'standby');assert(!unleashSpirit('cinder'));near(s.xp.Worship,56);
 fresh();s.x=px=10;s.y=py=10;const a={type:'enemy',hp:100,maxhp:100,dead:0,x:12,y:10},b={type:'enemy',hp:3,maxhp:3,dead:0,x:13,y:10};objects.splice(0,objects.length,a,b);target=a;s.spirits={cinder:{state:'standby'},zephyr:{state:'standby'}};
-assert(summonSpirits());near(s.xp.Worship,(26+3)*4);near(s.xp.Hitpoints,(26+3)*4/3);near(s.xp.Magic,0);assert(!summonSpirits());
+assert(summonSpirits());near(s.xp.Worship,(24+3)*4);near(s.xp.Hitpoints,(24+3)*4/3);near(s.xp.Magic,0);assert(!summonSpirits());
 fresh();s.x=px=10;s.y=py=10;s.equipment.weapon='oakStaff';s.bag.runes=5;s.bag.airRunes=5;inAttackRange=()=>true;Math.random=()=>.999;playerAttackReadyAt=0;
 const spell=currentSpell(),casterTarget={type:'enemy',hp:100,maxhp:100,dead:0,x:15,y:10,level:1};assert(performAttack(casterTarget));near(s.xp.Magic,spell.baseXP);const before=JSON.stringify(s.xp);time+=2;updateCombat(2);assert.equal(JSON.stringify(s.xp),before,'a splashed spell keeps only the legitimate base cast XP');
 console.log('PASS: every combat/training style, damage scaling per hit, visible XP, misses, overkill, dead targets, spirit single/area damage, repeat prevention and spell base XP.');

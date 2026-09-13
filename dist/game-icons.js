@@ -1,6 +1,7 @@
 'use strict';
 // Original 32-unit silhouettes, shared by the HUD and both canvas maps.
 const GAME_ICON_DEFS={
+ coins:[['M3 18V25C3 31 22 31 22 25V18Z','#b48a2c'],['M3 18C3 12 22 12 22 18C22 24 3 24 3 18Z','#eac55c'],['M11 9V16C11 22 30 22 30 16V9Z','#b48a2c'],['M11 9C11 3 30 3 30 9C30 15 11 15 11 9Z','#f0d376']],
  friends:[['M4 16Q0 28 3 29H17Q19 23 15 16Z','#ba8058'],['M6 4Q13 0 15 8Q15 15 9 15Q3 13 4 8Z','#d8b68b'],['M19 17Q14 23 18 29H30Q33 21 27 16Z','#649d88'],['M20 6Q26 1 29 9Q30 16 24 17Q18 15 19 10Z','#e0bc8e']],
  ignore:[['M4 16Q0 28 3 29H17Q19 23 15 16Z','#8b7771'],['M6 4Q13 0 15 8Q15 15 9 15Q3 13 4 8Z','#bead91'],['M19 13L29 27M29 13L19 27','none','#c94f3e']],
  ammo:[['M7 11L24 13L21 29L10 28Z','#9c724b'],['M11 13L13 3M17 14L21 2M21 15L27 6','none','#d7c193'],['M10 3L14 7L16 2M18 2L21 6L24 2M24 6L27 10L30 6','none','#b2c7b5'],['M9 17L23 19','none','#d8af6a']],

@@ -6,7 +6,7 @@ vm.runInContext(fs.readFileSync('dist/multiplayer.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('dist/social.js','utf8'),ctx);
 vm.runInContext(\`
 (async()=>{
-s.character={name:'Alice'};s.bag={arrows:100};s.gear={woodenSword:1};s.equipment={weapon:'woodenSword'};s.gold=100;
+s.character={name:'Alice'};s.bag={arrows:100,coins:100};s.gear={woodenSword:1};s.equipment={weapon:'woodenSword'};s.gold=100;
 appendChat({author:'bobby',recipient:null,body:'<img src=x onerror=bad()>',id:1,age:0});assert.equal($('chatMessages').children[0].textContent,'bobby: <img src=x onerror=bad()>','chat is rendered as text');assert(socialOverheads.has('bobby'));
 appendChat({author:'carol',recipient:'alice',body:'Private only',id:2,age:0});assert(!socialOverheads.has('carol'),'private messages never go overhead');assert.equal(socialLastPrivate,'carol');
 const labels=[];pushOverheadChat(labels,'A long public message that needs wrapping so nearby players can read it without covering the entire game screen.',10,20);assert(labels.length>1);assert(labels.every(e=>e[0].length<=38));

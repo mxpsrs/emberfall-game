@@ -1,11 +1,44 @@
 'use strict';
-const BAG_SIZE=25,STACKABLE=new Set(['arrows','runes']);
+const BAG_SIZE=25,STACKABLE=new Set(['coins','arrows','runes']);
 const GROUND_LOOT_LIFETIME=120000;
 const PLAYER_FIRE_LIFETIME=150000;
 function inventorySlots(){const slots=[];for(const [id,count]of Object.entries(s.bag)){if(!ITEMS[id]||ITEMS[id].slot||count<=0)continue;if(STACKABLE.has(id))slots.push({id,count});else for(let n=0;n<count;n++)slots.push({id,count:1});}for(const [id,count]of Object.entries(s.gear)){const item=ITEMS[id];if(!item?.slot)continue;const stored=count-(s.equipment[item.slot]===id?1:0);for(let n=0;n<stored;n++)slots.push({id,count:1});}return slots;}
 function bagSpaceFor(id){return STACKABLE.has(id)&&s.bag[id]>0?Infinity:Math.max(0,BAG_SIZE-inventorySlots().length);}
 function canCarry(id,count=1){return bagSpaceFor(id)>=(STACKABLE.has(id)?1:count);}
 function addToBag(id,count=1){if(!canCarry(id,count)){toast('Your 25-slot inventory is full. Drop or use an item first.');return false;}s.bag[id]=(s.bag[id]||0)+count;return true;}
+// Saved gold is the pouch; loose coins are a normal inventory stack.
+const COIN_LIMIT=1000000000;
+function carriedCoins(){return (s.bag.coins||0)+(s.gold||0);}
+function receiveCoins(amount){
+ if(!Number.isSafeInteger(amount)||amount<=0)return false;
+ const accepted=canCarry('coins')?Math.min(amount,COIN_LIMIT-(s.bag.coins||0)):0;
+ if(accepted)s.bag.coins=(s.bag.coins||0)+accepted;
+ if(accepted<amount){groundDrop({coins:amount-accepted},s.x,s.y,currentScene,true);toast('Your remaining coins are on the ground beside you.');}
+ return true;
+}
+function spendCoins(amount){
+ if(!Number.isSafeInteger(amount)||amount<0||amount>carriedCoins())return false;
+ const loose=Math.min(s.bag.coins||0,amount);s.bag.coins=(s.bag.coins||0)-loose;s.gold-=amount-loose;return true;
+}
+function addCoinsToPouch(){
+ if(window.playerTrade)return false;
+ const amount=s.bag.coins||0;if(!amount)return false;
+ if(!Number.isSafeInteger(amount)||amount+s.gold>COIN_LIMIT){toast('Your coin pouch cannot hold that many coins.');return false;}
+ s.gold+=amount;delete s.bag.coins;renderUI();save();toast('Added '+amount.toLocaleString()+' coins to your pouch.');return true;
+}
+function withdrawCoins(amount){
+ if(window.playerTrade||!Number.isSafeInteger(amount)||amount<=0||amount>s.gold)return false;
+ if(!canCarry('coins')){toast('Make space in your inventory for coins.');return false;}
+ if((s.bag.coins||0)+amount>COIN_LIMIT){toast('That coin stack is too large.');return false;}
+ s.gold-=amount;s.bag.coins=(s.bag.coins||0)+amount;renderUI();save();return true;
+}
+function openCoinPouch(){
+ if(window.playerTrade)return;
+ dialog('Coin pouch','<p>In pouch: <b>'+s.gold.toLocaleString()+'</b></p><p>In inventory: <b>'+(s.bag.coins||0).toLocaleString()+'</b></p><label>Coins to withdraw <input id="pouchAmount" type="number" inputmode="numeric" min="1" max="'+s.gold+'" value="'+Math.min(1,s.gold)+'"></label>',[
+ ['Withdraw',()=>{const n=Number($('pouchAmount').value);if(withdrawCoins(n))close();}],
+ ['Withdraw all',()=>{if(withdrawCoins(s.gold))close();}]
+ ]);
+}
 function groundDrop(items,x=s.x,y=s.y,scene=currentScene,protectedDrop=false){
  expireGroundLoot();
  s.groundLoot=s.groundLoot||[];let pile=s.groundLoot.find(p=>p.x===x&&p.y===y&&p.scene===scene);
@@ -56,8 +89,8 @@ function takeGroundItem(pile,id,limit=Infinity){
  expireGroundLoot();if(!s.groundLoot?.includes(pile))return false;
  const n=Math.min(pile.items[id]||0,limit);if(!n)return false;
  let taken=n;
- if(id==='coins')s.gold+=n;
- else if(ITEMS[id]?.slot){taken=Math.min(n,bagSpaceFor(id));if(!taken){toast('Inventory full. This loot stays on the ground.');return false;}s.gear[id]=(s.gear[id]||0)+taken;}
+ if(id==='coins'&&(!Number.isSafeInteger(n)||(s.bag.coins||0)+n>COIN_LIMIT)){toast('That coin stack is too large.');return false;}
+ if(ITEMS[id]?.slot){taken=Math.min(n,bagSpaceFor(id));if(!taken){toast('Inventory full. This loot stays on the ground.');return false;}s.gear[id]=(s.gear[id]||0)+taken;}
  else {taken=STACKABLE.has(id)?(canCarry(id,n)?n:0):Math.min(n,bagSpaceFor(id));if(!taken){toast('Inventory full. This loot stays on the ground.');return false;}s.bag[id]=(s.bag[id]||0)+taken;}
  pile.items[id]-=taken;if(!pile.items[id])delete pile.items[id];
  if(!Object.keys(pile.items).length)s.groundLoot=s.groundLoot.filter(p=>p!==pile);

@@ -101,7 +101,7 @@ function tutorialEvent(event){
  if((event==='training-gear'||event==='dummy')&&(s.equipment.weapon!=='woodenSword'||s.equipment.shield!=='woodenShield'))return;
  s.tutorial++;stop();tutorialCameraStart=null;
  if(!tutorialStep()){
-  const earned=!s.tutorialReward;if(earned){s.gold+=15;s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
+  const earned=!s.tutorialReward;if(earned){receiveCoins(15);s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
   if(typeof departTutorialIsland==='function')departTutorialIsland();
   if(typeof tutorialCrossing!=='undefined'&&tutorialCrossing)tutorialCrossing.earned=earned;else showTutorialArrival(earned);
  }

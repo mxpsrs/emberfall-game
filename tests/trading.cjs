@@ -17,10 +17,10 @@ s.bank.fish=100;s.bag={bones:24};s.gear={bronzeSword:1,ironHelm:1};window.realmT
 s.bag={bones:24,arrows:1};s.bank.arrows=500;renderUI();clickStock('arrows');assert.equal(s.bag.arrows,501,'existing stack accepts withdrawal in full bag');assert.equal(inventorySlots().length,25);
 depositInventory();assert.equal(inventorySlots().length,0);assert.equal(s.gear.bronzeSword,1);assert.equal(s.gear.ironHelm,1);
 const saved=JSON.parse(JSON.stringify(s));assert.deepEqual(saved.bank,s.bank);close();assert.equal(window.realmTrade,null);
-s.bag={fish:3,bones:2};s.hp=1;s.gold=100;shop();assert.equal($('modal').presentation,'nonmodal');const hp=s.hp;clickBag('fish');assert.equal(s.hp,hp,'shop click never eats');assert.equal(s.bag.fish,2);assert.equal(s.gold,101,'one item sold, not whole bag');
+s.bag={fish:3,bones:2};s.hp=1;s.gold=100;shop();assert.equal($('modal').presentation,'nonmodal');const hp=s.hp;clickBag('fish');assert.equal(s.hp,hp,'shop click never eats');assert.equal(s.bag.fish,2);assert.equal(s.gold,100,'selling preserves pouch');assert.equal(s.bag.coins,1,'sale coins enter inventory');
 clickStock('fish');assert.equal(s.bag.fish,3);assert.equal(s.gold,98);window.realmTrade.quantity=5;renderUI();clickStock('arrows');assert.equal(s.bag.arrows,5);assert.equal(s.gold,93);
 window.realmTrade.quantity=1;s.gold=200;renderUI();clickStock('ironHelm');clickStock('ironHelm');assert.equal(s.gear.ironHelm,3,'buying additional gear keeps existing equipment');assert.equal(s.gold,100);
-window.realmTrade.quantity='All';renderUI();clickBag('ironHelm');assert.equal(s.gear.ironHelm,1);assert.equal(s.equipment.head,'ironHelm');assert.equal(s.gold,150);
+window.realmTrade.quantity='All';renderUI();clickBag('ironHelm');assert.equal(s.gear.ironHelm,1);assert.equal(s.equipment.head,'ironHelm');assert.equal(s.gold,100);assert.equal(s.bag.coins,50);
 s.bag={bones:25};const coins=s.gold;renderUI();assert.equal(tradeItemAction('fish','stock'),false);assert.equal(s.gold,coins);s.bag={};s.gold=2;renderUI();assert.equal(tradeItemAction('fish','stock'),false);assert.equal(s.gold,2);
 window.realmTrade.quantity='X';window.realmTrade.custom='7';assert.equal(tradeAmount(),7);window.realmTrade.custom='invalid';assert.equal(tradeAmount(),1);
 close();s.bag={fish:1};renderUI();clickBag('fish');assert(s.hp>hp,'normal bag action restored when shop closes');

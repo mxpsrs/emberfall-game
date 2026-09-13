@@ -7,7 +7,7 @@ vm.runInContext(fs.readFileSync('dist/account-auth.js','utf8'),ctx);vm.runInCont
 vm.runInContext(fs.readFileSync('dist/game-messages.js','utf8'),ctx);vm.runInContext("gameMessage('Message before chat loads');",ctx);
 vm.runInContext(fs.readFileSync('dist/multiplayer.js','utf8'),ctx);vm.runInContext(fs.readFileSync('dist/social.js','utf8'),ctx);
 // Use movable elements for controls created by the fixture before the shell mounts.
-for(const id of ['combatbar','friendsPane','fullscreenButton','ambientButton','waveButton','journal','tutorial','gameTabs','mapHud','panel','gameDock','hitpointOrb','worshipOrb','specialOrb'])els[id]=movable();
+for(const id of ['combatbar','friendsPane','fullscreenButton','ambientButton','waveButton','journal','tutorial','gameTabs','mapHud','panel','gameDock','hitpointOrb','worshipOrb','coinPouchOrb'])els[id]=movable();
 // Mirror the real document: spiritButton starts inside gameTabs, and an ID
 // lookup cannot find a node after replaceChildren disconnects it.
 const spiritControl=els.spiritButton||movable();els.spiritButton=spiritControl;
@@ -23,6 +23,6 @@ s.character={name:'Alice',look:0};s.spirits={};assetsReady=false;
 for(const which of ['friends','ignore','settings','emotes','music','account','worship','combat']){tab=which;renderPanel();assert($('panel').children.length>0,which+' renders');}
 tab='friends';renderPanel();assert.equal($('friendsPane').parentElement,$('panel'));openSocial();assert.equal($('friendsPane').hidden,false,'chat and friends remain usable together');tab='settings';renderPanel();assert.equal($('friendsPane').parentElement,classicStorage,'friends control survives panel changes');
 const before=$('chatMessages').children.length;toast('Your bag is full.');assert.equal($('chatMessages').children.length,before+1);assert.equal($('chatMessages').children.at(-1).textContent,'Your bag is full.');
-updateClassicVitals();assert.equal($('hitpointValue').textContent,s.hp);assert.equal($('worshipValue').textContent,lv('Worship'));
+assert.equal($('mapHud').children.filter(b=>b.id==='coinPouchOrb').length,1);assert(!$('mapHud').children.some(b=>b.id==='specialOrb'));s.gold=2500;updateClassicVitals();assert.equal($('coinPouchValue').textContent,'2,500');assert.equal($('hitpointValue').textContent,s.hp);assert.equal($('worshipValue').textContent,lv('Worship'));
 console.log('PASS: fourteen wired tabs, preserved controls across panel switches, chat alongside friends, early notices, chat-only toast messages, and live map vitals.');
 \`,ctx);`);

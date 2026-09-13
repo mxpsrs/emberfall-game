@@ -43,7 +43,7 @@ function renderTradeContents(){
  const t=window.realmTrade;if(!t)return;const grid=$('tradeGrid');if(!grid)return;
  const bank=t.kind==='bank',entries=bank?Object.entries(s.bank||{}).filter(([id,n])=>ITEMS[id]&&n>0):shopStock.map(([id])=>[id,Infinity]);
  const rows=entries.filter(([id])=>(!t.search||ITEMS[id].name.toLowerCase().includes(t.search.toLowerCase()))&&(t.filter==='all'||(t.filter==='equipment'?!!ITEMS[id].slot:!ITEMS[id].slot)));
- $('tradeSummary').textContent=bank?entries.length+' stored item types · '+s.gold+' coins':s.gold+' coins · Buy from the shop, sell from your bag';
+ $('tradeSummary').textContent=bank?entries.length+' stored item types · '+carriedCoins()+' coins':carriedCoins()+' coins · Buy from the shop, sell from your bag';
  $('modalBody').querySelectorAll('[data-trade-filter]').forEach(b=>b.setAttribute('aria-pressed',String(t.filter===b.dataset.tradeFilter)));
  $('modalBody').querySelectorAll('[data-trade-quantity]').forEach(b=>b.setAttribute('aria-pressed',String(t.quantity.toString()===b.dataset.tradeQuantity)));
  grid.replaceChildren();
@@ -56,7 +56,7 @@ function renderTradeContents(){
  const emptyCount=Math.max(0,(bank?40:24)-rows.length);for(let i=0;i<emptyCount;i++){const empty=document.createElement('span');empty.className='trade-slot trade-empty-slot';empty.setAttribute('aria-hidden','true');grid.appendChild(empty);}
  $('tradeEmpty').hidden=!!rows.length;$('tradeEmpty').textContent=entries.length?'No matching items.':bank?'Your bank is empty. Tap an item in your bag to store it.':'No stock available.';
  $('tradeNotice').textContent=t.notice||(bank?'Tap bag items to deposit. Tap stored items to withdraw.':'Tap stock to buy. Tap bag items to sell. Hold an item for prices and quantities.');
- if(bank)$('depositInventory').disabled=inventorySlots().length===0;else $('tradeWallet').textContent=s.gold+' coins';
+ if(bank)$('depositInventory').disabled=inventorySlots().length===0;else $('tradeWallet').textContent=carriedCoins()+' coins';
  paintItemIcons(grid);
 }
 function formatTradeCount(count){return count>=1000000?(Math.floor(count/100000)/10)+'m':count>=10000?Math.floor(count/1000)+'k':String(count);}
@@ -68,9 +68,9 @@ function tradeItemAction(id,side,amount=tradeAmount()){
  else if(side==='bag'){price=shopSalePrice(id);if(!price){t.notice='Mara does not buy '+item.name+'.';if(typeof gameMessage==='function')gameMessage(t.notice);renderTradeContents();return false;}moved=sell(id,price,amount);}
  else{
   price=shopUnitPrice(id);if(!price)return false;
-  const room=STACKABLE.has(id)?(canCarry(id)?Infinity:0):bagSpaceFor(id),quantity=Math.min(amount,Math.floor(s.gold/price),room);
+  const affordable=Math.min(amount,Math.floor(carriedCoins()/price));let room=STACKABLE.has(id)?(canCarry(id)?Infinity:0):bagSpaceFor(id);const loose=s.bag.coins||0;if(loose>0&&affordable>0){const withFreedSlot=STACKABLE.has(id)?affordable:Math.min(affordable,room+1);if(withFreedSlot*price>=loose)room=STACKABLE.has(id)?Infinity:room+1;}const quantity=Math.min(affordable,room);
   if(quantity>0&&buySupply(id,quantity,quantity*price))moved=quantity;
-  else t.notice=s.gold<price?'You need '+price+' coins to buy '+item.name+'.':'Your bag is full.';
+  else t.notice=carriedCoins()<price?'You need '+price+' coins to buy '+item.name+'.':'Your bag is full.';
  }
  if(moved){t.notice=({Deposit:'Deposited',Withdraw:'Withdrew',Buy:'Bought',Sell:'Sold'})[verb]+' '+moved+' × '+item.name+(price?' for '+(moved*price)+' coins':'')+'.';}
  else if(t.kind==='bank')t.notice=side==='stock'?'Make room in your bag to withdraw this item.':'There are no unworn items of that type in your bag.';

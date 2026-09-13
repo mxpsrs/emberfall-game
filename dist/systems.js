@@ -60,6 +60,7 @@ function normalizeToolBelt(state){state.toolBelt={axe:true,pickaxe:true,fishingR
 function useBeltTool(id){if(!normalizeToolBelt(s)[id]){toast('Your tool belt needs a '+TOOL_BELT_TOOLS[id].name.toLowerCase()+'.');return false;}s.lastToolUsed=id;return true;}
 let toolBeltOpen=false;
 const ITEMS={
+ coins:{name:'Coins',icon:0,desc:'Money carried in your inventory. Add to pouch to store it, or offer it in a player trade.'},
  bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Choose Accurate, Aggressive, Defensive, or Balanced training.'},
  ironSword:{name:'Iron sword',icon:1,slot:'weapon',style:'melee',power:5,range:1.45,desc:'Forged iron. Four more damage than a bronze sword.'},
  shortbow:{name:'Shortbow',icon:2,slot:'weapon',style:'ranged',power:2,range:5,desc:'Fires one arrow per shot. Trains Ranged and Hitpoints; Defensive training also earns Defense XP.'},
@@ -135,7 +136,8 @@ function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[dat
 function itemActions(id,fromBag=false){
  const item=ITEMS[id];if(!item)return [];
  const slot=isAmmunition(id)?'ammo':item.slot,worn=!fromBag&&slot&&s.equipment[slot]===id,actions=[];
- if(slot&&EQUIPMENT_SLOTS.some(([key])=>key===slot))actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
+ if(id==='coins')actions.push(['Add to pouch',addCoinsToPouch]);
+ else if(slot&&EQUIPMENT_SLOTS.some(([key])=>key===slot))actions.push([worn?'Unequip':'Equip',()=>{const ok=worn?unequipItem(slot):equipItem(id);if(ok)toast(item.name+(worn?' unequipped.':' equipped.'));return ok;}]);
  else if(skillItemActions(id))actions.push(...skillItemActions(id));
  else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(id==='fish')eat();else{if(s.hp>=maxhp()){toast('Your health is full.');return false;}s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
  else if(id==='bones')actions.push(['Bury',buryBones]);
@@ -149,7 +151,7 @@ function itemActions(id,fromBag=false){
 }
 function primaryItemAction(id,fromBag=false,index=null){
  if(fromBag&&typeof selectedUseItem!=='undefined'&&selectedUseItem)return useItemOnItem(id);
- if(fromBag&&typeof selectUseItem==='function'&&!ITEMS[id]?.slot&&!isAmmunition(id)&&!ITEMS[id]?.heal&&!ITEMS[id]?.beltTool&&!['bones','herbs'].includes(id))return selectUseItem(id,index);
+ if(fromBag&&typeof selectUseItem==='function'&&!ITEMS[id]?.slot&&!isAmmunition(id)&&!ITEMS[id]?.heal&&!ITEMS[id]?.beltTool&&!['coins','bones','herbs'].includes(id))return selectUseItem(id,index);
  itemActions(id,fromBag)[0]?.[1]();
 }
 function itemDetails(id,fromBag=false){
@@ -171,7 +173,7 @@ function bindItemPress(button,id,fromBag,tradeSide=null){
  button.addEventListener('contextmenu',e=>{e.preventDefault();clear();if(!suppressClick)details();suppressClick=true;});
  button.addEventListener('keydown',e=>{if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')){e.preventDefault();clear();details();}});
  button.onclick=e=>{if(suppressClick){e.preventDefault();suppressClick=false;return;}if(tradeSide&&window.realmTrade)tradeItemAction(id,tradeSide);else primaryItemAction(id,fromBag,Number(button.dataset?.inventoryIndex));};
- button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+(fromBag&&!ITEMS[id].slot&&!isAmmunition(id)&&!ITEMS[id].heal&&!ITEMS[id].beltTool&&!['bones','herbs'].includes(id)?'Use':itemActions(id,fromBag)[0][0])+'. Hold for more options.');
+ button.setAttribute('aria-label',tradeSide&&window.realmTrade?tradeItemLabel(id,tradeSide):ITEMS[id].name+'. '+(fromBag&&!ITEMS[id].slot&&!isAmmunition(id)&&!ITEMS[id].heal&&!ITEMS[id].beltTool&&!['coins','bones','herbs'].includes(id)?'Use':itemActions(id,fromBag)[0][0])+'. Hold for more options.');
 }
 function renderInventory(){
  pageControls(1,1);const slots=inventorySlots();const panel=$('panel');panel.innerHTML='<div class="inventory-summary"><span>'+slots.length+' / 25</span>'+(window.realmTrade?'<span>Tap to '+(window.realmTrade.kind==='bank'?'deposit':'sell')+'</span>':'')+'</div><div id="inventoryGrid" class="inventorygrid bag25"></div>';
@@ -199,7 +201,7 @@ function renderCombatBar(){
  if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
  select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
 }
-function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
+function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isSafeInteger(cost)||cost<0)return false;if(carriedCoins()<cost){toast('You need '+cost+' coins.');return false;}const oldCoins=s.bag.coins||0,oldPouch=s.gold;if(!spendCoins(cost))return false;if(!canCarry(id,count)){s.bag.coins=oldCoins;s.gold=oldPouch;toast('Not enough inventory space.');return false;}if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
 function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>(o.type==='tree'||o.blocksSight&&!o.penFence&&!/fence/i.test(o.name||''))&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange(o)+.01&&lineOfSight(px,py,o.x,o.y);}
@@ -238,7 +240,7 @@ function performAttack(o){
 function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
 function applyEnemyHit(o,hit){
  s.hp=Math.max(0,s.hp-hit);playerHitAt=hit>0?time:playerHitAt;floating(hit?'-'+hit:'Blocked',px,py,hit?'#ffaba1':'#a7c7cf');
- if(s.hp<=0){s.gold=Math.max(0,s.gold-5);returnToVillage();s.hp=maxhp();o.hp=o.maxhp;projectiles=[];meleeImpacts=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}
+ if(s.hp<=0){spendCoins(Math.min(5,carriedCoins()));returnToVillage();s.hp=maxhp();o.hp=o.maxhp;projectiles=[];meleeImpacts=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}
  renderUI();save();
 }
 function updateCombat(dt){
