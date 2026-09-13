@@ -4,4 +4,4 @@ Before EVERY production deployment, send the in-game “System maintenance” no
 
 Use scripts/maintenance.mjs to start, check and finish the same request ID. Never use global-reset as a maintenance substitute. Never deploy before the deadline or silently skip this rule.
 
-Bootstrap limitation: live v63 does not have a maintenance broadcaster. Installing this feature requires the user's explicit one-time exception after the update is prepared and verified. No exception has been granted. Future agents must not infer one from an older instruction to publish.
+Bootstrap completed: the user explicitly approved a one-time exception for v64, which was published successfully on 2026-09-13. That exception is consumed. The maintenance broadcaster is now installed; every subsequent production deployment must follow the countdown and disconnect procedure above.
