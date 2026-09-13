@@ -5,6 +5,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "db:generate": "drizzle-kit generate",
+    "accounts:reset": "node scripts/prepare-global-reset.mjs",
+    "accounts:reset:check": "node tests/global-reset.mjs",
     "dev": "vite"
   },
   "dependencies": {
