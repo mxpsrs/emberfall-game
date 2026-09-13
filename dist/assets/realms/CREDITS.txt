@@ -50,3 +50,10 @@ Original mesh, base color, skin, idle and anima takes retained; unused DCC contr
 The three attack styles reuse the original anima gesture with Emberfall effects.
 The package has no native death take: a held native pose uses game-authored crystal shatter/dissolve.
 Incorporated game data only; original source files are not distributed or used for model training.
+
+Veyr the Mindbreaker: Demon Creature with Weapon - 25 animations, 2 skins by andriichykrii.
+https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins
+CGTrader Royalty Free License (no AI). Original body, orb weapon, default color maps and rig retained.
+Twenty-six source takes inspected, including the A-pose. Ten runtime clips retain reviewed single-cycle
+windows for idle, walking, running, three strikes, two casts, damage and death. Ground effects and lair by Emberfall.
+Incorporated game data only; original FBX and texture archives are not distributed or used for model training.

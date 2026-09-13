@@ -1,6 +1,6 @@
 # Approved creature roster
 
-On September 12, 2026, the owner approved the six model designs with two role changes: the treant formerly called Old Bracken becomes a standard **Forest Giant**, and the minotaur formerly called Borruk the Pitbreaker becomes a regular dungeon monster named **Ork**. The remaining four retain their selected boss names. All earlier draft boss names except **Runeforged Colossus** remain retired. The model selections, names and roles are approved; source-file inspection and game integration are still pending.
+On September 12, 2026, the owner approved the six model designs with two role changes: the treant formerly called Old Bracken becomes a standard **Forest Giant**, and the minotaur formerly called Borruk the Pitbreaker becomes a regular dungeon monster named **Ork**. The remaining four retain their selected boss names. All earlier draft boss names except **Runeforged Colossus** remain retired. The model selections, names and roles are approved. Forest Giants, Orks, the Colossus and Veyr now have inspected original assets and complete integrations. The dragon and insect source packages remain pending; the current status is in `lair-integration-checkpoint.md`.
 
 ![Approved models and monster roles using actual artist previews](boss-candidates/boss-shortlist.jpg)
 
@@ -13,7 +13,7 @@ On September 12, 2026, the owner approved the six model designs with two role ch
 
 Forest Giants populate forests. Orks populate dungeons. Both use the ordinary monster system, repeatable spawns, normal combat and ground drops. Neither has a named boss encounter, phase system, boss marks or boss music. Preserve the owner's spelling **Ork** in the game; the original asset title remains Animated Minotaur in the credits.
 
-These animation confirmations come from the creators' listings. The source files have not yet been inspected or tested in Emberfall.
+Both ordinary monsters have since been imported and verified in Emberfall. Their import audits record the original files, native motions and material handling.
 
 ## Approved bosses
 
@@ -21,13 +21,13 @@ The four bosses are **Runeforged Colossus**, **Veyr the Mindbreaker**, **Varkesh
 
 ### Veyr the Mindbreaker
 
-[Demon Creature with Weapon — andriichykrii](https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins) has twenty-five listed animations plus a bonus A-pose, including punches, shooting, telepathy, throwing, damage and death. The animated FBX includes its orb weapon. Its CGTrader Royalty Free (no AI) license supports commercial game use under the terms below. The owner approved the darker demon design as a boss. Its existing action set makes it a candidate for one of the small number of fights using several attack styles.
+[Demon Creature with Weapon — andriichykrii](https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins) has twenty-five listed animations plus a bonus A-pose, including punches, shooting, telepathy, throwing, damage and death. The animated FBX includes its orb weapon. Its CGTrader Royalty Free (no AI) license supports commercial game use under the terms below. The owner approved the darker demon design as a boss. Its ten reviewed runtime clips now drive melee and magic in the Shattered Sanctum. Below half health its second phase adds a telepathic ring and native jumping slam. The complete body, orb and source textures are recovered; see `veyr-integration.md`.
 
 ### Colossus: retain the name, use the owner's chosen asset
 
-[Icebronze — melikovfuad7](https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze) is free under CGTrader Royalty Free (no AI), and the listing marks it rigged and animated. Its description specifies 10,344 triangles but does not enumerate animation clips. Clicking Free Download opened a CGTrader sign-in dialog; no original model file has been downloaded. Do not claim that melee, ranged, and magic clips have been verified.
+[Icebronze — melikovfuad7](https://www.cgtrader.com/free-3d-models/character/fantasy-character/icebronze) is free under CGTrader Royalty Free (no AI), and the listing marks it rigged and animated. Its description specifies 10,344 triangles but does not enumerate animation clips. The original files have since been recovered and imported. They contain only idle and anima, so all three styles share that native gesture with different game effects; no separate native style or death clips are claimed.
 
-The owner's approved fight direction is stationary, with melee/ranged/magic styles and two phases. Proposed tuning: phase two begins at 50% health, turns the crystals and runes red, and shortens the attack cycle by 25% while retaining visible warnings. It remains anchored in the arena, can face the player, and cannot chase. Leaving its arena resets health, color, phase, and timing. Those behavior changes are specified here and are **not implemented** in the current draft.
+The owner's approved fight direction is stationary, with melee/ranged/magic styles and two phases. Proposed tuning: phase two begins at 50% health, turns the crystals and runes red, and shortens the attack cycle by 25% while retaining visible warnings. It remains anchored in the arena, can face the player, and cannot chase. Leaving its arena resets health, color, phase, and timing. These behaviors were implemented and published in version 55, with subsequent tutorial improvements in versions 56–57.
 
 ### Dragon and insect boss: designs approved, combat clips pending inspection
 

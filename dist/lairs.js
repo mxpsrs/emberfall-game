@@ -2,7 +2,7 @@
 // Authored encounter spaces. Stable scene IDs and mainland exits survive saves.
 const CREATURE_LAIRS={
  lair_colossus:{title:'The Crystal Crucible',subtitle:'Runeforged Colossus · Ancient crystal foundry',boss:'colossus',theme:'crystal',size:[46,48],entry:[23,44],arena:[23.5,18.5],spawn:[23,18],entrance:[945,387],floor:'#3d4d58',trim:'#8a9ea6',glow:'#72cfff',fog:[.11,.18,.25],ambient:[.86,.97,1.13],light:[.08,.24,.37],rooms:[['ellipse',23,19,17,15],['rect',19,30,9,16],['ellipse',10,27,5,5],['ellipse',36,27,5,5]]},
- lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'veyr',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4a4353',trim:'#93836b',glow:'#bd96f5',fog:[.17,.13,.23],ambient:[1,.91,1.12],light:[.21,.10,.31],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
+ lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'veyr',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4d484c',trim:'#a3967d',glow:'#bd96f5',fog:[.12,.10,.16],ambient:[.95,.94,1.04],light:[.12,.07,.19],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
  lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'varkesh',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[270,105],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
  lair_xalith:{title:'The Brood Hollow',subtitle:'Xalith the Broodmother · Amber hive cavern',boss:'xalith',theme:'hive',size:[54,54],entry:[27,50],arena:[27,21],spawn:[27,20],entrance:[720,516],floor:'#554333',trim:'#9e7850',glow:'#e1b666',fog:[.20,.15,.09],ambient:[1.1,.96,.79],light:[.29,.16,.035],rooms:[['ellipse',27,21,19,17],['rect',23,36,9,16],['ellipse',10,32,6,8],['ellipse',44,32,6,8]]},
  ork_warrens:{title:'Ork Warrens',subtitle:'Ork camps · Raided dwarven workings',theme:'ork',size:[38,44],entry:[19,39],arena:[19,20],entrance:[657,198],spawns:[[12,13],[26,15],[12,30],[25,32]],floor:'#615646',trim:'#99866b',glow:'#e2ac62',fog:[.20,.17,.13],ambient:[1.02,.95,.85],light:[.25,.14,.045],rooms:[['rect',14,3,10,38],['rect',4,7,12,11],['rect',22,8,12,11],['rect',4,24,12,11],['rect',22,25,12,11]]}
@@ -22,7 +22,7 @@ function lairDecorBlocked(scene,x,z,allowPlinth=false){
    return Math.abs(dx*c-dz*n)<(hi[0]-lo[0])*s/2+.18&&Math.abs(dx*n+dz*c)<(hi[2]-lo[2])*s/2+.18;
   }
   if(o.kind==='arch')return [-1,1].some(side=>Math.abs(dx-side*2.6*k)<.55*k&&Math.abs(dz)<.6*k);
-  const radius=o.kind==='plinth'&&!allowPlinth?k:o.kind==='pillar'?.8*k:o.kind==='crystal'?.85*k:o.kind==='egg'?1.35*k:o.kind==='hearth'?k+.2:0;
+  const radius=o.kind==='plinth'&&!allowPlinth?k:o.kind==='pillar'?.8*k:o.kind==='crystal'?.85*k:o.kind==='egg'?1.35*k:o.kind==='hearth'?k+.2:o.kind==='orrery'?1.3*k:o.kind==='runeBasin'?.8*k:0;
   return radius>0&&Math.hypot(dx,dz)<radius;
  });
 }
@@ -40,9 +40,15 @@ function lairScenery(lair){
   for(let i=0;i<8;i++){const a=i/8*Math.PI*2;feature('pillar',cx+Math.cos(a)*11,cz+Math.sin(a)*10,i%3===0?.72:1);}
   feature('dais',cx,cz,5.7);feature('plinth',lair.spawn[0]+.5,lair.spawn[1]+.5,2.1);feature('arch',23,34,1.3);
  }else if(lair.theme==='arcane'){
-  for(const side of [-1,1]){for(let n=0;n<4;n++){model('Wall_UnevenBrick_Straight',cx+side*12,10+n*5,2.5,n%2*.08,[.80,.72,.92]);feature('crystal',cx+side*11,9+n*5,.55);}for(let n=0;n<3;n++)model('World_Bookcase_2',cx+side*16,25+n*3,1.8,side*Math.PI/2);}
+  for(const side of [-1,1]){for(let n=0;n<4;n++){model('Wall_UnevenBrick_Straight',cx+side*12,10+n*5,2.5,-side*Math.PI/2+n%2*.08,[.80,.72,.92]);feature('crystal',cx+side*11,9+n*5,.55);}for(let n=0;n<3;n++)model('World_Bookcase_2',cx+side*16,25+n*3,1.8,side*Math.PI/2);}
   for(const side of [-1,1]){model('World_Table_Large',cx+side*15.5,30,1,Math.PI/2);model('World_BookStand',cx+side*13.5,27,1.15);}
   feature('dais',cx,cz,5.1);feature('arch',cx,35,1.35);
+  feature('orrery',cx,cz-10,1.35);
+  for(const side of [-1,1]){
+   model('World_BookStand',cx+side*7,cz-10,1.25,side*.45);
+   model('World_Crate_Wooden',cx+side*16,24,.85,side*.25);
+   feature('runeBasin',cx+side*10,cz+8,1);
+  }
   for(let i=0;i<8;i++){const a=i/8*Math.PI*2;model('Rock_Medium_3',cx+Math.cos(a)*14,cz+Math.sin(a)*12,.65+i%3*.15,a,[.8,.72,.88]);}
  }else if(lair.theme==='blight'){
   for(const [x,z,h]of [[11,13,6],[47,13,5.5],[9,29,4.5],[49,29,6],[17,7,4],[42,8,4.7],[16,39,3.8],[44,38,4.2]])model('Rock_Medium_1',x,z,h,x*.7,[.83,.82,.63]);
@@ -133,6 +139,17 @@ function drawLairFeature(r,o,lair){
   for(let i=0;i<3;i++){const xx=x+(i-1)*k*.7,zz=z+i%2*k*.5;profile3(materialRealm(r,7),xx,k*.7,zz,k*.82,k*1.4,k*.8,[[-.5,.48],[-.3,.88],[.08,1],[.35,.7],[.5,.13]],i===1?shade3(glow,.68):'#8c754d',p=>p,14);for(let j=0;j<5;j++){const a=j/5*Math.PI*2;beamArt(stone,[xx+Math.cos(a)*k*.43,k*.8,zz+Math.sin(a)*k*.43],[xx+Math.cos(a)*k*.23,k*1.25,zz+Math.sin(a)*k*.23],.021,'#584b37',5);}}
  }else if(o.kind==='web'){
   for(let j=0;j<6;j++){const a=j/6*Math.PI*2;beamArt(r,[x,.08,z],[x+Math.cos(a)*k,.10,z+Math.sin(a)*k],.012,'#b7ae87',4);}for(let j=1;j<5;j++)lairRing(r,x,z,j*k/4,.015,'#a79f7a',.09);
+ }else if(o.kind==='orrery'){
+  profile3(stone,x,.42*k,z,2.6*k,.84*k,2.6*k,[[-.5,1],[-.28,1],[.18,.72],[.5,.76]],'#797080',p=>p,12);
+  for(const side of [-1,1])beamArt(materialRealm(r,7),[x+side*k,.7*k,z],[x+side*.45*k,2.4*k,z],.09*k,'#9b825f',8);
+  for(let ring=0;ring<2;ring++)for(let i=0;i<36;i++){
+   const point=a=>[x+Math.cos(a)*1.2*k,2.2*k+Math.sin(a)*1.2*k*(ring?.75:1),z+Math.sin(a)*k*(ring?.75:0)];
+   beamArt(materialRealm(r,7),point(i*Math.PI/18),point((i+1)*Math.PI/18),.035*k,'#b09b72',5);
+  }
+  profile3(light,x,2.2*k,z,.52*k,.75*k,.52*k,[[-.5,0],[-.25,.8],[.15,1],[.5,0]],glow,p=>p,9);
+ }else if(o.kind==='runeBasin'){
+  profile3(stone,x,.36*k,z,1.6*k,.72*k,1.6*k,[[-.5,.75],[-.3,.6],[.15,1],[.5,.9]],'#827486',p=>p,12);
+  lairRing(r,x,z,.52*k,.17*k,glow,.70*k);
  }else if(o.kind==='nest'){
   for(let i=0;i<26;i++){const a=i/26*Math.PI*2,rad=k+Math.sin(i*7)*.35;beamArt(materialRealm(r,5),[x+Math.cos(a)*rad,.09,z+Math.sin(a)*rad],[x+Math.cos(a+.25)*(rad+.3),.18,z+Math.sin(a+.25)*(rad+.3)],.06,lair.theme==='hive'?'#8b6947':'#7d7856',7);}
  }else if(o.kind==='pool'){
@@ -146,7 +163,26 @@ function drawCreatureLair(r,minx,maxx,minz,maxz){
  const lair=CREATURE_LAIRS[currentScene];if(!lair)return;const world=worldScenes[currentScene];
  for(let z=Math.floor(minz/8)*8;z<=maxz;z+=8)for(let x=Math.floor(minx/8)*8;x<=maxx;x+=8){const key=x+':'+z;let tile=world.floorChunks.get(key);if(!tile){tile={};world.floorChunks.set(key,tile);}emitMesh3(r,cachedMesh3(tile,'prop',q=>{for(let zz=z;zz<z+8;zz++)for(let xx=x;xx<x+8;xx++)if(!worldWall(xx,zz)){const color=shade3(lair.floor,.94+.06*Math.sin(xx*3.7+zz*1.3));q.face([[xx,.025,zz],[xx+1,.025,zz],[xx+1,.025,zz+1],[xx,.025,zz+1]],color,null,['crystal','arcane','ork'].includes(lair.theme)?18:7);}return .03;}));}
  for(const o of world.decor){if(o.x<minx-8||o.x>maxx+8||o.z<minz-8||o.z>maxz+8)continue;if(o.kind==='model')lairModel(r,o.model,o.x,0,o.z,o.height,o.heading,o.tint);else drawLairFeature(r,o,lair);}
- drawColossusEffects(r);
+ drawColossusEffects(r);drawVeyrEffects(r);
+}
+function drawVeyrEffects(r){
+ const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='veyr')return;
+ const light=materialRealm(r,19),color=f.phase?'#e5a5ed':'#b99bf0';
+ for(const h of f.hazards){
+  const t=Math.max(0,Math.min(1,(time-h.started)/(h.due-h.started))),x=h.x+.5,z=h.y+.5;
+  if(h.key==='hex'){
+   lairRing(r,x,z,h.radius,.065,color,.08);
+   for(let i=0;i<5;i++){const a=i*Math.PI*.4+time*.7,rad=h.radius*(1-t*.45),y=.12+Math.sin(t*Math.PI)*.45;
+    profile3(light,x+Math.cos(a)*rad,y,z+Math.sin(a)*rad,.09,.3,.09,[[-.5,0],[0,1],[.5,0]],color,p=>p,5);
+   }
+  }else if(h.key==='ring'){
+   // Both safe boundaries remain visible throughout the warning.
+   lairRing(r,x,z,h.inner,.075,color,.09);lairRing(r,x,z,h.radius,.075,color,.09);
+   lairRing(r,x,z,h.inner+(h.radius-h.inner)*t,.035,color,.10);
+  }else if(h.key==='sweep'){
+   lairRing(r,x,z,h.radius,.04,'#dfad86',.065);
+  }
+ }
 }
 function drawColossusShatter(r,x,z,progress,enraged){
  if(progress>=1)return;const light=materialRealm(r,19),color=enraged?'#f47564':'#83d8ed';
@@ -169,6 +205,15 @@ const wallArtBeforeLairs=drawRealmWall;
 drawRealmWall=function(r,x,z){
  const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallArtBeforeLairs(r,x,z);if([[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dz])=>worldWall(x+dx,z+dz)))return;
  const foreground=(x-px)*Math.sin(view3d.yaw)+(z-py)*Math.cos(view3d.yaw)>1,height=foreground?1.05:2.6+Math.sin(x*6.1+z)*.3;
+ if(lair.theme==='arcane'){
+  // Fit the original masonry to each exposed edge. Uniform height scaling
+  // made short foreground walls narrower than a tile and left visible gaps.
+  const name='Wall_UnevenBrick_Straight',[lo,hi]=rebuiltModels[name].bounds,k=1.06/(hi[0]-lo[0]),sy=height/(hi[1]-lo[1]);
+  for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]])if(!worldWall(x+dx,z+dz)){
+   const angle=Math.atan2(dx,dz),c=Math.cos(angle),s=Math.sin(angle),cx=(lo[0]+hi[0])*.5*k,cz=(lo[2]+hi[2])*.5*k;
+   rebuiltPlace(r,name,x+.5+dx*.48-cx*c-cz*s,-lo[1]*sy,z+.5+dz*.48+cx*s-cz*c,k,angle,sy,[.78,.76,.84]);
+  }return;
+ }
  lairModel(r,lair.theme==='arcane'?'Wall_UnevenBrick_Straight':'Rock_Medium_1',x+.5,0,z+.5,height,Math.sin(x*3+z)*.3,lair.theme==='hive'?[.9,.7,.43]:lair.theme==='blight'?[.82,.85,.67]:[.70,.76,.88]);
 };
 const propBeforeLairs=prop3;

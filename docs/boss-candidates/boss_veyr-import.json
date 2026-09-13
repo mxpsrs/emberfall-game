@@ -1,0 +1,178 @@
+{
+  "joints": 46,
+  "scale": 0.6366468026708546,
+  "height": 3.5,
+  "source": {
+    "title": "Demon Creature with Weapon \u2014 25 animations, 2 skins",
+    "author": "andriichykrii",
+    "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/demon-creature-with-weapon-25-animations-2-skins",
+    "license": "CGTrader Royalty Free (no AI)",
+    "notes": "Original body, orb, default skin and rig retained. Twenty-six native takes inspected; ten runtime clips use reviewed single-cycle windows. The second phase adds a telepathic ring. No synthetic replacement body, weapon or animation.",
+    "sha256": "e976fcb93e60235e997f75a94241fbfdacec6ef9de138678608a4e9b1e5d6eba",
+    "file": "Demon.fbx",
+    "nativeActions": [
+      "Demon|@Pose_A",
+      "Demon|Come-out1",
+      "Demon|Come-out2",
+      "Demon|Death",
+      "Demon|Get-damage",
+      "Demon|Idle1",
+      "Demon|Idle2",
+      "Demon|Idle3",
+      "Demon|Jump-long",
+      "Demon|Jump-short",
+      "Demon|Punch1",
+      "Demon|Punch2",
+      "Demon|Punch3",
+      "Demon|Run1",
+      "Demon|Shoot1",
+      "Demon|Shoot2",
+      "Demon|Spasm",
+      "Demon|Telepathic",
+      "Demon|Telepathic-loop",
+      "Demon|Throw",
+      "Demon|Throw-catch",
+      "Demon|Throw-loop",
+      "Demon|Turn-left",
+      "Demon|Turn-right",
+      "Demon|Walk1",
+      "Demon|Walk2"
+    ],
+    "animationFiles": [],
+    "sourceNodes": 52,
+    "materials": [
+      {
+        "material": "Demon",
+        "file": "Demon1_BaseColor.png",
+        "sha256": "d0ccc0cce62b04a9248690a28eefb6521f63d3e2da808f2b98cf3dfc1f8bad1d"
+      },
+      {
+        "material": "Ball",
+        "file": "Ball_BaseColor.png",
+        "sha256": "8c0afde2216eab33b44c5c68eeca443158152105af59424670e2953aaafd0ade"
+      }
+    ],
+    "meshes": [
+      {
+        "name": "Demon-mesh",
+        "triangles": 15080,
+        "activeSkinJoints": 43
+      },
+      {
+        "name": "Ball-mesh",
+        "triangles": 2164,
+        "activeSkinJoints": 1
+      }
+    ]
+  },
+  "vertices": 9646,
+  "triangles": 17244,
+  "deforms": 44,
+  "clips": {
+    "idle": {
+      "source": "Demon|Idle1",
+      "duration": 2.4,
+      "frames": 60,
+      "sourceRange": [
+        0,
+        2.4
+      ],
+      "sourceDuration": 4.84
+    },
+    "walk": {
+      "source": "Demon|Walk1",
+      "duration": 1.2,
+      "frames": 31,
+      "sourceRange": [
+        0,
+        1.2
+      ],
+      "sourceDuration": 4.84
+    },
+    "run": {
+      "source": "Demon|Run1",
+      "duration": 0.8,
+      "frames": 21,
+      "sourceRange": [
+        0,
+        0.8
+      ],
+      "sourceDuration": 4.84
+    },
+    "attack": {
+      "source": "Demon|Punch2",
+      "duration": 0.8,
+      "frames": 21,
+      "release": 0.45,
+      "sourceRange": [
+        0,
+        0.8
+      ],
+      "sourceDuration": 4.84
+    },
+    "attack2": {
+      "source": "Demon|Punch1",
+      "duration": 0.8,
+      "frames": 21,
+      "release": 0.25,
+      "sourceRange": [
+        0,
+        0.8
+      ],
+      "sourceDuration": 4.84
+    },
+    "attack3": {
+      "source": "Demon|Punch3",
+      "duration": 1.6,
+      "frames": 40,
+      "release": 0.7,
+      "sourceRange": [
+        0,
+        1.6
+      ],
+      "sourceDuration": 4.84
+    },
+    "cast": {
+      "source": "Demon|Shoot1",
+      "duration": 2.4,
+      "frames": 60,
+      "release": 0.4,
+      "sourceRange": [
+        0,
+        2.4
+      ],
+      "sourceDuration": 4.84
+    },
+    "death": {
+      "source": "Demon|Death",
+      "duration": 2.6,
+      "frames": 64,
+      "sourceRange": [
+        0,
+        2.6
+      ],
+      "sourceDuration": 4.84
+    },
+    "hit": {
+      "source": "Demon|Get-damage",
+      "duration": 1.2,
+      "frames": 31,
+      "sourceRange": [
+        0,
+        1.2
+      ],
+      "sourceDuration": 4.84
+    },
+    "cast2": {
+      "source": "Demon|Telepathic",
+      "duration": 2.4,
+      "frames": 60,
+      "release": 0.35,
+      "sourceRange": [
+        0,
+        2.4
+      ],
+      "sourceDuration": 4.84
+    }
+  }
+}

@@ -24,6 +24,27 @@ def matrix(value):
     out[:3] = np.asarray(value).reshape(3, 4)
     return out
 
+def clip_window(frames, source_duration, entry):
+    """Keep one reviewed source interval, interpolating its boundary poses."""
+    if not isinstance(entry, dict) or 'range' not in entry:
+        return frames, source_duration
+    start, end = entry['range']
+    if not 0 <= start < end <= source_duration:
+        raise ValueError('Clip range falls outside the native action')
+    frames = np.asarray(frames, dtype=float)
+    count = max(2, int(np.ceil((end-start)/source_duration*(len(frames)-1)))+1)
+    positions = np.linspace(start, end, count)/source_duration*(len(frames)-1)
+    result = []
+    for position in positions:
+        low = int(np.floor(position)); high = min(low+1, len(frames)-1)
+        a, b = frames[low], frames[high].copy()
+        # Match quaternion hemispheres before blending, just as the game does.
+        b[:,3:7] *= np.where(np.sum(a[:,3:7]*b[:,3:7],axis=1)<0,-1,1)[:,None]
+        pose = a+(b-a)*(position-low)
+        pose[:,3:7] /= np.linalg.norm(pose[:,3:7],axis=1,keepdims=True)
+        result.append(pose)
+    return result, end-start
+
 def build(config):
     data = json.loads(Path(config['export']).read_text())
     world = json.loads((DEST/'models.js').read_text().split('=', 1)[1].rstrip(';\n'))
@@ -41,18 +62,25 @@ def build(config):
         slot = slots[digest]
         world['tiles']['Approved_'+digest[:12]] = slot
         return slot
-    material_slots = {}
+    material_slots, material_sources = {}, []
     for i, material in enumerate(data['materials']):
         texture = config.get('textures', {}).get(material['name'], config.get('texture'))
         if not texture: raise ValueError('No reviewed texture for material '+material['name'])
         material_slots[i] = texture_slot(texture)
+        material_sources.append({'material':material['name'],'file':Path(texture).name,
+                                 'sha256':hashlib.sha256(Path(texture).read_bytes()).hexdigest()})
     if not data['materials']: material_slots[-1] = texture_slot(config['texture'])
     nodes = data['nodes']
     # DCC control rigs may contain hundreds of unused helper nodes. Preserve the
     # complete ancestry of every deforming joint, while removing unused controls.
     used = set()
+    mesh_joints = []
     for mesh in data['meshes']:
-        for deform in mesh['deforms']:
+        vertices = np.asarray(mesh['vertices'], dtype=float)
+        active = set(vertices[:,9:13].astype(int)[vertices[:,13:17]>0].ravel())
+        mesh_joints.append(active)
+        for index in active:
+            deform = mesh['deforms'][index]
             i = deform['node']
             while i >= 0 and i not in used:
                 used.add(i); i = nodes[i]['parent']
@@ -61,16 +89,17 @@ def build(config):
     node_index = {old:new for new,old in enumerate(order)}
     parents = [node_index.get(nodes[i]['parent'], -1) for i in order]
     deforms, binds, chunks, deform_index = [], [], [], {}
-    for mesh in data['meshes']:
+    for mesh, active in zip(data['meshes'], mesh_joints):
         vertices = np.asarray(mesh['vertices'], dtype=float)
-        remap = []
-        for deform in mesh['deforms']:
+        remap = [0]*len(mesh['deforms'])
+        for index in sorted(active):
+            deform = mesh['deforms'][index]
             node = node_index[deform['node']]
             key = (node, *np.round(deform['bind'],7))
             if key not in deform_index:
                 deform_index[key] = len(deforms)
                 deforms.append(node); binds.append(matrix(deform['bind']))
-            remap.append(deform_index[key])
+            remap[index] = deform_index[key]
         vertices[:,9:13] = np.asarray(remap)[vertices[:,9:13].astype(int)]
         chunks.append(vertices)
     vertices = np.concatenate(chunks)
@@ -125,7 +154,6 @@ def build(config):
         source = entry if isinstance(entry,str) else entry['source']
         if source not in native: raise ValueError('Missing source action '+source)
         animation = native[source]
-        duration = animation['duration'] if isinstance(entry,str) else entry.get('duration',animation['duration'])
         source_frames = animation['frames']
         if isinstance(entry,dict) and 'holdAt' in entry:
             index = round(entry['holdAt']/animation['duration']*(len(source_frames)-1))
@@ -144,16 +172,23 @@ def build(config):
                     raise ValueError('Sheared joint requires baking: '+nodes[order[i]]['name'])
                 local.append([*m[:3,3],*q,*scale])
             frames.append(local)
+        frames, native_duration = clip_window(frames, animation['duration'], entry)
+        duration = native_duration if isinstance(entry,str) else entry.get('duration',native_duration)
         clips[target] = {'source':source,'duration':duration,'frames':len(frames),'trs':packed(np.asarray(frames))}
         if isinstance(entry,dict):
             for field in ('holdAt','note','release'):
                 if field in entry: clips[target][field]=entry[field]
+            if 'range' in entry:
+                clips[target]['sourceRange'] = entry['range']
+                clips[target]['sourceDuration'] = animation['duration']
     required = {'idle','attack'} if config.get('reviewDir') else {'idle','walk','run','attack','death'}
     if not required <= clips.keys(): raise ValueError('Missing required motions '+str(required-clips.keys()))
     model = {'mesh':mesh,'rig':{'names':[nodes[i]['name'] for i in order],'parents':parents,'deforms':deforms,'bind':packed(bind[:,:3])},
              'joints':len(order),'clips':clips,'scale':config['height']/(hi[1]-lo[1]),'height':config['height'],
              'source':{**config['source'],'sha256':hashlib.sha256(Path(config['fbx']).read_bytes()).hexdigest(),'file':Path(config['fbx']).name,'nativeActions':list(native),
-                       'animationFiles':animation_files,'sourceNodes':len(nodes)}}
+                       'animationFiles':animation_files,'sourceNodes':len(nodes),'materials':material_sources,
+                       'meshes':[{'name':m['name'],'triangles':len(m['vertices'])//3,'activeSkinJoints':len(active)}
+                                 for m,active in zip(data['meshes'],mesh_joints)]}}
     if config.get('reviewDir'):
         review = Path(config['reviewDir']); review.mkdir(parents=True,exist_ok=True)
         (review/'creature.json').write_text(json.dumps({'key':config['key'],'model':model},separators=(',',':')))

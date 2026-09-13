@@ -4,14 +4,15 @@ const getElement=ctx.document.getElementById;ctx.document.getElementById=id=>{co
 for(const f of ['game-icons','trading','world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
+let testWallTime=Date.now();Date.now=()=>testWallTime;
 s.character={name:'Combat test'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.sceneId='overworld';setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
 assert.equal(Object.keys(HUNT_ENCOUNTERS).length,4,'only the four approved boss designs remain');
-assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'colossus','only the fully integrated boss is released');
+assert.equal(Object.keys(HUNT_ENCOUNTERS).filter(encounterReleased).join(','),'veyr,colossus','only the fully integrated bosses are released');
 assert.equal(Object.values(HUNT_ENCOUNTERS).filter(e=>e.mechanics).length,2,'only selected future bosses have phases');
 assert.equal(worldScenes.overworld.objects.filter(o=>ENEMY_TIERS[o.kind]?.look).length,45,'42 ordinary monsters and three Forest Giants');
 assert(!worldScenes.tutorial.objects.some(o=>o.encounter||ENEMY_TIERS[o.kind]?.look),'new fights stay off tutorial island');
-assert(Object.values(worldScenes).every(w=>w.objects.every(o=>!o.encounter||o.encounter==='colossus')),'no rejected or unfinished bosses ship');
-assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus','unfinished lairs stay closed');
+assert(Object.values(worldScenes).every(w=>w.objects.every(o=>!o.encounter||encounterReleased(o.encounter))),'no rejected or unfinished bosses ship');
+assert.equal(Object.keys(worldScenes).filter(id=>id.startsWith('lair_')).join(','),'lair_colossus,lair_veyr','unfinished lairs stay closed');
 assert.equal(worldScenes.ork_warrens.objects.filter(o=>o.kind==='ork').length,4,'four ordinary Orks populate their dungeon');
 const sharedRatStats=o=>JSON.stringify([o.maxhp,o.maxHit,o.accuracy,o.interval,o.defenseLevel]);const tutorialRat=worldScenes.tutorial.objects.find(o=>o.kind==='rat');for(const world of Object.values(worldScenes))for(const o of world.objects.filter(o=>o.kind==='rat'))assert.equal(sharedRatStats(o),sharedRatStats(tutorialRat),'all rats share one baseline across scenes');
 activateScene('overworld',42,51);
@@ -59,15 +60,48 @@ for(const phase of [0,1]){
   const speed=phase?.75:1;assert(Math.abs(h.windup-ENCOUNTER_MOVES[key].windup*speed)<.00001,'phase two shortens the warning by 25 percent');
   assert(Math.abs(f.nextAttack-time-(ENCOUNTER_MOVES[key].windup+2.3)*speed)<.00001,'complete attack cycle is 25 percent shorter');
   if(key==='sweep')assert(h.radius>colossus.combatRadius+1.5,'melee ground attack covers the weapon engagement distance');
+  if(key!=='sweep'){px=s.x=h.x+3;py=s.y=h.y;}
+  assert(!hazardContains(h,px,py),'each Colossus style can be dodged');
   time=h.due+.01;updateEncounterAI(.01);assert.equal(JSON.stringify([colossus.x,colossus.y,colossus.drawX,colossus.drawY]),JSON.stringify([...home,...home]),'Colossus never chases in either phase');
  }
 }
 resetEncounter();assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);assert(!colossus.attackRecovery);
 beginEncounter(colossus);colossus.hp=Math.floor(colossus.maxhp*.45);updateEncounterAI(0);const firstGold=s.gold;resolveHit(colossus,colossus.hp,'melee');assert.equal(activeEncounter,null);assert.equal(colossus.dead,time+60);assert.equal(s.gold-firstGold,42*4);
 const bossLoot=s.groundLoot.find(p=>p.scene==='lair_colossus'&&p.items.huntersMark);assert(bossLoot);assert.equal(bossLoot.items.huntersMark,4);assert(!blocked(bossLoot.x,bossLoot.y));assert(route(bossLoot.x,bossLoot.y),'boss loot is on an accessible tile outside the solid pedestal');
-time+=60;updateWorldTimers(colossus.respawnAt+1);assert.equal(colossus.hp,colossus.maxhp);assert.equal(colossus.dead,0);assert(!colossus.enraged,'respawn is blue again');assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(home));
+time+=60;testWallTime=colossus.respawnAt+1;updateWorldTimers();assert.equal(colossus.hp,colossus.maxhp);assert.equal(colossus.dead,0);assert(!colossus.enraged,'respawn is blue again');assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(home));
 beginEncounter(colossus);colossus.hp=40;updateEncounterAI(0);leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py));assert.equal(activeEncounter,null);assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);
 activateScene('overworld',42,51);
+const sanctum=CREATURE_LAIRS.lair_veyr,sanctumDoor=objects.find(o=>o.destination==='lair_veyr');
+assert(sanctumDoor);assert(seen[sanctum.returnPoint[1]*nav.w+sanctum.returnPoint[0]],'sanctum connects to the mainland');
+assert(route(sanctumDoor.x,sanctumDoor.y,true,1.45,...sanctum.returnPoint),'sanctum entrance is reachable');
+activateScene('lair_veyr',...sanctum.entry);const veyr=objects.find(o=>o.encounter==='veyr');
+assert(veyr);assert(!blocked(veyr.x,veyr.y),'Veyr spawns clear of scenery');
+assert(route(veyr.x,veyr.y,true,attackRange(veyr)),'Veyr is reachable from the entrance');
+assert(route(worldScenes.lair_veyr.exit.x,worldScenes.lair_veyr.exit.y,true),'sanctum exit is reachable');
+for(const [x,y]of [[22,24],[16,18],[28,18],[22,13]])assert(route(x,y),'sanctum leaves room to dodge');
+assert(blocked(22,9),'orrery has a solid base');
+px=s.x=veyr.x+4;py=s.y=veyr.y;beginEncounter(veyr);
+for(const phase of [0,1]){
+ veyr.hp=phase?Math.floor(veyr.maxhp*.49):veyr.maxhp;updateEncounterAI(0);assert.equal(activeEncounter.phase,phase);
+ const f=activeEncounter;f.hazards=[];f.move=0;
+ for(const key of HUNT_ENCOUNTERS.veyr.phases[phase].moves){
+  scheduleEnemyMove(f,key);const h=f.hazards.at(-1),a=creatureAssets.boss_veyr;
+  assert.equal(creatureAttackAnimation(veyr,a,veyr.attackWindup).phase,a.clips[veyr.attackClip].release,'native impact matches the end of its warning');
+  if(key==='ring'){
+   assert.equal(veyr.attackClip,'cast2');assert(!hazardContains(h,h.x,h.y),'ring has a safe center');
+   assert(hazardContains(h,h.x+3,h.y),'ring threatens its marked band');assert(!hazardContains(h,h.x+5,h.y),'outside the ring is safe');
+  }else if(key==='hex'){assert.equal(veyr.attackClip,'cast');assert.equal(h.style,'magic');}
+  else {assert.equal(h.style,'melee');assert.equal(veyr.attackClip,phase?'attack3':'attack');}
+  f.hazards=[];
+ }
+}
+const veyrHome=[veyr.homeX,veyr.homeY];resetEncounter();assert.equal(veyr.hp,veyr.maxhp);assert(!veyr.attackMove);
+beginEncounter(veyr);veyr.hp=35;updateEncounterAI(0);leaveInterior();assert.equal(activeEncounter,null);assert.equal(veyr.hp,veyr.maxhp);
+activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const beforeVeyrGold=s.gold;resolveHit(veyr,veyr.hp,'melee');
+assert.equal(s.gold-beforeVeyrGold,80);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
+const veyrLoot=s.groundLoot.find(p=>p.scene==='lair_veyr'&&p.items.huntersMark);assert.equal(veyrLoot.items.huntersMark,3);assert(!blocked(veyrLoot.x,veyrLoot.y));assert(route(veyrLoot.x,veyrLoot.y),'Veyr loot is reachable');
+time+=60;testWallTime=veyr.respawnAt+1;updateWorldTimers();assert.equal(veyr.hp,veyr.maxhp);assert.equal(veyr.dead,0);assert.equal(JSON.stringify([veyr.x,veyr.y]),JSON.stringify(veyrHome));
+leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
 const rat=objects.find(o=>o.kind==='rat'),ratStats=JSON.stringify([rat.maxhp,rat.maxHit,rat.level]);for(const skill of COMBAT_SKILLS)s.xp[skill]=skillThreshold(skill,70);setupEncounters();assert.equal(JSON.stringify([rat.maxhp,rat.maxHit,rat.level]),ratStats,'enemies never grow to match the player');
 const originalSight=lineOfSight;lineOfSight=()=>true;
 function fresh(kind='rat'){

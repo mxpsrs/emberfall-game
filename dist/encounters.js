@@ -27,7 +27,7 @@ const ENEMY_TIERS={
 // A boss is released only after its approved native model, actions and lair pass review.
 // The four designs are approved; unreleased entries never spawn or expose empty lairs.
 const HUNT_ENCOUNTERS={
- veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:false,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
+ veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:true,combatRadius:.7,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
  varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:false,rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{steelBar:2,chaosRunes:15}},
  colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
  xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:false,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
@@ -129,13 +129,18 @@ function hazardContains(h,x,y){
 }
 function scheduleEnemyMove(fight,key){
  const o=fight.o,definition=HUNT_ENCOUNTERS[o.encounter],speed=definition?.phases?.[fight.phase]?.speed||1,move={...ENCOUNTER_MOVES[key]};
+ o.attackClip=o.kind==='forestgiant'?['attack','attack2','attack3'][fight.move%3]:null;
  if(o.kind==='forestgiant')move.windup=1;
  if(o.encounter==='colossus'){
   Object.assign(move,key==='sweep'?{name:'Crystal cleave',radius:4.2}:key==='shot'?{name:'Crystal barrage'}:{name:'Runic eruption'});
   o.attackRecovery=1.35*speed;
  }
+ if(o.encounter==='veyr'){
+  Object.assign(move,key==='sweep'?{name:fight.phase?'Shattering blow':'Orb strike',radius:3.2}:key==='ring'?{name:'Mindbreak pulse',inner:2.1,radius:4.6}:{name:'Rift eruption'});
+  o.attackClip=key==='sweep'?(fight.phase?'attack3':fight.move%4===0?'attack':'attack2'):key==='ring'?'cast2':'cast';
+  o.attackRecovery=key==='sweep'?.85:1.0;
+ }
  move.windup*=speed;const near=move.origin==='enemy';
- o.attackClip=o.kind==='forestgiant'?['attack','attack2','attack3'][fight.move%3]:null;
  const h={...move,key,o,x:near?(o.drawX??o.x):px,y:near?(o.drawY??o.y):py,fromX:o.drawX??o.x,fromY:o.drawY??o.y,started:time,due:time+move.windup};
  fight.hazards.push(h);o.attackAt=time;o.attackMove=key;o.attackVisualStyle=move.style;o.attackWindup=move.windup;
  if(typeof playGameSound==='function')playGameSound(move.style==='magic'?'magic':move.style==='ranged'?'bow':'sword',o.x,o.y);
@@ -160,7 +165,7 @@ function updateEncounterAI(dt){
  }
  if(activeEncounter!==fight)return;
  fight.hazards=fight.hazards.filter(h=>h.due>time);
- const distance=Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py),style=o.attackStyle||'melee',range=definition?.mechanics?1.6:style==='melee'?1.5+(o.combatRadius||0):5.5;
+ const distance=Math.hypot((o.drawX??o.x)-px,(o.drawY??o.y)-py),style=o.attackStyle||'melee',range=definition?.mechanics?1.6+(o.combatRadius||0):style==='melee'?1.5+(o.combatRadius||0):5.5;
  if(!definition?.anchored&&!fight.hazards.length&&distance>range&&time>=fight.nextMove&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
   fight.nextMove=time+.35;const p=route(Math.round(px),Math.round(py),true,range,o.x,o.y,o);if(p?.length){[o.x,o.y]=p[0];}
  }

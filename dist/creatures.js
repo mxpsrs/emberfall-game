@@ -89,7 +89,7 @@ creature3=function(r,o,x,z){
  else if(attack){({clip,phase,blend}=attack);}
  else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}
  else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}
- if(!dying&&['attack','attack2','attack3','cast','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
+ if(!dying&&['attack','attack2','attack3','cast','cast2','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}
  const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
  phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
  if(!dying){state.lastClip=clip;state.lastPhase=phase;}

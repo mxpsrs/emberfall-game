@@ -1,5 +1,5 @@
 {
-  "status": "The integrated roster contains native Forest Giants, Orks and the Runeforged Colossus with their habitats. Three approved bosses remain gated until their original assets are complete and reviewed.",
+  "status": "Native Forest Giants, Orks, Runeforged Colossus and Veyr the Mindbreaker are integrated with their habitats. Varkesh and Xalith remain gated until their original packages are available and reviewed.",
   "checked": "2026-09-13",
   "design_approval": {
     "date": "2026-09-12",
@@ -183,9 +183,9 @@
       "license": "CGTrader Royalty Free License (no AI)",
       "commercial_use": true,
       "rigged": "Creator explicitly confirms rig and animated game FBX",
-      "animation_evidence": "Creator lists 25 animations plus a bonus A-pose; punches, shooting, telepathic actions, throwing, damage, and death are included",
-      "animation_badge": "25 animations | Punch, shoot, throw + telepathy",
-      "animation_count": 25,
+      "animation_evidence": "The recovered Demon.fbx contains 26 native takes: 25 actions and the A-pose. Ten runtime clips use reviewed single-cycle windows with the original 44 weighted skin clusters, body and hand-bound orb.",
+      "animation_badge": "10 reviewed runtime clips | 26 source takes | Original body and orb",
+      "animation_count": 26,
       "combat_animations": [
         "Punch1",
         "Punch2",
@@ -203,8 +203,10 @@
       "triangles": 17244,
       "asset_files_inspected": true,
       "proposed_role": "An ancient psychic enemy. Strong candidate for one of the small number of fights using several attack styles, because the source includes corresponding actions.",
-      "note": "Owner approved the darker demon design as a boss. Source FBX contains the creature and its orb weapon. Import the animated FBX, not the separate unrigged A-pose. Body texture download did not complete; do not publish with a placeholder material. Several takes contain repeated action cycles and need a reviewed single-cycle trim.",
-      "download_status": "Original Demon.fbx and Ball_tex.rar received; all 26 takes (25 actions plus A-pose) inspected. Demon_tex.rar body materials are still missing. The FBX has no embedded textures."
+      "note": "Original default skin and orb color maps atlased. Source FBX and archives stay outside public game assets. Commercial incorporation under CGTrader Royalty Free (no AI); no model-training use.",
+      "download_status": "Demon.fbx, Demon_tex.rar and Ball_tex.rar recovered through the authenticated creator download page. Both complete texture archives passed extraction checks.",
+      "import_audit": "boss_veyr-import.json",
+      "runtime_status": "Two-phase level 20 boss in the Shattered Sanctum. Native orb strikes and casting; second phase adds a telepathic ring and jumping slam. Fixed stats, clear warnings, ordinary first-clear/mark rewards and 60-second respawn."
     },
     {
       "name": "Varkesh the Blightwing",
@@ -226,7 +228,9 @@
       "triangles": 19766,
       "asset_files_inspected": false,
       "proposed_role": "A dragon guarding a blighted pass; green-fire identity is a proposed encounter direction, not a verified supplied animation.",
-      "note": "Credit DM-913 and link CC BY 4.0. Creator notes Blender bendy bones lose fidelity outside Blender. Bake and inspect neck, tail, and wing deformation before considering this ready for Emberfall. Do not imply a full combat set is included."
+      "note": "Credit DM-913 and link CC BY 4.0. Creator notes Blender bendy bones lose fidelity outside Blender. Bake and inspect neck, tail, and wing deformation before considering this ready for Emberfall. Do not imply a full combat set is included.",
+      "creator_fab_url": "https://www.fab.com/listings/ffa5098e-a41f-45d0-873b-de7230b28d78",
+      "download_status": "Official Fab listing verified; browser navigation encounters an Epic security check. No original package recovered. Do not retry the failed verification or bypass its challenge."
     },
     {
       "name": "Xalith the Broodmother",
@@ -248,7 +252,9 @@
       "triangles": 13156,
       "asset_files_inspected": false,
       "proposed_role": "A large chitin-armored boss for an underground hive. Keep the default fight to a single phase; only a few selected bosses should use phases or multiple styles.",
-      "note": "Credit DM-913 and link CC BY 4.0. Animated preview is not proof of attack, death, or locomotion coverage. Keep conditional until the source action is inspected."
+      "note": "Credit DM-913 and link CC BY 4.0. Animated preview is not proof of attack, death, or locomotion coverage. Keep conditional until the source action is inspected.",
+      "creator_fab_url": "https://www.fab.com/listings/ff1306d9-c968-4745-8437-0388a8d7aa5a",
+      "download_status": "Official Fab listing verified from the creator profile. Fab is blocked by its security check in the current browser; no original package recovered."
     }
   ]
 }

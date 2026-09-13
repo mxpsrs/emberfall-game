@@ -33,6 +33,7 @@ else if(choice==='mine')activateScene('mine',10,12);
 else if(choice==='forge-detail')activateScene('overworld',69,45);
 else if(choice==='ork-warrens')activateScene('ork_warrens',19,22);
 else if(choice.startsWith('colossus-lair')){activateScene('lair_colossus',23,25);const boss=objects.find(o=>o.encounter==='colossus');beginEncounter(boss);if(choice.includes('red'))boss.hp=Math.floor(boss.maxhp*.45);updateEncounterAI(0);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,processCaptureClip==='attack'?'shot':processCaptureClip);time+=posePhase;}
+else if(choice.startsWith('veyr-lair')){activateScene('lair_veyr',22,25);const boss=objects.find(o=>o.encounter==='veyr');beginEncounter(boss);if(choice.includes('phase2'))boss.hp=Math.floor(boss.maxhp*.45);updateEncounterAI(0);if(choice.includes('attack'))scheduleEnemyMove(activeEncounter,processCaptureClip==='attack'?'sweep':processCaptureClip);time+=posePhase;}
 else if(choice==='giant-grove')activateScene('overworld',40,143);
 else if(choice==='rat-pen')activateScene('overworld',54,82);
 else if(choice==='tree-lineup'){
@@ -67,6 +68,13 @@ realmGPU={skinning:captureSkinning,skinnedMeshes:new WeakMap(),cache:new WeakMap
  const draws=entries.map(e=>{const m=e.model?Array.from(e.model):null;if(m)m[7]+=landHeight(m[3],m[11]);return {file:e.buffer,count:e.count,stride:e.stride||48,palette:e.palette?Array.from(e.palette):null,bossColor:e.bossColor||0,dissolve:e.dissolve||0,terrain:!!e.terrain,normal:Array.from(realmNormalMatrix(e.model)),model:m?[m[0],m[4],m[8],0,m[1],m[5],m[9],0,m[2],m[6],m[10],0,m[3],m[7],m[11],1]:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]};});
  capture({vertex:captureSkinning?realmSkinnedVertexShader:realmVertexShader,fragment:realmFragmentShader,draws,width:screen.w,height:screen.h,uniforms:{uCamera:[px+.5,py+.5,view3d.yaw,view3d.tilt],uView:[screen.w,screen.h,cameraZoom3(),0],uOrigin:[px+.5,0,py+.5],uLightRange:Math.max(20,Math.min(85,Math.hypot(screen.w,screen.h)/cameraZoom3()*.65)),uTime:time,uInterior:inWorld()?0:1,uNight:inWorld()?0:.25,uMood:CREATURE_LAIRS[currentScene]?.ambient||[1,1,1],uFogColor:CREATURE_LAIRS[currentScene]?.fog||[.28,.39,.40],uGlowColor:CREATURE_LAIRS[currentScene]?.light||[.20,.10,.025],uLandCamera:walkSurfaceHeight(px+.5,py+.5),uEye:[Math.sin(view3d.yaw)*Math.cos(view3d.tilt),Math.sin(view3d.tilt),Math.cos(view3d.yaw)*Math.cos(view3d.tilt)]}});
  }};
+// Isolated creature captures review the requested native pose without the
+// combat timing warp. Lair captures still exercise the normal gameplay path.
+const nativeCapturePose=creatureRigPose;
+creatureRigPose=function(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
+ if(kind===choice)return nativeCapturePose(kind,processCaptureClip,posePhase,1);
+ return nativeCapturePose(kind,clip,phase,blend,baseClip,basePhase);
+};
 for(let i=0;i<motionFrames;i++){
  if(motionFrames>1){posePhase=i/(motionFrames-1);playerMotion.phase=posePhase;time=1+posePhase;if(choice==='sword')lastAttack=time-posePhase*rebuiltAvatars[captureSex].clips.melee.duration;if(choice==='idle')time=posePhase*rebuiltAvatars[captureSex].clips.swordIdle.duration;if(choice==='transition')playerMotion.blend=Math.sin(posePhase*Math.PI)**2;}
  if(creatureAssets[choice]){
@@ -75,7 +83,7 @@ for(let i=0;i<motionFrames;i++){
   if(clip.startsWith('attack')){o.attackAt=time-posePhase*a.clips[clip].duration;o.attackClip=clip;o.attackWindup=a.clips[clip].duration*.6;}
   if(clip==='death'){o.dead=time+25;o.deathAt=time-posePhase*a.clips.death.duration;}
  }
- captureAction();draw3d();
+captureAction();draw3d();
 }
 `,sandbox);
 console.log('Captured',next,'mesh buffers for',sandbox.choice);
