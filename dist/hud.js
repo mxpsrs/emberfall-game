@@ -19,7 +19,7 @@ function initHud(){
 }
 
 function minimapBounds(){
- const c=$('minimap'),width=40,height=width*(c.height||300)/(c.width||300);
+ const c=$('minimap'),width=60,height=width*(c.height||300)/(c.width||300);
  return {x:px+.5-width/2,y:py+.5-height/2,w:width,h:height};
 }
 function minimapPoint(x,y,bounds=minimapBounds(),yaw=view3d.yaw){

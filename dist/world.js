@@ -93,7 +93,7 @@ function handleWorldInteraction(o){
 function livingWorld(dt){
  s.worldClock=(s.worldClock+dt)%480;
  for(const o of objects){
-  if(o===target||o._inCombat||o._stationary||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden'||Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.01)continue;
+  if(o===target||o._inCombat||o._returning||o._stationary||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden'||Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.01)continue;
   if(Math.hypot(o.x-s.x,o.y-s.y)>18)continue;
   o.roamClock=(o.roamClock||0)+dt;if(o.roamClock<3+(o.id%5))continue;o.roamClock=0;
   const atHome=Math.hypot(o.x-o.homeX,o.y-o.homeY)<3;

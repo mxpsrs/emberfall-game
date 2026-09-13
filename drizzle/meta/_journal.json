@@ -64,6 +64,20 @@
       "when": 1789259782590,
       "tag": "0008_global_reset_protocol",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1789279906752,
+      "tag": "0009_vengeful_white_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1789279989125,
+      "tag": "0010_lethal_surge",
+      "breakpoints": true
     }
   ]
 }

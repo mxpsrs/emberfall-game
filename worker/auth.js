@@ -1,3 +1,4 @@
+import {MAINTENANCE_OPEN_SQL} from './maintenance.js';
 import bcrypt from 'bcryptjs';
 const SESSION_AGE=30*24*60*60;
 const hex=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
@@ -40,7 +41,8 @@ export async function handleAuth(request,env){
   const matches=await bcrypt.compare(password,hash);if(!account||!matches)return reply({error:'Incorrect username or password.'},401);
  }
  const token=hex(crypto.getRandomValues(new Uint8Array(32)));
- await env.DB.prepare('INSERT INTO game_sessions (token_hash,account_id,expires_at) VALUES (?,?,?)').bind(await tokenDigest(token),account.id,now+SESSION_AGE*1000).run();
+ const session=await env.DB.prepare(`INSERT INTO game_sessions (token_hash,account_id,expires_at) SELECT ?,?,? WHERE ${MAINTENANCE_OPEN_SQL}`).bind(await tokenDigest(token),account.id,now+SESSION_AGE*1000).run();
+ if(!session.meta.changes)return reply({error:'System maintenance. Please reconnect after the update.'},503);
  headers['Set-Cookie']='ember_session='+token+'; Path=/; Max-Age='+SESSION_AGE+'; Secure; HttpOnly; SameSite=Lax';
  return reply({account:{username:account.username}});
  }catch(error){console.error('account_service_failed');return reply({error:'Account service is temporarily unavailable. Please retry.'},503);}

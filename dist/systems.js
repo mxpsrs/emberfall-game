@@ -110,7 +110,7 @@ function equipAmmunition(id){
  stop();s.bag[id]=0;
  if(previous===id)s.equippedAmmoCount=remaining+count;
  else{if(previous&&remaining)s.bag[previous]=(s.bag[previous]||0)+remaining;s.equipment.ammo=id;s.equippedAmmoCount=count;}
- renderUI();save();return true;
+ tutorialEvent('ranged-gear');renderUI();save();return true;
 }
 function unequipAmmunition(){
  const id=s.equipment.ammo,count=s.equippedAmmoCount||0;if(!id||!count)return false;
@@ -126,7 +126,7 @@ function equipItem(id){
  if(item.slot==='crest'&&!s.equipment.head){toast('Equip headgear before adding a helmet attachment.');return false;}
  if(item.slot==='shield'&&combatStyle()==='ranged'){toast('Bows need both hands. Equip a one-handed weapon before wearing a shield.');return false;}
  if(item.slot==='weapon'&&item.style==='ranged'&&s.equipment.shield&&inventorySlots().length+(s.equipment.weapon?1:0)>BAG_SIZE){toast('Make room in your bag for your shield before equipping a bow.');return false;}
- stop();if(item.slot==='weapon'&&item.style==='ranged')s.equipment.shield=null;s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');renderUI();save();return true;
+ stop();if(item.slot==='weapon'&&item.style==='ranged')s.equipment.shield=null;s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');tutorialEvent('ranged-gear');renderUI();save();return true;
 }
 function unequipItem(slot){if(slot==='ammo')return unequipAmmunition();if(!s.equipment[slot])return false;if(inventorySlots().length+1>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
 function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(id){if(equipItem(id))toast(ITEMS[id].name+' equipped.');return;}if(style==='melee'){s.tutorialCasting=false;if(s.equipment.weapon&&!unequipItem('weapon'))return;renderUI();save();return;}toast(style==='magic'&&tutorialStep()?'Speak to Arcanist Elowen for your practice staff and runes.':'You need a '+(style==='ranged'?'bow':'staff')+' to use this combat style.');}
@@ -201,7 +201,7 @@ function renderCombatBar(){
 }
 function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isFinite(cost)||cost<0)return false;if(s.gold<cost){toast('You need '+cost+' coins.');return false;}if(!canCarry(id,count)){toast('Not enough inventory space.');return false;}s.gold-=cost;if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
-function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>(o.type==='tree'||o.blocksSight)&&o.x===x&&o.y===y))return false;}return true;}
+function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>(o.type==='tree'||o.blocksSight&&!o.penFence&&!/fence/i.test(o.name||''))&&o.x===x&&o.y===y))return false;}return true;}
 function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange(o)+.01&&lineOfSight(px,py,o.x,o.y);}
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100,playerAttackReadyAt=0;
 function actorWalkSpeed(o){return o.type==='man'||o.type==='villager'?.75:['wolf','ridgewolf'].includes(o.kind)?1.6:o.kind==='slime'?.85:1.25;}

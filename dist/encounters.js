@@ -104,14 +104,30 @@ function setupEncounters(){
 }
 const villageBeforeEncounters=setupTutorialVillage;
 setupTutorialVillage=function(){villageBeforeEncounters();setupEncounters();};
-function resetEncounter(heal=true){
- const fight=activeEncounter;if(fight&&heal&&fight.o.hp>0){const o=fight.o;o.hp=o.maxhp;o.x=o.drawX=o.homeX;o.y=o.drawY=o.homeY;o.attackAt=-100;delete o._creatureMotion;}
- if(fight){delete fight.o._inCombat;if(heal){delete fight.o.enraged;delete fight.o.attackRecovery;delete fight.o.attackWindup;delete fight.o.attackMove;delete fight.o.attackHeading;}}activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
+function resetEncounter(recover=true){
+ const fight=activeEncounter,o=fight?.o;
+ if(o){delete o._inCombat;delete o.enraged;delete o.attackRecovery;delete o.attackWindup;delete o.attackMove;delete o.attackHeading;o.attackAt=-100;
+  if(recover&&o.hp>0&&o.dead<=time){o._returning=true;o._recovering=true;o._returnPath=null;o._recoverClock=0;o._returnAt=time;}
+ }
+ activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
+}
+function updateEnemyRecovery(dt){
+ for(const o of objects){if(!o._recovering||o._inCombat)continue;if(o.hp<=0||o.dead>time){delete o._recovering;delete o._returning;continue;}
+  if(o._returning&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
+   if(o.x===o.homeX&&o.y===o.homeY){delete o._returning;o._returnPath=null;}
+   else if(time>=o._returnAt){
+    if(!o._returnPath?.length)o._returnPath=route(o.homeX,o.homeY,false,1.45,o.x,o.y,o);
+    const step=o._returnPath?.shift();if(step&&land(...step)&&trainingRatCanMove(o,...step)){[o.x,o.y]=step;o._returnAt=time+.15;}else{o._returnPath=null;o._returnAt=time+.8;}
+   }
+  }
+  o._recoverClock=(o._recoverClock||0)+dt;if(o._recoverClock>=5){const ticks=Math.floor(o._recoverClock/5);o._recoverClock-=ticks*5;o.hp=Math.min(o.maxhp,o.hp+ticks);}
+  if(o.hp>=o.maxhp&&!o._returning)delete o._recovering;
+ }
 }
 function beginEncounter(o){
  if(!fighter(o)||o.kind==='dummy'||o.hp<=0||o.dead>time)return;
  if(activeEncounter?.o===o)return;
- resetEncounter();delete o.enraged;delete o.attackRecovery;o._inCombat=true;activeEncounter={o,scene:currentScene,phase:0,move:0,nextAttack:time+(o.encounter?2.5:o.interval||3.2),nextMove:time,started:time,hazards:[]};encounterHealClock=0;
+ resetEncounter();delete o._returning;delete o._recovering;o._returnPath=null;delete o.enraged;delete o.attackRecovery;o._inCombat=true;activeEncounter={o,scene:currentScene,phase:0,move:0,nextAttack:time+(o.encounter?2.5:o.interval||3.2),nextMove:time,started:time,hazards:[]};encounterHealClock=0;
 }
 const attackBeforeEncounters=performAttack;
 performAttack=function(o){const ok=attackBeforeEncounters(o);if(ok)beginEncounter(o);return ok;};
@@ -160,6 +176,7 @@ function scheduleEnemyMove(fight,key){
  if(typeof playGameSound==='function')playGameSound(move.style==='magic'?'magic':move.style==='ranged'?'bow':'sword',o.x,o.y);
 }
 function updateEncounterAI(dt){
+ updateEnemyRecovery(dt);
  if(!activeEncounter&&target&&fighter(target)&&target.kind!=='dummy'&&inAttackRange(target))beginEncounter(target);
  const fight=activeEncounter;if(!fight){
   if(!target&&!path.length&&time-Math.max(lastAttack,playerHitAt)>8&&s.hp<maxhp()){encounterHealClock+=dt;if(encounterHealClock>=5){encounterHealClock=0;s.hp=Math.min(maxhp(),s.hp+1);renderUI();save();}}else encounterHealClock=0;
@@ -206,7 +223,7 @@ const defeatBeforeEncounters=awardDefeat;
 awardDefeat=function(o,style){
  const p=huntProgress();p.kills[o.kind]=(p.kills[o.kind]||0)+1;
  const first=!!o.encounter&&!p.firstClears[o.kind];if(first)p.firstClears[o.kind]=true;
- defeatBeforeEncounters(o,style);if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){s.gold+=Math.round(o.level*4);toast(o.name+' first clear · +'+Math.round(o.level*4)+' coins. Marks are in the loot.');}if(typeof playGameSound==='function')playGameSound('quest');}
+ defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){s.gold+=Math.round(o.level*4);toast(o.name+' first clear · +'+Math.round(o.level*4)+' coins. Marks are in the loot.');}if(typeof playGameSound==='function')playGameSound('quest');}
  if(activeEncounter?.o===o)resetEncounter(false);save();
 };
 const lootBeforeEncounters=monsterDrop;

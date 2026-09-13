@@ -136,7 +136,7 @@ function arrive(){
     if(o.type==='shop')shop();
     if(o.type==='forge')forge();
     if(o.type==='inn')inn();
-  }else if(o.kind==='king'&&!o.encounter&&(!s.sword||lv('Combat')<3)){stop();toast('Bring an iron sword and reach Combat level 3 first.');}
+  }
   renderAction();
 }
 function renderAction(){
@@ -323,7 +323,7 @@ function advanceMovement(dt){
    const next=path[0];if(!prepareTrainingGateStep(next))break;path.shift();if(!land(...next)){stop();toast('The way is blocked. Choose another path.');break;}
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
-  const running=s.runEnabled&&s.runEnergy>0,speed=running?4:2;
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25;
   const used=Math.min(remaining,distance/speed,running?s.runEnergy/1.8:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
   travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
@@ -340,10 +340,10 @@ function frame(now){
   const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
-  if(assetsReady&&!cloudConflict&&!cloudDisconnected)updateWorldTimers();
+  if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.playerTrade&&!window.maintenancePreparing)updateWorldTimers();
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
-  if(!crossing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
+  if(!crossing&&!window.playerTrade&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
     time+=dt;observeTutorialCamera();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}

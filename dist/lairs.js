@@ -77,7 +77,7 @@ function setupCreatureLairs(){
   // Clear scenery from the approach, preserving services and quest characters.
   for(let i=mainland.objects.length-1;i>=0;i--){const o=mainland.objects[i];if(['tree','prop'].includes(o.type)&&Math.abs(o.x-lair.entrance[0])<5&&Math.abs(o.y-lair.entrance[1])<5)mainland.objects.splice(i,1);}
   const point=encounterSpawnPoint('overworld',...lair.entrance,16);if(!point)throw new Error('No reachable entrance for '+lair.title);
-  const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;
+  const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,walkThrough:true,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;
   lair.returnPoint=encounterSpawnPoint('overworld',point[0],point[1]+2,6);
   if(!lair.returnPoint)throw new Error('No clear return point for '+lair.title);
  }
