@@ -453,4 +453,4 @@ prop3=function(r,o,x,z){
  return propBeforeWorkplaces(r,o,x,z);
 };
 const roadBeforeWorkplaces=roadInfluence;
-roadInfluence=function(x,z){const result=roadBeforeWorkplaces(x,z);if(!inWorld()||x<18||x>84||z<40||z>94)return result;for(const a of tutorialWorkplaces){const d=Math.hypot((x-a.x)/a.rx,(z-a.y)/a.ry),edge=1+.035*Math.sin(x*2.5+z*1.4),t=Math.max(0,Math.min(1,(edge-d)/.25)),blend=t*t*(3-2*t);result[0]=Math.max(result[0],blend);if(a.paved)result[1]=Math.max(result[1],blend);}return result;};
+roadInfluence=function(x,z){const result=roadBeforeWorkplaces(x,z);if(currentScene!=='tutorial'||x<18||x>84||z<40||z>94)return result;for(const a of tutorialWorkplaces){const d=Math.hypot((x-a.x)/a.rx,(z-a.y)/a.ry),edge=1+.035*Math.sin(x*2.5+z*1.4),t=Math.max(0,Math.min(1,(edge-d)/.25)),blend=t*t*(3-2*t);result[0]=Math.max(result[0],blend);if(a.paved)result[1]=Math.max(result[1],blend);}return result;};

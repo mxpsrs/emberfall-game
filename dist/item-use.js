@@ -42,7 +42,7 @@ function completeItemUse(){
  const valid=scene===currentScene&&objects.includes(o)&&!o.collected&&o.dead<=time&&spareItemCount(id)>0&&Math.hypot(px-o.x,py-o.y)<=1.5&&lineOfSight(s.x,s.y,o.x,o.y);
  stop();if(!valid){toast('That item or target is no longer available.');renderUI();return true;}
  const kind=itemStationKind(o);
- if(kind==='cooking'){if(id==='breadDough')bakeBread();else cookFish(id);}
+ if(kind==='cooking'){if(id==='breadDough')bakeBread();else cookFish(id,false,o);}
  else if(kind==='furnace')openWorkbench('furnace',metalForOre(id),o);
  else if(kind==='forge')openWorkbench('forge',ITEMS[id].metal,o);
  else if(o.type==='crop')tendCrop(o);
@@ -110,7 +110,7 @@ function openWorkbench(kind='forge',metal='bronze',station=null){
 }
 function workbenchRecipes(){
  const t=window.realmWorkbench;if(!t)return [];
- if(t.kind==='cooking')return Object.keys(s.bag).filter(id=>s.bag[id]>0&&(ITEMS[id]?.rawFish||id==='breadDough'&&t.station.type==='range')).map(id=>{const f=FISH_RESOURCES[ITEMS[id].rawFish];return {id:f?.food||'bread',name:f?.name||'Bread',ingredients:{[id]:1},level:f?.cookLevel||1,skill:'Cooking',make:()=>id==='breadDough'?bakeBread():cookFish(id)};});
+ if(t.kind==='cooking')return Object.keys(s.bag).filter(id=>s.bag[id]>0&&(ITEMS[id]?.rawFish||id==='breadDough'&&t.station.type==='range')).map(id=>{const f=FISH_RESOURCES[ITEMS[id].rawFish];return {id:f?.food||'bread',name:f?.name||'Bread',ingredients:{[id]:1},level:f?.cookLevel||1,skill:'Cooking',make:()=>id==='breadDough'?bakeBread():cookFish(id,false,t.station)};});
  const m=METAL_RECIPES[t.metal];
  if(t.kind==='furnace')return [{id:m.bar,name:m.name+' bar',ingredients:m.ingredients,level:m.level,skill:'Smithing',make:()=>smeltMetal(t.metal)}];
  return Object.entries(smithPatterns).map(([part,p])=>({id:part==='arrowheads'?(t.metal==='iron'?'arrowheads':t.metal+'Arrowheads'):t.metal+'_'+part,name:p.name,ingredients:{[m.bar]:p.bars},level:smithingLevel(t.metal,part),skill:'Smithing',make:()=>smithMetal(t.metal,part)}));

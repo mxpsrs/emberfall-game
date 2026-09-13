@@ -3,6 +3,7 @@ const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],sho
 const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishing & Firemaking',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
+ if(o.mapService)return {kind:o.mapService,tags:[o.mapService],detail:'Magic school'};
  if(o.tutor)return {kind:o.tutor==='bank'?'bank':'tutor',tags:['tutor',...(o.tutor==='bank'?['bank']:o.tutor==='magic'?['magic']:o.tutor==='worship'?['shrine']:[])],detail:MAP_TUTOR_SUBJECTS[o.tutor]+' tutor'};
  if(o.type==='banker')return {kind:'bank',tags:['bank'],detail:'Deposit and withdraw supplies'};
  if(o.type==='shop')return {kind:'shop',tags:['shop','weapons','armour'],detail:'Supplies, weapons & armour'};
@@ -41,7 +42,7 @@ function drawMapServices(g,bounds,width,height,small=false,filter='all',selected
  }if(small)miniServiceMarkers=markers;return markers;
 }
 function hitMapService(markers,clientX,clientY,rect,width,height){if(!rect.width||!rect.height)return null;const x=(clientX-rect.left)*width/rect.width,y=(clientY-rect.top)*height/rect.height;return markers.map(m=>({m,d:Math.hypot((m.x-x)*rect.width/width,(m.y-y)*rect.height/height)})).filter(({d})=>d<=20).sort((a,b)=>a.d-b.d)[0]?.m.entry||null;}
-function mapServiceAtMinimap(e){const c=$('minimap');return hitMapService(layoutMapMarkers(mapEntriesInBounds(minimapBounds()),minimapBounds(),c.width,c.height,true),e.clientX,e.clientY,c.getBoundingClientRect(),c.width,c.height);}
+function mapServiceAtMinimap(e){const c=$('minimap');return hitMapService(miniServiceMarkers,e.clientX,e.clientY,c.getBoundingClientRect(),c.width,c.height);}
 function mapTravelGoal(entry){
  const inside=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py)),room=entry.building?.walkIn?entry.building:null;
  const closed=inside&&inside!==room&&inside.service.openedAt===undefined?inside:room&&inside!==room&&room.service.openedAt===undefined?room:null;
@@ -81,6 +82,6 @@ function openLocalMap(selectedId=null){
  for(const event of ['pointercancel','lostpointercapture'])c.addEventListener(event,e=>{if(drag?.id===e.pointerId)drag=null;});
  renderLocalMap();
 }
-$('minimapButton').addEventListener('pointermove',e=>{const entry=mapServiceAtMinimap(e);$('minimapButton').title=entry?entry.name+' · '+entry.detail:'Tap clear ground to walk; tap an icon for details';});
+$('minimapButton').addEventListener('pointermove',e=>{const entry=mapServiceAtMinimap(e);$('minimapButton').title=entry?entry.name+' · '+entry.detail:'Tap to walk. Open the world map for service details';});
 $('modal').addEventListener('close',()=>{$('modal').classList.remove('world-map-window');localMapState=null;});
 worldMap=function(){openLocalMap();};$('mapBtn').onclick=worldMap;

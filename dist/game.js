@@ -140,7 +140,7 @@ function arrive(){
   renderAction();
 }
 function renderAction(){
-  if(playerAction){$('targetTitle').textContent='Burying bones';$('targetSub').textContent='Tap Stop or move to cancel.';return;}
+  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking over the fire':'Burying bones';$('targetSub').textContent='Tap Stop or move to cancel.';return;}
   const a=target;
   $('targetTitle').textContent=a?(path.length?'Walking to '+a.name:a.name):path.length?'Following the path':'Explore the borderlands';
   $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Tap Stop to cancel'):path.length?'Tap Stop or another spot to change course.':'Tap a resource, building, person, or monster.';

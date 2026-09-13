@@ -29,7 +29,7 @@ function buryBones(){
  if((s.bag.bones||0)<1||playerAction)return false;stop();playerAction={kind:'bury',started:time,duration:1.8,commitAt:.95,committed:false};renderAction();return true;
 }
 function updatePlayerAction(){
- const action=playerAction;if(!action)return;const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
+ const action=playerAction;if(!action)return;if(action.kind!=='bury'){updateSkillingAction(action);return;}const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
  if(!action.committed&&age>=action.commitAt){
   action.committed=true;if((s.bag.bones||0)<1){playerAction=null;return;}
   s.bag.bones--;gain('Worship',18,true);showExperienceDrop({Worship:18});tutorialEvent('bury');toast('Bones buried · +18 Worship XP');renderUI();save();

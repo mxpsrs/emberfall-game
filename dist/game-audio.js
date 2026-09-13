@@ -129,7 +129,7 @@ const doorBeforeAudio=setWalkInDoor;
 setWalkInDoor=function(o,open,restoring=false){if(!restoring)playGameSound('door',o.x,o.y);return doorBeforeAudio(o,open,restoring);};
 const gateBeforeAudio=setTrainingGate;
 setTrainingGate=function(open){if(trainingPenGate&&(trainingPenGate.openedAt!==undefined)!==open)playGameSound('door',trainingPenGate.x,trainingPenGate.y);return gateBeforeAudio(open);};
-for(const [name,sound]of [['cookFish','cook'],['bakeBread','cook'],['lightLog','fire'],['smeltMetal','smith'],['smithMetal','smith'],['mixBreadDough','craft'],['fletch','craft'],['eatFood','eat'],['equipItem','equip'],['unequipItem','equip'],['transferBank','bank'],['takeGroundItem','coins'],['unleashSpirit','spirit'],['summonSpirits','spirit']]){const original=globalThis[name];globalThis[name]=function(...args){const result=original(...args);if(result)playGameSound(sound);return result;};}
+for(const [name,sound]of [['cookFish','cook'],['bakeBread','cook'],['lightLog','fire'],['smeltMetal','smith'],['smithMetal','smith'],['mixBreadDough','craft'],['fletch','craft'],['eatFood','eat'],['equipItem','equip'],['unequipItem','equip'],['transferBank','bank'],['takeGroundItem','coins'],['unleashSpirit','spirit'],['summonSpirits','spirit']]){const original=globalThis[name];globalThis[name]=function(...args){const result=original(...args);if(result&&!((name==='lightLog'&&playerAction?.kind==='firemaking')||(name==='cookFish'&&playerAction?.kind==='cook'&&!args[1])))playGameSound(sound);return result;};}
 const burialBeforeAudio=updatePlayerAction;
 updatePlayerAction=function(){const before=s.bag.bones;burialBeforeAudio();if(s.bag.bones<before)playGameSound('bury');};
 const departureBeforeAudio=departTutorialIsland;

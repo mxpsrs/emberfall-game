@@ -9,6 +9,7 @@ function pageControls(total,size){const pages=Math.max(1,Math.ceil(total/size));
 function updateOrientation(){const portrait=window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(orientation: portrait)').matches;$('rotateScreen').hidden=!portrait;document.body.classList.toggle('portrait-mode',portrait);if(typeof resize==='function')resize();}
 function initHud(){
  $('minimapButton').onclick=walkFromMinimap;
+ setHudButton('minimapCompass','Face north','compass');$('minimapCompass').onclick=()=>{view3d.yaw=0;rememberView();miniMapLastYaw=null;drawMinimap();};
  $('togglePanels').onclick=()=>{if(window.realmTrade){close();return;}openGamePanel(tab,true);};
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
@@ -18,9 +19,18 @@ function initHud(){
 }
 
 function minimapBounds(){
- const [w,h]=sceneSize(),c=$('minimap'),width=Math.min(w,96),height=Math.min(h,width*(c.height||300)/(c.width||300));
- return {x:Math.max(0,Math.min(w-width,px+.5-width/2)),y:Math.max(0,Math.min(h-height,py+.5-height/2)),w:width,h:height};
+ const c=$('minimap'),width=40,height=width*(c.height||300)/(c.width||300);
+ return {x:px+.5-width/2,y:py+.5-height/2,w:width,h:height};
 }
+function minimapPoint(x,y,bounds=minimapBounds(),yaw=view3d.yaw){
+ const c=$('minimap'),dx=x+.5-(bounds.x+bounds.w/2),dy=y+.5-(bounds.y+bounds.h/2),co=Math.cos(yaw),si=Math.sin(yaw);
+ return [(c.width||300)/2+(dx*co-dy*si)*(c.width||300)/bounds.w,(c.height||300)/2+(dx*si+dy*co)*(c.height||300)/bounds.h];
+}
+function minimapTile(u,v,bounds=minimapBounds(),yaw=view3d.yaw){
+ const dx=(u-.5)*bounds.w,dy=(v-.5)*bounds.h,co=Math.cos(yaw),si=Math.sin(yaw);
+ return [Math.floor(bounds.x+bounds.w/2+dx*co+dy*si),Math.floor(bounds.y+bounds.h/2-dx*si+dy*co)];
+}
+let miniMapLayer=null,miniMapLastYaw=null;
 function drawMapTerrain(g,bounds,cw,ch){
  const sx=cw/bounds.w,sy=ch/bounds.h;
  if(!miniTerrain||miniTerrain.scene!==currentScene)miniTerrain={scene:currentScene,tiles:new Map(),next:0};
@@ -37,23 +47,33 @@ function drawMapTerrain(g,bounds,cw,ch){
  }
 }
 function drawMinimap(){
- const c=$('minimap'),g=c.getContext('2d'),bounds=minimapBounds(),cw=c.width||300,ch=c.height||300,sx=cw/bounds.w,sy=ch/bounds.h;
- if(miniTerrain&&miniTerrain.scene===currentScene&&time<miniTerrain.next)return;
- drawMapTerrain(g,bounds,cw,ch);miniTerrain.next=time+.12;
- const point=(x,y)=>[(x+.5-bounds.x)*sx,(y+.5-bounds.y)*sy];
+ const c=$('minimap'),g=c.getContext('2d'),bounds=minimapBounds(),cw=c.width||300,ch=c.height||300,yaw=view3d.yaw;
+ if(miniTerrain&&miniTerrain.scene===currentScene&&time<miniTerrain.next&&yaw===miniMapLastYaw)return;
+ miniMapLastYaw=yaw;
+ if(!miniMapLayer)miniMapLayer=document.createElement('canvas');
+ const size=Math.ceil(Math.hypot(cw,ch));if(miniMapLayer.width!==size){miniMapLayer.width=miniMapLayer.height=size;}
+ const span=bounds.w*size/cw,outer={x:px+.5-span/2,y:py+.5-span/2,w:span,h:span};
+ drawMapTerrain(miniMapLayer.getContext('2d'),outer,size,size);miniTerrain.next=time+.08;
+ g.clearRect(0,0,cw,ch);g.save();g.beginPath();g.arc(cw/2,ch/2,Math.min(cw,ch)/2,0,Math.PI*2);g.clip();
+ g.save();g.translate(cw/2,ch/2);g.rotate(yaw);g.drawImage(miniMapLayer,-size/2,-size/2);g.restore();
+ const point=(x,y)=>minimapPoint(x,y,bounds,yaw);
  const guidePath=tutorialGuideRoute();if(guidePath.length){g.strokeStyle='#e6d8a0';g.lineWidth=1.5;g.beginPath();for(const [i,p]of [[px,py],...guidePath].entries()){const q=point(...p);if(i)g.lineTo(...q);else g.moveTo(...q);}g.stroke();}
- for(const o of objects){if(o.dead>time||o.collected||(o.kind==='king'&&s.boss&&!o.repeatable)||['tree','prop','crop'].includes(o.type)||o.x<bounds.x||o.x>bounds.x+bounds.w||o.y<bounds.y||o.y>bounds.y+bounds.h)continue;const q=point(o.x,o.y);g.fillStyle=fighter(o)?'#e2836c':o.tutor?'#ffe1a0':'#d8d3b5';g.beginPath();g.arc(...q,o.tutor?2.5:2,0,Math.PI*2);g.fill();}
- for(const pile of s.groundLoot||[])if(pile.scene===currentScene){const q=point(pile.x,pile.y);g.fillStyle='#f4d45e';g.fillRect(q[0]-1.5,q[1]-1.5,3,3);}
- if(typeof drawMapServices==='function')drawMapServices(g,bounds,cw,ch,true);
- const [x,y]=point(px,py);g.fillStyle='#fff5d0';g.strokeStyle='#16271e';g.lineWidth=2;g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();g.stroke();
+ for(const o of objects){if(o.dead>time||o.collected||!(['enemy','man','villager','elder','banker','shop','inn'].includes(o.type)||o.tutor))continue;const q=point(o.drawX??o.x,o.drawY??o.y);g.fillStyle='#ffff35';g.fillRect(q[0]-2,q[1]-2,4,4);}
+ for(const pile of s.groundLoot||[])if(pile.scene===currentScene){const q=point(pile.x,pile.y);g.fillStyle='#ee403a';g.fillRect(q[0]-2,q[1]-2,4,4);}
+ if(typeof onlinePeers!=='undefined'&&onlineScene===currentScene)for(const peer of onlinePeers.values()){const q=point(peer.drawX??peer.x,peer.drawY??peer.y);g.fillStyle='#fff';g.fillRect(q[0]-2,q[1]-2,4,4);}
+ miniServiceMarkers=[];
+ if(typeof collectMapServices==='function')for(const entry of collectMapServices()){
+  const [x,y]=point(entry.x,entry.y);if(Math.hypot(x-cw/2,y-ch/2)>cw/2-13)continue;
+  miniServiceMarkers.push({entry,x,y,r:13});g.save();g.shadowColor='#141a12';g.shadowBlur=3;drawGameIcon(g,mapIconFor(entry),x-13,y-13,26);g.restore();
+ }
+ if(path.length){const q=point(...path[path.length-1]);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(q[0],q[1]+5);g.lineTo(q[0],q[1]-9);g.stroke();g.fillStyle='#e84436';g.fillRect(q[0]+1,q[1]-9,8,5);}
+ g.fillStyle='#fff';g.strokeStyle='#16271e';g.lineWidth=1.5;g.fillRect(cw/2-3,ch/2-3,6,6);g.strokeRect(cw/2-3,ch/2-3,6,6);g.restore();
+ const compass=$('minimapCompass');if(compass)compass.style.transform='rotate('+yaw+'rad)';
 }
-
 function walkFromMinimap(e){
  if(!assetsReady||cloudConflict||cloudDisconnected||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
- const rect=$('minimap').getBoundingClientRect(),bounds=minimapBounds();
- if(!rect.width||!rect.height)return;
+ const rect=$('minimap').getBoundingClientRect();if(!rect.width||!rect.height)return;
  const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
  if(u<0||v<0||u>=1||v>=1||Math.hypot(u-.5,v-.5)>.5)return;
- if(typeof mapServiceAtMinimap==='function'){const service=mapServiceAtMinimap(e);if(service){openLocalMap(service.id);return;}}
- walkTo(Math.floor(bounds.x+u*bounds.w),Math.floor(bounds.y+v*bounds.h));
+ const [x,y]=minimapTile(u,v),[w,h]=sceneSize();if(x>=0&&y>=0&&x<w&&y<h)walkTo(x,y);
 }

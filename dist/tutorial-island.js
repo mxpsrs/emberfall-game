@@ -33,7 +33,7 @@ const FIRSTLIGHT_COURTS=[
 ];
 function moveFirstlightObject(o,dx,dy){for(const [x,y]of [['x','y'],['homeX','homeY'],['drawX','drawY']])if(Number.isFinite(o[x]+o[y])){o[x]+=dx;o[y]+=dy;}}
 function moveFirstlightBuilding(island,id,x,y,facing){
- const b=island.buildings.find(b=>b.service.destination===id);if(!b)return;
+ const b=island.buildings.find(b=>b.service?.destination===id);if(!b)return;
  const old={x:b.x,y:b.y,facing:b.doorFacing||'south',...(b.southPlan?{w:b.southPlan.w,h:b.southPlan.h}:{w:b.w,h:b.h})};
  const local=(x,y)=>{const u=x-old.x,v=y-old.y;return old.facing==='east'?[old.w-1-v,u]:old.facing==='north'?[old.w-1-u,old.h-1-v]:old.facing==='west'?[v,old.h-1-u]:[u,v];};
  const door=local(b.service.x,b.service.y);
@@ -86,7 +86,7 @@ function arrangeFirstlight(island){
 }
 function buildFirstlightStreets(){
  const island=worldScenes.tutorial;if(currentScene!=='tutorial'||island.roads.length)return;
- const front=id=>doorApproach(island.buildings.find(b=>b.service.destination===id).service,false);
+ const front=id=>doorApproach(island.buildings.find(b=>b.service?.destination===id).service,false);
  const town=[43,55],stops=[[27,48],[29,64],[28,91],[42,85],front('realm_briarhaven_3'),front('village_kitchen'),[79,50],front('realm_briarhaven_4'),front('inn')];
  const links=stops.map(p=>[town,p,true]);for(let i=1;i<stops.length;i++)links.push([stops[i-1],stops[i],false]);links.push([town,front('shop'),true]);
  for(const [a,b,paved]of links){
@@ -256,9 +256,9 @@ openLocalMap=function(selected=null){mapBeforeIsland(selected);if(currentScene==
 worldMap=function(){openLocalMap();};$('mapBtn').onclick=worldMap;
 const propBeforeFirstlight=prop3;
 prop3=function(r,o,x,z){
- if(!o.firstlightDetail)return propBeforeFirstlight(r,o,x,z);
+ if(!o.firstlightDetail&&!o.briarhavenDetail)return propBeforeFirstlight(r,o,x,z);
  const q=groundedPainter(r,x,z),wood=materialRealm(q,5);
- if(o.name==='Firstlight market stall'){
+ if(/market stall/i.test(o.name)){
   worldModel(q,'Stall_Cart_Empty',x,0,z,1.4);
   for(const side of [-1,1]){box3(wood,x+side*1.05,1.25,z-.35,.12,2.5,.12,'#70563b');beamArt(wood,[x+side*1.05,2.3,z-.35],[x+side*1.05,2.3,z+.9],.055,'#866c4b',6);}
   worldRoof(q,x,2.45,z+.2,2.7,1.9,.45,o.id%2?'#7e5a47':'#657c68');
