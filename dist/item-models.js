@@ -190,8 +190,8 @@ function buildMiscItem(r,id){
 }
 function buildSupplyItem(r,id,item){
  if(id==='rangerCap'){briarEmit(r,rebuiltModels.Ranger_Cap,briarTransform(0,0,0));return {lie:false,authored:true};}
- if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,rebuiltModels.Archer_Bow,briarTransform(0,0,0));beamArt(r,ARCHER_BOW.top,ARCHER_BOW.bottom,.0054,'#d4c9ac',4);return {lie:true,authored:true};}
- if(typeof isAmmunition==='function'&&isAmmunition(id)){for(let i=0;i<3;i++)briarEmit(r,rebuiltModels.Archer_Arrow,briarTransform((i-1)*.14,(i%2)*.1,0));return {lie:true,authored:true};}
+ if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,archerBowMesh(id),briarTransform(0,0,0));beamArt(r,ARCHER_BOW.top,ARCHER_BOW.bottom,.0054,'#d4c9ac',4);return {lie:true,authored:true};}
+ if(typeof isAmmunition==='function'&&isAmmunition(id)){for(let i=0;i<3;i++)briarEmit(r,rangedItemMesh(id,true),briarTransform((i-1)*.14,(i%2)*.1,0));return {lie:true,authored:true};}
  const food=itemFoodInfo(id);if(food){buildFoodItem(r,food);return {lie:true,food};}
  if(item.logType){buildLogItem(r,item.logType);return {lie:false};}
  if(item.resource){buildOreItem(r,item.resource);return {lie:false};}
@@ -227,16 +227,20 @@ function itemVisual(id){
  const visual={...info,faces,min,max,mesh:{packed:new Float32Array(data)},size:id.includes('_dagger')?.48:item.slot==='weapon'?.90:item.beltTool?.80:info.food?.kind==='shrimp'?.49:id==='coins'?.46:.68};
  itemVisualCache.set(id,visual);return visual;
 }
+function itemIconView(id,model){
+ const item=ITEMS[id]||{},thin=item.slot==='weapon'||item.beltTool||isAmmunition(id)||['arrowShafts','headlessArrows'].includes(id);
+ return {yaw:thin?0:item.slot?-.12:model.food?-.08:-.28,tilt:thin?.04:item.slot?.09:model.food?.08:model.lie?.13:.68,roll:thin?.57:model.food?.kind==='shrimp'?-.28:model.food?.kind==='lobster'?0:model.food?.30:0,thin};
+}
 function drawItemModelIcon(g,id){
  const model=itemVisual(id);if(!model)return false;const w=g.canvas.width,h=g.canvas.height,key=id+':'+w+':'+h;
  let icon=itemIconCache.get(key);if(!icon){
-  icon=document.createElement('canvas');icon.width=w;icon.height=h;const q=icon.getContext('2d'),yaw=-.35,tilt=model.lie?.50:.82,cy=Math.cos(yaw),sy=Math.sin(yaw),ct=Math.cos(tilt),st=Math.sin(tilt);
-  const projected=model.faces.map(f=>({...f,p:f.points.map(([x,y,z])=>{const u=x*cy-z*sy,d=x*sy+z*cy;return {x:u,y:d*st-y*ct,depth:d*ct+y*st};})}));
+  icon=document.createElement('canvas');icon.width=w;icon.height=h;const q=icon.getContext('2d'),view=itemIconView(id,model),cy=Math.cos(view.yaw),sy=Math.sin(view.yaw),ct=Math.cos(view.tilt),st=Math.sin(view.tilt),cr=Math.cos(view.roll),sr=Math.sin(view.roll);
+  const projected=model.faces.map(f=>({...f,p:f.points.map(([x,y,z])=>{const u=x*cy-z*sy,d=x*sy+z*cy,v=d*st-y*ct;return {x:u*cr-v*sr,y:u*sr+v*cr,depth:d*ct+y*st};})}));
   const points=projected.flatMap(f=>f.p),loX=Math.min(...points.map(p=>p.x)),hiX=Math.max(...points.map(p=>p.x)),loY=Math.min(...points.map(p=>p.y)),hiY=Math.max(...points.map(p=>p.y));
-  const foot=model.food?h*.15:0,k=Math.min(w*.84/(hiX-loX||1),(h*.84-foot)/(hiY-loY||1))*(id.includes('_dagger')?.72:1),ox=w/2-(loX+hiX)*k/2,oy=(h-foot)/2-(loY+hiY)*k/2;
+  const k=Math.min(w*.86/(hiX-loX||1),h*.86/(hiY-loY||1))*(id.includes('_dagger')?.84:1),ox=w/2-(loX+hiX)*k/2,oy=h/2-(loY+hiY)*k/2;
   projected.sort((a,b)=>a.p.reduce((s,p)=>s+p.depth,0)/a.p.length-b.p.reduce((s,p)=>s+p.depth,0)/b.p.length);
-  for(const f of projected){const n=f.normal,light=.76+.30*Math.max(0,-n[0]*.43+n[1]*.65+n[2]*.62);q.fillStyle=shade3(f.color,light);q.beginPath();f.p.forEach((p,i)=>q[i?'lineTo':'moveTo'](ox+p.x*k,oy+p.y*k));q.closePath();q.fill();}
-  if(model.food){q.font='bold '+Math.round(h*.13)+'px sans-serif';q.textAlign='center';q.fillStyle=model.food.state==='raw'?'#bad7d9':model.food.state==='burnt'?'#beb6a5':'#edbd82';q.fillText(model.food.state.toUpperCase(),w/2,h*.95);}
+  q.lineJoin='round';q.lineWidth=h*.025;
+  for(const f of projected){const n=f.normal,light=.88+.30*Math.max(0,-n[0]*.43+n[1]*.25+n[2]*.82);q.fillStyle=shade3(f.color,light);q.beginPath();f.p.forEach((p,i)=>q[i?'lineTo':'moveTo'](ox+p.x*k,oy+p.y*k));q.closePath();q.fill();if(view.thin){q.strokeStyle=q.fillStyle;q.stroke();}}
   itemIconCache.set(key,icon);if(itemIconCache.size>256)itemIconCache.delete(itemIconCache.keys().next().value);
  }
  g.drawImage(icon,0,0,w,h);return true;

@@ -4,7 +4,7 @@ const {ctx}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;ctx.cr
 ctx.document.createElement=()=>createCanvas(96,96);
 vm.runInContext(fs.readFileSync(__dirname+'/../dist/item-models.js','utf8'),ctx,{filename:'item-models.js'});
 vm.runInContext(`
-setupExpandedWorld();const ids=[...Object.keys(ITEMS),'coins'];
+setupExpandedWorld();const ids=Object.keys(ITEMS);
 for(const id of ids){
  const m=itemVisual(id);assert(m,id+' has an item model');assert(m.faces.length>4,id+' is a solid model');assert(m.mesh.packed.length>0,id+' has GPU geometry');assert(Array.from(m.mesh.packed).every(Number.isFinite),id+' has valid geometry');
  const canvas=createCanvas(96,96),g=canvas.getContext('2d');assert(drawItemModelIcon(g,id),id+' renders in inventory');const pixels=g.getImageData(0,0,96,96).data;let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i])visible++;assert(visible>60,id+' icon is visible');
@@ -17,5 +17,9 @@ assert.notDeepEqual(itemVisual('arrowheads').mesh.packed,itemVisual('ironArrows'
 assert(itemVisual('iron_body').faces.length>wornModularMesh('male','iron_body').i.length/3,'inventory and ground chest pieces include matching shoulders');
 const pile={items:{rawShrimp:1,bronze_body:1,coins:12}},received=[];drawGroundPileModels({indexed:m=>received.push(m)},pile,42.5,51.5);assert.deepEqual(received,['rawShrimp','bronze_body','coins'].map(id=>itemVisual(id).mesh),'mixed piles keep their item identities and order');
 assert.equal(itemVisual('not-an-item'),null);
+for(const group of [['shortbow','oakShortbow','willowShortbow','mapleShortbow','yewShortbow','magicShortbow'],['arrows','ironArrows','steelArrows','mithrilArrows','adamantArrows','runeArrows']]){
+ const signatures=[];for(const id of group){const canvas=createCanvas(25,25),g=canvas.getContext('2d');drawItemModelIcon(g,id);const pixels=g.getImageData(0,0,25,25).data;let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>100)visible++;assert(visible>20,id+' remains visible at 25 pixels');signatures.push(Array.from(pixels).join(','));const mesh=rangedItemMesh(id,isAmmunition(id)),source=rebuiltModels[isAmmunition(id)?'Archer_Arrow':'Archer_Bow'];assert.equal(mesh.p,source.p,'material changes preserve the fitted geometry');assert.equal(mesh.i,source.i);}
+ assert.equal(new Set(signatures).size,group.length,'material tiers are visually distinct');
+}
 console.log('PASS: '+ids.length+' item types render in inventory and on the ground; distinct resources, food states, combined armor, valid GPU geometry, and mixed loot piles.');
 `,ctx);

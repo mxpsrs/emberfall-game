@@ -1,5 +1,5 @@
 'use strict';
-const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],shop:['shop','General stores'],weapons:['melee','Weapons'],armour:['gear','Armour'],bank:['bank','Banks'],forge:['forge','Forges'],inn:['inn','Inns'],magic:['spells','Magic schools'],shrine:['shrine','Shrines'],mine:['mine','Mines']};
+const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],shop:['shop','General stores'],weapons:['attack','Weapons'],armour:['gear','Armour'],bank:['bank','Banks'],forge:['forge','Forges'],inn:['inn','Inns'],magic:['spells','Magic schools'],shrine:['shrine','Shrines'],mine:['mine','Mines']};
 const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishing & Firemaking',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
@@ -24,7 +24,8 @@ function collectMapServices(){
  }
  mapServicesCache={key,entries};return entries;
 }
-function mapIconFor(entry,filter='all'){return MAP_SERVICE_TYPES[filter==='weapons'||filter==='armour'?filter:entry.kind]?.[0]||'map';}
+const MAP_TUTOR_ICONS={guide:'tutor',woods:'woodcutting',fishing:'fish',cooking:'cooking',mining:'mine',combat:'melee',bank:'bank',worship:'shrine',magic:'spells'};
+function mapIconFor(entry,filter='all'){if(filter!=='weapons'&&filter!=='armour'&&entry.target?.tutor)return MAP_TUTOR_ICONS[entry.target.tutor]||'tutor';return MAP_SERVICE_TYPES[filter==='weapons'||filter==='armour'?filter:entry.kind]?.[0]||'map';}
 function mapEntriesInBounds(bounds,filter='all'){return collectMapServices().filter(e=>(filter==='all'||e.tags.includes(filter))&&e.x>=bounds.x&&e.x<bounds.x+bounds.w&&e.y>=bounds.y&&e.y<bounds.y+bounds.h);}
 function layoutMapMarkers(entries,bounds,width,height,small=false){
  const diameter=small?32:30,markers=[],inside=(x,y)=>!small||Math.hypot((x-width/2)/(width/2-18),(y-height/2)/(height/2-18))<=1;
@@ -59,7 +60,7 @@ function renderLocalMap(){
  const p=point(px,py);g.fillStyle='#fff3c6';g.strokeStyle='#273326';g.lineWidth=2;g.beginPath();g.arc(...p,5,0,Math.PI*2);g.fill();g.stroke();
  $('mapScale').textContent=Math.round(bounds.w)+' tiles across';
  const entries=mapEntriesInBounds(bounds,state.filter).sort((a,b)=>Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py)),list=$('mapPlaces');list.replaceChildren();
- for(const entry of entries){const button=document.createElement('button');button.type='button';button.setAttribute('aria-pressed',String(entry.id===state.selected));button.innerHTML=gameIcon(mapIconFor(entry,state.filter));const copy=document.createElement('span'),name=document.createElement('strong'),detail=document.createElement('small');name.textContent=entry.name;detail.textContent=entry.detail;copy.append(name,detail);button.appendChild(copy);button.onclick=()=>selectMapService(entry);list.appendChild(button);}
+ for(const entry of entries){const button=document.createElement('button');button.type='button';button.setAttribute('aria-pressed',String(entry.id===state.selected));button.innerHTML=gameIcon(mapIconFor(entry,state.filter));button.title=entry.name+' — '+entry.detail;const copy=document.createElement('span'),name=document.createElement('strong'),detail=document.createElement('small');name.textContent=entry.name;detail.textContent=entry.detail;copy.append(name,detail);button.appendChild(copy);button.onclick=()=>selectMapService(entry);list.appendChild(button);}
  if(!entries.length){const empty=document.createElement('p');empty.textContent='No '+MAP_SERVICE_TYPES[state.filter][1].toLowerCase()+' in this area. Drag the map or zoom out.';list.appendChild(empty);}
  const selection=$('mapSelection');selection.replaceChildren();const copy=document.createElement('div'),name=document.createElement('strong'),detail=document.createElement('p');copy.append(name,detail);selection.appendChild(copy);
  name.textContent=selected?.name||'Choose a map icon';detail.textContent=selected?mapTravelGoal(selected).detail:'Tutors and services are shown here. The white dot is you.';
@@ -70,14 +71,14 @@ function openLocalMap(selectedId=null){
  if(!assetsReady||cloudConflict||cloudDisconnected||$('creator').open||$('spiritsDialog').open)return;
  const selected=collectMapServices().find(e=>e.id===selectedId);localMapState={x:selected?.x??px,y:selected?.y??py,span:144,filter:'all',selected:selected?.id||null,markers:[]};
  dialog('Local map','<div class="map-heading"><p>Drag to explore · Tap an icon for its name and route</p><button id="mapKingdoms" type="button"></button></div><div id="mapFilters" class="map-filters" role="group" aria-label="Map services"></div><div class="map-content"><div><div class="local-map-frame"><canvas id="localMap" width="600" height="390" aria-label="Local map. Services can also be selected from the adjacent list."></canvas><span class="map-north">N</span><span id="mapScale" class="map-scale"></span></div><div class="map-toolbar"><p id="mapFilterName">All services</p><div class="map-tools"><button id="mapZoomOut" type="button"></button><button id="mapRecenter" type="button"></button><button id="mapZoomIn" type="button"></button></div></div></div><div id="mapPlaces" class="map-places" role="group" aria-label="Services in this area"></div></div><div id="mapSelection" aria-live="polite"></div>');
- $('modal').classList.add('world-map-window');setHudButton('mapKingdoms','Kingdoms and settlements','map');setHudButton('mapZoomOut','Zoom map out','zoomOut');setHudButton('mapZoomIn','Zoom map in','zoomIn');setHudButton('mapRecenter','Centre on your character','compass');
+ $('modal').classList.add('world-map-window');setHudButton('mapKingdoms','Kingdoms and settlements','map');setHudButton('mapZoomOut','Zoom map out','zoomOut');setHudButton('mapZoomIn','Zoom map in','zoomIn');setHudButton('mapRecenter','Centre on your character','recenter');
  for(const [id,[icon,label]]of Object.entries(MAP_SERVICE_TYPES)){const b=document.createElement('button');b.type='button';b.dataset.mapFilter=id;setHudButton(b,label,icon);b.onclick=()=>{localMapState.filter=id;localMapState.selected=null;$('mapFilterName').textContent=label;renderLocalMap();};$('mapFilters').appendChild(b);}
  $('mapKingdoms').onclick=()=>{$('modal').classList.remove('world-map-window');localMapState=null;expandedMap();};
  $('mapRecenter').onclick=()=>{localMapState.x=px;localMapState.y=py;renderLocalMap();};
  const zoom=factor=>{localMapState.span=Math.max(48,Math.min(384,localMapState.span*factor));renderLocalMap();};$('mapZoomOut').onclick=()=>zoom(1.4);$('mapZoomIn').onclick=()=>zoom(1/1.4);
  const c=$('localMap');let drag=null;
  c.addEventListener('pointerdown',e=>{if(drag||e.button!==0)return;e.preventDefault();drag={id:e.pointerId,x:e.clientX,y:e.clientY,bounds:localMapBounds(),moved:false};c.setPointerCapture(e.pointerId);});
- c.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>7)drag.moved=true;if(!drag.moved)return;const rect=c.getBoundingClientRect(),[w,h]=sceneSize();localMapState.x=Math.max(0,Math.min(w,drag.bounds.x+drag.bounds.w/2-dx*drag.bounds.w/rect.width));localMapState.y=Math.max(0,Math.min(h,drag.bounds.y+drag.bounds.h/2-dy*drag.bounds.h/rect.height));renderLocalMap();});
+ c.addEventListener('pointermove',e=>{if(!drag){const entry=hitMapService(localMapState.markers,e.clientX,e.clientY,c.getBoundingClientRect(),c.width,c.height);c.title=entry?entry.name+' · '+entry.detail:'Drag to explore the map';return;}if(drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>7)drag.moved=true;if(!drag.moved)return;const rect=c.getBoundingClientRect(),[w,h]=sceneSize();localMapState.x=Math.max(0,Math.min(w,drag.bounds.x+drag.bounds.w/2-dx*drag.bounds.w/rect.width));localMapState.y=Math.max(0,Math.min(h,drag.bounds.y+drag.bounds.h/2-dy*drag.bounds.h/rect.height));renderLocalMap();});
  c.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId)return;const tap=!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<=7;drag=null;if(tap)selectMapService(hitMapService(localMapState.markers,e.clientX,e.clientY,c.getBoundingClientRect(),c.width,c.height));});
  for(const event of ['pointercancel','lostpointercapture'])c.addEventListener(event,e=>{if(drag?.id===e.pointerId)drag=null;});
  renderLocalMap();

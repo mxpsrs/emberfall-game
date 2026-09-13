@@ -6,7 +6,7 @@ function element(){
  return {children:[],dataset:{},style:{},attributes:{},scrollTop:0,
   classList:{add:(...v)=>v.forEach(x=>classes.add(x)),remove:(...v)=>v.forEach(x=>classes.delete(x)),contains:v=>classes.has(v),toggle(v,on){on??=!classes.has(v);on?classes.add(v):classes.delete(v);return on;}},
   set innerHTML(v){this.html=v;this.children=[];},get innerHTML(){return this.html||'';},
-  appendChild(c){this.children.push(c);return c;},append(...c){this.children.push(...c);},replaceChildren(...c){this.children=c;},
+  appendChild(c){this.children.push(c);if(c.id)elements[c.id]=c;return c;},append(...c){c.forEach(n=>this.appendChild(n));},replaceChildren(...c){this.children=c;},
   querySelectorAll:()=>[],querySelector(){return null;},addEventListener(type,fn){(listeners[type]??=[]).push(fn);},
   setAttribute(k,v){this.attributes[k]=v;},removeAttribute(k){delete this.attributes[k];},getContext:()=>new Proxy({},{get:()=>noop}),
   show(){this.open=true;this.presentation='nonmodal';},showModal(){this.open=true;this.presentation='modal';},
@@ -24,7 +24,14 @@ let previewWeapon=null,previewRenders=0;paintEquipmentPreview=()=>{previewWeapon
 s=defaults();s.character={name:'Tester'};s.tutorial=tutorialSteps.length;s.gear={bronzeSword:1,shortbow:1};s.bag={arrows:20};s.equipment={};
 const clickBag=id=>{const button=$('inventoryGrid').children.find(b=>b.title===ITEMS[id].name);assert(button,'Bag contains '+id);button.onclick({preventDefault:()=>{}});};
 const statsText=()=>$('combatStatGroups').children.flatMap(section=>section.children[1].children.map(el=>el.textContent));
-openGamePanel('gear');assert(window.equipmentStatsOpen,'the main equipment button opens the paired window directly');openCombatStats();
+openGamePanel('gear');assert(window.equipmentOpen,'the equipment tab opens compact worn slots');assert(!window.equipmentStatsOpen,'the stats view requires its own button');assert.equal(tab,'bag');assert.equal($('modal').presentation,'nonmodal');assert($('modal').classList.contains('equipment-window'));
+assert.equal($('wornEquipmentGrid').children.length,EQUIPMENT_SLOTS.length);assert($('wornEquipmentGrid').children.some(b=>b.dataset.equipmentSlot==='ammo'));
+clickBag('bronzeSword');assert.equal(s.equipment.weapon,'bronzeSword');assert($('wornEquipmentGrid').children.find(b=>b.dataset.equipmentSlot==='weapon').title.includes('Bronze sword'));
+$('equipmentTools').onclick();assert.equal($('wornEquipmentTitle').textContent,'Tool belt');assert.equal(tab,'bag');assert($('inventoryGrid').children.some(b=>b.title===ITEMS.shortbow.name));$('wornEquipmentContents').children[0].onclick();assert.equal($('wornEquipmentTitle').textContent,'Worn equipment');
+openGamePanel('gear',true);flushCloseEvents();assert(!window.equipmentOpen);assert(!$('modal').open);openGamePanel('gear');openGamePanel('skills');flushCloseEvents();assert(!window.equipmentOpen);assert(!$('modal').classList.contains('equipment-window'));
+openGamePanel('gear');$('equipmentStats').onclick();assert(!window.equipmentOpen);assert(!$('modal').classList.contains('equipment-window'));assert(window.equipmentStatsOpen);assert($('modal').classList.contains('combat-stats-window'));
+// Put the sword back into the bag for the same equip/swap checks in stats.
+$('statsEquipment').children.find(b=>b.dataset.equipmentSlot==='weapon').onclick({preventDefault:()=>{}});
 assert.equal(tab,'bag');assert.equal($('gameDock').hidden,false);assert.equal($('modal').presentation,'nonmodal');assert(window.equipmentStatsOpen);
 $('pairedEquipmentTools').onclick();assert.equal(tab,'bag');assert($('inventoryGrid').children.some(b=>b.title===ITEMS.bronzeSword.name),'tool belt keeps the bag visible');$('pairedEquipmentTools').onclick();
 clickBag('bronzeSword');assert.equal(s.equipment.weapon,'bronzeSword');assert.equal(previewWeapon,'bronzeSword');assert(statsText().includes('melee'));
@@ -38,6 +45,6 @@ openCombatStats();flushCloseEvents();assert(window.equipmentStatsOpen,'queued cl
 openGamePanel('skills');flushCloseEvents();assert(!window.equipmentStatsOpen);assert.equal(tab,'skills');assert(!$('modal').open);
 openCombatStats();openBank();flushCloseEvents();assert(window.realmTrade);assert(!window.equipmentStatsOpen);assert(!$('modal').classList.contains('combat-stats-window'));assert.equal(tab,'bag');
 openCombatStats();flushCloseEvents();assert(!window.realmTrade);assert(window.equipmentStatsOpen);assert(!$('modal').classList.contains('trade-window'));
-openGamePanel('bag',true);flushCloseEvents();assert(!window.equipmentStatsOpen);assert($('gameDock').hidden);assert(previewRenders>=6);
-console.log('PASS: interactive bag beside modeless equipment, live weapon/bonus/preview refresh, unequip, window switching, close/reopen races and bank compatibility.');
+openGamePanel('bag',true);flushCloseEvents();assert(!window.equipmentStatsOpen);assert($('gameDock').hidden);assert(previewRenders>=6);openGamePanel('gear');openBank();flushCloseEvents();assert(!window.equipmentOpen);assert(!$('modal').classList.contains('equipment-window'));assert(window.realmTrade);
+console.log('PASS: compact Equipment with Stats/Tool belt/Spirits controls, explicit stats expansion, paired bag in both views, live weapon/bonus/preview refresh, unequip, window switching, close/reopen races and bank compatibility.');
 `,context);

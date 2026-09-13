@@ -1,0 +1,73 @@
+EMBERFALL — INTERFACE ICON CREDITS
+
+Icons by Lorc, Delapouite, Lucas, sbed, Skoll, Carl Olsen.
+Available on https://game-icons.net
+Licensed under Creative Commons Attribution 3.0: https://creativecommons.org/licenses/by/3.0/
+Changes: recoloured for the game palette; backgrounds removed; elemental spell tier indicators added; Ignore combines a person with a prohibition mark.
+Original source: https://github.com/game-icons/icons at 82d948812bfe3f269ef8f731dcdb07b08160edc4
+Close, fullscreen, resize, paging and zoom controls are simple geometric marks authored for Emberfall.
+
+Inventory (bag) — Lorc — https://game-icons.net/1x1/lorc/knapsack.html
+Worn equipment (gear) — Delapouite — https://game-icons.net/1x1/delapouite/chest-armor.html
+Skills (skills) — Delapouite — https://game-icons.net/1x1/delapouite/histogram.html
+Quest list (quests) — Lorc — https://game-icons.net/1x1/lorc/scroll-unfurled.html
+Magic spellbook (spells) — Delapouite — https://game-icons.net/1x1/delapouite/spell-book.html
+Combat options (melee) — Lorc — https://game-icons.net/1x1/lorc/crossed-swords.html
+Ranged (ranged) — Delapouite — https://game-icons.net/1x1/delapouite/bow-arrow.html
+Magic (magic) — Lorc — https://game-icons.net/1x1/lorc/crystal-wand.html
+Worship (shrine) — Lorc — https://game-icons.net/1x1/lorc/prayer.html
+Elemental spirits (followers) — Lorc — https://game-icons.net/1x1/lorc/ghost.html
+Special attack (spirit) — Lorc — https://game-icons.net/1x1/lorc/power-lightning.html
+Friends list (friends) — Delapouite — https://game-icons.net/1x1/delapouite/three-friends.html
+Player (person) — Delapouite — https://game-icons.net/1x1/delapouite/person.html
+Settings (settings) — Lorc — https://game-icons.net/1x1/lorc/cog.html
+Music (music) — Delapouite — https://game-icons.net/1x1/delapouite/musical-notes.html
+Tool belt (tools) — Lucas — https://game-icons.net/1x1/lucasms/belt.html
+Emotes (wave) — sbed — https://game-icons.net/1x1/sbed/hand.html
+Logout (exit) — Delapouite — https://game-icons.net/1x1/delapouite/exit-door.html
+Chat (chat) — Delapouite — https://game-icons.net/1x1/delapouite/chat-bubble.html
+Combat statistics (stats) — Delapouite — https://game-icons.net/1x1/delapouite/chart.html
+Attack (attack) — Lorc — https://game-icons.net/1x1/lorc/broadsword.html
+Strength (strength) — Skoll — https://game-icons.net/1x1/skoll/fist.html
+Defence / shield (shield) — sbed — https://game-icons.net/1x1/sbed/shield.html
+Hitpoints (heart) — Skoll — https://game-icons.net/1x1/skoll/hearts.html
+Woodcutting (woodcutting) — Lorc — https://game-icons.net/1x1/lorc/pine-tree.html
+Mining (mine) — Delapouite — https://game-icons.net/1x1/delapouite/war-pick.html
+Fishing (fish) — Delapouite — https://game-icons.net/1x1/delapouite/fishing-pole.html
+Smithing (forge) — Lorc — https://game-icons.net/1x1/lorc/anvil.html
+Firemaking (firemaking) — Lorc — https://game-icons.net/1x1/lorc/campfire.html
+Cooking (cooking) — Delapouite — https://game-icons.net/1x1/delapouite/cooking-pot.html
+Fletching (fletching) — Lorc — https://game-icons.net/1x1/lorc/feather.html
+Farming (farming) — Delapouite — https://game-icons.net/1x1/delapouite/rake.html
+Head slot (helm) — Lorc — https://game-icons.net/1x1/lorc/visored-helm.html
+Neck slot (necklace) — Lucas — https://game-icons.net/1x1/lucasms/necklace.html
+Ammunition (ammo) — Delapouite — https://game-icons.net/1x1/delapouite/quiver.html
+Hands slot (glove) — Delapouite — https://game-icons.net/1x1/delapouite/gauntlet.html
+Legs slot (legs) — Lucas — https://game-icons.net/1x1/lucasms/trousers.html
+Feet slot (boot) — Lorc — https://game-icons.net/1x1/lorc/boots.html
+World map (map) — Lorc — https://game-icons.net/1x1/lorc/treasure-map.html
+Tutor (tutor) — Delapouite — https://game-icons.net/1x1/delapouite/graduate-cap.html
+General store (shop) — Delapouite — https://game-icons.net/1x1/delapouite/shop.html
+Bank (bank) — Delapouite — https://game-icons.net/1x1/delapouite/bank.html
+Inn (inn) — Delapouite — https://game-icons.net/1x1/delapouite/bed.html
+Coins (coins) — Delapouite — https://game-icons.net/1x1/delapouite/coins.html
+Run (run) — Lorc — https://game-icons.net/1x1/lorc/run.html
+Eat food (eat) — Delapouite — https://game-icons.net/1x1/delapouite/meal.html
+Stop action (stop) — Delapouite — https://game-icons.net/1x1/delapouite/stop-sign.html
+Sound on (sound) — Delapouite — https://game-icons.net/1x1/delapouite/speaker.html
+Sound off (mute) — Delapouite — https://game-icons.net/1x1/delapouite/speaker-off.html
+Face north (compass) — Lorc — https://game-icons.net/1x1/lorc/compass.html
+Help (help) — sbed — https://game-icons.net/1x1/sbed/help.html
+Hunting journal (hunting) — Lorc — https://game-icons.net/1x1/lorc/target-arrows.html
+Appearance (appearance) — Delapouite — https://game-icons.net/1x1/delapouite/clothes.html
+Centre map on player (recenter) — Delapouite — https://game-icons.net/1x1/delapouite/position-marker.html
+Air (air) — Lorc — https://game-icons.net/1x1/lorc/windy-stripes.html
+Water (water) — sbed — https://game-icons.net/1x1/sbed/water-drop.html
+Earth (earth) — Delapouite — https://game-icons.net/1x1/delapouite/stone-pile.html
+Fire (fire) — Carl Olsen — https://game-icons.net/1x1/carl-olsen/flame.html
+Feather (feather) — Lorc — https://game-icons.net/1x1/lorc/feather.html
+Trade (trade) — Lorc — https://game-icons.net/1x1/lorc/trade.html
+Private message (privateChat) — Lorc — https://game-icons.net/1x1/lorc/envelope.html
+Accurate attack (accurate) — Lorc — https://game-icons.net/1x1/lorc/target-shot.html
+Balanced attack (balanced) — Lorc — https://game-icons.net/1x1/lorc/swords-emblem.html
+Aggressive attack (aggressive) — Lorc — https://game-icons.net/1x1/lorc/sword-slice.html

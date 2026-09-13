@@ -1,7 +1,7 @@
 'use strict';
-const EQUIPMENT_EMPTY_ICONS={head:'helm',neck:'necklace',ammo:'ammo',weapon:'melee',body:'gear',shield:'shield',hands:'glove',legs:'legs',feet:'boot'};
+const EQUIPMENT_EMPTY_ICONS={head:'helm',neck:'necklace',ammo:'ammo',weapon:'attack',body:'gear',shield:'shield',hands:'glove',legs:'legs',feet:'boot'};
 let equipmentPreviewAngle=-.4,equipmentToolView=false;
-window.equipmentStatsOpen=false;
+window.equipmentStatsOpen=false;window.equipmentOpen=false;
 function appendEquipmentSlots(grid,interactive=true){
  for(const [slot,title]of EQUIPMENT_SLOTS){const id=s.equipment[slot],button=document.createElement('button');button.type='button';button.className='gearslot';button.dataset.equipmentSlot=slot;button.title=title+(id?': '+ITEMS[id].name:': empty');button.setAttribute('aria-label',button.title);
   if(id)button.appendChild(itemCanvas(id));else button.innerHTML=gameIcon(EQUIPMENT_EMPTY_ICONS[slot]);
@@ -28,11 +28,12 @@ function paintEquipmentPreview(){
  try{const r=creatorPainter(g,(x,y,z)=>({x:c.width/2+(x*cy-z*sy)*scale,y:c.height-26-y*scale+(x*sy+z*cy)*scale*.09,depth:x*sy+z*cy+y*.09}),c.width,c.height);humanoid3(r,0,0,s.character?.look||0,{...s.equipment,_appearance:s.character,_ammoCount:s.equippedAmmoCount});r.flush();}finally{meshDetail3=old;}
 }
 function endCombatStats(){
- if(!window.equipmentStatsOpen)return;window.equipmentStatsOpen=false;equipmentToolView=false;syncTabs();
- document.body.classList.remove('equipment-stats-open');$('modal').classList.remove('combat-stats-window');$('modal').removeAttribute('aria-label');
+ if(!window.equipmentStatsOpen&&!window.equipmentOpen)return;window.equipmentStatsOpen=false;window.equipmentOpen=false;equipmentToolView=false;syncTabs();
+ document.body.classList.remove('equipment-stats-open','equipment-open');$('modal').classList.remove('combat-stats-window','equipment-window');$('modal').removeAttribute('aria-label');
  $('closeModal').textContent='Back to adventure';$('closeModal').setAttribute('aria-label','Back to adventure');
 }
 function renderCombatStats(){
+ if(window.equipmentOpen)return renderWornEquipment();
  if(!window.equipmentStatsOpen||!$('modal').open)return;
  const grid=$('statsEquipment'),groups=$('combatStatGroups'),scroll=groups.scrollTop;
  const focusedSlot=document.activeElement?.closest?.('[data-equipment-slot]')?.dataset.equipmentSlot;
@@ -44,14 +45,38 @@ function renderCombatStats(){
  groups.scrollTop=scroll;if(focusedSlot)grid.querySelector('[data-equipment-slot="'+focusedSlot+'"]').focus({preventScroll:true});paintEquipmentPreview();
 }
 function openEquipment(toggle=false){
- if(toggle&&window.equipmentStatsOpen){close();return;}
- return openCombatStats();
+ if(toggle&&(window.equipmentOpen||window.equipmentStatsOpen)){close();return;}
+ if(window.equipmentOpen&&$('modal').open){openGamePanel('bag');return;}
+ prepareEquipmentWindow();openGamePanel('bag');window.equipmentOpen=true;syncTabs();document.body.classList.add('equipment-open');
+ const modal=$('modal');modal.classList.add('equipment-window');modal.setAttribute('aria-label','Worn equipment');
+ $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label','Close worn equipment');
+ $('modalBody').innerHTML='<h2 id="wornEquipmentTitle">Worn equipment</h2><div id="wornEquipmentContents"></div><div id="wornEquipmentActions" class="equipment-actions"><button id="equipmentStats" type="button"></button><button id="equipmentTools" type="button"></button><button id="equipmentFollowers" type="button"></button></div>';
+ modal.show();renderWornEquipment();
+ setHudButton('equipmentStats','View combat stats','stats');setHudButton('equipmentTools','Tool belt','tools');setHudButton('equipmentFollowers','Elemental spirits','followers');
+ $('equipmentStats').onclick=openCombatStats;$('equipmentTools').onclick=()=>{equipmentToolView=true;renderWornEquipment();};$('equipmentFollowers').onclick=()=>{close();openSpirits();};
+}
+function prepareEquipmentWindow(){
+ if(typeof npcDialogueState!=='undefined'&&npcDialogueState)endNpcDialogue();
+ if(window.realmWorkbench)endWorkbench();if(window.realmTrade)endTrade();
+ if(window.equipmentOpen||window.equipmentStatsOpen)endCombatStats();if($('modal').open)$('modal').close();stop();
+}
+function renderWornEquipment(){
+ if(!window.equipmentOpen||!$('modal').open)return;
+ const contents=$('wornEquipmentContents');contents.replaceChildren();$('wornEquipmentTitle').textContent=equipmentToolView?'Tool belt':'Worn equipment';$('wornEquipmentActions').hidden=equipmentToolView;
+ if(equipmentToolView){
+  const back=document.createElement('button');back.type='button';back.className='equipment-tools-back';back.textContent='Back to worn equipment';back.onclick=()=>{equipmentToolView=false;renderWornEquipment();};contents.appendChild(back);
+  const owned=normalizeToolBelt(s),list=document.createElement('div');list.className='equipment-tool-list';
+  for(const [id,tool]of Object.entries(TOOL_BELT_TOOLS)){const row=document.createElement('div'),name=document.createElement('strong'),detail=document.createElement('small');name.textContent=ITEMS[owned[id+'Item']]?.name||tool.name;detail.textContent=tool.skill+' · '+(owned[id]?'On belt':'Not on belt');row.append(name,detail);list.appendChild(row);}contents.appendChild(list);
+ }else{
+  const grid=document.createElement('div');grid.id='wornEquipmentGrid';grid.className='equipmentgrid equipment-slots paper-equipment';appendEquipmentSlots(grid);contents.appendChild(grid);paintItemIcons(grid);
+  $('equipmentStats').classList.toggle('tutorialfocus',tutorialStep()?.event==='combat-stats');
+ }
 }
 function openCombatStats(){
  if(typeof npcDialogueState!=='undefined'&&npcDialogueState)endNpcDialogue();
  if(window.realmWorkbench)endWorkbench();
  if(window.equipmentStatsOpen&&$('modal').open){tutorialEvent('combat-stats');openGamePanel('bag');return;}
- if(window.realmTrade)endTrade();if($('modal').open)$('modal').close();stop();tutorialEvent('combat-stats');openGamePanel('bag');
+ prepareEquipmentWindow();tutorialEvent('combat-stats');openGamePanel('bag');
  window.equipmentStatsOpen=true;syncTabs();document.body.classList.add('equipment-stats-open');
  const modal=$('modal');modal.classList.add('combat-stats-window');modal.setAttribute('aria-label','Equipment and combat stats');
  $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label','Close equipment and combat stats');
@@ -64,10 +89,14 @@ function openCombatStats(){
  c.addEventListener('pointerdown',e=>{if(drag||e.button!==0)return;e.preventDefault();drag={id:e.pointerId,x:e.clientX,angle:equipmentPreviewAngle};c.setPointerCapture(e.pointerId);});c.addEventListener('pointermove',e=>{if(drag?.id!==e.pointerId)return;equipmentPreviewAngle=drag.angle+(e.clientX-drag.x)*.014;paint();});for(const event of ['pointerup','pointercancel','lostpointercapture'])c.addEventListener(event,e=>{if(drag?.id===e.pointerId)drag=null;});
  c.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();equipmentPreviewAngle+=(e.key==='ArrowLeft'?-1:1)*.18;paint();}});
 }
-const SKILL_PANEL_ICONS={Attack:'melee',Strength:'glove',Defense:'shield',Hitpoints:'heart',Ranged:'ranged',Magic:'magic',Worship:'shrine',Woodcutting:'tools',Mining:'mine',Fishing:'fish',Smithing:'forge',Firemaking:'spirit',Cooking:'eat',Fletching:'ranged',Farming:'leaf'};
+const SKILL_PANEL_ICONS={Attack:'attack',Strength:'strength',Defense:'shield',Hitpoints:'heart',Ranged:'ranged',Magic:'magic',Worship:'shrine',Woodcutting:'woodcutting',Mining:'mine',Fishing:'fish',Smithing:'forge',Firemaking:'firemaking',Cooking:'cooking',Fletching:'fletching',Farming:'farming'};
+function openIconGuide(){
+ const groups=[['Game controls',CLASSIC_TABS.map(([,icon,label])=>[label,icon])],['Skills',Object.entries(SKILL_PANEL_ICONS)],['Map services',Object.values(MAP_SERVICE_TYPES).map(([icon,label])=>[label,icon])]];
+ dialog('Icon guide','<p>Hover over an icon for its name. On a phone, hold a menu or skill icon to see its label. Hold an item for its usual action menu.</p>'+groups.map(([name,entries])=>'<h3>'+name+'</h3><div class="icon-guide">'+entries.map(([label,icon])=>'<div>'+gameIcon(icon)+'<span>'+label+'</span></div>').join('')+'</div>').join(''));
+}
 function renderSkillInterface(){
  pageControls(1,1);const panel=$('panel');panel.innerHTML='<div class="questhead"><small>Total level '+Object.keys(s.xp).filter(k=>k!=='Combat').reduce((n,k)=>n+lv(k),0)+'</small><small>Combat '+combatLevel()+'</small></div><div id="skillTiles" class="skill-tiles"></div>';
- for(const [skill,xp]of Object.entries(s.xp).filter(([k])=>k!=='Combat')){const level=lv(skill),b=document.createElement('button');b.type='button';b.innerHTML=gameIcon(SKILL_PANEL_ICONS[skill]||'skills')+'<span>'+skill+'</span><b>'+level+'<small>/ '+level+'</small></b>';b.title=skill+' · Level '+level;b.setAttribute('aria-label',skill+', level '+level+', '+Math.floor(xp)+' XP');b.onclick=()=>dialog(skill,'<p>Level <b>'+level+'</b> / 99</p><p>'+Math.floor(xp).toLocaleString()+' XP · '+(level===99?'Maximum level':Math.max(0,skillThreshold(skill,level+1)-xp).toLocaleString()+' XP to level '+(level+1))+'</p>'+(COMBAT_SKILL_DETAILS[skill]?'<p>'+COMBAT_SKILL_DETAILS[skill]+'</p>':''));$('skillTiles').appendChild(b);}
+ for(const [skill,xp]of Object.entries(s.xp).filter(([k])=>k!=='Combat')){const level=lv(skill),b=document.createElement('button');b.type='button';b.innerHTML=gameIcon(SKILL_PANEL_ICONS[skill]||'skills')+'<span>'+skill+'</span><b>'+level+'<small>/ '+level+'</small></b>';b.title=skill+' · Level '+level;b.dataset.skill=skill;b.dataset.helpHold='true';b.dataset.tooltip=skill+' · Level '+level+' / 99\nCurrent XP: '+Math.floor(xp).toLocaleString()+'\n'+(level===99?'Maximum level':Math.ceil(Math.max(0,skillThreshold(skill,level+1)-xp)).toLocaleString()+' XP to level '+(level+1));b.setAttribute('aria-label',skill+', level '+level+', '+Math.floor(xp)+' XP');b.onclick=()=>dialog(skill,'<p>Level <b>'+level+'</b> / 99</p><p>'+Math.floor(xp).toLocaleString()+' XP · '+(level===99?'Maximum level':Math.max(0,skillThreshold(skill,level+1)-xp).toLocaleString()+' XP to level '+(level+1))+'</p>'+(COMBAT_SKILL_DETAILS[skill]?'<p>'+COMBAT_SKILL_DETAILS[skill]+'</p>':''));$('skillTiles').appendChild(b);}
 }
 $('modal').addEventListener('close',()=>{if(!$('modal').open)endCombatStats();});
-document.addEventListener('keydown',e=>{if(window.equipmentStatsOpen&&e.key==='Escape'){e.preventDefault();close();}});
+document.addEventListener('keydown',e=>{if((window.equipmentStatsOpen||window.equipmentOpen)&&e.key==='Escape'){e.preventDefault();close();}});

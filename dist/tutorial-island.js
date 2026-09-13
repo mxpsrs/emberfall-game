@@ -176,7 +176,7 @@ activateScene=function(id,x,y,persist=true){
   if(id===TUTORIAL_SCENE&&tutorialComplete(s)){toast('Your apprenticeship is complete. Firstlight Isle is closed to mainland adventurers.');return false;}
   if(id!==TUTORIAL_SCENE&&!tutorialComplete(s)){toast('Finish your apprenticeship with Rowan before travelling to the mainland.');return false;}
  }
- const changed=currentScene!==id;if(changed){closeWorldOptions();if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen)close();s.insideBuilding=null;resetLandSurface();mapServicesCache=null;}
+ const changed=currentScene!==id;if(changed){closeWorldOptions();if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen||window.equipmentOpen)close();s.insideBuilding=null;resetLandSurface();mapServicesCache=null;}
  activateBeforeIsland(id,x,y,persist);if(id===TUTORIAL_SCENE&&tutorialIslandReady)buildFirstlightStreets();return currentScene===id;
 };
 const regionBeforeIsland=regionInfo;

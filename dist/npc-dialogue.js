@@ -30,7 +30,7 @@ function renderNpcDialogue(){
  choices.querySelector('button')?.focus({preventScroll:true});
 }
 function openNpcDialogue(speaker,html,choices=[],topic=speaker.name){
- if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen)close();
+ if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen||window.equipmentOpen)close();
  if($('modal').open)$('modal').close();stop();closeWorldOptions();
  npcDialogueState={speaker,topic,pages:Array.isArray(html)?html:dialoguePages(html),page:0,choices};
  $('modal').classList.add('npc-dialogue');$('modal').setAttribute('aria-labelledby','npcName');document.body.classList.add('npc-talking');

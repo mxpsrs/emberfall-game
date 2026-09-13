@@ -6,7 +6,7 @@ function enrich(el){
 }
 ctx.enrich=enrich;
 const get=ctx.document.getElementById,create=ctx.document.createElement;ctx.document.getElementById=id=>enrich(get(id));ctx.document.createElement=()=>enrich(create());ctx.document.body=enrich(ctx.document.body);ctx.window.innerWidth=844;ctx.window.innerHeight=390;
-for(const f of ['game-icons','trading','world-options','map-icons','equipment-interface','item-use'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['trading','world-options','equipment-interface','item-use'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`{
 renderAction=renderTutorial=save=draw=drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();s.character={name:'Interaction check'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;assetsReady=false;s.bag={rawShrimp:3,breadDough:1,flour:1,jugWater:1,normalLogs:1,arrowShafts:15,feathers:15,headlessArrows:0,bronzeArrowheads:15,copperOre:1,tinOre:1,bronzeBar:1};
 const range=tutorialObject('range'),kitchen=buildings.find(b=>b.service?.destination==='village_kitchen');activateScene('overworld',...doorApproach(kitchen.service));setWalkInDoor(kitchen.service,true,true);activateScene('overworld',range.x-1,range.y);

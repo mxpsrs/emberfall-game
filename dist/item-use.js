@@ -5,7 +5,7 @@ window.realmWorkbench=null;
 function clearUseItem(refresh=true){selectedUseItem=null;selectedUseIndex=null;if(refresh){if(tab==='bag')renderInventory();renderAction();}}
 function selectUseItem(id,index=null){
  if(!ITEMS[id]||spareItemCount(id)<1)return false;
- stop();if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen)close();
+ stop();if(window.realmTrade||window.realmWorkbench||window.equipmentStatsOpen||window.equipmentOpen)close();
  openGamePanel('bag');selectedUseItem=id;selectedUseIndex=Number.isInteger(index)?index:inventorySlots().findIndex(slot=>slot.id===id);
  renderInventory();renderAction();return true;
 }
@@ -101,7 +101,7 @@ function endWorkbench(){
 function openWorkbench(kind='forge',metal='bronze',station=null){
  station=station||nearbyWork(kind==='cooking'?'fire':kind);
  if(!station||!objects.includes(station)||Math.hypot(station.x-px,station.y-py)>=2||!lineOfSight(s.x,s.y,station.x,station.y)){toast('Use your materials on a '+(kind==='cooking'?'fire or cooking range':kind==='furnace'?'furnace':'smithing anvil')+'.');return false;}
- if(window.realmTrade)endTrade();if(window.equipmentStatsOpen)endCombatStats();if(window.realmWorkbench)endWorkbench();if($('modal').open)$('modal').close();
+ if(window.realmTrade)endTrade();if(window.equipmentStatsOpen||window.equipmentOpen)endCombatStats();if(window.realmWorkbench)endWorkbench();if($('modal').open)$('modal').close();
  stop();openGamePanel('bag');window.realmWorkbench={kind,metal:METAL_RECIPES[metal]?metal:'bronze',station,scene:currentScene};
  document.body.classList.add('workbench-open');$('modal').classList.add('trade-window','workbench-window');$('modal').setAttribute('aria-label',kind==='cooking'?'Cooking':kind==='furnace'?'Smelting furnace':'Smithing anvil');
  $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label','Close workshop');

@@ -19,7 +19,7 @@ function openTrade(kind){
  if(typeof npcDialogueState!=='undefined'&&npcDialogueState)endNpcDialogue();
  if(window.realmWorkbench)endWorkbench();
  if(typeof clearUseItem==='function')clearUseItem(false);
- if(window.equipmentStatsOpen)endCombatStats();
+ if(window.equipmentStatsOpen||window.equipmentOpen)endCombatStats();
  stop();if($('modal').open)$('modal').close();
  window.realmTrade={kind,quantity:1,custom:10,search:'',filter:'all',notice:''};
  document.body.classList.add('panels-open','trade-open');$('gameDock').hidden=false;tab='bag';panelPage=0;syncTabs();

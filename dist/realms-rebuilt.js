@@ -361,13 +361,13 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  if(gear.head==='rangerCap')briarEmit(r,rebuiltModels.Ranger_Cap,affineMultiply(headTransform,briarTransform(0,a.mesh.bounds[1][1]-.052,.015,1.13)));
- if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0);
+ if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0,gear.ammo);
  if(casting)drawCastingLight(r,root,mesh,phase,worship?spiritEffect.color:'#a7e6e0');
  if(burying&&playerAction.kind==='bury')drawBoneOffering(r,root,mesh,(time-playerAction.started)/playerAction.duration);
  if(firemaking&&!playerAction.committed){for(const [bone,left]of [[mesh.avatar.left,true],[mesh.avatar.right,false]]){const hand=affineMultiply(root,mesh.pose.subarray(bone*12,bone*12+12));box3(r,0,.01,0,left?.13:.075,.045,left?.085:.045,left?'#695341':'#9d9e93',p=>briarPoint(p,0,hand));}const age=time-playerAction.started,p=briarPoint([0,.08,.35],0,root);if(age>.4&&Math.sin(age*18)>.3)for(let i=0;i<3;i++)oval3(r,p[0]+Math.sin(i*3+age)*.08,p[1]+i*.04,p[2]+Math.cos(i+age)*.06,.025,.025,.025,'#ffd789',p=>p,5);}
  // Weapon meshes are attached to the new rig's actual palms.
  if(gathering&&typeof drawGatheringTool==='function')drawGatheringTool(r,affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),gathering.tool);
- if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(player?playerAttackMotion?.ammo:gear._ammoCount>0));
+ if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(player?playerAttackMotion?.ammo:gear._ammoCount>0),gear.weapon,gear.ammo);
  for(const [slot,bone]of [['weapon',mesh.avatar.right],['shield',mesh.avatar.left]])if(!busy&&!bow&&gear[slot]){
   const source=slot==='shield'?briarRigs.Knight.meshes.Badge_Shield:ITEMS[gear.weapon]?.style==='magic'?briarRigs.Mage.meshes['2H_Staff']:ITEMS[gear.weapon]?.style==='ranged'?null:briarRigs.Knight.meshes['1H_Sword'];
   const socket=mesh.pose.subarray(bone*12,bone*12+12),world=affineMultiply(root,socket);
@@ -384,7 +384,23 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
 // The imported mesh has its grip at x=0 and its limb tips at x=-.318.
 // Its origin is already the palm: no extra half-turn or hand offset is needed.
 const ARCHER_BOW={grip:[.0075,0,0],top:[-.317, .994,0],bottom:[-.317,-.994,0],scale:.65};
-function archerBowMesh(){return rebuiltModels.Archer_Bow;}
+const rangedMaterialCache=new Map();
+function rangedItemMesh(id,arrow=false){
+ const source=rebuiltModels[arrow?'Archer_Arrow':'Archer_Bow'],key=(arrow?'arrow:':'bow:')+id;
+ if(rangedMaterialCache.has(key))return rangedMaterialCache.get(key);
+ const woods={shortbow:'#ab7844',oakShortbow:'#916037',willowShortbow:'#788c53',mapleShortbow:'#c77c43',yewShortbow:'#856f63',magicShortbow:'#729cbe'};
+ const metals={arrows:'#b69358',ironArrows:'#9ca8b5',steelArrows:'#d1dbe0',mithrilArrows:'#91a3de',adamantArrows:'#72ab7b',runeArrows:'#75cddd'};
+ const hex=(arrow?metals[id]:woods[id])||(arrow?metals.arrows:woods.shortbow),rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);
+ // Keep the imported geometry and shading. Change only wood or metal: the
+ // arrow's shaft and feather colours are shared by all ammunition tiers.
+ const dye=colors=>{const out=new Float32Array(colors);for(let i=0;i<out.length;i+=3){const r=colors[i],g=colors[i+1],b=colors[i+2],isHead=Math.max(r,g,b)-Math.min(r,g,b)<.04&&r>.6;
+  if(!arrow||isHead){const light=arrow?Math.max(r,g,b):Math.min(1.12,Math.max(.70,r/.36));for(let k=0;k<3;k++)out[i+k]=Math.min(1,rgb[k]*light);}
+  else if(r>g*1.2&&g>b*1.5){out[i]=Math.min(1,r*1.65);out[i+1]=Math.min(1,g*1.65);out[i+2]=Math.min(1,b*1.65);}
+ }return out;};
+ const mesh={...source,c:dye(source.f||source.c),f:dye(source.f||source.c),uv:null,t:new Float32Array(source.p.length/3).fill(12)};
+ rangedMaterialCache.set(key,mesh);return mesh;
+}
+function archerBowMesh(id='shortbow'){return rangedItemMesh(id);}
 function arrowTransform(start,end,width=1){
  const y=end.map((v,i)=>v-start[i]),length=Math.hypot(...y)||1;for(let i=0;i<3;i++)y[i]/=length;
  const x=Math.abs(y[1])<.9?[y[2],0,-y[0]]:[1,0,0],xl=Math.hypot(...x)||1;for(let i=0;i<3;i++)x[i]/=xl;
@@ -400,10 +416,10 @@ function fittedBowPose(root,mesh,age){
  const d=grip.map((v,i)=>v-nock[i]),distance=Math.hypot(...d)||1,length=Math.max(.78,distance+.16),tip=nock.map((v,i)=>v+d[i]/distance*length);
  return {m,top,bottom,grip,nock,tip,length,release};
 }
-function drawFittedBow(r,root,mesh,age,loaded){
- const pose=fittedBowPose(root,mesh,age);briarEmit(r,archerBowMesh(),pose.m);
+function drawFittedBow(r,root,mesh,age,loaded,weapon='shortbow',ammo='arrows'){
+ const pose=fittedBowPose(root,mesh,age);briarEmit(r,archerBowMesh(weapon),pose.m);
  beamArt(r,pose.top,pose.nock,.0035,'#d4c9ac',4);beamArt(r,pose.nock,pose.bottom,.0035,'#d4c9ac',4);
- if(loaded&&age>=.15&&age<pose.release)briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(pose.nock,pose.tip,.75));
+ if(loaded&&age>=.15&&age<pose.release)briarEmit(r,rangedItemMesh(ammo,true),arrowTransform(pose.nock,pose.tip,.75));
 }
 function rangedReleasePose(shot){
  const a=rebuiltAvatars[shot.frame||'male'],clip=a.clips.ranged,age=clip.releaseAt-.0001;
@@ -411,10 +427,10 @@ function rangedReleasePose(shot){
  return fittedBowPose(root,{avatar:a,pose},age);
 }
 function visibleQuiverArrows(count){return Math.min(5,Math.max(0,Math.ceil(Number(count)||0)));}
-function drawArcherQuiver(r,root,mesh,count){
+function drawArcherQuiver(r,root,mesh,count,ammo='arrows'){
  const spine=mesh.avatar.rig.names.indexOf('spine_03'),body=affineMultiply(root,mesh.pose.subarray(spine*12,spine*12+12)),m=affineMultiply(body,[.86,-.22,0,.13,.22,.86,0,1.22,0,0,.9,-.25]);
  briarEmit(r,rebuiltModels.Archer_Quiver,m);
- for(let i=0;i<visibleQuiverArrows(count);i++){const x=(i%3-1)*.029,z=(Math.floor(i/3)-.5)*.039,start=briarPoint([x,.43+(i%2)*.027,z],0,m),end=briarPoint([x,-.21,z],0,m);briarEmit(r,rebuiltModels.Archer_Arrow,arrowTransform(start,end,.65));}
+ for(let i=0;i<visibleQuiverArrows(count);i++){const x=(i%3-1)*.029,z=(Math.floor(i/3)-.5)*.039,start=briarPoint([x,.43+(i%2)*.027,z],0,m),end=briarPoint([x,-.21,z],0,m);briarEmit(r,rangedItemMesh(ammo,true),arrowTransform(start,end,.65));}
 }
 function drawBoneOffering(r,root,mesh,phase){
  if(phase<.53){const hand=affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),q={face:(p,c)=>r.face(p.map(v=>briarPoint(v,0,hand)),c)};beamArt(q,[-.10,0,0],[.10,0,0],.018,'#d6cfb8',6);for(const x of [-.10,.10])oval3(q,x,0,0,.065,.048,.04,'#d6cfb8',p=>p,6);}
@@ -430,7 +446,7 @@ function drawCombatProjectiles3(r){
   const t=Math.min(1,p.age/p.duration),start=p.releasePose?.tip||[p.x+.5,1.3,p.y+.5],end=[p.tx+.5,p.targetHeight||.7,p.ty+.5];
   const tip=start.map((v,i)=>v+(end[i]-v)*t);tip[1]+=Math.sin(t*Math.PI)*.15;
   const d=end.map((v,i)=>v-start[i]),distance=Math.hypot(...d)||1,length=p.releasePose?.length||.78,tail=tip.map((v,i)=>v-d[i]/distance*length);
-  briarEmit(groundedPainter(r,tip[0],tip[2]),rebuiltModels.Archer_Arrow,arrowTransform(tail,tip,.75));
+  briarEmit(groundedPainter(r,tip[0],tip[2]),rangedItemMesh(p.ammo,true),arrowTransform(tail,tip,.75));
  }
 }
 
