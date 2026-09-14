@@ -57,6 +57,7 @@ function tutorialGoal(){
  const step=tutorialStep();let goal=step.point();
  if(step.event==='fire')goal=!besideFishingTutor()?tutorialTutor('fishing'):Object.keys(s.bag).some(id=>s.bag[id]>0&&ITEMS[id]?.logType)?null:tutorialObject('fishing-tree');
  if(step.event==='loot')goal=(s.groundLoot||[]).filter(o=>o.scene===currentScene&&o.items.bones>0).sort((a,b)=>Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py))[0]||null;
+ if(typeof tutorialGuidanceWorldGoal==='function')goal=tutorialGuidanceWorldGoal(goal);
  if(!goal||goal.collected||goal.dead>time)return null;
  const inside=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py)),room=buildings.find(b=>b.walkIn&&(goal.interiorBuilding===b.service.destination||withinWalkIn(b,goal.x,goal.y)));
  const closed=inside&&inside!==room&&inside.service.openedAt===undefined?inside:room&&inside!==room&&room.service.openedAt===undefined?room:null;
@@ -99,6 +100,7 @@ function tutorialEvent(event){
  if(!s.character||!tutorialStep()||typeof tutorialIslandReady!=='undefined'&&tutorialIslandReady&&currentScene!=='tutorial')return;
  if(event==='fire'&&!besideFishingTutor())return;
  if(event==='cook-shrimp'&&(!besideFishingTutor()||!s.tutorialActions?.fire))return;
+ if(event==='smith'&&!(s.gear.bronze_dagger>0))return;
  if(REMEMBERED_LESSONS.includes(event)){s.tutorialActions??={};s.tutorialActions[event]=true;}
  if(tutorialStep().event!==event)return;
  if(event==='talk-finish'&&typeof beginTutorialCrossing==='function'&&currentScene==='tutorial'&&!tutorialCrossing?.committing)return beginTutorialCrossing();
@@ -131,7 +133,7 @@ function observeTutorialCamera(){
 function renderTutorial(){
  const step=tutorialStep();$('tutorial').hidden=!s.character||!step||!inWorld();$('eat').classList.toggle('tutorialfocus',step?.event==='eat');
  if(!step)return;
- if(tutorialShownIndex!==s.tutorial&&typeof gameMessage==='function')gameMessage(step.title+': '+step.desc,{action:()=>guide()});
+ if(tutorialShownIndex!==s.tutorial&&typeof tutorialGuidanceAction!=='function'&&typeof gameMessage==='function')gameMessage(step.title+': '+step.desc,{action:()=>guide()});
  if(tutorialShownIndex!==s.tutorial&&s.tutorial<2){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}tutorialShownIndex=s.tutorial;
  $('tutCount').textContent='APPRENTICESHIP · '+(s.tutorial+1)+' / '+tutorialSteps.length;
  $('tutTitle').textContent=step.title;$('tutDesc').textContent=step.desc;
@@ -193,6 +195,12 @@ function setupTutorialVillage(){
 }
 function talkTutor(o){
  const role=o.tutor,expected=tutorialStep()?.event;
+ if(role==='magic'&&tutorialStep()){
+  const ready=giveTutorialMagicSupplies();
+  if(expected==='talk-magic'&&ready){tutorialEvent('talk-magic');return;}
+  if(typeof gameMessage==='function')gameMessage('Arcanist Elowen: '+(ready?'Your staff and practice runes are ready. Follow your next instruction.':'Make room in your bag. I will hand over your supplies as soon as there is space.'));
+  renderTutorial();return;
+ }
  if(role==='combat'&&expected==='ranged-kit'){
   dialog('Captain Vale','<p>“A bow lets you strike before an enemy reaches you. Take this shortbow and these arrows. Equip both: the bow goes in your hands, and the arrows go in your ammunition slot.”</p><p>“Now leave the pen and shoot a rat across its low fence. Arrows and spells pass over low fences; solid walls block them. Keep your distance and watch your ammunition.”</p>',[['Take bow and arrows',()=>{if(grantTutorialItems('ranged',{shortbow:1,arrows:60})){close();tutorialEvent('ranged-kit');}}]]);return;
  }
@@ -205,19 +213,27 @@ function talkTutor(o){
  if(role==='guide'&&expected==='talk-finish'){dialog('Elder Rowan','<p>“You have learned from our tutors and practised each skill. I will teleport you to Briarhaven on the mainland. Take your supplies with you; this is a one-way journey.”</p>',[['Finish apprenticeship',()=>{close();tutorialEvent('talk-finish');}]]);return;}
  if(role==='guide'&&expected!=='talk-guide'){elder();return;}
  const t=TUTORS[role],buttons=[];
- if(expected==='talk-'+role)buttons.push(['Continue',()=>{if(role==='magic'&&!grantTutorialItems('magic',{oakStaff:1,airRunes:30,runes:20}))return;if(role==='cooking'&&!grantTutorialItems('baking',{flour:1,jugWater:1}))return;close();tutorialEvent('talk-'+role);}]);
+ if(expected==='talk-'+role)buttons.push(['Continue',()=>{if(role==='cooking'&&!grantTutorialItems('baking',{flour:1,jugWater:1}))return;close();tutorialEvent('talk-'+role);}]);
  if(role==='cooking'&&['mix-dough','bake-bread'].includes(expected)&&!(s.bag.breadDough>0)&&!(s.bag.bread>0)&&!hasIngredients({flour:1,jugWater:1}))buttons.push(['Take baking ingredients',()=>{const missing={flour:Math.max(0,1-(s.bag.flour||0)),jugWater:Math.max(0,1-(s.bag.jugWater||0))};if(Object.entries(missing).every(([id,n])=>!n||canCarry(id,n))){for(const [id,n]of Object.entries(missing))if(n)addToBag(id,n);close();}}]);
  if(role==='bank')buttons.push(['Open bank',()=>{close();openBank();}]);
  if(role==='combat'&&['dummy','monster'].includes(expected)&&!s.tutorialGifts?.combatFood)buttons.push(['Take food for the rat pen',()=>{if(grantTutorialItems('combatFood',{shrimp:3}))close();}]);
- if(role==='magic'&&expected==='magic'&&!s.tutorialGifts?.magic)buttons.push(['Take practice staff and runes',()=>{if(grantTutorialItems('magic',{oakStaff:1,airRunes:30,runes:20}))close();}]);
  if(role==='worship'&&s.tutorial< tutorialSteps.length&&!(s.bag.bones>0))buttons.push(['Take practice bones',()=>{if(addToBag('bones')){close();save();toast('Bury the practice bones from your bag.');}}]);
- if(role==='magic'&&s.tutorial<tutorialSteps.length){if(s.bag.airRunes<1)buttons.push(['Take 10 air runes',()=>{if(addToBag('airRunes',10))close();}]);if(s.bag.runes<1)buttons.push(['Take 5 practice runes',()=>{if(addToBag('runes',5))close();}]);}
- dialog(t.name,'<p>“'+t.text+'”</p>',buttons);
+ dialog(t.name,'<p>“'+(expected==='talk-'+role?t.text.split('\n')[0]:t.text)+'”</p>',buttons);
+}
+function tutorialGiftSpace(items){return Object.entries(items).reduce((n,[id,count])=>n+(STACKABLE.has(id)?(owns(id)?0:1):count),0);}
+function giveTutorialMagicSupplies(){
+ const items={};if(!(s.gear.oakStaff>0))items.oakStaff=1;
+ if(!(s.bag.airRunes>0))items.airRunes=30;if(!(s.bag.runes>0))items.runes=20;
+ const needed=tutorialGiftSpace(items);s.tutorialMagicPending=true;
+ if(inventorySlots().length+needed>BAG_SIZE)return false;
+ for(const [id,count]of Object.entries(items)){const bag=ITEMS[id].slot?s.gear:s.bag;bag[id]=(bag[id]||0)+count;}
+ s.tutorialGifts??={};s.tutorialGifts.magic=true;s.tutorialMagicPending=false;
+ if(Object.keys(items).length){renderUI();save();}return true;
 }
 function grantTutorialItems(key,items){
  s.tutorialGifts=s.tutorialGifts||{};if(s.tutorialGifts[key])return true;
  const needed=Object.entries(items).reduce((n,[id,count])=>n+(STACKABLE.has(id)?(owns(id)?0:1):count),0);
- if(inventorySlots().length+needed>BAG_SIZE){toast('Make '+needed+' spaces in your bag, then speak to the tutor again.');return false;}
+ if(inventorySlots().length+needed>BAG_SIZE){toast('Make '+needed+' spaces in your bag for your tutor’s supplies.');return false;}
  for(const [id,count]of Object.entries(items)){const collection=ITEMS[id].slot?s.gear:s.bag;collection[id]=(collection[id]||0)+count;}
  s.tutorialGifts[key]=true;renderUI();save();return true;
 }

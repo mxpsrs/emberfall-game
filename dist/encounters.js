@@ -121,7 +121,7 @@ function resetEncounter(recover=true){
  activeEncounter=null;encounterHudKey='';const hud=$('encounterHud');if(hud)hud.hidden=true;
 }
 function updateEnemyRecovery(dt){
- for(const o of worldActors()){if(!o._recovering||o._inCombat)continue;if(o.hp<=0||o.dead>time){delete o._recovering;delete o._returning;continue;}
+ for(const o of worldActors()){if(!o._recovering||o._inCombat||o._sharedReady&&typeof sharedLive==='function'&&sharedLive()&&o._sharedOwner!==sharedActor)continue;if(o.hp<=0||o.dead>time){delete o._recovering;delete o._returning;continue;}
   if(o._returning&&Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)<.03){
    if(o.x===o.homeX&&o.y===o.homeY){delete o._returning;o._returnPath=null;}
    else if(time>=o._returnAt){
@@ -129,7 +129,7 @@ function updateEnemyRecovery(dt){
     const step=o._returnPath?.shift();if(step&&land(...step)&&trainingRatCanMove(o,...step)){[o.x,o.y]=step;o._returnAt=time+.15;}else{o._returnPath=null;o._returnAt=time+.8;}
    }
   }
-  o._recoverClock=(o._recoverClock||0)+dt;if(o._recoverClock>=5){const ticks=Math.floor(o._recoverClock/5);o._recoverClock-=ticks*5;o.hp=Math.min(o.maxhp,o.hp+ticks);}
+  o._recoverClock=(o._recoverClock||0)+dt;if(o._recoverClock>=5){const ticks=Math.floor(o._recoverClock/5);o._recoverClock-=ticks*5;if(!o._sharedReady)o.hp=Math.min(o.maxhp,o.hp+ticks);}
   if(o.hp>=o.maxhp&&!o._returning)delete o._recovering;
  }
 }
@@ -222,7 +222,7 @@ function updateEncounterAI(dt){
 // Resolve the existing player projectiles/XP, then run fixed-stat enemy attacks.
 updateCombat=function(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
- for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus);}
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus,hit.sharedGeneration);}
  updatePlayerProjectiles(dt);
  updateEncounterAI(dt);
 };
@@ -240,16 +240,17 @@ monsterDrop=function(o){
  lootBeforeEncounters(o);
 };
 function renderEncounterHud(){
- const box=$('encounterHud');if(!box)return;const f=activeEncounter;if(!f){box.hidden=true;return;}const o=f.o,e=HUNT_ENCOUNTERS[o.encounter],h=f.hazards[0];
- const title=o.name+' · Lv. '+o.level,phase=e?.mechanics?e.rank+' · '+e.phases[f.phase].name:(e?e.rank+' · ':'')+(o.attackLabel||(o.attackStyle||'melee')+' attacks'),tell=h?h.name+' · '+h.hint:(o.weak?'Weak to '+o.weak+' · ':'')+(e?.mechanics?'Watch the ground. Move to dodge.':'Eat to heal, or move away to retreat.'),key=[title,phase,tell].join('|');
+ const box=$('encounterHud');if(!box)return;const f=activeEncounter;if(!f){box.hidden=true;return;}const o=f.o,e=HUNT_ENCOUNTERS[o.encounter],h=f.hazards[0];if(o.type!=='boss'&&!e?.mechanics){box.hidden=true;return;}
+ const title=o.name+' · Lv. '+o.level,phase=e?.mechanics?e.rank+' · '+e.phases[f.phase].name:(e?e.rank+' · ':'')+(o.attackLabel||(o.attackStyle||'melee')+' attacks'),tell=h?h.name+' · '+h.hint:'',key=[title,phase,tell].join('|');
  box.hidden=false;if(key!==encounterHudKey){$('encounterName').textContent=title;$('encounterPhase').textContent=phase;$('encounterTell').textContent=tell;encounterHudKey=key;}
+ $('encounterPhase').hidden=true;$('encounterTell').hidden=!h;box.dataset.casting=String(!!h);
  $('encounterHealth').style.width=Math.max(0,o.hp/o.maxhp*100)+'%';$('encounterHP').textContent=Math.max(0,o.hp)+' / '+o.maxhp;$('encounterCast').style.width=h?Math.min(100,(time-h.started)/(h.due-h.started)*100)+'%':'0%';box.dataset.style=h?.style||o.attackStyle||'melee';
 }
 function drawEncounterWarnings(){
- const f=activeEncounter;if(!f)return;ctx.save();
+ const hazards=typeof sharedLive==='function'&&sharedLive()?sharedCombatHazards():activeEncounter?.hazards||[];if(!hazards.length)return;ctx.save();
  const point=(x,y)=>project3(x+.5,.07+walkSurfaceHeight(x+.5,y+.5)-landHeight(x+.5,y+.5),y+.5);
  const line=(a,b,width)=>{const p=point(...a),q=point(...b);ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();};
- for(const h of f.hazards){if(h.shape==='strike')continue;if(h.shape==='projectile'){const t=Math.min(1,(time-h.started)/(h.due-h.started)),p=point(h.fromX+(px-h.fromX)*t,h.fromY+(py-h.fromY)*t);ctx.fillStyle=h.style==='magic'?'#bb94ee':'#e7c781';ctx.beginPath();ctx.arc(p.x,p.y-10,h.style==='magic'?5:3,0,Math.PI*2);ctx.fill();continue;}const color=h.style==='magic'?'#ba8fff':h.style==='ranged'?'#e7bb66':'#ee8c70';ctx.strokeStyle=color;ctx.fillStyle=color;ctx.globalAlpha=.5+.15*Math.sin(time*12);
+ for(const h of hazards){if(h.shape==='strike')continue;if(h.shape==='projectile'){const t=Math.min(1,(time-h.started)/(h.due-h.started)),p=point(h.fromX+(h.x-h.fromX)*t,h.fromY+(h.y-h.fromY)*t);ctx.fillStyle=h.style==='magic'?'#bb94ee':'#e7c781';ctx.beginPath();ctx.arc(p.x,p.y-10,h.style==='magic'?5:3,0,Math.PI*2);ctx.fill();continue;}const color=h.style==='magic'?'#ba8fff':h.style==='ranged'?'#e7bb66':'#ee8c70';ctx.strokeStyle=color;ctx.fillStyle=color;ctx.globalAlpha=.5+.15*Math.sin(time*12);
   if(h.shape==='cone'){/* The lair renderer draws the exact ground sector. */}
   else if(h.shape==='line'){line([h.fromX,h.fromY],[h.x,h.y],Math.max(8,cameraZoom3()*h.radius));}
   else if(h.shape==='cross'){line([h.x-h.length,h.y],[h.x+h.length,h.y],Math.max(8,cameraZoom3()*h.radius));line([h.x,h.y-h.length],[h.x,h.y+h.length],Math.max(8,cameraZoom3()*h.radius));}

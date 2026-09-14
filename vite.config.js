@@ -1,27 +1,24 @@
 import {defineConfig} from 'vite';
-import {DatabaseSync} from 'node:sqlite';
+import {openLocalStorage} from './scripts/local-storage.mjs';
+import {Readable} from 'node:stream';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-import {handleSave,handlePlayers,handleAuth,handleStatus} from './worker/api.js';
+import {handleSave,handlePlayers,handleAuth,handleStatus,handleSocial,handleActivity,handleMaintenance,maintenanceGate} from './worker/api.js';
 
-// Isolated local gameplay saves; production continues to use the Sites D1 binding.
-const db=new DatabaseSync(':memory:');
-for(const file of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())db.exec(fs.readFileSync('drizzle/'+file,'utf8'));
-const env={DB:{prepare(sql){return{args:[],bind(...args){this.args=args;return this},
- async first(){return db.prepare(sql).get(...this.args)},
- async all(){return{results:db.prepare(sql).all(...this.args)}},
- async run(){return{meta:{changes:Number(db.prepare(sql).run(...this.args).changes)}}}
-}},async batch(statements){db.exec('BEGIN');try{const out=[];for(const statement of statements)out.push(await statement.run());db.exec('COMMIT');return out;}catch(error){db.exec('ROLLBACK');throw error;}}}};
+// Local characters and accounts persist across restarts, without Cloudflare.
+const storage=openLocalStorage(),{db,env}=storage;
+console.log('Player save files: '+storage.saveDirectory);
 export default defineConfig({
  root:'dist',
- server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
- plugins:[{name:'veldren-local-api',configureServer(server){server.middlewares.use(async(req,res,next)=>{
+ server:{host:'127.0.0.1',allowedHosts:['terminal.local'],fs:{deny:['**/player-saves/**','**/server-data/**','**/.env*','**/*.{pem,crt}']}},
+ plugins:[{name:'veldren-local-api',configureServer(server){server.httpServer?.once('close',()=>storage.close());server.middlewares.use(async(req,res,next)=>{
   const path=req.url?.split('?')[0];
+  if(/(?:^|\/)(?:player-saves|server-data)(?:\/|$)/i.test(decodeURIComponent(path||''))){res.statusCode=404;res.end('Not found');return;}
   if(path==='/')req.url='/landing.html'+(req.url.includes('?')?'?'+req.url.split('?').slice(1).join('?'):'');
   if(path==='/donate'||path==='/donate/')req.url='/donate.html';
   if(path==='/play'||path==='/play/')req.url='/index.html'+(req.url.includes('?')?'?'+req.url.split('?').slice(1).join('?'):'');
-  if(path==='/__creator-layout__/'){const token='a'.repeat(64),hash=createHash('sha256').update(token).digest('hex');db.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').run('creator-qa','CreatorTest','creatortest','not-a-login-hash',Date.now());db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'creator-qa',Date.now()+3600000);res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/creator-layout.html','utf8'));return;}
+  if(process.env.VELDREN_ENABLE_QA==='1'&&path==='/__creator-layout__/'){const token='a'.repeat(64),hash=createHash('sha256').update(token).digest('hex');db.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').run('creator-qa','CreatorTest','creatortest','not-a-login-hash',Date.now());db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'creator-qa',Date.now()+3600000);res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/creator-layout.html','utf8'));return;}
   if(path==='/__skills-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/skills-layout.html','utf8'));return;}
   if(path==='/__armor-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/armor-layout.html','utf8'));return;}
   if(path==='/__trade-layout__/'){
@@ -43,15 +40,16 @@ export default defineConfig({
     return new Response((await response.text()).replace('</body>','<script>'+fixture+'</script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
    }
    return response;
-  }:path==='/api/status'?handleStatus:path?.startsWith('/api/auth/')?handleAuth:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
+  }:path==='/api/maintenance'||path==='/api/admin/maintenance'?handleMaintenance:path==='/api/social'?handleSocial:path==='/api/activity'?handleActivity:path==='/api/status'?handleStatus:path?.startsWith('/api/auth/')?handleAuth:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
   if(!handler)return next();
   try{
    const chunks=[];for await(const chunk of req)chunks.push(chunk);
    const body=Buffer.concat(chunks);
    const request=new Request('http://'+req.headers.host+req.url,{method:req.method,headers:req.headers,...(body.length?{body}: {})});
-   const response=await handler(request,env);res.statusCode=response.status;
+   const blocked=path?.startsWith('/api/')&&!['/api/maintenance','/api/admin/maintenance','/api/status'].includes(path)?await maintenanceGate(request,env):null;
+   const response=blocked||await handler(request,env);res.statusCode=response.status;
    response.headers.forEach((value,key)=>res.setHeader(key,key==='set-cookie'?value.replace('; Secure',''):value));
-   res.end(Buffer.from(await response.arrayBuffer()));
+   if(response.body){const stream=Readable.fromWeb(response.body);res.once('close',()=>stream.destroy());stream.on('error',()=>res.destroy());stream.pipe(res);}else res.end();
   }catch(error){console.error(error);res.statusCode=500;res.end('Local preview API error');}
  })}}]
 });

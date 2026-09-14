@@ -48,7 +48,7 @@ function renderTradeContents(){
  $('modalBody').querySelectorAll('[data-trade-quantity]').forEach(b=>b.setAttribute('aria-pressed',String(t.quantity.toString()===b.dataset.tradeQuantity)));
  grid.replaceChildren();
  for(const [id,count]of rows){
-  const button=document.createElement('button');button.type='button';button.className='trade-slot';button.appendChild(itemCanvas(id));
+  const button=document.createElement('button');button.type='button';button.className='trade-slot';button.dataset.itemId=id;button.appendChild(itemCanvas(id));
   const qty=document.createElement('b');qty.textContent=bank?formatTradeCount(count):'∞';button.appendChild(qty);
   if(!bank){const cost=document.createElement('small');cost.textContent=shopUnitPrice(id)+' gp'+(ITEMS[id].requirements?' · '+Object.entries(ITEMS[id].requirements).map(([k,n])=>k.slice(0,3)+' '+n).join(' / '):'');button.appendChild(cost);}
   button.title=ITEMS[id].name+(bank?' · '+count:' · '+shopUnitPrice(id)+' coins each');bindItemPress(button,id,false,'stock');grid.appendChild(button);

@@ -87,6 +87,7 @@ function creatureMotion(o,x,z){
   if(walking)state.phase=(state.phase+distance/(creatureAsset(o)?.gaitDistance||((o.creatureLook||creatureKinds[o.kind])==='rat'?.52*creatureSize(o):(o.creatureLook||creatureKinds[o.kind])==='wolf'?1.6:1.15)))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
   if(!walking&&(target===o||o._inCombat)&&Math.hypot(px+.5-x,py+.5-z)<12)desired=Math.atan2(px+.5-x,py+.5-z);
+  if(o._sharedReady&&typeof sharedActor!=='undefined'&&o._sharedOwner!==sharedActor&&o._sharedTarget&&Number.isFinite(o.attackHeading))desired=o.attackHeading;
   if(o.lockAttackHeading&&Number.isFinite(o.attackHeading)&&time<(o.attackAt||0)+(o.attackWindup||0)+(o.attackRecovery||0))desired=o.attackHeading;
   const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
   state.time=time;state.x=x;state.z=z;

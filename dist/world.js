@@ -6,11 +6,11 @@ let worldObjectRevision=0,worldObjectIndex=null,worldObjectArrayObserved=false;
 function worldIndex(){
  if(!worldObjectArrayObserved){worldObjectArrayObserved=true;for(const name of ['push','pop','shift','unshift','splice','sort','reverse','copyWithin','fill'])Object.defineProperty(objects,name,{configurable:true,writable:true,value:function(...args){worldObjectRevision++;return Array.prototype[name].apply(this,args);}});}
  if(worldObjectIndex?.revision===worldObjectRevision&&worldObjectIndex.scene===currentScene&&worldObjectIndex.length===objects.length)return worldObjectIndex;
- const actors=[],buckets=new Map(),order=new Map();
- for(let i=0;i<objects.length;i++){const o=objects[i];order.set(o,i);if(fighter(o)||o.characterSprite||o.penId||['elder','shop','questgiver','spirit','villager','inn','tutor'].includes(o.type)){actors.push(o);continue;}
+ const actors=[],buckets=new Map(),order=new Map(),byId=new Map();
+ for(let i=0;i<objects.length;i++){const o=objects[i];order.set(o,i);byId.set(String(o.id),o);if(fighter(o)||o.characterSprite||o.penId||['elder','shop','questgiver','spirit','villager','inn','tutor'].includes(o.type)){actors.push(o);continue;}
   const key=Math.floor(o.x/16)+':'+Math.floor(o.y/16);let bucket=buckets.get(key);if(!bucket){bucket=[];buckets.set(key,bucket);}bucket.push(o);
  }
- return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,order};
+ return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,order,byId};
 }
 function worldActors(){return worldIndex().actors;}
 function worldObjectsAt(x,y){const index=worldIndex(),bucket=index.buckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[];return [...bucket,...index.actors].filter(o=>o.x===x&&o.y===y);}

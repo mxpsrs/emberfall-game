@@ -9,12 +9,31 @@ Use Node.js 24, then run:
 
 ```sh
 npm ci
-npm run build
-npm run dev -- --host 127.0.0.1
+npm run dev
 ```
 
-The local preview uses temporary test data. Production accounts and character
-saves remain on the existing hosted game.
+Open **http://127.0.0.1:5173/play** and create a local account. No Cloudflare
+account, API key or cloud server is needed. Stop with Ctrl+C and run the same
+command to resume. Use `npm run dev -- --host 0.0.0.0` to test another device
+on your local network.
+
+- **`player-saves/<username>.json`**: readable character files, written after
+  successful saves and committed trades. Each contains the character's state,
+  inventory, equipment, bank, skills, tutorial progress and save revision.
+- **`server-data/veldren.sqlite`**: local accounts, password hashes, transactional
+  save records, friends, chat, trades and shared world data. SQLite runs entirely
+  on your computer; no database service needs installing.
+
+Both folders are created automatically in the project root and excluded from
+Git and public web access. Back up **both folders with the server stopped** to
+move the whole local game to another computer. Restore both in the same places
+before starting it. If a character's database row is missing but its account
+still exists, its JSON file restores it on startup. Otherwise the committed
+local database is authoritative; editing a JSON mirror does not overwrite it.
+Set `VELDREN_DATA_DIR` to keep both folders in another directory.
+
+The hosted game's existing accounts remain in its live database. Local accounts
+are separate; downloading source does not download private production saves.
 
 ## Source layout
 

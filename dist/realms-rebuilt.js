@@ -328,7 +328,7 @@ function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame){
  return pose;
 }
 function avatarMaterial(sex,gear,look){
- const identity=avatarIdentity(gear),key=[sex,look,armorAppearanceKey(gear),gear._cloth,JSON.stringify(identity)].join(':');if(avatarMaterials.has(key))return avatarMaterials.get(key);
+ const identity=avatarIdentity(gear),key=[sex,look,armorAppearanceKey(gear),gear._cloth,JSON.stringify(identity)].join(':');if(avatarMaterials.has(key)){const cached=avatarMaterials.get(key);avatarMaterials.delete(key);avatarMaterials.set(key,cached);return cached;}
  const mesh=(rebuiltAvatars[sex]||rebuiltAvatars.male).mesh,p=new Float32Array(mesh.p),c=new Float32Array(mesh.c),f=new Float32Array(mesh.f),t=new Uint8Array(mesh.t);
  const cloth=APPEARANCE_COLORS[identity.topColor]||APPEARANCE_COLORS[look%4],skin=APPEARANCE_SKINS[identity.skin]||[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
@@ -344,7 +344,7 @@ function avatarMaterial(sex,gear,look){
   const expand=torso?(y<1.02?.020:.010):feet&&gear.feet?.012:0;
   for(let axis=0;axis<3;axis++)p[i+axis]+=mesh.n[i+axis]*expand;
  }
- const material=mergeWornMeshes({...mesh,p,c,f,t},sex,gear);avatarMaterials.set(key,material);if(avatarMaterials.size>64)avatarMaterials.delete(avatarMaterials.keys().next().value);return material;
+ const material=mergeWornMeshes({...mesh,p,c,f,t},sex,gear);avatarMaterials.set(key,material);if(avatarMaterials.size>128)avatarMaterials.delete(avatarMaterials.keys().next().value);return material;
 }
 function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)*2)/2)),baseFrame=Math.min(a.clips[baseClip].frames-1,Math.max(0,Math.round(basePhase*(a.clips[baseClip].frames-1)*2)/2));blend=Math.round(blend*16)/16;
@@ -391,12 +391,12 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const identity=gear===s.equipment?(creatorDraft||s.character||{}):{race:gear._race||'human',frame:gear._frame||(look%3===2?'female':'male'),hair:gear._hair??look%3,...(gear._appearance||{})},race=identity.race||gear._race||'human',sex=identity.frame||'male';
  const player=gear===s.equipment&&!creatorDraft,locomotion=player&&playerMotion.blend>.01,a=rebuiltAvatars[sex]||rebuiltAvatars.male;
  const worship=player&&spiritEffect?.ids&&spiritEffect.scene===currentScene,castAt=worship?spiritEffect.started:gear._castAt,castDuration=worship?spiritEffect.duration:gear._castDuration||2.6;
- const gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():null,burying=player&&['bury','cook','firemaking'].includes(playerAction?.kind),firemaking=burying&&playerAction.kind==='firemaking',casting=Number.isFinite(castAt)&&time>=castAt&&time-castAt<castDuration,busy=gathering||burying||casting,poseGear=busy?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
- const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!(player?playerMotion.moving:walk)&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
+ const poseAction=player?playerAction:gear._peerAction?.work,gathering=player&&typeof gatheringActivity==='function'?gatheringActivity():gear._peerAction?.gathering,burying=['bury','cook','firemaking'].includes(poseAction?.kind),firemaking=burying&&poseAction.kind==='firemaking',casting=Number.isFinite(castAt)&&time>=castAt&&time-castAt<castDuration,busy=gathering||burying||casting,poseGear=busy?{...gear,_appearance:identity,weapon:null,shield:null}:gear;
+ const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=['ranged','magic'].includes(gear._attackStyle)?gear._attackStyle:ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!(player?playerMotion.moving:walk)&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
  const idleClip=gear._portrait?'idle':poseGear.weapon?(bow?'bowIdle':ITEMS[poseGear.weapon]?.style==='magic'?'staffIdle':ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle'):'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=casting?'magic':firemaking?'firemaking':burying?'bury':gathering?(gathering.object.type==='fish'?'fishing':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?(gear._peerMotion?.running?'run':'walk'):idleClip;
- const phase=casting?Math.min(.94,(time-castAt)/castDuration):burying?Math.min(1,(time-playerAction.started)/playerAction.duration):gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(gear._peerMotion?.phase??(walk/10/.75)%1):idlePhase,blend=casting?Math.min(1,(time-castAt)/.18):burying?1:gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
+ const phase=casting?Math.min(.94,(time-castAt)/castDuration):burying?Math.min(1,(time-poseAction.started)/poseAction.duration):gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(gear._peerMotion?.phase??(walk/10/.75)%1):idlePhase,blend=casting?Math.min(1,(time-castAt)/.18):burying?1:gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
  const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,poseGear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
  if(r.skinned)r.skinned(mesh.gpuMesh,root,mesh.pose);else briarEmit(r,mesh,root);
@@ -407,8 +407,8 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(gear.head==='rangerCap')briarEmit(r,rebuiltModels.Ranger_Cap,affineMultiply(headTransform,briarTransform(0,a.mesh.bounds[1][1]-.052,.015,1.13)));
  if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0,gear.ammo);
  if(casting)drawCastingLight(r,root,mesh,phase,worship?spiritEffect.color:gear._castColor||'#a7e6e0');
- if(burying&&playerAction.kind==='bury')drawBoneOffering(r,root,mesh,(time-playerAction.started)/playerAction.duration);
- if(firemaking&&!playerAction.committed){for(const [bone,left]of [[mesh.avatar.left,true],[mesh.avatar.right,false]]){const hand=affineMultiply(root,mesh.pose.subarray(bone*12,bone*12+12));box3(r,0,.01,0,left?.13:.075,.045,left?.085:.045,left?'#695341':'#9d9e93',p=>briarPoint(p,0,hand));}const age=time-playerAction.started,p=briarPoint([0,.08,.35],0,root);if(age>.4&&Math.sin(age*18)>.3)for(let i=0;i<3;i++)oval3(r,p[0]+Math.sin(i*3+age)*.08,p[1]+i*.04,p[2]+Math.cos(i+age)*.06,.025,.025,.025,'#ffd789',p=>p,5);}
+ if(burying&&poseAction.kind==='bury')drawBoneOffering(r,root,mesh,(time-poseAction.started)/poseAction.duration);
+ if(firemaking&&!poseAction.committed){for(const [bone,left]of [[mesh.avatar.left,true],[mesh.avatar.right,false]]){const hand=affineMultiply(root,mesh.pose.subarray(bone*12,bone*12+12));box3(r,0,.01,0,left?.13:.075,.045,left?.085:.045,left?'#695341':'#9d9e93',p=>briarPoint(p,0,hand));}const age=time-poseAction.started,p=briarPoint([0,.08,.35],0,root);if(age>.4&&Math.sin(age*18)>.3)for(let i=0;i<3;i++)oval3(r,p[0]+Math.sin(i*3+age)*.08,p[1]+i*.04,p[2]+Math.cos(i+age)*.06,.025,.025,.025,'#ffd789',p=>p,5);}
  // Weapon meshes are attached to the new rig's actual palms.
  if(gathering&&typeof drawGatheringTool==='function')drawGatheringTool(r,affineMultiply(root,mesh.pose.subarray(mesh.avatar.right*12,mesh.avatar.right*12+12)),gathering.tool);
  if(!busy&&bow)drawFittedBow(r,root,mesh,attacking?age:-1,attacking&&(player?playerAttackMotion?.ammo:gear._ammoCount>0),gear.weapon,gear.ammo);

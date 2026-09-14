@@ -57,6 +57,7 @@ function updateWorldTimers(now=Date.now()){
  if(now<nextWorldTimerCheck)return;nextWorldTimerCheck=now+250;
  const seen=new Set(),expiredObjects=new Set();for(const [sceneId,scene]of Object.entries(worldScenes))for(const o of scene.objects){
   if(seen.has(o))continue;seen.add(o);
+  if(o._sharedReady||o._sharedObject)continue;
   if(Number.isFinite(o.expiresAt)&&o.expiresAt<=now){
    o.collected=true;o.dead=Infinity;expiredObjects.add(o);if(target===o)stop();
    if(o.type==='camp'&&o.name==='Log fire'&&o.expiresAt+GROUND_LOOT_LIFETIME>now){const existing=s.groundLoot?.find(p=>p.x===o.x&&p.y===o.y&&p.scene===sceneId),ashes=groundDrop({ashes:1},o.x,o.y,sceneId);if(!existing)ashes.expiresAt=o.expiresAt+GROUND_LOOT_LIFETIME;}

@@ -139,6 +139,7 @@ function updateSkillingAction(action){
    if(!besideFishingTutor()&&Math.random()>chance&&action.attempt<5){action.attempt++;action.started=time-.45;toast('You strike the tinderbox again…');return;}
    action.committed=true;action.pile.items[action.id]--;if(!action.pile.items[action.id])delete action.pile.items[action.id];if(!Object.keys(action.pile.items).length)s.groundLoot=s.groundLoot.filter(p=>p!==action.pile);
    const o={id:practiceFireSerial++,type:'camp',name:'Log fire',cooking:true,...(besideFishingTutor()?{tutorialRole:'fishing-fire'}:{}),x:action.x,y:action.y,homeX:action.x,homeY:action.y,drawX:action.x,drawY:action.y,sprite:7,dead:0,walkThrough:true,logType:ITEMS[action.id].logType,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};
+   if(typeof sharedLive==='function'&&sharedLive()){publishSharedFire(action);renderUI();save();return;}
    worldScenes[currentScene].objects.push(o);if(worldScenes[currentScene].objects!==objects)objects.push(o);gain('Firemaking',d.fire);tutorialEvent('fire');if(typeof playGameSound==='function')playGameSound('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');
   }
  }

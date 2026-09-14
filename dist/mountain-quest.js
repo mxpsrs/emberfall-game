@@ -273,7 +273,7 @@ performAttack=function(o){if(!mountainCanFight(o)){stop();toast(o.encounter==='v
 beginEncounter=function(o){if(!mountainCanFight(o))return;const previous=activeEncounter;mountainBeginBefore(o);if(activeEncounter&&activeEncounter!==previous&&o.encounter==='veyr'&&mountainState().stage===17){activeEncounter.companionWard=true;activeEncounter.companionHealAt=time+5;activeEncounter.companionPulseAt=time+3;activeEncounter.companionInterruptAt=time+7;toast('Alaric: I have the ward. Keep moving—I am with you!');}};
 function mountainAssisted(o){return mountainState().stage===17&&currentScene==='lair_veyr'&&o?.encounter==='veyr'&&activeEncounter?.o===o&&activeEncounter.companionWard;}
 const mountainHitBefore=applyEnemyHit;
-applyEnemyHit=function(o,hit){if(mountainAssisted(o)&&hit>0){hit=Math.max(1,Math.ceil(hit*.5));floating('Alaric’s ward',px,py,'#a4e0e7');}return mountainHitBefore(o,hit);};
+applyEnemyHit=function(o,hit){if(mountainAssisted(o)&&hit>0&&!(typeof sharedApplying!=='undefined'&&sharedApplying)){hit=Math.max(1,Math.ceil(hit*.5));floating('Alaric’s ward',px,py,'#a4e0e7');}return mountainHitBefore(o,hit);};
 const mountainAIBefore=updateEncounterAI;
 updateEncounterAI=function(dt){
  const f=activeEncounter;
@@ -283,7 +283,7 @@ updateEncounterAI=function(dt){
    if(f.companionInterruptAt<=time&&f.hazards.length){f.hazards.shift();f.companionInterruptAt=time+10;companion._castAt=time;companion._castDuration=1.2;floating('Eruption broken',f.o.x,f.o.y,'#a4e0e7');}
    if(f.companionHealAt<=time){s.hp=Math.min(maxhp(),s.hp+3);renderUI();f.companionHealAt=time+6;companion._castAt=time;companion._castDuration=1.2;floating('+3 · Alaric',px,py,'#a4e0e7');}
    // Companion damage gives no player XP and cannot land the finishing blow.
-   if(f.companionPulseAt<=time){f.o.hp=Math.max(1,f.o.hp-2);f.companionPulseAt=time+4;companion._castAt=time;companion._castDuration=1.2;floating('−2 · Alaric',f.o.x,f.o.y,'#a4e0e7');}
+   if(f.companionPulseAt<=time){if(typeof sharedLive==='function'&&sharedLive())sharedTarget('companion',f.o);else f.o.hp=Math.max(1,f.o.hp-2);f.companionPulseAt=time+4;companion._castAt=time;companion._castDuration=1.2;floating('−2 · Alaric',f.o.x,f.o.y,'#a4e0e7');}
   }
  }
  mountainAIBefore(dt);mountainTickWork(dt);
@@ -324,7 +324,7 @@ function finishHuntsmanCrossing(crossing){
  if(!mountainCanEnter(crossing.destination)){crossing.destinationName='Crossing closed';return;}
  const lair=CREATURE_LAIRS[crossing.destination],boss=worldScenes[crossing.destination].objects.find(o=>o.encounter);
  // An explicit new hunt starts a fresh encounter, including after a previous clear.
- if(boss){boss.hp=boss.maxhp;boss.dead=0;boss.respawnAt=0;delete boss._recovering;delete boss._returning;}
+ if(boss&&!(typeof sharedLive==='function'&&sharedLive())){boss.hp=boss.maxhp;boss.dead=0;boss.respawnAt=0;delete boss._recovering;delete boss._returning;}
  s.insideBuilding=null;s.returnPoint=lair.returnPoint?.slice();activateScene(crossing.destination,...lair.entry);save();
 }
 const mountainHuntsBefore=renderHunts;

@@ -166,7 +166,7 @@ function drawCreatureLair(r,minx,maxx,minz,maxz){
  drawColossusEffects(r);drawVeyrEffects(r);drawVarkeshEffects(r);
 }
 function drawVarkeshEffects(r){
- const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='varkesh')return;
+ const f=typeof sharedEncounterVisual==='function'?sharedEncounterVisual('varkesh'):typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='varkesh')return;
  for(const h of f.hazards){
   if(h.shape!=='cone')continue;
   const x=h.fromX+.5,z=h.fromY+.5,progress=Math.max(0,Math.min(1,(time-h.started)/(h.due-h.started))),color=h.key==='blight'?'#9cc65d':'#d99c73';
@@ -192,7 +192,7 @@ function drawVarkeshEffects(r){
  }
 }
 function drawVeyrEffects(r){
- const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='veyr')return;
+ const f=typeof sharedEncounterVisual==='function'?sharedEncounterVisual('veyr'):typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='veyr')return;
  const light=materialRealm(r,19),color=f.phase?'#e5a5ed':'#b99bf0';
  for(const h of f.hazards){
   const t=Math.max(0,Math.min(1,(time-h.started)/(h.due-h.started))),x=h.x+.5,z=h.y+.5;
@@ -217,7 +217,7 @@ function drawColossusShatter(r,x,z,progress,enraged){
  }
 }
 function drawColossusEffects(r){
- const f=typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='colossus')return;
+ const f=typeof sharedEncounterVisual==='function'?sharedEncounterVisual('colossus'):typeof activeEncounter!=='undefined'&&activeEncounter;if(!f||f.scene!==currentScene||f.o.encounter!=='colossus')return;
  const light=materialRealm(r,19),color=f.o.enraged?'#ee7366':'#7ed0ed';
  for(const h of f.hazards){const t=Math.max(0,Math.min(1,(time-h.started)/(h.due-h.started))),x=h.x+.5,z=h.y+.5;
   if(h.key==='shot'){
