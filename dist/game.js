@@ -8,7 +8,7 @@ const defaults = () => ({
   bag:{coins:0,logs:0, ore:0, fish:0, fang:0, bones:0, arrows:0, runes:0,airRunes:0,feathers:0},
   equippedAmmoCount:0,
   sword:0, quest:0, kills:0, boss:false, character:null,
-  spirits:{}, tutorial:0, tutorialVersion:6, tutorialReward:false, spell:"spark",
+  spirits:{}, tutorial:0, tutorialVersion:7, tutorialReward:false, spell:"spark",
   runEnabled:false,runEnergy:100,bank:{},
   starterGearVersion:1,tutorialGifts:{},gear:{},
   equipment:{weapon:null,head:null,neck:null,body:null,hands:null,legs:null,shield:null,feet:null},

@@ -17,19 +17,22 @@ account, API key or cloud server is needed. Stop with Ctrl+C and run the same
 command to resume. Use `npm run dev -- --host 0.0.0.0` to test another device
 on your local network.
 
-- **`player-saves/<username>.json`**: readable character files, written after
+- **`player-saves/<username>.json`**: the character saves the server loads on startup and writes after
   successful saves and committed trades. Each contains the character's state,
   inventory, equipment, bank, skills, tutorial progress and save revision.
-- **`server-data/veldren.sqlite`**: local accounts, password hashes, transactional
-  save records, friends, chat, trades and shared world data. SQLite runs entirely
+- **`server-data/veldren.sqlite`**: local accounts, password hashes, friends, chat,
+  trades, shared world data and the transaction journal for file writes. SQLite runs entirely
   on your computer; no database service needs installing.
 
 Both folders are created automatically in the project root and excluded from
 Git and public web access. Back up **both folders with the server stopped** to
 move the whole local game to another computer. Restore both in the same places
-before starting it. If a character's database row is missing but its account
-still exists, its JSON file restores it on startup. Otherwise the committed
-local database is authoritative; editing a JSON mirror does not overwrite it.
+before starting it. The server loads characters from `player-saves/` on startup. To edit or restore
+a character, stop the server, edit or replace that account's JSON file, then
+restart it. The file takes precedence over cached character state. Leave its
+account ID and username intact. A malformed file stops startup with an error
+instead of silently creating an empty character. Interrupted saves or trades
+are finished from the local transaction journal before files are loaded.
 Set `VELDREN_DATA_DIR` to keep both folders in another directory.
 
 The hosted game's existing accounts remain in its live database. Local accounts

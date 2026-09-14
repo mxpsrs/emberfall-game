@@ -7,20 +7,20 @@ function at(event){s.tutorial=tutorialSteps.findIndex(t=>t.event===event);s.tuto
 function fresh(){s=defaults();s.character={name:'Guided apprentice'};s.gear={};s.bag={};s.bank={};s.equipment={};s.tutorialGifts={};s.tutorialReward=false;}
 fresh();at('talk-magic');
 talkTutor({tutor:'magic',name:'Arcanist Elowen'});
-assert.equal(tutorialStep().event,'bag');assert.equal(npcDialogueState,null,'no rune menu or confirmation');
+assert.equal(tutorialStep().event,'talk-magic');assert.deepEqual(npcDialogueState.choices.map(c=>c[0]),['Continue'],'original dialogue remains, without rune-selection choices');npcDialogueState.choices[0][1]();assert.equal(tutorialStep().event,'magic');
 assert.equal(s.gear.oakStaff,1);assert.equal(s.bag.airRunes,30);assert.equal(s.bag.runes,20);
 talkTutor({tutor:'magic',name:'Arcanist Elowen'});
 assert.equal(s.gear.oakStaff,1);assert.equal(s.bag.airRunes,30,'talking again does not duplicate supplies');
 at('magic');s.bag.airRunes=0;settleTutorialHandoffs();assert.equal(s.bag.airRunes,30,'practice runes refill without another conversation');
 fresh();at('talk-magic');s.bag.logs=BAG_SIZE;
 talkTutor({tutor:'magic',name:'Arcanist Elowen'});assert(s.tutorialMagicPending);assert.equal(tutorialStep().event,'talk-magic');
-s.bag.logs-=3;settleTutorialHandoffs();assert.equal(tutorialStep().event,'bag');assert.equal(s.gear.oakStaff,1);assert(inventorySlots().length<=BAG_SIZE,'queued gift cannot overflow the bag');
-fresh();at('training-kit');settleTutorialHandoffs();assert.equal(tutorialStep().event,'training-gear');assert.equal(s.gear.woodenSword,1);assert.equal(s.gear.woodenShield,1);
+s.bag.logs-=3;settleTutorialHandoffs();assert.equal(tutorialStep().event,'magic');assert.equal(s.gear.oakStaff,1);assert(inventorySlots().length<=BAG_SIZE,'queued gift cannot overflow the bag');
+fresh();close();at('training-kit');settleTutorialHandoffs();assert.equal(tutorialStep().event,'training-kit');assert(npcDialogueState);npcDialogueState.choices[0][1]();assert.equal(tutorialStep().event,'training-gear');assert.equal(s.gear.woodenSword,1);assert.equal(s.gear.woodenShield,1);
 settleTutorialHandoffs();assert.equal(s.gear.woodenSword,1);
 $('gameDock').hidden=true;assert.equal(tutorialGuidanceAction().selector,'#gameTabs [data-tab="bag"]');
 $('gameDock').hidden=false;tab='bag';assert(tutorialGuidanceAction().selector.includes('woodenSword'));
 s.equipment.weapon='woodenSword';assert(tutorialGuidanceAction().selector.includes('woodenShield'),'one equipment item at a time');
-at('ranged-kit');settleTutorialHandoffs();assert.equal(tutorialStep().event,'ranged-gear');assert.equal(s.bag.arrows,60);
+at('ranged-kit');showValeLesson();assert.equal(tutorialStep().event,'ranged-kit');npcDialogueState.choices[0][1]();assert.equal(tutorialStep().event,'ranged-gear');assert.equal(s.bag.arrows,60);
 assert(tutorialGuidanceAction().selector.includes('shortbow'));s.equipment.weapon='shortbow';assert(tutorialGuidanceAction().selector.includes('arrows'));
 at('ore');assert(tutorialGuidanceAction().instruction.includes('copper'));s.bag.copperOre=1;assert(tutorialGuidanceAction().instruction.includes('tin'));
 at('smelt');selectedUseItem=null;assert(tutorialGuidanceAction().selector.includes('copperOre'));selectedUseItem='copperOre';assert(tutorialGuidanceAction().instruction.includes('furnace'));
@@ -30,5 +30,6 @@ at('smith');delete s.gear.bronze_dagger;tutorialEvent('smith');assert.equal(tuto
 const marks=new Set(),controlTarget={classList:{add:x=>marks.add(x),remove:x=>marks.delete(x)},focus:()=>{}};
 document.querySelector=()=>controlTarget;at('skills');renderTutorialGuidance();assert(marks.has('tutorial-next-control'));
 s.tutorial=tutorialSteps.length;renderTutorialGuidance();assert(!marks.has('tutorial-next-control'),'highlight clears when tutorial ends');
+at('skills');s.tutorialCompleted=['camera','walk','talk-guide','bag'];const history=questJournalRows('tutorial');assert.equal(history.length,5);assert(history.slice(0,-1).every(row=>row.done));assert.equal(history.at(-1).done,false);assert(history.at(-1).text.includes('Skills'));assert(!history.some(row=>row.text.includes('Elowen')),'future instructions stay hidden');assert(questJournalEntries().some(q=>q.id==='village-1'));
 console.log('PASS: automatic and queued supplies, no rune menu, idempotent kits, sequential UI targets, recipe guard and highlight cleanup.');
 \`,ctx);`);

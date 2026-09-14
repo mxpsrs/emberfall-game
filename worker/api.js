@@ -8,7 +8,7 @@ import {SAVE_RESET_VERSION,currentResetVersion,RESET_VERSION_SQL} from './reset-
 export {handleGlobalReset} from './admin-reset.js';
 export {handleAuth};
 export {SAVE_RESET_VERSION};
-const completedApprenticeship=state=>state?.tutorialReward===true||(state?.tutorialVersion===4&&state?.tutorial>=36||[5,6].includes(state?.tutorialVersion)&&state?.tutorial>=39);
+const completedApprenticeship=state=>state?.tutorialReward===true||(state?.tutorialVersion===4&&state?.tutorial>=36||[5,6].includes(state?.tutorialVersion)&&state?.tutorial>=39||state?.tutorialVersion===7&&state?.tutorial>=38);
 async function resolvePlayer(request,env){const account=await authenticatedPlayer(request,env);if(!account)return null;const user='account:'+account.id;const row=await env.DB.prepare('SELECT state,revision,updated_at FROM character_saves WHERE user_id=?').bind(user).first();return {user,row,username:account.username};}
 export async function handleSave(request,env){
  let resetVersion=SAVE_RESET_VERSION;

@@ -4,61 +4,92 @@ import {createHash,randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {RESET_VERSION_SQL} from '../worker/reset-policy.js';
 
-// A persistent, local D1-compatible adapter. SQL transactions still protect
-// trades and accounts; every committed character save is also an ordinary file.
+// Character JSON files are the source of truth at startup. SQLite is local:
+// it stores accounts/social data and supplies an atomic working index for the
+// existing game handlers. A durable outbox completes interrupted file writes.
 export function openLocalStorage({root=process.cwd(),dataDirectory=process.env.VELDREN_DATA_DIR||root}={}){
  const directory=path.resolve(dataDirectory),saveDirectory=path.join(directory,'player-saves'),serverDirectory=path.join(directory,'server-data');
  for(const dir of [saveDirectory,serverDirectory])fs.mkdirSync(dir,{recursive:true,mode:0o700});
  const db=new DatabaseSync(path.join(serverDirectory,'veldren.sqlite'));
  db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON;');
- db.exec('CREATE TABLE IF NOT EXISTS local_migrations (name TEXT PRIMARY KEY, hash TEXT NOT NULL)');
- for(const name of fs.readdirSync(path.join(root,'drizzle')).filter(n=>n.endsWith('.sql')).sort()){
-  const sql=fs.readFileSync(path.join(root,'drizzle',name),'utf8'),hash=createHash('sha256').update(sql).digest('hex');
-  const existing=db.prepare('SELECT hash FROM local_migrations WHERE name=?').get(name);
-  if(existing){if(existing.hash!==hash)throw new Error('Applied local migration changed: '+name);continue;}
-  db.exec('BEGIN IMMEDIATE');try{db.exec(sql);db.prepare('INSERT INTO local_migrations VALUES (?,?)').run(name,hash);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');db.close();throw error;}
- }
- const resetVersion=()=>db.prepare('SELECT '+RESET_VERSION_SQL+' AS version').get().version;
- function validSave(record){return record?.format===1&&typeof record.userId==='string'&&Number.isSafeInteger(record.revision)&&record.revision>0&&record.state&&typeof record.state==='object'&&record.state.xp&&record.state.bag&&['x','y','hp','gold'].every(k=>Number.isFinite(record.state[k]));}
- // Files can restore missing character rows when the corresponding local
- // account still exists. A newer committed DB row always wins after a crash.
- for(const name of fs.readdirSync(saveDirectory).filter(n=>n.endsWith('.json'))){
-  let record;try{record=JSON.parse(fs.readFileSync(path.join(saveDirectory,name),'utf8'));}catch{throw new Error('Unreadable player save: '+name+'; repair or move it before restarting.');}
-  if(!validSave(record))throw new Error('Invalid player save: '+name);
-  const account=db.prepare('SELECT id FROM game_accounts WHERE id=?').get(record.userId.replace(/^account:/,''));
-  if(!account||record.resetVersion!==resetVersion())continue;
-  const current=db.prepare('SELECT revision FROM character_saves WHERE user_id=?').get(record.userId);
-  if(!current)db.prepare('INSERT INTO character_saves (user_id,state,revision,updated_at) VALUES (?,?,?,?)').run(record.userId,JSON.stringify(record.state),record.revision,record.updatedAt||new Date().toISOString());
- }
- const revisions=new Map();let knownIds=new Set();
- function flushPlayerFiles(){
-  const rows=db.prepare("SELECT c.*,a.username FROM character_saves c LEFT JOIN game_accounts a ON c.user_id='account:'||a.id").all();
-  for(const row of rows){
-   const fingerprint=row.revision+':'+row.updated_at;if(revisions.get(row.user_id)===fingerprint)continue;
-   const name=/^[a-zA-Z0-9_]{3,20}$/.test(row.username||'')?row.username.toLowerCase():createHash('sha256').update(row.user_id).digest('hex');
-   const destination=path.join(saveDirectory,name+'.json'),temporary=destination+'.'+randomUUID()+'.tmp';
-   const record={format:1,resetVersion:resetVersion(),userId:row.user_id,username:row.username||null,revision:row.revision,updatedAt:row.updated_at,state:JSON.parse(row.state)};
-   let fd;try{fd=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(fd,JSON.stringify(record,null,2)+'\n');fs.fsyncSync(fd);fs.closeSync(fd);fd=undefined;fs.renameSync(temporary,destination);revisions.set(row.user_id,fingerprint);}finally{if(fd!==undefined)fs.closeSync(fd);if(fs.existsSync(temporary))fs.unlinkSync(temporary);}
+ try{
+  db.exec('CREATE TABLE IF NOT EXISTS local_migrations (name TEXT PRIMARY KEY, hash TEXT NOT NULL)');
+  for(const name of fs.readdirSync(path.join(root,'drizzle')).filter(n=>n.endsWith('.sql')).sort()){
+   const sql=fs.readFileSync(path.join(root,'drizzle',name),'utf8'),hash=createHash('sha256').update(sql).digest('hex');
+   const existing=db.prepare('SELECT hash FROM local_migrations WHERE name=?').get(name);
+   if(existing){if(existing.hash!==hash)throw new Error('Applied local migration changed: '+name);continue;}
+   db.exec('BEGIN IMMEDIATE');try{db.exec(sql);db.prepare('INSERT INTO local_migrations VALUES (?,?)').run(name,hash);db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}
   }
-  // A committed explicit reset must not resurrect removed characters on boot.
-  const ids=new Set(rows.map(row=>row.user_id));
-  for(const name of fs.readdirSync(saveDirectory).filter(n=>n.endsWith('.json'))){const filename=path.join(saveDirectory,name),record=JSON.parse(fs.readFileSync(filename,'utf8'));if(validSave(record)&&knownIds.has(record.userId)&&!ids.has(record.userId))fs.unlinkSync(filename);}
-  knownIds=ids;
+  db.exec('CREATE TABLE IF NOT EXISTS local_save_outbox (user_id TEXT PRIMARY KEY, username TEXT, state TEXT, revision INTEGER, updated_at TEXT, reset_version TEXT, deleted INTEGER NOT NULL DEFAULT 0)');
+ }catch(error){db.close();throw error;}
+ const resetVersion=()=>db.prepare('SELECT '+RESET_VERSION_SQL+' AS version').get().version;
+ const filename=row=>path.join(saveDirectory,(/^[a-zA-Z0-9_]{3,20}$/.test(row.username||'')?row.username.toLowerCase():createHash('sha256').update(row.user_id).digest('hex'))+'.json');
+ function atomicWrite(destination,record){
+  const temporary=destination+'.'+randomUUID()+'.tmp';let fd;
+  try{fd=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(fd,JSON.stringify(record,null,2)+'\n');fs.fsyncSync(fd);fs.closeSync(fd);fd=undefined;fs.renameSync(temporary,destination);}
+  finally{if(fd!==undefined)fs.closeSync(fd);if(fs.existsSync(temporary))fs.unlinkSync(temporary);}
  }
+ function flushPlayerFiles(){
+  const pending=db.prepare('SELECT * FROM local_save_outbox ORDER BY user_id').all();if(!pending.length)return;
+  for(const row of pending){
+   const destination=filename(row);
+   if(row.deleted){if(fs.existsSync(destination))fs.unlinkSync(destination);}
+   else atomicWrite(destination,{format:1,resetVersion:row.reset_version,userId:row.user_id,username:row.username||null,revision:row.revision,updatedAt:row.updated_at,state:JSON.parse(row.state)});
+  }
+  // Keep the whole transaction's outbox until every participant's file lands.
+  // A crash halfway through a trade is replayed before characters are loaded.
+  if(process.platform!=='win32'){const fd=fs.openSync(saveDirectory,'r');try{fs.fsyncSync(fd);}finally{fs.closeSync(fd);}}
+  db.exec('DELETE FROM local_save_outbox');
+ }
+ function validSave(record){return record?.format===1&&typeof record.userId==='string'&&record.userId.startsWith('account:')&&Number.isSafeInteger(record.revision)&&record.revision>0&&record.state&&typeof record.state==='object'&&record.state.xp&&record.state.bag&&['x','y','hp','gold'].every(k=>Number.isFinite(record.state[k]));}
+ try{
+  flushPlayerFiles();
+  // Validate the complete folder before replacing any cached character state.
+  const records=[],seen=new Set();
+  for(const name of fs.readdirSync(saveDirectory).filter(n=>n.endsWith('.json'))){
+   let record;try{record=JSON.parse(fs.readFileSync(path.join(saveDirectory,name),'utf8'));}catch{throw new Error('Unreadable player save: '+name+'; repair it before restarting.');}
+   if(!validSave(record)||seen.has(record.userId))throw new Error('Invalid or duplicate player save: '+name);seen.add(record.userId);
+   const account=db.prepare('SELECT id,username FROM game_accounts WHERE id=?').get(record.userId.slice('account:'.length));
+   if(!account)continue; // Keep orphan files intact until their accounts are restored.
+   if(filename({user_id:record.userId,username:account.username})!==path.join(saveDirectory,name))throw new Error('Player save filename does not match its account: '+name);
+   records.push({...record,username:account.username});
+  }
+  db.exec('BEGIN IMMEDIATE');
+  try{
+   for(const event of ['insert','update','delete'])db.exec('DROP TRIGGER IF EXISTS local_character_'+event);
+   const previous=new Map(db.prepare('SELECT * FROM character_saves').all().map(row=>[row.user_id,row]));
+   db.exec('DELETE FROM character_saves');
+   for(const record of records){
+    const old=previous.get(record.userId),state=JSON.stringify(record.state);
+    // Offline file edits/restores win; advance the revision so an old browser
+    // cannot immediately overwrite a restored file with stale cached progress.
+    const changed=old&&(old.state!==state||old.revision!==record.revision);
+    const revision=changed?Math.max(old.revision,record.revision)+1:record.revision,stamp=changed?new Date().toISOString():record.updatedAt||new Date().toISOString();
+    db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run(record.userId,state,revision,stamp);
+    if(changed)db.prepare('INSERT OR REPLACE INTO local_save_outbox VALUES (?,?,?,?,?,?,0)').run(record.userId,record.username,state,revision,stamp,resetVersion());
+   }
+   for(const event of ['INSERT','UPDATE','DELETE']){
+    const ref=event==='DELETE'?'OLD':'NEW';
+    db.exec(`CREATE TRIGGER local_character_${event.toLowerCase()} AFTER ${event} ON character_saves BEGIN INSERT OR REPLACE INTO local_save_outbox (user_id,username,state,revision,updated_at,reset_version,deleted) VALUES (${ref}.user_id,(SELECT username FROM game_accounts WHERE 'account:'||id=${ref}.user_id),${ref}.state,${ref}.revision,${ref}.updated_at,${RESET_VERSION_SQL},${event==='DELETE'?1:0}); END;`);
+   }
+   db.exec('COMMIT');
+  }catch(error){db.exec('ROLLBACK');throw error;}
+  flushPlayerFiles();
+ }catch(error){db.close();throw error;}
  class Statement{
   constructor(sql,args=[]){this.sql=sql;this.args=args;}
   bind(...args){return new Statement(this.sql,args);}
   async first(column){const row=db.prepare(this.sql).get(...this.args);return column?row?.[column]??null:row??null;}
   async all(){return {success:true,results:db.prepare(this.sql).all(...this.args)};}
   execute(){const result=db.prepare(this.sql).run(...this.args);return {success:true,results:[],meta:{changes:Number(result.changes),last_row_id:Number(result.lastInsertRowid)}};}
-  async run(){const result=this.execute();if(/\bcharacter_saves\b/i.test(this.sql)&&result.meta.changes)flushPlayerFiles();return result;}
+  async run(){const result=this.execute();if(/\bcharacter_saves\b/i.test(this.sql))flushPlayerFiles();return result;}
  }
  const DB={prepare:sql=>new Statement(sql),async batch(statements){
-  // No await within the transaction: another HTTP request cannot interleave.
+  // No await within a transaction: another HTTP request cannot interleave.
   db.exec('BEGIN IMMEDIATE');let results;
   try{results=statements.map(statement=>statement.execute());db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}
-  if(statements.some((statement,i)=>/\bcharacter_saves\b/i.test(statement.sql)&&results[i].meta.changes))flushPlayerFiles();return results;
+  flushPlayerFiles();return results;
  }};
- flushPlayerFiles();
- return {db,env:{DB},saveDirectory,serverDirectory,close(){flushPlayerFiles();db.close();}};
+ let closed=false;
+ return {db,env:{DB},saveDirectory,serverDirectory,close(){if(closed)return;try{flushPlayerFiles();}finally{db.close();closed=true;}}};
 }

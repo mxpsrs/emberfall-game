@@ -315,12 +315,13 @@ function realmJointMatrix(v){
  const [tx,ty,tz,x,y,z,w,sx,sy,sz]=v;
  return new Float32Array([(1-2*(y*y+z*z))*sx,2*(x*y-z*w)*sy,2*(x*z+y*w)*sz,tx,2*(x*y+z*w)*sx,(1-2*(x*x+z*z))*sy,2*(y*z-x*w)*sz,ty,2*(x*z-y*w)*sx,2*(y*z+x*w)*sy,(1-2*(x*x+y*y))*sz,tz]);
 }
-function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame){
+function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame,holdStaff=false){
  const motion=a.clips[clip];if(!motion.trs){const offset=Math.round(frame)*a.count*12;return new Float32Array(motion.m.subarray(offset,offset+a.count*12));}
  const rig=a.rig,global=[],pose=new Float32Array(a.count*12),v=new Float32Array(10),base=new Float32Array(10);
  for(let bone=0;bone<a.joints;bone++){
   sampleRealmJoint(motion,frame,bone,a.joints,v);
   if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,bone,a.joints,base);const sign=v[3]*base[3]+v[4]*base[4]+v[5]*base[5]+v[6]*base[6]<0?-1:1;for(let j=0;j<10;j++)v[j]=base[j]*(1-blend)+v[j]*blend*(j>=3&&j<=6?sign:1);const length=Math.hypot(v[3],v[4],v[5],v[6]);for(let j=3;j<7;j++)v[j]/=length;}
+  if(holdStaff&&['walk','run','idle'].includes(clip)&&/^(index|middle|ring|pinky|thumb)_.*_r$/.test(rig.names[bone]))sampleRealmJoint(a.clips.staffIdle,0,bone,a.joints,v);
   const local=realmJointMatrix(v),parent=rig.parents[bone];global.push(parent<0?local:affineMultiply(global[parent],local));
   pose.set(affineMultiply(global[bone],rig.bind.subarray(bone*12,bone*12+12)),bone*12);
  }
@@ -349,7 +350,7 @@ function avatarMaterial(sex,gear,look){
 function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,motion=a.clips[clip],frame=Math.min(motion.frames-1,Math.max(0,Math.round(phase*(motion.frames-1)*2)/2)),baseFrame=Math.min(a.clips[baseClip].frames-1,Math.max(0,Math.round(basePhase*(a.clips[baseClip].frames-1)*2)/2));blend=Math.round(blend*16)/16;
  const key=[sex,clip,frame,look,armorAppearanceKey(gear),gear._cloth,JSON.stringify(avatarIdentity(gear)),blend,blend<1?baseClip:'',blend<1?baseFrame:''].join(':');if(rebuiltPoses.has(key))return rebuiltPoses.get(key);
- const mesh=avatarMaterial(sex,gear,look),p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame);
+ const mesh=avatarMaterial(sex,gear,look),p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame,ITEMS[gear.weapon]?.style==='magic');
  for(let v=0;v<p.length/3;v++){const i=v*3;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*mesh.p[i]+pose[k+1]*mesh.p[i+1]+pose[k+2]*mesh.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*mesh.n[i]+pose[k+1]*mesh.n[i+1]+pose[k+2]*mesh.n[i+2]);}}
  }
@@ -357,8 +358,8 @@ function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0
 }
 function avatarGpuPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,frame=Math.max(0,Math.min(a.clips[clip].frames-1,phase*(a.clips[clip].frames-1))),baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
- const key=[sex,clip,frame.toFixed(3),blend.toFixed(3),blend<1?baseClip:'',blend<1?baseFrame.toFixed(3):''].join(':');let pose=avatarRigPoses.get(key);
- if(!pose){pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame);avatarRigPoses.set(key,pose);if(avatarRigPoses.size>128)avatarRigPoses.delete(avatarRigPoses.keys().next().value);}
+ const key=[sex,clip,ITEMS[gear.weapon]?.style==='magic',frame.toFixed(3),blend.toFixed(3),blend<1?baseClip:'',blend<1?baseFrame.toFixed(3):''].join(':');let pose=avatarRigPoses.get(key);
+ if(!pose){pose=realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame,ITEMS[gear.weapon]?.style==='magic');avatarRigPoses.set(key,pose);if(avatarRigPoses.size>128)avatarRigPoses.delete(avatarRigPoses.keys().next().value);}
  const gpuMesh=avatarMaterial(sex,gear,look);return {...gpuMesh,gpuMesh,pose,avatar:a};
 }
 function avatarHelmet(mesh,a){
@@ -384,6 +385,20 @@ function fittedHairMesh(name,sex='male'){
 }
 function tintedHair(name,look,sex='male'){const key=sex+':'+name+':'+look%6;if(!hairTintCache.has(key)){const m=fittedHairMesh(name,sex),t=APPEARANCE_HAIR[look%6]||APPEARANCE_HAIR[0];hairTintCache.set(key,{...m,c:Float32Array.from(m.c,(v,i)=>v*t[i%3]),f:Float32Array.from(m.f,(v,i)=>v*t[i%3])});}return hairTintCache.get(key);}
 
+
+// The source staff's decorative grip was wider than the closed fingers.
+// Fit the shaft to the palm while preserving the artist's full-sized crown.
+let fittedStaffCache=null;
+function fittedStaffMesh(){
+ if(fittedStaffCache)return fittedStaffCache;
+ const source=briarRigs.Mage.meshes['2H_Staff'],p=new Float32Array(source.p),n=new Float32Array(source.n.length);
+ for(let i=0;i<p.length;i+=3){const blend=Math.max(0,Math.min(1,(p[i+1]-.32)/.34)),width=.28+blend*.40;p[i]*=width;p[i+1]*=.68;p[i+2]*=width;}
+ for(let i=0;i<source.i.length;i+=3){const a=source.i[i]*3,b=source.i[i+1]*3,c=source.i[i+2]*3,u=[p[b]-p[a],p[b+1]-p[a+1],p[b+2]-p[a+2]],v=[p[c]-p[a],p[c+1]-p[a+1],p[c+2]-p[a+2]],normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];for(const index of [a,b,c])for(let k=0;k<3;k++)n[index+k]+=normal[k];}
+ for(let i=0;i<n.length;i+=3){const length=Math.hypot(n[i],n[i+1],n[i+2])||1;for(let k=0;k<3;k++)n[i+k]/=length;}
+ const bounds=[0,1].map(side=>[0,1,2].map(axis=>{let value=side?-Infinity:Infinity;for(let i=axis;i<p.length;i+=3)value=side?Math.max(value,p[i]):Math.min(value,p[i]);return value;}));
+ return fittedStaffCache={...source,p,n,bounds};
+}
+
 const humanoidBeforeRebuild=humanoid3;
 humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  r=groundedPainter(r,x,z);
@@ -395,7 +410,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  const bow=ITEMS[gear.weapon]?.style==='ranged',attackClip=['ranged','magic'].includes(gear._attackStyle)?gear._attackStyle:ITEMS[gear.weapon]?.style==='magic'?'magic':bow?'ranged':gear.weapon?'melee':'unarmed',duration=a.clips[attackClip].duration,age=player?time-lastAttack:Number.isFinite(gear._attackAt)?time-gear._attackAt:Infinity,attacking=!busy&&!(player?playerMotion.moving:walk)&&age>=0&&age<duration&&(!playerAttackMotion||!player||playerAttackMotion.weapon===gear.weapon);
  // Small, distant NPCs retain the authored resting pose. Updating every finger
  // on every background character was needlessly repacking megabytes per frame.
- const idleClip=gear._portrait?'idle':poseGear.weapon?(bow?'bowIdle':ITEMS[poseGear.weapon]?.style==='magic'?'staffIdle':ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle'):'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=casting?'magic':firemaking?'firemaking':burying?'bury':gathering?(gathering.object.type==='fish'?'fishing':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?(gear._peerMotion?.running?'run':'walk'):idleClip;
+ const idleClip=gear._portrait&&ITEMS[poseGear.weapon]?.style!=='magic'?'idle':poseGear.weapon?(bow?'bowIdle':ITEMS[poseGear.weapon]?.style==='magic'?'staffIdle':ITEMS[poseGear.weapon]?.style==='melee'?'swordIdle':'idle'):'idle',nearbyIdle=!player&&cameraZoom3()*size>85&&Math.hypot(x-px-.5,z-py-.5)<6,idleTime=player?time:nearbyIdle?Math.floor(time*8)/8:0,idlePhase=(idleTime/a.clips[idleClip].duration)%1,clip=casting?'magic':firemaking?'firemaking':burying?'bury':gathering?(gathering.object.type==='fish'?'fishing':'melee'):attacking?attackClip:locomotion?(playerMotion.running?'run':'walk'):!player&&walk?(gear._peerMotion?.running?'run':'walk'):idleClip;
  const phase=casting?Math.min(.94,(time-castAt)/castDuration):burying?Math.min(1,(time-poseAction.started)/poseAction.duration):gathering?(gathering.object.type==='fish'?.2+Math.sin(gathering.phase*Math.PI)*.18:gathering.phase):attacking?age/duration:locomotion?playerMotion.phase:!player&&walk?(gear._peerMotion?.phase??(walk/10/.75)%1):idlePhase,blend=casting?Math.min(1,(time-castAt)/.18):burying?1:gathering?Math.min(1,.3+gathering.phase*5):attacking?Math.max(0,Math.min(1,age/.10,(duration-age)/.14)):locomotion?playerMotion.blend:1;
  const mesh=(r.skinned?avatarGpuPose:avatarPose)(sex,clip,phase,poseGear,look,blend,idleClip,idlePhase);
  const k=size*(race==='dwarf'?1.07:race==='elf'?.94:1),root=briarTransform(x,player?Math.max(0,Math.sin(Math.min(1,(time-playerHitAt)/.28)*Math.PI))*.025:0,z,k,heading,size*(race==='dwarf'?.77:race==='elf'?1.1:1));
@@ -418,6 +433,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
   const modular=wornModularMesh(sex,gear[slot]);
   if(modular)briarEmit(r,modular,world);
   else if(slot==='weapon'&&['bronzeSword','ironSword'].includes(gear.weapon)){fittedSwordRealm(r,world,gear.weapon==='bronzeSword');}
+  else if(slot==='weapon'&&ITEMS[gear.weapon]?.style==='magic')briarEmit(r,fittedStaffMesh(),affineMultiply(world,briarTransform(sex==='female'?-.003:-.008,0,-.006)));
   else if(source){const k=slot==='shield'?.62:ITEMS[gear.weapon]?.style==='magic'?.68:.78;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,0,0,0,k,0]));}
   else{const bow={face(p,c){r.face(p.map(v=>briarPoint(v,0,world)),c);}},points=Array.from({length:13},(_,i)=>[.13*Math.sin(i*Math.PI/12),-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.016,'#81613b',5);beamArt(bow,points[0],points[12],.004,'#c9bd9d',4);}
  }

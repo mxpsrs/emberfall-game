@@ -3,30 +3,30 @@
 const tutorialObject=role=>{const matches=(worldScenes.tutorial||worldScenes.overworld)?.objects.filter(o=>o.tutorialRole===role&&!o.collected)||[];return role==='rat'?matches.sort((a,b)=>Number(a.dead>time)-Number(b.dead>time)||Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py))[0]:matches[0];};
 const tutorialTutor=role=>tutorialObject('tutor-'+role);
 const lesson=(event,title,desc,role=null)=>({event,title,desc,point:()=>role?tutorialObject(role==='ore'&&s.bag.copperOre>0?'tin':role):null});
-const TUTORIAL_VERSION=6;
+const TUTORIAL_VERSION=7;
+const TUTORIAL_V6_EVENTS=["camera", "walk", "talk-guide", "talk-magic", "bag", "skills", "magic", "talk-mining", "ore", "smelt", "smith", "talk-combat", "equip-dagger", "combat-stats", "training-kit", "training-gear", "dummy", "monster", "loot", "ranged-kit", "ranged-gear", "ranged", "talk-woods", "tree", "talk-fishing", "fish", "fire", "cook-shrimp", "talk-cooking", "mix-dough", "bake-bread", "eat", "talk-bank", "deposit", "withdraw", "talk-worship", "bury", "spirit", "talk-finish"];
 const tutorialSteps=[
  lesson('camera','Look around','Swipe with one finger to turn the camera. Pinch to zoom. On a computer, drag the view or hold the arrow keys.'),
  lesson('walk','Take your first steps','Tap any clear ground and walk a few steps. Tap Run to travel faster; your energy recovers while walking or resting.'),
  lesson('talk-guide','Meet Elder Rowan','Rowan is in Firstlight Isle’s village square. He will explain the controls and introduce your tutors.','tutor-guide'),
- lesson('talk-magic','Find the magic tutor','Rowan sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
  lesson('bag','Your belongings','Open Bag in the navigation bar. Tap a material to highlight it, then tap another item or a world target. Press and hold any item for Use and its other actions.'),
  lesson('skills','Your skills','Open the Skills tab. Each skill has its own level and XP, including Attack, Strength, Defense and Hitpoints.'),
+ lesson('talk-magic','Find the magic tutor','Rowan sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
  lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses runes and trains your Magic level.','magic-dummy'),
  lesson('talk-mining','Visit the smith','Elowen sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.','tutor-mining'),
  lesson('ore','Mine copper and tin','Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.','ore'),
  lesson('smelt','Smelt a bronze bar','Tap copper or tin ore in your bag, then tap the furnace. Choose the bronze bar recipe to combine both ores.','furnace'),
  lesson('smith','Work the metal','Tap your bronze bar, then tap the practice anvil. Choose Dagger in the smithing menu. Your bag stays visible as you work.','practice-forge'),
  lesson('talk-combat','Meet the combat tutor','Orin sends you to Captain Vale at the training yard.','tutor-combat'),
- lesson('equip-dagger','Equip your bronze dagger','Open your bag and tap the bronze dagger you forged to equip it. Your weapon appears in the Equipment panel.'),
- lesson('combat-stats','Inspect your combat stats','Open Equipment, then tap the combat stats icon beneath your worn items. See your levels and the bonuses from your dagger.'),
- lesson('training-kit','A better practice weapon','Return to Captain Vale. He has a wooden training sword and shield to help you learn sword-and-shield combat.','tutor-combat'),
+ lesson('equip-dagger','Equip your bronze dagger','Open Equipment, then tap the bronze dagger in the bag beside it to equip it.'),
+ lesson('training-kit','A better practice weapon','Captain Vale will give you a wooden training sword and shield.','tutor-combat'),
  lesson('training-gear','Prepare for practice','Equip both the wooden training sword and wooden shield from your bag. Keep your bronze dagger; you made it yourself.'),
  lesson('dummy','Practice your attacks','With your wooden sword and shield equipped, tap the training dummy. Choose Attack, Strength, Defense or balanced training using the selector.','dummy'),
  lesson('monster','Enter the rat pen','Go through the gate beside Vale and defeat a giant rat inside the pen. The gate closes behind you. Tap Eat if your health gets low.','rat'),
- lesson('loot','Pick up the drops','Collect the coins and bones where the rat fell. Each tap takes the next item; keep the bones for Keeper Sera.'),
  lesson('ranged-kit','Learn ranged combat','Return to Captain Vale for a shortbow and arrows. He will teach you to fight across the low fence.','tutor-combat'),
  lesson('ranged-gear','Equip your bow and arrows','Equip the shortbow, then equip the arrows in your ammunition slot. Arrows left in your bag cannot be fired.'),
  lesson('ranged','Shoot across the fence','Stand outside the rat pen and attack a giant rat with your shortbow. Stay within bow range. Low fences stop feet, but arrows and spells can pass over them. Defeat a rat to complete the lesson.','rat'),
+ lesson('loot','Pick up the drops','Collect the coins and bones where the rat fell. Each tap takes the next item; keep the bones for Keeper Sera.'),
  lesson('talk-woods','Find the woodland tutor','Vale sends you to Forester Ash beside the timber yard to learn how to make camp.','tutor-woods'),
  lesson('tree','Cut your first log','Tap the marked tree. Your axe is carried with you; gathering trains Woodcutting.','tree'),
  lesson('talk-fishing','Follow Ash’s directions','Find Fisher Nell at Stillwater, just west of the village.','tutor-fishing'),
@@ -79,10 +79,10 @@ function tutorialStep(){return Number.isInteger(s.tutorial)?tutorialSteps[s.tuto
 function normalizeJourney(state,original=state){
  const previous=Math.max(0,Math.floor(Number(original?.tutorial)||0)),version=original?.tutorialVersion;
  const events=tutorialSteps.map(step=>step.event);
- const oldEvents=version===TUTORIAL_VERSION?events:version===5?TUTORIAL_V5_EVENTS:version===4?TUTORIAL_V4_EVENTS:version===3?TUTORIAL_V3_EVENTS:version===2?TUTORIAL_V2_EVENTS:null;
+ const oldEvents=version===TUTORIAL_VERSION?events:version===6?TUTORIAL_V6_EVENTS:version===5?TUTORIAL_V5_EVENTS:version===4?TUTORIAL_V4_EVENTS:version===3?TUTORIAL_V3_EVENTS:version===2?TUTORIAL_V2_EVENTS:null;
  // Record completed lesson identities before changing the sequence. Earlier
  // work stays complete even when its lesson now appears later in the journey.
- const completed=new Set(version===TUTORIAL_VERSION&&Array.isArray(original.tutorialCompleted)?original.tutorialCompleted.filter(event=>events.includes(event)):[]);
+ const completed=new Set([6,TUTORIAL_VERSION].includes(version)&&Array.isArray(original.tutorialCompleted)?original.tutorialCompleted.filter(event=>events.includes(event)):[]);
  for(const event of oldEvents?.slice(0,previous)||[])completed.add(event==='cook'?'cook-shrimp':event==='gear'?'equip-dagger':event);
  const finished=original?.tutorialReward===true||(oldEvents?previous>=oldEvents.length:previous>=14);
  state.tutorialCompleted=events.filter(event=>finished||completed.has(event));
@@ -104,6 +104,8 @@ function tutorialEvent(event){
  if(REMEMBERED_LESSONS.includes(event)){s.tutorialActions??={};s.tutorialActions[event]=true;}
  if(tutorialStep().event!==event)return;
  if(event==='talk-finish'&&typeof beginTutorialCrossing==='function'&&currentScene==='tutorial'&&!tutorialCrossing?.committing)return beginTutorialCrossing();
+ if(event==='monster'&&(!insideTrainingPen(px,py)||combatStyle()!=='melee'||typeof showValeLesson==='function'&&!s.tutorialGifts?.valeRatBriefed))return;
+ if(event==='ranged'&&(insideTrainingPen(px,py)||combatStyle()!=='ranged'))return;
  if(event==='loot'&&!(s.bag.bones>0))return;
  if(event==='equip-dagger'&&s.equipment.weapon!=='bronze_dagger')return;
  if(event==='combat-stats'&&s.equipment.weapon!=='bronze_dagger')return;
@@ -197,19 +199,11 @@ function talkTutor(o){
  const role=o.tutor,expected=tutorialStep()?.event;
  if(role==='magic'&&tutorialStep()){
   const ready=giveTutorialMagicSupplies();
-  if(expected==='talk-magic'&&ready){tutorialEvent('talk-magic');return;}
+  if(expected==='talk-magic'&&ready){dialog(TUTORS.magic.name,'<p>“'+TUTORS.magic.text+'”</p>',[['Continue',()=>{close();tutorialEvent('talk-magic');}]]);return;}
   if(typeof gameMessage==='function')gameMessage('Arcanist Elowen: '+(ready?'Your staff and practice runes are ready. Follow your next instruction.':'Make room in your bag. I will hand over your supplies as soon as there is space.'));
   renderTutorial();return;
  }
- if(role==='combat'&&expected==='ranged-kit'){
-  dialog('Captain Vale','<p>“A bow lets you strike before an enemy reaches you. Take this shortbow and these arrows. Equip both: the bow goes in your hands, and the arrows go in your ammunition slot.”</p><p>“Now leave the pen and shoot a rat across its low fence. Arrows and spells pass over low fences; solid walls block them. Keep your distance and watch your ammunition.”</p>',[['Take bow and arrows',()=>{if(grantTutorialItems('ranged',{shortbow:1,arrows:60})){close();tutorialEvent('ranged-kit');}}]]);return;
- }
- if(role==='combat'&&expected==='training-kit'){
-  dialog('Captain Vale','<p>“You made that dagger yourself—good work. It is a poor choice for learning to defend yourself, though. Take this wooden sword and shield. Their reach and protection will help you practise safely.”</p><p>Both are yours to keep. I have also packed three cooked shrimp. Save them for the rat pen and eat one when you are injured. Equip the sword and shield, then try the dummy.</p>',[['Take sword and shield',()=>{if(grantTutorialItems('combat',{woodenSword:1,woodenShield:1,shrimp:3})){s.tutorialGifts.combatFood=true;close();tutorialEvent('training-kit');}}]]);return;
- }
- if(role==='combat'&&['equip-dagger','combat-stats','training-gear','ranged-gear'].includes(expected)){
-  const step=tutorialStep();dialog('Captain Vale','<p>“'+step.desc+'”</p>',[[expected==='combat-stats'?'View combat stats':'Open Bag',()=>{close();if(expected==='combat-stats')openCombatStats();else openTutorialPanel('bag');}]]);return;
- }
+ if(role==='combat'&&typeof showValeLesson==='function'&&showValeLesson(expected))return;
  if(role==='guide'&&expected==='talk-finish'){dialog('Elder Rowan','<p>“You have learned from our tutors and practised each skill. I will teleport you to Briarhaven on the mainland. Take your supplies with you; this is a one-way journey.”</p>',[['Finish apprenticeship',()=>{close();tutorialEvent('talk-finish');}]]);return;}
  if(role==='guide'&&expected!=='talk-guide'){elder();return;}
  const t=TUTORS[role],buttons=[];

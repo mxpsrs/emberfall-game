@@ -25,7 +25,14 @@ const insideFirstlightLand=(x,y)=>Number.isFinite(x+y)&&x>=1&&y>=1&&x<FIRSTLIGHT
 // Keep a single finished elevation through the well, stalls and door aprons;
 // broad earth banks meet the island's natural hills outside the developed area.
 const FIRSTLIGHT_TOWN_LEVEL=.75;
-const FIRSTLIGHT_TOWN_PADS=[[32,43,57,64],[29,31,42,43],[51,32,62,43],[57,49,70,62]];
+const FIRSTLIGHT_TOWN_PADS=[
+ [32,43,57,64],[29,31,42,43],[51,32,62,43],[57,49,70,62],
+ // Forge, ore yard and their approach are one graded work site.
+ [71,31,92,55],[62,43,75,55],
+ // Keep the southern approach, Vale’s yard and the rat pen low and connected.
+ // Other built courts meet their buildings at the same finished level.
+ [18,40,32,55],[34,64,49,78],[34,76,66,91],[23,83,34,95],[70,60,88,77],[68,82,88,103]
+];
 const gradeBeforeFirstlight=gradeLand;
 gradeLand=function(x,z,height){
  if(currentScene!==TUTORIAL_SCENE)return gradeBeforeFirstlight(x,z,height);

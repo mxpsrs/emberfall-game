@@ -36,8 +36,14 @@ try{
  assert.equal(file('alice').state.bank.logs,2);assert.equal(file('alice').state.xp.Magic,5);
  store.close();
  // Simulate loss of only a character row, leaving its account and JSON intact.
- const {DatabaseSync}=await import('node:sqlite');const db=new DatabaseSync(path.join(directory,'server-data/veldren.sqlite'));db.prepare('DELETE FROM character_saves WHERE user_id=?').run('account:'+players.alice.account.id);db.close();
+ const {DatabaseSync}=await import('node:sqlite');const db=new DatabaseSync(path.join(directory,'server-data/veldren.sqlite'));db.exec('DROP TRIGGER local_character_delete');db.prepare('DELETE FROM character_saves WHERE user_id=?').run('account:'+players.alice.account.id);db.close();
  store=openLocalStorage({dataDirectory:directory});assert.equal(JSON.parse(store.db.prepare('SELECT state FROM character_saves WHERE user_id=?').get('account:'+players.alice.account.id).state).bag.arrows,75);
  assert.equal(fs.readdirSync(path.join(directory,'player-saves')).filter(n=>n.endsWith('.json')).length,2);
+ store.close();const edited=file('alice');edited.state.bag.arrows=321;fs.writeFileSync(path.join(directory,'player-saves/alice.json'),JSON.stringify(edited));
+ store=openLocalStorage({dataDirectory:directory});assert.equal(JSON.parse(store.db.prepare('SELECT state FROM character_saves WHERE user_id=?').get(edited.userId).state).bag.arrows,321,'JSON wins over cached DB state');
+ const newer=file('alice');assert(newer.revision>edited.revision,'offline restore advances revision');store.close();
+ const interrupted=new DatabaseSync(path.join(directory,'server-data/veldren.sqlite'));newer.state.bag.arrows=444;interrupted.prepare('UPDATE character_saves SET state=?,revision=revision+1 WHERE user_id=?').run(JSON.stringify(newer.state),newer.userId);interrupted.close();
+ assert.equal(file('alice').state.bag.arrows,321,'simulated interrupted file write leaves the old file');
+ store=openLocalStorage({dataDirectory:directory});assert.equal(file('alice').state.bag.arrows,444,'startup completes the durable file outbox before loading characters');
  console.log('PASS: automatic JSON character files, real two-player chat/trade, transaction rollback, persistent login and saves across restart, and JSON recovery.');
 }finally{store.close();fs.rmSync(directory,{recursive:true,force:true});}

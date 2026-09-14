@@ -11,19 +11,12 @@ function settleTutorialHandoffs(){
   if(s.tutorialMagicPending||(event==='magic'&&(!(s.gear.oakStaff>0)||!(s.bag.airRunes>0)||!(s.bag.runes>0)))){
    if(giveTutorialMagicSupplies()&&event==='talk-magic')tutorialEvent('talk-magic');
   }
-  event=tutorialStep()?.event;
-  const kit=event==='training-kit'?['combat',{woodenSword:1,woodenShield:1,shrimp:3}]:event==='ranged-kit'?['ranged',{shortbow:1,arrows:60}]:null;
-  if(kit&&(s.tutorialGifts?.[kit[0]]||inventorySlots().length+tutorialGiftSpace(kit[1])<=BAG_SIZE)){
-   if(grantTutorialItems(...kit)){
-    if(kit[0]==='combat')s.tutorialGifts.combatFood=true;
-    if(typeof gameMessage==='function')gameMessage(kit[0]==='combat'?'Captain Vale: That dagger will not protect you well. Here is a wooden sword, shield and some food.':'Captain Vale: Good work. Here is your shortbow and 60 arrows. Let’s learn ranged combat.');
-    tutorialEvent(event);
-   }
-  }
+  settleValeLesson();
  }finally{tutorialGuidanceBusy=false;}
 }
 function tutorialGuidanceWorldGoal(goal){
  const event=tutorialStep()?.event;
+ if(valeLessonPending()&&['monster','ranged-kit'].includes(event))return tutorialTutor('combat');
  if(event==='ranged'&&insideTrainingPen(px,py)||event==='monster'&&!insideTrainingPen(px,py))return trainingPenGate;
  if(event==='cook-shrimp'&&!(s.bag.rawShrimp>0))return tutorialObject('fish');
  if(event==='bury'&&!(s.bag.bones>0))return tutorialTutor('worship');
@@ -32,7 +25,7 @@ function tutorialGuidanceWorldGoal(goal){
 function tutorialGuidanceAction(){
  if(!tutorialGuidanceActive())return null;
  const step=tutorialStep(),event=step.event,index=s.tutorial;
- const name=index<3?'Elder Rowan':index<7?'Arcanist Elowen':index<11?'Smith Orin':index<22?'Captain Vale':index<24?'Forester Ash':index<28?'Fisher Nell':index<32?'Cook Bram':index<35?'Banker Ada':index<38?'Keeper Sera':'Elder Rowan';
+ const name=index<5?'Elder Rowan':index<7?'Arcanist Elowen':index<11?'Smith Orin':index<21?'Captain Vale':index<23?'Forester Ash':index<27?'Fisher Nell':index<31?'Cook Bram':index<34?'Banker Ada':index<37?'Keeper Sera':'Elder Rowan';
  const make=(key,instruction,selector=null,run=guide)=>({key:event+':'+key,title:step.title,speaker:name,instruction,selector,run,button:selector?'Show control':'Show me where',progress:''});
  const nav=(id,label)=>make('open-'+id,'Open '+label+'.','#gameTabs [data-tab="'+id+'"]',()=>openGamePanel(id));
  const bagOpen=()=>$('gameDock').hidden===false&&tab==='bag';
@@ -40,12 +33,13 @@ function tutorialGuidanceAction(){
  const world=(text,key='world')=>make(key,text);
  const selected=typeof selectedUseItem==='string'?selectedUseItem:null;
  const bench=window.realmWorkbench;
- if(s.tutorialMagicPending||['training-kit','ranged-kit'].includes(event))return make('space','Make room in your bag. Your tutor will give you the supplies automatically.',null,()=>openGamePanel('bag'));
+ if(s.tutorialMagicPending||s.tutorialValePendingSpace)return make('space','Make room in your bag. Your tutor will give you the supplies automatically.',null,()=>openGamePanel('bag'));
+ if(valeLessonPending())return world(['monster','ranged-kit'].includes(event)?'Come back to me for your next lesson.':'Finish speaking with me to receive your practice equipment.','vale-conversation');
  if(event==='camera')return world('Swipe the game view with one finger, or drag with your mouse, to turn the camera.');
  if(event==='walk')return world('Tap a clear patch of ground to walk there.');
  if(event.startsWith('talk-'))return world(event==='talk-finish'?'Speak to Elder Rowan to finish your apprenticeship.':'Speak to '+TUTORS[event.slice(5)].name+'.');
- if(event==='bag')return nav('bag','Bag');
- if(event==='skills')return nav('skills','Skills');
+ if(event==='bag')return {...nav('bag','Bag'),instruction:'Open your bag. This is where things go when you pick them up.'};
+ if(event==='skills')return {...nav('skills','Skills'),instruction:'Open Skills. There is a lot to learn in this world, but my freedom fighters and I will show you the ropes.'};
  if(event==='magic'){
   if(s.equipment.weapon!=='oakStaff'||s.spell!=='spark')return tab!=='spells'||$('gameDock').hidden?nav('spells','Magic'):make('spell','Tap Wind strike to ready your staff and spell.','[data-spell-id="spark"]',()=>openGamePanel('spells'));
   return world('Tap the practice dummy inside Elowen’s school to cast your spell.');
@@ -60,7 +54,7 @@ function tutorialGuidanceAction(){
   if(selected!==id&&!(smelt&&selected==='tinOre'))return item(id,'Tap',' to select it');
   return world(smelt?'Tap Orin’s furnace to use your selected ore.':'Tap Orin’s anvil to use your selected bronze bar.');
  }
- if(event==='equip-dagger')return item('bronze_dagger','Tap',' to equip it');
+ if(event==='equip-dagger')return !window.equipmentOpen?nav('gear','Equipment'):item('bronze_dagger','Tap',' to equip it');
  if(event==='combat-stats')return window.equipmentOpen?make('stats','Tap Combat stats beneath your equipment.','#equipmentStats',openCombatStats):nav('gear','Equipment');
  if(event==='training-gear')return item(s.equipment.weapon!=='woodenSword'?'woodenSword':'woodenShield','Tap',' to equip it');
  if(event==='ranged-gear')return item(combatStyle()!=='ranged'?'shortbow':'arrows','Tap',' to equip it');
@@ -98,24 +92,18 @@ tutorialNextAction=function(){return tutorialGuidanceAction()||tutorialJournalNe
 function renderTutorialGuidance(){
  if(tutorialGuidanceBusy)return;
  settleTutorialHandoffs();
- let action=tutorialGuidanceAction(),coach=$('tutorialCoach');
- if(!coach){coach=document.createElement('section');coach.id='tutorialCoach';coach.setAttribute('aria-label','Tutor guidance');coach.innerHTML='<div><strong id="tutorialCoachSpeaker"></strong><button id="tutorialCoachHide" type="button" aria-label="Minimize tutorial guidance">−</button></div><p id="tutorialCoachLine" role="status" aria-live="polite"></p><button id="tutorialCoachGuide" type="button">Show me where</button>';$('game').appendChild(coach);$('tutorialCoachHide').onclick=()=>{const collapsed=coach.classList.toggle('coach-collapsed');$('tutorialCoachHide').textContent=collapsed?'+':'−';$('tutorialCoachHide').setAttribute('aria-label',collapsed?'Expand tutorial guidance':'Minimize tutorial guidance');};}
- coach.hidden=!action;
+ let action=tutorialGuidanceAction();
  if(tutorialGuidanceTarget){tutorialGuidanceTarget.classList.remove('tutorial-next-control');tutorialGuidanceTarget=null;}
  if(!action){tutorialGuidanceKey='';return;}
- // Do not ask players to click scenery through a window. The close button is
- // itself the next action, while workbench and inventory steps remain usable.
+ if(npcDialogueState)return;
  if($('modal').open&&!action.selector&&!action.element&&!npcDialogueState)action={...action,key:action.key+':close',instruction:'Close this window to continue.',selector:'#closeModal',run:close};
  const el=action.element||(action.selector?document.querySelector(action.selector):null);
  if(el&&!el.disabled&&(!el.getClientRects||el.getClientRects().length)){el.classList.add('tutorial-next-control');tutorialGuidanceTarget=el;}
- $('tutorialCoachSpeaker').textContent=action.speaker+' · '+(s.tutorial+1)+'/'+tutorialSteps.length;
- if($('tutorialCoachLine').textContent!==action.instruction)$('tutorialCoachLine').textContent=action.instruction;
- $('tutorialCoachGuide').textContent=action.selector?'Show control':'Show me where';
- $('tutorialCoachGuide').onclick=()=>{if(el){el.scrollIntoView?.({block:'nearest'});el.focus();}else action.run();};
  const key=(s.character.name||'')+':'+action.key;
  if(tutorialGuidanceKey!==key){
   tutorialGuidanceKey=key;
-  if(typeof gameMessage==='function')gameMessage(action.speaker+': '+action.instruction,{action:()=>action.run()});
+  if(typeof gameMessage==='function')gameMessage(action.speaker+': '+action.instruction,{action:()=>{questJournalSelection='tutorial';openGamePanel('quests');}});
+  if(tab==='quests'&&!$('gameDock').hidden&&questJournalSelection==='tutorial')renderQuestJournal();
  }
 }
 function queueTutorialGuidance(){
@@ -123,7 +111,7 @@ function queueTutorialGuidance(){
  requestAnimationFrame(()=>{tutorialGuidanceQueued=false;renderTutorialGuidance();});
 }
 const guidedTutorialEvent=tutorialEvent;
-tutorialEvent=function(event){guidedTutorialEvent(event);settleTutorialHandoffs();queueTutorialGuidance();};
+tutorialEvent=function(event){guidedTutorialEvent(event);queueTutorialGuidance();};
 const guidedTutorialRender=renderTutorial;
 renderTutorial=function(){guidedTutorialRender();queueTutorialGuidance();};
 const guidedRenderUI=renderUI;
