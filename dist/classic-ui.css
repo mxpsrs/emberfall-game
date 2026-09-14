@@ -62,3 +62,5 @@ body.classic-ui{--ui-bg:#101f24;--ui-panel:#182d33;--ui-raised:#223d43;--ui-line
 .classic-ui [hidden]{display:none!important}
 
 .classic-ui .npc-dialogue #npcPage,.classic-ui .npc-choice-number{color:var(--ui-muted)}.classic-ui .npc-dialogue .npc-choice:hover,.classic-ui .npc-dialogue .npc-choice:focus-visible{background:#304f55;color:var(--ui-text);border-color:var(--ui-accent)}.classic-ui #gameTooltip{background:var(--ui-bg);color:var(--ui-text);border:1px solid var(--ui-line);border-radius:8px;text-shadow:none}.classic-ui .equipment-tools-back,.classic-ui .trade-wallet{color:var(--ui-accent)}
+
+.classic-ui #characterNameNote{display:block;font:11px/1.4 Arial;color:var(--ui-muted);margin-top:5px}.classic-ui #characterName[readonly]{color:var(--ui-muted);border-style:dashed;cursor:default}

@@ -54,7 +54,7 @@ openCreator=function(edit=false){
  stop();if($('modal').open)$('modal').close();editingCharacter=edit;selectedLook=s.character?.look||0;creatorAngle=-.4;creatorFace=false;
  creatorDraft={race:'human',frame:'male',skin:1,hair:0,hairColor:1,beard:0,topStyle:4,topColor:6,bottomStyle:3,bottomColor:7,...s.character};
  for(const [key,,options]of CREATOR_FIELDS)if(!options.some((_,i)=>creatorChoiceValue(key,i)===creatorDraft[key]))creatorDraft[key]=creatorChoiceValue(key,0);
- $('creatorTitle').textContent=edit?'Change your appearance':'Choose your appearance';$('characterName').value=s.character?.name||accountUsername||'';
+ $('creatorTitle').textContent=edit?'Change your appearance':'Choose your appearance';syncCharacterName();
  $('begin').textContent=edit?'Save appearance':'Begin adventure';$('cancelCreator').hidden=!edit;$('characterSaveError').textContent='';$('creatorZoom').textContent='Face detail';
  buildCreatorControls();$('creator').showModal();renderLooks();
 };

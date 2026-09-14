@@ -14,6 +14,16 @@ const state={sceneId:'overworld',combatProgress:{kills:{forestgiant:2},firstClea
 assert.equal((await handleSave(req('/api/character','PUT',{state,revision:0,resetVersion:SAVE_RESET_VERSION},cookie),env)).status,200);
 assert.deepEqual((await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state.character,state.character);
 const savedCharacter=(await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state;assert.deepEqual(savedCharacter.combatProgress,state.combatProgress);assert(savedCharacter.boss&&savedCharacter.wardenClear,'legacy quest completion survives the creature release');
+// Names are fixed after the first successful save; appearances remain editable.
+for(const character of [{...state.character,name:'Renamed'},null,{},undefined]){
+ const rejected=await handleSave(req('/api/character','PUT',{state:{...state,character},revision:1,resetVersion:SAVE_RESET_VERSION},cookie),env);
+ assert.equal(rejected.status,400);assert.match((await rejected.json()).error,/name is permanent/);
+}
+let current=await (await handleSave(req('/api/character','GET',null,secondCookie),env)).json();assert.equal(current.revision,1);assert.deepEqual(current.state,state,'rejected renames cannot alter the save');
+const restyled={...state,character:{...state.character,frame:'male',hair:1,topColor:6}};
+assert.equal((await handleSave(req('/api/character','PUT',{state:restyled,revision:1,resetVersion:SAVE_RESET_VERSION},cookie),env)).status,200);
+current=await (await handleSave(req('/api/character','GET',null,secondCookie),env)).json();assert.equal(current.state.character.name,'Test_Player');assert.equal(current.state.character.hair,1);assert.equal(current.state.character.topColor,6);
+assert.equal((await handleSave(req('/api/character','PUT',{state,revision:1,resetVersion:SAVE_RESET_VERSION},cookie),env)).status,409,'stale saves still cannot overwrite the latest appearance');
 const peer=await handlePlayers(req('/api/players','POST',{scene:'overworld',x:42,y:51},cookie),env);assert.equal(peer.status,200);
 const stored=db.prepare('SELECT password_hash FROM game_accounts').get().password_hash;assert.match(stored,/^\$2[ab]\$12\$/);assert.notEqual(stored,credentials.password);assert.equal(db.prepare('SELECT count(*) n FROM game_sessions WHERE token_hash=?').get(cookie.split('=')[1]).n,0);
 assert.equal((await handleAuth(req('/api/auth/register','POST',credentials,'','https://evil.test'),env)).status,403);

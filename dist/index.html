@@ -22,7 +22,7 @@
    </div>
    <section class="creator-options"><h3>Clothing</h3><div id="clothingFields"></div><button id="creatorRandom" type="button">Randomise appearance</button></section>
   </div>
-  <div class="creator-finish"><div class="creator-name"><label for="characterName">Character name</label><input id="characterName" name="characterName" maxlength="18" required autocomplete="off" placeholder="Your name in Veldren"></div><button class="primary" id="begin" type="submit">Begin adventure</button><button type="button" id="cancelCreator" hidden>Cancel</button></div>
+  <div class="creator-finish"><div class="creator-name"><label for="characterName">Character name</label><input id="characterName" name="characterName" maxlength="18" required autocomplete="off" aria-describedby="characterNameNote" placeholder="Your name in Veldren"><small id="characterNameNote">Choose carefully. Your character name cannot be changed later.</small></div><button class="primary" id="begin" type="submit">Begin adventure</button><button type="button" id="cancelCreator" hidden>Cancel</button></div>
   <p id="characterSaveError" role="alert"></p><p class="appearance-note">These are your everyday clothes. Earn equipment as you learn from the tutors on Firstlight Isle.</p>
  </form>
 </dialog>

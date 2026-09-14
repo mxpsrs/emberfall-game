@@ -25,6 +25,10 @@ export async function handleSave(request,env){
  if(body.resetVersion!==resetVersion)return reply({code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'},409);
  const st=body.state;if(!Number.isInteger(body.revision)||body.revision<0||!st||typeof st!=='object'||!st.xp||!st.bag||!Number.isFinite(st.x)||!Number.isFinite(st.y)||!Number.isFinite(st.hp)||!Number.isFinite(st.gold))return reply({error:'Invalid character data'},400);
  const previous=row?JSON.parse(row.state):null;
+ // Enforce identity on the server too, including attempts to erase the
+ // character first and recreate it under a different name. Revision checks
+ // below prevent a concurrent first save from replacing an established name.
+ if(typeof previous?.character?.name==='string'&&st.character?.name!==previous.character.name)return reply({error:'Your character name is permanent. You can still change your appearance.'},400);
  if(completedApprenticeship(previous)&&(!completedApprenticeship(st)||st.sceneId==='tutorial'))return reply({error:'The apprenticeship is complete. Tutorial re-entry is unavailable.'},400);
  if(st.tutorialIslandVersion>=1&&((st.sceneId==='tutorial')===completedApprenticeship(st)))return reply({error:'Invalid apprenticeship destination.'},400);
  const stamp=new Date().toISOString(),data=JSON.stringify(st);

@@ -212,9 +212,15 @@ function renderPanel(){
   if(tab==='skills'){const skills=Object.entries(s.xp).filter(([k])=>k!=='Combat');pageControls(skills.length,4);html='<div class="questhead"><h2>Skills</h2><small>Combat '+combatLevel()+'</small></div><div class="grid skillcards">'+pageItems(skills,4).map(([k,x])=>{const level=lv(k),base=skillThreshold(k,level),next=skillThreshold(k,level+1);return '<div class="item" title="'+(COMBAT_SKILL_DETAILS[k]||'')+'">'+k+' <b>Lv. '+level+'</b><small>'+Math.floor(x).toLocaleString()+' / '+(level===99?'MAX':next.toLocaleString())+' XP</small><div class="skillbar"><i style="width:'+(level===99?100:Math.max(0,Math.min(100,(x-base)/(next-base)*100)))+'%"></i></div><small class="skillpurpose">'+(COMBAT_SKILL_DETAILS[k]||'')+'</small></div>';}).join('')+'</div>';}
   $('panel').innerHTML=html;
 }
+function syncCharacterName(){
+  const input=$('characterName'),locked=typeof s.character?.name==='string';
+  input.value=locked?s.character.name:typeof accountUsername==='string'?accountUsername:'';
+  input.readOnly=locked;input.setCustomValidity('');
+  $('characterNameNote').textContent=locked?'Your name is permanent. You can change your appearance.':'Choose carefully. Your character name cannot be changed later.';
+}
 function openCreator(edit=false){
   stop();if($('modal').open)$('modal').close();editingCharacter=edit;selectedLook=s.character?.look||0;
-  $('characterName').value=s.character?.name||'';$('creatorTitle').textContent=edit?'Your adventurer':'Create your adventurer';
+  syncCharacterName();$('creatorTitle').textContent=edit?'Your adventurer':'Create your adventurer';
   $('creatorIntro').textContent=edit?'Choose how you appear in the borderlands.':s.quest>0?'Welcome back to Briarhaven. Give your adventurer a name and appearance. Your items and skills are waiting for you.':'Beyond Briarhaven’s gates, the old roads are growing dangerous. A new adventurer has arrived.';
   $('begin').textContent=edit?'Save character':'Enter Briarhaven';$('cancelCreator').hidden=!edit;
   const container=$('looks');container.innerHTML='';
@@ -228,7 +234,7 @@ function renderLooks(){
 let portraitAppearance=null;
 function drawPortrait(){const key=JSON.stringify([s.character,s.equipment]);if(portraitAppearance===key)return;const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);portraitAppearance=key;}
 async function finishCharacter(name,look){
-  const cleaned=name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
+  const cleaned=s.character?.name??name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
   if(!s.character){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}
   const draft=typeof creatorDraft==='undefined'?null:creatorDraft;
   s.character={...(draft||{}),name:cleaned,look:Math.max(0,Math.min(3,look)),race:'human',frame:draft?.frame||s.character?.frame||'male',hair:draft?.hair??s.character?.hair??0,creationVersion:3};
