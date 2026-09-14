@@ -1,4 +1,5 @@
 export {handleSocial} from './social.js';
+export {handleStatus} from './status.js';
 export {maintenanceGate,handleMaintenance} from './maintenance.js';
 import {authenticatedPlayer,handleAuth} from './auth.js';
 import {SAVE_RESET_VERSION,currentResetVersion,RESET_VERSION_SQL} from './reset-policy.js';

@@ -15,7 +15,7 @@ const other=shop.building;px=shop.x;py=shop.y;delete other.service.openedAt;goal
 activateScene('overworld',43,52);drawMinimap();assert(miniServiceMarkers.length>=6);const marker=miniServiceMarkers.find(m=>m.entry.tags.includes('tutor')),rect=$('minimap').getBoundingClientRect(),x=rect.left+marker.x*rect.width/300,y=rect.top+marker.y*rect.height/300;
 assert.equal(hitMapService(miniServiceMarkers,x,y,rect,300,300).id,marker.entry.id,'scaled canvas hit matches visible icon');assert.equal(mapServiceAtMinimap({clientX:x,clientY:y}).id,marker.entry.id);
 let opened=null,walked=0;const realOpen=openLocalMap;openLocalMap=id=>opened=id;walkTo=()=>walked++;walkFromMinimap({clientX:x,clientY:y});assert.equal(opened,null);assert.equal(walked,1,'minimap taps continue to walk to the chosen tile, including service markers');
-walkFromMinimap({clientX:rect.left,clientY:rect.top});assert.equal(walked,1,'outside round minimap is inert');openLocalMap=realOpen;
+walkFromMinimap({clientX:rect.left,clientY:rect.top});assert.equal(walked,2,'square minimap corner is a valid travel target');walkFromMinimap({clientX:rect.left-1,clientY:rect.top});assert.equal(walked,2,'outside square minimap is inert');openLocalMap=realOpen;
 const iconCanvas=document.createElement('canvas');iconCanvas.width=iconCanvas.height=48;for(const name of Object.keys(GAME_ICON_DEFS)){const g=iconCanvas.getContext('2d');g.clearRect(0,0,48,48);drawGameIcon(g,name,0,0,48);assert(g.getImageData(0,0,48,48).data.some(v=>v>0),name+' draws');}
-console.log('PASS: real shop stock, all nine tutors, bank deduplication, indoor entrance/exit routes, scaled marker taps, circular boundaries and every shared icon.');
+console.log('PASS: real shop stock, all nine tutors, bank deduplication, indoor entrance/exit routes, scaled marker taps, square boundaries and every shared icon.');
 }`,ctx);

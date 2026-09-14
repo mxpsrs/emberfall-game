@@ -1,6 +1,7 @@
 'use strict';
 let panelPage=0;
-function setHudButton(button,label,icon){const b=typeof button==='string'?$(button):button;if(!b)return;b.title=label;b.setAttribute('aria-label',label);if(typeof gameIcon==='function'){b.innerHTML=gameIcon(icon);b.classList.add('hud-icon');b.dataset.icon=icon;b.dataset.helpHold='true';}else b.textContent=label;}
+const JOURNAL_TAB_LABELS={combat:'Combat',skills:'Skills',quests:'Journal',bag:'Bag',gear:'Equipment',worship:'Spirits',spells:'Magic',friends:'Friends',ignore:'Blocked',settings:'Settings'};
+function setHudButton(button,label,icon){const b=typeof button==='string'?$(button):button;if(!b)return;b.title=label;b.setAttribute('aria-label',label);if(typeof gameIcon==='function'){b.innerHTML=gameIcon(icon);b.classList.add('hud-icon');b.dataset.icon=icon;b.dataset.helpHold='true';}else b.textContent=label;if(b.dataset.tab&&JOURNAL_TAB_LABELS[b.dataset.tab]){const text=document.createElement('span');text.className='journal-tab-label';text.textContent=JOURNAL_TAB_LABELS[b.dataset.tab];b.appendChild(text);}}
 function syncPanelButton(){const open=!$('gameDock').hidden;setHudButton('togglePanels',window.realmTrade?'Close '+window.realmTrade.kind:open?'Close panel':'Open bag',open?'close':'bag');$('togglePanels').setAttribute('aria-expanded',String(open));}
 function openGamePanel(which,toggle=false){if(window.realmTrade)return;if(which==='gear'&&typeof openEquipment==='function')return openEquipment(toggle);if((window.equipmentStatsOpen||window.equipmentOpen||window.realmWorkbench)&&(which!=='bag'||toggle))close();const open=!(toggle&&!$('gameDock').hidden&&tab===which);$('gameDock').hidden=!open;document.body.classList.toggle('panels-open',open);tab=which;panelPage=0;syncPanelButton();syncTabs();if(open){tutorialEvent(which);renderPanel();}}
 function syncAmbientIcon(){const on=typeof ambientEnabled!=='undefined'&&ambientEnabled;setHudButton('ambientButton',on?'Mute sound':'Enable sound',on?'sound':'mute');$('ambientButton').setAttribute('aria-pressed',String(on));}
@@ -58,7 +59,7 @@ function drawMinimap(){
  const size=Math.ceil(Math.hypot(cw,ch));if(miniMapLayer.width!==size){miniMapLayer.width=miniMapLayer.height=size;}
  const span=bounds.w*size/cw,outer={x:px+.5-span/2,y:py+.5-span/2,w:span,h:span};
  drawMapTerrain(miniMapLayer.getContext('2d'),outer,size,size);miniTerrain.next=time+.08;
- g.clearRect(0,0,cw,ch);g.save();g.beginPath();g.arc(cw/2,ch/2,Math.min(cw,ch)/2,0,Math.PI*2);g.clip();
+ g.clearRect(0,0,cw,ch);g.save();g.beginPath();g.rect(0,0,cw,ch);g.clip();
  g.save();g.translate(cw/2,ch/2);g.rotate(yaw);g.drawImage(miniMapLayer,-size/2,-size/2);g.restore();
  const point=(x,y)=>minimapPoint(x,y,bounds,yaw);
  const guidePath=tutorialGuideRoute();if(guidePath.length){g.strokeStyle='#e6d8a0';g.lineWidth=1.5;g.beginPath();for(const [i,p]of [[px,py],...guidePath].entries()){const q=point(...p);if(i)g.lineTo(...q);else g.moveTo(...q);}g.stroke();}
@@ -67,7 +68,7 @@ function drawMinimap(){
  if(typeof onlinePeers!=='undefined'&&onlineScene===currentScene)for(const peer of onlinePeers.values()){const q=point(peer.drawX??peer.x,peer.drawY??peer.y);g.fillStyle='#fff';g.fillRect(q[0]-2,q[1]-2,4,4);}
  miniServiceMarkers=[];
  if(typeof collectMapServices==='function')for(const entry of collectMapServices()){
-  const [x,y]=point(entry.x,entry.y);if(Math.hypot(x-cw/2,y-ch/2)>cw/2-13)continue;
+  const [x,y]=point(entry.x,entry.y);if(x<13||y<13||x>cw-13||y>ch-13)continue;
   miniServiceMarkers.push({entry,x,y,r:13});g.save();g.shadowColor='#141a12';g.shadowBlur=3;drawGameIcon(g,mapIconFor(entry),x-13,y-13,26);g.restore();
  }
  if(path.length){const q=point(...path[path.length-1]);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(q[0],q[1]+5);g.lineTo(q[0],q[1]-9);g.stroke();g.fillStyle='#e84436';g.fillRect(q[0]+1,q[1]-9,8,5);}
@@ -78,6 +79,6 @@ function walkFromMinimap(e){
  if(!assetsReady||cloudConflict||cloudDisconnected||$('creator').open||$('modal').open||$('spiritsDialog').open)return;
  const rect=$('minimap').getBoundingClientRect();if(!rect.width||!rect.height)return;
  const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
- if(u<0||v<0||u>=1||v>=1||Math.hypot(u-.5,v-.5)>.5)return;
+ if(u<0||v<0||u>=1||v>=1)return;
  const [x,y]=minimapTile(u,v),[w,h]=sceneSize();if(x>=0&&y>=0&&x<w&&y<h)walkTo(x,y);
 }

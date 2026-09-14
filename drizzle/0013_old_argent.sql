@@ -1,0 +1,1 @@
+CREATE INDEX `idx_presence_seen` ON `player_presence` (`seen_at`);

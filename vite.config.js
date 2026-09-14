@@ -3,16 +3,16 @@ import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-import {handleSave,handlePlayers,handleAuth} from './worker/api.js';
+import {handleSave,handlePlayers,handleAuth,handleStatus} from './worker/api.js';
 
 // Isolated local gameplay saves; production continues to use the Sites D1 binding.
 const db=new DatabaseSync(':memory:');
 for(const file of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())db.exec(fs.readFileSync('drizzle/'+file,'utf8'));
-const env={DB:{prepare(sql){return{bind(...args){return{
- async first(){return db.prepare(sql).get(...args)},
- async all(){return{results:db.prepare(sql).all(...args)}},
- async run(){return{meta:{changes:Number(db.prepare(sql).run(...args).changes)}}}
-}}}}}};
+const env={DB:{prepare(sql){return{args:[],bind(...args){this.args=args;return this},
+ async first(){return db.prepare(sql).get(...this.args)},
+ async all(){return{results:db.prepare(sql).all(...this.args)}},
+ async run(){return{meta:{changes:Number(db.prepare(sql).run(...this.args).changes)}}}
+}},async batch(statements){db.exec('BEGIN');try{const out=[];for(const statement of statements)out.push(await statement.run());db.exec('COMMIT');return out;}catch(error){db.exec('ROLLBACK');throw error;}}}};
 export default defineConfig({
  root:'dist',
  server:{host:'0.0.0.0',allowedHosts:['terminal.local']},
@@ -43,7 +43,7 @@ export default defineConfig({
     return new Response((await response.text()).replace('</body>','<script>'+fixture+'</script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
    }
    return response;
-  }:path?.startsWith('/api/auth/')?handleAuth:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
+  }:path==='/api/status'?handleStatus:path?.startsWith('/api/auth/')?handleAuth:path==='/api/character'?handleSave:path==='/api/players'?handlePlayers:null;
   if(!handler)return next();
   try{
    const chunks=[];for await(const chunk of req)chunks.push(chunk);

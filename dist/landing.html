@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#101b1c">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101b1c'/%3E%3Cpath d='M14 15h9l9 29 9-29h9L36 51h-8Z' fill='%23dfbd79'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="/landing.css">
+  <script src="/landing-status.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -16,6 +17,11 @@
     <nav aria-label="Main navigation"><a class="world-link" href="#world">The world</a><a href="/donate">Donate</a><a class="button button-small" href="/play">Play now</a></nav>
   </header>
   <main id="main">
+    <section class="release-strip" aria-label="Release and live server status">
+      <div class="release-name"><span class="eyebrow">THE FIRST CHAPTER</span><strong>Veldren Beta v1</strong><span>Now available · <time datetime="2026-09-14">September 14, 2026</time></span></div>
+      <div id="realm-status" data-state="checking" role="status" aria-live="polite" aria-atomic="true"><div class="status-line"><span class="status-dot" aria-hidden="true"></span><strong id="server-state">Checking server…</strong><span id="player-count">Player count pending</span></div><p id="status-note">Connecting to Veldren</p></div>
+      <noscript>Enable JavaScript to see live server status and player counts.</noscript>
+    </section>
     <section class="hero" aria-labelledby="hero-title">
       <img class="hero-image" src="/assets/landing-world.webp" alt="The cobbled village square on Firstlight Isle, with timber houses, market stalls, and adventurers." fetchpriority="high" width="1200" height="800">
       <div class="hero-content">
