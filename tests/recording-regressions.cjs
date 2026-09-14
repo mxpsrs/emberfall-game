@@ -9,6 +9,9 @@ vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);
 for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art','assets/realms/models','realms-rebuilt','world-depth','organic-world','walk-in-world','world-style','assets/realms/monsters','creatures'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
 
 
+// Load production dependencies added since this regression was introduced.
+for(const f of ["tree-identity", "building-orientation", "assets/realms/approved-creatures", "game-icons", "map-icons"])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
+
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();s.tutorial=tutorialSteps.length;assetsReady=true;
 activateScene('overworld',42,51);
@@ -38,6 +41,6 @@ s.hp=1;s.gold=30;s.bag.logs=4;s.xp.Mining=123;const belongings=JSON.stringify({b
 assert.equal(currentScene,'overworld');assert(Math.hypot(px-42,py-51)<8);assert(land(s.x,s.y));assert(worldWaterDistance(px+.5,py+.5)>=4);assert(!objects.some(o=>o.type==='tree'&&Math.hypot(o.x-px,o.y-py)<4));assert.equal(s.hp,maxhp());assert.equal(s.gold,25);assert.equal(JSON.stringify({bag:s.bag,gear:s.gear,equipment:s.equipment,xp:s.xp}),belongings);close();
 // Local minimap drawing and tapping share a center and the same visible world bounds.
 activateScene('overworld',600,400);let destination;const travel=walkTo;walkTo=(x,y)=>destination=[x,y];$('minimap').getBoundingClientRect=()=>({left:20,top:30,width:240,height:180});
-walkFromMinimap({clientX:140,clientY:120});assert.deepEqual(destination,[600,400]);walkFromMinimap({clientX:200,clientY:75});assert.deepEqual(destination,[624,382]);walkTo=travel;
+walkFromMinimap({clientX:140,clientY:120});assert.deepEqual(destination,[600,400]);const projected=minimapTile(.75,.25);walkFromMinimap({clientX:200,clientY:75});assert.deepEqual(destination,projected);walkTo=travel;
 console.log('PASS: every building exit, dry tree placement, diagonal bridge travel, camera picking, timed melee, cancelled strikes, safe rescue with retained progress, and local minimap taps.');
 `,ctx);

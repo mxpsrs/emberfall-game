@@ -7,7 +7,7 @@ function client(layout=2){
  const elements={},requests=[],pending=[];
  let saved={sceneId:'tutorial',tutorial:35,tutorialReward:false,tutorialIslandVersion:layout};
  const element=()=>({style:{},open:false,setAttribute(){},appendChild(){},focus(){}});
- const context={console,AbortSignal,Date,Map,Set,JSON,setTimeout(){},clearTimeout(){},
+ const context={console,AbortSignal,Date,Map,Set,JSON,performance,playerMotion:{running:false,moving:false},path:[],setTimeout(){},clearTimeout(){},
   document:{hidden:false,body:element(),createElement:element,addEventListener(){},querySelectorAll:()=>[]},
   window:{addEventListener(){}},localStorage:{setItem(){}},stop(){},
   $:id=>elements[id]??=element(),

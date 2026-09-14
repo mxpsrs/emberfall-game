@@ -1,0 +1,1 @@
+ALTER TABLE `social_messages` ADD `audience` text DEFAULT '[]' NOT NULL;

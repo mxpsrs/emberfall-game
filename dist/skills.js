@@ -28,7 +28,7 @@ const ORE_RESOURCES={
  copper:{name:'Copper rock',item:'copperOre',level:1,xp:17.5,respawn:5},tin:{name:'Tin rock',item:'tinOre',level:1,xp:17.5,respawn:5},
  iron:{name:'Iron rock',item:'ore',level:15,xp:35,respawn:8},coal:{name:'Coal rock',item:'coal',level:30,xp:50,respawn:30},
  gold:{name:'Gold rock',item:'goldOre',level:40,xp:65,respawn:60},mithril:{name:'Mithril rock',item:'mithrilOre',level:55,xp:80,respawn:60},
- adamant:{name:'Adamantite rock',item:'adamantOre',level:70,xp:95,respawn:120},rune:{name:'Runite rock',item:'runeOre',level:85,xp:125,respawn:360}
+ adamant:{name:'Adamantite rock',item:'adamantOre',level:70,xp:95,respawn:120},rune:{name:'Eldrite rock',item:'runeOre',level:85,xp:125,respawn:360}
 };
 const FISH_RESOURCES={
  shrimp:{name:'Shrimp',raw:'rawShrimp',food:'shrimp',level:1,xp:10,cookLevel:1,cookXP:30,heal:3,burnStop:34,tool:'fishingNet'},
@@ -45,7 +45,7 @@ const METAL_RECIPES={
  gold:{name:'Gold',level:40,xp:22.5,bar:'goldBar',ingredients:{goldOre:1},smithXP:0},
  mithril:{name:'Mithril',level:50,xp:30,bar:'mithrilBar',ingredients:{mithrilOre:1,coal:4},smithXP:50},
  adamant:{name:'Adamant',level:70,xp:37.5,bar:'adamantBar',ingredients:{adamantOre:1,coal:6},smithXP:62.5},
- rune:{name:'Rune',level:85,xp:50,bar:'runeBar',ingredients:{runeOre:1,coal:8},smithXP:75}
+ rune:{name:'Eldrite',level:85,xp:50,bar:'runeBar',ingredients:{runeOre:1,coal:8},smithXP:75}
 };
 const FOOD_BY_ID={};const SKILL_SHOP_STOCK=[];
 const addSkillItem=(id,item,price=0,count=1)=>{ITEMS[id]={icon:9,...ITEMS[id],...item};if(price)SKILL_SHOP_STOCK.push([id,count,price*count]);};
@@ -60,8 +60,8 @@ for(const [key,f]of Object.entries(FISH_RESOURCES)){
  addSkillItem(f.food,{name:f.name,icon:10,heal:f.heal,desc:'Eat to restore up to '+f.heal+' Hitpoints.',value:f.heal});FOOD_BY_ID[f.food]=f;
 }
 for(const [key,m]of Object.entries(METAL_RECIPES))addSkillItem(m.bar,{name:m.name+' bar',metal:key,desc:'Smelt at Smithing '+m.level+'. Work this bar at an anvil.',value:m.level*2+3});
-for(const [id,name,price]of [['airRunes','Air runes',4],['waterRunes','Water runes',4],['earthRunes','Earth runes',4],['fireRunes','Fire runes',4],['chaosRunes','Chaos runes',90],['deathRunes','Death runes',180],['bloodRunes','Blood runes',400],['feathers','Feathers',2],['arrowShafts','Arrow shafts',1],['headlessArrows','Headless arrows',3]]){addSkillItem(id,{name,icon:id.includes('Rune')?13:12,desc:name+'. Used in spells or fletching.'},price,10);STACKABLE.add(id);}
-ITEMS.runes.name='Mind runes';ITEMS.runes.desc='Mind runes power strike spells. Elemental runes are also required.';
+for(const [id,name,price]of [['airRunes','Air relic',4],['waterRunes','Water relic',4],['earthRunes','Earth relic',4],['fireRunes','Fire relic',4],['chaosRunes','Chaos relic',90],['deathRunes','Death relic',180],['bloodRunes','Blood relic',400],['feathers','Feathers',2],['arrowShafts','Arrow shafts',1],['headlessArrows','Headless arrows',3]]){addSkillItem(id,{name,icon:id.includes('Rune')?13:12,desc:name+'. Used in spells or fletching.'},price,10);STACKABLE.add(id);}
+ITEMS.runes.name='Mind relic';ITEMS.runes.desc='Mind relics power strike spells. Elemental relics are also required.';
 ITEMS.arrows.name='Bronze arrows';ITEMS.arrows.rangedStrength=7;ITEMS.arrows.desc='Bronze arrows. Equip a bow to use them.';
 addSkillItem('burntFish',{name:'Burnt fish',icon:10,desc:'A spoiled catch. Higher Cooking reduces the chance of burning food.'});
 addSkillItem('potatoSeeds',{name:'Potato seeds',desc:'Plant in a farming patch at Farming 1.'},1,5);STACKABLE.add('potatoSeeds');
@@ -192,7 +192,7 @@ const GEAR_TIERS=[
  {id:'black',name:'Black',level:10,source:'I',attack:17,strength:14,defense:24,cost:300,tint:[.42,.46,.48]},
  {id:'mithril',name:'Mithril',level:20,source:'M',attack:24,strength:20,defense:32,cost:600},
  {id:'adamant',name:'Adamant',level:30,source:'M',attack:33,strength:28,defense:46,cost:1200,tint:[.66,1.06,.63]},
- {id:'rune',name:'Rune',level:40,source:'M',attack:48,strength:40,defense:65,cost:2500,tint:[.68,1.10,1.24]},
+ {id:'rune',name:'Eldrite',level:40,source:'M',attack:48,strength:40,defense:65,cost:2500,tint:[.68,1.10,1.24]},
  {id:'gold',name:'Gilded',level:40,source:'G',attack:48,strength:40,defense:65,cost:3500},
  {id:'dragonslayer',name:'Dragonslayer',level:60,source:'DS',attack:67,strength:60,defense:95,cost:9000}
 ];

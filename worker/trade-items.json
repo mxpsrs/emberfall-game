@@ -70,7 +70,7 @@
     "stackable": true
   },
   "runes": {
-    "name": "Mind runes",
+    "name": "Mind relic",
     "slot": null,
     "stackable": true
   },
@@ -415,7 +415,7 @@
     "stackable": false
   },
   "runeOre": {
-    "name": "Runite ore",
+    "name": "Eldrite ore",
     "slot": null,
     "stackable": false
   },
@@ -495,42 +495,42 @@
     "stackable": false
   },
   "runeBar": {
-    "name": "Rune bar",
+    "name": "Eldrite bar",
     "slot": null,
     "stackable": false
   },
   "airRunes": {
-    "name": "Air runes",
+    "name": "Air relic",
     "slot": null,
     "stackable": true
   },
   "waterRunes": {
-    "name": "Water runes",
+    "name": "Water relic",
     "slot": null,
     "stackable": true
   },
   "earthRunes": {
-    "name": "Earth runes",
+    "name": "Earth relic",
     "slot": null,
     "stackable": true
   },
   "fireRunes": {
-    "name": "Fire runes",
+    "name": "Fire relic",
     "slot": null,
     "stackable": true
   },
   "chaosRunes": {
-    "name": "Chaos runes",
+    "name": "Chaos relic",
     "slot": null,
     "stackable": true
   },
   "deathRunes": {
-    "name": "Death runes",
+    "name": "Death relic",
     "slot": null,
     "stackable": true
   },
   "bloodRunes": {
-    "name": "Blood runes",
+    "name": "Blood relic",
     "slot": null,
     "stackable": true
   },
@@ -685,42 +685,42 @@
     "stackable": false
   },
   "rune_head": {
-    "name": "Rune headgear",
+    "name": "Eldrite headgear",
     "slot": "head",
     "stackable": false
   },
   "rune_shoulders": {
-    "name": "Rune shoulder pads",
+    "name": "Eldrite shoulder pads",
     "slot": "shoulders",
     "stackable": false
   },
   "rune_body": {
-    "name": "Rune chestplate",
+    "name": "Eldrite chestplate",
     "slot": "body",
     "stackable": false
   },
   "rune_hands": {
-    "name": "Rune gauntlets",
+    "name": "Eldrite gauntlets",
     "slot": "hands",
     "stackable": false
   },
   "rune_legs": {
-    "name": "Rune legguards",
+    "name": "Eldrite legguards",
     "slot": "legs",
     "stackable": false
   },
   "rune_feet": {
-    "name": "Rune boots",
+    "name": "Eldrite boots",
     "slot": "feet",
     "stackable": false
   },
   "rune_shield": {
-    "name": "Rune shield",
+    "name": "Eldrite shield",
     "slot": "shield",
     "stackable": false
   },
   "rune_weapon": {
-    "name": "Rune sword",
+    "name": "Eldrite sword",
     "slot": "weapon",
     "stackable": false
   },
@@ -830,7 +830,7 @@
     "stackable": false
   },
   "rune_dagger": {
-    "name": "Rune dagger",
+    "name": "Eldrite dagger",
     "slot": "weapon",
     "stackable": false
   },
@@ -875,12 +875,12 @@
     "stackable": true
   },
   "runeArrowheads": {
-    "name": "Rune arrowheads",
+    "name": "Eldrite arrowheads",
     "slot": null,
     "stackable": true
   },
   "runeArrows": {
-    "name": "Rune arrows",
+    "name": "Eldrite arrows",
     "slot": null,
     "stackable": true
   },
@@ -945,12 +945,12 @@
     "stackable": false
   },
   "runeAxe": {
-    "name": "Rune axe",
+    "name": "Eldrite axe",
     "slot": null,
     "stackable": false
   },
   "runePickaxe": {
-    "name": "Rune pickaxe",
+    "name": "Eldrite pickaxe",
     "slot": null,
     "stackable": false
   },

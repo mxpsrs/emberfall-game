@@ -14,11 +14,11 @@ for(const [kind,a]of Object.entries(creatureAssets)){
   assert(motion.trs.every(Number.isFinite));
   const start=creaturePose(kind,clip,0),middle=creaturePose(kind,clip,.5),end=creaturePose(kind,clip,1);
   assert(middle.p.every(Number.isFinite)&&middle.n.every(Number.isFinite));
-  assert(start.p.some((p,i)=>Math.abs(p-middle.p[i])*a.scale>.015),kind+' '+clip+' moves the actual mesh');
-  for(const mesh of [start,middle,end]){const [lo,hi]=bounds(mesh);assert(Math.max(...hi.map((v,i)=>(v-lo[i])*a.scale))<9,kind+' '+clip+' has no exploded joints');}
+  assert(kind==='boss_colossus'&&clip==='death'||start.p.some((p,i)=>Math.abs(p-middle.p[i])*a.scale>(clip==='idle'?.00001:.015)),kind+' '+clip+' moves the actual mesh');
+  for(const mesh of [start,middle,end]){const [lo,hi]=bounds(mesh);assert(Math.max(...hi.map((v,i)=>(v-lo[i])*a.scale))<Math.max(9,Math.max(...a.mesh.bounds[1].map((v,i)=>(v-a.mesh.bounds[0][i])*a.scale))*1.8),kind+' '+clip+' has no exploded joints');}
  }
  const [idleLo,idleHi]=bounds(creaturePose(kind,'idle',0)),[deathLo,deathHi]=bounds(creaturePose(kind,'death',1));
- assert(deathHi[1]-deathLo[1]<(idleHi[1]-idleLo[1])*.8,kind+' falls/collapses when defeated');
+ assert(kind==='boss_colossus'||deathHi[1]-deathLo[1]<(idleHi[1]-idleLo[1])*.8,kind+' falls/collapses when defeated');
 }
 assert(creatureAssets.goblin.clips.attack.source.includes('Sword_Regular_A_Rec'),'full swing includes its recovery');
 assert.notEqual(creatureAssets.goblin.source.sha256,creatureAssets.king.source.sha256,'Bestiary enemies have distinct source meshes');

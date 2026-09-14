@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Tutorial visual check</title>
+<style>body{margin:10px;background:#101f24;color:#eee;font:14px Arial}button{padding:9px;margin:0 6px 8px 0}iframe{display:block;border:1px solid #dfbd79;width:844px;height:390px}</style>
+<button id="wide">Desktop</button><button id="compact">Phone landscape</button><button id="portrait">Phone portrait</button><button id="bank">Bank lesson</button><button id="worship">Worship lesson</button><button id="bag">Bag lesson</button><button id="vale">Captain Vale</button><button id="armour">Armour models</button>
+<button id="story-watch">Rellan</button><button id="story-lift">Rescue lift</button><button id="story-shrine">Cursed shrine</button>
+<iframe title="Tutorial game" src="/__tutorial-game__/?lesson=deposit"></iframe>
+<script>const frame=document.querySelector('iframe');for(const [id,w,h]of [['wide',1280,720],['compact',844,390],['portrait',390,844]])document.getElementById(id).onclick=()=>{frame.style.width=w+'px';frame.style.height=h+'px'};for(const [id,event]of [['bank','deposit'],['worship','talk-worship'],['bag','bag'],['armour','armour'],['vale','talk-combat'],['story-watch','story-watch'],['story-lift','story-lift'],['story-shrine','story-shrine']])document.getElementById(id).onclick=()=>frame.src='/__tutorial-game__/?lesson='+event;</script></html>

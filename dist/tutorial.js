@@ -12,7 +12,7 @@ const tutorialSteps=[
  lesson('bag','Your belongings','Open Bag in the navigation bar. Tap a material to highlight it, then tap another item or a world target. Press and hold any item for Use and its other actions.'),
  lesson('skills','Your skills','Open the Skills tab. Each skill has its own level and XP, including Attack, Strength, Defense and Hitpoints.'),
  lesson('talk-magic','Find the magic tutor','Rowan sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
- lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses runes and trains your Magic level.','magic-dummy'),
+ lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses relics and trains your Magic level.','magic-dummy'),
  lesson('talk-mining','Visit the smith','Elowen sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.','tutor-mining'),
  lesson('ore','Mine copper and tin','Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.','ore'),
  lesson('smelt','Smelt a bronze bar','Tap copper or tin ore in your bag, then tap the furnace. Choose the bronze bar recipe to combine both ores.','furnace'),
@@ -125,7 +125,7 @@ function tutorialEvent(event){
  else if(s.tutorialActions?.[tutorialStep()?.event])tutorialEvent(tutorialStep().event);
 }
 function showTutorialArrival(earned){
- dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and runes in your bank.</b> Your worn items and bag stay with you.</p>':''));
+ dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and relics in your bank.</b> Your worn items and bag stay with you.</p>':''));
 }
 function observeTutorialCamera(){
  if(tutorialStep()?.event!=='camera')return;
@@ -165,7 +165,7 @@ const TUTORS={
  combat:{name:'Captain Vale',at:[45,80],look:1,text:'First, equip the bronze dagger you forged. Then open Equipment and inspect your combat stats. I will give you a wooden sword and shield before we practise on the dummy. Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. After the dummy, go through the gate beside me and defeat a giant rat. The gate closes behind you when you enter or leave, and the rats stay inside. Collect its drops, then return to me for your shortbow and arrows. After your ranged lesson, visit Forester Ash at the timber yard northwest of the square.'},
  bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Firstlight Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
  worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, return to Rowan in the square to finish your apprenticeship.'},
- magic:{name:'Arcanist Elowen',at:[76,65],look:3,text:'Welcome to the village magic school. First, open Bag and Skills to see your supplies and progress. Take this staff and runes, then equip the staff using the Magic icon. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then visit Smith Orin at the forge northeast of the square.'}
+ magic:{name:'Arcanist Elowen',at:[76,65],look:3,text:'Welcome to the village magic school. First, open Bag and Skills to see your supplies and progress. Take this staff and relics, then equip the staff using the Magic icon. Wind strike uses an air relic and a mind relic per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then visit Smith Orin at the forge northeast of the square.'}
 };
 let tutorialVillageReady=false;
 function setupTutorialVillage(){
@@ -200,19 +200,19 @@ function talkTutor(o){
  if(role==='magic'&&tutorialStep()){
   const ready=giveTutorialMagicSupplies();
   if(expected==='talk-magic'&&ready){dialog(TUTORS.magic.name,'<p>“'+TUTORS.magic.text+'”</p>',[['Continue',()=>{close();tutorialEvent('talk-magic');}]]);return;}
-  if(typeof gameMessage==='function')gameMessage('Arcanist Elowen: '+(ready?'Your staff and practice runes are ready. Follow your next instruction.':'Make room in your bag. I will hand over your supplies as soon as there is space.'));
+  if(typeof gameMessage==='function')gameMessage('Arcanist Elowen: '+(ready?'Your staff and practice relics are ready. Follow your next instruction.':'Make room in your bag. I will hand over your supplies as soon as there is space.'));
   renderTutorial();return;
  }
  if(role==='combat'&&typeof showValeLesson==='function'&&showValeLesson(expected))return;
  if(role==='guide'&&expected==='talk-finish'){dialog('Elder Rowan','<p>“You have learned from our tutors and practised each skill. I will teleport you to Briarhaven on the mainland. Take your supplies with you; this is a one-way journey.”</p>',[['Finish apprenticeship',()=>{close();tutorialEvent('talk-finish');}]]);return;}
  if(role==='guide'&&expected!=='talk-guide'){elder();return;}
  const t=TUTORS[role],buttons=[];
- if(expected==='talk-'+role)buttons.push(['Continue',()=>{if(role==='cooking'&&!grantTutorialItems('baking',{flour:1,jugWater:1}))return;close();tutorialEvent('talk-'+role);}]);
+ if(expected==='talk-'+role)buttons.push(['Continue',()=>{if(role==='cooking'&&!grantTutorialItems('baking',{flour:1,jugWater:1}))return;close();tutorialEvent('talk-'+role);if(role==='bank')openBank();}]);
  if(role==='cooking'&&['mix-dough','bake-bread'].includes(expected)&&!(s.bag.breadDough>0)&&!(s.bag.bread>0)&&!hasIngredients({flour:1,jugWater:1}))buttons.push(['Take baking ingredients',()=>{const missing={flour:Math.max(0,1-(s.bag.flour||0)),jugWater:Math.max(0,1-(s.bag.jugWater||0))};if(Object.entries(missing).every(([id,n])=>!n||canCarry(id,n))){for(const [id,n]of Object.entries(missing))if(n)addToBag(id,n);close();}}]);
- if(role==='bank')buttons.push(['Open bank',()=>{close();openBank();}]);
+ if(role==='bank'&&expected!=='talk-bank')buttons.push(['Open bank',()=>{close();openBank();}]);
  if(role==='combat'&&['dummy','monster'].includes(expected)&&!s.tutorialGifts?.combatFood)buttons.push(['Take food for the rat pen',()=>{if(grantTutorialItems('combatFood',{shrimp:3}))close();}]);
  if(role==='worship'&&s.tutorial< tutorialSteps.length&&!(s.bag.bones>0))buttons.push(['Take practice bones',()=>{if(addToBag('bones')){close();save();toast('Bury the practice bones from your bag.');}}]);
- dialog(t.name,'<p>“'+(expected==='talk-'+role?t.text.split('\n')[0]:t.text)+'”</p>',buttons);
+ dialog(t.name,t.text.split('\n').map(p=>'<p>'+p+'</p>').join(''),buttons);
 }
 function tutorialGiftSpace(items){return Object.entries(items).reduce((n,[id,count])=>n+(STACKABLE.has(id)?(owns(id)?0:1):count),0);}
 function giveTutorialMagicSupplies(){
@@ -273,7 +273,9 @@ function transferBank(id,withdraw=false,quantity=1,refresh=true){
  const count=Math.min(quantity,available,room);if(count<1){if(withdraw)toast('Make space in your bag to withdraw.');return false;}
  if(withdraw){s.bank[id]-=count;bag[id]=(bag[id]||0)+count;}
  else{bag[id]-=count;s.bank[id]=(s.bank[id]||0)+count;}
- tutorialEvent(withdraw?'withdraw':'deposit');if(refresh){renderUI();save();}return count;
+ if(typeof tutorialBankTransfer==='function')tutorialBankTransfer(id,withdraw);
+ else tutorialEvent(withdraw?'withdraw':'deposit');
+ if(refresh){renderUI();save();}return count;
 }
 function openBank(){
  openTrade('bank');
@@ -330,7 +332,7 @@ function dressTutorWorkplaces(world){
  for(const [name,x,y,room]of [
   ['Cooking table',56,51,'village_kitchen'],['Flour supplies',55,50,'village_kitchen'],['Fresh produce crate',55,53,'village_kitchen'],['Water barrel',61,54,'village_kitchen'],
   ['Bank counter',56,69,'realm_briarhaven_4'],['Bank chest',60,67,'realm_briarhaven_4'],['Bank chest',60,69,'realm_briarhaven_4'],['Ledger table',56,66,'realm_briarhaven_4'],
-  ['Bookcase',74,63,'realm_briarhaven_3'],['Bookcase',75,63,'realm_briarhaven_3'],['Study table',74,66,'realm_briarhaven_3'],['Rune supplies',80,63,'realm_briarhaven_3']
+  ['Bookcase',74,63,'realm_briarhaven_3'],['Bookcase',75,63,'realm_briarhaven_3'],['Study table',74,66,'realm_briarhaven_3'],['Relic supplies',80,63,'realm_briarhaven_3']
  ])prop(name,x,y,{interiorBuilding:room});
  for(const [x,y,h]of [[22,47,0],[22,49,0],[25,44,Math.PI/2],[27,44,Math.PI/2]])prop('Timber yard fence',x,y,{heading:h});
  const lanes=[[[43,52],[28,50]],[[28,50],[28,63]],[[43,52],[58,57]],[[43,52],[68,45]],[[43,52],[50,55]],[[50,62],[58,74]],[[58,74],[77,72]],[[43,64],[58,74]],[[50,62],[45,72]],[[45,72],[46,82]],[[46,82],[48,82]]];

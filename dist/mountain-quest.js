@@ -7,15 +7,15 @@ const MOUNTAIN_STEPS=[
  ['A pattern in the names','Bring the three pieces of evidence to Maerin.','maerin'],
  ['Stone remembers','Recover a bearing from the collapsed workings outside Ironhollow. Requires Mining 5.','bearing'],
  ['Iron carries','Reforge the recovered bearing at the ward workbench. Requires Smithing 5.','workbench'],
- ['Breath awakens','Install the bearing and solve the three-rune seal at the Underworks entrance.','seal'],
+ ['Breath awakens','Install the bearing and solve the three-sigil seal at the Underworks entrance.','seal'],
  ['The last watch','Enter the Sealed Underworks and defeat the Oathbound Watcher guarding the survivors.','watcher'],
  ['A name still living','Reach Warden Edda in the Underworks and hear what happened.','edda'],
  ['Open the way home','Restore the ventilation wheel so Edda can lead the trapped miners out.','vent'],
- ['The borrowed voice','Recover the memory from the royal recording stone.','memory'],
+ ['The borrowed voice','Recover the memory from the royal memory stone.','memory'],
  ['Part One: the witness returns','Bring the memory and Edda’s testimony to Maerin in Ironhollow.','maerin'],
  ['A voice that is not his','Speak to Maerin to begin Part Two.','maerin'],
  ['The inscription in the glass','Investigate the fragment in your journal, then take its inscription to Master Alaric in Ironcrown Citadel’s library.','expert'],
- ['A ward of your own','At Ironhollow’s ward workbench, bind 2 iron bars, 6 air runes and 6 mind runes. Requires Smithing 5 and Magic 5.','workbench'],
+ ['A ward of your own','At Ironhollow’s ward workbench, bind 2 iron bars, 6 air relics and 6 mind relics. Requires Smithing 5 and Magic 5.','workbench'],
  ['The adventurer who returned','Meet Master Alaric in the castle library. Prepare together for the Sanctum.','expert'],
  ['Unbind the captives','Enter the Shattered Sanctum. Free all three captive minds by answering them with the truths in your journal.','bindings'],
  ['Before the Mindbreaker','Speak to Alaric inside the Sanctum. He will hold your ward while you fight.','expert'],
@@ -76,15 +76,15 @@ function syncMountainExpert(){
 }
 function mountainInspectFragment(){
  const q=mountainState();if(q.stage!==12||!q.memory)return;
- dialog('The inscription in the glass','<p>Turned against the light, the memory fragment reveals writing beneath its surface:</p><p><i>“Within the broken oath, the listener waits. Return the witness to the threshold.”</i></p><p>The letters circle a key-shaped cut in the glass. This was fashioned deliberately; it is more than a recording.</p>',[['Copy the strange inscription.',()=>{if(mountainState().stage!==12)return;q.inscription=true;save();close();toast('Take the inscription to Master Alaric in Ironcrown Citadel’s library.');}]]);
+ dialog('The inscription in the glass','<p>Turned against the light, the memory fragment reveals writing beneath its surface:</p><p><i>“Within the broken oath, the listener waits. Return the witness to the threshold.”</i></p><p>The letters circle a key-shaped cut in the glass. This was fashioned deliberately; it is more than a preserved memory.</p>',[['Copy the strange inscription.',()=>{if(mountainState().stage!==12)return;q.inscription=true;save();close();toast('Take the inscription to Master Alaric in Ironcrown Citadel’s library.');}]]);
 }
 function mountainExpertReveal(o){
  const q=mountainState();if(!q.inscription)return mountainSay(o,['Maerin’s letter mentions writing inside the glass. Examine the fragment in your quest journal and copy every word. An incomplete inscription can be dangerous.'],[['Investigate the fragment.',mountainInspectFragment]]);
  return mountainOffer(o,12,[
   'Where did you find this? No—let me read it. “Within the broken oath…” I cut those words into the glass myself. This is a key to Veyr’s lair, the Shattered Sanctum. It was never merely a memory stone.',
   'Before I kept this library, I was an adventurer. My companions and I tried to seal Veyr away. I mistook his silence for surrender. When I closed the binding, he spoke with my friend’s voice. I broke the seal to let her out. It was him.',
-  'I escaped with half the key. I entrusted it to Ironcrown’s ward-keepers, who hid it inside their recording stone. I thought its memories would bury the path. Instead Veyr followed those memories back to them. The missing families are paying for my failure.',
-  'I will assist you this time. Forge a counter-ward at Ironhollow’s workbench: two iron bars, six air runes and six mind runes. Smithing 5 and Magic 5. Bring it back to me; together we can wake the key without answering his voice.',
+  'I escaped with half the key. I entrusted it to Ironcrown’s ward-keepers, who hid it inside their memory stone. I thought its memories would bury the path. Instead Veyr followed those memories back to them. The missing families are paying for my failure.',
+  'I will assist you this time. Forge a counter-ward at Ironhollow’s workbench: two iron bars, six air relics and six mind relics. Smithing 5 and Magic 5. Bring it back to me; together we can wake the key without answering his voice.',
   'Three truths will free the captive minds. Knowing a name does not prove who is speaking. The miners’ duty ends when their people are safe. An oath protects people, not a borrowed voice. I forgot that last truth once. I will not forget it again.'
  ],'Let us finish what you started.',()=>{mountainAdvance(12,o,{truths:true,lairKey:true});close();});
 }
@@ -100,12 +100,12 @@ function setupMountainQuest(){
  mountainPlace('overworld','bearing','Collapsed ward workings',t.x+22,t.y+32,{mountainModel:'Rock_Medium_1'});
  mountainPlace('overworld','workbench','Ward workbench',t.x+11,t.y+19,{mountainModel:'World_Workbench'});
  const entrance=CREATURE_LAIRS.quest_underiron.entrance;
- mountainPlace('overworld','seal','Three-rune royal seal',entrance[0]+2,entrance[1]+1,{mountainModel:'World_BookStand'});
+ mountainPlace('overworld','seal','Three-sigil royal seal',entrance[0]+2,entrance[1]+1,{mountainModel:'World_BookStand'});
  const guard=mountainPlace('quest_underiron','watcher','Oathbound Watcher',22,31,{type:'enemy',kind:'mountainwatcher',sprite:species.skeleton.sprite});
  applyEnemyTier(guard,{...ENEMY_TIERS.skeleton,look:'skeleton',name:'Oathbound Watcher',hp:32,level:12,maxHit:3,weak:'magic'});
  mountainNPC('quest_underiron','edda','Warden Edda',12,27);
  mountainPlace('quest_underiron','vent','Ventilation wheel',31,27,{mountainModel:'World_Workbench'});
- mountainPlace('quest_underiron','memory','Royal recording stone',22,10,{mountainModel:'World_BookStand'});
+ mountainPlace('quest_underiron','memory','Royal memory stone',22,10,{mountainModel:'World_BookStand'});
  mountainNPC('quest_underiron','survivor','Trapped miner Dorrin',12,29);
  for(const [key,x,y]of [['child',9,30],['miner',35,31],['keeper',15,11]])mountainPlace('lair_veyr','binding_'+key,MOUNTAIN_BINDINGS[key].name,x,y,{mountainModel:'World_BookStand'});
  mountainPlace('lair_veyr','aftermath','Fractured memory',27,11,{mountainModel:'World_BookStand'});
@@ -159,7 +159,7 @@ function mountainTalk(o){
   if(q.stage===10)return mountainOffer(o,10,[
    'Edda is alive. So are the people the court had already written off. I will enter their testimony into the public record before anyone can seal it away.',
    q.choice==='warn'?'Your warning reached the families. They refused the next summons together. The square was full of witnesses; the guards could not pretend not to see.':'We moved the families into the archive after dusk. None answered last night’s summons. Their names will stay under seal until the danger passes.',
-   'In this memory, the king’s voice continues after the recording stone breaks. Another voice laughs behind it. Strange writing lies beneath the fracture, too fine to read without a closer look. You have proved the disappearances can be stopped. Now we must find the speaker.'
+   'In this memory, the king’s voice continues after the memory stone breaks. Another voice laughs behind it. Strange writing lies beneath the fracture, too fine to read without a closer look. You have proved the disappearances can be stopped. Now we must find the speaker.'
   ],'Complete Part One.',()=>{if(mountainAdvance(10,o)){mountainReward(1);close();}});
   if(q.stage===11)return mountainOffer(o,11,[
    'The fragment still speaks when no one touches it. There is an inscription beneath its cracked surface. Examine it closely before taking it to Master Alaric, the expert in Ironcrown Citadel’s library.',
@@ -179,7 +179,7 @@ function mountainTalk(o){
   if(key==='edda'&&q.stage===7)return mountainOffer(o,7,[
    'Do not say my name loudly. That thing learned it from the duty roll. It called in my mother’s voice. I knew she was dead. I followed anyway.',
    'I was the lower ward’s keeper. The Watcher turned on us when the voice changed its orders. Dorrin got the children into a side shaft, but the air is failing.',
-   'Restore the ventilation wheel across this chamber. I will lead them through the emergency passage. Afterward, take the recording stone from the northern chamber. It heard both voices.'
+   'Restore the ventilation wheel across this chamber. I will lead them through the emergency passage. Afterward, take the memory stone from the northern chamber. It heard both voices.'
   ],'I will open the escape route.',()=>{mountainAdvance(7,o);close();});
   if(key==='expert'&&q.stage===14)return mountainOffer(o,14,[
    'The inscription has awakened. This fragment is the key I broke when my first sealing failed. Your counter-ward will let us carry it without surrendering our minds.',
@@ -200,7 +200,7 @@ function mountainWorkStart(o,stage,skill,level,label,finish,requirements={}){
  if(mountainState().stage!==stage||!mountainNear(o))return false;
  if(lv(skill)<level){toast('Requires '+skill+' '+level+'.');return false;}
  if(skill==='Mining'&&!useBeltTool('pickaxe'))return false;
- if(Object.entries(requirements).some(([id,n])=>(s.bag[id]||0)<n)){toast('Bring 2 iron bars, 6 air runes and 6 mind runes in your bag.');return false;}
+ if(Object.entries(requirements).some(([id,n])=>(s.bag[id]||0)<n)){toast('Bring 2 iron bars, 6 air relics and 6 mind relics in your bag.');return false;}
  close();stop();mountainWork={o,stage,skill,level,label,finish,requirements,age:0,scene:currentScene};
  playerHeading=Math.atan2(o.x-px,o.y-py);renderAction();return true;
 }
@@ -223,7 +223,7 @@ renderAction=function(){mountainActionBefore();if(mountainWork){$('targetTitle')
 function mountainSeal(o,index=0){
  if(mountainState().stage!==5||!mountainNear(o))return;
  const order=['Stone','Iron','Breath'];
- dialog('The three-rune seal','<p>“Stone remembers. Iron carries. Breath awakens.”</p><p>The repaired bearing fits. Touch the runes in the order of the inscription.</p><p>'+index+' / 3 runes awakened.</p>',
+ dialog('The three-sigil seal','<p>“Stone remembers. Iron carries. Breath awakens.”</p><p>The repaired bearing fits. Touch the sigils in the order of the inscription.</p><p>'+index+' / 3 sigils awakened.</p>',
  ['Breath','Stone','Iron'].map(word=>[word,()=>{
   if(mountainState().stage!==5||!mountainNear(o))return;
   if(word!==order[index]){toast('The seal falls quiet. Read the inscription and start again.');return mountainSeal(o,0);}
@@ -249,7 +249,7 @@ function mountainInteract(o){
  if(key==='bearing'&&q.stage===3)return dialog(o.name,'<p>An iron bearing is trapped beneath loose stone. Recover it with your pickaxe. Mining 5 required. This quest component is kept in your journal.</p>',[['Recover the bearing.',()=>mountainWorkStart(o,3,'Mining',5,'Recovering the ward bearing',()=>mountainAdvance(3,o))]]);
  if(key==='workbench'){
   if(q.stage===4)return dialog(o.name,'<p>The recovered bearing is bent. Use the workbench to reshape it and repair the royal passage. Smithing 5 required.</p>',[['Reforge the bearing.',()=>mountainWorkStart(o,4,'Smithing',5,'Reforging the ward bearing',()=>mountainAdvance(4,o))]]);
-  if(q.stage===13)return dialog(o.name,'<p>Bind a counter-ward from <b>2 iron bars, 6 air runes and 6 mind runes</b>. Requires Smithing 5 and Magic 5. Alaric can sustain this ward during your first Veyr battle.</p>',[['Bind the counter-ward.',()=>{if(lv('Smithing')<5){toast('Requires Smithing 5.');return;}mountainWorkStart(o,13,'Magic',5,'Binding the counter-ward',()=>mountainAdvance(13,o,{ward:true}),{ironBar:2,airRunes:6,runes:6});}]]);
+  if(q.stage===13)return dialog(o.name,'<p>Bind a counter-ward from <b>2 iron bars, 6 air relics and 6 mind relics</b>. Requires Smithing 5 and Magic 5. Alaric can sustain this ward during your first Veyr battle.</p>',[['Bind the counter-ward.',()=>{if(lv('Smithing')<5){toast('Requires Smithing 5.');return;}mountainWorkStart(o,13,'Magic',5,'Binding the counter-ward',()=>mountainAdvance(13,o,{ward:true}),{ironBar:2,airRunes:6,runes:6});}]]);
  }
  if(key==='seal'&&q.stage===5)return mountainSeal(o);
  if(key==='vent'&&q.stage===8)return dialog(o.name,'<p>The return chain has slipped. Seat it in the guide, then turn the wheel toward the open passage. Edda waits until there is enough air to move the survivors.</p>',[['Restore the ventilation.',()=>mountainWorkStart(o,8,'Smithing',1,'Restoring the escape route',()=>mountainAdvance(8,o,{rescued:true}))]]);
@@ -378,7 +378,7 @@ function renderMountainJournal(){
  for(const key of q.clues)note(MOUNTAIN_CLUES[key][2]);
  if(q.stage>=3)note('Seal inscription: Stone remembers. Iron carries. Breath awakens.');
  if(q.stage>=4&&q.stage<=5)note(q.stage===4?'Quest tool: recovered ward bearing.':'Quest tool: repaired ward bearing.');
- if(q.memory)note('Memory fragment: a second voice speaks behind the king’s recording.');
+ if(q.memory)note('Memory fragment: a second voice speaks behind the king’s preserved memory.');
  if(q.inscription)note('Inscription: “Within the broken oath, the listener waits. Return the witness to the threshold.”');
  if(q.lairKey)note('Alaric identified the fragment as his broken key to Veyr’s lair. He failed to seal Veyr away and has agreed to help you.');
  if(q.truths)for(const row of Object.values(MOUNTAIN_BINDINGS))note(row.memory);

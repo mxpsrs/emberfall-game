@@ -1,5 +1,7 @@
 # Veldren: The Unwritten Age publishing
 
+Playtest freeze requested 2026-09-14: read `docs/PLAYTEST-HANDOFF-2026-09-14.md` and the committed QA report before resuming. After the final audit/handoff, pause development until Saturday 2026-09-19 (America/Chicago), unless Raymond explicitly requests an earlier change. Preserve unresolved test failures honestly; a client-only walkthrough is not proof of shared-server end-to-end correctness.
+
 Before EVERY production deployment, send the in-game “System maintenance” notice with a full two-minute countdown. At zero, revoke all game sessions and clear online presence; preserve accounts and character saves. Verify maintenance is locked before deploying. Keep login locked until deployment succeeds, then finish that same maintenance request to reopen the game. A failed deployment must stay locked until recovered.
 
 Use scripts/maintenance.mjs to start, check and finish the same request ID. Never use global-reset as a maintenance substitute. Never deploy before the deadline or silently skip this rule.

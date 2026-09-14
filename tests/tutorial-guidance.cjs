@@ -27,6 +27,17 @@ at('smelt');selectedUseItem=null;assert(tutorialGuidanceAction().selector.includ
 window.realmWorkbench={kind:'furnace',metal:'iron'};assert(tutorialGuidanceAction().selector.includes('data-metal'));window.realmWorkbench.metal='bronze';assert(tutorialGuidanceAction().selector.includes('bronzeBar'));window.realmWorkbench=null;
 at('mix-dough');selectedUseItem=null;assert(tutorialGuidanceAction().selector.includes('flour'));selectedUseItem='flour';assert(tutorialGuidanceAction().selector.includes('jugWater'));
 at('smith');delete s.gear.bronze_dagger;tutorialEvent('smith');assert.equal(tutorialStep().event,'smith','other forged items do not finish the dagger lesson');
+// Transfers, early close and reconnect preserve one banking lesson.
+fresh();at('deposit');s.bag.logs=2;s.bag.bones=1;s.bank.bones=2;openBank();
+assert(transferBank('logs'));assert.equal(tutorialStep().event,'withdraw');assert.equal(s.tutorialBankItem,'logs');
+assert(transferBank('bones',true));assert.equal(s.tutorialBankPhase,'withdraw','withdrawing another item cannot skip the selected item');
+close();assert.equal(tutorialStep().event,'withdraw');openBank();assert(transferBank('logs',true));assert.equal(s.tutorialBankPhase,'quantity');
+close();assert.equal(tutorialStep().event,'withdraw','closing before quantity acknowledgement does not finish');
+s=JSON.parse(JSON.stringify(s));normalizeJourney(s,s);openBank();assert.equal(s.tutorialBankPhase,'quantity','reload resumes without repeating the transfer');
+assert(tutorialGuidanceAction().instruction.includes('1, 5, 10 or All'));tutorialBankQuantity();assert.equal(s.tutorialBankPhase,'close');
+assert.equal(tutorialStep().event,'withdraw','quantity selection alone does not finish banking');close();assert.equal(tutorialStep().event,'talk-worship');assert.equal(s.tutorialBankPhase,'done');
+const bankXP=JSON.stringify(s.xp);openBank();close();assert.equal(tutorialStep().event,'talk-worship');assert.equal(JSON.stringify(s.xp),bankXP);
+close();at('talk-worship');talkTutor({tutor:'worship',name:'Keeper Sera'});assert(npcDialogueState.pages.join(' ').includes('Higher Worship'));assert(npcDialogueState.pages.join(' ').includes('standby'));close();
 const marks=new Set(),controlTarget={classList:{add:x=>marks.add(x),remove:x=>marks.delete(x)},focus:()=>{}};
 document.querySelector=()=>controlTarget;at('skills');renderTutorialGuidance();assert(marks.has('tutorial-next-control'));
 s.tutorial=tutorialSteps.length;renderTutorialGuidance();assert(!marks.has('tutorial-next-control'),'highlight clears when tutorial ends');

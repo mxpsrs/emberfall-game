@@ -113,12 +113,12 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
     }else if(event.kind==='attack'){
      const range=event.style==='melee'?2+(e.radius||0):10+(e.radius||0);
      if(!near(input,v,range)||!npcLineOfSight(e,v,input))fail('Target is out of attack range.');
-     else if(e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
+     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
      else{result.ok=true;if(!v.target){v.owner='server';v.target=actor;v.pose=null;v.hazard=null;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment};v.assisted=s.mountainQuest?.stage===17;}}
     }else if(event.kind==='hit'){
      const style=styles.includes(event.style)?event.style:'melee',weapon=catalog.items[s.equipment?.weapon],range=style==='melee'?2+(e.radius||0):10+(e.radius||0);
      if(!near(input,v,range)||!npcLineOfSight(e,v,input))fail('Target is out of attack range.');
-     else if(e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
+     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
      else if(style==='worship'&&(!token(event.cast)||v.spiritCasts?.[actor]===event.cast))fail('That spirit effect has already struck.');
      else if(!await cooldown(db,actor+':attack',style==='worship'?event.cast:event.id,now,style==='worship'?4000:.6*(style==='magic'?5:weapon?.attackTicks||4)*1000-150))fail('Your next attack is not ready.');
      else{if(style==='worship'){v.spiritCasts??={};v.spiritCasts[actor]=event.cast;}const damage=Math.min(v.hp,rollHit(s,e,style,event));v.hp-=damage;if(!v.target){v.owner='server';v.target=actor;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment};v.assisted=s.mountainQuest?.stage===17;}result.ok=true;result.damage=damage;result.style=style;result.focus=s[style+'Training']||'balanced';result.defeat=v.hp<=0;
@@ -166,7 +166,10 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
   if(event.kind==='teleport'){
    const destination=String(event.destination),lairs=['lair_veyr','lair_varkesh','lair_colossus','lair_xalith'],entry={lair_veyr:[22,44],lair_varkesh:[29,54],lair_colossus:[23,44],lair_xalith:[27,50],overworld:[42,51]};
    const clock=await db.prepare('SELECT ready_at FROM shared_clocks WHERE id=?').bind(actor+':attack').first();
-   if(event.mode==='rowan'?scene!=='tutorial'||(s.tutorial||0)<38:scene==='tutorial'||!lairs.includes(destination)||destination==='lair_veyr'&&(s.mountainQuest?.stage||0)<18){result.error='That crossing is not unlocked.';await record().run();continue;}
+   // Rowan's permit precedes completion: the character is on the final lesson,
+   // not one step past it. Export this index from the actual tutorial sequence.
+   const finishStage=catalog.tutorial.finishStages[s.tutorialVersion]??catalog.tutorial.finishStage;
+   if(event.mode==='rowan'?scene!=='tutorial'||(s.tutorial||0)<finishStage:scene==='tutorial'||!lairs.includes(destination)||destination==='lair_veyr'&&(s.mountainQuest?.stage||0)<18){result.error='That crossing is not unlocked.';await record().run();continue;}
    if(event.mode==='rowan'&&destination!=='overworld'){result.error='Invalid island crossing.';await record().run();continue;}
    if(clock&&clock.ready_at+6000>now){result.error='Leave combat before teleporting.';await record().run();continue;}
    if(!await cooldown(db,actor+':teleport',event.id,now,4000)){result.error='A crossing is already forming.';await record().run();continue;}

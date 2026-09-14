@@ -9,7 +9,7 @@ function valeLessonPending(){
 function showValeLesson(event=tutorialStep()?.event){
  const speak=(text,done)=>dialog('Captain Vale','<p>'+text+'</p>',[['Continue',()=>{close();done();queueTutorialGuidance();}]]);
  if(event==='talk-combat'){
-  speak('Welcome to the training yard. Open your Equipment tab, then equip the bronze dagger you just made from the bag beside it.',()=>tutorialEvent('talk-combat'));return true;
+  speak('I swore to protect our people. When the garrisons turned on them, I brought everyone I could to this refuge. Now I will teach you to protect yourself. Open your Equipment tab, then equip the bronze dagger you just made from the bag beside it.',()=>tutorialEvent('talk-combat'));return true;
  }
  if(event==='training-kit'||event==='ranged-kit'){
   const melee=event==='training-kit',key=melee?'combat':'ranged',items=melee?{woodenSword:1,woodenShield:1,shrimp:3}:{shortbow:1,arrows:60};
@@ -19,7 +19,7 @@ function showValeLesson(event=tutorialStep()?.event){
   speak(melee?'Good job. But that dagger is not a proper weapon for this practice. Here is a wooden sword and shield, and some food. Equip the sword and shield, then practise on that dummy over there.':'Great job against that rat. Now it is time to learn ranged attacks. Here is a shortbow and 60 arrows. Equip the bow and the arrows, stay outside the fence, and kill a rat by shooting across it.',()=>tutorialEvent(event));return true;
  }
  if(event==='monster'&&!s.tutorialGifts?.valeRatBriefed){
-  speak('Great job on the dummy. Now I want to see how you fare against a real enemy. Go through the gate into the rat pen and defeat a giant rat with your sword and shield. Eat some food if you get hurt.',()=>{s.tutorialGifts??={};s.tutorialGifts.valeRatBriefed=true;save();});return true;
+  speak('Great job on the dummy. Now I want to see how you fare against a real enemy. Go through the gate into the rat pen and defeat a giant rat with your sword and shield. Your attacks repeat automatically. Some hits do zero damage; accuracy and defense decide whether an attack connects. Watch your health beside the minimap and tap Eat if you get hurt.',()=>{s.tutorialGifts??={};s.tutorialGifts.valeRatBriefed=true;save();});return true;
  }
  if(['equip-dagger','training-gear','dummy','monster','ranged-gear','ranged','loot'].includes(event)){
   speak(tutorialStep().desc,()=>{});return true;

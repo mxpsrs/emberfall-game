@@ -10,10 +10,11 @@ function shopSalePrice(id){
  return ITEMS[id]?.value||{bronzeSword:3,ironSword:24,shortbow:8,oakStaff:10,leatherArmor:12,leatherBoots:5,rawTrout:1,ironBar:6,arrowheads:1,ashes:1}[id]||0;
 }
 function endTrade(){
- if(!window.realmTrade)return;window.realmTrade=null;document.body.classList.remove('trade-open');$('modal').classList.remove('trade-window');
+ if(!window.realmTrade)return;const wasBank=window.realmTrade.kind==='bank';window.realmTrade=null;document.body.classList.remove('trade-open');$('modal').classList.remove('trade-window');
  $('closeModal').textContent='Back to adventure';$('closeModal').setAttribute('aria-label','Back to adventure');$('modal').removeAttribute('aria-label');
  document.querySelectorAll('[data-tab]').forEach(b=>b.disabled=false);
  syncPanelButton();
+ if(wasBank&&typeof tutorialBankClosed==='function')tutorialBankClosed();
 }
 function openTrade(kind){
  if(typeof npcDialogueState!=='undefined'&&npcDialogueState)endNpcDialogue();
@@ -34,7 +35,7 @@ function openTrade(kind){
   '<div class="trade-bottom"><p id="tradeNotice" role="status"></p><div class="trade-controls"><div class="trade-quantity" role="group" aria-label="Transaction quantity"><span>Quantity</span>'+TRADE_QUANTITIES.map(q=>'<button type="button" data-trade-quantity="'+q+'" aria-pressed="'+(q===1)+'">'+q+'</button>').join('')+'<input id="tradeCustom" type="number" min="1" max="1000000" step="1" value="10" aria-label="Custom quantity" hidden></div>'+(kind==='bank'?'<button id="depositInventory" type="button">Deposit bag</button>':'<span class="trade-wallet" id="tradeWallet"></span>')+'</div></div><div id="tradeItemMenu" role="menu" hidden></div>';
  $('tradeSearch').oninput=e=>{window.realmTrade.search=e.target.value;renderTradeContents();};
  $('modalBody').querySelectorAll('[data-trade-filter]').forEach(b=>b.onclick=()=>{window.realmTrade.filter=b.dataset.tradeFilter;renderTradeContents();});
- $('modalBody').querySelectorAll('[data-trade-quantity]').forEach(b=>b.onclick=()=>{const t=window.realmTrade;t.quantity=/^\d+$/.test(b.dataset.tradeQuantity)?Number(b.dataset.tradeQuantity):b.dataset.tradeQuantity;$('tradeCustom').hidden=t.quantity!=='X';if(t.quantity==='X')$('tradeCustom').focus();renderUI();});
+ $('modalBody').querySelectorAll('[data-trade-quantity]').forEach(b=>b.onclick=()=>{const t=window.realmTrade;t.quantity=/^\d+$/.test(b.dataset.tradeQuantity)?Number(b.dataset.tradeQuantity):b.dataset.tradeQuantity;$('tradeCustom').hidden=t.quantity!=='X';if(t.quantity==='X')$('tradeCustom').focus();if(typeof tutorialBankQuantity==='function')tutorialBankQuantity();renderUI();});
  $('tradeCustom').oninput=e=>{if(window.realmTrade)window.realmTrade.custom=e.target.value;renderInventory();renderTradeContents();};
  if(kind==='bank')$('depositInventory').onclick=depositInventory;
  $('modal').show();renderUI();

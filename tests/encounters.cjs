@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {ctx,els}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;
 const getElement=ctx.document.getElementById;ctx.document.getElementById=id=>{const e=getElement(id);e.remove=()=>{};e.replaceChildren=()=>{};return e;};
-for(const f of ['game-icons','trading','world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['trading','world-options','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 let testWallTime=Date.now();Date.now=()=>testWallTime;
@@ -19,7 +19,7 @@ activateScene('overworld',42,51);
 // A cardinal flood confirms mainland spawns are in the main walkable landmass.
 const nav=realmNav(),seen=new Uint8Array(nav.cells.length),queue=new Int32Array(nav.cells.length);let head=0,tail=0;
 const start=51*nav.w+42;queue[tail++]=start;seen[start]=1;
-while(head<tail){const id=queue[head++],x=id%nav.w,y=Math.floor(id/nav.w);for(const [dx,dy]of [[0,-1],[0,1],[-1,0],[1,0]]){const nx=x+dx,ny=y+dy,next=ny*nav.w+nx;if(nx<1||ny<1||nx>=nav.w-1||ny>=nav.h-1||nav.cells[next]||seen[next])continue;seen[next]=1;queue[tail++]=next;}}
+while(head<tail){const id=queue[head++],x=id%nav.w,y=Math.floor(id/nav.w);for(const [dx,dy]of [[0,-1],[0,1],[-1,0],[1,0]]){const nx=x+dx,ny=y+dy,next=ny*nav.w+nx;if(nx<1||ny<1||nx>=nav.w-1||ny>=nav.h-1||realmCellBlocked(nav,next)||seen[next])continue;seen[next]=1;queue[tail++]=next;}}
 const dragonDoor=objects.find(o=>o.destination==='lair_varkesh');assert(dragonDoor&&seen[CREATURE_LAIRS.lair_varkesh.returnPoint[1]*nav.w+CREATURE_LAIRS.lair_varkesh.returnPoint[0]],'dragon entrance joins the mainland landmass');
 for(const o of objects.filter(o=>ENEMY_TIERS[o.kind]?.look)){
  assert(!blocked(o.x,o.y),'clear spawn: '+o.kind+' '+o.x+','+o.y);assert(seen[o.y*nav.w+o.x],'reachable mainland spawn: '+o.kind+' '+o.x+','+o.y);
@@ -66,11 +66,11 @@ for(const phase of [0,1]){
   time=h.due+.01;updateEncounterAI(.01);assert.equal(JSON.stringify([colossus.x,colossus.y,colossus.drawX,colossus.drawY]),JSON.stringify([...home,...home]),'Colossus never chases in either phase');
  }
 }
-resetEncounter();assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);assert(!colossus.attackRecovery);
+resetEncounter();assert(colossus._recovering);assert(!colossus.enraged);assert(!colossus.attackRecovery);
 beginEncounter(colossus);colossus.hp=Math.floor(colossus.maxhp*.45);updateEncounterAI(0);const firstGold=carriedCoins();resolveHit(colossus,colossus.hp,'melee');assert.equal(activeEncounter,null);assert.equal(colossus.dead,time+60);assert.equal(carriedCoins()-firstGold,42*4);
 const bossLoot=s.groundLoot.find(p=>p.scene==='lair_colossus'&&p.items.huntersMark);assert(bossLoot);assert.equal(bossLoot.items.huntersMark,4);assert(!blocked(bossLoot.x,bossLoot.y));assert(route(bossLoot.x,bossLoot.y),'boss loot is on an accessible tile outside the solid pedestal');
 time+=60;testWallTime=colossus.respawnAt+1;updateWorldTimers();assert.equal(colossus.hp,colossus.maxhp);assert.equal(colossus.dead,0);assert(!colossus.enraged,'respawn is blue again');assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(home));
-beginEncounter(colossus);colossus.hp=40;updateEncounterAI(0);leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py));assert.equal(activeEncounter,null);assert.equal(colossus.hp,colossus.maxhp);assert(!colossus.enraged);
+beginEncounter(colossus);colossus.hp=40;updateEncounterAI(0);leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py));assert.equal(activeEncounter,null);assert.equal(colossus.hp,40);assert(colossus._recovering);assert(!colossus.enraged);
 activateScene('overworld',42,51);
 const sanctum=CREATURE_LAIRS.lair_veyr,sanctumDoor=objects.find(o=>o.destination==='lair_veyr');
 assert(sanctumDoor);assert(seen[sanctum.returnPoint[1]*nav.w+sanctum.returnPoint[0]],'sanctum connects to the mainland');
@@ -96,10 +96,10 @@ for(const phase of [0,1]){
   f.hazards=[];
  }
 }
-const veyrHome=[veyr.homeX,veyr.homeY];resetEncounter();assert.equal(veyr.hp,veyr.maxhp);assert(!veyr.attackMove);
-beginEncounter(veyr);veyr.hp=35;updateEncounterAI(0);leaveInterior();assert.equal(activeEncounter,null);assert.equal(veyr.hp,veyr.maxhp);
-activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const beforeVeyrGold=s.gold;resolveHit(veyr,veyr.hp,'melee');
-assert.equal(s.gold-beforeVeyrGold,80);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
+const veyrHome=[veyr.homeX,veyr.homeY];resetEncounter();assert(veyr._recovering);assert(!veyr.attackMove);
+beginEncounter(veyr);veyr.hp=35;updateEncounterAI(0);leaveInterior();assert.equal(activeEncounter,null);assert.equal(veyr.hp,35);assert(veyr._recovering);
+activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const beforeVeyrGold=carriedCoins();resolveHit(veyr,veyr.hp,'melee');
+assert.equal(carriedCoins()-beforeVeyrGold,80);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
 const veyrLoot=s.groundLoot.find(p=>p.scene==='lair_veyr'&&p.items.huntersMark);assert.equal(veyrLoot.items.huntersMark,3);assert(!blocked(veyrLoot.x,veyrLoot.y));assert(route(veyrLoot.x,veyrLoot.y),'Veyr loot is reachable');
 time+=60;testWallTime=veyr.respawnAt+1;updateWorldTimers();assert.equal(veyr.hp,veyr.maxhp);assert.equal(veyr.dead,0);assert.equal(JSON.stringify([veyr.x,veyr.y]),JSON.stringify(veyrHome));
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
@@ -124,10 +124,10 @@ for(const health of [1,.4]){
   activeEncounter.hazards=[];
  }
 }
-resetEncounter();assert.equal(xalith.hp,xalith.maxhp);assert(!xalith.attackMove);
-beginEncounter(xalith);xalith.hp=35;leaveInterior();assert.equal(activeEncounter,null);assert.equal(xalith.hp,xalith.maxhp);
-activateScene('lair_xalith',xalith.homeX+2,xalith.homeY);beginEncounter(xalith);const beforeXalithGold=s.gold;resolveHit(xalith,xalith.hp,'melee');
-assert.equal(s.gold-beforeXalithGold,248);assert(creatureDying(xalith));assert.equal(xalith.dead,time+60);
+resetEncounter();assert(xalith._recovering);assert(!xalith.attackMove);
+beginEncounter(xalith);xalith.hp=35;leaveInterior();assert.equal(activeEncounter,null);assert.equal(xalith.hp,35);assert(xalith._recovering);
+activateScene('lair_xalith',xalith.homeX+2,xalith.homeY);beginEncounter(xalith);const beforeXalithGold=carriedCoins();resolveHit(xalith,xalith.hp,'melee');
+assert.equal(carriedCoins()-beforeXalithGold,248);assert(creatureDying(xalith));assert.equal(xalith.dead,time+60);
 const hiveLoot=s.groundLoot.find(p=>p.scene==='lair_xalith'&&p.items.huntersMark);assert(hiveLoot);assert.equal(hiveLoot.items.huntersMark,5);assert.equal(hiveLoot.items.coins,240);assert(!blocked(hiveLoot.x,hiveLoot.y));assert(route(hiveLoot.x,hiveLoot.y),'hive loot remains reachable');
 time+=60;testWallTime=xalith.respawnAt+1;updateWorldTimers();assert.equal(xalith.hp,xalith.maxhp);assert.equal(xalith.dead,0);assert.equal(xalith.x,xalith.homeX);assert.equal(xalith.y,xalith.homeY);
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
@@ -144,10 +144,10 @@ let seed=20260912;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0
 const killTimes=[];let deaths=0,totalDamage=0;
 for(let run=0;run<1000;run++){
  const r=fresh(),started=time;target=r;let loss=0;
- for(let frame=0;frame<2400&&r.hp>0;frame++){if(time>=playerAttackReadyAt)performAttack(r);const hp=s.hp;time+=.05;updateCombat(.05);loss+=Math.max(0,hp-s.hp);if($('modal').open){deaths++;$('modal').close();break;}}
- assert(r.hp<=0||deaths,'starter rat resolves');killTimes.push(time-started);totalDamage+=loss;
+ for(let frame=0;frame<24000&&r.hp>0;frame++){if(time+.0001>=playerAttackReadyAt)performAttack(r);const hp=s.hp;time+=.05;updateCombat(.05);loss+=Math.max(0,hp-s.hp);if($('modal').open){deaths++;$('modal').close();break;}}
+ assert(r.hp<=0||deaths,'starter rat resolves '+JSON.stringify({hp:r.hp,maxhp:r.maxhp,x:r.x,y:r.y,drawX:r.drawX,px,py,time,playerAttackReadyAt,damage:playerMaxHit('melee'),range:inAttackRange(r)}));killTimes.push(time-started);totalDamage+=loss;
 }
-killTimes.sort((a,b)=>a-b);assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds');assert(killTimes[950]<36,'unlucky starter fights stay reasonable while preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
+killTimes.sort((a,b)=>a-b);
 console.log('Starter rat / 1,000 real simulated fights: median '+killTimes[500].toFixed(2)+'s; p95 '+killTimes[950].toFixed(2)+'s; mean HP lost '+(totalDamage/1000).toFixed(2)+'; deaths '+deaths+'. Zero hits are preserved.');
 for(const kind of ['slinger','brambleslime','warden','sentinel','king','forestgiant','ork']){o=fresh(kind);target=o;beginEncounter(o);time=activeEncounter.nextAttack;updateEncounterAI(.05);assert(['strike','projectile'].includes(activeEncounter.hazards[0].shape),'ordinary fight has no ground pattern: '+kind);assert.equal(activeEncounter.phase,0);}
 // Ordinary Forest Giants cycle native melee motions without phase mechanics.
@@ -157,8 +157,10 @@ o=fresh('forestgiant');px=s.x=o.x-2;let edgeRoll=0;Math.random=()=>edgeRoll++?.5
 const giantGold=s.gold;resolveHit(o,o.hp,'melee');assert.equal(huntProgress().kills.forestgiant,1);assert(!huntProgress().firstClears.forestgiant);assert.equal(s.gold,giantGold,'ordinary giant has no first-clear boss bonus');assert(s.groundLoot.some(p=>p.items.logs===3&&p.items.bones===2));assert(!s.groundLoot.some(p=>p.items.huntersMark),'ordinary giants have no boss marks');assert.equal(activeEncounter,null);assert.equal(o.dead,time+25);const savedGiantProgress=JSON.parse(JSON.stringify(s));normalizeJourney(savedGiantProgress);assert.equal(savedGiantProgress.combatProgress.kills.forestgiant,1,'giant kill progress survives save normalization');
 o=fresh('king');target=o;beginEncounter(o);resolveHit(o,o.hp,'melee');assert(s.boss,'existing ruins quest flag still advances');
 o=fresh('warden');resolveHit(o,o.hp,'melee');assert(s.wardenClear,'crypt cache flag still advances');
-o=fresh('forestgiant');beginEncounter(o);o.hp=5;px=s.x=o.homeX+20;updateEncounterAI(.05);assert.equal(activeEncounter,null);assert.equal(o.hp,o.maxhp);assert(!o._inCombat);
+o=fresh('forestgiant');beginEncounter(o);o.hp=5;px=s.x=o.homeX+20;updateEncounterAI(.05);assert.equal(activeEncounter,null);assert.equal(o.hp,5);assert(o._recovering,'retreated enemies recover gradually');assert(!o._inCombat);
 o=fresh('forestgiant');beginEncounter(o);activateScene('mine',10,12);assert.equal(activeEncounter,null,'scene change clears fight');assert.equal(o.hp,o.maxhp);
 
-lineOfSight=originalSight;console.log('PASS: reachable ordinary monsters and Ork Warrens; stationary Colossus with exactly two phases, three styles, faster red phase, accessible loot, reset and respawn; original quest flags and zero-inclusive combat preserved.');
+lineOfSight=originalSight;
+assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds; measured '+killTimes[500].toFixed(2)+'s');assert(killTimes[950]<36,'unlucky starter fights stay reasonable while preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
+console.log('PASS: reachable ordinary monsters and Ork Warrens; stationary Colossus with exactly two phases, three styles, faster red phase, accessible loot, reset and respawn; original quest flags and zero-inclusive combat preserved.');
 `,ctx);

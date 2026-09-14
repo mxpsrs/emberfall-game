@@ -7,6 +7,7 @@ function questJournalEntries(){
  const entries=[{id:'tutorial',title:'Firstlight apprenticeship',complete:!tutorialStep(),active:!!tutorialStep()}];
  for(let i=1;i<quests.length-1;i++)entries.push({id:'village-'+i,title:quests[i].title,complete:s.quest>i,active:s.quest===i});
  for(let i=0;i<frontierQuests.length;i++)entries.push({id:'frontier-'+i,title:frontierQuests[i].title,complete:(s.frontier?.quest||0)>i,active:(s.frontier?.quest||0)===i&&s.frontier?.accepted});
+ if(typeof mainStoryState==='function'){const stage=mainStoryState().stage;MAIN_STORY_QUESTS.forEach((q,i)=>entries.push({id:'main-'+i,title:(i+1)+'. '+q.title,complete:stage>=q.end,active:stage>=q.start&&stage<q.end}));}
  if(typeof mountainState==='function'){const stage=mountainState().stage;entries.push({id:'mountain-1',title:'The King Beneath the Mountain — Part One',complete:stage>=11,active:stage>0&&stage<11},{id:'mountain-2',title:'The King Beneath the Mountain — Part Two',complete:stage>=20,active:stage>=11&&stage<20});}
  return entries;
 }
@@ -17,8 +18,15 @@ function questJournalRows(id){
   const action=tutorialNextAction();if(action)rows.push({text:action.instruction,done:false,run:action.run});
   return rows;
  }
+ if(id.startsWith('main-')){
+  const index=Number(id.slice(5)),quest=MAIN_STORY_QUESTS[index],state=mainStoryState(),rows=[];if(!quest)return rows;
+  if(state.stage<quest.start)return [{text:'Complete '+MAIN_STORY_QUESTS[index-1].title+' first.',done:false,run:mainStoryGuide}];
+  for(let i=quest.start;i<Math.min(state.stage,quest.end);i++)rows.push({text:MAIN_STORY_STEPS[i][0],done:true});
+  if(state.stage<quest.end)rows.push({text:MAIN_STORY_STEPS[state.stage][0],done:false,run:mainStoryGuide});return rows;
+ }
  if(id.startsWith('mountain-')){
   const stage=mountainState().stage,start=id==='mountain-1'?0:11,end=id==='mountain-1'?11:20,rows=[];
+  if(stage===0&&typeof mainStoryComplete==='function'&&!mainStoryComplete())return [{text:'Complete The Broken Watch, The Weight of an Oath and Echoes Without a Name, in that order.',done:false,run:mainStoryGuide}];
   if(stage<start)return [{text:'Complete Part One of The King Beneath the Mountain first.',done:false}];
   for(let i=start;i<Math.min(stage,end);i++)rows.push({text:MOUNTAIN_STEPS[i][1],done:true});
   if(stage<end)rows.push({text:MOUNTAIN_STEPS[stage][1],done:false,run:mountainGuide});
@@ -54,6 +62,14 @@ function renderQuestJournal(){
  }
  panel.appendChild(history);
  if(selected.complete){const complete=document.createElement('p');complete.className='quest-journal-complete';complete.textContent='Quest complete.';panel.appendChild(complete);}
+ if(selected.id.startsWith('main-')){
+  const q=mainStoryState(),notes=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Evidence and quest notes';notes.className='mountain-notes';notes.appendChild(summary);
+  const note=text=>{const p=document.createElement('p');p.textContent=text;notes.appendChild(p);},index=Number(selected.id.slice(5));
+  if(index===0){if(q.witness)note('Tovin: the courier escaped west; the raider took the dispatch east.');for(const k of q.clues)note(MAIN_STORY_CLUES[k][1]);if(q.dispatch)note('Forged dispatch: withdraw patrols and abandon the lift crew. The obsolete seal has seven crown points; current royal orders have five.');}
+  if(index===1){if(q.safety)note('Lift safety: Air before entry. Pin the brake. Seat the weight. Open the ramp.');if(q.pin)note('Bound rescue tool: forged locking pin.');if(q.stage>=15)note('Bera lost her voice before the alarm, yet Oren heard her calling from below while standing beside her.');if(q.testimony)note('Hesta’s signed testimony: both workers rescued; false orders copied the royal seal; stolen voices called from below.');}
+  if(index===2){for(const k of q.stones)note(MAIN_STORY_STONES[k][1]);if(q.comparison)note('The curse steals living voices. Restore the oath: Bell, Lantern, Hand.');if(q.memoryShard)note('Whispering memory shard: Send the ward-keepers below. Let the borrowed voice carry the order.');}
+  const reward=MAIN_STORY_QUESTS[index];note('Reward: '+reward.coins+' coins; '+Object.entries(reward.xp).map(([skill,xp])=>xp+' '+skill+' XP').join('; ')+'.');panel.appendChild(notes);
+ }
  if(selected.id.startsWith('mountain-')){
   const state=mountainState(),notes=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Evidence and quest notes';notes.className='mountain-notes';notes.appendChild(summary);
   const note=text=>{const p=document.createElement('p');p.textContent=text;notes.appendChild(p);};

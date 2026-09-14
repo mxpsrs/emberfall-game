@@ -20,7 +20,7 @@ try{
   const id=createHash('sha256').update('public-player:account:'+account.id).digest('hex');
   await store.env.DB.prepare('INSERT INTO player_presence VALUES (?,?,?,?)').bind(id,'overworld',JSON.stringify({x:10,y:10}),Date.now()).run();
  }
- const social=async(name,body)=>{const r=await handleSocial(request('/api/social',body,players[name].cookie),store.env);const data=await r.json();assert.equal(r.status,200,JSON.stringify(data));return data;};
+ const social=async(name,body)=>{const r=await handleSocial(request('/api/social'+(body?'':'?after=0'),body,players[name].cookie),store.env);const data=await r.json();assert.equal(r.status,200,JSON.stringify(data));return data;};
  await social('alice',{action:'message',text:'Local chat works'});
  assert((await social('bobby')).messages.some(m=>m.body==='Local chat works'));
  let trade=(await social('alice',{action:'requestTrade',username:'bobby'})).trade;

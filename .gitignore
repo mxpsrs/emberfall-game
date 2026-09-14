@@ -12,3 +12,4 @@ __pycache__/
 
 player-saves/
 server-data/
+.qa/

@@ -108,7 +108,7 @@ function handleWorldInteraction(o){
  if(o.type==='exit'){leaveInterior();return true;}
  if(o.type==='villager'){stop();dialog(o.name,'<p>'+o.talk+'</p>');return true;}
  if(o.type==='prop'){stop();toast(o.name+'.');return true;}
- if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt guard still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Crypt supply cache','<p>The cache leaves <b>100 coins, 30 rune stones, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
+ if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt guard still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Crypt supply cache','<p>The cache leaves <b>100 coins, 30 relics, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
  return false;
 }
 function livingWorld(dt){

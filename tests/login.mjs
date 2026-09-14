@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import {handleAuth} from '../worker/auth.js';
 const database=new DatabaseSync(':memory:');
 database.exec('CREATE TABLE game_accounts(id TEXT PRIMARY KEY,username TEXT,normalized_username TEXT UNIQUE,password_hash TEXT,created_at INTEGER); CREATE TABLE game_sessions(token_hash TEXT PRIMARY KEY,account_id TEXT,expires_at INTEGER); CREATE TABLE auth_limits(key TEXT PRIMARY KEY,window INTEGER,attempts INTEGER);');
+database.exec(readFileSync(new URL('../drizzle/0009_vengeful_white_queen.sql',import.meta.url),'utf8'));
 const env={DB:{prepare(sql){
  return {bind(...args){
   return {async first(){return database.prepare(sql).get(...args)||null;},async run(){return {meta:{changes:database.prepare(sql).run(...args).changes}};}};

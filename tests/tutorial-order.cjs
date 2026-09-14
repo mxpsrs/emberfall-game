@@ -9,7 +9,7 @@ assert(events.indexOf('ranged')<events.indexOf('talk-woods'));
 assert(events.indexOf('tree')<events.indexOf('talk-fishing'));
 assert(events.indexOf('eat')<events.indexOf('talk-bank'));
 assert.equal(events.length,38);assert.equal(new Set(events).size,38);
-assert(TUTORS.guide.text.includes('open your bag'));assert(TUTORS.combat.text.includes('Forester Ash'));assert(TUTORS.cooking.text.includes('Banker Ada'));
+assert(TUTORS.guide.text.includes('open your bag'));assert(tutorialSteps.find(t=>t.event==='talk-woods').desc.includes('Forester Ash'));assert(TUTORS.cooking.text.includes('Banker Ada'));
 for(const [version,oldEvents]of [[4,TUTORIAL_V4_EVENTS],[5,TUTORIAL_V5_EVENTS],[6,TUTORIAL_V6_EVENTS]])for(let progress=0;progress<=oldEvents.length;progress++){
  const state={...defaults(),character:{name:'Existing apprentice'},tutorialVersion:version,tutorial:progress,tutorialIslandVersion:FIRSTLIGHT_LAYOUT_VERSION,sceneId:'tutorial',x:42,y:51,tutorialReward:false,starterGearVersion:1,bag:{logs:2},xp:{Woodcutting:70,Cooking:0,Firemaking:0},tutorialGifts:{baking:true}};
  const possessions=JSON.stringify([state.bag,state.xp,state.tutorialGifts,state.character]);normalizeJourney(state);

@@ -16,7 +16,7 @@ engage(gate);assert(finishWalk(),'tapping gate from outside enters');assert(insi
 assert(walkTo(46,82));finishWalk();activateScene('overworld',47,82);walkTo(51,82);tick();assert.notEqual(gate.openedAt,undefined);stop();tick();assert.equal(gate.openedAt,undefined,'cancelled approach shuts unused gate');
 setTrainingGate(true);s.x=px=gate.x;s.y=py=gate.y;stop();tick();assert.notEqual(gate.openedAt,undefined,'gate never shuts on player in threshold');walkTo(46,82);finishWalk();assert.equal(gate.openedAt,undefined);
 for(const [x,y]of [[46,82],[66,82],[56,74],[56,90]]){const p=route(56,82,false,1.45,x,y);assert(p&&p.some(([a,b])=>a===gate.x&&b===gate.y),'all approaches use the only entrance');}
-assert(!lineOfSight(47,80,50,80),'fence blocks attacks through its planks');
+assert(lineOfSight(47,80,50,80),'arrows and spells clear the low fence');assert(!land(48,80),'low fence still blocks movement');
 const moved=new Set();activateScene('overworld',55,81);target=null;
 for(let i=0;i<400;i++){time+=.5;livingWorld(.5);for(const rat of rats){advanceActorMovement(rat,.5);if(rat.x!==rat.homeX||rat.y!==rat.homeY)moved.add(rat);assert(insideTrainingPen(rat.x,rat.y,1));assert(insideTrainingPen(rat.drawX,rat.drawY,1));}}
 assert(moved.size>=10,'the rats can roam inside the enlarged pen');
@@ -24,7 +24,7 @@ for(const rat of rats)Object.assign(rat,{x:rat.homeX,y:rat.homeY,drawX:rat.homeX
 activateScene('overworld',46,82);target=rats[5];
 for(const open of [false,true]){setTrainingGate(open);for(let i=0;i<60;i++){time+=.5;updateCombat(.5);advanceActorMovement(target,.5);assert(insideTrainingPen(target.x,target.y,1),'combat cannot lead rats through even an open gate');}}
 stop();setTrainingGate(false);const rat=rats[0];rat.x=pen.left-3;advanceActorMovement(rat,.05);assert(insideTrainingPen(rat.x,rat.y,1),'invalid old position is repaired');
-activateScene('overworld',rat.x+1,rat.y);s.tutorial=tutorialSteps.findIndex(a=>a.event==='monster');rat.hp=0;awardDefeat(rat,'melee');assert.equal(tutorialStep().event,'loot','any pen rat completes the field test');assert(s.groundLoot.some(p=>insideTrainingPen(p.x,p.y)),'loot remains inside pen');assert.notEqual(tutorialObject('rat'),rat,'guide chooses a living rat');
+activateScene('overworld',rat.x+1,rat.y);s.tutorial=tutorialSteps.findIndex(a=>a.event==='monster');rat.hp=0;awardDefeat(rat,'melee');assert.equal(tutorialStep().event,'ranged-kit','any pen rat completes the field test');assert(s.groundLoot.some(p=>insideTrainingPen(p.x,p.y)),'loot remains inside pen');assert.notEqual(tutorialObject('rat'),rat,'guide chooses a living rat');
 nextWorldTimerCheck=0;updateWorldTimers(now+26000);assert.equal(rat.dead,0);assert.equal(rat.hp,rat.maxhp);assert(insideTrainingPen(rat.x,rat.y,1));assert.equal(objects.filter(o=>o.penId===pen.id&&o.dead<=time).length,15,'all 15 can respawn');
 setupTutorialVillage();assert.equal(objects.filter(o=>o.penId===pen.id).length,15,'repeat setup does not duplicate rats');
 console.log('PASS: 15 larger rats, complete fence collision, gate entry/exit and automatic closure, interruption safety, constrained roaming/combat, tutorial kills, loot and respawn.');

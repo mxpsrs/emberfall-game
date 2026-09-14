@@ -17,7 +17,19 @@ function meshSliceDepth(mesh,y,width){
  }return [lo,hi];
 }
 function fitModularArmorMesh(sex,name,mesh){
- if(/^(Chestplate|Shoulder|Gauntlets|Legguards|Boots|Headgear|Belt)\./.test(name))return fittedPlateArmour(sex,name);
+ const part=name.split('.')[0];
+ if(['Shoulder','Gauntlets','Boots','Headgear'].includes(part)){
+  const p=new Float32Array(mesh.p),n=new Float32Array(mesh.n),female=sex==='female';
+  for(let i=0;i<p.length;i+=3){
+   const x=p[i],y=p[i+1],z=p[i+2];
+   if(part==='Gauntlets'){const cy=female?1.413:1.447,cz=-.062;p[i+1]=cy+(y-cy)*1.17;p[i+2]=cz+(z-cz)*1.28;n[i+1]/=1.17;n[i+2]/=1.28;}
+   if(part==='Shoulder'){const cy=female?1.415:1.45,cz=-.067;p[i+1]=cy+(y-cy)*1.05;p[i+2]=cz+(z-cz)*1.24;n[i+1]/=1.05;n[i+2]/=1.24;}
+   if(part==='Boots'){const cx=Math.sign(x)*(female?.128:.132);p[i]=cx+(x-cx)*1.12;p[i+1]=Math.max(.006,y*1.12+.006);p[i+2]=-.03+(z+.03)*1.12;}
+   if(part==='Headgear'){p[i]*=female?1.14:1.09;p[i+2]=-.02+(z+.02)*1.19;n[i]/=female?1.14:1.09;n[i+2]/=1.19;}
+   const length=Math.hypot(n[i],n[i+1],n[i+2])||1;for(let k=0;k<3;k++)n[i+k]/=length;
+  }
+  return remeasureArmour({...mesh,p,n});
+ }
  // Bone retargeting compressed front/back volume at the chest and pelvis.
  // Fit shells around the actual body, never scale or erase the body to fit them.
  if(name==='Hair.007'){
@@ -46,7 +58,7 @@ function fitModularArmorMesh(sex,name,mesh){
   return {...mesh,p,n,bounds:mesh.bounds.map(row=>row.map((v,k)=>k===2?target+(v-center)*scale:v))};
  }
  const body=rebuiltAvatars[sex].mesh,source=mesh.p,rows=[];
- const start=mesh.bounds[0][1]-.05,end=mesh.bounds[1][1]+.05,clearance=belt?.040:.024;
+ const start=mesh.bounds[0][1]-.05,end=mesh.bounds[1][1]+.05,clearance=belt?.040:.043;
  for(let y=start;y<=end+.025;y+=.025){const [a,b]=meshSliceDepth(mesh,y,chest?.28:.34),[c,d]=meshSliceDepth(body,y,chest?.24:.32);if(!Number.isFinite(a+b+c+d)||b-a<.04){rows.push({y,scale:1,offset:0});continue;}const lo=Math.min(a,c-clearance),hi=Math.max(b,d+clearance),scale=(hi-lo)/(b-a);rows.push({y,scale,offset:lo-a*scale});}
  const fit=y=>{const v=Math.max(0,Math.min(rows.length-1,(y-rows[0].y)/.025)),i=Math.floor(v),a=rows[i],b=rows[Math.min(i+1,rows.length-1)],t=v-i;return {scale:a.scale+(b.scale-a.scale)*t,offset:a.offset+(b.offset-a.offset)*t};};
  const p=new Float32Array(source),n=new Float32Array(mesh.n);
@@ -57,49 +69,122 @@ function fitModularArmorMesh(sex,name,mesh){
  return {...mesh,p,n,bounds:[bounds.map(v=>v[0]),bounds.map(v=>v[1])]};
 }
 
-function fittedPlateArmour(sex,name){
- // New wearable shells use the licensed character mesh as a fitting cage.
- // Shared positions and weights keep player, NPC and preview proportions equal.
- const body=rebuiltAvatars[sex].mesh,part=name.split('.')[0],tier=name.split('.')[1];
- const metals={B:[.48,.28,.12],I:[.43,.48,.53],G:[.70,.51,.15],M:[.25,.43,.55],DS:[.22,.26,.32]},metal=part==='Belt'?[.25,.16,.09]:(metals[tier]||metals.I);
- const p=[],n=[],c=[],j=[],w=[],indices=[],uv=[],tags=[],thickness=tier==='DS'?.038:tier==='G'?.032:.026;
-
- const regions={
- Chestplate:[[-.285,.285,1.00,1.49,-2,2]],
- Shoulder:[[-.48,-.255,1.36,1.52,-2,2],[.255,.48,1.36,1.52,-2,2]],
- Gauntlets:[[-2,-.57,1.12,2,-2,2],[.57,2,1.12,2,-2,2]],
- Legguards:[[-.32,.32,.25,.49,-2,2],[-.32,.32,.56,1.02,-2,2]],
- Boots:[[-2,2,-1,.29,-2,2]],
- Belt:[[-.34,.34,.88,.98,-2,2]],
- Headgear:[[-2,2,1.72,2,-2,2],[-2,2,1.56,1.72,-2,.005],[-2,-.087,1.56,1.72,.005,2],[.087,2,1.56,1.72,.005,2]]
- }[part]||[];
- // Average normals at shared positions so adjacent plates remain watertight
- // even where the source body splits vertices for flat shading or UV seams.
- const cageNormals=new Map(),normalKeys=[];
- for(let v=0;v<body.p.length/3;v++){const key=[0,1,2].map(k=>Math.round(body.p[v*3+k]*100000)).join(':');normalKeys.push(key);const sum=cageNormals.get(key)||[0,0,0];for(let k=0;k<3;k++)sum[k]+=body.n[v*3+k];cageNormals.set(key,sum);}
- for(const normal of cageNormals.values()){const length=Math.hypot(...normal)||1;for(let k=0;k<3;k++)normal[k]/=length;}
- function vertex(v){const weights={};for(let k=0;k<4;k++)if(body.w[v*4+k])weights[body.j[v*4+k]]=body.w[v*4+k];return {p:Array.from(body.p.subarray(v*3,v*3+3)),n:cageNormals.get(normalKeys[v]),weights};}
- function interpolate(a,b,t){const weights={};for(const bone of new Set([...Object.keys(a.weights),...Object.keys(b.weights)]))weights[bone]=(a.weights[bone]||0)*(1-t)+(b.weights[bone]||0)*t;return {p:a.p.map((v,k)=>v+(b.p[k]-v)*t),n:a.n.map((v,k)=>v+(b.n[k]-v)*t),weights};}
- function clip(poly,axis,bound,sign){const result=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],da=(a.p[axis]-bound)*sign,db=(b.p[axis]-bound)*sign;if(da>=0)result.push(a);if((da>=0)!==(db>=0))result.push(interpolate(a,b,da/(da-db)));}return result;}
- for(let t=0;t<body.i.length;t+=3){
-  const triangle=[vertex(body.i[t]),vertex(body.i[t+1]),vertex(body.i[t+2])];
-  for(const region of regions){let polygon=triangle;
-   for(let axis=0;axis<3&&polygon.length;axis++){polygon=clip(polygon,axis,region[axis*2],1);if(polygon.length)polygon=clip(polygon,axis,region[axis*2+1],-1);}
-   if(polygon.length<3)continue;
-   const first=p.length/3;
-   for(const v of polygon){const length=Math.hypot(...v.n)||1,normal=v.n.map(n=>n/length),offset=thickness*(part==='Shoulder'?1.6:1);
-    for(let k=0;k<3;k++){let position=v.p[k]+normal[k]*offset;if(k===1)position=Math.max(.002,position);p.push(position);n.push(normal[k]);c.push(metal[k]);}
-    const weights=Object.entries(v.weights).sort((a,b)=>b[1]-a[1]).slice(0,4),sum=weights.reduce((s,b)=>s+b[1],0)||1;
-    for(let k=0;k<4;k++){j.push(Number(weights[k]?.[0]||0));w.push((weights[k]?.[1]||0)/sum);}uv.push(0,0);tags.push(20);
-   }
-   for(let k=1;k<polygon.length-1;k++)indices.push(first,first+k,first+k+1);
+function remeasureArmour(mesh,tier=null){
+ const bounds=[0,1,2].map(k=>Array.from(mesh.p).filter((_,i)=>i%3===k));
+ const palettes={B:['#9f7549','#ceaa74'],I:['#8d9fab','#c1cbd0'],G:['#b89b50','#ead7a2'],M:['#557e99','#a5c4d2'],DS:['#475363','#b3a28c']},palette=palettes[tier],c=new Float32Array(mesh.c),f=new Float32Array(c.length);
+ const rgb=hex=>[1,3,5].map(k=>parseInt(hex.slice(k,k+2),16)/255);
+ for(let i=0;i<f.length;i+=3){
+  if(palette){const source=Array.from(mesh.c.subarray(i,i+3),v=>Math.round(v*255)),[r,g,b]=source;let color;
+   if(r<65&&g<65&&b<65)color='#303c45';
+   else if(Math.max(r,g,b)-Math.min(r,g,b)<14)color=palette[0];
+   else if(r>170&&g>140&&b>110)color=palette[1];
+   else if(r>g*1.25&&g>b*1.1)color=r>145?'#785437':'#533e30';
+   if(color)c.set(rgb(color),i);
   }
+  const light=.52+.48*Math.max(0,-mesh.n[i]*.40+mesh.n[i+1]*.75+mesh.n[i+2]*.53);for(let k=0;k<3;k++)f[i+k]=c[i+k]*light;
  }
- const bounds=[0,1,2].map(k=>{const values=p.filter((_,i)=>i%3===k);return [Math.min(...values),Math.max(...values)];});
- return {p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(c),f:new Float32Array(c),j:new Uint8Array(j),w:new Float32Array(w),i:new Uint16Array(indices),uv:new Float32Array(uv),t:new Uint8Array(tags),bounds:[bounds.map(b=>b[0]),bounds.map(b=>b[1])]};
+ return {...mesh,c,f,bounds:[bounds.map(v=>Math.min(...v)),bounds.map(v=>Math.max(...v))]};
+}
+function fittedPlateArmour(sex,name){
+ // Metal tiers use the fitted plate silhouette with their own metal palette.
+ const shapeName=name.replace(/\.(B|M|G|DS)\./,'.I.'),source=REALM_MODELS.armor[sex][shapeName]||REALM_MODELS.armor[sex][name];if(!source)return null;
+ let mesh=fitModularArmorMesh(sex,name,rebuiltMesh(source));
+ if(/^(Chestplate|Shoulder|Gauntlets|Legguards)\./.test(name)){const indices=[];for(let t=0;t<mesh.i.length;t+=3){const ids=Array.from(mesh.i.subarray(t,t+3));if(ids.every(id=>Math.max(...mesh.c.subarray(id*3,id*3+3))<.27)&&(!name.startsWith('Chestplate.')||ids.every(id=>Math.abs(mesh.p[id*3])>.265)))continue;indices.push(...ids);}mesh={...mesh,i:new Uint16Array(indices)};}
+ if(name.startsWith('Chestplate.'))mesh=joinArmourMeshes(mesh,contouredBackplate(sex));
+ if(name.startsWith('Shoulder.'))mesh=joinArmourMeshes(mesh,contouredLimbPlates(sex,'upperArms'));
+ if(name.startsWith('Gauntlets.'))mesh=joinArmourMeshes(mesh,contouredLimbPlates(sex,'forearms'));
+ if(name.startsWith('Legguards.'))mesh=joinArmourMeshes(mesh,contouredLimbPlates(sex,'thighs'));
+ return remeasureArmour(mesh,name.split('.')[1]);
+}
+function joinArmourMeshes(a,b){
+ const result={...a},count=a.p.length/3;
+ for(const key of ['p','n','c','f','j','w','uv','t']){const Type=a[key].constructor,resultArray=new Type(a[key].length+b[key].length);resultArray.set(a[key]);resultArray.set(b[key],a[key].length);result[key]=resultArray;}
+ result.i=new Uint16Array(a.i.length+b.i.length);result.i.set(a.i);result.i.set(Array.from(b.i,v=>v+count),a.i.length);return result;
+}
+function contouredBackplate(sex){
+ // A complete cuirass back, shaped around the shoulder blades and tapered at
+ // the waist. The surface, bevel and inside are separate closed geometry.
+ const body=rebuiltAvatars[sex].mesh,female=sex==='female',p=[],n=[],c=[],j=[],w=[],i=[];
+ function sample(x,y){
+  let hit=null;
+  for(let t=0;t<body.i.length;t+=3){const ids=[body.i[t],body.i[t+1],body.i[t+2]],q=ids.map(v=>Array.from(body.p.subarray(v*3,v*3+3))),[a,b,d]=q;
+   const denom=(b[1]-d[1])*(a[0]-d[0])+(d[0]-b[0])*(a[1]-d[1]);if(Math.abs(denom)<1e-9)continue;
+   const u=((b[1]-d[1])*(x-d[0])+(d[0]-b[0])*(y-d[1]))/denom,v=((d[1]-a[1])*(x-d[0])+(a[0]-d[0])*(y-d[1]))/denom,h=1-u-v;
+   if(Math.min(u,v,h)<-.0001)continue;const z=u*a[2]+v*b[2]+h*d[2];if(hit&&z>=hit.z)continue;
+   const weights={};for(let a=0;a<3;a++)for(let k=0;k<4;k++){const bone=body.j[ids[a]*4+k];weights[bone]=(weights[bone]||0)+body.w[ids[a]*4+k]*[u,v,h][a];}
+   hit={z,weights};
+  }
+  return hit;
+ }
+ const rows=[[1.028,.18],[1.13,.177],[1.27,.209],[1.405,.234],[1.48,.208],[1.535,.113]],columns=[-1,-.83,-.47,0,.47,.83,1];
+ const grid=rows.map(([height,width])=>columns.map(fraction=>{
+  const x=fraction*width*(female?.90:1),y=height*(female?.976:1),hit=sample(x,y)||sample(x*.82,y)||sample(0,y),weights=Object.entries(hit?.weights||{4:1}).sort((a,b)=>b[1]-a[1]).slice(0,4),sum=weights.reduce((sum,q)=>sum+q[1],0)||1;
+  return {p:[x,y,(hit?.z||-.13)-.038-(1-Math.abs(fraction))*.008],weights:weights.map(([bone,weight])=>[Number(bone),weight/sum])};
+ }));
+ function face(vertices,rgb){const base=p.length/3,a=vertices[0].p,b=vertices[1].p,d=vertices[2].p,u=b.map((v,k)=>v-a[k]),v=d.map((v,k)=>v-a[k]),normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...normal)||1;
+  for(const q of vertices){p.push(...q.p);n.push(...normal.map(v=>v/length));c.push(...rgb);for(let k=0;k<4;k++){j.push(q.weights[k]?.[0]||0);w.push(q.weights[k]?.[1]||0);}}
+  for(let k=1;k<vertices.length-1;k++)i.push(base,base+k,base+k+1);
+ }
+ const metal=[177/255,177/255,177/255],rim=[191/255,167/255,143/255],inner=q=>({...q,p:[q.p[0],q.p[1],q.p[2]+.018]});
+ for(let row=1;row<grid.length;row++)for(let col=1;col<columns.length;col++){
+  const points=[grid[row-1][col-1],grid[row][col-1],grid[row][col],grid[row-1][col]];
+  face(points,metal);face([...points].reverse().map(inner),metal);
+ }
+ const outline=[...grid[0],...grid.slice(1).map(row=>row.at(-1)),...grid.at(-1).slice(0,-1).reverse(),...grid.slice(1,-1).reverse().map(row=>row[0])];
+ for(let k=0;k<outline.length;k++){const a=outline[k],b=outline[(k+1)%outline.length];face([a,inner(a),inner(b),b],rim);}
+ return {p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(c),f:new Float32Array(c),j:new Uint8Array(j),w:new Float32Array(w),i:new Uint16Array(i),uv:new Float32Array(p.length/3*2),t:new Uint8Array(p.length/3).fill(20)};
 }
 
-function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(name==='Veldren_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else if(name==='Veldren_WoodenSword'||name==='Veldren_WoodenShield')modularMeshes.set(key,makeTrainingMesh(name));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,fitModularArmorMesh(sex,name,rebuiltMesh(source)));}}return modularMeshes.get(key);}
+const contouredLimbCache=new Map();
+function contouredLimbPlates(sex,part){
+ const cacheKey=sex+':'+part;if(contouredLimbCache.has(cacheKey))return contouredLimbCache.get(cacheKey);
+ // Closed, tapered armour sleeves follow each limb's actual cross section.
+ // Both surfaces and the rolled rims carry interpolated body skin weights.
+ const body=rebuiltAvatars[sex].mesh,female=sex==='female',p=[],n=[],c=[],j=[],w=[],indices=[];
+ const arm=part!=='thighs',axis=arm?0:1,u=arm?1:0,v=2,scale=female?.976:1;
+ const spans=part==='upperArms'?[[.315,.525]]:part==='forearms'?[[.545,.705]]:[[.515,.935],[.455,.505]];
+ function surface(center,direction){
+  let best=null;
+  for(let t=0;t<body.i.length;t+=3){
+   const ids=Array.from(body.i.subarray(t,t+3)),points=ids.map(id=>Array.from(body.p.subarray(id*3,id*3+3))),hits=[];
+   for(let a=0;a<3;a++){const b=(a+1)%3,delta=points[b][axis]-points[a][axis];if(Math.abs(delta)<1e-8)continue;const q=(center[axis]-points[a][axis])/delta;if(q<0||q>1)continue;hits.push({p:points[a].map((x,k)=>x+(points[b][k]-x)*q),weights:[0,1,2].map(k=>k===a?1-q:k===b?q:0)});}
+   if(hits.length<2)continue;
+   const a=hits[0],b=hits[1],dx=b.p[u]-a.p[u],dz=b.p[v]-a.p[v],ax=a.p[u]-center[u],az=a.p[v]-center[v],den=direction[u]*dz-direction[v]*dx;if(Math.abs(den)<1e-8)continue;
+   const radius=(ax*dz-az*dx)/den,q=(ax*direction[v]-az*direction[u])/den;if(radius<=0||radius>(arm?.12:.15)||q<-.0001||q>1.0001||best&&radius>=best.radius)continue;
+   const weights={};for(let z=0;z<3;z++)for(let k=0;k<4;k++){const bone=body.j[ids[z]*4+k],mix=a.weights[z]+(b.weights[z]-a.weights[z])*q;weights[bone]=(weights[bone]||0)+body.w[ids[z]*4+k]*mix;}
+   best={radius,weights};
+  }
+  return best;
+ }
+ function face(vertices,color){
+  const start=p.length/3,a=vertices[0].p,b=vertices[1].p,d=vertices[2].p,ab=b.map((x,k)=>x-a[k]),ad=d.map((x,k)=>x-a[k]),normal=[ab[1]*ad[2]-ab[2]*ad[1],ab[2]*ad[0]-ab[0]*ad[2],ab[0]*ad[1]-ab[1]*ad[0]],length=Math.hypot(...normal)||1;
+  for(const vertex of vertices){p.push(...vertex.p);n.push(...normal.map(x=>x/length));c.push(...color);for(let k=0;k<4;k++){j.push(vertex.weights[k]?.[0]||0);w.push(vertex.weights[k]?.[1]||0);}}
+  for(let k=1;k<vertices.length-1;k++)indices.push(start,start+k,start+k+1);
+ }
+ const metal=[.694,.694,.694],trim=[.75,.655,.56],sides=12;
+ for(const side of [-1,1])for(const [lo,hi]of spans){
+  const grid=[0,.045,.28,.70,.955,1].map((progress,row)=>Array.from({length:sides},(_,k)=>{
+   const center=arm?[side*(lo+(hi-lo)*progress)*scale,(female?1.413:1.44),female?-.054:-.075]:[side*(female?.113:.122),(lo+(hi-lo)*progress)*scale,-.045];
+   const angle=k/sides*Math.PI*2,direction=[0,0,0];direction[u]=Math.cos(angle);direction[v]=Math.sin(angle);
+   const hit=surface(center,direction),fallback=arm?.060:.075,edge=row===0||row===5,clearance=edge?.015:.023,radius=(hit?.radius||fallback)+clearance;
+   const weights=Object.entries(hit?.weights||{}).sort((a,b)=>b[1]-a[1]).slice(0,4),sum=weights.reduce((n,q)=>n+q[1],0)||1;
+   // Missing rays use the nearest body vertex's rig, never an unrelated bone.
+   if(!weights.length){let nearest=0,distance=Infinity;for(let z=0;z<body.p.length;z+=3){if(!arm&&body.p[z]*side<.025)continue;const d=center.reduce((sum,x,a)=>sum+(body.p[z+a]-(x+direction[a]*radius))**2,0);if(d<distance){distance=d;nearest=z/3;}}for(let k=0;k<4;k++)weights.push([body.j[nearest*4+k],body.w[nearest*4+k]]);}
+   return {p:center.map((x,a)=>x+direction[a]*radius),direction,weights:weights.map(([bone,weight])=>[Number(bone),weight/sum])};
+  }));
+  const inner=q=>({...q,p:q.p.map((x,a)=>x-q.direction[a]*.012)});
+  for(let row=1;row<grid.length;row++)for(let k=0;k<sides;k++){
+   const next=(k+1)%sides,points=[grid[row-1][k],grid[row][k],grid[row][next],grid[row-1][next]];
+   // Winding depends on the sleeve's axis and the mirrored arm.
+   if(arm&&side>0)points.reverse();
+   face(points,row===1||row===5?trim:metal);face([...points].reverse().map(inner),metal);
+  }
+  for(const row of [0,grid.length-1])for(let k=0;k<sides;k++){const a=grid[row][k],b=grid[row][(k+1)%sides],points=[a,b,inner(b),inner(a)];if((row===0)!==(arm&&side>0))points.reverse();face(points,trim);}
+ }
+ const result={p:new Float32Array(p),n:new Float32Array(n),c:new Float32Array(c),f:new Float32Array(c),j:new Uint8Array(j),w:new Float32Array(w),i:new Uint16Array(indices),uv:new Float32Array(p.length/3*2),t:new Uint8Array(p.length/3).fill(20)};contouredLimbCache.set(cacheKey,result);return result;
+}
+
+function modularMesh(sex,name){const key=sex+':'+name;if(!modularMeshes.has(key)){if(/^(Chestplate|Shoulder|Gauntlets|Legguards|Boots|Headgear|Belt|Robe)\./.test(name))modularMeshes.set(key,fittedPlateArmour(sex,name));else if(name==='Veldren_Necklace')modularMeshes.set(key,makeRealmNecklace(sex));else if(name==='Veldren_WoodenSword'||name==='Veldren_WoodenShield')modularMeshes.set(key,makeTrainingMesh(name));else{const source=REALM_MODELS.armor?.[sex]?.[name];if(!source)return null;modularMeshes.set(key,fitModularArmorMesh(sex,name,rebuiltMesh(source)));}}return modularMeshes.get(key);}
 function makeTrainingMesh(name){
  const p=[],n=[],colors=[],indices=[];
  const r={face(points,color){const a=points[0],b=points[1],c=points[2],u=b.map((v,k)=>v-a[k]),v=c.map((v,k)=>v-a[k]),normal=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],length=Math.hypot(...normal)||1,rgb=parseInt(color.slice(1),16),base=p.length/3;for(const point of points){p.push(...point);n.push(...normal.map(v=>v/length));colors.push((rgb>>16)/255,(rgb>>8&255)/255,(rgb&255)/255);}for(let i=1;i<points.length-1;i++)indices.push(base,base+i,base+i+1);}};
@@ -130,7 +215,7 @@ function modularModel(id){return ITEMS[id]?.model||(id==='ironHelm'?'Headgear.I.
 function armorShoulderItem(id){const tier=ITEMS[id]?.armorSet;return ITEMS[id]?.slot==='body'&&tier?tier+'_shoulders':null;}
 function modularBelt(gear){const set=GEAR_TIERS.find(a=>a.id===ITEMS[gear.body]?.armorSet);return 'Belt.'+(set?.source||'B')+'.001';}
 const wornTintCache=new Map();
-function wornModularMesh(sex,id){const mesh=modularMesh(sex,modularModel(id)),tint=ITEMS[id]?.modelTint,scale=ITEMS[id]?.modelScale||1;if(!mesh||!tint&&scale===1)return mesh;const key=sex+':'+id;if(!wornTintCache.has(key)){const c=Float32Array.from(mesh.c,(v,i)=>Math.min(1,v*(tint?.[i%3]||1)));wornTintCache.set(key,{...mesh,p:scale===1?mesh.p:Float32Array.from(mesh.p,v=>v*scale),bounds:mesh.bounds.map(v=>v.map(x=>x*scale)),c,f:c});}return wornTintCache.get(key);}
+function wornModularMesh(sex,id){const mesh=modularMesh(sex,modularModel(id)),tint=ITEMS[id]?.modelTint,scale=ITEMS[id]?.modelScale||1;if(!mesh||!tint&&scale===1)return mesh;const key=sex+':'+id;if(!wornTintCache.has(key)){const tintColors=source=>Float32Array.from(source,(v,i)=>Math.min(1,v*(tint?.[i%3]||1))),c=tintColors(mesh.c),f=tintColors(mesh.f||mesh.c);wornTintCache.set(key,{...mesh,p:scale===1?mesh.p:Float32Array.from(mesh.p,v=>v*scale),bounds:mesh.bounds.map(v=>v.map(x=>x*scale)),c,f});}return wornTintCache.get(key);}
 function armorAppearanceKey(gear){return EQUIPMENT_SLOTS.map(([slot])=>gear[slot]||'').join('/')+':'+(gear._civilian||'')+':'+(gear._hoodColor??'');}
 function mergeWornMeshes(base,sex,gear){
  const sources=[base],indices=[];
@@ -139,7 +224,15 @@ function mergeWornMeshes(base,sex,gear){
  const shoulderId=armorShoulderItem(gear.body),covered={head:!!modularModel(gear.head)&&!ITEMS[gear.head]?.openFace,body:!!modularModel(gear.body)||wearShirt,hands:!!modularModel(gear.hands),legs:!!modularModel(gear.legs)||wearPants,feet:!!modularModel(gear.feet),shoulders:!!shoulderId};
  for(let i=0;i<base.i.length;i+=3){const ids=[base.i[i],base.i[i+1],base.i[i+2]],x=ids.reduce((n,v)=>n+Math.abs(base.p[v*3]),0)/3,y=ids.reduce((n,v)=>n+base.p[v*3+1],0)/3;
   if(outfitTop&&y>1.02&&y<1.535||outfitBottom&&y<1.02&&(!gear.feet||y>.34))continue;
-  // Keep the underlayer and face visible through plate joints and visor openings.
+  // Clothing underneath rigid armour must not cut through its contoured plates.
+  // Keep uncovered joints and the open face, but cull the covered body surface.
+  const z=ids.reduce((n,v)=>n+base.p[v*3+2],0)/3;
+  if(covered.body&&y>1.02&&y<1.49&&x<.235)continue;
+  if(covered.shoulders&&y>1.32&&y<1.55&&x>.28&&x<.53)continue;
+  if(covered.hands&&x>.565&&y>1.32)continue;
+  if(covered.legs&&y>.15&&y<(/^Legguards\./.test(modularModel(gear.legs))?.935:.47))continue;
+  if(covered.feet&&y<.11)continue;
+  if(covered.head&&(y>1.72||y>1.60&&z<-.03))continue;
   indices.push(...ids);
  }
  if(!gear._civilian)sources[0]={...base,i:new Uint16Array(indices)};
@@ -334,8 +427,9 @@ function avatarMaterial(sex,gear,look){
  const cloth=APPEARANCE_COLORS[identity.topColor]||APPEARANCE_COLORS[look%4],skin=APPEARANCE_SKINS[identity.skin]||[[1.48,1.36,1.17],[1.08,.99,.90],[1.67,1.48,1.23],[.75,.70,.66]][look%4];
  for(let v=0;v<p.length/3;v++){
   const i=v*3,x=mesh.p[i],y=mesh.p[i+1],torso=y>.80&&y<1.55&&Math.abs(x)<.78&&(y<1.45||Math.abs(x)<.42),feet=y<.25;
-  if(torso){const color=gear._cloth|| (modularModel(gear.body)?[.15,.13,.10]:ITEMS[gear.body]?.magicAccuracy>0?(gear.body==='mysticRobe'?[.20,.34,.57]:gear.body==='adeptRobe'?[.42,.22,.48]:[.30,.24,.40]):ITEMS[gear.body]?.rangedAccuracy>0?(gear.body==='blackHideBody'?[.14,.17,.18]:gear.body==='redHideBody'?[.48,.20,.16]:gear.body==='blueHideBody'?[.19,.34,.50]:gear.body==='greenHideBody'?[.25,.39,.22]:[.38,.24,.14]):cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
+  if(torso){const color=gear._cloth|| (modularModel(gear.body)?[.188,.235,.270]:ITEMS[gear.body]?.magicAccuracy>0?(gear.body==='mysticRobe'?[.20,.34,.57]:gear.body==='adeptRobe'?[.42,.22,.48]:[.30,.24,.40]):ITEMS[gear.body]?.rangedAccuracy>0?(gear.body==='blackHideBody'?[.14,.17,.18]:gear.body==='redHideBody'?[.48,.20,.16]:gear.body==='blueHideBody'?[.19,.34,.50]:gear.body==='greenHideBody'?[.25,.39,.22]:[.38,.24,.14]):cloth);for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
   else if(y>1.49||Math.abs(x)>.70){for(let j=0;j<3;j++){c[i+j]*=skin[j];f[i+j]*=skin[j];}}
+  if(modularModel(gear.body)&&y>1.49&&y<1.625&&Math.abs(x)<.12){for(let k=0;k<3;k++)c[i+k]=f[i+k]=[.188,.235,.270][k];t[v]=20;}
   if(identity.topStyle===1&&Math.abs(x)>.42&&y>1.0&&y<1.55){for(let j=0;j<3;j++)c[i+j]=f[i+j]=mesh.c[i+j]*skin[j];t[v]=mesh.t[v];}
   if(identity.topStyle===2&&torso&&Math.abs(x)<.07&&y>1.05){for(let j=0;j<3;j++)c[i+j]=f[i+j]=[.72,.56,.30][j];}
   if(y>.24&&y<.89&&identity.bottomColor!==undefined){const color=APPEARANCE_COLORS[identity.bottomColor]||APPEARANCE_COLORS[5];for(let j=0;j<3;j++)c[i+j]=f[i+j]=color[j];t[v]=20;}
@@ -525,7 +619,7 @@ function buildFittedSwordRealm(r,m,bronze){
 }
 
 let REALM_ATLAS_IMAGE=null,MODULAR_ICON_IMAGE=null;
-function drawModularItemIcon(g,id){if(ITEMS[id]?.modelTint||ITEMS[id]?.modelScale)return false;const name=id==='toolBelt'?'PermanentToolBelt':modularModel(id),tile=REALM_MODELS.armorIcons?.[name];if(!MODULAR_ICON_IMAGE||tile===undefined)return false;g.drawImage(MODULAR_ICON_IMAGE,tile%8*128,Math.floor(tile/8)*128,128,128,0,0,g.canvas.width,g.canvas.height);return true;}
+function drawModularItemIcon(g,id){if(ITEMS[id]?.modelTint||ITEMS[id]?.modelScale)return false;const name=id==='toolBelt'?'PermanentToolBelt':modularModel(id);if(/^(Chestplate|Shoulder|Gauntlets|Legguards|Boots|Headgear|Belt|Robe)\./.test(name))return false;const tile=REALM_MODELS.armorIcons?.[name];if(!MODULAR_ICON_IMAGE||tile===undefined)return false;g.drawImage(MODULAR_ICON_IMAGE,tile%8*128,Math.floor(tile/8)*128,128,128,0,0,g.canvas.width,g.canvas.height);return true;}
 async function loadRebuiltTextures(){
  [REALM_ATLAS_IMAGE,MODULAR_ICON_IMAGE]=await Promise.all([realmLoadImage('assets/realms/atlas.png'),realmLoadImage('assets/realms/armor-icons.png')]);
  if(window.matchMedia('(pointer: coarse)').matches){const small=document.createElement('canvas');small.width=small.height=2048;small.getContext('2d').drawImage(REALM_ATLAS_IMAGE,0,0,2048,2048);REALM_ATLAS_IMAGE=small;}

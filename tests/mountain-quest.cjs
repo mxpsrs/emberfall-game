@@ -13,10 +13,11 @@ vm.runInContext(fs.readFileSync(root+'equipment-interface.js','utf8'),ctx);
 for(const f of ['world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 
 vm.runInContext(fs.readFileSync(root+'mountain-quest.js','utf8'),ctx,{filename:'mountain-quest'});
+vm.runInContext(fs.readFileSync(root+'main-story.js','utf8'),ctx,{filename:'main-story'});
 vm.runInContext(`
 let randomSeed=76151;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
 draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
-s.character={name:'Quest tester',look:0};s.tutorial=39;s.tutorialVersion=6;s.tutorialReward=true;assetsReady=true;s.runEnabled=false;
+s.mainStoryQuest={stage:25};s.character={name:'Quest tester',look:0};s.tutorial=39;s.tutorialVersion=6;s.tutorialReward=true;assetsReady=true;s.runEnabled=false;
 for(const k of ['Mining','Smithing','Magic'])s.xp[k]=skillThreshold(k,5);
 for(const k of ['Attack','Strength','Defense','Ranged','Hitpoints'])s.xp[k]=skillThreshold(k,20);
 s.hp=maxhp();s.gear.shortbow=1;s.bag.arrows=200;equipItem('shortbow');equipItem('arrows');
@@ -66,7 +67,7 @@ objective();press('Preserve the final memory.');stage(19);objective();press('Com
 const rewardXP=s.xp.Magic;mountainReward(2);assert.equal(s.xp.Magic,rewardXP);
 // Teleport animation uses the original casting/arrival sequence, with red geometry.
 stop();time+=9;assert(beginHuntsmanTeleport('veyr'));assert.equal(tutorialCrossing.kind,'hunt');assert.equal(tutorialCrossing.colors[0],'#ff5555');assert(!beginHuntsmanTeleport('veyr'),'double click cannot start two crossings');const origin=currentScene;
-for(let i=0;i<30;i++)tick();assert.equal(currentScene,origin,'casting remains visible before travel');until(()=>!tutorialCrossing,'Huntsman animation');assert.equal(currentScene,'lair_veyr');assert.equal(s.tutorial,39);assert.equal(boss.hp,boss.maxhp);assert.equal(boss.dead,0);
+for(let i=0;i<30;i++)tick();assert.equal(currentScene,origin,'casting remains visible before travel');until(()=>!tutorialCrossing,'Huntsman animation');assert.equal(currentScene,'lair_veyr');assert.equal(s.tutorial,tutorialSteps.length);assert.equal(boss.hp,boss.maxhp);assert.equal(boss.dead,0);
 engage(boss);until(()=>!!activeEncounter,'repeat Veyr');assert(!mountainAssisted(boss),'repeat hunts have no story assistance');assert(!activeEncounter.companionWard);
 const normalHP=s.hp;applyEnemyHit(boss,4);assert.equal(s.hp,normalHP-4,'normal damage restored');stop();resetEncounter();
 // Story progress and existing village stories coexist in the journal.

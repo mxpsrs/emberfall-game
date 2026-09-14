@@ -4,19 +4,19 @@ vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 s=defaults();s.gear={};s.equipment={};s.bag={};
 const slots=inventorySlots().length;normalizeToolBelt(s);assert.equal(inventorySlots().length,slots,'tools take no bag space');
-for(const id of Object.keys(TOOL_BELT_TOOLS))assert(useBeltTool(id));assert.equal(s.lastToolUsed,'hammer');
+for(const id of Object.keys(TOOL_BELT_TOOLS)){assert(useBeltTool(id));assert.equal(s.lastToolUsed,id);}
 assert(!EQUIPMENT_SLOTS.some(([slot])=>slot==='beltAttachment'),'pouch is part of the permanent tool belt');assert(!Object.values(ITEMS).some(item=>item.slot==='beltAttachment'));const restored=JSON.parse(JSON.stringify(s));restored.toolBelt.futureTool=true;normalizeToolBelt(restored);assert(restored.toolBelt.futureTool,'future tool entries survive normalization');
 s.toolBelt.axe=false;assert.equal(useBeltTool('axe'),false);s.toolBelt.axe=true;
 s.gear.mithril_body=1;assert.equal(equipItem('mithril_body'),false,'armor honors its Defense requirement');
-s.xp.Defense=s.xp.Attack=200000;
-for(const id of ['bronze_head','iron_body','gold_shoulders','bronze_hands','iron_legs','bronze_feet','helmet_crest_1','copperNecklace']){s.gear[id]=1;assert(equipItem(id),id);}
+s.xp.Defense=s.xp.Attack=SKILL_XP[99];
+for(const id of ['bronze_head','iron_body','bronze_hands','iron_legs','bronze_feet','copperNecklace']){s.gear[id]=1;assert(equipItem(id),id);}
 assert.equal(s.equipment.head,'bronze_head');assert.equal(s.equipment.body,'iron_body');assert.equal(s.equipment.neck,'copperNecklace');
-assert.equal(s.equipment.shoulders,'gold_shoulders','independent pieces mix across sets');
-assert.equal(transferBank('gold_shoulders'),false,'bank never removes a worn shoulder piece');assert.equal(sell('gold_shoulders',12),false,'shop never sells a worn armor piece');
-s.bag.bones=24;assert.equal(unequipItem('head'),false,'headgear and its crest require two free slots');assert.equal(s.equipment.crest,'helmet_crest_1');
-s.bag={};assert(unequipItem('head'));assert.equal(s.equipment.crest,null);assert.equal(s.gear.helmet_crest_1,1);assert.equal(equipItem('helmet_crest_1'),false,'a crest cannot float without headgear');
+s.gear.gold_shoulders=1;assert.equal(equipItem('gold_shoulders'),false,'legacy shoulder items are replaced by integrated chest geometry');assert.equal(s.equipment.shoulders,undefined);
+assert.equal(transferBank('iron_body'),false,'bank never removes a worn chest piece');assert.equal(sell('iron_body',12),false,'shop never sells a worn armor piece');
+s.bag={bones:25};s.gear.gold_shoulders=0;assert.equal(unequipItem('head'),false,'full bag cannot accept headgear');
+s.bag={};assert(unequipItem('head'));s.gear.helmet_crest_1=1;assert.equal(equipItem('helmet_crest_1'),false,'retired crest remains a keepsake');assert.equal(s.gear.helmet_crest_1,1);
 for(const set of MODULAR_ARMOR_SETS){
- const gear=Object.fromEntries(['head','shoulders','body','hands','legs','feet','weapon','shield'].map(slot=>[slot,set.id+'_'+slot]));gear.crest='helmet_crest_1';gear.neck='copperNecklace';
+ const gear=Object.fromEntries(['head','body','hands','legs','feet','weapon','shield'].map(slot=>[slot,set.id+'_'+slot]));gear.neck='copperNecklace';
  for(const id of Object.values(gear)){assert(shopStock.some(row=>row[0]===id),'every new item is obtainable');assert(modularModel(id));}
  for(const sex of ['male','female']){
   const material=avatarMaterial(sex,gear,0);assert(material.p.length/3<65536);assert(material.p.length>rebuiltAvatars[sex].mesh.p.length,'armor adds actual geometry');

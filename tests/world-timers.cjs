@@ -16,7 +16,7 @@ s.groundLoot=JSON.parse(JSON.stringify(s.groundLoot));wall+=130000;setupLoot();a
 s.groundLoot=[{x:1,y:1,scene:'overworld',items:{bones:1}}];setupLoot();assert.equal(s.groundLoot[0].expiresAt,wall+120000,'legacy drops receive a full collection window');
 s.groundLoot=[];groundDrop({ironSword:1},2,2,'overworld',true);wall+=500000;expireGroundLoot();assert.equal(s.groundLoot.length,1,'recovered save overflow remains protected');
 objects.splice(0,objects.length);buildings.splice(0,buildings.length);worldScenes.overworld.objects=[];s.bag.normalLogs=1;currentScene='overworld';s.x=14;s.y=17;px=s.x;py=s.y;
-assert(lightLog());const fire=objects.find(o=>o.name==='Log fire');assert.equal(fire.expiresAt,wall+150000);
+Math.random=()=>0;assert(lightLog());time+=2.5;updatePlayerAction();const fire=objects.find(o=>o.name==='Log fire');assert.equal(fire.expiresAt,wall+150000);
 const hearth={type:'camp',name:'Village hearth',dead:0,x:5,y:5};objects.push(hearth);worldScenes.overworld.objects.push(hearth);target=fire;
 wall+=149000;frame(1500);assert(objects.includes(fire));wall+=1500;frame(1600);assert(!objects.includes(fire));assert(!worldScenes.overworld.objects.includes(fire));assert(objects.includes(hearth));assert.equal(target,null);
 const ashes=s.groundLoot.find(p=>p.items.ashes);assert(ashes);assert.equal(ashes.items.ashes,1);assert.equal(ashes.x,fire.x);assert.equal(ashes.scene,'overworld');wall+=1000;frame(1700);assert.equal(ashes.items.ashes,1,'a fire leaves ashes exactly once');assert(takeGroundItem(ashes,'ashes'));assert.equal(s.bag.ashes,1);

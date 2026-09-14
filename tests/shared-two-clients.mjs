@@ -50,20 +50,29 @@ for(let frame=0;frame<12000;frame++){
 assert(renderedAttack,'rendered player attack');assert(renderedEnemy,'rendered monster attack');assert(damage,'second client damages shared rat');assert(peerAttack,'observer receives attack');assert(enemyAttack,'observer receives enemy attack');assert.equal(a.run('rat.hp'),0,'observer sees defeated NPC');assert(!a.run('s.groundLoot.some(o=>o._sharedObject)'),'observer cannot see private drops');
 console.log('PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.');
 // Exercise public action packets through both clients and the actual avatar renderer.
-for(const [kind,detail,clip] of [['combat','ranged','ranged'],['combat','magic','magic'],['gather','tree','melee'],['gather','ore','melee'],['gather','fish','fishing'],['work','cook','bury'],['work','firemaking','firemaking'],['teleport','red','magic']]){
+for(const [kind,detail,clip] of [['combat','ranged','ranged'],['combat','magic','magic'],['gather','tree','melee'],['gather','ore','melee'],['gather','fish','fishing'],['work','cook','bury'],['work','firemaking','firemaking'],['teleport','red','magic'],['teleport','green','magic'],['teleport','red-arrival','magic'],['teleport','green-arrival','magic']]){
  clock+=3000;for(const c of [a,b])c.run('time+=3;');
  b.ctx.KIND=kind;b.ctx.DETAIL=detail;
  b.run(`stop();resetEncounter(false);playerAction=null;tutorialCrossing=null;sharedActionCache=null;
   if(KIND==='combat')sharedActionCache={kind:'combat',started:sharedNow()-200,duration:1500,style:DETAIL,target:{entity:String(rat.id),x:rat.x,y:rat.y}};
   if(KIND==='gather'){var resource=objects.find(o=>o.type===DETAIL);target=resource;px=s.x=resource.x+1;py=s.y=resource.y;elapsed=.4;}
   if(KIND==='work')playerAction={kind:DETAIL,started:time-.4,duration:2};
-  if(KIND==='teleport')tutorialCrossing={kind:'hunt',phase:'casting',age:.4};`);
+  if(KIND==='teleport')tutorialCrossing={kind:DETAIL.startsWith('red')?'hunt':undefined,phase:DETAIL.includes('arrival')?'arrival':'casting',age:.4};`);
  const p=b.json('[px,py]');a.ctx.POS=p;a.run('px=s.x=POS[0];py=s.y=POS[1];');
  await b.poll();await a.poll();a.ctx.CLIP=clip;a.ctx.CASE=kind+':'+detail;
  a.run(`for(var p of onlinePeers.values()){p.drawX=p.x;p.drawY=p.y;p.samples=[{x:p.x,y:p.y,at:performance.now()-500}];}renderedClips=[];drawOnlinePlayers(testMesh,[]);assert(renderedClips.includes(CLIP),'observer renders '+CASE+': '+renderedClips+' '+JSON.stringify([...onlinePeers.values()].map(p=>p.action)));`);
+ if(kind==='teleport'){
+  const observer=a.json('[...onlinePeers.values()].find(p=>p.name==="SharedBravo").action');
+  assert.equal(observer.color,detail.startsWith('red')?'red':'green');
+  assert.equal(observer.duration,detail.includes('arrival')?1100:2600);
+  a.ctx.EXPECTED_COLOR=detail.startsWith('red')?'#ff6464':'#a7e6e0';
+  a.run(`var castPeer=[...onlinePeers.values()].find(p=>p.name==='SharedBravo');assert.equal(sharedPeerGear(castPeer)._castColor,EXPECTED_COLOR);`);
+  clock+=5000;for(const c of [a,b])c.run('time+=5;');
+  a.run(`assert.deepEqual(sharedPeerGear(castPeer),{},'expired teleport leaves no stuck casting pose');`);
+ }
 }
 b.run('tutorialCrossing=null;playerAction=null;sharedActionCache=null;stop();');
-console.log('PASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red teleport poses from authenticated action packets.');
+console.log('PASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red/green teleport departure/arrival poses, correct colors and expiry from authenticated action packets.');
 
 // Open the school at its real outside approach before receiving its snapshot,
 // then walk through the actual navigation threshold and close from inside.

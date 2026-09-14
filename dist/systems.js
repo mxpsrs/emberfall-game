@@ -64,7 +64,7 @@ const ITEMS={
  bronzeSword:{name:'Bronze sword',icon:0,slot:'weapon',style:'melee',power:1,range:1.45,desc:'A dependable starter sword. Choose Accurate, Aggressive, Defensive, or Balanced training.'},
  ironSword:{name:'Iron sword',icon:1,slot:'weapon',style:'melee',power:5,range:1.45,desc:'Forged iron. Four more damage than a bronze sword.'},
  shortbow:{name:'Shortbow',icon:2,slot:'weapon',style:'ranged',power:2,range:5,desc:'Fires one arrow per shot. Trains Ranged and Hitpoints; Defensive training also earns Defense XP.'},
- oakStaff:{name:'Oak staff',icon:3,slot:'weapon',style:'magic',power:1,range:4,desc:'Channels your selected spell using rune stones. Trains Magic and Hitpoints; Defensive training also earns Defense XP.'},
+ oakStaff:{name:'Oak staff',icon:3,slot:'weapon',style:'magic',power:1,range:4,desc:'Channels your selected spell using relics. Trains Magic and Hitpoints; Defensive training also earns Defense XP.'},
  ironHelm:{name:'Iron helmet',icon:4,slot:'head',armor:2,desc:'Reduces incoming damage by 2.'},
  leatherArmor:{name:'Leather armor',icon:5,slot:'body',armor:1,desc:'Light armor. Reduces incoming damage by 1.'},
  ironShield:{name:'Iron shield',icon:6,slot:'shield',armor:2,desc:'Reduces incoming damage by 2 with a melee weapon. Inactive with bows and staves.'},
@@ -74,7 +74,7 @@ const ITEMS={
  fish:{name:'Trout',icon:10,desc:'Eat to restore up to 14 health.'},
  fang:{name:'Wolf fang',icon:11,desc:'A trophy from a briar wolf. Sell for 6 coins.'},
  arrows:{name:'Arrows',icon:12,desc:'One consumed per bow shot. Buy at Mara’s store or craft at the forge.'},
- runes:{name:'Rune stones',icon:13,desc:'Fuel for magic. Buy at Mara’s store or find on monsters.'},
+ runes:{name:'Mind relic',icon:13,desc:'Fuel for magic. Buy at Mara’s store or find on monsters.'},
  bones:{name:'Bones',icon:14,desc:'Tap to bury one for 18 Worship XP. Dropped by creatures throughout the realm. Can also be sold for 4 coins.'},
  ashes:{name:'Ashes',icon:9,desc:'Cool ashes left after a log fire burns out.'},
  mageRobe:{name:'Mage robe',icon:15,slot:'body',magic:2,desc:'Adds 2 magic damage. Offers no armor protection.'}
@@ -130,7 +130,7 @@ function equipItem(id){
  stop();if(item.slot==='weapon'&&item.style==='ranged')s.equipment.shield=null;s.equipment[item.slot]=id;if(item.slot==='weapon')s.tutorialCasting=false;tutorialEvent('equip-dagger');tutorialEvent('training-gear');tutorialEvent('ranged-gear');renderUI();save();return true;
 }
 function unequipItem(slot){if(slot==='ammo')return unequipAmmunition();if(!s.equipment[slot])return false;if(inventorySlots().length+1>BAG_SIZE){toast('Make space in your inventory before unequipping.');return false;}stop();s.equipment[slot]=null;renderUI();save();return true;}
-function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(id){if(equipItem(id))toast(ITEMS[id].name+' equipped.');return;}if(style==='melee'){s.tutorialCasting=false;if(s.equipment.weapon&&!unequipItem('weapon'))return;renderUI();save();return;}toast(style==='magic'&&tutorialStep()?'Speak to Arcanist Elowen for your practice staff and runes.':'You need a '+(style==='ranged'?'bow':'staff')+' to use this combat style.');}
+function chooseStyle(style){const id=Object.keys(s.gear).filter(id=>s.gear[id]>0&&ITEMS[id]?.style===style&&ITEMS[id]?.slot==='weapon'&&!equipmentRequirement(ITEMS[id])).sort((a,b)=>(ITEMS[b].attackBonus||ITEMS[b].magicAccuracy||0)-(ITEMS[a].attackBonus||ITEMS[a].magicAccuracy||0))[0];if(id){if(equipItem(id))toast(ITEMS[id].name+' equipped.');return;}if(style==='melee'){s.tutorialCasting=false;if(s.equipment.weapon&&!unequipItem('weapon'))return;renderUI();save();return;}toast(style==='magic'&&tutorialStep()?'Speak to Arcanist Elowen for your practice staff and relics.':'You need a '+(style==='ranged'?'bow':'staff')+' to use this combat style.');}
 function itemCanvas(id,size=96){const c=document.createElement('canvas');c.width=size;c.height=size;c.dataset.itemIcon=id;c.setAttribute('aria-hidden','true');return c;}
 function paintItemIcons(root){if(!assetsReady)return;root.querySelectorAll('[data-item-icon]').forEach(c=>{const id=c.dataset.itemIcon,item=ITEMS[id];if(!item&&id!=='toolBelt')return;const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);if(typeof drawItemModelIcon==='function'&&drawItemModelIcon(g,id))return;if(typeof drawModularItemIcon==='function'&&drawModularItemIcon(g,id))return;if(typeof drawRealmItem==='function'&&drawRealmItem(g,id))return;if(item)sprite(g,item.atlas||'items',item.icon,c.width/2,c.height-5,c.width-10,c.height-10);});}
 function itemActions(id,fromBag=false){
@@ -191,12 +191,12 @@ function renderToolBelt(){
  for(const [id,tool]of Object.entries(TOOL_BELT_TOOLS)){const fitted=ITEMS[owned[id+'Item']],row=document.createElement('div');row.className='tool-belt-entry';row.dataset.tool=id;row.innerHTML='<strong>'+(fitted?.name||tool.name)+'</strong><small>'+tool.skill+' · '+(owned[id]?'On belt':'Not on belt')+'</small><p>'+tool.description+'</p>';$('toolBeltContents').appendChild(row);}
 }
 function renderSpells(){
- pageControls(Object.keys(SPELLS).length,4);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' mind runes · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
+ pageControls(Object.keys(SPELLS).length,4);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' mind relics · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
  for(const [id,spell]of pageItems(Object.entries(SPELLS),4)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+Object.entries(spell.ingredients).map(([id,n])=>n+' '+ITEMS[id].name).join(' + ')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
 }
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
- $('combatResource').textContent=combatStyle()==='ranged'?(selectedAmmo()?(s.equippedAmmoCount+' '+ITEMS[selectedAmmo()].name):'Equip suitable arrows'):combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' runes':'Defense bonus '+armorValue()+' · '+equippedWeapon().name;
+ $('combatResource').textContent=combatStyle()==='ranged'?(selectedAmmo()?(s.equippedAmmoCount+' '+ITEMS[selectedAmmo()].name):'Equip suitable arrows'):combatStyle()==='magic'?currentSpell().name+' · '+s.bag.runes+' relics':'Defense bonus '+armorValue()+' · '+equippedWeapon().name;
  const select=$('trainingFocus'),style=combatStyle(),focus=trainingFocus(style),key=style+':'+focus;
  if(select.dataset.selection!==key){select.innerHTML=(style==='melee'?[['balanced','Balanced · all melee'],['accurate','Accurate · Attack'],['aggressive','Aggressive · Strength'],['defensive','Defensive · Defense']]:[['focused',style==='magic'?'Focus · Magic':'Focus · Ranged'],['defensive','Defensive · shared XP']]).map(([value,label])=>'<option value="'+value+'">'+label+'</option>').join('');select.value=focus;select.dataset.selection=key;}
  select.onchange=()=>{s[style==='melee'?'meleeTraining':style+'Training']=select.value;renderCombatBar();save();};
@@ -227,7 +227,7 @@ function performAttack(o){
  if(!inAttackRange(o)){const p=route(o.x,o.y,true,attackRange(o));if(p===null){stop();toast('No clear line of attack.');}else path=p;return false;}
  const style=combatStyle(),spell=currentSpell();
  const ammo=style==='ranged'?selectedAmmo():null;if(style==='ranged'&&!ammo){stop();toast(s.equipment.ammo&&s.equippedAmmoCount?'This bow cannot fire '+ITEMS[s.equipment.ammo].name.toLowerCase()+'. Equip suitable arrows.':'Equip arrows in your ammunition slot to fire your bow.');return false;}
- if(style==='magic'&&(lv('Magic')<spell.level||!hasIngredients(spell.ingredients))){stop();toast('Not enough runes for '+spell.name+'. Switch to melee or visit Mara.');return false;}
+ if(style==='magic'&&(lv('Magic')<spell.level||!hasIngredients(spell.ingredients))){stop();toast('Not enough relics for '+spell.name+'. Switch to melee or visit Mara.');return false;}
  const focus=trainingFocus(style),maxHit=playerMaxHit(style);
  if(style==='ranged'&&--s.equippedAmmoCount<=0){s.equippedAmmoCount=0;s.equipment.ammo=null;}if(style==='magic')consumeIngredients(spell.ingredients);
  if(style==='magic'){gain('Magic',spell.baseXP,true);showExperienceDrop({Magic:spell.baseXP});tutorialEvent('magic');}
