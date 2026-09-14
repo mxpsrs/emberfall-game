@@ -6,7 +6,7 @@ import {SAVE_RESET_VERSION,currentResetVersion,RESET_VERSION_SQL} from './reset-
 export {handleGlobalReset} from './admin-reset.js';
 export {handleAuth};
 export {SAVE_RESET_VERSION};
-const completedApprenticeship=state=>state?.tutorialReward===true||(state?.tutorialVersion===4&&state?.tutorial>=36||state?.tutorialVersion===5&&state?.tutorial>=39);
+const completedApprenticeship=state=>state?.tutorialReward===true||(state?.tutorialVersion===4&&state?.tutorial>=36||[5,6].includes(state?.tutorialVersion)&&state?.tutorial>=39);
 async function resolvePlayer(request,env){const account=await authenticatedPlayer(request,env);if(!account)return null;const user='account:'+account.id;const row=await env.DB.prepare('SELECT state,revision,updated_at FROM character_saves WHERE user_id=?').bind(user).first();return {user,row,username:account.username};}
 export async function handleSave(request,env){
  let resetVersion=SAVE_RESET_VERSION;
@@ -44,7 +44,7 @@ export async function handlePlayers(request,env){
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
  try{const raw=await request.text();if(raw.length>2048)return reply({error:'Request too large'},413);const input=JSON.parse(raw),resetVersion=await currentResetVersion(env);
  const player=await resolvePlayer(request,env,headers);if(!player?.row)return reply({error:'Create your character first.'},401);
- const sizes={tutorial:[104,112],overworld:[1152,768],inn:[14,12],shop:[14,12],forge:[14,12],stoneInn:[14,12],stoneShop:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25],ork_warrens:[38,44],lair_colossus:[46,48],lair_veyr:[44,48],lair_varkesh:[58,58],lair_xalith:[54,54]};const realmCounts={crownreach:26,greyhaven:25,briarhaven:5,willowcross:5,stoneford:5,ironhollow:26,deepforge:25,copperdelve:5,stonehearth:5,aelindor:26,moonwillow:25,fernwatch:5,silverbrook:5},match=String(input.scene).match(/^realm_([a-z]+)_(\d+)$/);const realm=match&&Object.hasOwn(realmCounts,match[1])&&Number(match[2])<realmCounts[match[1]],index=match?Number(match[2]):-1;const size=(Object.hasOwn(sizes,input.scene)?sizes[input.scene]:null)||(realm?(index===25?[24,22]:index===5&&["ironhollow","deepforge"].includes(match[1])?[26,22]:[16,14]):null);
+ const sizes={tutorial:[128,136],overworld:[1152,768],inn:[14,12],shop:[14,12],forge:[14,12],stoneInn:[14,12],stoneShop:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25],ork_warrens:[38,44],lair_colossus:[46,48],lair_veyr:[44,48],lair_varkesh:[58,58],lair_xalith:[54,54]};const realmCounts={crownreach:26,greyhaven:25,briarhaven:5,willowcross:5,stoneford:5,ironhollow:26,deepforge:25,copperdelve:5,stonehearth:5,aelindor:26,moonwillow:25,fernwatch:5,silverbrook:5},match=String(input.scene).match(/^realm_([a-z]+)_(\d+)$/);const realm=match&&Object.hasOwn(realmCounts,match[1])&&Number(match[2])<realmCounts[match[1]],index=match?Number(match[2]):-1;const size=(Object.hasOwn(sizes,input.scene)?sizes[input.scene]:null)||(realm?(index===25?[24,22]:index===5&&["ironhollow","deepforge"].includes(match[1])?[26,22]:[16,14]):null);
  if(!size||!Number.isFinite(input.x)||!Number.isFinite(input.y)||input.x<0||input.y<0||input.x>=size[0]||input.y>=size[1])return reply({error:'Invalid position'},400);
  // Trail coordinates are finite integral, adjacent and ordered. Reject a
  // malformed trail as a whole; filtering individual nodes would invent gaps.

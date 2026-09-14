@@ -5,6 +5,22 @@ let tutorialIslandReady=false,tutorialResume=null;
 const tutorialComplete=state=>state.tutorialReward===true||state.tutorial>=tutorialSteps.length;
 const insideTutorialArea=(x,y)=>Number.isFinite(x+y)&&x>=10&&x<=94&&y>=30&&y<=101;
 const FIRSTLIGHT_LAYOUT_VERSION=2;
+const FIRSTLIGHT_SIZE=[128,136];
+// A continuous, asymmetric coastline with broad headlands and small coves.
+// This scene owns its water: mainland rivers must not cut through its coast.
+function firstlightWaterDistance(x,y){
+ const dx=(x-60)/50,dy=(y-66)/53,angle=Math.atan2(dy,dx);
+ const radius=1+.105*Math.sin(3*angle+.8)+.045*Math.sin(5*angle-1.2)+.025*Math.cos(7*angle+.3);
+ const body=(radius-Math.hypot(dx,dy))*50;
+ // A rounded woodland headland leaves room for Ash's established grove.
+ const woodland=(1-Math.hypot((x-25)/17,(y-42)/20))*17;
+ const blend=Math.max(0,1-Math.abs(body-woodland)/6);
+ const coast=Math.max(body,woodland)+1.5*blend*blend;
+ // Preserve Nell's fishing water, opening the western lake into a coastal bay.
+ const cove=(Math.hypot((x-15.5)/10.5,(y-66.5)/11.5)-1)*10.5+.24*Math.sin(y*.18+x*.12);
+ return Math.min(coast,cove);
+}
+const insideFirstlightLand=(x,y)=>Number.isFinite(x+y)&&x>=1&&y>=1&&x<FIRSTLIGHT_SIZE[0]-1&&y<FIRSTLIGHT_SIZE[1]-1&&firstlightWaterDistance(x+.5,y+.5)>=0;
 // The square and its civic lots were graded together before being paved.
 // Keep a single finished elevation through the well, stalls and door aprons;
 // broad earth banks meet the island's natural hills outside the developed area.
@@ -114,7 +130,7 @@ normalizeJourney=function(state,original=state){
   if(oldScene===TUTORIAL_SCENE){state.sceneId='overworld';[state.x,state.y]=MAINLAND_ENTRY;state.insideBuilding=null;state.openDoors=[];state.returnPoint=null;}
  }else{
   state.sceneId=TUTORIAL_SCENE;
-  if(oldVersion!==FIRSTLIGHT_LAYOUT_VERSION||!insideTutorialArea(state.x,state.y)||oldScene&&oldScene!=='overworld'&&oldScene!==TUTORIAL_SCENE){[state.x,state.y]=TUTORIAL_ENTRY;state.insideBuilding=null;state.openDoors=[];}
+  if(oldVersion!==FIRSTLIGHT_LAYOUT_VERSION||!insideFirstlightLand(state.x,state.y)||oldScene&&oldScene!=='overworld'&&oldScene!==TUTORIAL_SCENE){[state.x,state.y]=TUTORIAL_ENTRY;state.insideBuilding=null;state.openDoors=[];}
   if(!oldVersion)for(const pile of state.groundLoot||[])if(pile.scene==='overworld'&&insideTutorialArea(pile.x,pile.y))pile.scene=TUTORIAL_SCENE;
  }
  state.tutorialIslandVersion=FIRSTLIGHT_LAYOUT_VERSION;
@@ -128,11 +144,10 @@ const inWorldBeforeIsland=inWorld;
 inWorld=function(){return currentScene===TUTORIAL_SCENE||inWorldBeforeIsland();};
 const waterDistanceBeforeIsland=worldWaterDistance;
 worldWaterDistance=function(x,y){
- const original=waterDistanceBeforeIsland(x,y);if(currentScene!==TUTORIAL_SCENE)return original;
- // Broad, wavy coast beyond every lesson; no bridge or land joins the mainland.
- const edge=Math.min(x-8.5+.7*Math.sin(y*.17),96-x+.7*Math.sin(y*.11),y-28+.6*Math.sin(x*.14),103-y+.7*Math.sin(x*.12));
- return Math.min(original,edge);
+ return currentScene===TUTORIAL_SCENE?firstlightWaterDistance(x,y):waterDistanceBeforeIsland(x,y);
 };
+const bridgesBeforeIsland=bridgesInRealm;
+bridgesInRealm=function(){return currentScene===TUTORIAL_SCENE?[]:bridgesBeforeIsland();};
 const villageBeforeIsland=setupTutorialVillage;
 setupTutorialVillage=function(){
  villageBeforeIsland();if(tutorialIslandReady)return;
@@ -145,7 +160,7 @@ setupTutorialVillage=function(){
  const islandObjects=[...copies.values()].filter(o=>o.type!=='door'||o.building?.walkIn&&rooms.includes(o.building));
  for(const o of islandObjects)if(o.interiorBuilding&&!rooms.some(b=>b.service?.destination===o.interiorBuilding))delete o.interiorBuilding;
  const island={objects:islandObjects,buildings:rooms.filter(b=>b.walkIn&&b.service),title:'Firstlight Isle',entry:[...TUTORIAL_ENTRY]};
- worldScenes[TUTORIAL_SCENE]=island;sceneSizes[TUTORIAL_SCENE]=[104,112];
+ worldScenes[TUTORIAL_SCENE]=island;sceneSizes[TUTORIAL_SCENE]=[...FIRSTLIGHT_SIZE];
  trainingPenGate=islandObjects.find(o=>o.type==='gate'&&o.penFence)||null;
  // Keep normal mainland services, but remove every tutor, lesson marker and practice target.
  mainland.objects=mainland.objects.flatMap(o=>{
@@ -165,7 +180,7 @@ setupTutorialVillage=function(){
  const completed=tutorialComplete(s),destination=completed?(resume.scene===TUTORIAL_SCENE?'overworld':resume.scene||'overworld'):TUTORIAL_SCENE;
  s.openDoors=resume.doors||[];
  const migrating=!completed&&resume.islandVersion!==FIRSTLIGHT_LAYOUT_VERSION;
- const point=completed&&resume.scene===TUTORIAL_SCENE?MAINLAND_ENTRY:!completed&&(!insideTutorialArea(resume.x,resume.y)||migrating)?TUTORIAL_ENTRY:[resume.x,resume.y];
+ const point=completed&&resume.scene===TUTORIAL_SCENE?MAINLAND_ENTRY:!completed&&(!insideFirstlightLand(resume.x,resume.y)||migrating)?TUTORIAL_ENTRY:[resume.x,resume.y];
  activateScene(worldScenes[destination]?destination:'overworld',...point,false);
  if(currentScene===TUTORIAL_SCENE){buildFirstlightStreets();restoreWalkInDoors(island,{scene:'overworld',x:s.x,y:s.y});s.insideBuilding=buildings.find(b=>withinWalkIn(b,s.x,s.y))?.service.destination||null;}
  normalizeJourney(s);renderTutorial();

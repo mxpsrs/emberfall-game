@@ -22,15 +22,17 @@ const appearance=peers.find(p=>p.name==='Player B');assert.equal(appearance.fram
 const persisted=await (await handleSave(req('/api/character','GET',b),env)).json();assert.deepEqual(persisted.state.toolBelt,saved.state.toolBelt);
 const spoof=await handlePlayers(req('/api/players','POST',b,{scene:'overworld',x:14,y:17,equipment:{body:'malicious-model'}}),env);assert.equal(spoof.status,200);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'presence body cannot override saved equipment');
 // Tutorial presence and saves stay separate, including forged attempts to return.
-for(const layoutVersion of [1,2]){
-const apprentice=await guest('Apprentice '+layoutVersion);
+for(const [layoutVersion,tutorialVersion] of [[1,4],[2,4],[2,6]]){
+const apprentice=await guest('Apprentice '+layoutVersion+' '+tutorialVersion);
 let lesson=await (await handleSave(req('/api/character','GET',apprentice),env)).json();
-lesson.state={...lesson.state,sceneId:'tutorial',x:42,y:51,tutorial:4,tutorialVersion:4,tutorialIslandVersion:layoutVersion};
+lesson.state={...lesson.state,sceneId:'tutorial',x:42,y:51,tutorial:4,tutorialVersion,tutorialIslandVersion:layoutVersion};
 let savedLesson=await handleSave(req('/api/character','PUT',apprentice,{state:lesson.state,revision:lesson.revision}),env);assert.equal(savedLesson.status,200);lesson.revision=(await savedLesson.json()).revision;
 let island=await presence(apprentice,'tutorial',42);assert.equal(island.status,200);assert.deepEqual((await island.json()).players,[],'mainland players never appear in the tutorial');
 assert.equal((await presence(apprentice,'overworld',42)).status,403);
+assert.equal((await handlePlayers(req('/api/players','POST',apprentice,{scene:'tutorial',x:105,y:80}),env)).status,200,'expanded headland accepts presence');
+for(const [x,y]of [[128,80],[105,136]])assert.equal((await handlePlayers(req('/api/players','POST',apprentice,{scene:'tutorial',x,y}),env)).status,400,'expanded island limits are enforced');
 assert.equal((await handleSave(req('/api/character','PUT',apprentice,{state:{...lesson.state,sceneId:'overworld'},revision:lesson.revision}),env)).status,400);
-const complete={...lesson.state,tutorial:36,tutorialReward:true,sceneId:'overworld'};
+const complete={...lesson.state,tutorial:tutorialVersion===6?39:36,tutorialReward:tutorialVersion!==6,sceneId:'overworld'};
 savedLesson=await handleSave(req('/api/character','PUT',apprentice,{state:complete,revision:lesson.revision}),env);assert.equal(savedLesson.status,200);lesson.revision=(await savedLesson.json()).revision;
 assert.equal((await presence(apprentice,'overworld',42)).status,200);
 assert.equal((await presence(apprentice,'tutorial',42)).status,403,'completed players cannot publish tutorial presence');

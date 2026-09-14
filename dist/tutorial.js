@@ -3,23 +3,16 @@
 const tutorialObject=role=>{const matches=(worldScenes.tutorial||worldScenes.overworld)?.objects.filter(o=>o.tutorialRole===role&&!o.collected)||[];return role==='rat'?matches.sort((a,b)=>Number(a.dead>time)-Number(b.dead>time)||Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py))[0]:matches[0];};
 const tutorialTutor=role=>tutorialObject('tutor-'+role);
 const lesson=(event,title,desc,role=null)=>({event,title,desc,point:()=>role?tutorialObject(role==='ore'&&s.bag.copperOre>0?'tin':role):null});
+const TUTORIAL_VERSION=6;
 const tutorialSteps=[
  lesson('camera','Look around','Swipe with one finger to turn the camera. Pinch to zoom. On a computer, drag the view or hold the arrow keys.'),
  lesson('walk','Take your first steps','Tap any clear ground and walk a few steps. Tap Run to travel faster; your energy recovers while walking or resting.'),
  lesson('talk-guide','Meet Elder Rowan','Rowan is in Firstlight Isle’s village square. He will explain the controls and introduce your tutors.','tutor-guide'),
- lesson('bag','Your belongings','Tap the bag icon on the right. Tap a material to highlight it, then tap another item or a world target. Press and hold any item for Use and its other actions.'),
+ lesson('talk-magic','Find the magic tutor','Rowan sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
+ lesson('bag','Your belongings','Open Bag in the navigation bar. Tap a material to highlight it, then tap another item or a world target. Press and hold any item for Use and its other actions.'),
  lesson('skills','Your skills','Open the Skills tab. Each skill has its own level and XP, including Attack, Strength, Defense and Hitpoints.'),
- lesson('talk-woods','Find the woodland tutor','Rowan sends you to Forester Ash beside the timber yard.','tutor-woods'),
- lesson('tree','Cut your first log','Tap the marked tree. Your axe is carried with you; gathering trains Woodcutting.','tree'),
- lesson('talk-fishing','Follow Ash’s directions','Find Fisher Nell at Stillwater, just west of the village.','tutor-fishing'),
- lesson('fish','Net some shrimp','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
- lesson('fire','Light a fire beside Nell','Stay beside Fisher Nell. Hold a log in your bag and choose Light fire on clear ground. If you need another log, chop the tree beside her.'),
- lesson('cook-shrimp','Cook with Nell','Tap raw shrimp in your bag to highlight it, then tap the fire you lit beside Nell. You will walk to that fire and cook one shrimp.','fishing-fire'),
- lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the kitchen on the island’s eastern lane. He will supply a new recipe.','tutor-cooking'),
- lesson('mix-dough','Mix your bread dough','Bram has given you flour and water. Tap the flour to highlight it, then tap the jug of water to mix bread dough.'),
- lesson('bake-bread','Bake at the range','Tap bread dough in your bag to highlight it, then tap the range inside the kitchen to bake bread.','range'),
- lesson('eat','Food for the road','Try Eat with your cooked bread or shrimp. Food restores health. If your health is full, keep that food for a fight.'),
- lesson('talk-mining','Visit the smith','Bram sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.','tutor-mining'),
+ lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses runes and trains your Magic level.','magic-dummy'),
+ lesson('talk-mining','Visit the smith','Elowen sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.','tutor-mining'),
  lesson('ore','Mine copper and tin','Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.','ore'),
  lesson('smelt','Smelt a bronze bar','Tap copper or tin ore in your bag, then tap the furnace. Choose the bronze bar recipe to combine both ores.','furnace'),
  lesson('smith','Work the metal','Tap your bronze bar, then tap the practice anvil. Choose Dagger in the smithing menu. Your bag stays visible as you work.','practice-forge'),
@@ -34,18 +27,27 @@ const tutorialSteps=[
  lesson('ranged-kit','Learn ranged combat','Return to Captain Vale for a shortbow and arrows. He will teach you to fight across the low fence.','tutor-combat'),
  lesson('ranged-gear','Equip your bow and arrows','Equip the shortbow, then equip the arrows in your ammunition slot. Arrows left in your bag cannot be fired.'),
  lesson('ranged','Shoot across the fence','Stand outside the rat pen and attack a giant rat with your shortbow. Stay within bow range. Low fences stop feet, but arrows and spells can pass over them. Defeat a rat to complete the lesson.','rat'),
- lesson('talk-bank','Visit the banker','Leave the pen through its gate, then visit Banker Ada inside Firstlight Bank to the north. Open the bank door and walk inside.','tutor-bank'),
+ lesson('talk-woods','Find the woodland tutor','Vale sends you to Forester Ash beside the timber yard to learn how to make camp.','tutor-woods'),
+ lesson('tree','Cut your first log','Tap the marked tree. Your axe is carried with you; gathering trains Woodcutting.','tree'),
+ lesson('talk-fishing','Follow Ash’s directions','Find Fisher Nell at Stillwater, just west of the village.','tutor-fishing'),
+ lesson('fish','Net some shrimp','Tap the highlighted fishing spot. Your catch goes into your bag as raw food.','fish'),
+ lesson('fire','Light a fire beside Nell','Stay beside Fisher Nell. Hold a log in your bag and choose Light fire on clear ground. If you need another log, chop the tree beside her.'),
+ lesson('cook-shrimp','Cook with Nell','Tap raw shrimp in your bag to highlight it, then tap the fire you lit beside Nell. You will walk to that fire and cook one shrimp.','fishing-fire'),
+ lesson('talk-cooking','Visit the village kitchen','Nell sends you to Cook Bram inside the kitchen on the island’s eastern lane. He will supply a new recipe.','tutor-cooking'),
+ lesson('mix-dough','Mix your bread dough','Bram has given you flour and water. Tap the flour to highlight it, then tap the jug of water to mix bread dough.'),
+ lesson('bake-bread','Bake at the range','Tap bread dough in your bag to highlight it, then tap the range inside the kitchen to bake bread.','range'),
+ lesson('eat','Food for the road','Try Eat with your cooked bread or shrimp. Food restores health. If your health is full, keep that food for a fight.'),
+ lesson('talk-bank','Visit the banker','Bram sends you to Banker Ada inside Firstlight Bank to the north. Open the bank door and walk inside.','tutor-bank'),
  lesson('deposit','Store a supply','Talk to Ada and open your bank. Deposit an item from your bag. Stored items persist with your character.','tutor-bank'),
  lesson('withdraw','Take it back','Withdraw an item from your bank. Worn equipment stays separate from stored supplies.','tutor-bank'),
  lesson('talk-worship','Meet the shrine keeper','Ada sends you to Keeper Sera at the shrine in the island’s southwest. Worship and spirits are taught together.','tutor-worship'),
  lesson('bury','Honour the fallen','Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.'),
  lesson('spirit','Form a spiritual bond','Speak to Cinder beside Sera and form a bond. Worship grows through burial and first bonds; spirits grant their own bonuses.','cinder'),
- lesson('talk-magic','Find the magic tutor','Sera sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.','tutor-magic'),
- lesson('magic','Cast your first spell','Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses runes and trains your Magic level.','magic-dummy'),
  lesson('talk-finish','Ready for the realm','Return to Rowan in the square. Finish your apprenticeship with him to teleport to Briarhaven on the mainland. You cannot return to this island.','tutor-guide')
 ];
 const TUTORIAL_V2_EVENTS=['camera','walk','talk-guide','bag','skills','talk-woods','tree','fire','talk-fishing','fish','talk-cooking','cook','eat','talk-mining','ore','smelt','smith','talk-combat','gear','dummy','monster','loot','talk-bank','deposit','withdraw','talk-worship','bury','spirit','talk-magic','magic','talk-finish'];
-const TUTORIAL_V4_EVENTS=tutorialSteps.map(t=>t.event).filter(e=>!['ranged-kit','ranged-gear','ranged'].includes(e));
+const TUTORIAL_V5_EVENTS=["camera","walk","talk-guide","bag","skills","talk-woods","tree","talk-fishing","fish","fire","cook-shrimp","talk-cooking","mix-dough","bake-bread","eat","talk-mining","ore","smelt","smith","talk-combat","equip-dagger","combat-stats","training-kit","training-gear","dummy","monster","loot","ranged-kit","ranged-gear","ranged","talk-bank","deposit","withdraw","talk-worship","bury","spirit","talk-magic","magic","talk-finish"];
+const TUTORIAL_V4_EVENTS=TUTORIAL_V5_EVENTS.filter(e=>!['ranged-kit','ranged-gear','ranged'].includes(e));
 const TUTORIAL_V3_EVENTS=['camera','walk','talk-guide','bag','skills','talk-woods','tree','fire','talk-fishing','fish','talk-cooking','cook','eat','talk-mining','ore','smelt','smith','talk-combat','equip-dagger','combat-stats','training-kit','training-gear','dummy','monster','loot','talk-bank','deposit','withdraw','talk-worship','bury','spirit','talk-magic','magic','talk-finish'];
 
 // Tutorial guidance is independent of the player's selected walking destination.
@@ -74,11 +76,19 @@ const REMEMBERED_LESSONS=['fire','cook-shrimp','mix-dough','bake-bread','eat','b
 function besideFishingTutor(){const nell=tutorialTutor('fishing');return inWorld()&&nell&&Math.hypot(px-nell.x,py-nell.y)<=6;}
 function tutorialStep(){return Number.isInteger(s.tutorial)?tutorialSteps[s.tutorial]||null:null;}
 function normalizeJourney(state,original=state){
- const previous=Math.max(0,Math.floor(Number(original?.tutorial)||0));
- const oldEvents=original?.tutorialVersion===4?TUTORIAL_V4_EVENTS:original?.tutorialVersion===3?TUTORIAL_V3_EVENTS:original?.tutorialVersion===2?TUTORIAL_V2_EVENTS:null,oldEvent=oldEvents?.[previous];
- state.tutorial=original?.tutorialVersion===5?Math.min(tutorialSteps.length,previous):oldEvents?(previous>=oldEvents.length?tutorialSteps.length:Math.max(0,tutorialSteps.findIndex(t=>t.event===(oldEvent==='cook'?'cook-shrimp':original.tutorialVersion===2&&['gear','dummy'].includes(oldEvent)?'equip-dagger':oldEvent)))):previous>=14?tutorialSteps.length:0;
+ const previous=Math.max(0,Math.floor(Number(original?.tutorial)||0)),version=original?.tutorialVersion;
+ const events=tutorialSteps.map(step=>step.event);
+ const oldEvents=version===TUTORIAL_VERSION?events:version===5?TUTORIAL_V5_EVENTS:version===4?TUTORIAL_V4_EVENTS:version===3?TUTORIAL_V3_EVENTS:version===2?TUTORIAL_V2_EVENTS:null;
+ // Record completed lesson identities before changing the sequence. Earlier
+ // work stays complete even when its lesson now appears later in the journey.
+ const completed=new Set(version===TUTORIAL_VERSION&&Array.isArray(original.tutorialCompleted)?original.tutorialCompleted.filter(event=>events.includes(event)):[]);
+ for(const event of oldEvents?.slice(0,previous)||[])completed.add(event==='cook'?'cook-shrimp':event==='gear'?'equip-dagger':event);
+ const finished=original?.tutorialReward===true||(oldEvents?previous>=oldEvents.length:previous>=14);
+ state.tutorialCompleted=events.filter(event=>finished||completed.has(event));
+ const next=events.findIndex(event=>!completed.has(event));
+ state.tutorial=finished||next<0?events.length:next;
  if(!original?.starterGearVersion&&!state.tutorialReward&&state.tutorial<tutorialSteps.length){for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots']){if(state.gear[id]>0)state.gear[id]--;for(const slot of Object.keys(state.equipment))if(state.equipment[slot]===id)state.equipment[slot]=null;}}
- state.starterGearVersion=1;state.tutorialVersion=5;state.runEnabled=state.runEnabled===true;state.tutorialGifts=state.tutorialGifts&&typeof state.tutorialGifts==='object'&&!Array.isArray(state.tutorialGifts)?state.tutorialGifts:{};
+ state.starterGearVersion=1;state.tutorialVersion=TUTORIAL_VERSION;state.runEnabled=state.runEnabled===true;state.tutorialGifts=state.tutorialGifts&&typeof state.tutorialGifts==='object'&&!Array.isArray(state.tutorialGifts)?state.tutorialGifts:{};
  state.tutorialActions=Object.fromEntries(REMEMBERED_LESSONS.filter(event=>state.tutorialActions?.[event]===true).map(event=>[event,true]));
  state.runEnergy=Number.isFinite(state.runEnergy)?Math.max(0,Math.min(100,state.runEnergy)):100;
  state.bank=state.bank&&typeof state.bank==='object'&&!Array.isArray(state.bank)?state.bank:{};
@@ -99,7 +109,8 @@ function tutorialEvent(event){
  if(event==='ranged-gear'&&(combatStyle()!=='ranged'||!s.equippedAmmoCount))return;
  if(event==='training-kit'&&!s.tutorialGifts?.combat)return;
  if((event==='training-gear'||event==='dummy')&&(s.equipment.weapon!=='woodenSword'||s.equipment.shield!=='woodenShield'))return;
- s.tutorial++;stop();tutorialCameraStart=null;
+ s.tutorialCompleted??=[];if(!s.tutorialCompleted.includes(event))s.tutorialCompleted.push(event);
+ s.tutorial++;while(tutorialSteps[s.tutorial]&&s.tutorialCompleted.includes(tutorialSteps[s.tutorial].event))s.tutorial++;stop();tutorialCameraStart=null;
  if(!tutorialStep()){
   const earned=!s.tutorialReward;if(earned){receiveCoins(15);s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
   if(typeof departTutorialIsland==='function')departTutorialIsland();
@@ -142,15 +153,15 @@ function guide(){
 }
 
 const TUTORS={
- guide:{name:'Elder Rowan',at:[43,52],look:0,text:'Welcome to Firstlight Isle. The minimap moves you to a place when you tap it. Swipe with one finger to turn your view. The icons on the right open your bag, equipment and skills. Tap a material to highlight it, then choose an item or a world target. Hold any item for Use and its other options. Look at your bag and skills, then meet Forester Ash west of the square.'},
+ guide:{name:'Elder Rowan',at:[43,52],look:0,text:'Welcome to Firstlight Isle. The minimap moves you to a place when you tap it. Swipe with one finger to turn your view. The navigation bar opens your bag, equipment and skills. Tap a material to highlight it, then choose an item or a world target. Hold any item for Use and its other options. Start with Arcanist Elowen at the magic school in the southeast. She will teach you to cast your first spell.'},
  woods:{name:'Forester Ash',at:[28,49],look:2,text:'Trees supply logs and Woodcutting experience. Tap the tree beside me to cut a log, then carry it to Fisher Nell at Stillwater. She will show you how to light a fire and cook your first catch. There is another tree beside her if you need more logs.'},
  fishing:{name:'Fisher Nell',at:[28,63],look:1,text:'Tap the fishing ripples at the shore. Your net is already with you. Every catch trains Fishing. Stay beside me, light a fire with a log, and cook your shrimp while I watch. Chop the tree beside me if you need another log. Then visit Cook Bram inside the village kitchen east of the square for a new recipe.'},
- cooking:{name:'Cook Bram',at:[57,52],look:3,text:'Welcome to the village kitchen. Nell taught you to cook a catch over a fire; now we will bake bread. Take my flour and water. Select the flour, then tap the water to mix dough. Select the dough and use it on the range beside me to bake it. Try your food, then visit Smith Orin east of the square.'},
- mining:{name:'Smith Orin',at:[68,43],look:0,text:'Mine copper and tin in my yard. The furnace combines them into bronze. At the anvil, work a bronze bar into a dagger. Better ores and recipes need higher levels. Mining and Smithing have separate levels. When you have made your dagger, Captain Vale will teach you to fight.'},
- combat:{name:'Captain Vale',at:[45,80],look:1,text:'First, equip the bronze dagger you forged. Then open Equipment and inspect your combat stats. I will give you a wooden sword and shield before we practise on the dummy. Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. After the dummy, go through the gate beside me and defeat a giant rat. The gate closes behind you when you enter or leave, and the rats stay inside. Collect its drops, then return to me for your shortbow and arrows. After your ranged lesson, visit Banker Ada inside Firstlight Bank to the north.'},
+ cooking:{name:'Cook Bram',at:[57,52],look:3,text:'Welcome to the village kitchen. Nell taught you to cook a catch over a fire; now we will bake bread. Take my flour and water. Select the flour, then tap the water to mix dough. Select the dough and use it on the range beside me to bake it. Try your food, then visit Banker Ada at Firstlight Bank north of the square.'},
+ mining:{name:'Smith Orin',at:[68,43],look:0,text:'Elowen has shown you magic. Now mine copper and tin in my yard. The furnace combines them into bronze. At the anvil, work a bronze bar into a dagger. Better ores and recipes need higher levels. Mining and Smithing have separate levels. When you have made your dagger, Captain Vale will teach you to fight.'},
+ combat:{name:'Captain Vale',at:[45,80],look:1,text:'First, equip the bronze dagger you forged. Then open Equipment and inspect your combat stats. I will give you a wooden sword and shield before we practise on the dummy. Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. After the dummy, go through the gate beside me and defeat a giant rat. The gate closes behind you when you enter or leave, and the rats stay inside. Collect its drops, then return to me for your shortbow and arrows. After your ranged lesson, visit Forester Ash at the timber yard northwest of the square.'},
  bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Firstlight Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
- worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, Arcanist Elowen will teach you magic in the school east of the bank.'},
- magic:{name:'Arcanist Elowen',at:[76,65],look:3,text:'Welcome to the village magic school. Take this staff and runes, then equip the staff using the Magic icon. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then return to Rowan to finish your apprenticeship.'}
+ worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, return to Rowan in the square to finish your apprenticeship.'},
+ magic:{name:'Arcanist Elowen',at:[76,65],look:3,text:'Welcome to the village magic school. First, open Bag and Skills to see your supplies and progress. Take this staff and runes, then equip the staff using the Magic icon. Wind strike uses an air rune and a mind rune per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then visit Smith Orin at the forge northeast of the square.'}
 };
 let tutorialVillageReady=false;
 function setupTutorialVillage(){
