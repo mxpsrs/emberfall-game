@@ -227,38 +227,39 @@ function updateTutorialCrossing(dt){
  crossing.age+=dt;
  if(crossing.phase==='casting'&&crossing.age>=2.6){
   crossing.committing=true;crossing.phase='saving';crossing.age=0;
-  delete crossing.caster._castAt;delete crossing.caster._castDuration;
-  tutorialEvent('talk-finish');
-  $('crossingCaption').textContent='Crossing to Briarhaven…';
+  delete crossing.caster._castAt;delete crossing.caster._castDuration;delete crossing.caster._castColor;
+  if(crossing.kind==='hunt')finishHuntsmanCrossing(crossing);else tutorialEvent('talk-finish');
+  $('crossingCaption').textContent=crossing.kind==='hunt'?'Crossing to '+crossing.destinationName+'…':'Crossing to Briarhaven…';
  }
  if(crossing.phase==='saving'){
   if(cloudReady&&(cloudBusy||cloudDirty)){if(!cloudBusy&&cloudDirty)flushCloudSave();}
-  else{crossing.phase='arrival';crossing.age=0;$('crossingCaption').textContent='Briarhaven · The mainland';}
+  else{crossing.phase='arrival';crossing.age=0;$('crossingCaption').textContent=crossing.kind==='hunt'?crossing.destinationName:'Briarhaven · The mainland';}
  }
  const opacity=crossing.phase==='casting'?Math.max(0,(crossing.age-2.15)/.45):crossing.phase==='saving'?1:Math.max(0,1-crossing.age/.6);
  $('tutorialCrossing')?.style.setProperty?.('--crossing-opacity',String(opacity));
  if(crossing.phase==='arrival'&&crossing.age>=1.1){
-  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');showTutorialArrival(crossing.earned);
+  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');if(crossing.kind!=='hunt')showTutorialArrival(crossing.earned);
  }
 }
 function drawTutorialCrossing3(mesh){
  const crossing=tutorialCrossing;if(!crossing||crossing.phase==='saving')return;
  const arriving=crossing.phase==='arrival',t=crossing.age,fade=arriving?Math.max(0,1-t/1.1):Math.min(1,t/.4),x=px+.5,z=py+.5;
+ const colors=crossing.colors||['#b0ead6','#e5dca2','#cff6e1','#e0f2d6'];
  const r=groundedPainter(mesh,x,z),glow=materialRealm(r,19),radius=arriving?.75+t*.8:.65+Math.min(1,t/2.6)*.35;
  for(const radiusScale of [1,1.25])for(let i=0;i<48;i++){
   const a=i*Math.PI/24,b=(i+1)*Math.PI/24,rr=radius*radiusScale,w=.025*fade;
-  glow.face([[x+Math.cos(a)*(rr-w),.035,z+Math.sin(a)*(rr-w)],[x+Math.cos(a)*(rr+w),.035,z+Math.sin(a)*(rr+w)],[x+Math.cos(b)*(rr+w),.035,z+Math.sin(b)*(rr+w)],[x+Math.cos(b)*(rr-w),.035,z+Math.sin(b)*(rr-w)]],'#b0ead6');
+  glow.face([[x+Math.cos(a)*(rr-w),.035,z+Math.sin(a)*(rr-w)],[x+Math.cos(a)*(rr+w),.035,z+Math.sin(a)*(rr+w)],[x+Math.cos(b)*(rr+w),.035,z+Math.sin(b)*(rr+w)],[x+Math.cos(b)*(rr-w),.035,z+Math.sin(b)*(rr-w)]],colors[0]);
  }
  for(let i=0;i<12;i++){
   const angle=i*Math.PI/6+t*.7,p=[x+Math.cos(angle)*radius,.05,z+Math.sin(angle)*radius];
-  beamArt(glow,p,[p[0],.08+fade*.18,p[2]],.022*fade,'#e5dca2',5);
+  beamArt(glow,p,[p[0],.08+fade*.18,p[2]],.022*fade,colors[1],5);
   const rise=(t*.8+i/12)%1,rr=radius*(1-rise*.55),size=(.02+Math.sin(rise*Math.PI)*.03)*fade;
-  oval3(glow,x+Math.cos(angle)*rr,.1+rise*2.2,z+Math.sin(angle)*rr,size,size*1.6,size,'#cff6e1',p=>p,6);
+  oval3(glow,x+Math.cos(angle)*rr,.1+rise*2.2,z+Math.sin(angle)*rr,size,size*1.6,size,colors[2],p=>p,6);
  }
  if(!arriving){
   if(crossing.remote)creature3(mesh,crossing.caster,crossing.caster.x+.5,crossing.caster.y+.5);
   const c=crossing.caster,ground=walkSurfaceHeight(c.x+.5,c.y+.5)-walkSurfaceHeight(x,z);
-  for(let i=0;i<7;i++){const u=(t*.65+i/7)%1;oval3(glow,(c.x+.5)*(1-u)+x*u,ground*(1-u)+1.35+Math.sin(u*Math.PI)*.4,(c.y+.5)*(1-u)+z*u,.045*fade,.045*fade,.045*fade,'#e0f2d6',p=>p,6);}
+  for(let i=0;i<7;i++){const u=(t*.65+i/7)%1;oval3(glow,(c.x+.5)*(1-u)+x*u,ground*(1-u)+1.35+Math.sin(u*Math.PI)*.4,(c.y+.5)*(1-u)+z*u,.045*fade,.045*fade,.045*fade,colors[3],p=>p,6);}
  }
 }
 for(const event of ['pointerdown','pointerup','click','keydown','wheel'])document.addEventListener(event,e=>{

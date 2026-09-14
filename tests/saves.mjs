@@ -10,10 +10,10 @@ assert.equal((await auth('login',{...credentials,password:'wrong-password-983!'}
 const login=await auth('login',{...credentials,username:'TEST_PLAYER'});assert.equal(login.status,200);const secondCookie=login.headers.get('set-cookie').split(';')[0];
 assert.equal((await(await auth('session',null,secondCookie)).json()).account.username,'Test_Player');
 const record=await(await handleSave(req('/api/character','GET',null,cookie),env)).json();assert.equal(record.state,null);
-const state={sceneId:'overworld',combatProgress:{kills:{forestgiant:2},firstClears:{}},boss:true,wardenClear:true,x:42,y:51,hp:10,gold:0,xp:{Attack:0},bag:{},equipment:{},character:{name:'Test_Player',frame:'female',hair:3,skin:4,topStyle:1,topColor:2,bottomColor:5,hairColor:2,beard:0}};
+const state={mountainQuest:{version:1,stage:17,clues:['ledger','tools','summons'],bindings:['child','miner','keeper'],inscription:true,lairKey:true,ward:true,reward1:true,choice:'warn'},sceneId:'overworld',combatProgress:{kills:{forestgiant:2},firstClears:{}},boss:true,wardenClear:true,x:42,y:51,hp:10,gold:0,xp:{Attack:0},bag:{},equipment:{},character:{name:'Test_Player',frame:'female',hair:3,skin:4,topStyle:1,topColor:2,bottomColor:5,hairColor:2,beard:0}};
 assert.equal((await handleSave(req('/api/character','PUT',{state,revision:0,resetVersion:SAVE_RESET_VERSION},cookie),env)).status,200);
 assert.deepEqual((await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state.character,state.character);
-const savedCharacter=(await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state;assert.deepEqual(savedCharacter.combatProgress,state.combatProgress);assert(savedCharacter.boss&&savedCharacter.wardenClear,'legacy quest completion survives the creature release');
+const savedCharacter=(await(await handleSave(req('/api/character','GET',null,secondCookie),env)).json()).state;assert.deepEqual(savedCharacter.combatProgress,state.combatProgress);assert.deepEqual(savedCharacter.mountainQuest,state.mountainQuest,'quest evidence, key, choices and assistance stage survive cross-device saves');assert(savedCharacter.boss&&savedCharacter.wardenClear,'legacy quest completion survives the creature release');
 // Names are fixed after the first successful save; appearances remain editable.
 for(const character of [{...state.character,name:'Renamed'},null,{},undefined]){
  const rejected=await handleSave(req('/api/character','PUT',{state:{...state,character},revision:1,resetVersion:SAVE_RESET_VERSION},cookie),env);

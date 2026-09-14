@@ -406,7 +406,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  if(gear.head==='rangerCap')briarEmit(r,rebuiltModels.Ranger_Cap,affineMultiply(headTransform,briarTransform(0,a.mesh.bounds[1][1]-.052,.015,1.13)));
  if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0,gear.ammo);
- if(casting)drawCastingLight(r,root,mesh,phase,worship?spiritEffect.color:'#a7e6e0');
+ if(casting)drawCastingLight(r,root,mesh,phase,worship?spiritEffect.color:gear._castColor||'#a7e6e0');
  if(burying&&playerAction.kind==='bury')drawBoneOffering(r,root,mesh,(time-playerAction.started)/playerAction.duration);
  if(firemaking&&!playerAction.committed){for(const [bone,left]of [[mesh.avatar.left,true],[mesh.avatar.right,false]]){const hand=affineMultiply(root,mesh.pose.subarray(bone*12,bone*12+12));box3(r,0,.01,0,left?.13:.075,.045,left?.085:.045,left?'#695341':'#9d9e93',p=>briarPoint(p,0,hand));}const age=time-playerAction.started,p=briarPoint([0,.08,.35],0,root);if(age>.4&&Math.sin(age*18)>.3)for(let i=0;i<3;i++)oval3(r,p[0]+Math.sin(i*3+age)*.08,p[1]+i*.04,p[2]+Math.cos(i+age)*.06,.025,.025,.025,'#ffd789',p=>p,5);}
  // Weapon meshes are attached to the new rig's actual palms.

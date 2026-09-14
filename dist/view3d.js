@@ -105,7 +105,7 @@ function npcAppearance(o){
  return {race:o.race||'human',frame,look:npcLook(o),topStyle,bottomStyle,topColor,bottomColor,hair,hairColor,skin,beard:frame==='male'?(role==='guide'?1:pick(9600)%3):0};
 }
 function npcEquipment(o){
- const role=o.tutor||o.appearanceRole,appearance=npcAppearance(o),gear={_appearance:appearance,_frame:appearance.frame,_race:appearance.race,_castAt:o._castAt,_castDuration:o._castDuration};
+ const role=o.tutor||o.appearanceRole,appearance=npcAppearance(o),gear={_appearance:appearance,_frame:appearance.frame,_race:appearance.race,_castAt:o._castAt,_castDuration:o._castDuration,_castColor:o._castColor};
  if(role){
   if(role==='guide')Object.assign(gear,{head:'rangerHood',_hoodColor:5});
   if(role==='combat')Object.assign(gear,{body:'mithril_body',legs:'mithril_legs',hands:'mithril_hands',feet:'mithril_feet',shield:'mithril_shield',weapon:'mithril_weapon',head:null});
