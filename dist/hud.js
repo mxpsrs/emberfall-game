@@ -63,7 +63,7 @@ function drawMinimap(){
  g.save();g.translate(cw/2,ch/2);g.rotate(yaw);g.drawImage(miniMapLayer,-size/2,-size/2);g.restore();
  const point=(x,y)=>minimapPoint(x,y,bounds,yaw);
  const guidePath=tutorialGuideRoute();if(guidePath.length){g.strokeStyle='#e6d8a0';g.lineWidth=1.5;g.beginPath();for(const [i,p]of [[px,py],...guidePath].entries()){const q=point(...p);if(i)g.lineTo(...q);else g.moveTo(...q);}g.stroke();}
- for(const o of objects){if(o.dead>time||o.collected||!(['enemy','man','villager','elder','banker','shop','inn'].includes(o.type)||o.tutor))continue;const q=point(o.drawX??o.x,o.drawY??o.y);g.fillStyle='#ffff35';g.fillRect(q[0]-2,q[1]-2,4,4);}
+ for(const o of objects){if(!questFightVisible(o,s)||o.dead>time||o.collected||!(['enemy','man','villager','elder','banker','shop','inn'].includes(o.type)||o.tutor))continue;const q=point(o.drawX??o.x,o.drawY??o.y);g.fillStyle='#ffff35';g.fillRect(q[0]-2,q[1]-2,4,4);}
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene){const q=point(pile.x,pile.y);g.fillStyle='#ee403a';g.fillRect(q[0]-2,q[1]-2,4,4);}
  if(typeof onlinePeers!=='undefined'&&onlineScene===currentScene)for(const peer of onlinePeers.values()){const q=point(peer.drawX??peer.x,peer.drawY??peer.y);g.fillStyle='#fff';g.fillRect(q[0]-2,q[1]-2,4,4);}
  miniServiceMarkers=[];
@@ -72,6 +72,7 @@ function drawMinimap(){
   miniServiceMarkers.push({entry,x,y,r:13});g.save();g.shadowColor='#141a12';g.shadowBlur=3;drawGameIcon(g,mapIconFor(entry),x-13,y-13,26);g.restore();
  }
  if(path.length){const q=point(...path[path.length-1]);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(q[0],q[1]+5);g.lineTo(q[0],q[1]-9);g.stroke();g.fillStyle='#e84436';g.fillRect(q[0]+1,q[1]-9,8,5);}
+ if(typeof drawQuestMinimap==='function')drawQuestMinimap(g,point,cw,ch);
  g.fillStyle='#fff';g.strokeStyle='#16271e';g.lineWidth=1.5;g.fillRect(cw/2-3,ch/2-3,6,6);g.strokeRect(cw/2-3,ch/2-3,6,6);g.restore();
  const compass=$('minimapCompass');if(compass)compass.style.transform='rotate('+yaw+'rad)';
 }

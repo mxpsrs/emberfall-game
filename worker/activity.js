@@ -3,6 +3,7 @@ import {currentResetVersion} from './reset-policy.js';
 import {publicAction,readSharedEffects} from './shared-world.js';
 
 // A small, independent notification path. World transactions remain authoritative.
+// Four reads/second preserves the urgent channel without ten DB polls/second.
 // Streams are renewed after 32 reads, bounding connection lifetime and DB work.
 export async function handleActivity(request,env){
  const reply=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
@@ -24,18 +25,21 @@ export async function handleActivity(request,env){
    await env.DB.prepare("INSERT INTO shared_events (id,scope,scene,actor,kind,result,created_at,acked) VALUES (?,?,?,?,'activity',?,?,1) ON CONFLICT DO NOTHING").bind(actor+':activity:'+action.kind+':'+action.started,scope,scene,actor,JSON.stringify({...action,x:input.x,y:input.y}),now).run();
    return reply({ok:true,serverTime:Date.now()});
   }
+  const saved=await env.DB.prepare('SELECT state FROM character_saves WHERE user_id=?').bind('account:'+account.id).first();
+  const questState=saved?JSON.parse(saved.state):null;
   const url=new URL(request.url);if(url.searchParams.get('scene')!==scene)return reply({error:'Scene changed'},409);
   let since=Date.now()-1000,cancelled=false,reads=0;const seen=new Set(),encoder=new TextEncoder();
+  request.signal.addEventListener('abort',()=>{cancelled=true;},{once:true});
   const stream=new ReadableStream({
    async pull(controller){
     if(cancelled)return;
     try{
-     const effects=await readSharedEffects(env.DB,scope,scene,actor,position,since);
+     const effects=await readSharedEffects(env.DB,scope,scene,actor,position,since,questState);
      const fresh=effects.filter(e=>!seen.has(e.id));for(const e of fresh){seen.add(e.id);since=Math.max(since,e.at-1000);}
      if(cancelled)return;
      controller.enqueue(encoder.encode('data: '+JSON.stringify({scene,serverTime:Date.now(),effects:fresh})+'\n\n'));
      if(++reads>=32){controller.close();return;}
-     await new Promise(resolve=>setTimeout(resolve,100));
+     await new Promise(resolve=>setTimeout(resolve,250));
     }catch{if(!cancelled)controller.close();}
    },cancel(){cancelled=true;}
   });

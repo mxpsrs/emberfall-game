@@ -42,7 +42,7 @@ const tutorialSteps=[
  lesson('withdraw','Take it back','Withdraw an item from your bank. Worn equipment stays separate from stored supplies.','tutor-bank'),
  lesson('talk-worship','Meet the shrine keeper','Ada sends you to Keeper Sera at the shrine in the island’s southwest. Worship and spirits are taught together.','tutor-worship'),
  lesson('bury','Honour the fallen','Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.'),
- lesson('spirit','Form a spiritual bond','Speak to Cinder beside Sera and form a bond. Worship grows through burial and first bonds; spirits grant their own bonuses.','cinder'),
+ lesson('spirit','Choose your first spirit','Speak to Keeper Sera and choose Fire, Water, Air or Earth. Your first companion joins your party with an elemental awakening.','tutor-worship'),
  lesson('talk-finish','Ready for the realm','Return to Rowan in the square. Finish your apprenticeship with him to teleport to Briarhaven on the mainland. You cannot return to this island.','tutor-guide')
 ];
 const TUTORIAL_V2_EVENTS=['camera','walk','talk-guide','bag','skills','talk-woods','tree','fire','talk-fishing','fish','talk-cooking','cook','eat','talk-mining','ore','smelt','smith','talk-combat','gear','dummy','monster','loot','talk-bank','deposit','withdraw','talk-worship','bury','spirit','talk-magic','magic','talk-finish'];
@@ -116,7 +116,7 @@ function tutorialEvent(event){
  s.tutorialCompleted??=[];if(!s.tutorialCompleted.includes(event))s.tutorialCompleted.push(event);
  s.tutorial++;while(tutorialSteps[s.tutorial]&&s.tutorialCompleted.includes(tutorialSteps[s.tutorial].event))s.tutorial++;stop();tutorialCameraStart=null;
  if(!tutorialStep()){
-  const earned=!s.tutorialReward;if(earned){receiveCoins(15);s.tutorialReward=true;for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0))s.bank[id]=(s.bank[id]||0)+1;for(const [id,n]of Object.entries({arrows:60,runes:40,airRunes:120,fish:3}))s.bank[id]=(s.bank[id]||0)+n;s.tutorialCasting=false;}
+  const earned=!s.tutorialReward;if(earned){tutorialCompletionBanked=grantQuestCoins(21);s.tutorialReward=true;tutorialCompletionItems={};for(const id of ['bronzeSword','shortbow','oakStaff','leatherArmor','leatherBoots'])if(!(s.gear[id]>0||s.bank[id]>0)){s.bank[id]=(s.bank[id]||0)+1;tutorialCompletionItems[id]=1;}for(const [id,n]of Object.entries({arrows:84,runes:56,airRunes:168,fish:4})){s.bank[id]=(s.bank[id]||0)+n;tutorialCompletionItems[id]=n;}s.tutorialCasting=false;}
   if(typeof departTutorialIsland==='function')departTutorialIsland();
   if(typeof tutorialCrossing!=='undefined'&&tutorialCrossing)tutorialCrossing.earned=earned;else showTutorialArrival(earned);
  }
@@ -124,8 +124,10 @@ function tutorialEvent(event){
  if(tutorialStep()?.event==='equip-dagger'&&s.equipment.weapon==='bronze_dagger')tutorialEvent('equip-dagger');
  else if(s.tutorialActions?.[tutorialStep()?.event])tutorialEvent(tutorialStep().event);
 }
+let tutorialCompletionItems={},tutorialCompletionBanked=0;
 function showTutorialArrival(earned){
- dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 15 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and relics in your bank.</b> Your worn items and bag stay with you.</p>':''));
+ if(earned&&typeof showQuestCompletion==='function')showQuestCompletion({title:'Firstlight apprenticeship',coins:21,banked:tutorialCompletionBanked,items:tutorialCompletionItems,unlocks:['Briarhaven and the mainland'],note:'Equipment and supplies have been placed in your bank. Your carried belongings stay with you.'});
+ dialog('Elder Rowan','<p>“You have learned from every tutor. Keep your crafted dagger, training sword and shield, staff, and everything you gathered along the way. You earned them.”</p><p>The crossing closes behind you. You are in Briarhaven now, on the mainland of the threatened world. Firstlight Isle is beyond your reach. Find me in the square when you are ready; our people need food and supplies before we can take the fight to the ruins guardian.</p>'+(earned?'<p><b>Bonus: 21 coins, plus a bronze sword, bow, leather armor, boots and extra food, arrows and relics in your bank.</b> Your worn items and bag stay with you.</p>':''));
 }
 function observeTutorialCamera(){
  if(tutorialStep()?.event!=='camera')return;
@@ -150,7 +152,7 @@ function guide(){
  if(!inWorld()||Math.hypot(s.x-43,s.y-52)>90){dialog('Continue on Firstlight Isle','<p>Your tutors are on Firstlight Isle. Return to Rowan’s square to continue this lesson. Your belongings, levels and bank come with you.</p>',[['Return to the square',()=>{close();activateScene(worldScenes.tutorial?'tutorial':'overworld',42,51);renderTutorial();}],['Stay here',close]]);return;}
  if(step.event==='combat-stats'){openCombatStats();return;}
  if(['bag','skills','bury','fire','mix-dough','equip-dagger','training-gear','ranged-gear'].includes(step.event)&&!(step.event==='fire'&&tutorialGoal())){openTutorialPanel(step.event==='skills'?'skills':'bag');return;}
- if(step.event==='spirit'&&s.spirits.cinder){openSpirits();return;}
+ if(step.event==='spirit'&&spiritHasBond()){openSpirits();return;}
  let point=tutorialGoal();
  if(point){if(point.dead>time){toast('The practice target will be ready again shortly.');return;}engage(point.tutorialDoor||point);}
  else toast(step.event==='loot'?'Defeat another rat to find fresh drops.':'Follow the lesson above.');
@@ -164,7 +166,7 @@ const TUTORS={
  mining:{name:'Smith Orin',at:[68,43],look:0,text:'Elowen has shown you magic. Now mine copper and tin in my yard. The furnace combines them into bronze. At the anvil, work a bronze bar into a dagger. Better ores and recipes need higher levels. Mining and Smithing have separate levels. When you have made your dagger, Captain Vale will teach you to fight.'},
  combat:{name:'Captain Vale',at:[45,80],look:1,text:'First, equip the bronze dagger you forged. Then open Equipment and inspect your combat stats. I will give you a wooden sword and shield before we practise on the dummy. Attack improves melee accuracy, Strength raises its damage, Defense protects you and Hitpoints raises your health. Ranged and Magic train separately. After the dummy, go through the gate beside me and defeat a giant rat. The gate closes behind you when you enter or leave, and the rats stay inside. Collect its drops, then return to me for your shortbow and arrows. After your ranged lesson, visit Forester Ash at the timber yard northwest of the square.'},
  bank:{name:'Banker Ada',at:[56,68],look:3,text:'Welcome to Firstlight Bank. Your bag has limited space. The bank holds supplies and unworn equipment for later and saves them with your character. Deposit an item, then withdraw it. Afterward, visit Keeper Sera at the shrine south of the square.'},
- worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Cinder waits beside the shrine: form a bond to gain its equipped bonus. Spirits belong to this spiritual practice. Afterward, return to Rowan in the square to finish your apprenticeship.'},
+ worship:{name:'Keeper Sera',at:[42,63],look:2,text:'Burying bones honours the fallen and trains Worship. First bonds with spirits also earn Worship experience. Choose your first Fire, Water, Air or Earth companion with me. Spirits belong to this spiritual practice. Afterward, return to Rowan in the square to finish your apprenticeship.'},
  magic:{name:'Arcanist Elowen',at:[76,65],look:3,text:'Welcome to the village magic school. First, open Bag and Skills to see your supplies and progress. Take this staff and relics, then equip the staff using the Magic icon. Wind strike uses an air relic and a mind relic per cast; stronger spells unlock with your Magic level. Cast at my practice dummy, then visit Smith Orin at the forge northeast of the square.'}
 };
 let tutorialVillageReady=false;
@@ -190,13 +192,14 @@ function setupTutorialVillage(){
  make('practice-forge','practiceForge','Practice forge',66,44);
  make('town-resident','villager','Tobin the beggar',54,49,{characterSprite:true,civilianModel:'chosan',_stationary:true,talk:'“A warm meal and dry boots make a fine day. Mara’s store is just here, and the cooking hearth is west by the inn. If you find work, keep your tools on your belt—you’ll want room in your bag.”'});
  const dummy=make('magic-dummy','dummy','Spell practice dummy',79,66,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';dummy.interiorBuilding='realm_briarhaven_3';place(dummy,79,66);
- const cinder=world.objects.find(o=>o.spiritId==='cinder');if(cinder){cinder.tutorialRole='cinder';fit(cinder,44,64);}SPIRITS.cinder.hint='Beside Keeper Sera at Briarhaven’s shrine.';
+ // Spirit companions are chosen with Sera; no world discovery actors.
  dressTutorWorkplaces(world);setupSkillWorld(world);setupTrainingPen(world);
  if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
  normalizeJourney(s);renderTutorial();
 }
 function talkTutor(o){
  const role=o.tutor,expected=tutorialStep()?.event;
+ if(role==='worship'&&expected==='spirit'){openFirstSpiritChoice();return;}
  if(role==='magic'&&tutorialStep()){
   const ready=giveTutorialMagicSupplies();
   if(expected==='talk-magic'&&ready){dialog(TUTORS.magic.name,'<p>“'+TUTORS.magic.text+'”</p>',[['Continue',()=>{close();tutorialEvent('talk-magic');}]]);return;}
@@ -235,7 +238,8 @@ function handleTutorialInteraction(o){
  if(o.tutor){stop();talkTutor(o);return true;}
  if(o.workstation==='furnace'){stop();openSmithing('furnace');return true;}
  if(o.type==='practiceForge'){stop();workPracticeForge();return true;}
- if(o.type==='range'||o.type==='camp'&&o.cooking){stop();openWorkbench('cooking',null,o);return true;}
+ if(o.type==='camp'&&o.cooking){stop();return true;}
+ if(o.type==='range'){stop();openWorkbench('cooking',null,o);return true;}
  return false;
 }
 

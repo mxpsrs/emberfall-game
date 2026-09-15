@@ -64,7 +64,7 @@ resetEncounter();assert(!activeEncounter);assert.equal(dragon.hp,dragon.maxhp);a
 activateScene('lair_varkesh',dragon.homeX,dragon.homeY+3);beginEncounter(dragon);scheduleEnemyMove(activeEncounter,'bite');h=activeEncounter.hazards[0];
 assert.equal(h.style,'melee');assert.equal(dragon.attackClip,'attack');assert(hazardContains(h,dragon.x,dragon.y+3));assert(!hazardContains(h,dragon.x,dragon.y-2));
 const bite=creatureAttackAnimation(dragon,a,h.due-dragon.attackAt);assert(Math.abs(bite.phase-a.clips.attack.release)<.0001);
-const gold=carriedCoins();resolveHit(dragon,dragon.hp,'melee');assert.equal(carriedCoins(),gold+120,'first-clear reward is preserved');
+const gold=carriedCoins();resolveHit(dragon,dragon.hp,'melee');assert.equal(carriedCoins(),gold+168,'first-clear reward increased by 40%');
 const loot=s.groundLoot.find(p=>p.scene==='lair_varkesh'&&p.items.huntersMark);assert(loot);assert.equal(loot.items.huntersMark,3);assert.equal(loot.items.coins,105);assert(!blocked(loot.x,loot.y));
 assert(route(loot.x,loot.y),'loot is reachable');assert.equal(dragon.dead,time+60);assert(creatureDying(dragon));
 time+=60;wallTime=dragon.respawnAt+1;updateWorldTimers();assert.equal(dragon.dead,0);assert.equal(dragon.hp,dragon.maxhp);assert.equal(dragon.x,dragon.homeX);assert.equal(dragon.y,dragon.homeY);

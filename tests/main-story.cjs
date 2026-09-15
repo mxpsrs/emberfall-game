@@ -22,7 +22,7 @@ objective();press('Follow the courier west.');stage(3);press('Follow the raider 
 mainStoryGuide();until(()=>{if(s.hp<8)s.hp=maxhp();return mainStoryState().stage===5;},'lookout combat');stage(5);
 objective();press('Preserve the forged dispatch.');stage(6);assert(mainStoryState().dispatch);reload();
 objective();press('Tovin must have forged it.');stage(6);const attackXP=s.xp.Attack,bagBefore=s.bag,bankCoins=s.bank.coins||0;s.bag={logs:25};
-const finishWatch=npcDialogueState.choices.find(([label])=>label.startsWith('The crown'))[1];finishWatch();stage(7);assert.equal(s.xp.Attack,attackXP+200);finishWatch();assert.equal(s.xp.Attack,attackXP+200);assert(mainStoryState().reward1);assert.equal(s.bank.coins,bankCoins+150);s.bag=bagBefore;reload();
+const finishWatch=npcDialogueState.choices.find(([label])=>label.startsWith('The crown'))[1];finishWatch();stage(7);assert.equal(s.xp.Attack,attackXP+280);finishWatch();assert.equal(s.xp.Attack,attackXP+280);assert(mainStoryState().reward1);assert.equal(s.bank.coins,bankCoins+210);s.bag=bagBefore;reload();
 objective();const mining=s.xp.Mining;s.xp.Mining=0;close();mainStoryInteract(mainStoryObject('hesta'));assert.equal(npcDialogueState.choices.length,0);stage(7);s.xp.Mining=mining;close();mainStoryInteract(mainStoryObject('hesta'));press('Bring both workers home.');stage(8);
 objective();press('Record the safety sequence.');stage(9);work('Open the ventilation.',10);
 objective();press('Recover the iron support.');assert(mainStoryWork);stop();assert(!mainStoryWork);stage(10);
@@ -30,7 +30,7 @@ work('Recover the iron support.',11);work('Forge the locking pin.',12);
 objective();press('Seat the counterweight.');stage(12);press('Secure the brake.');stage(13);reload();objective();press('Seat the counterweight.');stage(14);
 objective();press('Follow me to Hesta.');stage(15);reload();objective();press('Come with us to the surface.');stage(16);
 assert.equal(mainStoryState().rescued.length,0);mainStoryGuide();until(()=>{if($('modal').open)close();if(!path.length&&!target&&mainStoryState().stage===16)mainStoryGuide();return mainStoryState().stage===17;},'escort both miners');stage(17);assert.equal(mainStoryState().rescued.length,2);reload();
-objective();const beforeMining=s.xp.Mining,finishRescue=npcDialogueState.choices.find(([label])=>label==='Complete The Weight of an Oath.')[1];finishRescue();stage(18);finishRescue();assert.equal(s.xp.Mining,beforeMining+250);assert(mainStoryState().testimony);reload();
+objective();const beforeMining=s.xp.Mining,finishRescue=npcDialogueState.choices.find(([label])=>label==='Complete The Weight of an Oath.')[1];finishRescue();stage(18);finishRescue();assert.equal(s.xp.Mining,beforeMining+350);assert(mainStoryState().testimony);reload();
 objective();const magic=s.xp.Magic;s.xp.Magic=0;close();mainStoryInteract(mainStoryObject('ilyra'));assert.equal(npcDialogueState.choices.length,0);s.xp.Magic=magic;close();mainStoryInteract(mainStoryObject('ilyra'));press('Investigate the stolen voices.');stage(19);
 for(let i=0;i<3;i++){objective();press('Remember the whisper.');reload();}stage(20);
 objective();press('The miners called to each other below.');stage(20);press('The curse is stealing living voices.');stage(21);
@@ -38,7 +38,7 @@ objective();press('Hand');stage(21);assert.equal(mainStoryState().runes,0);press
 mainStoryGuide();until(()=>target?.mainStoryKey==='shade'&&!path.length,'reach shade');s.hp=1;applyEnemyHit(mainStoryObject('shade'),5);stage(22);assert.equal(mainStoryState().stones.length,3);close();reload();s.hp=maxhp();
 mainStoryGuide();until(()=>{if(s.hp<8)s.hp=maxhp();return mainStoryState().stage===23;},'shade retry');stage(23);
 work('Break the curse and bind the memory.',24);assert(mainStoryState().memoryShard);
-objective();const beforeMagic=s.xp.Magic,finishEcho=npcDialogueState.choices.find(([label])=>label==='Complete Echoes Without a Name.')[1];finishEcho();stage(25);finishEcho();assert.equal(s.xp.Magic,beforeMagic+300);assert(mainStoryComplete());reload();
+objective();const beforeMagic=s.xp.Magic,finishEcho=npcDialogueState.choices.find(([label])=>label==='Complete Echoes Without a Name.')[1];finishEcho();stage(25);finishEcho();assert.equal(s.xp.Magic,beforeMagic+420);assert(mainStoryComplete());reload();
 assert(questJournalEntries().filter(q=>q.id.startsWith('main-')).every(q=>q.complete));for(let i=0;i<3;i++)assert(questJournalRows('main-'+i).every(row=>row.done));
 objective();assert.equal(npcDialogueState.speaker.name,'Archivist Maerin');press('Investigate the disappearances.');assert.equal(mountainState().stage,1);
 for(const [id,name]of Object.entries({runes:'Mind',airRunes:'Air',waterRunes:'Water',earthRunes:'Earth',fireRunes:'Fire',chaosRunes:'Chaos',deathRunes:'Death',bloodRunes:'Blood'}))assert.equal(ITEMS[id].name,name+' relic');
@@ -50,7 +50,7 @@ const saved=JSON.parse(vm.runInContext('JSON.stringify(s)',ctx));
 for(const stage of [2,13,16,21,22,25]){
  delete require.cache[require.resolve('../scripts/game-fixture.cjs')];const fresh=require('../scripts/game-fixture.cjs');
  const restored={...saved,mainStoryQuest:{...saved.mainStoryQuest,stage,rescued:stage===16?['bera']:stage>16?['bera','oren']:[],positions:{oren:[803,157]}},mountainQuest:{stage:0}};
- fresh.vm.runInContext('s='+JSON.stringify(restored)+';normalizeJourney(s,s);draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assert.equal(mainStoryState().stage,'+stage+');assert.equal(worldScenes.overworld.objects.filter(o=>o.mainStoryKey).length,21);',fresh.ctx);
+ fresh.vm.runInContext('s='+JSON.stringify(restored)+';normalizeJourney(s,s);draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assert.equal(mainStoryState().stage,'+stage+');assert.equal(Object.values(worldScenes).flatMap(w=>w.objects).filter(o=>o.mainStoryKey).length,21);',fresh.ctx);
 }
 vm.runInContext('s.mainStoryQuest={stage:0};s.mountainQuest={stage:6};assert(mountainCanEnter("quest_underiron"));assert(mountainAdvance(6,null));assert.equal(mountainState().stage,7);',ctx);
 console.log('PASS: fresh-runtime recovery and existing mountain progress remain available.');

@@ -51,7 +51,7 @@ const TUTORIAL_REASONS={
  deposit:'Your bank keeps supplies between visits and on the mainland. Only items in your bag are deposited; worn equipment stays on you.',
  withdraw:'A stored item returns to your bag when you withdraw it. You need enough free bag space.',
  bury:'Worship strengthens spirit attacks and improves your protection as it levels. Burying one bone gives 18 Worship XP. First bonds and spirit damage also train it.',
- spirit:'Cinder is a Fire spirit. While set, its bond adds 2 melee and magic damage. Spirits are managed from Spirits; Unleash uses an ability and puts the spirit on standby.',
+ spirit:'Choose your first elemental companion with Sera. Unleash opens your spirit choices in the chat box without stopping combat. Spirits reactivate after 30 seconds; rare twins take 45 seconds.',
  'talk-finish':'Your bank, belongings and skill levels travel with you. Rowan’s crossing to Briarhaven is one way.'
 };
 function tutorialGuidanceActive(){return !!s.character&&!!tutorialStep()&&currentScene==='tutorial';}
@@ -143,9 +143,9 @@ function tutorialGuidanceAction(){
  }
  if(event==='bury')return s.bag.bones>0?item('bones','Tap',' to bury them'):world('Speak to Keeper Sera for practice bones.');
  if(event==='spirit'){
-  const bond=Array.from($('modalBody')?.querySelectorAll('button')||[]).find(b=>b.textContent==='Form a bond');
-  if(bond)return {...make('bond','Tap Form a bond to welcome Cinder.'),element:bond};
-  return world('Speak to Cinder beside Sera to form a bond.');
+  const bond=$('modalBody')?.querySelector('[data-spirit-choice]');
+  if(bond)return {...make('bond','Choose any of the four elemental companions.'),element:bond};
+  return world('Speak to Keeper Sera to choose your first elemental companion.');
  }
  return world(step.desc);
 }

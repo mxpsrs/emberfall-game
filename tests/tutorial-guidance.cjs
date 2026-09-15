@@ -37,7 +37,7 @@ s=JSON.parse(JSON.stringify(s));normalizeJourney(s,s);openBank();assert.equal(s.
 assert(tutorialGuidanceAction().instruction.includes('1, 5, 10 or All'));tutorialBankQuantity();assert.equal(s.tutorialBankPhase,'close');
 assert.equal(tutorialStep().event,'withdraw','quantity selection alone does not finish banking');close();assert.equal(tutorialStep().event,'talk-worship');assert.equal(s.tutorialBankPhase,'done');
 const bankXP=JSON.stringify(s.xp);openBank();close();assert.equal(tutorialStep().event,'talk-worship');assert.equal(JSON.stringify(s.xp),bankXP);
-close();at('talk-worship');talkTutor({tutor:'worship',name:'Keeper Sera'});assert(npcDialogueState.pages.join(' ').includes('Higher Worship'));assert(npcDialogueState.pages.join(' ').includes('standby'));close();
+close();at('talk-worship');talkTutor({tutor:'worship',name:'Keeper Sera'});assert(npcDialogueState.pages.join(' ').includes('Higher Worship'));assert(npcDialogueState.pages.join(' ').includes('30 seconds'));close();
 const marks=new Set(),controlTarget={classList:{add:x=>marks.add(x),remove:x=>marks.delete(x)},focus:()=>{}};
 document.querySelector=()=>controlTarget;at('skills');renderTutorialGuidance();assert(marks.has('tutorial-next-control'));
 s.tutorial=tutorialSteps.length;renderTutorialGuidance();assert(!marks.has('tutorial-next-control'),'highlight clears when tutorial ends');

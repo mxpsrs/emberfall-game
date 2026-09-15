@@ -1,3 +1,4 @@
+import catalog from './shared-catalog.json' with {type:'json'};
 import {syncSharedWorld,publicAction} from './shared-world.js';
 export {handleActivity} from './activity.js';
 export {handleSocial} from './social.js';
@@ -10,6 +11,7 @@ export {handleAuth};
 export {SAVE_RESET_VERSION};
 const completedApprenticeship=state=>state?.tutorialReward===true||(state?.tutorialVersion===4&&state?.tutorial>=36||[5,6].includes(state?.tutorialVersion)&&state?.tutorial>=39||state?.tutorialVersion===7&&state?.tutorial>=38);
 async function resolvePlayer(request,env){const account=await authenticatedPlayer(request,env);if(!account)return null;const user='account:'+account.id;const row=await env.DB.prepare('SELECT state,revision,updated_at FROM character_saves WHERE user_id=?').bind(user).first();return {user,row,username:account.username};}
+function acknowledgedSave(row,body){return row&&row.revision===body.revision+1&&typeof body.state._saveRequestId==='string'&&row.state===JSON.stringify(body.state);}
 export async function handleSave(request,env){
  let resetVersion=SAVE_RESET_VERSION;
  const headers={'Content-Type':'application/json','Cache-Control':'no-store'};
@@ -27,6 +29,7 @@ export async function handleSave(request,env){
  if(body.resetVersion!==resetVersion)return reply({code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'},409);
  const st=body.state;if(!Number.isInteger(body.revision)||body.revision<0||!st||typeof st!=='object'||!st.xp||!st.bag||!Number.isFinite(st.x)||!Number.isFinite(st.y)||!Number.isFinite(st.hp)||!Number.isFinite(st.gold))return reply({error:'Invalid character data'},400);
  const previous=row?JSON.parse(row.state):null;
+ if(acknowledgedSave(row,body))return reply({revision:row.revision,updatedAt:row.updated_at});
  // Enforce identity on the server too, including attempts to erase the
  // character first and recreate it under a different name. Revision checks
  // below prevent a concurrent first save from replacing an established name.
@@ -36,7 +39,7 @@ export async function handleSave(request,env){
  if((st.mountainQuest?.stage||0)>0&&!(previous?.mountainQuest?.stage>0)&&st.mainStoryQuest?.stage!==25)return reply({error:'Complete the three preceding main-story quests before beginning The King Beneath the Mountain.'},400);
  const stamp=new Date().toISOString(),data=JSON.stringify(st);
  const result=body.revision===0?await env.DB.prepare(`INSERT INTO character_saves (user_id,state,revision,updated_at) SELECT ?,?,1,? WHERE ${RESET_VERSION_SQL}=? ON CONFLICT(user_id) DO NOTHING`).bind(user,data,stamp,body.resetVersion).run():await env.DB.prepare(`UPDATE character_saves SET state = ?, revision = revision + 1, updated_at = ? WHERE user_id = ? AND revision = ? AND ${RESET_VERSION_SQL}=?`).bind(data,stamp,user,body.revision,body.resetVersion).run();
- if(!result.meta.changes){resetVersion=await currentResetVersion(env);return reply(resetVersion!==body.resetVersion?{code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'}:{error:'Your character was saved in another tab or device. Reload to continue with that save.'},409);}
+ if(!result.meta.changes){resetVersion=await currentResetVersion(env);if(resetVersion===body.resetVersion){const latest=await env.DB.prepare('SELECT state,revision,updated_at FROM character_saves WHERE user_id=?').bind(user).first();if(acknowledgedSave(latest,body))return reply({revision:latest.revision,updatedAt:latest.updated_at});}return reply(resetVersion!==body.resetVersion?{code:'ACCOUNTS_RESET',error:'All characters have been reset. Reload Veldren to create your new character.'}:{error:'Your character was saved in another tab or device. Reload to continue with that save.'},409);}
  return reply({revision:body.revision+1,updatedAt:stamp});
  }catch(error){console.error('character_save_failed',error.message);return reply({error:'Could not reach character storage. Your local backup is safe.'},503);}
 }
@@ -47,7 +50,7 @@ export async function handlePlayers(request,env){
  if(request.headers.get('origin')&&request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
  try{const raw=await request.text();if(raw.length>24576)return reply({error:'Request too large'},413);const input=JSON.parse(raw),resetVersion=await currentResetVersion(env);
  const player=await resolvePlayer(request,env,headers);if(!player?.row)return reply({error:'Create your character first.'},401);
- const sizes={tutorial:[128,136],overworld:[1152,768],inn:[14,12],shop:[14,12],forge:[14,12],stoneInn:[14,12],stoneShop:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25],ork_warrens:[38,44],lair_colossus:[46,48],lair_veyr:[44,48],lair_varkesh:[58,58],lair_xalith:[54,54],quest_underiron:[44,48]};const realmCounts={crownreach:26,greyhaven:25,briarhaven:5,willowcross:5,stoneford:5,ironhollow:26,deepforge:25,copperdelve:5,stonehearth:5,aelindor:26,moonwillow:25,fernwatch:5,silverbrook:5},match=String(input.scene).match(/^realm_([a-z]+)_(\d+)$/);const realm=match&&Object.hasOwn(realmCounts,match[1])&&Number(match[2])<realmCounts[match[1]],index=match?Number(match[2]):-1;const size=(Object.hasOwn(sizes,input.scene)?sizes[input.scene]:null)||(realm?(index===25?[24,22]:index===5&&["ironhollow","deepforge"].includes(match[1])?[26,22]:[16,14]):null);
+ const size=Object.hasOwn(catalog.scenes,input.scene)?catalog.scenes[input.scene]:null;
  if(!size||!Number.isFinite(input.x)||!Number.isFinite(input.y)||input.x<0||input.y<0||input.x>=size[0]||input.y>=size[1])return reply({error:'Invalid position'},400);
  // Trail coordinates are finite integral, adjacent and ordered. Reject a
  // malformed trail as a whole; filtering individual nodes would invent gaps.
@@ -62,7 +65,7 @@ export async function handlePlayers(request,env){
  const seen=await env.DB.prepare(`INSERT INTO player_presence (player_id,scene,payload,seen_at) SELECT ?,?,?,? WHERE ${RESET_VERSION_SQL}=? ON CONFLICT(player_id) DO UPDATE SET scene=excluded.scene,payload=excluded.payload,seen_at=excluded.seen_at WHERE player_presence.seen_at<=excluded.seen_at`).bind(id,input.scene,JSON.stringify(payload),now,resetVersion).run();
  if(!seen.meta.changes&&await currentResetVersion(env)!==resetVersion)return reply({error:'Characters have been reset. Reconnect to create your character.'},401);
  const world=await syncSharedWorld(env,id,state,input,now,String(resetVersion));
- const result=await env.DB.prepare('SELECT payload FROM player_presence WHERE scene = ? AND seen_at > ? AND player_id <> ? ORDER BY seen_at DESC LIMIT 60').bind(input.scene,now-12000,id).all();
- return reply({serverTime:Date.now(),selfId:id,world,players:result.results.map(row=>JSON.parse(row.payload))});
+ const peers=world?._peers??(await env.DB.prepare('SELECT payload FROM player_presence WHERE scene = ? AND seen_at > ? AND player_id <> ? ORDER BY seen_at DESC LIMIT 60').bind(input.scene,now-12000,id).all()).results.map(row=>JSON.parse(row.payload));
+ return reply({serverTime:Date.now(),selfId:id,world,players:peers});
  }catch(error){console.error('player_presence_failed',error.message);return reply({error:'Online world temporarily unavailable'},503);}
 }

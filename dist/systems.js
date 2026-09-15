@@ -21,6 +21,7 @@ function awardCombatDamage(damage,style,focus=trainingFocus(style)){
  }else if(style==='ranged'){rewards.Ranged=damage*(focus==='defensive'?2:4);if(focus==='defensive')rewards.Defense=damage*2;}
  else if(style==='magic'){rewards.Magic=damage*(focus==='defensive'?4/3:2);if(focus==='defensive')rewards.Defense=damage;}
  else rewards.Worship=damage*4;
+ if(style==='melee')for(const skill of Object.keys(rewards))rewards[skill]*=3;
  for(const [skill,xp]of Object.entries(rewards))gain(skill,xp,true);
  showExperienceDrop(rewards);
 }
@@ -142,7 +143,7 @@ function itemActions(id,fromBag=false){
  else if(id==='fish'||id==='herbs')actions.push([id==='fish'?'Eat trout':'Eat herbs',()=>{if(!owns(id))return false;if(id==='fish')eat();else{if(s.hp>=maxhp()){toast('Your health is full.');return false;}s.bag.herbs--;s.hp=Math.min(maxhp(),s.hp+6);renderUI();save();}return true;}]);
  else if(id==='bones')actions.push(['Bury',buryBones]);
  else if(id==='logs')actions.push(['Light fire',lightLog]);
- else if(id==='rawTrout')actions.push(['Cook',cookTrout]);
+ else if(id==='rawTrout'){}
  else if(id==='ore'||id==='ironBar')actions.push([id==='ore'?'Smelt':'Smith arrowheads',workPracticeForge]);
  else if(id==='arrowheads')actions.push(['Make arrows',finishArrows]);
  else actions.push(['Examine',()=>{toast(item.name+': '+item.desc);return true;}]);
@@ -214,7 +215,7 @@ function advanceActorMovement(o,dt){
  if(distance>0){o.drawX+=dx/distance*step;o.drawY+=dy/distance*step;}
 }
 function awardDefeat(o,style){
- frontierKill(o);if(o.type!=='dummy'&&(tutorialStep()?.event!=='monster'||o.penId&&o.kind==='rat'))tutorialEvent('monster');
+ if(o.encounter==='veyr')delete s.questRematch;frontierKill(o);if(o.type!=='dummy'&&(tutorialStep()?.event!=='monster'||o.penId&&o.kind==='rat'))tutorialEvent('monster');
  const respawnSeconds=o.type==='dummy'?8:25;o.dead=time+respawnSeconds;o.respawnAt=Date.now()+respawnSeconds*1000;o.deathAt=time;monsterDrop(o);
  if(o.kind==='warden'){s.wardenClear=true;toast('The Crypt guard falls. The supply cache is yours.');}
  else if(o.kind==='king'){s.boss=true;toast('The ruins guardian falls! Return to Elder Rowan.');}
@@ -257,12 +258,12 @@ function updatePlayerProjectiles(dt){
    if(blocked(...point)){let found=null;for(let radius=1;radius<=4&&!found;radius++)for(let y=-radius;y<=radius&&!found;y++)for(let x=-radius;x<=radius;x++)if(Math.max(Math.abs(x),Math.abs(y))===radius&&!blocked(point[0]+x,point[1]+y)){found=[point[0]+x,point[1]+y];break;}if(found)point=found;}
    groundDrop({[p.ammo]:1},...point,p.scene||currentScene);save();
   }
-  if(p.o.hp>0&&p.o.dead<=time)resolveHit(p.o,p.damage,p.style,p.slow,p.focus,p.sharedGeneration);
+  if(p.o.hp>0&&p.o.dead<=time)resolveHit(p.o,p.damage,p.style,p.slow,p.focus,p.sharedGeneration,p.sharedSwing);
  }
 }
 function updateCombat(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
- for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus,hit.sharedGeneration);}
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus,hit.sharedGeneration,hit.sharedSwing);}
  updatePlayerProjectiles(dt);
  if(!target||!fighter(target))return;
  const o=target;

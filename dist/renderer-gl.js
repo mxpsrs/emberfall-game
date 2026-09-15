@@ -18,7 +18,7 @@ void main(){
 const realmFragmentShader = `
 precision highp float;
 varying vec3 vWorld; varying vec3 vNormal; varying vec3 vColor; varying float vMaterial; varying vec3 vShadow; varying vec2 vUV;
-uniform sampler2D uShadow;uniform sampler2D uAtlas;uniform float uShadowPass;uniform float uTime;uniform float uNight;uniform float uInterior;uniform vec3 uOrigin;uniform vec3 uEye;uniform vec3 uMood;uniform vec3 uFogColor;uniform vec3 uGlowColor;uniform float uBossColor;uniform float uDissolve;
+uniform sampler2D uShadow;uniform sampler2D uAtlas;uniform float uShadowPass;uniform float uTime;uniform float uNight;uniform float uInterior;uniform vec3 uOrigin;uniform vec3 uEye;uniform vec3 uMood;uniform vec3 uFogColor;uniform vec4 uLightPos[16];uniform vec4 uLightColor[16];uniform float uLightCount;uniform vec4 uRoom[12];uniform float uRoomCeiling[12];uniform float uRoomCount;uniform float uHouse;uniform float uBossColor;uniform float uDissolve;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1)),f.x),f.y);}
 vec4 packDepth(float d){vec4 e=fract(d*vec4(1.0,255.0,65025.0,16581375.0));e-=e.yzww*vec4(1.0/255.0,1.0/255.0,1.0/255.0,0.0);return e;}
@@ -54,9 +54,14 @@ void main(){
  else {col*=.95+.075*noise((vWorld.xz+vWorld.yy)*24.0);}
  if(uBossColor>1.5)col=vec3(max(col.b,col.g*.95),col.r*.45,col.r*.35);
  float lit=1.0;if(vShadow.x>0.0&&vShadow.x<1.0&&vShadow.y>0.0&&vShadow.y<1.0){float shade=0.0;float bias=.0008+.0006*(1.0-max(0.0,dot(n,light)));for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float d=unpackDepth(texture2D(uShadow,vShadow.xy+vec2(float(x),float(y))/1024.0));shade+=step(vShadow.z-bias,d);}lit=.48+.52*shade/9.0;}
- float diffuse=max(0.0,dot(n,light));vec3 ambient=mix(vec3(.35,.40,.46),vec3(.31,.37,.57),uNight*.7);vec3 sun=mix(vec3(.78,.72,.58),vec3(.34,.39,.54),uNight);col*=ambient+sun*diffuse*lit;col+=vec3(.48,.65,.70)*pow(max(0.0,dot(reflect(-light,n),uEye)),40.0)*gloss*lit;
- col*=uMood;float localGlow=exp(-length(vWorld-uOrigin)*.19)*uInterior;col+=uGlowColor*localGlow;
- if(vMaterial>18.5&&vMaterial<19.5)col=mix(col,vColor*1.16,.75);
+ float room=uHouse;for(int i=0;i<12;i++){if(float(i)>=uRoomCount)break;vec4 b=uRoom[i];if(p.x>b.x&&p.y>b.y&&p.x<b.z&&p.y<b.w&&vWorld.y<uRoomCeiling[i])room=1.0;}
+ float diffuse=max(0.0,dot(n,light));vec3 ambient=mix(vec3(.35,.40,.46),vec3(.13,.17,.27),uNight);vec3 sun=mix(vec3(.78,.72,.58),vec3(.12,.17,.27),uNight);
+ ambient=mix(ambient,vec3(.16,.175,.20),uInterior);sun=mix(sun,vec3(.065),uInterior);
+ ambient=mix(ambient,vec3(.83,.79,.69),room);sun=mix(sun,vec3(.22,.22,.20),room);
+ vec3 illumination=(ambient+sun*diffuse*mix(lit,1.0,room))*uMood;
+ for(int i=0;i<16;i++){if(float(i)>=uLightCount)break;vec3 delta=uLightPos[i].xyz-vWorld;float distance=length(delta),falloff=max(0.0,1.0-distance/uLightPos[i].w);float facing=.65+.35*max(0.0,dot(n,normalize(delta)));illumination+=uLightColor[i].rgb*uLightColor[i].a*falloff*falloff*facing;}
+ col*=min(illumination,vec3(1.3));col+=vec3(.48,.65,.70)*pow(max(0.0,dot(reflect(-light,n),uEye)),40.0)*gloss*lit*(1.0-uInterior);
+ if(vMaterial>18.5&&vMaterial<19.5)col=mix(col,vColor*1.16,vMaterial>19.15?.75*uNight:.75);
  float fog=smoothstep(19.0,65.0,length(vWorld.xz-uOrigin.xz));col=mix(col,uFogColor,fog*.32);col=pow(max(col,vec3(0.0)),vec3(.92));
  gl_FragColor=vec4(col,1.0);
 }`;
@@ -217,7 +222,7 @@ function createRealmGPU(){
  let skinning=realmAllowsGpuSkinning(gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS)),textureSkinning=!skinning&&realmTestTextureSkinning(gl),program;skinning=skinning||textureSkinning;
  try{program=link(textureSkinning?realmTextureSkinnedVertexShader:skinning?realmSkinnedVertexShader:realmVertexShader);}catch(error){if(!skinning)throw error;skinning=false;textureSkinning=false;program=link(realmVertexShader);}
  gl.useProgram(program);
- const uniformNames=['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera','uSkinning','uBones[0]','uBoneTexture','uBoneRow','uMood','uFogColor','uGlowColor','uBossColor','uDissolve'];
+ const uniformNames=['uCamera','uView','uOrigin','uShadowPass','uLightRange','uShadow','uTime','uNight','uInterior','uEye','uAtlas','uModel','uNormal','uLandCamera','uSkinning','uBones[0]','uBoneTexture','uBoneRow','uMood','uFogColor','uLightPos[0]','uLightColor[0]','uLightCount','uRoom[0]','uRoomCeiling[0]','uRoomCount','uHouse','uBossColor','uDissolve'];
  const shaderState=(program,skinning,instanced=false)=>({program,skinning,instanced,attrs:['aPosition','aNormal','aColor','aMaterial','aUV','aJoints','aWeights'].map(n=>gl.getAttribLocation(program,n)),instanceAttrs:instanced?['aInstance0','aInstance1','aInstance2'].map(n=>gl.getAttribLocation(program,n)):[],uniforms:Object.fromEntries(uniformNames.map(n=>[n,gl.getUniformLocation(program,n)]))});
  const mainState={...shaderState(program,skinning),textureSkinning},instancing=gl.getExtension('ANGLE_instanced_arrays');let instanceState=null;
  if(instancing&&typeof instancing.drawElementsInstancedANGLE==='function'){try{instanceState=shaderState(link(realmInstancedVertexShader),false,true);}catch(error){console.warn('Using individual scenery draws:',error.message);}}
@@ -256,12 +261,14 @@ function createRealmGPU(){
   if(gl.isContextLost())return;
   const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;}
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
-  const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,hours=(s.worldClock/480*24+4)%24;
+  const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,hours=worldHour();
+  const lighting=typeof realmLightingState==='function'?realmLightingState():{lights:[],rooms:[],cave:0,house:0,night:0};
+  const lightPositions=new Float32Array(64),lightColors=new Float32Array(64),roomBounds=new Float32Array(48);lighting.lights.forEach((o,i)=>{lightPositions.set([o.x,o.y,o.z,o.radius],i*4);lightColors.set([...o.color,o.intensity],i*4);});lighting.rooms.forEach((b,i)=>roomBounds.set(b,i*4));
   const configure=(state,shadowPass)=>{
    const {uniforms}=state;gl.useProgram(state.program);
-   gl.uniform1f(uniforms.uShadowPass,shadowPass);gl.uniform3f(uniforms.uMood,...(lair?.ambient||[1,1,1]));gl.uniform3f(uniforms.uFogColor,...(lair?.fog||[.28,.39,.40]));gl.uniform3f(uniforms.uGlowColor,...(lair?.light||[.20,.10,.025]));
-   gl.uniform4f(uniforms.uCamera,px+.5,py+.5,view3d.yaw,view3d.tilt);gl.uniform4f(uniforms.uView,screen.w,screen.h,cameraZoom3(),0);gl.uniform3f(uniforms.uOrigin,px+.5,0,py+.5);gl.uniform1f(uniforms.uLightRange,Math.max(20,Math.min(85,Math.hypot(screen.w,screen.h)/cameraZoom3()*.65)));gl.uniform1f(uniforms.uTime,time);gl.uniform1f(uniforms.uInterior,inWorld()||lair?.openAir?0:1);
-   gl.uniform1f(uniforms.uLandCamera,typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0);gl.uniform1f(uniforms.uNight,inWorld()?(hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0):.25);gl.uniform3f(uniforms.uEye,Math.sin(view3d.yaw)*Math.cos(view3d.tilt),Math.sin(view3d.tilt),Math.cos(view3d.yaw)*Math.cos(view3d.tilt));gl.uniform1i(uniforms.uShadow,0);gl.uniform1i(uniforms.uAtlas,1);if(state.textureSkinning)gl.uniform1i(uniforms.uBoneTexture,2);
+   gl.uniform1f(uniforms.uShadowPass,shadowPass);gl.uniform3f(uniforms.uMood,...(lair?.ambient||[1,1,1]));gl.uniform3f(uniforms.uFogColor,...(lair?.fog||[.28,.39,.40]));gl.uniform4fv(uniforms['uLightPos[0]'],lightPositions);gl.uniform4fv(uniforms['uLightColor[0]'],lightColors);gl.uniform1f(uniforms.uLightCount,lighting.lights.length);gl.uniform4fv(uniforms['uRoom[0]'],roomBounds);gl.uniform1fv(uniforms['uRoomCeiling[0]'],new Float32Array(lighting.roomCeilings||[]));gl.uniform1f(uniforms.uRoomCount,lighting.rooms.length);gl.uniform1f(uniforms.uHouse,lighting.house);
+   gl.uniform4f(uniforms.uCamera,px+.5,py+.5,view3d.yaw,view3d.tilt);gl.uniform4f(uniforms.uView,screen.w,screen.h,cameraZoom3(),0);gl.uniform3f(uniforms.uOrigin,px+.5,0,py+.5);gl.uniform1f(uniforms.uLightRange,Math.max(20,Math.min(85,Math.hypot(screen.w,screen.h)/cameraZoom3()*.65)));gl.uniform1f(uniforms.uTime,time);gl.uniform1f(uniforms.uInterior,lighting.cave);
+   gl.uniform1f(uniforms.uLandCamera,typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0);gl.uniform1f(uniforms.uNight,lighting.night);gl.uniform3f(uniforms.uEye,Math.sin(view3d.yaw)*Math.cos(view3d.tilt),Math.sin(view3d.tilt),Math.cos(view3d.yaw)*Math.cos(view3d.tilt));gl.uniform1i(uniforms.uShadow,0);gl.uniform1i(uniforms.uAtlas,1);if(state.textureSkinning)gl.uniform1i(uniforms.uBoneTexture,2);
   };
   const drawEntries=[...entries];if(dynamic.length){const data=new Float32Array(dynamic);gl.bindBuffer(gl.ARRAY_BUFFER,dynamicBuffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);drawEntries.push({buffer:dynamicBuffer,count:data.length/12});}
   uploadPalettes(drawEntries);const {singles,batches,transforms}=realmPrepareDraws(drawEntries,!!instanceState);

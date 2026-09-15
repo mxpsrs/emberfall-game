@@ -42,7 +42,7 @@ function completeItemUse(){
  const valid=scene===currentScene&&objects.includes(o)&&!o.collected&&o.dead<=time&&spareItemCount(id)>0&&Math.hypot(px-o.x,py-o.y)<=1.5&&lineOfSight(s.x,s.y,o.x,o.y);
  stop();if(!valid){toast('That item or target is no longer available.');renderUI();return true;}
  const kind=itemStationKind(o);
- if(kind==='cooking'){if(id==='breadDough')bakeBread();else cookFish(id,false,o);}
+ if(kind==='cooking')startCookingBatch(id,o);
  else if(kind==='furnace')openWorkbench('furnace',metalForOre(id),o);
  else if(kind==='forge')openWorkbench('forge',ITEMS[id].metal,o);
  else if(o.type==='crop')tendCrop(o);

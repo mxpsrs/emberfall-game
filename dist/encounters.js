@@ -109,6 +109,14 @@ function setupEncounters(){
  for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))if(encounterReleased(kind)&&worldScenes[e.scene]&&!worldScenes[e.scene].objects.some(o=>o.kind===kind))spawnOne(kind,e.scene,...e.at);
  if(creatureAssets.forestgiant)for(const point of FOREST_GIANT_HABITAT.spawns){const giant=spawnOne('forestgiant','overworld',...point);if(giant)giant.habitat='elderwood';}
  if(creatureAssets.ork&&worldScenes.ork_warrens)for(const point of CREATURE_LAIRS.ork_warrens.spawns)spawnOne('ork','ork_warrens',...point);
+ // Stable, separate IDs keep new dungeon populations from renumbering bosses.
+ serial=6400000;
+ for(const [scene,lair]of Object.entries(CREATURE_LAIRS))if(lair.approach&&worldScenes[scene]){
+  for(const [i,[x,y]]of lair.approach.stations.entries())for(const side of [-1,1]){
+   const guard=spawnOne(lair.approach.guards[i],scene,x+side*3,y-4);
+   if(guard){guard.dungeonGuard=true;guard.homeX=guard.x;guard.homeY=guard.y;}
+  }
+ }
  realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);huntProgress();
 }
 const villageBeforeEncounters=setupTutorialVillage;
@@ -222,7 +230,7 @@ function updateEncounterAI(dt){
 // Resolve the existing player projectiles/XP, then run fixed-stat enemy attacks.
 updateCombat=function(dt){
  const due=meleeImpacts.filter(hit=>hit.due<=time);meleeImpacts=meleeImpacts.filter(hit=>hit.due>time);
- for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus,hit.sharedGeneration);}
+ for(const hit of due){if(hit.o.dead>time||hit.o.hp<=0||Math.hypot((hit.o.drawX??hit.o.x)-px,(hit.o.drawY??hit.o.y)-py)>1.75+(hit.o.combatRadius||0)||!lineOfSight(px,py,hit.o.x,hit.o.y))continue;if(hit.enemy)applyEnemyHit(hit.o,hit.damage);else resolveHit(hit.o,hit.damage,'melee',0,hit.focus,hit.sharedGeneration,hit.sharedSwing);}
  updatePlayerProjectiles(dt);
  updateEncounterAI(dt);
 };
@@ -230,7 +238,7 @@ const defeatBeforeEncounters=awardDefeat;
 awardDefeat=function(o,style){
  const p=huntProgress();p.kills[o.kind]=(p.kills[o.kind]||0)+1;
  const first=!!o.encounter&&!p.firstClears[o.kind];if(first)p.firstClears[o.kind]=true;
- defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){receiveCoins(Math.round(o.level*4));toast(o.name+' first clear · +'+Math.round(o.level*4)+' coins. Marks are in the loot.');}if(typeof playGameSound==='function')playGameSound('quest');}
+ defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){const coins=Math.round(o.level*4*1.4),banked=grantQuestCoins(coins);if(typeof showQuestCompletion==='function')showQuestCompletion({title:o.name,coins,banked,hunt:true,note:'First-clear bonus awarded. Collect your marks and other drops from the ground.'});}if(!first&&typeof playGameSound==='function')playGameSound('quest');}
  if(activeEncounter?.o===o)resetEncounter(false);save();
 };
 const lootBeforeEncounters=monsterDrop;
@@ -269,7 +277,7 @@ function renderHunts(){
  for(const [kind,e]of pageItems([...rows,['rewards',null]],3)){
   const card=document.createElement('section');card.className='hunt-card';
   if(kind==='rewards'){card.innerHTML='<h3>Mark exchange</h3><p>'+(s.bag.huntersMark||0)+' marks carried · Earn more from named encounters.</p>';for(const [id,cost]of HUNT_REWARDS){if(!ITEMS[id])continue;const b=document.createElement('button');b.textContent=ITEMS[id].name+' · '+cost+' marks';b.disabled=(s.bag.huntersMark||0)<cost;b.onclick=()=>{if((s.bag.huntersMark||0)<cost||!canCarry(id)){toast('Bring enough marks and make space in your bag.');return;}s.bag.huntersMark-=cost;s.gear[id]=(s.gear[id]||0)+1;save();renderUI();};card.appendChild(b);}}
-  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+(e.level*4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
+  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+Math.round(e.level*4*1.4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
   $('huntCards').appendChild(card);
  }huntSectionLink('Browse ordinary hunting grounds',true);
 }

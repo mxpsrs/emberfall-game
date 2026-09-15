@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "environment": "local in-memory SQLite; NOT a live D1 capacity certification",
+  "clients": 39,
+  "rounds": 480,
+  "targetWorldHz": 4,
+  "durationMs": 120000,
+  "requests": 25545,
+  "queries": 239787,
+  "queriesPerSecond": 1998,
+  "sqlExecutionMs": 11356,
+  "maxRoundMs": 163,
+  "lateRounds": 0,
+  "peerChecks": 18681,
+  "combatReceipts": 1560,
+  "successfulHits": 117,
+  "chatChecks": 39,
+  "streamFrames": 19227,
+  "savedCharacters": 39,
+  "command": "VELDREN_LOAD_ROUNDS=480 node tests/shared-39-clients.mjs",
+  "retentionTest": "100,000-event fixture plus ten simulated minutes at 156 public effects/second; bounded history, indexed query without full-history sort, unacknowledged receipts retained",
+  "limitations": [
+    "Local SQLite, not hosted D1 or physical browsers",
+    "Does not certify live 39-player capacity or eliminate provider-side faults"
+  ]
+}

@@ -3,10 +3,25 @@
 const CREATURE_LAIRS={
  lair_colossus:{title:'The Crystal Crucible',subtitle:'Runeforged Colossus · Ancient crystal foundry',boss:'colossus',theme:'crystal',size:[46,48],entry:[23,44],arena:[23.5,18.5],spawn:[23,18],entrance:[945,387],floor:'#3d4d58',trim:'#8a9ea6',glow:'#72cfff',fog:[.11,.18,.25],ambient:[.86,.97,1.13],light:[.08,.24,.37],rooms:[['ellipse',23,19,17,15],['rect',19,30,9,16],['ellipse',10,27,5,5],['ellipse',36,27,5,5]]},
  lair_veyr:{title:'The Shattered Sanctum',subtitle:'Veyr the Mindbreaker · Ruined arcane sanctuary',boss:'veyr',theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],spawn:[22,18],entrance:[45,9],floor:'#4d484c',trim:'#a3967d',glow:'#bd96f5',fog:[.12,.10,.16],ambient:[.95,.94,1.04],light:[.12,.07,.19],rooms:[['ellipse',22,19,15,14],['rect',8,18,28,16],['rect',18,31,9,15],['rect',3,24,7,11],['rect',34,24,7,11]]},
- lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'varkesh',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[270,105],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
+ lair_varkesh:{title:'Blightwing Roost',subtitle:'Varkesh the Blightwing · Blighted mountain eyrie',boss:'varkesh',theme:'blight',size:[58,58],entry:[29,54],arena:[29,22],spawn:[29,21],entrance:[315,63],floor:'#555342',trim:'#a29265',glow:'#a6c776',fog:[.22,.25,.16],ambient:[1.08,1.02,.84],light:[.15,.19,.05],openAir:true,rooms:[['ellipse',29,22,23,19],['rect',24,37,11,19],['ellipse',16,36,8,7],['ellipse',42,35,8,7]]},
  lair_xalith:{title:'The Brood Hollow',subtitle:'Xalith the Broodmother · Amber hive cavern',boss:'xalith',theme:'hive',size:[54,54],entry:[27,50],arena:[27,21],spawn:[27,20],entrance:[720,516],floor:'#554333',trim:'#9e7850',glow:'#e1b666',fog:[.20,.15,.09],ambient:[1.1,.96,.79],light:[.29,.16,.035],rooms:[['ellipse',27,21,19,17],['rect',23,36,9,16],['ellipse',10,32,6,8],['ellipse',44,32,6,8]]},
  ork_warrens:{title:'Ork Warrens',subtitle:'Ork camps · Raided dwarven workings',theme:'ork',size:[38,44],entry:[19,39],arena:[19,20],entrance:[657,198],spawns:[[12,13],[26,15],[12,30],[25,32]],floor:'#615646',trim:'#99866b',glow:'#e2ac62',fog:[.20,.17,.13],ambient:[1.02,.95,.85],light:[.25,.14,.045],rooms:[['rect',14,3,10,38],['rect',4,7,12,11],['rect',22,8,12,11],['rect',4,24,12,11],['rect',22,25,12,11]]}
 };
+// The arena stays in its original coordinates; an inhabited approach extends south.
+// Existing boss IDs, quest bindings and saved positions remain valid.
+const LAIR_APPROACHES={
+ lair_colossus:{name:'Abandoned Crystal Mine',rooms:['Miners’ refuge','Flooded workings','Crystal gallery'],guards:['cavecrawler','quarrybrute','ironhideslime'],theme:'crystal'},
+ lair_veyr:{name:'Hollow Ruins Catacombs',rooms:['Broken cloister','Burial passage','Ward-keepers’ hall'],guards:['skeleton','hexer','skeleton'],theme:'arcane'},
+ lair_varkesh:{name:'Ashwatch Mountain Caves',rooms:['Abandoned watch camp','Scorched galleries','Cliff ascent'],guards:['ridgewolf','emberhound','ridgewolf'],theme:'blight'},
+ lair_xalith:{name:'Moonwillow Root Caverns',rooms:['Root-bound passage','Webbed nesting ground','Amber nursery'],guards:['moonstalker','grovehexer','duskwraith'],theme:'hive'}
+};
+for(const [id,approach]of Object.entries(LAIR_APPROACHES)){
+ const lair=CREATURE_LAIRS[id],cx=lair.entry[0],oldY=lair.entry[1];
+ lair.approach=approach;lair.arenaEntry=lair.entry.slice();lair.size=[lair.size[0],oldY+96];lair.entry=[cx,oldY+90];
+ // Broad chambers joined by alternating passages; no straight sightline to the boss.
+ lair.rooms.push(['rect',cx-3,oldY-2,7,19],['rect',cx-3,oldY+10,18,7],['ellipse',cx+11,oldY+22,8,10],['rect',cx+8,oldY+23,7,20],['rect',cx-13,oldY+37,28,7],['ellipse',cx-10,oldY+49,8,11],['rect',cx-13,oldY+48,7,23],['rect',cx-13,oldY+65,17,7],['ellipse',cx,oldY+78,8,11],['rect',cx-3,oldY+78,7,15]);
+ approach.stations=[[cx,oldY+78],[cx-10,oldY+49],[cx+11,oldY+22]];
+}
 let creatureLairsReady=false,pendingLairSave=null;
 const FOREST_GIANT_HABITAT={name:'Elderwood giant grove',entry:[43,127],spawns:[[38,138],[49,145],[36,153]],center:[42,144]};
 function creatureLairReleased(lair){return lair.boss?encounterReleased(lair.boss):lair.theme==='ork'&&!!creatureAssets.ork;}
@@ -26,15 +41,63 @@ function lairDecorBlocked(scene,x,z,allowPlinth=false){
   return radius>0&&Math.hypot(dx,dz)<radius;
  });
 }
+// Collision follows the restored boulders, independently of camera cutaway.
+function cavePassageKind(scene){
+ if(scene==='quest_underiron'||scene==='mine'||scene==='dungeon'||realmSceneInfo.get(scene)?.kind==='mine')return 'ladder';
+ return CREATURE_LAIRS[scene]?'cave':null;
+}
+function caveOpeningCutout(scene,x,z){
+ const lair=CREATURE_LAIRS[scene];if(!lair||cavePassageKind(scene)!=='cave')return false;
+ const exit=worldScenes[scene]?.exit,ex=exit?.x??lair.entry[0],ez=exit?.y??lair.entry[1]+1;
+ return Math.abs(x-ex)<=3&&z>=ez-1;
+}
+function cavePassageBlocked(scene,x,z){
+ const exit=worldScenes[scene]?.exit;if(!exit||cavePassageKind(scene)!=='ladder')return false;
+ return [-1,1].some(side=>Math.abs(x-exit.x-side*1.12)<.53&&Math.abs(z-exit.y-.85)<=.86);
+}
+const lairRockMasks=new Map();
+function lairRockBlocked(scene,x,z){
+ const lair=CREATURE_LAIRS[scene];if(!lair)return false;if(lair.theme==='arcane')return cavePassageKind(scene)==='cave'&&!!worldScenes[scene]?.exit&&lairEntranceBlocked(worldScenes[scene].exit,x+.5,z+.5);
+ let mask=lairRockMasks.get(scene);
+ if(!mask){
+  const [w,h]=lair.size,[lo,hi]=rebuiltModels.Rock_Medium_1.bounds;mask=new Uint8Array(w*h);
+  const wall=(x,z)=>x<1||z<1||x>=w-1||z>=h-1||!lair.rooms.some(room=>lairContains(room,x,z));
+  for(let rz=0;rz<h;rz++)for(let rx=0;rx<w;rx++){
+   if(!wall(rx,rz)||caveOpeningCutout(scene,rx,rz)||[[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dz])=>wall(rx+dx,rz+dz)))continue;
+   const k=(2.6+Math.sin(rx*6.1+rz)*.3)/(hi[1]-lo[1]),a=Math.sin(rx*3+rz)*.3,c=Math.cos(a),n=Math.sin(a),hx=(hi[0]-lo[0])*k/2+.3,hz=(hi[2]-lo[2])*k/2+.3,reach=Math.ceil(Math.hypot(hx,hz));
+   for(let zz=Math.max(0,rz-reach);zz<=Math.min(h-1,rz+reach);zz++)for(let xx=Math.max(0,rx-reach);xx<=Math.min(w-1,rx+reach);xx++){const dx=xx-rx,dz=zz-rz;if(Math.abs(dx*c-dz*n)<hx&&Math.abs(dx*n+dz*c)<hz)mask[zz*w+xx]=1;}
+  }
+  if(cavePassageKind(scene)==='cave'){const exit=worldScenes[scene]?.exit||{type:'exit',x:lair.entry[0],y:lair.entry[1]+1};for(let zz=Math.max(0,exit.y-5);zz<h;zz++)for(let xx=Math.max(0,exit.x-12);xx<Math.min(w,exit.x+13);xx++)if(lairEntranceBlocked(exit,xx+.5,zz+.5))mask[zz*w+xx]=1;}
+  lairRockMasks.set(scene,mask);
+ }
+ return !!mask[Math.floor(z)*lair.size[0]+Math.floor(x)];
+}
+const LAIR_ENTRANCE_ROCKS=[[-4.5,-1,3.8],[4.5,-1,3.8],[-5,-5,4.8],[5,-5,4.8],[0,-8,5.8],[-2.5,-6.5,5.3],[2.5,-6.5,5.3],[-2.7,-1.8,2.8],[2.7,-1.8,2.8]];
+function lairEntranceBlocked(o,x,z){
+ if(o.passageKind==='ladder')return false;const mesh=rebuiltModels.Rock_Medium_1;if(!mesh)return false;const [lo,hi]=mesh.bounds;if(o.type==='exit'){x=2*(o.x+.5)-x;z=2*(o.y+.5)-z;}
+ return LAIR_ENTRANCE_ROCKS.some(([dx,dz,h],i)=>{const k=h/(hi[1]-lo[1]),a=i<7?dx*.4:Math.sign(dx)*.3,c=Math.cos(a),n=Math.sin(a),xx=x-o.x-.5-dx,zz=z-o.y-.5-dz;return Math.abs(xx*c-zz*n)<(hi[0]-lo[0])*k/2+.18&&Math.abs(xx*n+zz*c)<(hi[2]-lo[2])*k/2+.18;});
+}
 const navigationBeforeLairs=realmNav;
 realmNav=function(){
- const nav=navigationBeforeLairs();if(CREATURE_LAIRS[currentScene]&&!nav.lairDecor){
-  for(let z=0;z<nav.h;z++)for(let x=0;x<nav.w;x++)if(lairDecorBlocked(currentScene,x,z))nav.cells[z*nav.w+x]=1;
+ const nav=navigationBeforeLairs();if(currentScene==='overworld'&&!nav.lairOutcrops){for(const o of objects.filter(o=>o.lairEntrance))for(let z=Math.max(0,o.y-14);z<Math.min(nav.h,o.y+5);z++)for(let x=Math.max(0,o.x-11);x<Math.min(nav.w,o.x+12);x++)if(lairEntranceBlocked(o,x+.5,z+.5))nav.cells[z*nav.w+x]=1;nav.lairOutcrops=true;}if(cavePassageKind(currentScene)&&!nav.lairDecor){
+  for(let z=0;z<nav.h;z++)for(let x=0;x<nav.w;x++)if(lairDecorBlocked(currentScene,x,z)||lairRockBlocked(currentScene,x,z)||cavePassageBlocked(currentScene,x,z))nav.cells[z*nav.w+x]=1;
   nav.lairDecor=true;
  }return nav;
 };
 function lairScenery(lair){
  const [cx,cz]=lair.arena,decor=[],model=(name,x,z,height,heading=0,tint)=>decor.push({kind:'model',model:name,x,z,height,heading,tint}),feature=(kind,x,z,size=1)=>decor.push({kind,x,z,size});
+ // Story caves have their own furnishing plans; arena templates cannot be
+ // transplanted into differently shaped mine rooms.
+ if(lair===CREATURE_LAIRS.story_mine){
+  model('World_Bed_Twin1',7.5,10,.7);model('World_Bed_Twin1',7.5,17,.7);
+  model('World_Crate_Wooden',17,8,1);model('World_Barrel',19,10,1.1);feature('hearth',17,21,.65);
+  model('World_Workbench',29,22,1);model('World_WeaponStand',31,19,1.6);
+  model('World_Crate_Wooden',29,68,1);model('World_Barrel',30,70,1.1);return decor;
+ }
+ if(lair===CREATURE_LAIRS.quest_underiron){
+  model('World_Bed_Twin1',11,26,.7);model('World_Bed_Twin1',15,26,.7);model('World_Barrel',9,30,1);
+  model('World_Bookcase_2',12,9,1.8);model('World_BookStand',29,12,1.1);return decor;
+ }
  if(lair.theme==='crystal'){
   for(const side of [-1,1]){for(let n=0;n<5;n++)feature('crystal',cx+side*(13+n%2),cz-8+n*4,1.25+n%3*.3);for(let n=0;n<4;n++)model('Rock_Medium_1',cx+side*(6+n*.2),36+n*2,1.5+n%2*.35,n*.9,[.61,.76,.91]);}
   for(let i=0;i<8;i++){const a=i/8*Math.PI*2;feature('pillar',cx+Math.cos(a)*11,cz+Math.sin(a)*10,i%3===0?.72:1);}
@@ -64,6 +127,16 @@ function lairScenery(lair){
   for(const side of [-1,1])for(let n=0;n<5;n++)model('Rock_Medium_1',19+side*5,5+n*7,1.5,n,[.81,.77,.66]);
   model('World_Workbench',29,32,1);model('World_Anvil_Log',9,31,.9);
  }
+ if(lair.approach)for(const [i,[x,z]]of lair.approach.stations.entries()){
+  // Dress the edges, keeping a six-tile passage around each camp clear.
+  model('Rock_Medium_1',x-6,z+2,1.7,i,[.72,.76,.7]);
+  model(i===0?'World_Crate_Wooden':'World_Barrel',x+5,z+3,1.1,i*.7);
+  if(lair.theme==='hive'){feature('web',x-4,z-3,2);feature('egg',x+5,z-4,.8);}
+  else if(lair.theme==='crystal')feature('crystal',x+5,z-4,1);
+  else if(lair.theme==='arcane')model('World_BookStand',x+5,z-3,1.1);
+  else model('TwistedTree_1',x+5,z-4,2.5,i);
+  if(i===0)feature('hearth',x-5,z-3,.6);
+ }
  return decor;
 }
 function setupCreatureLairs(){
@@ -76,8 +149,18 @@ function setupCreatureLairs(){
   worldScenes[scene]={title:lair.title,subtitle:lair.subtitle,objects:[exit],buildings:[],entry:lair.entry.slice(),exit,lair:scene,decor:lairScenery(lair),floorChunks:new Map(),openAir:!!lair.openAir};
   // Clear scenery from the approach, preserving services and quest characters.
   for(let i=mainland.objects.length-1;i>=0;i--){const o=mainland.objects[i];if(['tree','prop'].includes(o.type)&&Math.abs(o.x-lair.entrance[0])<5&&Math.abs(o.y-lair.entrance[1])<5)mainland.objects.splice(i,1);}
-  const point=encounterSpawnPoint('overworld',...lair.entrance,16);if(!point)throw new Error('No reachable entrance for '+lair.title);
-  const door={id:id++,type:'door',name:lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,walkThrough:true,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;
+  let point=null;
+  // Reserve the whole outcrop and its foreground, not just the clickable tile.
+  // A clear doorway beside a house could otherwise bury the cave in its walls.
+  search:for(let radius=0;radius<=64;radius+=2)for(let dz=-radius;dz<=radius;dz+=2)for(let dx=-radius;dx<=radius;dx+=2){
+   if(Math.max(Math.abs(dx),Math.abs(dz))!==radius)continue;
+   const x=lair.entrance[0]+dx,y=lair.entrance[1]+dz;
+   if(mainland.buildings.some(b=>x>b.x-14&&x<b.x+b.w+14&&y>b.y-10&&y<b.y+b.h+17))continue;
+   const p=encounterSpawnPoint('overworld',x,y,0);if(p){point=p;break search;}
+  }
+  if(!point)throw new Error('No reachable entrance for '+lair.title);
+  for(let i=mainland.objects.length-1;i>=0;i--){const o=mainland.objects[i];if(['tree','prop'].includes(o.type)&&Math.abs(o.x-point[0])<8&&o.y>point[1]-11&&o.y<point[1]+4)mainland.objects.splice(i,1);}
+  const door={id:id++,type:'door',name:lair.approach?.name||lair.title,sprite:13,x:point[0],y:point[1],destination:scene,lairEntrance:scene,walkThrough:true,dead:0,homeX:point[0],homeY:point[1]};mainland.objects.push(door);lair.entrance=point;
   lair.returnPoint=encounterSpawnPoint('overworld',point[0],point[1]+2,6);
   if(!lair.returnPoint)throw new Error('No clear return point for '+lair.title);
  }
@@ -106,7 +189,7 @@ setupTutorialVillage=function(){villageBeforeLairs();setupCreatureLairs();if(pen
 const leaveBeforeLairs=leaveInterior;
 leaveInterior=function(){const lair=CREATURE_LAIRS[currentScene];if(!lair)return leaveBeforeLairs();const point=lair.returnPoint||lair.entrance;activateScene('overworld',...point);};
 const regionBeforeLairs=regionInfo;
-regionInfo=function(){const lair=CREATURE_LAIRS[currentScene];if(lair)return [lair.title,lair.subtitle];if(inWorld()&&creatureAssets.forestgiant&&Math.hypot(px-42,py-144)<20)return [FOREST_GIANT_HABITAT.name,'Forest Giants · Level 18'];return regionBeforeLairs();};
+regionInfo=function(){const lair=CREATURE_LAIRS[currentScene];if(lair){if(lair.approach&&py>lair.arenaEntry[1]+10){const i=lair.approach.stations.reduce((best,p,n)=>Math.hypot(p[0]-px,p[1]-py)<Math.hypot(lair.approach.stations[best][0]-px,lair.approach.stations[best][1]-py)?n:best,0);return [lair.approach.name,lair.approach.rooms[i]];}return [lair.title,lair.subtitle];}if(inWorld()&&creatureAssets.forestgiant&&Math.hypot(px-42,py-144)<20)return [FOREST_GIANT_HABITAT.name,'Forest Giants · Level 18'];return regionBeforeLairs();};
 function lairModel(r,name,x,y,z,height,heading=0,tint){
  const mesh=rebuiltModels[name];if(!mesh)return 0;const [lo,hi]=mesh.bounds,k=height/(hi[1]-lo[1]),cx=(lo[0]+hi[0])*.5*k,cz=(lo[2]+hi[2])*.5*k,c=Math.cos(heading),s=Math.sin(heading);
  rebuiltPlace(r,name,x-cx*c-cz*s,y-lo[1]*k,z+cx*s-cz*c,k,heading,k,tint);return height;
@@ -229,8 +312,8 @@ function drawColossusEffects(r){
 }
 const wallArtBeforeLairs=drawRealmWall;
 drawRealmWall=function(r,x,z){
- const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallArtBeforeLairs(r,x,z);if([[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dz])=>worldWall(x+dx,z+dz)))return;
- const foreground=(x-px)*Math.sin(view3d.yaw)+(z-py)*Math.cos(view3d.yaw)>1,height=foreground?1.05:2.6+Math.sin(x*6.1+z)*.3;
+ const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallArtBeforeLairs(r,x,z);if(caveOpeningCutout(currentScene,x,z)||[[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dz])=>worldWall(x+dx,z+dz)))return;
+ const fullHeight=2.6+Math.sin(x*6.1+z)*.3,foreground=(x-px)*Math.sin(view3d.yaw)+(z-py)*Math.cos(view3d.yaw)>1,height=foreground?1.05:fullHeight;
  if(lair.theme==='arcane'){
   // Fit the original masonry to each exposed edge. Uniform height scaling
   // made short foreground walls narrower than a tile and left visible gaps.
@@ -240,7 +323,48 @@ drawRealmWall=function(r,x,z){
    rebuiltPlace(r,name,x+.5+dx*.48-cx*c-cz*s,-lo[1]*sy,z+.5+dz*.48+cx*s-cz*c,k,angle,sy,[.78,.76,.84]);
   }return;
  }
- lairModel(r,lair.theme==='arcane'?'Wall_UnevenBrick_Straight':'Rock_Medium_1',x+.5,0,z+.5,height,Math.sin(x*3+z)*.3,lair.theme==='hive'?[.9,.7,.43]:lair.theme==='blight'?[.82,.85,.67]:[.70,.76,.88]);
+ // Restore the original boulders. Lower only their vertical scale for
+ // foreground cutaway; the horizontal footprint and collision stay fixed.
+ const name='Rock_Medium_1',[lo,hi]=rebuiltModels[name].bounds,k=fullHeight/(hi[1]-lo[1]),vertical=height/(hi[1]-lo[1]),heading=Math.sin(x*3+z)*.3,c=Math.cos(heading),sn=Math.sin(heading),cx=(lo[0]+hi[0])*.5*k,cz=(lo[2]+hi[2])*.5*k;
+ rebuiltPlace(r,name,x+.5-cx*c-cz*sn,-lo[1]*vertical,z+.5+cx*sn-cz*c,k,heading,vertical,lair.theme==='hive'?[.9,.7,.43]:lair.theme==='blight'?[.82,.85,.67]:[.70,.76,.88]);
 };
 const propBeforeLairs=prop3;
-prop3=function(r,o,x,z){if(o.habitatModel)return lairModel(r,o.habitatModel,x,0,z,o.habitatHeight,o.heading,o.tint);if(o.lairEntrance){const lair=CREATURE_LAIRS[o.lairEntrance];drawLairFeature(r,{kind:'arch',x,z,size:1},lair);if(lair.theme==='crystal'||lair.theme==='arcane')for(const side of [-1,1])drawLairFeature(r,{kind:'crystal',x:x+side*3.2,z:z-.8,size:.8},lair);return 4.4;}return propBeforeLairs(r,o,x,z);};
+prop3=function(r,o,x,z){if(o.habitatModel)return lairModel(r,o.habitatModel,x,0,z,o.habitatHeight,o.heading,o.tint);if(o.passageKind==='ladder')return drawCaveLadder3(r,o,x,z);if(o.lairEntrance||o.passageKind==='cave')return drawCaveOpening3(r,o,x,z);return propBeforeLairs(r,o,x,z);};
+function drawCaveOpening3(r,o,x,z){
+ const lair=CREATURE_LAIRS[o.lairEntrance||o.passageScene||currentScene],base=groundedPainter(r,x,z),root=briarTransform(x,0,z,1,o.type==='exit'?Math.PI:0),p=Object.create(base);p.face=(points,...args)=>base.face(points.map(q=>briarPoint(q,0,root)),...args);if(base.indexed)p.indexed=(mesh,m,...args)=>base.indexed(mesh,affineMultiply(root,m),...args);x=0;z=0;const tint=lair.theme==='hive'?[.74,.7,.55]:[.72,.76,.78];
+ // A solid rock outcrop encloses the dark tunnel. The entrance is a physical
+ // opening with daylight at its threshold, not a luminous freestanding portal.
+ for(const [dx,dz,h]of LAIR_ENTRANCE_ROCKS.slice(0,7))lairModel(p,'Rock_Medium_1',x+dx,0,z+dz,h,dx*.4,tint);
+ // Shoulders and an overhead stone bridge join the opening to the outcrop.
+ for(const side of [-1,1])lairModel(p,'Rock_Medium_1',x+side*2.7,0,z-1.8,2.8,side*.3,tint);
+ lairModel(p,'Rock_Medium_3',x,2.7,z-2.2,2.2,0,tint);
+ p.face([[x-1.4,0,z-1.5],[x+1.4,0,z-1.5],[x+1.4,2.8,z-1.5],[x-1.4,2.8,z-1.5]],'#171c1d',null,7);
+ if(lair.theme==='arcane')for(const side of [-1,1])lairModel(p,'Wall_UnevenBrick_Straight',x+side*1.65,0,z-1.3,3.3,0,[.8,.77,.72]);
+ else for(const side of [-1,1])beamArt(p,[x+side*1.55,0,z-1.3],[x+side*1.55,2.9,z-1.3],.15,'#66533e',6);
+ beamArt(p,[x-1.7,2.9,z-1.3],[x+1.7,2.9,z-1.3],.18,'#756047',6);return 7.2;
+}
+
+function caveOpeningPolygon3(o,x=o.x+.5,z=o.y+.5){
+ const root=briarTransform(x,0,z,1,o.type==='exit'?Math.PI:0);
+ return [[-1.55,0,-1.35],[1.55,0,-1.35],[1.55,3,-1.35],[-1.55,3,-1.35]].map(p=>project3(...briarPoint(p,0,root)));
+}
+function drawCaveLadder3(r,o,x,z){
+ const p=groundedPainter(r,x,z),up=o.type==='exit',wood='#9c7950',iron='#45474a';
+ // The descending shaft is visibly open, with rails continuing below ground.
+ const y=.04;
+ if(up){
+  // A masonry shaft joins the back wall: the ladder enters its dark recess.
+  // No freestanding ceiling hatch floats above the chamber.
+  const stone=materialRealm(p,18);
+  for(const side of [-1,1])box3(stone,x+side*1.12,1.95,z+.85,.45,3.9,1.1,'#77796f');
+  box3(stone,x,3.88,z+.85,2.7,.45,1.35,'#858578');
+  p.face([[x-.9,.1,z+1.12],[x+.9,.1,z+1.12],[x+.9,3.7,z+1.12],[x-.9,3.7,z+1.12]],'#14191a',null,7);
+ }else{
+  p.face([[x-1,y,z-.8],[x+1,y,z-.8],[x+1,y,z+.8],[x-1,y,z+.8]],'#11171b',null,7);
+  for(const side of [-1,1]){beamArt(p,[x+side*1,y,z-.9],[x+side*1,y,z+.9],.15,wood,6);beamArt(p,[x-1,y,z+side*.9],[x+1,y,z+side*.9],.15,wood,6);}
+ }
+ for(const side of [-1,1])beamArt(p,[x+side*.55,up?.05:-1,z+(up?-.5:.4)],[x+side*.55,up?3.8:1.15,z+(up?.3:-.3)],.12,wood,6);
+ const count=up?10:6;for(let i=0;i<count;i++){const t=i/(count-1),yy=up?.2+t*3.4:-.9+t*1.9,zz=up?-.5+t*.8:.4-t*.7;beamArt(p,[x-.57,yy,z+zz],[x+.57,yy,z+zz],.1,wood,6);}
+ if(up)for(const side of [-1,1])beamArt(p,[x+side*.6,.1,z+.5],[x+side*.6,.1,z+.9],.14,iron,6);
+ return up?3.9:1.2;
+}

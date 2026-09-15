@@ -37,7 +37,7 @@ function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','
 function roadSegmentDistance(x,z,seg){const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg.a[1],t=Math.max(0,Math.min(1,((x-seg.a[0])*dx+(z-seg.a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-seg.a[0]-dx*t,z-seg.a[1]-dz*t);}
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
 drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
- for(const b of buildings){if(!b.service||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);if(typeof buildingDoorTransform==='function')briarEmit(r,rebuiltModels.Door_1_Round,buildingDoorTransform(b));else rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85);}
+ for(const b of buildings){if(!b.service||b.service.passageKind||b.archetype==='castle'||b.arch)continue;const q=project3(b.x,0,b.y);if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);if(typeof buildingDoorTransform==='function')briarEmit(r,rebuiltModels.Door_1_Round,buildingDoorTransform(b));else rebuiltPlace(r,'Door_1_Round',xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85);}
 };
 let doorReturnUntil=0;
 const engageBeforeDoors=engage;

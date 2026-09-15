@@ -8,28 +8,33 @@ function recordPlayerDeparture(x,y){
  movementTrail.push([++movementTrailSequence,x,y,Date.now()]);if(movementTrail.length>24)movementTrail.shift();
 }
 function outgoingMovementTrail(){return movementTrailScene===currentScene&&movementTrail.length&&Math.hypot(px-movementTrail.at(-1)[1],py-movementTrail.at(-1)[2])<=2?movementTrail.map(([seq,x,y,at])=>[seq,x,y,Math.min(60000,Math.max(0,Date.now()-at))]):[];}
+let onlineSyncBusy=false,onlineSyncTimer=null;
 async function syncOnlineWorld(){
+ if(onlineSyncBusy)return;onlineSyncBusy=true;clearTimeout(onlineSyncTimer);onlineSyncTimer=null;try{await syncOnlineWorldOnce();}finally{onlineSyncBusy=false;if(!cloudDisconnected&&!cloudConflict&&!onlineSyncTimer)scheduleOnlineSync(100);}
+}
+function scheduleOnlineSync(delay){clearTimeout(onlineSyncTimer);onlineSyncTimer=setTimeout(()=>{onlineSyncTimer=null;syncOnlineWorld();},delay);}
+async function syncOnlineWorldOnce(){
  if(cloudDisconnected||cloudConflict)return;
- if(!assetsReady||!s.character||!cloudReady||$('creator').open||document.hidden){setTimeout(syncOnlineWorld,1200);return;}
+ if(!assetsReady||!s.character||!cloudReady||$('creator').open||document.hidden){scheduleOnlineSync(1200);return;}
  // Presence must follow the saved journey, for every island layout version.
  // Otherwise the server correctly rejects a mainland arrival as unfinished.
  if((onlineScene!==currentScene||typeof sharedPending==='function'&&sharedPending('teleport'))&&cloudDirty)await flushCloudSave();
  if(cloudDisconnected||cloudConflict)return;
- if(onlineScene!==currentScene&&(cloudDirty||cloudBusy)){setTimeout(syncOnlineWorld,1200);return;}
+ if(onlineScene!==currentScene&&(cloudDirty||cloudBusy)){scheduleOnlineSync(1200);return;}
  const requestedScene=currentScene,started=performance.now();
  if(typeof publishSharedAction==='function')publishSharedAction(outgoingSharedAction());
- try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json'},body:JSON.stringify({world:typeof outgoingSharedWorld==='function'?outgoingSharedWorld():null,action:typeof outgoingSharedAction==='function'?outgoingSharedAction():null,scene:requestedScene,x:px,y:py,trailEpoch:movementTrailEpoch,trail:outgoingMovementTrail(),heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null,running:playerMotion.running,moving:playerMotion.moving,route:playerMotion.moving?[[s.x,s.y],...path.slice(0,7)]:[]})});
+ try{const response=await fetch('/api/players',{method:'POST',signal:AbortSignal.timeout(12000),headers:{'Content-Type':'application/json'},body:JSON.stringify({world:typeof outgoingSharedWorld==='function'?outgoingSharedWorld():null,action:typeof outgoingSharedAction==='function'?outgoingSharedAction():null,scene:requestedScene,x:px,y:py,trailEpoch:movementTrailEpoch,trail:outgoingMovementTrail(),heading:playerHeading,emote:Date.now()<onlineEmoteUntil?onlineEmote:null,running:playerMotion.running,moving:playerMotion.moving,route:playerMotion.moving?[[s.x,s.y],...path.slice(0,7)]:[]})});
  // An island request can still be in flight when Rowan finishes the crossing.
- if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
- if(!response.ok)throw new Error('offline');const data=await response.json();
- if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}
+ if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
+ if(await handleConnectionResponse(response))return;if(!response.ok)throw new Error('offline');if(cloudDisconnected||cloudConflict)return;const data=await response.json();if(cloudDisconnected||cloudConflict)return;
+ if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
  if(typeof applySharedWorld==='function')applySharedWorld(data);
  if(typeof ensureSharedActivityStream==='function')ensureSharedActivityStream();
  const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);acceptPeerSnapshot(peer,received,data.serverTime,received-started);}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
  $('onlineStatus').textContent=currentScene==='tutorial'?'Firstlight Isle · '+(onlinePeers.size+1)+' online':(onlinePeers.size+1)+' online here';
- }catch{if(requestedScene!==currentScene){setTimeout(syncOnlineWorld,0);return;}$('onlineStatus').textContent='Connection lost';pauseForServer();return;}
- setTimeout(syncOnlineWorld,Math.max(20,250-(performance.now()-started)));
+ }catch{if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}$('onlineStatus').textContent='Reconnecting…';transientConnectionFailure();return;}
+ scheduleOnlineSync(Math.max(100,500-(performance.now()-started)));
 }
 function acceptPeerSnapshot(peer,received,serverTime,roundTrip=0){
  if(typeof rememberSharedAction==='function')rememberSharedAction(peer.id,peer.action,serverTime);

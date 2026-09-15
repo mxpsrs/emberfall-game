@@ -33,7 +33,7 @@ try{
  assert.equal(currentScene,'overworld');assert.equal(s.sceneId,'overworld');
  assert.equal(s.tutorial,tutorialSteps.length);assert(s.tutorialReward);
  assert.equal(s.bag.bones,2);assert.equal(s.bank.normalLogs,3);assert.equal(s.xp.Mining,123);
- assert.equal(carriedCoins(),25);assert.equal(s.bank.bronzeSword,1);
+ assert.equal(carriedCoins(),31);assert.equal(s.bank.bronzeSword,1);assert.equal(s.bank.arrows,84);assert.equal(s.bank.runes,56);assert.equal(s.bank.airRunes,168);assert.equal(s.bank.fish,4);
  assert(finalSave?.tutorialReward&&finalSave.sceneId==='overworld','completion and destination save together');
  const before=JSON.stringify(s);tutorialEvent('talk-finish');assert.equal(JSON.stringify(s),before,'no duplicated reward');
  `,ctx);

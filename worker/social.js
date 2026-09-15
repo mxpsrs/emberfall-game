@@ -21,11 +21,11 @@ function count(state,id){const item=ITEMS[id];return item?.slot?Math.max(0,(stat
 function offer(raw,state){if(!raw||typeof raw!=='object'||!integer(raw.gold)||raw.gold>(state.bag?.coins||0)||!Array.isArray(raw.items)||raw.items.length>25)fail('Invalid trade offer.');const seen=new Set();for(const entry of raw.items){if(!entry||!Object.hasOwn(ITEMS,entry.id)||entry.id==='coins'||seen.has(entry.id)||!integer(entry.count)||!entry.count||count(state,entry.id)<entry.count)fail('Only items currently in your bag can be offered.');seen.add(entry.id);}return {gold:raw.gold,items:raw.items.map(e=>({id:e.id,count:e.count}))};}
 function exchange(state,give,take){state=structuredClone(state);state.bag||={};state.gear||={};state.bag.coins=(state.bag.coins||0)-give.gold+take.gold;if(!integer(state.bag.coins))fail('That coin amount is too large.');for(const [items,sign]of [[give.items,-1],[take.items,1]])for(const e of items){const bag=ITEMS[e.id].slot?state.gear:state.bag;bag[e.id]=(bag[e.id]||0)+sign*e.count;if(!integer(bag[e.id]))fail('That item stack is too large.');}let slots=0;for(const [id,item]of Object.entries(ITEMS)){const n=count(state,id);if(n>0)slots+=item.stackable?1:n;}if(slots>25)fail('Both players need enough bag space for this trade.');return state;}
 async function tradeView(env,row,id){if(!row)return null;const other=await env.DB.prepare('SELECT username FROM game_accounts WHERE id=?').bind(row.a===id?row.b:row.a).first();const data=JSON.parse(row.payload),side=row.a===id?'a':'b',peer=side==='a'?'b':'a';return {id:row.id,status:row.status,revision:row.revision,expiresAt:row.expires_at,username:other.username,incoming:side==='b',mine:data[side],theirs:data[peer],stage:data.stage||'offer',accepted:!!data[side+'Accept'],peerAccepted:!!data[peer+'Accept'],confirmed:!!data[side+'Confirm'],peerConfirmed:!!data[peer+'Confirm']};}
-async function expire(env){await env.DB.prepare("UPDATE player_trades SET status='cancelled',revision=revision+1 WHERE status IN ('pending','active') AND expires_at<=?").bind(Date.now()).run();}
+async function expire(env,id){await env.DB.prepare("UPDATE player_trades SET status='cancelled',revision=revision+1 WHERE (a=? OR b=?) AND status IN ('pending','active') AND expires_at<=?").bind(id,id,Date.now()).run();}
 export async function handleSocial(request,env){
  try{
  const me=await authenticatedPlayer(request,env);if(!me)return reply({error:'Please reconnect.'},401);
- await expire(env);
+ await expire(env,me.id);
  const url=new URL(request.url);
  if(request.method==='GET'){
   // A fresh client starts at the live head. Local listeners are recorded at

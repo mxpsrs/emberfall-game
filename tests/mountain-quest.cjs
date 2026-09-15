@@ -14,6 +14,8 @@ for(const f of ['world-options','map-icons','item-use','tutorial-island','npc-di
 
 vm.runInContext(fs.readFileSync(root+'mountain-quest.js','utf8'),ctx,{filename:'mountain-quest'});
 vm.runInContext(fs.readFileSync(root+'main-story.js','utf8'),ctx,{filename:'main-story'});
+vm.runInContext(fs.readFileSync(root+'quest-world.js','utf8'),ctx,{filename:'quest-world'});
+for(const f of ['world-geography','world-dressing','quest-celebration','world-atlas'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 let randomSeed=76151;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
 draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();
@@ -27,7 +29,7 @@ assert.equal(activateScene('quest_underiron'),false);
 let now=0;function tick(){now+=50;frame(now);}
 function until(test,label,max=40000){for(let i=0;i<max;i++){if(test())return;tick();}throw new Error('Timeout '+label+' scene '+currentScene+' pos '+s.x+','+s.y+' stage '+mountainState().stage+' target '+target?.name+' path '+path.length);}
 function press(label){if(npcDialogueState){const choice=npcDialogueState.choices.find(([l])=>l===label);assert(choice,'NPC choice '+label);choice[1]();return;}const b=$('modalBody').children.find(b=>b.textContent===label&&b.onclick);assert(b,'dialog choice '+label);b.onclick();}
-function objective(){assert(!$('modal').open);mountainGuide();assert(path.length||target||pendingWalkInDoor||$('modal').open,'objective must route');until(()=>{if($('modal').open)return true;if(!path.length&&!target&&!pendingWalkInDoor)mountainGuide();return false;},'objective '+mountainState().stage);}
+function objective(){assert(!$('modal').open);mountainGuide();assert(path.length||target||pendingWalkInDoor||playerAction||$('modal').open,'objective must route');until(()=>{if($('modal').open)return true;if(!path.length&&!target&&!pendingWalkInDoor)mountainGuide();return false;},'objective '+mountainState().stage);}
 function stage(n){assert.equal(mountainState().stage,n);}
 function reload(){s=JSON.parse(JSON.stringify(s));normalizeJourney(s,s);syncMountainWorld();}
 // Long-distance mainland routing to the quest giver; each objective uses actual pathing.
@@ -80,6 +82,6 @@ const resumeState=JSON.parse(vm.runInContext('JSON.stringify(s)',ctx));
 for(const [stage,scene] of [[6,'quest_underiron'],[17,'lair_veyr'],[20,'lair_veyr']]){
  const restored={...resumeState,sceneId:scene,x:22,y:44,mountainQuest:{version:1,stage,lairKey:stage>=17,ward:stage>=17,clues:['ledger','tools','summons'],bindings:stage>=17?['child','miner','keeper']:[]}};
  const setup="s="+JSON.stringify(restored)+";normalizeJourney(s,s);draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assert.equal(currentScene,"+JSON.stringify(scene)+");assert.equal(mountainState().stage,"+stage+");assert.equal(mountainObject('expert').scene,"+JSON.stringify(stage===17?'lair_veyr':'overworld')+");assert.equal(objects.filter(o=>o.mountainKey==='watcher').length,"+(stage===6?1:0)+");";
- eval(resumeBootstrap+"\nvm.runInContext(fs.readFileSync(root+'mountain-quest.js','utf8'),ctx);vm.runInContext("+JSON.stringify(setup)+",ctx);");
+ eval(resumeBootstrap+"\nvm.runInContext("+JSON.stringify(setup)+",ctx);");
 }
 console.log('PASS: fresh-runtime reload restores Underworks progress, assisted-fight companion and completed-hunt access.');

@@ -93,6 +93,8 @@ function playGameSound(kind,x=px,y=py,delay=0){
  else if(kind==='eat'){noise(.13,.09,1400);noise(.15,.075,1000,'bandpass',.18);}
  else if(kind==='bury'){noise(.2,.13,450,'lowpass');noise(.25,.08,600,'lowpass',.2);}
  else if(kind==='craft'){noise(.12,.1,850);tone(520,.15,.045,'triangle',340,.1);}
+ else if(kind==='questComplete'){[392,494,587,784,988].forEach((f,i)=>tone(f,.55,.075,'triangle',f,i*.15));[196,294,392].forEach(f=>tone(f,1.1,.035,'sine',f,.6));tone(1568,.65,.025,'sine',1568,.9);}
+ else if(kind==='levelRise'){noise(.6,.035,2200,'highpass');[392,494,587,784,988,1175].forEach((f,i)=>tone(f,.85,.065,'sine',f,i*.11));tone(196,1.15,.075,'triangle',392);}
  else if(kind==='quest'||kind==='level'||kind==='lesson'){(kind==='quest'?[392,494,587,784]:kind==='level'?[440,554,659,880]:[523,659]).forEach((f,i)=>tone(f,.5,.075,'triangle',f,i*.12));}
  else if(kind==='lowHealth'){tone(75,.14,.09,'sine',55);tone(75,.13,.08,'sine',55,.22);}
  else if(kind==='phase'){[165,220,330].forEach((f,i)=>tone(f,.9,.1,'triangle',f*.97,i*.12));}
@@ -130,7 +132,7 @@ resolveHit=function(o,damage,...rest){if(o.dead<=time&&o.hp>0)playGameSound(dama
 const enemyHitBeforeAudio=applyEnemyHit;
 applyEnemyHit=function(o,damage){playGameSound(damage>0?'hurt':'miss');return enemyHitBeforeAudio(o,damage);};
 const gainBeforeAudio=gain;
-gain=function(skill,n,quiet){const before=lv(skill),result=gainBeforeAudio(skill,n,quiet);if(lv(skill)>before)playGameSound('level');return result;};
+gain=function(skill,n,quiet){const before=lv(skill),result=gainBeforeAudio(skill,n,quiet);if(lv(skill)>before&&typeof showLevelCelebration==='function')showLevelCelebration(skill,lv(skill));return result;};
 const doorBeforeAudio=setWalkInDoor;
 setWalkInDoor=function(o,open,restoring=false){if(!restoring)playGameSound('door',o.x,o.y);return doorBeforeAudio(o,open,restoring);};
 const gateBeforeAudio=setTrainingGate;
@@ -150,3 +152,10 @@ function openSoundSettings(){
 let screenMusicCheck=-1000;
 const frameBeforeAudio=frame;
 frame=function(now){frameBeforeAudio(now);if(now-screenMusicCheck>=500){screenMusicCheck=now;updateAreaMusic();}};
+
+function playSpiritBondSound(element){
+ unlockGameAudio();const c=gameAudio.context;if(!c||c.state!=='running'||s.sound===false||audioPreferences().effects===0)return;
+ const base=({Fire:220,Water:294,Air:392,Earth:147})[element]||220,at=c.currentTime;
+ audioNoise(gameAudio.effects,at,.9,.05,element==='Earth'?220:element==='Fire'?1600:2800,'bandpass');
+ [1,1.25,1.5,2,3].forEach((ratio,i)=>audioTone(gameAudio.effects,at+i*.14,base*ratio,1.15,.075,element==='Earth'?'triangle':'sine',base*ratio*1.01));
+}

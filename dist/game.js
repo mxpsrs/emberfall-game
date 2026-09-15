@@ -48,7 +48,7 @@ const species = {
   slime:{name:'Marsh slime',sprite:9,hp:10,atk:1,spread:1,xp:12,coins:4,level:1},
   skeleton:{name:'Restless skeleton',sprite:11,hp:30,atk:4,spread:2,xp:42,coins:13,level:5,loot:'bones'},
   bandit:{name:'Road bandit',sprite:13,hp:36,atk:4,spread:3,xp:48,coins:17,level:6},
-  rat:{name:'Giant rat',sprite:15,hp:8,atk:1,spread:0,xp:8,coins:2,level:1},
+  rat:{name:'Giant rat',sprite:15,hp:2,atk:1,spread:0,xp:8,coins:2,level:1},
   man:{name:'Man',sprite:6,hp:12,atk:1,spread:2,xp:14,coins:5,level:1},
   dummy:{name:'Training dummy',sprite:14,hp:12,atk:1,spread:0,xp:6,coins:0,level:1},
   king:{name:'The ruins guardian',sprite:12,hp:90,atk:5,spread:4,xp:180,coins:80,level:10}
@@ -112,13 +112,14 @@ function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null)
   if(!end)return null;const out=[];while(end[0]!==start[0]||end[1]!==start[1]){out.unshift(end);end=prev.get(end.join(','));}return out;
 }
 function select(o){
+  if(!questFightVisible(o,s))return;
   if(o.dead>time||(o.kind==='king'&&s.boss&&!o.repeatable)){toast(o.dead>time?'They will return shortly.':'The ruins guardian has fallen.');return;}
   if(o.type==='man'){
     talkVillager(o);return;
   }
   engage(o);
 }
-function engage(o){if(o.type==='gate'){enterTrainingGate();return;}if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange(o):1.45);if(!p){toast('There is no clear path to that spot.');return;}stop();target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
+function engage(o){if(!questFightVisible(o,s))return;if(typeof sharedFightClaimed==='function'&&sharedFightClaimed(o)){toast('Someone else is fighting that.');return;}if(o.type==='gate'){enterTrainingGate();return;}if(['tree','ore','fish'].includes(o.type)&&!resourceRequirement(o))return;const p=route(o.x,o.y,o.type!=='loot',fighter(o)?attackRange(o):1.45);if(!p){toast('There is no clear path to that spot.');return;}stop();target=o;path=p;elapsed=0;enemyClock=0;retaliationClock=0;renderAction();if(!path.length&&(o.type!=='loot'||Math.hypot(px-s.x,py-s.y)<.02))arrive();}
 function walkTo(x,y){
  x=Math.floor(x);y=Math.floor(y);const [w,h]=sceneSize();if(!Number.isFinite(x+y)||x<0||y<0||x>=w||y>=h)return false;
  let p=land(x,y)?route(x,y):null;
@@ -140,7 +141,7 @@ function arrive(){
   renderAction();
 }
 function renderAction(){
-  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking over the fire':'Burying bones';$('targetSub').textContent='Click or tap the ground to cancel.';return;}
+  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking '+ITEMS[playerAction.id].name.toLowerCase()+' · '+(s.bag[playerAction.id]||0)+' left':'Burying bones';$('targetSub').textContent='Click or tap the ground to cancel.';return;}
   const a=target;
   $('targetTitle').textContent=a?(path.length?'Walking to '+a.name:a.name):path.length?'Following the path':'Explore the borderlands';
   $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Click or tap the ground to cancel'):path.length?'Click or tap another spot to change course.':'Tap a resource, building, person, or monster.';
@@ -162,12 +163,18 @@ const quests=[
   {title:'Guardian of Briarhaven',desc:'The ruins guardian has fallen. Explore the goblin camp, hunt bandits, or keep mastering your skills.'}
 ];
 function ready(){const q=quests[s.quest];return q.checks&&q.checks().every(([,v,n])=>v>=n);}
+// Quest rewards cannot be lost to a full inventory or expiring ground loot.
+function grantQuestCoins(coins){
+ const carried=canCarry('coins')?Math.min(coins,Math.max(0,COIN_LIMIT-(s.bag.coins||0))):0;
+ if(carried)s.bag.coins=(s.bag.coins||0)+carried;
+ const banked=coins-carried;if(banked){s.bank??={};s.bank.coins=(s.bank.coins||0)+banked;}return banked;
+}
 function elder(){
   if(s.quest===0){dialog('Elder Rowan','<p>“Welcome to Briarhaven. The forest has turned restless. Gather supplies for the village and I’ll see that you’re rewarded.”</p><p>Your axe, pickaxe, and fishing rod are on your tool belt. Open Equipment → Tool belt to see them.</p>',[['Accept quest',()=>{s.quest=1;close();toast('Quest accepted: Tools of the trade');}]]);return;}
   if(s.quest===5){dialog('Elder Rowan','<p>“Briarhaven will remember your name, Guardian. There will always be a place for you beside our fire.”</p>');return;}
   if(ready()){
-    const reward=[0,45,70,50,200][s.quest];
-    dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;}receiveCoins(reward);s.quest++;close();toast(s.quest===5?'You are the Guardian of Briarhaven!':'Quest complete! Check your journal for the next quest.');}]]);
+    const questAtOffer=s.quest,reward=[0,63,98,70,280][s.quest];
+    dialog('Elder Rowan','<p>“Well done, adventurer. Your work gives this village hope.”</p><p>Reward: <b>'+reward+' coins</b>'+(s.quest===4?' and the Guardian title.':'.')+'</p>',[['Complete quest',()=>{if(s.quest!==questAtOffer||!ready())return;if(s.quest===1){s.bag.logs-=5;s.bag.ore-=5;s.bag.fish-=3;}const banked=grantQuestCoins(reward);s.quest++;close();save();if(typeof showQuestCompletion==='function')showQuestCompletion({title:quests[questAtOffer].title,coins:reward,banked,unlocks:s.quest===5?['Guardian of Briarhaven title']:[]});}]]);
   }else dialog('Elder Rowan','<p>'+quests[s.quest].desc+'</p><p>“Rest by the campfire when you need to heal. Watch for goblins on the eastern road.”</p>');
 }
 const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50],['ironShield',1,45],['mageRobe',1,65],...modularShopStock,...SKILL_SHOP_STOCK];
@@ -274,7 +281,7 @@ function draw(){
   const tutPoint=tutorialGoal();
   if(tutPoint){groundRing(tutPoint.x,tutPoint.y,'#ffd98b',22+Math.sin(time*3)*3);const tx=(tutPoint.x+.5)*TILE-camera.x,ty=(tutPoint.y+.5)*TILE-camera.y;if(tx<20||tx>w-20||ty<65||ty>h-25){const dx=tx-w/2,dy=ty-h/2,t=Math.min((w/2-25)/Math.max(1,Math.abs(dx)),(h/2-70)/Math.max(1,Math.abs(dy)));const ex=w/2+dx*t,ey=h/2+dy*t;ctx.save();ctx.translate(ex,ey);ctx.rotate(Math.atan2(dy,dx));ctx.fillStyle='#ffe1a2';ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-5,-6);ctx.lineTo(-5,6);ctx.closePath();ctx.fill();ctx.restore();}}
   const renderables=buildings.map(b=>({b,depth:b.y+b.h-.2}));
-  for(const o of objects)if(o.dead<=time&&!(o.kind==='king'&&s.boss&&!o.repeatable))renderables.push({o,depth:o.y+.9});
+  for(const o of objects)if(questFightVisible(o,s)&&o.dead<=time&&!(o.kind==='king'&&s.boss&&!o.repeatable))renderables.push({o,depth:o.y+.9});
   renderables.push({player:true,depth:py+.91});renderables.sort((a,b)=>a.depth-b.depth);
   for(const entry of renderables){
     if(entry.b){
@@ -351,8 +358,8 @@ function frame(now){
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
   if(!crossing&&!window.playerTrade&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
-    time+=dt;observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=spiritEffect?.ids?false:advanceMovement(dt);
-    if(!moving&&!path.length&&target&&!spiritEffect?.ids){
+    time+=dt;observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=advanceMovement(dt);
+    if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{const previous=elapsed;elapsed+=dt;const duration=actionDuration(target);if(typeof soundGatheringSwing==='function')soundGatheringSwing(target,previous,elapsed,duration);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
@@ -392,7 +399,7 @@ async function boot(){
     let completed=0;const update=()=>realmLoadStatus('Loading your character and the world…',35+(++completed)*8);
     await Promise.all([
       initializeCloud().then(update),loadRebuiltTextures().then(update),
-      ...['items','environment','spirits'].map(async name=>{art[name]=await realmLoadImage('assets/'+name+'.png');update();}),
+      ...['items','environment','spirits'].map(async name=>{art[name]=await realmLoadImage('assets/'+(name==='spirits'?'spirit-portraits':name)+'.png');update();}),
       fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw new Error('Item artwork unavailable');art.bounds=await response.json();update();})
     ]);
     if(window.realmStartup?.failed)return;

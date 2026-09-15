@@ -67,7 +67,7 @@ for(const phase of [0,1]){
  }
 }
 resetEncounter();assert(colossus._recovering);assert(!colossus.enraged);assert(!colossus.attackRecovery);
-beginEncounter(colossus);colossus.hp=Math.floor(colossus.maxhp*.45);updateEncounterAI(0);const firstGold=carriedCoins();resolveHit(colossus,colossus.hp,'melee');assert.equal(activeEncounter,null);assert.equal(colossus.dead,time+60);assert.equal(carriedCoins()-firstGold,42*4);
+beginEncounter(colossus);colossus.hp=Math.floor(colossus.maxhp*.45);updateEncounterAI(0);const firstGold=carriedCoins();resolveHit(colossus,colossus.hp,'melee');assert.equal(activeEncounter,null);assert.equal(colossus.dead,time+60);assert.equal(carriedCoins()-firstGold,235);
 const bossLoot=s.groundLoot.find(p=>p.scene==='lair_colossus'&&p.items.huntersMark);assert(bossLoot);assert.equal(bossLoot.items.huntersMark,4);assert(!blocked(bossLoot.x,bossLoot.y));assert(route(bossLoot.x,bossLoot.y),'boss loot is on an accessible tile outside the solid pedestal');
 time+=60;testWallTime=colossus.respawnAt+1;updateWorldTimers();assert.equal(colossus.hp,colossus.maxhp);assert.equal(colossus.dead,0);assert(!colossus.enraged,'respawn is blue again');assert.equal(JSON.stringify([colossus.x,colossus.y]),JSON.stringify(home));
 beginEncounter(colossus);colossus.hp=40;updateEncounterAI(0);leaveInterior();assert.equal(currentScene,'overworld');assert(!blocked(px,py));assert.equal(activeEncounter,null);assert.equal(colossus.hp,40);assert(colossus._recovering);assert(!colossus.enraged);
@@ -99,7 +99,7 @@ for(const phase of [0,1]){
 const veyrHome=[veyr.homeX,veyr.homeY];resetEncounter();assert(veyr._recovering);assert(!veyr.attackMove);
 beginEncounter(veyr);veyr.hp=35;updateEncounterAI(0);leaveInterior();assert.equal(activeEncounter,null);assert.equal(veyr.hp,35);assert(veyr._recovering);
 activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const beforeVeyrGold=carriedCoins();resolveHit(veyr,veyr.hp,'melee');
-assert.equal(carriedCoins()-beforeVeyrGold,80);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
+assert.equal(carriedCoins()-beforeVeyrGold,112);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
 const veyrLoot=s.groundLoot.find(p=>p.scene==='lair_veyr'&&p.items.huntersMark);assert.equal(veyrLoot.items.huntersMark,3);assert(!blocked(veyrLoot.x,veyrLoot.y));assert(route(veyrLoot.x,veyrLoot.y),'Veyr loot is reachable');
 time+=60;testWallTime=veyr.respawnAt+1;updateWorldTimers();assert.equal(veyr.hp,veyr.maxhp);assert.equal(veyr.dead,0);assert.equal(JSON.stringify([veyr.x,veyr.y]),JSON.stringify(veyrHome));
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
@@ -127,7 +127,7 @@ for(const health of [1,.4]){
 resetEncounter();assert(xalith._recovering);assert(!xalith.attackMove);
 beginEncounter(xalith);xalith.hp=35;leaveInterior();assert.equal(activeEncounter,null);assert.equal(xalith.hp,35);assert(xalith._recovering);
 activateScene('lair_xalith',xalith.homeX+2,xalith.homeY);beginEncounter(xalith);const beforeXalithGold=carriedCoins();resolveHit(xalith,xalith.hp,'melee');
-assert.equal(carriedCoins()-beforeXalithGold,248);assert(creatureDying(xalith));assert.equal(xalith.dead,time+60);
+assert.equal(carriedCoins()-beforeXalithGold,347);assert(creatureDying(xalith));assert.equal(xalith.dead,time+60);
 const hiveLoot=s.groundLoot.find(p=>p.scene==='lair_xalith'&&p.items.huntersMark);assert(hiveLoot);assert.equal(hiveLoot.items.huntersMark,5);assert.equal(hiveLoot.items.coins,240);assert(!blocked(hiveLoot.x,hiveLoot.y));assert(route(hiveLoot.x,hiveLoot.y),'hive loot remains reachable');
 time+=60;testWallTime=xalith.respawnAt+1;updateWorldTimers();assert.equal(xalith.hp,xalith.maxhp);assert.equal(xalith.dead,0);assert.equal(xalith.x,xalith.homeX);assert.equal(xalith.y,xalith.homeY);
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);
@@ -161,6 +161,6 @@ o=fresh('forestgiant');beginEncounter(o);o.hp=5;px=s.x=o.homeX+20;updateEncounte
 o=fresh('forestgiant');beginEncounter(o);activateScene('mine',10,12);assert.equal(activeEncounter,null,'scene change clears fight');assert.equal(o.hp,o.maxhp);
 
 lineOfSight=originalSight;
-assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds; measured '+killTimes[500].toFixed(2)+'s');assert(killTimes[950]<36,'unlucky starter fights stay reasonable while preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
+assert(killTimes[500]>=12&&killTimes[500]<=18,'median starter rat stays near the requested 15 seconds; measured '+killTimes[500].toFixed(2)+'s');assert(killTimes[950]<36.5,'unlucky starter fights stay within 36 seconds plus the melee impact delay, preserving misses');assert.equal(deaths,0,'starter rats do not overwhelm fresh players in the seeded sample');
 console.log('PASS: reachable ordinary monsters and Ork Warrens; stationary Colossus with exactly two phases, three styles, faster red phase, accessible loot, reset and respawn; original quest flags and zero-inclusive combat preserved.');
 `,ctx);

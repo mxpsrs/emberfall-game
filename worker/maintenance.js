@@ -1,8 +1,21 @@
 const reply=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 export const MAINTENANCE_OPEN_SQL="NOT EXISTS (SELECT 1 FROM game_maintenance WHERE status='locked' OR (status='countdown' AND kick_at<=CAST((julianday('now')-2440587.5)*86400000 AS INTEGER)))";
+function databaseDiagnostic(error){
+ return {name:String(error?.name||'Error').slice(0,80),message:String(error?.message||error).slice(0,500),cause:String(error?.cause?.message||'').slice(0,500)};
+}
+async function readMaintenanceRecord(env){
+ // Only this idempotent SELECT is retried. Never replay session deletion or writes.
+ for(let attempt=0;attempt<2;attempt++){
+  try{return await env.DB.prepare('SELECT run_id,status,kick_at FROM game_maintenance WHERE id=1').first();}
+  catch(error){
+   if(attempt||/overloaded|too many requests queued/i.test(String(error?.message||error))){console.error('maintenance_database_read_failed',databaseDiagnostic(error));throw error;}
+   console.warn('maintenance_database_read_retry',databaseDiagnostic(error));
+   await new Promise(resolve=>setTimeout(resolve,100));
+  }
+ }
+}
 export async function maintenanceState(env){
- const now=Date.now();
- const existing=await env.DB.prepare('SELECT run_id,status,kick_at FROM game_maintenance WHERE id=1').first();
+ const existing=await readMaintenanceRecord(env),now=Date.now();
  if(!existing||existing.status!=='countdown'||existing.kick_at>now)return {id:existing?.run_id||null,status:existing?.status||'open',kickAt:existing?.kick_at||0,serverTime:now,message:'System maintenance'};
  const due="EXISTS (SELECT 1 FROM game_maintenance WHERE status='countdown' AND kick_at<=?)";
  await env.DB.batch([
@@ -10,7 +23,7 @@ export async function maintenanceState(env){
   env.DB.prepare('DELETE FROM player_presence WHERE '+due).bind(now),
   env.DB.prepare("UPDATE game_maintenance SET status='locked' WHERE status='countdown' AND kick_at<=?").bind(now)
  ]);
- const row=await env.DB.prepare('SELECT run_id,status,kick_at FROM game_maintenance WHERE id=1').first();
+ const row=await readMaintenanceRecord(env);
  return {id:row?.run_id||null,status:row?.status||'open',kickAt:row?.kick_at||0,serverTime:now,message:'System maintenance'};
 }
 export async function maintenanceGate(request,env){
@@ -43,5 +56,5 @@ export async function handleMaintenance(request,env){
   await env.DB.prepare("UPDATE game_maintenance SET status='open' WHERE id=1 AND run_id=? AND status='locked'").bind(body.requestId).run();
  }else return reply({error:'Unknown maintenance action'},400);
  return reply(await maintenanceState(env));
- }catch{return reply({error:'Maintenance service unavailable'},503);}
+ }catch(error){console.error('maintenance_service_failed',databaseDiagnostic(error));return reply({error:'Maintenance service unavailable'},503);}
 }

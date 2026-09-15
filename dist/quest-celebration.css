@@ -1,0 +1,21 @@
+#modal.quest-celebration{width:min(32rem,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);box-sizing:border-box;padding:0;border:1px solid #be9855;border-radius:12px;color:#f5ead2;background:radial-gradient(ellipse at top,#394238 0,#202a29 45%,#151e22 100%);box-shadow:0 0 0 4px #ba96551a,0 24px 80px #000b;overflow:auto;animation:quest-arrive .38s ease-out}
+#modal.quest-celebration::backdrop{background:#060d16b8}
+.quest-celebration #modalBody{padding:26px 30px 24px;text-align:center}
+.completion-emblem{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 12px;border:1px solid #d2ab63;border-radius:50%;background:#d7b26b12;box-shadow:0 0 36px #d9b76b25}
+.completion-emblem .game-icon{width:38px;height:38px}
+.completion-kicker{margin:0 0 9px;color:#edc984;font-size:.875rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.quest-celebration .completion-title{margin:0;font-family:Georgia,serif;font-size:clamp(1.5rem,4vw,2rem);line-height:1.2;color:#fff1cb;overflow-wrap:anywhere}
+.completion-congratulations{margin:10px 0 20px;font-size:1rem;color:#d8dbcf}
+.completion-rewards{list-style:none;padding:0;margin:0;text-align:left;border-top:1px solid #d7b26b40;border-bottom:1px solid #d7b26b40}
+.completion-reward{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:42px;padding:7px 0;box-sizing:border-box;border-bottom:1px solid #fff1;font-size:1rem;animation:quest-reward .45s ease-out both}
+.completion-reward:last-child{border-bottom:0}.completion-reward:nth-child(2){animation-delay:.08s}.completion-reward:nth-child(n+3){animation-delay:.16s}
+.completion-reward-icon .game-icon{width:24px;height:24px}.completion-reward-label{overflow-wrap:anywhere}.completion-reward-value{color:#f1cf87;font-variant-numeric:tabular-nums;white-space:nowrap}
+.completion-note{margin:16px 0;font-size:.875rem;line-height:1.5;color:#c2cbbf}
+.quest-celebration .completion-continue{width:100%;min-height:44px;padding:12px 16px;font-size:1rem;font-weight:700;color:#1d2525;background:#e6c27c;border:1px solid #f4d89e;border-radius:6px;cursor:pointer}
+.completion-continue:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@keyframes quest-arrive{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes quest-reward{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-height:500px){.quest-celebration #modalBody{padding:16px 22px}.completion-emblem{width:40px;height:40px;margin-bottom:7px}.completion-emblem .game-icon{width:26px;height:26px}.completion-congratulations{margin:8px 0 12px}.completion-reward{min-height:36px}.completion-note{margin:10px 0}}
+@media(prefers-reduced-motion:reduce){#modal.quest-celebration,.completion-reward{animation:none}}
+
+.quest-celebration #closeModal{display:none}

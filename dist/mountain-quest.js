@@ -137,9 +137,9 @@ function mountainSay(o,pages,choices=[],topic){openNpcDialogue(o,pages,choices,t
 function mountainOffer(o,expected,pages,label,action){mountainSay(o,pages,[[label,()=>{if(mountainState().stage!==expected||!mountainNear(o))return;action();}],['I need more time.',close]]);}
 function mountainReward(part){
  const q=mountainState(),key='reward'+part;if(q[key])return;q[key]=true;
- const rewards=part===1?{Mining:250,Smithing:250}:{Magic:400,Defense:300};
- receiveCoins(part===1?200:350);for(const [skill,n]of Object.entries(rewards))gain(skill,n,true);
- showExperienceDrop(rewards);save();toast('Part '+part+' complete · '+(part===1?'200 coins · 250 Mining and Smithing XP':'350 coins · 400 Magic XP · 300 Defense XP · Veyr hunts unlocked'));playGameSound('quest');
+ const rewards=part===1?{Mining:350,Smithing:350}:{Magic:560,Defense:420};
+ const banked=grantQuestCoins(part===1?280:490);for(const [skill,n]of Object.entries(rewards))gain(skill,n,true);
+ showExperienceDrop(rewards);save();if(typeof showQuestCompletion==='function')showQuestCompletion({title:'The King Beneath the Mountain — Part '+(part===1?'One':'Two'),coins:part===1?280:490,banked,xp:rewards,unlocks:part===2?['Repeat Veyr hunts']:[]});
 }
 function mountainTalk(o){
  const q=mountainState(),key=o.mountainKey;
@@ -322,6 +322,7 @@ function beginHuntsmanTeleport(kind,speaker=null){
 }
 function finishHuntsmanCrossing(crossing){
  if(!mountainCanEnter(crossing.destination)){crossing.destinationName='Crossing closed';return;}
+ if(crossing.destination==='lair_veyr')s.questRematch='veyr';
  const lair=CREATURE_LAIRS[crossing.destination],boss=worldScenes[crossing.destination].objects.find(o=>o.encounter);
  // An explicit new hunt starts a fresh encounter, including after a previous clear.
  if(boss&&!(typeof sharedLive==='function'&&sharedLive())){boss.hp=boss.maxhp;boss.dead=0;boss.respawnAt=0;delete boss._recovering;delete boss._returning;}
@@ -336,6 +337,7 @@ renderHunts=function(){
  }
 };
 function mountainGuide(){
+ if(playerAction?.kind==='investigate')return true;
  const q=mountainState();let key=MOUNTAIN_STEPS[q.stage][2];
  if(key==='clues')key=Object.keys(MOUNTAIN_CLUES).find(k=>!q.clues.includes(k));
  if(key==='bindings')key='binding_'+Object.keys(MOUNTAIN_BINDINGS).find(k=>!q.bindings.includes(k));
@@ -386,7 +388,7 @@ function renderMountainJournal(){
  for(const key of q.bindings)note(MOUNTAIN_BINDINGS[key].name+': freed.');
  if(q.lastMemory)note('Veyr: “I did not wake him. I heard him wake.” Three bindings lie beneath Veldren’s kingdoms.');
  for(let i=0;i<q.stage;i++)note('✓ '+MOUNTAIN_STEPS[i][0]);p.appendChild(notes);
- const rewards=document.createElement('p');rewards.className='desc';rewards.textContent='Part One: 200 coins, 250 Mining XP, 250 Smithing XP. Part Two: 350 coins, 400 Magic XP, 300 Defense XP. Assisted Veyr victory unlocks repeat Huntsman crossings.';p.appendChild(rewards);
+ const rewards=document.createElement('p');rewards.className='desc';rewards.textContent='Part One: 280 coins, 350 Mining XP, 350 Smithing XP. Part Two: 490 coins, 560 Magic XP, 420 Defense XP. Assisted Veyr victory unlocks repeat Huntsman crossings.';p.appendChild(rewards);
 }
 const mountainPanelBefore=renderPanel;
 renderPanel=function(){

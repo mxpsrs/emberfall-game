@@ -1,7 +1,7 @@
 'use strict';
 // Select a quest, then read its completed history and current instruction.
 // No floating task panel and no spoilers for future quest steps.
-let questJournalSelection=null;
+let questJournalSelection=null,questJournalStepKey='';
 function tutorialNextAction(){const step=tutorialStep();return step?{title:step.title,instruction:step.desc,run:guide}:null;}
 function questJournalEntries(){
  const entries=[{id:'tutorial',title:'Firstlight apprenticeship',complete:!tutorialStep(),active:!!tutorialStep()}];
@@ -35,29 +35,31 @@ function questJournalRows(id){
  const index=Number(id.split('-')[1]),frontier=id.startsWith('frontier-'),q=frontier?frontierQuests[index]:quests[index];
  if(!q)return [];
  const progress=frontier?(s.frontier?.quest||0):s.quest,finished=progress>index,accepted=finished||progress===index&&(!frontier||s.frontier.accepted),npc=frontier?q.npc:'Elder Rowan';
- if(!accepted)return [{text:(progress<index-(frontier?0:1)?'Finish the earlier '+(frontier?'Stoneford':'Briarhaven')+' quest, then speak to ': 'Speak to ')+npc+' to begin.',done:false}];
+ if(!accepted)return [{run:()=>guideSideQuest(frontier,index),text:(progress<index-(frontier?0:1)?'Finish the earlier '+(frontier?'Stoneford':'Briarhaven')+' quest, then speak to ': 'Speak to ')+npc+' to begin.',done:false}];
  const rows=[{text:'Accepted '+q.title+' from '+npc+'.',done:true}];
- const checks=frontier?q.kind==='hunt'?[[q.desc,s.frontier.kills,q.goal]]:q.item?[[q.desc,s.bag[q.item]||0,q.goal]]:[]:q.checks?.()||[];
- for(const [label,value,goal]of checks){const done=finished||value>=goal;rows.push({text:label+(done?'':' · '+Math.min(value,goal)+' / '+goal),done});if(!done)return rows;}
+ const checks=frontier?q.kind==='hunt'?[[q.desc,s.frontier.kills,q.goal]]:q.item?[[q.desc,s.bag[q.item]||0,q.goal]]:q.kind==='repair'?[['Iron ore',s.bag.ore||0,4],['Oak logs',s.bag.logs||0,4]]:[]:q.checks?.()||[];
+ for(const [label,value,goal]of checks){const done=finished||value>=goal;rows.push({text:label+(done?'':' · '+Math.min(value,goal)+' / '+goal),done,run:()=>guideSideQuest(frontier,index)});if(!done)return rows;}
  if(!checks.length)rows.push({text:q.desc,done:finished});
- if(finished||checks.length)rows.push({text:'Return to '+npc+' to complete the quest.',done:finished});
+ if(finished||checks.length)rows.push({text:'Return to '+npc+' to complete the quest.',done:finished,run:()=>guideSideQuest(frontier,index)});
  return rows;
 }
 function renderQuestJournal(){
+ if(questJournalSelection===s.trackedQuest){const next=trackedQuestId();if(next&&next!==questJournalSelection){questJournalSelection=next;s.trackedQuest=next;}}
  pageControls(1,1);const panel=$('panel'),scroll=panel.scrollTop;panel.replaceChildren();
  const entries=questJournalEntries(),selected=entries.find(q=>q.id===questJournalSelection);
  if(!selected){
   const title=document.createElement('h2');title.className='quest-journal-title';title.textContent='Quest journal';panel.appendChild(title);
   const list=document.createElement('div');list.className='quest-journal-list';
-  for(const quest of entries){const button=document.createElement('button');button.type='button';button.dataset.questId=quest.id;button.className=quest.complete?'quest-complete':quest.active?'quest-active':'quest-not-started';button.textContent=quest.title;button.setAttribute('aria-label',quest.title+' — '+(quest.complete?'complete':quest.active?'in progress':'not started'));button.onclick=()=>{questJournalSelection=quest.id;panel.scrollTop=0;renderQuestJournal();};list.appendChild(button);}panel.appendChild(list);return;
+  for(const quest of entries){const button=document.createElement('button');button.type='button';button.dataset.questId=quest.id;button.className=quest.complete?'quest-complete':quest.active?'quest-active':'quest-not-started';button.textContent=quest.title;button.setAttribute('aria-label',quest.title+' — '+(quest.complete?'complete':quest.active?'in progress':'not started'));button.onclick=()=>{questJournalSelection=quest.id;if(!quest.complete)trackQuest(quest.id);panel.scrollTop=0;renderQuestJournal();};list.appendChild(button);}panel.appendChild(list);return;
  }
  const back=document.createElement('button');back.textContent='All quests';back.className='quest-journal-back';back.onclick=()=>{questJournalSelection=null;renderQuestJournal();};panel.appendChild(back);
  const title=document.createElement('h2');title.className='quest-journal-title';title.textContent=selected.title;panel.appendChild(title);
+ let currentLine=null,currentKey='';
  const history=document.createElement('ol');history.className='quest-journal-history';
  for(const row of questJournalRows(selected.id)){
   const line=document.createElement('li');line.className=row.done?'quest-step-done':'quest-step-current';
   const text=document.createElement(row.done?'s':'p');text.textContent=row.text;line.appendChild(text);
-  if(!row.done){line.setAttribute('aria-current','step');text.setAttribute('role','status');if(row.run){const button=document.createElement('button');button.type='button';button.textContent='Show me where';button.onclick=row.run;line.appendChild(button);}}
+  if(!row.done){currentLine=line;currentKey=selected.id+':'+row.text;const badge=document.createElement('strong');badge.className='quest-next-label';badge.textContent='NEXT STEP';line.prepend(badge);line.setAttribute('aria-current','step');text.setAttribute('role','status');if(row.run){const button=document.createElement('button');button.type='button';button.textContent='Show me where';button.onclick=()=>{trackQuest(selected.id);row.run();};line.appendChild(button);}}
   history.appendChild(line);
  }
  panel.appendChild(history);
@@ -81,6 +83,6 @@ function renderQuestJournal(){
   for(const key of state.bindings)note(MOUNTAIN_BINDINGS[key].name+': freed.');
   panel.appendChild(notes);
  }
- panel.scrollTop=scroll;
+ panel.scrollTop=scroll;if(currentLine&&currentKey!==questJournalStepKey){questJournalStepKey=currentKey;panel.scrollTop=Math.max(0,(currentLine.offsetTop||0)-(panel.offsetTop||0)-24);}
 }
 function renderTutorialJournal(){questJournalSelection='tutorial';renderQuestJournal();}

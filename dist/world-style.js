@@ -360,13 +360,8 @@ creature3=function(r,o,x,z){
   if(q.indexed)return cachedRealmShape(q,'world-slime',briarTransform(x,0,z,1-squash,0,1+squash),shape);
   return shape(worldLocal(q,x,0,z));
  }
- if(o.type==='spirit'){
-  const colors=['#b89164','#779a9c','#b1a67b','#899b77'],q=groundedPainter(r,x,z),y=.60+Math.sin(time*2.5)*.045;
-  worldOrganic(q,x,y,z,.32,.51,.31,colors[(o.sprite||0)%4],19);
-  for(const side of [-1,1])worldOrganic(q,x+side*.056,y+.05,z+.151,.018,.033,.014,'#dae2bf',19);
-  for(let i=0;i<2;i++){const a=time*.8+i*Math.PI;worldOrganic(q,x+Math.sin(a)*.27,y-.08,z+Math.cos(a)*.22,.047,.061,.047,'#b8c49b',19);}
-  return 1.15;
- }
+ if(o.type==='spirit')return 0;
+
  return worldCreatureBefore(r,o,x,z);
 };
 

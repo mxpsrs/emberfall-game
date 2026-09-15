@@ -1,0 +1,29 @@
+.spirit-art{display:block;flex:none;width:64px;height:64px;background-size:400% 200%;background-repeat:no-repeat;border-radius:4px;background-color:#101724}
+.first-spirit-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.first-spirit-choices button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;white-space:normal;border:1px solid var(--spirit-color);background:#192028;color:#f0e7d1;text-align:center}
+.first-spirit-choices .spirit-art{width:110px;height:110px;max-width:100%;aspect-ratio:1}
+.first-spirit-choices strong{font-size:16px;color:var(--spirit-color)}.first-spirit-choices span,.first-spirit-choices small{font-size:14px;line-height:1.35}.first-spirit-choices b{margin-top:auto}
+#socialPanel.spirit-quick-open{position:fixed;overflow:hidden}
+#socialPanel.spirit-quick-open>#chatTabs,#socialPanel.spirit-quick-open>#chatPane,#socialPanel.spirit-quick-open>#friendsPane,#socialPanel.spirit-quick-open>#socialError{visibility:hidden;pointer-events:none}
+#spiritQuickPanel{position:absolute;inset:0;display:flex;flex-direction:column;background:#24231f;color:#f2e2be;padding:6px;overflow:auto;z-index:2}
+#spiritQuickPanel header{display:flex;align-items:center;gap:8px;padding:0 0 5px;position:static;height:auto;min-height:0;background:none}
+#spiritQuickPanel header strong{font-size:16px;white-space:nowrap}#spiritQuickPanel header span{font-size:12px;color:#ccc0a1}#closeSpiritQuick{margin-left:auto;min-height:28px;font-size:14px;padding:3px 7px;white-space:nowrap}
+.quick-spirit-grid{display:grid;grid-template-columns:repeat(8,minmax(54px,1fr));gap:4px;flex:none;overflow-x:auto}
+.quick-spirit-grid .quick-spirit{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;padding:3px 1px;border:1px solid #807052;background:#171b20;color:#f0e7d1}
+.quick-spirit .spirit-art{width:42px;height:42px}.quick-spirit span{font-size:14px;color:var(--spirit-color)}.quick-spirit small{font-size:12px}.quick-spirit:disabled{opacity:.62}.quick-spirit.undiscovered{filter:grayscale(.8)}
+.quick-spirit-grid .spirit-convergence{grid-column:1/-1;min-height:24px;font-size:14px;padding:2px}
+#spiritQuickHelp{font-size:14px;line-height:1.25;margin:4px 0 0}
+#spiritDiscovery{position:fixed;left:50%;top:14%;transform:translateX(-50%);max-width:calc(100vw - 24px);display:flex;align-items:center;gap:12px;padding:12px 18px;background:#111b25f2;border:1px solid var(--spirit-color);box-shadow:0 0 28px color-mix(in srgb,var(--spirit-color),transparent 60%);z-index:35;pointer-events:none;animation:spirit-bond-arrival .8s ease-out}
+#spiritDiscovery div{display:flex;flex-direction:column;gap:4px}#spiritDiscovery small{font-size:12px;color:var(--spirit-color)}#spiritDiscovery strong{font-size:22px;color:#fff2da}#spiritDiscovery span{font-size:14px}
+.classic-spirit-grid .spirit-art{width:54px;height:54px;margin:auto}
+#spiritButton{font-size:12px!important;white-space:nowrap}
+@keyframes spirit-bond-arrival{from{opacity:0;transform:translate(-50%,15px);filter:brightness(2)}to{opacity:1;transform:translate(-50%,0);filter:brightness(1)}}
+@media(max-height:500px){.quick-spirit .spirit-art{width:32px;height:32px}.quick-spirit-grid{gap:2px}#spiritQuickPanel header span{display:none}#spiritQuickHelp{font-size:12px}.first-spirit-choices .spirit-art{width:64px;height:64px}.first-spirit-choices button{padding:6px;gap:4px}}
+@media(max-width:540px){.first-spirit-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-spirit-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){#spiritDiscovery{animation:none}}
+#levelCelebration{position:fixed;top:18%;left:50%;transform:translateX(-50%);z-index:34;pointer-events:none;min-width:210px;max-width:70vw;padding:12px 26px;text-align:center;background:#10232ef2;border:1px solid #e8c873;box-shadow:0 0 30px #f3d36577;color:#fff2ca;animation:level-arrival .7s ease-out;transition:opacity 1.4s,translate 1.4s}
+#levelCelebration small{display:block;font-size:14px;letter-spacing:.16em;color:#efd37c}#levelCelebration strong{display:block;font-size:22px;margin:5px 0}#levelCelebration strong span{font-size:28px;color:#a8f4e7}#levelCelebration p{font-size:14px;margin:4px 0 0}#levelCelebration.level-fading{opacity:0;translate:0 -15px}
+body:has(#spiritDiscovery) #levelCelebration{top:42%}
+@keyframes level-arrival{0%{opacity:0;scale:.8;filter:brightness(2)}65%{scale:1.04}100%{opacity:1;scale:1;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){#levelCelebration{animation:none;transition:opacity .3s}}
+.classic-ui #mapHud #spiritButton{width:64px;min-width:64px}

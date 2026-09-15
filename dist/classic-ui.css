@@ -64,3 +64,9 @@ body.classic-ui{--ui-bg:#101f24;--ui-panel:#182d33;--ui-raised:#223d43;--ui-line
 .classic-ui .npc-dialogue #npcPage,.classic-ui .npc-choice-number{color:var(--ui-muted)}.classic-ui .npc-dialogue .npc-choice:hover,.classic-ui .npc-dialogue .npc-choice:focus-visible{background:#304f55;color:var(--ui-text);border-color:var(--ui-accent)}.classic-ui #gameTooltip{background:var(--ui-bg);color:var(--ui-text);border:1px solid var(--ui-line);border-radius:8px;text-shadow:none}.classic-ui .equipment-tools-back,.classic-ui .trade-wallet{color:var(--ui-accent)}
 
 .classic-ui #characterNameNote{display:block;font:11px/1.4 Arial;color:var(--ui-muted);margin-top:5px}.classic-ui #characterName[readonly]{color:var(--ui-muted);border-style:dashed;cursor:default}
+
+/* Chat tabs must participate in layout; the global game header is absolute. */
+.classic-ui #socialPanel #chatTabs{position:static;inset:auto;transform:none;width:100%;height:auto;z-index:auto;flex:0 0 auto;min-height:30px;display:flex;align-items:stretch}
+.atlas-legend{margin:6px 0 0;color:#bdc9bb;font-size:12px;text-align:center}
+
+.classic-spell-pages{display:flex;gap:6px;margin:8px 0 12px}.classic-spell-pages button{flex:1;min-height:44px;padding:6px;white-space:normal}.classic-spell-pages button[aria-pressed=true]{border-color:#b785f5;background:#39234c;color:#efddff}.home-teleport{border-color:#9160bd;background:#281c35;color:#eedbff}.home-teleport:hover,.home-teleport:focus-visible{background:#3d2753;box-shadow:0 0 10px #b785f544}#tutorialCrossing.home-crossing .crossing-veil{background:#b785f5}#tutorialCrossing.home-crossing #crossingCaption{border-color:#b785f5;background:#291a3ced;color:#eedbff;max-width:calc(100vw - 32px);white-space:normal;text-align:center;box-sizing:border-box}

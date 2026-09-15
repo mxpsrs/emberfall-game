@@ -1,4 +1,15 @@
 'use strict';
+// Shared with the server by scripts/export-shared-world.cjs.
+function questFightVisible(o,state){
+ if(!o)return false;
+ if(o.mainStoryStage!=null)return (state.mainStoryQuest?.stage||0)<=o.mainStoryStage;
+ if(o.kind==='mountainwatcher')return (state.mountainQuest?.stage||0)<=6;
+ if(o.encounter==='veyr')return (state.mountainQuest?.stage||0)<=17||state.questRematch==='veyr';
+ if(o.kind==='king')return !state.boss;
+ if(o.kind==='sentinel')return !(state.frontier?.quest>3||state.frontier?.quest===3&&state.frontier?.accepted&&state.frontier?.kills>=1);
+ return true;
+}
+
 let currentScene='overworld',worldScenes={},ambient=null,ambientEnabled=false,ambientTimer=0,miniTerrain=null;
 // Static scenery lives in spatial buckets; only actors enter movement updates.
 // Array mutations invalidate the index, while actor positions remain live.
@@ -12,13 +23,13 @@ function worldIndex(){
  }
  return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,order,byId};
 }
-function worldActors(){return worldIndex().actors;}
-function worldObjectsAt(x,y){const index=worldIndex(),bucket=index.buckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[];return [...bucket,...index.actors].filter(o=>o.x===x&&o.y===y);}
+function worldActors(){return worldIndex().actors.filter(o=>questFightVisible(o,s));}
+function worldObjectsAt(x,y){const index=worldIndex(),bucket=index.buckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[];return [...bucket,...index.actors].filter(o=>questFightVisible(o,s)&&o.x===x&&o.y===y);}
 function worldObjectsInBounds(minX,maxX,minY,maxY){
  const index=worldIndex(),visible=[];
  for(let by=Math.floor(minY/16);by<=Math.floor(maxY/16);by++)for(let bx=Math.floor(minX/16);bx<=Math.floor(maxX/16);bx++)for(const o of index.buckets.get(bx+':'+by)||[])if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)visible.push(o);
  for(const o of index.actors)if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)visible.push(o);
- return visible.sort((a,b)=>index.order.get(a)-index.order.get(b));
+ return visible.filter(o=>questFightVisible(o,s)).sort((a,b)=>index.order.get(a)-index.order.get(b));
 }
 function advanceWorldActors(dt){for(const o of worldActors())advanceActorMovement(o,dt);}
 const sceneSizes={overworld:[96,84],stoneInn:[14,12],stoneShop:[14,12],inn:[14,12],shop:[14,12],forge:[14,12],willowInn:[14,12],willowShop:[14,12],mine:[26,22],dungeon:[28,25]};
@@ -59,7 +70,7 @@ function makeInterior(id,kind,title){
  objects.push(...oldO);buildings.push(...oldB);currentScene='overworld';worldScenes[id]=scene;
 }
 function setupExpandedWorld(){
- s.worldClock=Number.isFinite(s.worldClock)?s.worldClock:160;s.bag.herbs=s.bag.herbs||0;s.xp.Farming=s.xp.Farming||0;
+ s.worldClock=worldCycleSeconds();s.bag.herbs=s.bag.herbs||0;s.xp.Farming=s.xp.Farming||0;
  ITEMS.herbs={name:'Fresh herbs',icon:14,atlas:'environment',desc:'Harvested on the farm. Eat to restore 6 health, or sell at a shop.'};
  function door(o,id){o.type='door';o.destination=id;o.sprite=13;}
  door(innObj,'inn');door(shopObj,'shop');door(forgeObj,'forge');
@@ -91,6 +102,7 @@ function setupExpandedWorld(){
  document.addEventListener('visibilitychange',()=>{if(ambient){if(document.hidden)ambient.context.suspend();else if(ambientEnabled)ambient.context.resume();}});
 }
 function activateScene(id,x,y,persist=true){
+ if(id!=='lair_veyr')delete s.questRematch;
  const scene=worldScenes[id];if(!scene)return;stop();projectiles=[];meleeImpacts=[];floaters=[];currentScene=id;s.sceneId=id;
  objects.splice(0,objects.length,...scene.objects);buildings.splice(0,buildings.length,...scene.buildings);
  s.x=x??scene.entry[0];s.y=y??scene.entry[1];if(!land(s.x,s.y)){[s.x,s.y]=scene.entry;}px=s.x;py=s.y;miniTerrain=null;
@@ -103,7 +115,7 @@ function handleWorldInteraction(o){
  if(handleTutorialInteraction(o))return true;
  if(o.type==='questgiver'){frontierTalk(o);return true;}
  if(o.type==='loot'){pickupGroundLoot(o);return true;}
- if(o.type==='spirit'){collectSpirit(o);return true;}
+ if(o.type==='spirit')return true;
  if(o.type==='door'){enterInterior(o);return true;}
  if(o.type==='exit'){leaveInterior();return true;}
  if(o.type==='villager'){stop();dialog(o.name,'<p>'+o.talk+'</p>');return true;}
@@ -111,8 +123,12 @@ function handleWorldInteraction(o){
  if(o.type==='cache'){stop();if(!s.wardenClear){toast('The Crypt guard still guards this cache.');return true;}if(s.cryptLoot){toast('You already recovered these supplies.');return true;}groundDrop({coins:100,runes:30,arrows:40});s.cryptLoot=true;save();renderUI();dialog('Crypt supply cache','<p>The cache leaves <b>100 coins, 30 relics, and 40 arrows</b> at your feet. Tap the loot to collect it.</p>');return true;}
  return false;
 }
+// One eight-minute world day, anchored to server-corrected Unix time rather
+// than a character's saved playtime. Menus, reconnects and timezone do not pause it.
+function worldCycleSeconds(){const now=typeof sharedNow==='function'?sharedNow():Date.now();return ((now/1000)%480+480)%480;}
+function worldHour(){return (worldCycleSeconds()/480*24+4)%24;}
 function livingWorld(dt){
- s.worldClock=(s.worldClock+dt)%480;
+ s.worldClock=worldCycleSeconds();
  for(const o of worldActors()){
   if(o===target||o._inCombat||o._returning||o._stationary||o.dead>time||!['enemy','man','villager'].includes(o.type)||o.kind==='warden'||Math.hypot((o.drawX??o.x)-o.x,(o.drawY??o.y)-o.y)>.01)continue;
   if(Math.hypot(o.x-s.x,o.y-s.y)>18)continue;
@@ -138,7 +154,7 @@ function regionInfo(){
  return null;
 }
 function drawWorldMood(){
- const hours=(s.worldClock/480*24+4)%24,night=(hours>=20||hours<5)?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0;
+ const hours=worldHour(),night=(hours>=20||hours<5)?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0;
  const dark=!inWorld()?(currentScene==='dungeon'?.35:currentScene==='mine'?.22:.08):night*.29;
  ctx.fillStyle='rgba(7,15,40,'+dark+')';ctx.fillRect(0,0,screen.w,screen.h);
  for(const o of objects)if(o.type==='camp'){const x=(o.x+.5)*TILE-camera.x,y=(o.y+.5)*TILE-camera.y,g=ctx.createRadialGradient(x,y,0,x,y,110);g.addColorStop(0,'rgba(255,186,83,.17)');g.addColorStop(1,'rgba(255,186,83,0)');ctx.fillStyle=g;ctx.fillRect(x-110,y-110,220,220);}
@@ -149,7 +165,7 @@ function drawSceneWalls(){
  for(let x=minX;x<minX+screen.w/TILE+2;x++)for(let y=minY;y<minY+screen.h/TILE+2;y++)if(worldWall(x,y)){const a=x*TILE-camera.x,b=y*TILE-camera.y;ctx.fillStyle='#19242b';ctx.fillRect(a,b,TILE+1,TILE+1);ctx.fillStyle='#526065';ctx.fillRect(a+1,b+1,TILE-2,8);ctx.fillStyle='#0d171d';ctx.fillRect(a,b+TILE-5,TILE,5);}
 }
 function expandedMap(page=0){
- if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Use the exit marker or Exit button to return to the road.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
+ if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Use the cave opening or ladder to return to the surface.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
  const places=[['Stoneford','New town & quests',75,62],['Coastal beacon','Keeper Orin',86,71],['Ashwatch','Ruins & guards',89,35],['Briarhaven','Your starting village',14,17],['Willowcross','Inn & market',54,26],['Riverbend Farms','Harvest herbs',44,25],['Pinewatch Mine','Enter & mine iron',55,9],['Sunken Crypt','Dungeon & guards',58,46],['Elderwood','Ancient oak forest',14,44],['Stillwater','Fishing',9,21],['Reedwater','Southern lake',52,46],['Goblin camp','Combat level 3',27,16],['Wolf thicket','Combat level 2',23,23],['Hollow Ruins','The ruins guardian',15,8],['Iron Ridge','Mining',23,7]];
  const pages=Math.ceil(places.length/4);dialog('The borderlands','<p>Choose a destination to walk there. '+(page+1)+' / '+pages+'</p><div class="mapgrid" id="destinations"></div>',[[page+1<pages?'More destinations':'First destinations',()=>expandedMap((page+1)%pages)]]);
  for(const [name,desc,x,y]of places.slice(page*4,page*4+4)){const b=document.createElement('button');b.innerHTML=name+'<br><small>'+desc+'</small>';b.onclick=()=>{close();walkTo(x,y);};$('destinations').appendChild(b);}
@@ -162,6 +178,6 @@ function startAmbient(){
 function toggleAmbient(){if(!ambient){startAmbient();return;}ambientEnabled=!ambientEnabled;s.sound=ambientEnabled;if(ambientEnabled)ambient.context.resume();else ambient.context.suspend();syncAmbientIcon();save();}
 function ambientChirp(){
  if(!ambient||!ambientEnabled)return;const {context,master,filter}=ambient;filter.frequency.setTargetAtTime(!inWorld()?140:expandedWater(s.x-2,s.y)||expandedWater(s.x+2,s.y)?800:450,context.currentTime,.5);
- const night=(s.worldClock/480*24+4)%24;const osc=context.createOscillator(),gain=context.createGain(),now=context.currentTime;osc.type='sine';const frequency=!inWorld()?100:night>=20||night<5?3200:1800+Math.random()*700;
+ const night=worldHour();const osc=context.createOscillator(),gain=context.createGain(),now=context.currentTime;osc.type='sine';const frequency=!inWorld()?100:night>=20||night<5?3200:1800+Math.random()*700;
  osc.frequency.setValueAtTime(frequency,now);osc.frequency.exponentialRampToValueAtTime(frequency*(!inWorld()?1.05:1.3),now+.12);gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(.18,now+.03);gain.gain.exponentialRampToValueAtTime(.001,now+.24);osc.connect(gain);gain.connect(master);osc.start(now);osc.stop(now+.25);
 }

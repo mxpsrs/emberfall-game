@@ -84,7 +84,7 @@ function harvestResource(o){
  if(!canCarry(item)){stop();toast('Your bag is full.');return false;}
  const chance=Math.min(.95,.4+(lv(skill)-d.level)*.009+gatheringToolRank(tool)*.025);if(Math.random()>chance)return false;
  if(!addToBag(item))return false;if(d.bait)s.bag[d.bait]--;
- gain(skill,d.xp);if(typeof gameMessage==='function')gameMessage((o.type==='fish'?'You catch ':o.type==='ore'?'You mine ':'You get ')+ITEMS[item].name.toLowerCase()+'.');floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
+ gain(skill,d.xp);discoverSkillSpirit(skill);if(typeof gameMessage==='function')gameMessage((o.type==='fish'?'You catch ':o.type==='ore'?'You mine ':'You get ')+ITEMS[item].name.toLowerCase()+'.');floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
  if(o.type==='ore'||o.type==='tree'&&(o.resourceId==='normal'||Math.random()<.125)){o.dead=time+d.respawn;o.respawnAt=Date.now()+d.respawn*1000;stop();}
  if(o.tutorialRole==='ore'||o.tutorialRole==='tin'){if(s.bag.copperOre>0&&s.bag.tinOre>0)tutorialEvent('ore');}else tutorialEvent(o.type);
  renderUI();save();return true;
@@ -110,9 +110,10 @@ function mixBreadDough(){
  if(!canMake(ingredients,'breadDough')){toast('Make space in your bag for the dough.');return false;}
  consumeIngredients(ingredients);s.bag.breadDough=(s.bag.breadDough||0)+1;tutorialEvent('mix-dough');renderUI();save();toast('Flour and water mixed into bread dough.');return true;
 }
-function bakeBread(){
+function bakeBread(commit=false,station=null){
+ if(!commit)return startCookingBatch('breadDough',station||nearbyWork('range'));
  if(!(s.bag.breadDough>0)){toast('Mix flour and water into dough first.');return false;}
- if(!nearbyWork('range')){toast('Use a cooking range to bake your bread.');return false;}
+ if(!(station?.type==='range'||nearbyWork('range'))){toast('Use a cooking range to bake your bread.');return false;}
  s.bag.breadDough--;s.bag.bread=(s.bag.bread||0)+1;gain('Cooking',40);tutorialEvent('bake-bread');renderUI();save();toast('Bread baked · +40 Cooking XP');return true;
 }
 function fireExit(x,y){return [[-1,0],[1,0],[0,-1],[0,1]].map(([dx,dy])=>[x+dx,y+dy]).find(([a,b])=>land(a,b)&&!objects.some(o=>!o.collected&&o.dead<=time&&o.x===a&&o.y===b&&!o.walkThrough));}
@@ -132,7 +133,7 @@ function updateSkillingAction(action){
  if(!action.committed&&age>=action.commitAt){
   if(action.kind==='cook'){
    const fire=action.fire;if(!objects.includes(fire)||fire.collected||fire.dead>time||fire.expiresAt<=Date.now()||Math.hypot(fire.x-px,fire.y-py)>1.5){stop();toast('The fire is no longer available.');return;}
-   action.committed=true;cookFish(action.id,true,fire);
+   action.committed=true;const cooked=action.id==='breadDough'?bakeBread(true,fire):cookFish(action.id,true,fire);if(!cooked){stop();return;}if(typeof playGameSound==='function')playGameSound('cook');
   }else{
    if(!s.groundLoot.includes(action.pile)||!(action.pile.items[action.id]>0)||!clearFireTile(action.x,action.y)||!fireExit(action.x,action.y)){stop();toast('The logs or fire site are no longer available.');return;}
    const d=TREE_RESOURCES[ITEMS[action.id].logType],chance=Math.min(.95,.45+(lv('Firemaking')-d.level)*.012);
@@ -140,16 +141,24 @@ function updateSkillingAction(action){
    action.committed=true;action.pile.items[action.id]--;if(!action.pile.items[action.id])delete action.pile.items[action.id];if(!Object.keys(action.pile.items).length)s.groundLoot=s.groundLoot.filter(p=>p!==action.pile);
    const o={id:practiceFireSerial++,type:'camp',name:'Log fire',cooking:true,...(besideFishingTutor()?{tutorialRole:'fishing-fire'}:{}),x:action.x,y:action.y,homeX:action.x,homeY:action.y,drawX:action.x,drawY:action.y,sprite:7,dead:0,walkThrough:true,logType:ITEMS[action.id].logType,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};
    if(typeof sharedLive==='function'&&sharedLive()){publishSharedFire(action);renderUI();save();return;}
-   worldScenes[currentScene].objects.push(o);if(worldScenes[currentScene].objects!==objects)objects.push(o);gain('Firemaking',d.fire);tutorialEvent('fire');if(typeof playGameSound==='function')playGameSound('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');
+   worldScenes[currentScene].objects.push(o);if(worldScenes[currentScene].objects!==objects)objects.push(o);gain('Firemaking',d.fire);discoverSkillSpirit('Firemaking');tutorialEvent('fire');if(typeof playGameSound==='function')playGameSound('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');
   }
  }
- if(age>=action.duration&&playerAction===action){playerAction=null;$('activity').style.width='0';if(action.kind==='firemaking'&&action.committed){const exit=fireExit(action.x,action.y);if(exit){path=[exit];target=null;}}renderAction();}
+ if(age>=action.duration&&playerAction===action){if(action.kind==='cook'&&s.bag[action.id]>0){playerAction={...action,started:time,committed:false};renderAction();return;}playerAction=null;$('activity').style.width='0';if(action.kind==='firemaking'&&action.committed){const exit=fireExit(action.x,action.y);if(exit){path=[exit];target=null;}}renderAction();}
 }
 
+function startCookingBatch(id,fire){
+ const fish=FISH_RESOURCES[ITEMS[id]?.rawFish],bread=id==='breadDough';
+ if(!fish&&!bread||!(s.bag[id]>0))return false;
+ if(!requireSkill('Cooking',fish?.cookLevel||1))return false;
+ if(!fire||!objects.includes(fire)||fire.collected||fire.dead>time||fire.expiresAt<=Date.now()||Math.hypot(fire.x-px,fire.y-py)>1.5||!lineOfSight(s.x,s.y,fire.x,fire.y)||bread&&fire.type!=='range'){toast(bread?'Use the dough on a cooking range.':'Use your raw catch on a nearby fire or range.');return false;}
+ if(window.realmWorkbench)close();stop();playerHeading=Math.atan2(fire.x-px,fire.y-py);
+ playerAction={kind:'cook',id,fire,x:px,y:py,scene:currentScene,started:time,duration:1.8,commitAt:.95,committed:false};renderAction();return true;
+}
 function cookFish(id=Object.keys(s.bag).find(id=>s.bag[id]>0&&ITEMS[id]?.rawFish),commit=false,station=null){
  const f=FISH_RESOURCES[ITEMS[id]?.rawFish];if(!f||!s.bag[id]){toast('Bring a raw catch to a hearth or fire.');return false;}
  if(!requireSkill('Cooking',f.cookLevel))return false;const fire=station||nearbyWork('fire');if(!fire||!objects.includes(fire)||Math.hypot(fire.x-px,fire.y-py)>2){toast('Stand beside a range or fire.');return false;}
- if(fire.type==='camp'&&!commit){stop();playerHeading=Math.atan2(fire.x-px,fire.y-py);playerAction={kind:'cook',id,fire,x:px,y:py,scene:currentScene,started:time,duration:1.8,commitAt:.95,committed:false};renderAction();return true;}
+ if(!commit)return startCookingBatch(id,fire);
  const supervised=['fish','fire','cook-shrimp'].includes(tutorialStep()?.event)&&f===FISH_RESOURCES.shrimp&&besideFishingTutor();const burnt=!supervised&&Math.random()<Math.max(0,(f.burnStop-lv('Cooking'))/(f.burnStop-f.cookLevel)*.32);
  s.bag[id]--;const result=burnt?'burntFish':f.food;s.bag[result]=(s.bag[result]||0)+1;if(!burnt){gain('Cooking',f.cookXP);if(f===FISH_RESOURCES.shrimp&&fire.type==='camp')tutorialEvent('cook-shrimp');}renderUI();save();toast(burnt?'The fish burns. Higher Cooking improves your chances.':f.name+' cooked · +'+f.cookXP+' Cooking XP');return true;
 }
@@ -283,4 +292,4 @@ function tendCrop(o){
  if(Date.now()<plot.readyAt){toast('Growing potatoes · about '+Math.ceil((plot.readyAt-Date.now())/60000)+' minutes remaining.');return false;}
  if(!addToBag('potato'))return false;gain('Farming',9);if(--plot.harvests<=0)delete s.farmPlots[key];renderUI();save();return true;
 }
-function skillItemActions(id){const item=ITEMS[id];if(id==='flour'||id==='jugWater')return [['Mix dough',mixBreadDough]];if(id==='breadDough')return [['Bake bread',()=>requestCookFish(id)]];if(item.heal)return [['Eat',()=>eatFood(id)]];if(item.logType)return [['Light fire',()=>lightLog(id)],['Cut arrow shafts',()=>fletch(id)]];if(item.rawFish)return [['Cook',()=>requestCookFish(id)]];if(item.beltTool)return [['Add to tool belt',()=>fitBeltTool(id)]];if(id==='arrowShafts'||id==='arrowheads'||id.endsWith('Arrowheads'))return [['Fletch',()=>fletch(id)]];if(item.metal)return [['Smith arrowheads',()=>smithMetal(item.metal,'arrowheads')],['Recipes',()=>{openSmithing('forge',item.metal);return true;}]];if(item.resource)return [['Smelt',()=>smeltMetal(item.resource==='copper'||item.resource==='tin'?'bronze':item.resource==='coal'?'steel':item.resource)]];return null;}
+function skillItemActions(id){const item=ITEMS[id];if(id==='flour'||id==='jugWater')return [['Mix dough',mixBreadDough]];if(id==='breadDough')return [];if(item.heal)return [['Eat',()=>eatFood(id)]];if(item.logType)return [['Light fire',()=>lightLog(id)],['Cut arrow shafts',()=>fletch(id)]];if(item.rawFish)return [];if(item.beltTool)return [['Add to tool belt',()=>fitBeltTool(id)]];if(id==='arrowShafts'||id==='arrowheads'||id.endsWith('Arrowheads'))return [['Fletch',()=>fletch(id)]];if(item.metal)return [['Smith arrowheads',()=>smithMetal(item.metal,'arrowheads')],['Recipes',()=>{openSmithing('forge',item.metal);return true;}]];if(item.resource)return [['Smelt',()=>smeltMetal(item.resource==='copper'||item.resource==='tin'?'bronze':item.resource==='coal'?'steel':item.resource)]];return null;}

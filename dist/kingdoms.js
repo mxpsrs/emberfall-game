@@ -111,9 +111,10 @@ route=function(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null)
  const start=startY*w+startX,goal=ty*w+tx;if(!adjacent&&isSolid(goal))return null;const costs=new Map(),previous=new Map();const heap=[];
  const push=o=>{heap.push(o);let i=heap.length-1;while(i){const p=(i-1)>>1;if(heap[p].f<=o.f)break;heap[i]=heap[p];i=p;}heap[i]=o;};
  const pop=()=>{const out=heap[0],last=heap.pop();if(heap.length){let i=0;while(i*2+1<heap.length){let c=i*2+1;if(c+1<heap.length&&heap[c+1].f<heap[c].f)c++;if(heap[c].f>=last.f)break;heap[i]=heap[c];i=c;}heap[i]=last;}return out;};
- costs.set(start,0);push({id:start,g:0,f:0});let end=-1;
- while(heap.length&&costs.size<45000){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>(costs.get(a.id)??Infinity)+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
-  for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){const nx=x+dx,ny=y+dy,id=ny*w+nx;if(nx<1||ny<1||nx>=w-1||ny>=h-1||isSolid(id)||dx&&dy&&(isSolid(y*w+nx)||isSolid(ny*w+x)))continue;const g=a.g+(dx&&dy?Math.SQRT2:1);if(g<(costs.get(id)??Infinity)-.001){costs.set(id,g);previous.set(id,a.id);push({id,g,f:g+Math.max(0,Math.hypot(tx-nx,ty-ny)-(adjacent?reach:0))});}}
+ const longJourney=Math.hypot(tx-startX,ty-startY)>180,estimate=(x,y)=>{const dx=Math.abs(tx-x),dy=Math.abs(ty-y);return Math.max(0,Math.max(dx,dy)+(Math.SQRT2-1)*Math.min(dx,dy)-(adjacent?reach:0))*(longJourney?1.5:1);};
+ costs.set(start,0);push({id:start,g:0,f:estimate(startX,startY)});let end=-1;
+ while(heap.length&&costs.size<(longJourney?90000:45000)){const a=pop(),x=a.id%w,y=Math.floor(a.id/w);if(a.g>(costs.get(a.id)??Infinity)+.001)continue;if(adjacent?Math.hypot(x-tx,y-ty)<=reach+.01&&lineOfSight(x,y,tx,ty):a.id===goal){end=a.id;break;}
+  for(const [dx,dy]of [[0,-1],[1,0],[0,1],[-1,0],[-1,-1],[1,-1],[1,1],[-1,1]]){const nx=x+dx,ny=y+dy,id=ny*w+nx;if(nx<1||ny<1||nx>=w-1||ny>=h-1||isSolid(id)||dx&&dy&&(isSolid(y*w+nx)||isSolid(ny*w+x)))continue;const g=a.g+(dx&&dy?Math.SQRT2:1);if(g<(costs.get(id)??Infinity)-.001){costs.set(id,g);previous.set(id,a.id);push({id,g,f:g+estimate(nx,ny)});}}
  }
  if(end<0)return null;const result=[];while(end!==start){result.push([end%w,Math.floor(end/w)]);end=previous.get(end);if(end===undefined)return null;}return result.reverse();
 };

@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-14",
+  "scope": "Quest geography and inhabited boss approaches",
+  "checks": [
+    {
+      "test": "main-story.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "mountain-quest.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "dungeon-journeys.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "dungeon-server.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "story-server.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "shared-world.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "shared-two-clients.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "sky-combat-guardians.cjs",
+      "result": "passed"
+    }
+  ],
+  "routeSteps": {
+    "lair_colossus": 152,
+    "lair_veyr": 150,
+    "lair_varkesh": 157,
+    "lair_xalith": 154
+  },
+  "guardsPerBossApproach": 6,
+  "visualReview": "Production geometry and shaders rendered offscreen; cave entrance and inhabited approach inspected",
+  "limitations": [
+    "No new physical-device or hosted 39-player capacity certification",
+    "Prior encounter-balance discrepancy remains unresolved"
+  ],
+  "correctionsDuringValidation": [
+    "Escort pacing now prevents guided walking from stranding miners",
+    "Navigation fixture resolves lazily evaluated cells",
+    "Teleport receipt test reads permit entry instead of obsolete arena-adjacent coordinates",
+    "Entrance placement reserves the complete outcrop away from buildings"
+  ]
+}

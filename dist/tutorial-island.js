@@ -181,7 +181,7 @@ setupTutorialVillage=function(){
  arrangeFirstlight(island);
  const guide=islandObjects.find(o=>o.tutor==='guide');if(guide)guide.name='Elder Rowan';
  for(const b of island.buildings){b.name=b.name.replace(/Briarhaven/g,'Firstlight');b.service.name=b.name;}
- if(islandObjects.some(o=>o.spiritId==='cinder')){SPIRITS.cinder.scene=TUTORIAL_SCENE;SPIRITS.cinder.hint='Beside Keeper Sera on Firstlight Isle.';}
+ // Elemental companions are selected through Keeper Sera.
  tutorialIslandReady=true;realmNavigation.clear();resetLandSurface();miniTerrain=null;mapServicesCache=null;
  const resume=tutorialResume||{scene:s.sceneId,x:s.x,y:s.y,doors:s.openDoors||[]};
  const completed=tutorialComplete(s),destination=completed?(resume.scene===TUTORIAL_SCENE?'overworld':resume.scene||'overworld'):TUTORIAL_SCENE;
@@ -216,6 +216,27 @@ function departTutorialIsland(){
 // This sequence is deliberately transient: a reload during the cast resumes the
 // final lesson; completion, belongings and the destination are saved together.
 let tutorialCrossing=null;
+// Travel magic is separate from combat spells: no relic cost and no XP.
+function homeTeleportReady(){
+ if(tutorialCrossing)return false;
+ if(currentScene===TUTORIAL_SCENE||!tutorialComplete(s)){toast('Finish your apprenticeship to unlock Home Teleport.');return false;}
+ if(activeEncounter||target&&fighter(target)||time-Math.max(lastAttack,playerHitAt)<5){toast('Leave combat and wait five seconds before teleporting.');return false;}
+ if(cloudConflict||cloudDisconnected||window.maintenancePreparing||window.playerTrade)return false;
+ return true;
+}
+function beginHomeTeleport(){
+ if(!homeTeleportReady())return false;
+ close();stop();clearUseItem(false);closeWorldOptions();
+ tutorialCrossing={kind:'home',phase:'casting',age:0,caster:{x:px,y:py},remote:false,destination:'overworld',destinationName:'Briarhaven',colors:['#b785f5','#d9b7ff','#eedbff','#a761ed']};
+ document.body.classList.add('tutorial-crossing');
+ const veil=document.createElement('div');veil.id='tutorialCrossing';veil.className='home-crossing';veil.setAttribute('role','status');veil.setAttribute('aria-live','polite');
+ veil.innerHTML='<div class="crossing-veil"></div><p id="crossingCaption">Home Teleport · Briarhaven…</p>';document.body.appendChild(veil);
+ playGameSound('teleport');return true;
+}
+function finishHomeCrossing(){
+ s.insideBuilding=null;s.returnPoint=null;
+ activateScene('overworld',...BRIARHAVEN_PLAZA);
+}
 function beginTutorialCrossing(){
  if(tutorialCrossing||currentScene!==TUTORIAL_SCENE||tutorialComplete(s)||tutorialStep()?.event!=='talk-finish')return false;
  if($('modal').open)close();stop();clearUseItem(false);closeWorldOptions();
@@ -231,11 +252,14 @@ function beginTutorialCrossing(){
 }
 function updateTutorialCrossing(dt){
  const crossing=tutorialCrossing;if(!crossing)return;
+ if(crossing.kind==='home'&&crossing.phase==='casting'&&(activeEncounter||time-Math.max(lastAttack,playerHitAt)<5)){
+  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');delete s.sharedArrival;toast('Combat interrupted your Home Teleport.');return;
+ }
  crossing.age+=dt;
  if(crossing.phase==='casting'&&crossing.age>=2.6){
   crossing.committing=true;crossing.phase='saving';crossing.age=0;
   delete crossing.caster._castAt;delete crossing.caster._castDuration;delete crossing.caster._castColor;
-  if(crossing.kind==='hunt')finishHuntsmanCrossing(crossing);else tutorialEvent('talk-finish');
+  if(crossing.kind==='hunt')finishHuntsmanCrossing(crossing);else if(crossing.kind==='home')finishHomeCrossing();else tutorialEvent('talk-finish');
   $('crossingCaption').textContent=crossing.kind==='hunt'?'Crossing to '+crossing.destinationName+'…':'Crossing to Briarhaven…';
  }
  if(crossing.phase==='saving'){
@@ -245,7 +269,7 @@ function updateTutorialCrossing(dt){
  const opacity=crossing.phase==='casting'?Math.max(0,(crossing.age-2.15)/.45):crossing.phase==='saving'?1:Math.max(0,1-crossing.age/.6);
  $('tutorialCrossing')?.style.setProperty?.('--crossing-opacity',String(opacity));
  if(crossing.phase==='arrival'&&crossing.age>=1.1){
-  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');if(crossing.kind!=='hunt')showTutorialArrival(crossing.earned);
+  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');if(!crossing.kind)showTutorialArrival(crossing.earned);
  }
 }
 function drawTutorialCrossing3(mesh){

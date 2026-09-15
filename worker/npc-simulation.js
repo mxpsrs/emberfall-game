@@ -28,7 +28,7 @@ export function advanceNpc(e,v,players,now,catalog,rollEnemy){
   v.target=null;v.pose=null;v.hazard=null;v.returning=true;v.nextMove=now;v.nextAttack=0;
  }
  if(!v.target){
-  if(v.returning){if(distance(v,e)<.1)v.returning=false;else if(now>=(v.nextMove||0)){const step=nextStep(e,v,e,0);if(step)[v.x,v.y]=step;v.nextMove=now+1000/(e.speed||1.25);}}
+  if(v.returning){if(distance(v,e)<.1)v.returning=false;else if(now>=(v.nextMove||0)){const step=nextStep(e,v,e,0);if(step)[v.x,v.y]=step;v.nextMove=now+1000/((e.speed||1.25)*(v.slowUntil>now?.45:1));}}
   else if(!e.stationary&&e.type!=='dummy'&&e.kind!=='warden'&&now>=(v.nextMove||0)){
    const directions=distance(v,e)>=3?[[Math.sign(e.x-v.x),0],[0,Math.sign(e.y-v.y)]]:[[1,0],[-1,0],[0,1],[0,-1]];
    const start=Math.floor(now/1000+Number(e.id))%directions.length;
@@ -47,7 +47,7 @@ export function advanceNpc(e,v,players,now,catalog,rollEnemy){
  }
  const d=distance(v,p),range=boss?.mechanics?1.6+(e.radius||0):e.style==='melee'?1.5+(e.radius||0):5.5;
  if(!boss?.anchored&&!v.hazard&&d>range&&now>=(v.nextMove||0)){
-  const step=nextStep(e,v,p,range);if(step)[v.x,v.y]=step;v.nextMove=now+1000/(e.speed||1.25);
+  const step=nextStep(e,v,p,range);if(step)[v.x,v.y]=step;v.nextMove=now+1000/((e.speed||1.25)*(v.slowUntil>now?.45:1));
  }
  if(now<(v.nextAttack||0)||v.hazard||d>10||!npcLineOfSight(e,v,p))return effects;
  const speed=boss?.phases?.[phase]?.speed||1;
