@@ -3,7 +3,8 @@ const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],sho
 const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishing & Firemaking',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
- if(o.mapService)return {kind:o.mapService,tags:[o.mapService],detail:'Magic school'};
+ if(o.mapService)return {kind:o.mapService,tags:[o.mapService],detail:MAP_SERVICE_TYPES[o.mapService]?.[1]||o.name};
+ if(o.civilStair)return {kind:'all',tags:[],detail:'Visible stairs · '+(worldScenes[o.civilStair.destination]?.title||'Ground floor')};
  if(o.tutor)return {kind:o.tutor==='bank'?'bank':'tutor',tags:['tutor',...(o.tutor==='bank'?['bank']:o.tutor==='magic'?['magic']:o.tutor==='worship'?['shrine']:[])],detail:MAP_TUTOR_SUBJECTS[o.tutor]+' tutor'};
  if(o.type==='banker')return {kind:'bank',tags:['bank'],detail:'Deposit and withdraw supplies'};
  if(o.type==='shop')return {kind:'shop',tags:['shop','weapons','armour'],detail:'Supplies, weapons & armour'};

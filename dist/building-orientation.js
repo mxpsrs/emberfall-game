@@ -19,6 +19,7 @@ function buildingDoorTransform(b){
  return affineMultiply(buildingRotation(b),leaf);
 }
 function chooseBuildingFacing(b,world){
+ if(b.planFacing)return b.planFacing;
  const town=SETTLEMENTS.find(t=>t.id===b.settlement);if(!town||!b.service)return 'south';
  const dx=town.x-(b.x+b.w/2),dy=town.y-(b.y+b.h/2),horizontal=dx>0?'east':'west',vertical=dy>0?'south':'north';
  const candidates=Math.abs(dx)>Math.abs(dy)?[horizontal,vertical]:[vertical,horizontal];

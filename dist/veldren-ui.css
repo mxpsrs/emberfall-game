@@ -1,126 +1,18 @@
-/* Veldren's field instruments: open world, split status, lower command ribbon.
-   Authored UI only. Existing handlers and accessible names remain in place. */
-body.veldren-ui{--ui-bg:#0c1725;--ui-panel:#132235;--ui-raised:#1d3148;--ui-line:#405875;--ui-accent:#92cce4;--ui-text:#eef5fb;--ui-muted:#b3c4d8;--side-panel-width:336px;--side-panel-height:min(424px,calc(100dvh - 344px));--chat-width:350px;--chat-height:168px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
-.veldren-ui button,.veldren-ui input,.veldren-ui select{font-family:inherit;border-radius:3px 10px 3px 3px;transition:background-color .12s,border-color .12s}
-.veldren-ui button:hover{background:#2a4461;border-color:#9ed9ea}
-.veldren-ui button:disabled{cursor:default}
-.veldren-ui button[aria-pressed=true],.veldren-ui button.selected{background:#28465d!important;color:#d6f3ff;border-color:#92cce4!important}
-.veldren-ui :is(button,input,select):focus-visible{outline:2px solid #c3f0ff;outline-offset:3px}
-.veldren-ui #gameTabs{inset:auto auto max(10px,env(safe-area-inset-bottom)) 50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);height:64px;max-height:64px;display:flex;flex-direction:row;align-items:stretch;gap:2px;padding:5px;overflow-x:auto;overflow-y:hidden;border:1px solid #54718b;border-top:2px solid #91c9dc;border-radius:4px 18px 4px 18px;background:#0b1727ee;box-shadow:0 6px 24px #0004}
-.veldren-ui #gameTabs button{width:66px;flex:0 0 66px;height:52px;min-height:52px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:3px;border-radius:2px 8px 2px 2px}
-.veldren-ui #gameTabs .game-icon{width:24px;height:24px}
-.veldren-ui .journal-tab-label{font:12px/1.25 system-ui;letter-spacing:.01em}
-.veldren-ui #gameTabs button.selected{border-left:1px solid var(--ui-accent)!important;border-bottom:3px solid var(--ui-accent)!important}
-.veldren-ui #gameDock,.veldren-ui.panels-open #gameDock{inset:auto max(12px,env(safe-area-inset-right)) 88px auto;width:var(--side-panel-width);height:var(--side-panel-height);max-height:calc(100dvh - 180px);padding:14px;background:#132235f7;border:1px solid var(--ui-line);border-left:3px solid var(--ui-accent);border-top:1px solid var(--ui-line);border-radius:4px 16px 4px 4px;box-shadow:0 10px 26px #0004}
-.veldren-ui .dock-heading{border-bottom:1px solid #54718b;padding:0 0 9px;margin:0 0 10px}
-.veldren-ui .dock-heading h2,.veldren-ui .classic-panel-title{font:600 18px/1.25 system-ui;letter-spacing:.03em;color:#eef5fb}
-.veldren-ui #panel{font-size:14px;line-height:1.45;scrollbar-color:#6888a0 #132235}
-.veldren-ui #panel p,.veldren-ui #panel .desc{font-size:14px;line-height:1.5;color:var(--ui-muted)}
-.veldren-ui .inventory-summary{font:13px/1.5 system-ui;color:#b3c4d8;margin-bottom:10px}
-.veldren-ui #inventoryGrid.bag25{gap:6px}
-.veldren-ui .bagslot,.veldren-ui.trade-open .bagslot{height:49px;min-height:49px;padding:3px;background:#0c1725;border:1px solid #354c66;border-radius:3px 9px 3px 3px;box-shadow:inset 0 -2px #263f56}
-.veldren-ui .bagslot:not(:disabled):hover{background:#203b52;border-color:#aad6e7}
-.veldren-ui .bagslot b{font:600 12px/1.2 system-ui;color:#eef5fb;text-shadow:0 1px 2px #000}
-.veldren-ui #mapHud{--map-size:188px;inset:12px max(12px,env(safe-area-inset-right)) auto auto;width:188px;height:234px;background:transparent}
-.veldren-ui #mapHud #minimapButton{width:188px;height:188px;border:1px solid #728b9e;border-top:3px solid #afd6df;border-radius:4px 20px 4px 4px;padding:6px;background:#0c1725eb}
-.veldren-ui #mapHud #minimap{border-radius:0 12px 0 0}
-.veldren-ui #minimapCompass{left:10px;top:10px;width:34px;height:34px;background:#0c1725d9;border-color:#819eb1}
-.veldren-ui #mapHud #mapBtn{left:0;right:auto;top:196px;width:138px;height:38px;min-height:38px;gap:8px}
-.veldren-ui #mapHud #mapBtn::after{content:'World map';font-size:13px}
-.veldren-ui #game>#fullscreenButton{left:auto;right:max(12px,env(safe-area-inset-right));top:208px;bottom:auto;width:40px;height:38px;min-height:38px;z-index:19}
-.veldren-ui #mapHud #spiritButton{position:fixed;left:50%;right:auto;top:auto;bottom:86px;transform:translateX(-50%);width:138px;height:42px;min-height:42px;border:1px solid #9cbfd8;border-radius:3px 14px 3px 14px;background:#162e43;letter-spacing:.09em;font-size:14px!important;font-weight:600;text-transform:uppercase}
-.veldren-ui #mapHud #hitpointOrb{left:max(14px,env(safe-area-inset-left));top:14px;width:210px;height:54px;border-radius:4px 12px 4px 4px;border-left:3px solid #e89992;background:#142438!important}
-.veldren-ui #mapHud #worshipOrb,.veldren-ui #mapHud #runButton,.veldren-ui #mapHud #coinPouchOrb{left:14px;top:76px;width:101px;height:43px;min-height:43px;border-radius:3px;border-color:#3e5772;background:#102035e8!important}
-.veldren-ui #mapHud #worshipOrb{left:122px}.veldren-ui #mapHud #coinPouchOrb{left:230px;width:110px}
-.veldren-ui .status-orb b,.veldren-ui #runEnergy{font:600 15px/1.1 system-ui}
-.veldren-ui .status-orb b::before,.veldren-ui #runEnergy::before{font:11px/1.3 system-ui;letter-spacing:.07em;color:#b3c4d8}
-.veldren-ui #hitpointOrb::after{background:#e89992;height:4px}.veldren-ui #runButton::after{background:#99d9d0}
-#spiritBuildHud{position:fixed;left:236px;top:14px;z-index:18;display:flex;align-items:center;gap:10px;width:272px;height:54px;padding:5px 10px;background:#102035eb;border:1px solid #46617d;border-left:3px solid var(--spirit-color);border-radius:3px 12px 3px 3px;text-align:left}
-#spiritBuildHud .spirit-art{width:38px;height:38px;border-radius:3px}#spiritBuildHud>span:last-child{display:flex;flex-direction:column;gap:1px;min-width:0}#spiritBuildHud strong{font:600 14px/1.3 system-ui;color:var(--spirit-color);white-space:nowrap}#spiritBuildHud small{font:11px/1.2 system-ui;color:#c0d0e2;text-transform:capitalize}#spiritBuildHud>.game-icon{width:32px;height:32px}
-.veldren-ui .region{top:128px;left:14px;background:#0c1725bb;border-left:2px solid #8fbcd2;padding:5px 9px;font:13px/1.3 system-ui;max-width:300px;pointer-events:none}.veldren-ui .region small{font-size:12px}
-.veldren-ui #worldClock{display:block!important;position:fixed;left:352px;top:89px;right:auto;bottom:auto;font:12px/1.3 system-ui;color:#d5e6ef;background:#0c1725b8;padding:4px 8px;border-radius:3px;z-index:17}
-.veldren-ui #onlineStatus{display:block!important;position:fixed;left:14px;right:auto;top:auto;bottom:12px;max-width:calc(50vw - 370px);overflow:hidden;white-space:nowrap;font:12px/1.3 system-ui;color:#b3c4d8;pointer-events:none;background:#0c1725ab;padding:4px 7px;z-index:15}
-.veldren-ui #socialPanel{left:14px;right:auto;bottom:88px;top:auto;width:350px;height:168px;max-height:38dvh;background:#0c1725de;border:1px solid #3d5570;border-left:2px solid #718da6;border-radius:4px 14px 4px 4px;padding:9px}
-.veldren-ui #chatToggle{left:14px;right:auto;bottom:264px;width:40px;height:36px;min-height:36px;border-radius:3px}
-.veldren-ui #chatMessages{font:14px/1.4 system-ui}.veldren-ui #chatTabs button{font:12px/1.3 system-ui;min-height:32px}
-.veldren-ui #chatForm{min-height:36px}.veldren-ui #chatForm button{min-height:32px}.veldren-ui #chatText{font:16px system-ui}
-.veldren-ui #socialPanel.spirit-quick-open{width:390px;height:270px;max-height:calc(100dvh - 180px)}
-.veldren-ui #spiritQuickPanel{background:#132235;padding:10px;color:#eef5fb}.veldren-ui #spiritQuickPanel header{flex-wrap:wrap}.veldren-ui #spiritQuickPanel header strong{font-size:16px}.veldren-ui #spiritQuickPanel header span{display:none}
-.veldren-ui .quick-spirit-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;overflow:visible}.veldren-ui .quick-spirit-grid .quick-spirit{background:#0c1725;border:1px solid #49637e;min-height:66px;border-bottom:2px solid var(--spirit-color);border-radius:3px 8px 3px 3px}.veldren-ui .quick-spirit .spirit-art{width:32px;height:32px}.veldren-ui .quick-spirit span{font-size:13px}.veldren-ui .quick-spirit small{font-size:12px}.veldren-ui #spiritQuickHelp{font:13px/1.4 system-ui;color:#c6d6e7}
-.veldren-ui .spirit-build-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.veldren-ui .spirit-build-grid button{padding:6px 2px;gap:3px;border-bottom:2px solid var(--spirit-color);font-size:13px}.veldren-ui .spirit-build-grid .spirit-art{width:40px;height:40px}.veldren-ui .spirit-build-grid small{font-size:11px;color:#c0d0e2}
-.spirit-build-detail{border-left:3px solid var(--spirit-color);background:#0c1725;padding:10px;margin:14px 0}.spirit-build-detail h3{font:600 17px system-ui;color:var(--spirit-color);margin:0 0 10px}.spirit-build-detail b{font-size:14px;color:#eef5fb}.spirit-build-detail meter{width:100%;height:12px;accent-color:var(--spirit-color)}.spirit-build-detail button{width:100%;min-height:44px;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}.spirit-build-detail .game-icon{width:22px;height:22px}.build-summary{border-left:3px solid #a2d8e0;background:#0c1725;padding:10px;font-size:14px}
-.veldren-ui .classic-spell-grid{grid-template-columns:1fr 1fr;gap:7px}.veldren-ui .classic-spell{min-height:80px;display:flex;align-items:flex-start;flex-direction:column;border-left:2px solid var(--spell-color);border-radius:2px 10px 2px 2px}.veldren-ui .classic-spell .game-icon{width:30px;height:30px}.veldren-ui .journal-spell-label{font:13px/1.3 system-ui;white-space:normal}.veldren-ui .classic-spell-detail{font:14px/1.5 system-ui}
-.veldren-ui dialog,.veldren-ui #modal.world-map-window[open]{border:1px solid #516c85;border-left:3px solid #92cce4;border-top:1px solid #516c85;border-radius:4px 18px 4px 4px;background:#132235;color:#eef5fb}
-.veldren-ui dialog h2,.veldren-ui .npc-dialogue #npcName{font:600 20px/1.3 system-ui;color:#d3ebf5}.veldren-ui dialog p{font-size:14px;line-height:1.5}
-.veldren-ui #modal.equipment-window[open]{left:auto;right:12px;bottom:88px;width:336px;height:min(424px,calc(100dvh - 344px));max-height:calc(100dvh - 150px);padding:14px;background:#132235;border-left:3px solid #92cce4;border-radius:4px 18px 4px 4px}
-.veldren-ui .paper-equipment{--equipment-slot-width:52px;--equipment-slot-height:46px;gap:7px}.veldren-ui #wornEquipmentActions button{width:auto;min-width:48px;min-height:44px}
-.veldren-ui #modal.trade-window[open],.veldren-ui #modal.combat-stats-window[open]{left:14px;right:auto;bottom:88px;width:calc(100vw - 388px);max-width:700px;height:min(470px,calc(100dvh - 165px));max-height:calc(100dvh - 165px)}
-.veldren-ui #modal.npc-dialogue[open]{left:14px;right:auto;bottom:88px;width:min(500px,calc(100vw - 390px));max-height:calc(100dvh - 240px);border-left:3px solid #92cce4;background:#132235}.veldren-ui .npc-dialogue #npcWords{font:15px/1.5 system-ui}.veldren-ui .npc-dialogue .npc-choice{font:14px system-ui;min-height:40px}
-.veldren-ui #gameTooltip,.veldren-ui #worldOptions,.veldren-ui #socialOptions,.veldren-ui #itemOptions{border:1px solid #67859f;border-left:3px solid #b0dcec;border-radius:3px 12px 3px 3px;background:#0c1725f7;color:#eef5fb;font:14px/1.45 system-ui;box-shadow:0 6px 20px #0005}.veldren-ui #worldOptions button,.veldren-ui #socialOptions button,.veldren-ui #itemOptions button{font:14px system-ui;min-height:38px}
-.veldren-ui #encounterHud{top:14px;left:50%;transform:translateX(-50%);width:min(320px,26vw);border:1px solid #967f9e;border-left:3px solid #d5a6c6;border-radius:3px 12px 3px 3px;background:#1b192cdd;font:14px system-ui}.veldren-ui #encounterName{font:600 16px system-ui}.veldren-ui #encounterTell{font-size:14px}
-.veldren-ui #leaveInterior{left:auto;right:210px;bottom:88px;width:44px;height:44px;min-height:44px}
-@media(max-width:1100px),(pointer:coarse){
- body.veldren-ui{--side-panel-width:min(312px,44vw);--side-panel-height:calc(100dvh - 148px);--chat-height:132px}
- .veldren-ui #gameTabs{left:50%;right:auto;bottom:max(6px,env(safe-area-inset-bottom));height:58px;max-height:58px;padding:3px;gap:1px;width:max-content;max-width:calc(100vw - 20px)}
- .veldren-ui #gameTabs button{width:61px;flex-basis:61px;height:50px;min-height:50px}.veldren-ui #gameTabs .game-icon{width:23px;height:23px}
- .veldren-ui #gameDock,.veldren-ui.panels-open #gameDock{right:176px;left:auto;bottom:72px;height:var(--side-panel-height);max-height:calc(100dvh - 148px);padding:10px}
- .veldren-ui .dock-heading{padding-bottom:5px;margin-bottom:7px}.veldren-ui #inventoryGrid.bag25{gap:4px}.veldren-ui .bagslot,.veldren-ui.trade-open .bagslot{height:42px;min-height:42px;padding:2px}
- .veldren-ui #mapHud{--map-size:144px;right:max(10px,env(safe-area-inset-right));top:10px;width:144px;height:188px}.veldren-ui #mapHud #minimapButton{width:144px;height:144px;padding:5px}.veldren-ui #minimapCompass{width:32px;height:32px}
- .veldren-ui #mapHud #mapBtn{top:151px;width:99px;height:34px;min-height:34px;font-size:12px;gap:3px}.veldren-ui #mapHud #mapBtn::after{font-size:12px}.veldren-ui #mapHud #mapBtn .game-icon{width:20px;height:20px}
- .veldren-ui #game>#fullscreenButton{right:max(10px,env(safe-area-inset-right));top:161px;width:36px;height:34px;min-height:34px;padding:6px}
- .veldren-ui.panels-open #minimapButton,.veldren-ui.panels-open #minimapCompass,.veldren-ui.panels-open #mapHud #mapBtn,.veldren-ui.panels-open #mapHud #spiritButton{visibility:visible}
- .veldren-ui #mapHud #hitpointOrb{left:max(10px,env(safe-area-inset-left));top:10px;width:186px;height:49px;min-height:49px}
- #spiritBuildHud{left:204px;top:10px;width:246px;height:49px;gap:7px;padding:4px 7px}#spiritBuildHud .spirit-art{width:32px;height:32px}#spiritBuildHud strong{font-size:13px}
- .veldren-ui #mapHud #runButton,.veldren-ui #mapHud #worshipOrb,.veldren-ui #mapHud #coinPouchOrb{left:10px;top:67px;width:88px;height:41px;min-height:41px;padding:5px;gap:4px}.veldren-ui #mapHud #worshipOrb{left:104px}.veldren-ui #mapHud #coinPouchOrb{left:198px;width:96px}.veldren-ui .status-orb b,.veldren-ui #runEnergy{font-size:14px}
- .veldren-ui #worldClock{left:304px;top:78px;padding:3px 5px;font-size:12px}.veldren-ui .region{left:10px;top:116px;max-width:260px;font-size:12px;padding:3px 6px}.veldren-ui .region small{display:none}
- .veldren-ui #mapHud #spiritButton{left:auto;right:max(10px,env(safe-area-inset-right));bottom:72px;top:auto;transform:none;width:144px;height:44px;min-height:44px}
- .veldren-ui #socialPanel{left:max(10px,env(safe-area-inset-left));right:auto;bottom:72px;width:min(324px,calc(100vw - 520px));height:132px;max-height:calc(100dvh - 230px);padding:6px}
- .veldren-ui #chatToggle{left:10px;right:auto;bottom:210px;width:38px;height:34px;min-height:34px}.veldren-ui #chatTabs button{font-size:12px;min-height:28px}.veldren-ui #chatMessages{font-size:13px}.veldren-ui #chatTabs small{display:none}.veldren-ui #chatChannel{font-size:12px}
- .veldren-ui #socialPanel.spirit-quick-open{width:min(330px,calc(100vw - 190px));height:calc(100dvh - 148px);max-height:calc(100dvh - 148px)}
- .veldren-ui #onlineStatus{display:none!important}
- .veldren-ui #modal.equipment-window[open]{right:176px;left:auto;bottom:72px;width:var(--side-panel-width);height:calc(100dvh - 148px);max-height:calc(100dvh - 148px);padding:10px}.veldren-ui .paper-equipment{--equipment-slot-width:44px;--equipment-slot-height:38px;gap:5px}
- .veldren-ui #modal.trade-window[open],.veldren-ui #modal.combat-stats-window[open]{left:10px;right:auto;bottom:72px;width:calc(100vw - 342px);height:calc(100dvh - 86px);max-height:calc(100dvh - 86px)}
- .veldren-ui.trade-open #gameDock,.veldren-ui.equipment-stats-open #gameDock,.veldren-ui.workbench-open #gameDock{right:10px;left:auto;bottom:72px;width:312px;height:calc(100dvh - 86px);max-height:calc(100dvh - 86px)}
- .veldren-ui #modal.npc-dialogue[open]{left:10px;right:auto;bottom:72px;width:calc(100vw - 358px);max-height:calc(100dvh - 140px)}
- .veldren-ui #encounterHud{top:10px;left:470px;transform:none;width:calc(100vw - 640px);min-width:160px;padding:7px}.veldren-ui #encounterName{font-size:14px}.veldren-ui #encounterTell{font-size:13px}.veldren-ui #leaveInterior{right:10px;left:auto;bottom:124px}
-}
-@media(max-width:760px){
- .veldren-ui #gameTabs button{width:55px;flex-basis:55px}.veldren-ui #gameTabs .journal-tab-label{font-size:11px}
- #spiritBuildHud{width:220px}.veldren-ui #gameDock,.veldren-ui.panels-open #gameDock,.veldren-ui #modal.equipment-window[open]{right:166px;width:min(294px,calc(100vw - 188px))}
- .veldren-ui #socialPanel{width:250px;max-width:calc(100vw - 190px);height:115px;max-height:115px}.veldren-ui.panels-open #socialPanel:not(.spirit-quick-open){visibility:hidden}.veldren-ui #chatToggle{bottom:193px}
- .veldren-ui #encounterHud{left:10px;top:118px;min-width:0;width:230px}.veldren-ui #encounterHud:not([hidden])~.region{display:none}
- .veldren-ui #worldClock{display:none!important}
-}
-@media(max-height:360px){.veldren-ui .region{display:none}.veldren-ui #socialPanel{height:105px;max-height:105px}.veldren-ui #chatToggle{bottom:182px}.veldren-ui #gameDock,.veldren-ui.panels-open #gameDock{max-height:calc(100dvh - 136px);height:calc(100dvh - 136px)}}
-@media(prefers-reduced-motion:reduce){.veldren-ui button,.veldren-ui input,.veldren-ui select{transition:none}}
-.veldren-ui [hidden]{display:none!important}
-/* A compact equipment kit replaces the old paper-doll silhouette. */
-body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid){grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"head neck ring cape" "weapon body shield ammo" "hands legs feet belt";gap:6px;width:100%;margin:4px 0}
-body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid)::before{display:none}
-body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid) .gearslot{width:100%;height:56px;min-height:56px;background:#0c1725;border:1px solid #405875;border-radius:3px 10px 3px 3px;box-shadow:none;padding:3px 3px 15px;position:relative}
-body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid) .gearslot::after{content:attr(data-equipment-slot);position:absolute;left:0;right:0;bottom:3px;text-align:center;font:11px/1.1 system-ui;text-transform:capitalize;color:#b3c4d8}
-body.veldren-ui #modal.equipment-window h2{font:600 17px/1.3 system-ui;color:#eef5fb}
-.veldren-ui .trade-window :is(.trade-slot,.trade-slot-empty,#tradeSearch,.trade-quantity button,#depositInventory),.veldren-ui .trade-scroll{background:#0c1725;border-color:#405875;box-shadow:none;color:#eef5fb;scrollbar-color:#6888a0 #132235}
-.veldren-ui .trade-tools,.veldren-ui .trade-bottom{border-color:#405875}
-.veldren-ui .trade-emblem{background:#1d3148;color:#92cce4;border-color:#405875;box-shadow:none}
-.veldren-ui .trade-window .trade-quantity button,.veldren-ui .trade-window #depositInventory{background:#1d3148;border-radius:3px 9px 3px 3px}
-@media(max-width:1100px),(pointer:coarse){body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid) .gearslot{height:48px;min-height:48px}body.veldren-ui :is(#wornEquipmentGrid,#equipmentGrid){gap:4px}}
-/* Keep status controls reachable beside compact panels. */
-@media(min-width:1101px) and (pointer:fine){.veldren-ui #encounterHud{left:520px;transform:none;width:min(320px,calc(100vw - 748px))}}
-@media(max-width:1100px),(pointer:coarse){.veldren-ui.panels-open #worldClock{display:none!important}}
-@media(max-width:1100px),(pointer:coarse){
- .veldren-ui #socialPanel.spirit-quick-open{left:auto;right:176px;width:312px}
- .veldren-ui:has(#socialPanel.spirit-quick-open) #gameDock{visibility:hidden}
- .veldren-ui:has(#socialPanel.spirit-quick-open) #worldClock{display:none!important}
-}
-@media(max-width:760px){
- .veldren-ui.panels-open #mapHud #coinPouchOrb{left:10px;top:113px}
- .veldren-ui.panels-open #chatToggle{left:113px;top:113px;bottom:auto}
- .veldren-ui #socialPanel.spirit-quick-open{right:166px;width:min(294px,calc(100vw - 188px))}
- .veldren-ui:has(#socialPanel.spirit-quick-open) #mapHud #coinPouchOrb{left:10px;top:113px}
- .veldren-ui:has(#socialPanel.spirit-quick-open) #chatToggle{left:113px;top:113px;bottom:auto}
-}
-@media(max-height:360px){
- .veldren-ui #chatToggle{bottom:156px}
- .veldren-ui #gameDock,.veldren-ui.panels-open #gameDock{height:calc(100dvh - 148px);max-height:calc(100dvh - 148px)}
+/* Compact extensions to the established journal rail. World controls retain their locations. */
+body.veldren-ui{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.veldren-ui #mapHud{--map-size:188px;width:188px;height:230px}
+.veldren-ui #mapHud #minimapButton{width:188px;height:188px}
+.veldren-ui #mapHud #mapBtn,.veldren-ui #mapHud #spiritButton{top:194px;width:90px;height:36px;min-height:36px}
+.veldren-ui #mapHud #spiritButton{right:98px}
+#spiritBuildHud{position:fixed;right:8px;left:auto;top:240px;z-index:18;display:flex;align-items:center;gap:8px;width:188px;min-height:44px;padding:5px 8px;background:var(--ui-bg);border:1px solid var(--ui-line);border-left:3px solid var(--spirit-color);border-radius:8px;text-align:left}
+#spiritBuildHud .spirit-art{width:30px;height:30px}#spiritBuildHud>span:last-child{display:flex;flex-direction:column;min-width:0}#spiritBuildHud strong{font:600 12px/1.4 system-ui;color:var(--spirit-color)}#spiritBuildHud small{font:11px/1.3 system-ui;color:var(--ui-muted)}#spiritBuildHud>.game-icon{width:26px;height:26px}
+.spirit-build-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.spirit-build-grid button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;font-size:12px;border-bottom:2px solid var(--spirit-color)}.spirit-build-grid .spirit-art{width:36px;height:36px}.spirit-build-grid small{font-size:10px;color:var(--ui-muted)}
+.spirit-build-detail{border-left:3px solid var(--spirit-color);background:var(--ui-bg);padding:10px;margin:12px 0}.spirit-build-detail h3{font:600 16px system-ui;color:var(--spirit-color)}.spirit-build-detail meter{width:100%;height:12px}.spirit-build-detail button{width:100%;min-height:44px;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}.spirit-build-detail .game-icon{width:22px;height:22px}.build-summary{border-left:3px solid var(--ui-accent);padding:10px;font-size:13px;background:var(--ui-bg)}
+.veldren-ui #socialPanel.spirit-quick-open{height:270px;max-height:calc(100dvh - 130px)}.veldren-ui .quick-spirit-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.veldren-ui .quick-spirit-grid .quick-spirit{min-height:64px}.veldren-ui #spiritQuickPanel header span{display:none}
+@media(max-width:1000px),(pointer:coarse){
+ .veldren-ui #mapHud{--map-size:144px;width:144px;height:188px}.veldren-ui #mapHud #minimapButton{width:144px;height:144px}.veldren-ui #mapHud #mapBtn,.veldren-ui #mapHud #spiritButton{top:150px;width:68px;min-height:34px;height:34px}.veldren-ui #mapHud #spiritButton{right:76px}
+ #spiritBuildHud{top:192px;width:144px;min-height:38px;padding:3px 5px}#spiritBuildHud small{display:none}#spiritBuildHud .spirit-art{width:26px;height:26px}
+ .veldren-ui.panels-open #spiritBuildHud{display:none}
+ .veldren-ui #socialPanel.spirit-quick-open{width:min(360px,calc(100vw - 282px));height:calc(100dvh - 142px);max-height:calc(100dvh - 142px)}
+ .veldren-ui .quick-spirit-grid .quick-spirit{min-height:55px}.veldren-ui .quick-spirit .spirit-art{width:25px;height:25px}.veldren-ui #spiritQuickHelp{font-size:11px;line-height:1.3}
 }

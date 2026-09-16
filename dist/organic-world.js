@@ -1,5 +1,72 @@
 'use strict';
-function organicLots(t,count){const lots=[],city=t.kind==='city',radius=city?27:13;let seed=[...t.id].reduce((a,c)=>a*31+c.charCodeAt(0),7)>>>0;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};for(let attempts=0;lots.length<count&&attempts<20000;attempts++){const angle=random()*Math.PI*2,r=Math.sqrt(random())*radius,x=Math.round(t.x+Math.cos(angle)*r-2),y=Math.round(t.y+Math.sin(angle)*r*.92-2);if(Math.hypot(x+2-t.x,y+2-t.y)<5)continue;if(t.capital&&x<t.x+8&&x+5>t.x-8&&y<t.y-19)continue;if(lots.some(([a,b])=>x<a+7.5&&x+7.5>a&&y<b+6.5&&y+6.5>b))continue;lots.push([x,y]);}if(lots.length!==count)throw new Error('Settlement layout could not fit '+t.id);return lots;}
+// Roads and civic spaces define lots; deterministic decoration never chooses the skeleton.
+const SETTLEMENT_PURPOSES={
+ crownreach:['capital','Royal enclosure','Crown administration and grain trade','wells and the western river','Sunspire Castle'],
+ ironhollow:['capital','Mountain citadel','Ore, masonry and royal foundries','cisterns and mountain springs','Ironcrown Citadel'],
+ aelindor:['capital','Grove palace','Forest stewardship and learning','forest springs','The Bough Palace'],
+ greyhaven:['city','Market crossroads','Regional trade and river transport','western watershed','Guild bell tower'],
+ deepforge:['city','Foundry terraces','Metalworking and deep mining','Ironmirror watershed','Foundry headframe'],
+ moonwillow:['city','Connected groves','Herbalism, weaving and forest trade','Silver River','Moon sanctuary'],
+ briarhaven:['town','Market crossroads','Mainland services and farming','Stillwater and town well','Briarhaven well'],
+ willowcross:['town','Market crossroads','Grain milling and river trade','Eastbank river','Mill and market'],
+ stoneford:['large village','Roadside green','Highland provisions and husbandry','village well','Militia watchtower'],
+ copperdelve:['large village','Mining green','Copper and local stone','spring-fed well','Quarry headframe'],
+ stonehearth:['large village','Masons’ green','Stone cutting and mountain supplies','cistern','Masons’ hall'],
+ fernwatch:['small village','Woodland grove','Forestry and forest watch','grove spring','Ancient watch tree'],
+ silverbrook:['small village','Shrine green','Fishing and medicinal herbs','Silver River tributary','Waterside shrine']
+};
+function settlementBlueprint(t){
+ const [settlementClass,plan,purpose,water,landmark]=SETTLEMENT_PURPOSES[t.id];
+ const city=['city','capital'].includes(settlementClass),large=settlementClass==='large village';
+ return {id:t.id,settlementClass,plan,purpose,industry:purpose,population:city?settlementClass==='capital'?420:240:large?85:settlementClass==='town'?125:35,water,landmark,political:t.capital?'kingdom seat':'local council',defense:t.capital?'city gates and inner enclosure':city?'guarded roads':'local watch',trade:city?'regional hub':'local supply',terrain:t.kingdom==='khazdur'?'graded stone terraces':t.kingdom==='sylvaran'?'groves with connected clearings':'graded streets and cultivated edge',radius:city?60:large?44:38,center:[t.x,t.y],entrances:[],roads:[],districts:[],quarries:[]};
+}
+function authoredLots(t,count){
+ const city=t.kind==='city',large=SETTLEMENT_PURPOSES[t.id]?.[0]==='large village',slots=[];
+ // Slot coordinates are pre-expansion tiles. Each row faces the reserved street south of it.
+ const rows=city?[-12,-6,4,10,16]:large?[-12,-6,4]:[-6,4];
+ const cols=city?[-17,-11,-5,3,9,15]:large?[-11,-5,3,9]:[-11,-5,3];
+ for(const y of rows)for(const x of cols){if(city&&[-6,4].includes(y)&&[-5,3].includes(x))continue;slots.push([t.x+x,t.y+y]);}
+ // Elven cities use four inhabited groves around a broad, unbuilt heart.
+ if(t.kingdom==='sylvaran'&&city){slots.length=0;for(const [cx,cy]of [[-12,-8],[9,-8],[-12,10],[9,10]])for(const dy of [-3,3])for(const dx of [-6,0,6])slots.push([t.x+cx+dx,t.y+cy+dy]);slots.push([t.x-18,t.y-19]);}
+ if(slots.length<count)throw new Error('Authored settlement has too few lots: '+t.id);
+ return slots.slice(0,count);
+}
+function organicLots(t,count){return authoredLots(t,count);}
+function plannedRoad(a,b,width=1.4,paved=false,settlement=null){
+ const dx=b[0]-a[0],dy=b[1]-a[1],d=Math.hypot(dx,dy);if(!d)return;
+ organicRoads.push({a:[...a],b:[...b],na:[-dy/d,dx/d],nb:[-dy/d,dx/d],width,paved,settlement});
+}
+const settlementPlans=new Map();
+function planPhysicalSettlements(world){
+ for(const t of SETTLEMENTS){const plan=settlementBlueprint(t);settlementPlans.set(t.id,plan);t.settlementClass=plan.settlementClass;
+  for(const b of world.buildings.filter(b=>b.settlement===t.id)){
+   if(!t.legacy)b.planFacing=Math.abs(b.x-(t.x-15))<1?'east':'south';
+   if(b.archetype==='castle'){b.x=t.x-24;b.y=t.y-78;b.w=49;b.h=39;b.planFacing='south';b.civilCastle=true;}
+  }
+ }
+}
+function buildPlannedStreets(world){
+ for(const t of SETTLEMENTS){const plan=settlementPlans.get(t.id),city=t.kind==='city',large=plan.settlementClass==='large village',radius=plan.radius,paved=city||plan.settlementClass==='town';
+  const local=world.buildings.filter(b=>b.settlement===t.id),addRoad=(a,b,width,role)=>{plannedRoad(a,b,width,paved,t.id);plan.roads.push({a,b,width,role});};
+  const cx=t.x+.5,cy=t.y+.5;
+  addRoad([cx-radius,cy],[cx+radius,cy],city?2.7:1.5,'main road');
+  addRoad([cx,cy-(t.capital?40:radius)],[cx,cy+radius],t.capital?3.1:1.6,'civic approach');
+  plan.entrances=[[cx-radius,cy],[cx+radius,cy],[cx,cy+radius]];
+  if(!t.legacy){
+   for(const b of local.filter(b=>b.archetype!=='castle')){
+    const y=b.y+b.h+2.5;
+    if(t.kingdom==='sylvaran'&&b.y<t.y-40){addRoad([b.service.x+.5,y],[cx-39,y],1.2,'grove approach');addRoad([cx-39,y],[cx-39,cy],1.2,'grove approach');}else addRoad([cx-radius+3,y],[cx+radius-3,y],city?1.35:1.0,'district street');
+    plannedRoad([b.service.x+.5,b.service.y+.5],[b.service.x+.5,y],1,paved,t.id);
+    b.district=['inn','shop','hall','temple'].includes(b.archetype)?'civic and market':b.archetype==='forge'||b.archetype==='mine'?'craft and industry':'residential';
+   }
+  }else for(const b of local){const door=[b.service.x+.5,b.service.y+.5];curveRoad(cx,cy,...door,1.2,paved);}
+  plan.districts=['civic and market','residential',...(city||large?['craft and industry']:[])];
+ }
+ // Named trade connections, through the river crossings, instead of an arbitrary minimum tree.
+ const links=[['briarhaven','willowcross'],['willowcross','stoneford'],['willowcross','crownreach'],['stoneford','greyhaven'],['crownreach','greyhaven'],['greyhaven','copperdelve'],['copperdelve','ironhollow'],['ironhollow','stonehearth'],['ironhollow','deepforge'],['deepforge','stonehearth'],['greyhaven','fernwatch'],['fernwatch','aelindor'],['aelindor','silverbrook'],['silverbrook','moonwillow'],['deepforge','moonwillow']];
+ for(const [aid,bid]of links){const a=SETTLEMENTS.find(t=>t.id===aid),b=SETTLEMENTS.find(t=>t.id===bid),pa=settlementPlans.get(aid),pb=settlementPlans.get(bid),toward=(p,t)=>p.entrances.reduce((best,q)=>Math.hypot(q[0]-t.x,q[1]-t.y)<Math.hypot(best[0]-t.x,best[1]-t.y)?q:best),aa=toward(pa,b),bb=toward(pb,a);curveRoad(...aa,...bb,1.7);}
+ roadBuckets=null;
+}
 const organicRoads=[];
 function curveRoad(ax,az,bx,bz,width=1.1,paved=false){
  const points=planVillageLane([ax,az],[bx,bz]);
@@ -24,13 +91,9 @@ function arrangeBriarhaven(world){const plan={inn:[30,32,11,10],shop:[49,35,9,8]
 const terrainBeforeOrganic=expandedTerrain;
 expandedTerrain=function(x,z){if(!inWorld())return terrainBeforeOrganic(x,z);return worldWaterSurface(x,z)?3:0;};
 const setupBeforeOrganic=setupExpandedWorld;
-setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.worldScale};setupBeforeOrganic();if(organicRoads.length)return;const world=worldScenes.overworld;expandPhysicalWorld(world);arrangeBriarhaven(world);setupVillageKitchen(world);
+setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.worldScale};setupBeforeOrganic();if(organicRoads.length)return;const world=worldScenes.overworld;expandPhysicalWorld(world);arrangeBriarhaven(world);setupVillageKitchen(world);planPhysicalSettlements(world);
  for(const b of world.buildings){if(!b.service)continue;const seg=Math.max(1,Math.round(b.w/2)),xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg;b.service.x=Math.round(xx-.5);b.service.y=Math.round(b.y+b.h);}
- // One connected inter-town network; every lane is routed around real obstacles.
- const connected=[SETTLEMENTS.find(t=>t.id==='briarhaven')],remaining=SETTLEMENTS.filter(t=>t.id!=='briarhaven');
- while(remaining.length){let best=null;for(const a of connected)for(const b of remaining){const d=Math.hypot(a.x-b.x,a.y-b.y);if(!best||d<best.d)best={a,b,d};}curveRoad(best.a.x+.5,best.a.y+.5,best.b.x+.5,best.b.y+.5,1.3);connected.push(best.b);remaining.splice(remaining.indexOf(best.b),1);}
- for(const t of SETTLEMENTS){const local=world.buildings.filter(b=>b.settlement===t.id),junctions=[[t.x+.5,t.y+.5]];local.sort((a,b)=>Math.hypot(a.service.x-t.x,a.service.y-t.y)-Math.hypot(b.service.x-t.x,b.service.y-t.y));for(const b of local){const door=[b.service.x+.5,b.service.y+.5],join=junctions.reduce((best,p)=>Math.hypot(p[0]-door[0],p[1]-door[1])<Math.hypot(best[0]-door[0],best[1]-door[1])?p:best);curveRoad(...join,...door,.95,t.kind==='city');junctions.push(door);}}
- for(const [a,b]of [[[42.5,51.5],[42.5,105.5]],[[42.5,51.5],[28.5,63.5]],[[42.5,51.5],[165.5,24.5]],[[42.5,105.5],[165.5,135.5]]])curveRoad(...a,...b,1.15);
+ buildPlannedStreets(world);
  clearStreetObstacles(world);plantSettlementGroves(world);dressSettlementSites(world);populateWalkInRooms(world);resetLandSurface();realmNavigation.clear();const resuming=resume.scale===3&&resume.scene==='overworld';restoreWalkInDoors(world,resuming?resume:null);if(resuming)activateScene('overworld',resume.x,resume.y,false);
 };
 function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','ore','prop'].includes(o.type))continue;const conflicts=(x,z)=>worldWaterDistance(x+.5,z+.5)<1.5||world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&z>=b.y-1&&z<b.y+b.h+1)||organicRoads.some(seg=>Math.abs((seg.a[0]+seg.b[0])/2-x)<3&&Math.abs((seg.a[1]+seg.b[1])/2-z)<3&&roadSegmentDistance(x+.5,z+.5,seg)<seg.width+.45);if(!conflicts(o.x,o.y))continue;let found=false;for(let radius=2;radius<=12&&!found;radius+=2)for(let i=0;i<16&&!found;i++){const x=Math.round(o.x+Math.cos(i*Math.PI/8)*radius),z=Math.round(o.y+Math.sin(i*Math.PI/8)*radius);if(!expandedWater(x,z)&&!conflicts(x,z)&&!world.objects.some(p=>p!==o&&p.x===x&&p.y===z)){Object.assign(o,{x,y:z,homeX:x,homeY:z,drawX:x,drawY:z});found=true;}}}}

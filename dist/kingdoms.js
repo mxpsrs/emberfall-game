@@ -53,7 +53,7 @@ function buildKingdoms(){
  if(kingdomsReady)return;sceneSizes.overworld=[384,256];
  const savedScene=currentScene,savedX=s.x,savedY=s.y;activateScene('overworld',14,17,false);
  for(const t of SETTLEMENTS){connectRealmRoad(96,112,t.x,t.y);if(t.legacy)continue;
-  const count=t.kind==='city'?25:5,lots=organicLots(t,count);
+  const count=t.kind==='city'?25:SETTLEMENT_PURPOSES[t.id]?.[0]==='large village'?12:6,lots=organicLots(t,count);
   for(let i=0;i<count;i++){const [x,y]=lots[i];
    const kind=i===0?'inn':i===1?'shop':i===2?'forge':i===3?'hall':i===4?'temple':i===5&&t.kingdom==='khazdur'?'mine':'house';realmBuilding(t,i,x,y,kind,4+(i%7===0?1:0),4);
   }
@@ -84,7 +84,7 @@ function buildKingdoms(){
 const setupBorderWorld=setupExpandedWorld;
 setupExpandedWorld=function(){const id=s.sceneId,x=s.x,y=s.y;setupBorderWorld();buildKingdoms();if(id&&worldScenes[id])activateScene(id,x,y,false);};
 const oldRegionInfo=regionInfo;
-regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===info.building.kingdom).name];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+t.kind];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [k.name,k.description];};
+regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===info.building.kingdom).name];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+(t.settlementClass||t.kind)];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [k.name,k.description];};
 expandedMap=function(page=0){
  if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Leave to return to the roads between kingdoms.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
  const k=KINGDOMS[page%3],places=SETTLEMENTS.filter(t=>t.kingdom===k.id);

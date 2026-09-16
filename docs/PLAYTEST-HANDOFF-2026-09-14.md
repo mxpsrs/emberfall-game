@@ -1,3 +1,7 @@
+# World civilizations and HUD correction — 16 September 2026
+
+The owner requested authored settlements, usable castles/floors and surface quarries, and rejected the Phase 1 HUD arrangement. Read `WORLD-CIVILIZATIONS-2026-09-16.md` and `qa/world-overhaul-2026-09-16.json`. Thirteen settlement plans, three castles, 96 usable floor scenes and five excavated quarries are integrated with quests, maps and the shared catalog. The established panel arrangement is restored while Spirit/combat functionality remains. Actual return-stair interactions are tested; do not regress landings onto blocking stair objects. The local 138-script final matrix passes after repairs. Physical-device and sustained hosted-capacity limits still apply. This explicit request overrides the freeze only for its stated scope.
+
 # Identity Phase 1 — 16 September 2026
 
 The owner explicitly requested the combat/Spirit/Worship/HUD identity pass, overriding the development freeze for this scope. Read `IDENTITY-PHASE-1-2026-09-16.md` and its QA matrix before continuing. One attuned passive replaces collection-wide stacking; saved Spirit resonance and the new HUD are in place. Do not begin the separate Skills/Magic/Equipment/Tutorial overhaul without that next request.

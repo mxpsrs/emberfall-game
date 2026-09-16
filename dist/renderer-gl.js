@@ -44,7 +44,7 @@ void main(){
   vec3 earth=mix(vec3(.31,.28,.22),vec3(.46,.41,.32),noise(p*3.5));
   float scree=mountain*smoothstep(.58,.82,noise(p*.23))*.42;
   col=mix(col,earth,max(max(bank*.82,(1.0-smoothstep(.78,.97,n.y))*.7),scree));
-  if(vUV.y>.5){vec3 dirt=mix(vec3(.40,.335,.25),vec3(.47,.405,.31),noise(p*3.5));dirt*=.96+.055*noise(p*25.0);dirt+=vec3(.055,.052,.044)*smoothstep(.87,.97,noise(p*18.0));vec3 paving=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;dirt=mix(dirt,paving,vColor.g);col=mix(col,dirt,smoothstep(.05,.9,vColor.r));}
+  if(vUV.y>.5){vec3 dirt=mix(vec3(.40,.335,.25),vec3(.47,.405,.31),noise(p*3.5));dirt*=.96+.055*noise(p*25.0);dirt+=vec3(.055,.052,.044)*smoothstep(.87,.97,noise(p*18.0));vec3 paving=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;dirt=mix(dirt,paving,vColor.g);vec3 cutRock=mix(vec3(.43,.44,.40),vec3(.64,.63,.56),noise(p*1.6));cutRock*=.94+.06*sin(vWorld.y*16.0)+.05*noise(p*22.0);dirt=mix(dirt,cutRock,vColor.b);col=mix(col,dirt,smoothstep(.05,.9,vColor.r));}
  }
  else if(vMaterial<2.5&&vMaterial>1.5){float earth=noise(p*.65)*.62+noise(p*4.5)*.38;col=mix(vec3(.28,.285,.255),vec3(.39,.375,.31),earth);col*=.96+.075*noise(p*18.0);}
  else if(vMaterial<3.5&&vMaterial>2.5){col=texture2D(uAtlas,(vec2(5.0,0.0)+(vec2(2.0)+fract(p*.5)*508.0)/512.0)/8.0).rgb*.83;}
@@ -301,6 +301,7 @@ function realmTerrainEntries(gpu){
  for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-cell/2,z=c.z-cell/2,samples=new Map(),sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),road:roadInfluence(a,b),shore:[shoreDistance(a,b),1]};samples.set(key,v);}return v;};
   for(let zz=z;zz<Math.min(z+cell,inWorld()?mh+128:mh);zz++)for(let xx=x;xx<Math.min(x+cell,inWorld()?mw+128:mw);xx++){
    if(typeof CREATURE_LAIRS!=='undefined'&&CREATURE_LAIRS[currentScene]&&worldWall(xx,zz))continue;
+   if(typeof civilStairWellAt==='function'&&civilStairWellAt(xx+.5,zz+.5))continue;
    const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=inWorld()&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
    if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2]));flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),1,vertices.map(v=>v.road),vertices.map(v=>v.shore));}else realmFaceData(data,points,'#808080',null,type+1);}}
    if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,inWorld()?corners.map(([a,b])=>[worldWaterDistance(a,b),0]):null);}

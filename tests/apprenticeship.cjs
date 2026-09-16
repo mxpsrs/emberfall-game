@@ -10,7 +10,7 @@ for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven
 vm.runInContext(fs.readFileSync(root+'game-icons.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync(root+'equipment-interface.js','utf8'),ctx);
 
-for(const f of ['world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','quest-celebration','world-atlas','tutorial-journal','tutorial-vale','tutorial-guidance'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['world-options','map-icons','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','civilization-world','quest-celebration','world-atlas','tutorial-journal','tutorial-vale','tutorial-guidance'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 
 vm.runInContext(`
 let randomSeed=91482;Math.random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
