@@ -424,11 +424,22 @@ function realmJointMatrix(v){
 function realmSkeletonPose(a,clip,frame,blend,baseClip,baseFrame,holdStaff=false){
  const motion=a.clips[clip];if(!motion.trs){const offset=Math.round(frame)*a.count*12;return new Float32Array(motion.m.subarray(offset,offset+a.count*12));}
  const rig=a.rig,global=[],pose=new Float32Array(a.count*12),v=new Float32Array(10),base=new Float32Array(10);
+ // An upright staff needs a bent, outward resting arm. The source idle keeps
+ // the wrist beside the hip, placing the shaft through the upper arm.
+ const staffRest=holdStaff?((clip==='staffIdle'?blend:0)+(baseClip==='staffIdle'?1-blend:0)):0;
+ const turnBasis=(m,axis,angle)=>{const c=Math.cos(angle),s=Math.sin(angle),a=axis===0?1:0,b=axis===0?2:1;for(let k=0;k<3;k++){const x=m[a*4+k],y=m[b*4+k];m[a*4+k]=c*x-s*y;m[b*4+k]=s*x+c*y;}};
  for(let bone=0;bone<a.joints;bone++){
   sampleRealmJoint(motion,frame,bone,a.joints,v);
   if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,bone,a.joints,base);const sign=v[3]*base[3]+v[4]*base[4]+v[5]*base[5]+v[6]*base[6]<0?-1:1;for(let j=0;j<10;j++)v[j]=base[j]*(1-blend)+v[j]*blend*(j>=3&&j<=6?sign:1);const length=Math.hypot(v[3],v[4],v[5],v[6]);for(let j=3;j<7;j++)v[j]/=length;}
   if(holdStaff&&['walk','run','idle'].includes(clip)&&/^(index|middle|ring|pinky|thumb)_.*_r$/.test(rig.names[bone]))sampleRealmJoint(a.clips.staffIdle,0,bone,a.joints,v);
   const local=realmJointMatrix(v),parent=rig.parents[bone];global.push(parent<0?local:affineMultiply(global[parent],local));
+  if(staffRest){const m=global[bone],name=rig.names[bone];
+   if(name==='upperarm_r')turnBasis(m,2,-.35*staffRest);
+   else if(name==='lowerarm_r')turnBasis(m,0,-1.1*staffRest);
+   // Preserve the authored wrist orientation, so the palm socket and fingers
+   // keep the staff upright as the elbow moves away from the body.
+   else if(name==='hand_r'){turnBasis(m,0,1.1*staffRest);turnBasis(m,2,.35*staffRest);}
+  }
   pose.set(affineMultiply(global[bone],rig.bind.subarray(bone*12,bone*12+12)),bone*12);
  }
  pose.set(global[rig.head],a.head*12);pose.set(affineMultiply(global[rig.right],rig.rightGrip),a.right*12);pose.set(affineMultiply(global[rig.left],rig.leftGrip),a.left*12);
