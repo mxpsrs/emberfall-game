@@ -98,7 +98,7 @@ function realmNav(){
  // village should not evaluate water and walls across the entire continent.
  cells.fill(2);
  for(const b of buildings)for(let y=Math.floor(b.y);y<b.y+b.h;y++)for(let x=Math.floor(b.x);x<b.x+b.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;
- for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){cells[o.y*w+o.x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
+ for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){if(!o.propKind)cells[o.y*w+o.x]=1;if(o.propKind&&typeof propCollisionTiles==='function')for(const [x,y]of propCollisionTiles(o))if(x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
 function realmCellBlocked(nav,id){let value=nav.cells[id];if(value===2){const x=id%nav.w,y=Math.floor(id/nav.w);value=Number(!!(worldWall(x,y)||water(x,y)));nav.cells[id]=value;}return value;}

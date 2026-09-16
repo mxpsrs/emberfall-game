@@ -11,7 +11,7 @@ vm.runInContext(`
 function sharedNavigation(o,scene){
  const world=worldScenes[scene],previous=currentScene;currentScene=scene;
  const left=Math.round(o.homeX??o.x)-21,top=Math.round(o.homeY??o.y)-21,width=43,cells=[];
- const props=new Map();for(const p of world.objects.filter(p=>!fighter(p)&&!p.characterSprite&&!p.collected&&!p.walkThrough)){props.set(p.x+':'+p.y,p);if(p.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<p.collisionRadius+.3)props.set((p.x+dx)+':'+(p.y+dy),p);}
+ const props=new Map();for(const p of world.objects.filter(p=>!fighter(p)&&!p.characterSprite&&!p.collected&&!p.walkThrough)){if(!p.propKind)props.set(p.x+':'+p.y,p);if(p.propKind)for(const [x,y]of propCollisionTiles(p))props.set(x+':'+y,p);if(p.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<p.collisionRadius+.3)props.set((p.x+dx)+':'+(p.y+dy),p);}
  try{for(let y=top;y<top+width;y++)for(let x=left;x<left+width;x++){
   const prop=props.get(x+':'+y),wall=worldWall(x,y)||lairRockBlocked(scene,x,y)||cavePassageBlocked(scene,x,y),decor=lairDecorBlocked(scene,x,y),building=world.buildings.some(b=>inBuilding(b,x,y));
   const sight=wall||building||prop&&(prop.type==='tree'||prop.blocksSight&&!prop.penFence&&!/fence/i.test(prop.name||''));

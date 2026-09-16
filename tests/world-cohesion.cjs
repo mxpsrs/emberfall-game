@@ -9,8 +9,8 @@ for(const scene of ['overworld','tutorial']){
   for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(worldWaterDistance(x+.5,y+.5)<0)wet.push(b.name+' at '+x+','+y);
   if(!b.walkIn||!b.service)continue;rooms++;
   const props=world.objects.filter(o=>o.interiorBuilding===b.service.destination&&o.furnished);
-  for(const o of props){assert(o.x>b.x&&o.x<b.x+b.w-1&&o.y>b.y&&o.y<b.y+b.h-1,o.name+' outside '+b.name);if(o.type==='range'){ranges++;assert.equal(Math.min(o.x-b.x,b.x+b.w-1-o.x,o.y-b.y,b.y+b.h-1-o.y),1,'range against a wall');}}
-  for(let i=0;i<props.length;i++)for(let j=i+1;j<props.length;j++)assert(Math.hypot(props[i].x-props[j].x,props[i].y-props[j].y)>=furnishingRadius(props[i])+furnishingRadius(props[j])+.09,'overlapping furniture in '+b.name);
+  for(const o of props){assert(o.x>b.x&&o.x<b.x+b.w-1&&o.y>b.y&&o.y<b.y+b.h-1,o.name+' outside '+b.name);if(o.type==='range'){ranges++;assert(o.placement?.wall,'range has a wall anchor');}}
+  for(let i=0;i<props.length;i++)for(let j=i+1;j<props.length;j++)assert(!propBoxesOverlap(propBox(props[i]),propBox(props[j])),'overlapping furniture in '+b.name);
  }
 }
 assert.deepEqual(wet,[],'all building footprints stay dry');assert(ranges>=2,'both mainland and tutorial ranges checked');assert(rooms>=180);

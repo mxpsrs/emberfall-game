@@ -30,7 +30,7 @@ function worldLightSources(scene=currentScene){
   if(o.interiorBuilding||inside(o.x+.5,o.y+.5)||o.collected||o.dead>time||Number.isFinite(o.expiresAt)&&o.expiresAt<=Date.now())continue;
   if(o.type==='camp')add(o.x+.5,.65,o.y+.5,13,[1,.65,.32],1.8);
   else if(o.streetLantern&&night>0)add(o.x+.5,2.75,o.y+.5,19,[1,.80,.51],1.7*night);
-  else if(o.name==='Square lantern'&&night>0)add(o.x+.9,1.95,o.y+.5,12,[1,.75,.43],1.5*night);
+  else if(o.name==='Square lantern'&&night>0){const yaw=o.placement?.yaw||0;add(o.x+.5+Math.cos(yaw)*.4,1.95,o.y+.5-Math.sin(yaw)*.4,12,[1,.75,.43],1.5*night);}
   else if(o.type==='range'||o.type==='furnace')add(o.x+.5,1,o.y+.5,9,[1,.61,.28],1.5);
  }
  for(const o of w?.decor||[]){if(o.kind==='hearth'&&!inside(o.x,o.z))add(o.x,.55,o.z,13,[1,.65,.32],1.8);else if(o.kind==='crystal')add(o.x,1.4,o.z,8,[.35,.65,1],.9);}
