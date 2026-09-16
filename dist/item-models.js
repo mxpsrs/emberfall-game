@@ -174,7 +174,7 @@ function buildMiscItem(r,id){
  if(id==='bread'||id==='breadDough'){itemOval(r,0,0,0,.86,.48,.52,id==='bread'?'#b87b3d':'#ddd0aa',10);if(id==='bread')for(const x of [-.23,0,.23])itemRod(r,[x-.05,.19,.13],[x+.06,.19,-.13],.024,'#e4b873',5);return;}
  if(id==='flour'){itemProfile(r,0,-.03,0,.66,.7,.50,[[-.5,.72],[-.2,1],[.27,.86],[.5,.60]],'#bda580',8);itemProfile(r,0,.34,0,.42,.07,.33,[[-.5,1],[.5,1]],'#e5ddc4',8);return;}
  if(id==='jugWater'){itemProfile(r,0,-.06,0,.55,.72,.52,[[-.5,.64],[-.25,1],[.2,.84],[.5,.54]],'#a97b55',10);itemProfile(r,0,.31,0,.30,.06,.30,[[-.5,1],[.5,1]],'#527e91',10);itemPath(r,[[.19,.19,0],[.42,.2,0],[.45,-.17,0],[.23,-.27,0]],.05,'#a97b55');return;}
- if(id==='oakStaff'){itemPath(r,[[0,-.65,0],[.02,.19,0],[-.05,.48,0],[.03,.63,0],[.17,.57,0]],.045,'#8d6845');itemOval(r,.02,.51,0,.23,.27,.23,'#78aaa8',6);return;}
+ if(id==='oakStaff'||id==='mysticStaff'){itemPath(r,[[0,-.65,0],[.02,.19,0],[-.05,.48,0],[.03,.63,0],[.17,.57,0]],.045,'#8d6845');itemOval(r,.02,.51,0,.23,.27,.23,'#78aaa8',6);return;}
  if(id==='bones'){for(const [a,b]of [[[-.35,-.25,0],[.33,.24,0]],[[-.32,.28,.03],[.32,-.25,.03]]]){itemRod(r,a,b,.048,'#d7cfb2');for(const p of [a,b])for(const dx of [-.047,.047])itemOval(r,p[0]+dx,p[1],p[2],.12,.13,.12,'#e6dec5',6);}return;}
  if(id==='fang'){itemProfile(r,0,0,0,.39,.88,.29,[[-.5,.05],[-.25,.32],[.15,.84],[.42,1],[.5,.75]],'#e0d4b1',7);itemProfile(r,0,.37,0,.38,.18,.30,[[-.5,1],[.5,.83]],'#a49b82',7);return;}
  if(id==='ashes'){for(const [x,y,z,w,c]of [[0,.05,0,.85,'#969589'],[-.20,.10,.08,.36,'#b7b5a7'],[.18,.08,-.05,.29,'#686d68']])itemProfile(r,x,y,z,w,.13,w*.65,[[-.5,1],[0,.8],[.5,.10]],c,7);for(const [x,z]of [[-.18,.15],[.18,.11],[.07,-.10]])itemBlock(r,x,.13,z,.10,.035,.04,'#4b4f4b');return;}
@@ -188,7 +188,35 @@ function buildMiscItem(r,id){
  if(id==='coins'){for(const [x,y,z]of [[-.17,.04,.07],[.16,.04,-.10],[.10,.10,-.10],[-.03,.04,.26]]){itemProfile(r,x,y,z,.33,.055,.33,[[-.5,1],[.5,1]],'#d8b14d',10);itemProfile(r,x,y+.03,z,.24,.012,.24,[[-.5,1],[.5,1]],'#f0d176',10);}return;}
  return false;
 }
+function buildArcItem(r,id){
+ if(id==='scholarAmulet')id='whisperPendant';if(id==='temperedRing')id='veilbreakerRing';if(id==='scholarMantle')id='wardkeeperCape';
+ const silver='#bfcad5',purple='#a778cf',teal='#6aafa9';
+ const loop=(radius,y,color,vertical=false)=>{const points=Array.from({length:17},(_,i)=>{const a=i*Math.PI/8;return vertical?[Math.cos(a)*radius,y+Math.sin(a)*radius,0]:[Math.cos(a)*radius,y,Math.sin(a)*radius];});itemPath(r,points,.026,color);};
+ if(id==='veyrOrb'){
+  itemOval(r,0,.27,0,.38,.38,.38,'#6c4696',12);itemOval(r,-.06,.34,.14,.13,.15,.05,'#d6b5f2',7);
+  for(const side of [-1,1]){const points=Array.from({length:11},(_,i)=>{const a=-1.1+i*.23;return [side*(.12+Math.cos(a)*.17),.27+Math.sin(a)*.30,.015];});itemPath(r,points,.026,silver);}
+  itemRod(r,[0,-.06,0],[0,.05,0],.045,'#58515f');loop(.24,.27,silver);return true;
+ }
+ if(id==='rellanSignet'||id==='veilbreakerRing'){
+  loop(.26,0,id==='rellanSignet'?'#c5a46b':silver,true);itemBlock(r,0,.26,.015,.27,.20,.09,id==='rellanSignet'?'#aa8350':'#657f8e');
+  itemOval(r,0,.26,.08,.12,.12,.04,id==='rellanSignet'?'#cab787':teal,6);return true;
+ }
+ if(id==='whisperPendant'){
+  loop(.35,.12,silver,true);itemPlate(r,[[-.13,-.20,0],[.13,-.20,0],[.17,-.39,0],[0,-.58,0],[-.17,-.39,0]],silver,.04);itemOval(r,0,-.36,.05,.17,.22,.08,teal,6);return true;
+ }
+ if(id==='wardkeeperCape'){
+  itemPlate(r,[[-.26,.6,0],[.26,.6,0],[.45,-.55,.12],[.12,-.48,.11],[0,-.62,.12],[-.45,-.55,.12]],'#334953',.035);
+  itemPath(r,[[-.26,.6,.03],[-.45,-.55,.15],[0,-.62,.16],[.45,-.55,.15],[.26,.6,.03]],.021,silver);
+  for(const side of [-1,1]){for(const x of [-.12,0,.12])itemOval(r,x,.10+(x===0?.15:0),side*.055,.065,.09,.025,teal,6);itemPath(r,[[-.12,.10,side*.055],[0,.25,side*.055],[.12,.10,side*.055]],.012,silver);}return true;
+ }
+ if(id==='ironhollowBelt'){
+  for(const y of [-.10,.10])loop(.39,y,'#86623e');itemBlock(r,0,0,.41,.21,.25,.07,silver);itemBlock(r,.32,-.12,.28,.23,.35,.15,'#806547');itemRod(r,[-.28,-.18,.27],[-.28,.23,.27],.035,silver);return true;
+ }
+ if(id==='memoryShard'){itemProfile(r,0,0,0,.5,.9,.32,[[-.5,.35],[-.12,1],[.2,.65],[.5,.08]],'#85bfc3',5);itemRod(r,[-.13,-.1,.18],[.06,.25,.10],.022,'#d0e9db');return true;}
+ if(id==='forgedOrders'){itemPlate(r,[[-.36,-.48,0],[.35,-.48,0],[.35,.48,0],[-.3,.44,0]],'#c7b991',.025);for(const y of [-.15,0,.15])itemRod(r,[-.2,y,.03],[.20,y,.03],.012,'#70634f');itemOval(r,.08,-.28,.05,.2,.2,.04,'#974a46',7);return true;}return false;
+}
 function buildSupplyItem(r,id,item){
+ if(buildArcItem(r,id))return {lie:!['veyrOrb','ironhollowBelt'].includes(id),arc:true};
  if(id==='rangerCap'){briarEmit(r,rebuiltModels.Ranger_Cap,briarTransform(0,0,0));return {lie:false,authored:true};}
  if(item.style==='ranged'&&item.slot==='weapon'){briarEmit(r,archerBowMesh(id),briarTransform(0,0,0));beamArt(r,ARCHER_BOW.top,ARCHER_BOW.bottom,.0054,'#d4c9ac',4);return {lie:true,authored:true};}
  if(typeof isAmmunition==='function'&&isAmmunition(id)){for(let i=0;i<3;i++)briarEmit(r,rangedItemMesh(id,true),briarTransform((i-1)*.14,(i%2)*.1,0));return {lie:true,authored:true};}

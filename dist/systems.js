@@ -80,6 +80,18 @@ const ITEMS={
  ashes:{name:'Ashes',icon:9,desc:'Cool ashes left after a log fire burns out.'},
  mageRobe:{name:'Mage robe',icon:15,slot:'body',magic:2,desc:'Adds 2 magic damage. Offers no armor protection.'}
 };
+// Story wearables use normal inventory, bank and equipment ownership.
+for(const row of [['ring','Ring'],['cape','Cape'],['belt','Tool belt']])if(!EQUIPMENT_SLOTS.some(([slot])=>slot===row[0]))EQUIPMENT_SLOTS.push(row);
+Object.assign(ITEMS,{
+ rellanSignet:{name:'Rellan’s Signet Ring',slot:'ring',icon:14,armor:1,bound:true,tradeable:false,desc:'Defence +1. Rellan’s early signet; recover it from him if lost. Non-tradeable; bankable.'},
+ ironhollowBelt:{name:'Ironhollow Miner’s Belt',slot:'belt',icon:9,miningSuccess:.02,bound:true,tradeable:false,desc:'Adds 2 percentage points to Mining success, within the normal success cap. Your fitted tools remain on the belt. Recover from Hesta. Non-tradeable; bankable.'},
+ whisperPendant:{name:'Whisper Pendant',slot:'neck',icon:14,magicAccuracy:2,worshipAccuracy:2,bound:true,tradeable:false,desc:'Magic accuracy +2; Worship accuracy +2. Reacts softly near disturbed memories. Recover from Ilyra. Non-tradeable; bankable.'},
+ wardkeeperCape:{name:'Wardkeeper Cape',slot:'cape',icon:15,armor:3,magicDefense:4,bound:true,tradeable:false,desc:'Defence +3; Magic defence +4. The silver three-point Wardkeeper emblem. Recover from Edda. Non-tradeable; bankable.'},
+ veilbreakerRing:{name:'Veilbreaker Ring',slot:'ring',icon:14,armor:2,attackBonus:1,rangedAccuracy:1,magicAccuracy:1,bound:true,tradeable:false,desc:'Defence +2; melee, ranged and Magic accuracy +1. Extends Spirit insight by one second. Recover from Alaric. Non-tradeable; bankable.'},
+ memoryShard:{name:'Memory Shard',icon:13,bound:true,tradeable:false,desc:'A physical fragment recovered at Hollow Shrine. Bring it to Maerin; Ilyra can recover it before handover.'},
+ forgedOrders:{name:'Forged Royal Orders',icon:13,bound:true,tradeable:false,desc:'Paid raiders’ dispatch. Hand to Rellan; its seal, payment and cargo evidence remain in your journal.'},
+ veyrOrb:{name:'Veyr’s Orb',slot:'weapon',style:'magic',icon:3,magicAccuracy:18,power:0,magic:0,range:6,attackTicks:5,requirements:{Magic:20},memoryFray:6,tradeable:true,desc:'Magic 20. Accuracy +18; normal spell damage and relic costs. Successful hits fracture the target’s memory for 4 seconds, adding +6 accuracy to your next Orb casts against it. A rare 1/250 Veyr drop.'}
+});
 const MODULAR_ARMOR_SETS=[{id:'bronze',name:'Bronze',source:'B',level:1,cost:28,armor:1},{id:'iron',name:'Iron',source:'I',level:5,cost:55,armor:2},{id:'gold',name:'Gold',source:'G',level:10,cost:95,armor:2},{id:'mithril',name:'Mithril',source:'M',level:20,cost:180,armor:3},{id:'dragonslayer',name:'Dragonslayer',source:'DS',level:35,cost:360,armor:4}];
 const MODULAR_ARMOR_PARTS=[['head','Headgear','headgear'],['shoulders','Shoulder','shoulder pads'],['body','Chestplate','chestplate'],['hands','Gauntlets','gauntlets'],['legs','Legguards','legguards'],['feet','Boots','boots']];
 const modularShopStock=[];
@@ -147,7 +159,8 @@ function itemActions(id,fromBag=false){
  else if(id==='ore'||id==='ironBar')actions.push([id==='ore'?'Smelt':'Smith arrowheads',workPracticeForge]);
  else if(id==='arrowheads')actions.push(['Make arrows',finishArrows]);
  else actions.push(['Examine',()=>{toast(item.name+': '+item.desc);return true;}]);
- if(!worn)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
+ if(!worn&&item.bound)actions.push(['Destroy one',()=>{dialog('Destroy '+item.name+'?','<p>Quest rewards can be recovered from their giver. Destroy this copy?</p>',[['Destroy',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1||window.playerTrade)return;bag[id]--;save();renderUI();close();}],["Keep it",close]]);return false;}]);
+ if(!worn&&!item.bound)actions.push(['Drop one',()=>{const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0);if(spare<1)return false;bag[id]--;groundDrop({[id]:1});renderUI();save();toast('Dropped '+item.name+'.');return true;}]);
  return actions;
 }
 function primaryItemAction(id,fromBag=false,index=null){
@@ -193,7 +206,7 @@ function renderToolBelt(){
 }
 function renderSpells(){
  pageControls(Object.keys(SPELLS).length,4);const panel=$('panel');panel.innerHTML='<div class="questhead"><h2>Spellbook</h2><small>Magic '+lv('Magic')+'</small></div><p class="desc">'+s.bag.runes+' mind relics · Staff '+(combatStyle()==='magic'?'equipped':'required')+'</p><div id="spellList" class="spelllist"></div>';
- for(const [id,spell]of pageItems(Object.entries(SPELLS),4)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+Object.entries(spell.ingredients).map(([id,n])=>n+' '+ITEMS[id].name).join(' + ')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;equipItem('oakStaff');toast(spell.name+' selected.');};$('spellList').appendChild(b);}
+ for(const [id,spell]of pageItems(Object.entries(SPELLS),4)){const b=document.createElement('button');const locked=lv('Magic')<spell.level;b.className='spellcard'+(s.spell===id?' active':'');b.disabled=locked;b.innerHTML='<span class="spellorb" style="--spell:'+spell.color+'">◆</span><span><strong>'+spell.name+'</strong><small>'+spell.desc+'</small><small>Magic '+spell.level+' · '+Object.entries(spell.ingredients).map(([id,n])=>n+' '+ITEMS[id].name).join(' + ')+' per cast'+(locked?' · Locked':'')+'</small></span>';b.onclick=()=>{s.spell=id;if(ITEMS[s.equipment.weapon]?.style!=='magic')chooseStyle('magic');save();renderUI();toast(spell.name+' selected.');};$('spellList').appendChild(b);}
 }
 function renderCombatBar(){
  $('combatButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.style===combatStyle()));
@@ -235,8 +248,8 @@ function performAttack(o){
  const accurate=Math.random()<playerAccuracy(o,style),rolled=accurate||o.type==='dummy'?Math.floor(Math.random()*(Math.max(1,maxHit)+1)):0;
  const damage=o.type==='dummy'||style==='ranged'&&accurate?Math.max(1,rolled):rolled;
  if(typeof playerHeading!=='undefined')playerHeading=Math.atan2(o.x-px,o.y-py);
- lastAttack=time;playerAttackMotion={...combatMotion(style),style,weapon:s.equipment.weapon,ammo,started:time,color:spell.color};playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
- if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:spell.color,style,o,damage,focus,ammo,scene:currentScene,frame:s.character?.frame||'male',heading:Math.atan2(o.x-px,o.y-py),targetHeight:o.kind==='rat'?.32:o.combatRadius?Math.max(.7,o.combatRadius):.8,recoverable:style==='ranged'&&Math.random()>=.2,slow:style==='magic'?spell.slow||0:0});
+ lastAttack=time;playerAttackMotion={...combatMotion(style),style,weapon:s.equipment.weapon,ammo,started:time,color:s.equipment.weapon==='veyrOrb'?'#b995e1':spell.color};playerAttackReadyAt=time+actionDuration(o);facing=o.x<s.x?-1:1;
+ if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:s.equipment.weapon==='veyrOrb'?'#b995e1':spell.color,weapon:s.equipment.weapon,style,o,damage,focus,ammo,scene:currentScene,frame:s.character?.frame||'male',heading:Math.atan2(o.x-px,o.y-py),targetHeight:o.kind==='rat'?.32:o.combatRadius?Math.max(.7,o.combatRadius):.8,recoverable:style==='ranged'&&Math.random()>=.2,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
 function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}

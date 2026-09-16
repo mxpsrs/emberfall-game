@@ -181,7 +181,7 @@ const shopStock=[['fish',3,9],['arrows',20,10],['runes',20,14],['ironHelm',1,50]
 const shopPrices={herbs:3,logs:3,ore:4,fang:6,bones:4};
 function shop(){openTrade('shop');}
 function sell(id,price,quantity=1){
- const item=ITEMS[id];if(!item||!(price>0)||!(quantity>0))return false;
+ const item=ITEMS[id];if(!item||item.tradeable===false||!(price>0)||!(quantity>0))return false;
  const bag=item.slot?s.gear:s.bag,spare=(bag[id]||0)-(item.slot&&s.equipment[item.slot]===id?1:0),count=Math.min(spare,quantity===Infinity?quantity:Math.floor(quantity));
  if(!(count>0)||!Number.isFinite(count))return false;
  bag[id]-=count;receiveCoins(count*price);renderUI();save();return count;

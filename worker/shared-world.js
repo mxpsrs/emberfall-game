@@ -1,3 +1,4 @@
+import {rollRareBossLoot} from './boss-loot.js';
 import {questFightVisible} from './quest-fights.js';
 import {readWorldSnapshot} from './world-snapshot.js';
 import {advanceNpc,npcLineOfSight} from './npc-simulation.js';
@@ -14,9 +15,9 @@ function gear(s){return Object.values(s.equipment||{}).map(id=>catalog.items[id]
 function bonus(s,key){return gear(s).reduce((n,item)=>n+(item[key]||0),0);}
 function spiritPassive(s,key){return Object.entries(s.spirits||{}).reduce((n,[id,v])=>n+(v.state==='set'||v.readyAt&&v.readyAt<=Date.now()?catalog.spirits[id]?.passive?.[key]||0:0),key==='armor'&&s.spiritWardUntil>Date.now()&&s.spiritWardUntil<=Date.now()+8000?4:0);}
 function chance(attack,defense){return attack>defense?1-(defense+2)/(2*(attack+1)):attack/(2*(defense+1));}
-function rollHit(s,e,style,event={}){
+function rollHit(s,e,style,event={},now=Date.now()){
  const focus=s[style+'Training']||'balanced',skill=style==='melee'?'Attack':style==='ranged'?'Ranged':style==='magic'?'Magic':'Worship';
- const aim=style==='magic'?bonus(s,'magicAccuracy'):style==='ranged'?bonus(s,'attackBonus')+bonus(s,'rangedAccuracy'):bonus(s,'attackBonus');
+ const aim=style==='magic'?bonus(s,'magicAccuracy')+(s.equipment?.weapon==='veyrOrb'&&e.memoryFrayUntil>now?catalog.items.veyrOrb.memoryFray:0):style==='ranged'?(catalog.items[s.equipment?.weapon]?.attackBonus||0)+bonus(s,'rangedAccuracy'):style==='worship'?bonus(s,'worshipAccuracy'):bonus(s,'attackBonus');
  const a=(level(s,skill)+8+(focus==='accurate'?3:focus==='balanced'?1:0))*(64+aim),d=(e.defenseLevel+9)*64*(e.weak===style?.8:1);
  let max;if(style==='magic'){const spell=catalog.spells[s.spell]||catalog.spells.windStrike||Object.values(catalog.spells)[0];if(level(s,'Magic')<spell.level)return 0;max=spell.power;}
  else if(style==='worship'){const ids=[...new Set(event.spirits||[])].filter(id=>s.spirits?.[id]&&catalog.spirits[id]);max=ids.length>1?ids.length*12+Math.floor(level(s,'Worship')*.4):ids.length&&catalog.spirits[ids[0]].power?catalog.spirits[ids[0]].power+Math.floor(level(s,'Worship')*.2):0;}
@@ -25,7 +26,7 @@ function rollHit(s,e,style,event={}){
  if(e.type==='dummy')return Math.max(1,Math.floor(Math.random()*(max+1)));
  if(Math.random()>=chance(a,d))return 0;return Math.max(style==='ranged'?1:0,Math.floor(Math.random()*(max+1)));
 }
-function rollEnemy(s,e,style){const skill=style==='magic'?level(s,'Magic')*.7+level(s,'Defense')*.3:level(s,'Defense'),a=(e.attackLevel+8)*64,d=(skill+8)*(64+bonus(s,'armor')+spiritPassive(s,'armor'));return Math.random()<chance(a,d)?Math.floor(Math.random()*(e.maxHit+1)):0;}
+function rollEnemy(s,e,style){const skill=style==='magic'?level(s,'Magic')*.7+level(s,'Defense')*.3:level(s,'Defense'),a=(e.attackLevel+8)*64,d=(skill+8)*(64+bonus(s,'armor')+(style==='magic'?bonus(s,'magicDefense'):0)+spiritPassive(s,'armor'));return Math.random()<chance(a,d)?Math.floor(Math.random()*(e.maxHit+1)):0;}
 export function publicAction(input,now){
  const a=input.action;if(!a||typeof a!=='object'||!['combat','gather','work','teleport'].includes(a.kind))return null;
  if(!Number.isFinite(a.started)||a.started<now-15000||a.started>now+1500)return null;
@@ -33,9 +34,9 @@ export function publicAction(input,now){
  return {kind:a.kind,started:Math.min(now,a.started),duration:Math.max(200,Math.min(10000,Number(a.duration)||1200)),weapon:catalog.items[a.weapon]?.slot==='weapon'?a.weapon:null,style:styles.includes(a.style)?a.style:null,tool:allowedTools.includes(a.tool)?a.tool:null,work:['bury','cook','firemaking','investigate','repair','ritual'].includes(a.work)?a.work:null,type:['tree','ore','fish'].includes(a.type)?a.type:null,color:a.color==='purple'?'purple':a.color==='red'?'red':'green',target:point(a.target?.x,a.target?.y)&&near(input,a.target,20)?{x:a.target.x,y:a.target.y,...(token(a.target.entity)&&catalog.entities[input.scene+':'+a.target.entity]?{entity:a.target.entity}:{} )}:null};
 }
 function initial(e,now,actor){return {entity:e.id,hp:e.hp,maxhp:e.hp,x:e.x,y:e.y,generation:1,deadUntil:0,owner:e.hp?'server':actor,ownerUntil:now+5000,nextMove:now+(3+Number(e.id)%5)*1000,target:null,pose:null,hazard:null,phase:0,move:0,defender:null,returning:false,nextAttack:0,opened:false,signature:[e.kind,e.hp,e.x,e.y,'server-v1'].join(':')};}
-function lootFor(e){
+export function lootFor(e){
  const common={ridgewolf:{fang:2,bones:1},sentinel:{bones:4,runes:20,ironSword:1},wolf:{fang:1,bones:1},goblin:{bones:1,arrows:3},slime:{herbs:1,runes:2},skeleton:{bones:2,runes:3},bandit:{bones:1,arrows:5},rat:{bones:1},man:{bones:1},king:{bones:3,runes:15,ironHelm:1},warden:{bones:3,runes:12,ironShield:1}};
- return e.type==='dummy'?{}:{coins:e.coins,...(e.drops||common[e.kind]||{bones:1}),...(e.marks?{huntersMark:e.marks}:{})};
+ return e.type==='dummy'?{}:{coins:e.coins,...(e.drops||common[e.kind]||{bones:1}),...(e.marks?{huntersMark:e.marks}:{}),...rollRareBossLoot(e.rareDrops)};
 }
 async function cooldown(db,id,nonce,now,ms){
  const r=await db.prepare('INSERT INTO shared_clocks (id,ready_at,nonce) VALUES (?,?,?) ON CONFLICT(id) DO UPDATE SET ready_at=excluded.ready_at,nonce=excluded.nonce WHERE shared_clocks.ready_at<=? OR shared_clocks.nonce=excluded.nonce RETURNING nonce').bind(id,now+ms,nonce,now).first();return !!r;
@@ -117,7 +118,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
   const record=()=>db.prepare('INSERT INTO shared_events (id,scope,scene,actor,kind,result,created_at,acked) VALUES (?,?,?,?,?,?,?,0) ON CONFLICT DO NOTHING').bind(rid,scope,scene,actor,String(event.kind).slice(0,24),enc(result),now);
   if(event.scene!==scene){result.error='You have left that scene.';await record().run();continue;}
   const e=catalog.entities[scene+':'+event.entity];
-  if(['attack','hit','enemyHit','companion','harvest','door'].includes(event.kind)){
+  if(['attack','hit','enemyHit','companion','wardInterrupt','harvest','door'].includes(event.kind)){
    if(!e||!definitions.some(d=>d.id===e.id)){result.error='Target is outside the shared area.';await record().run();continue;}
    for(let attempt=0;attempt<8;attempt++){
     if(await db.prepare('SELECT id FROM shared_events WHERE id=?').bind(rid).first())break;
@@ -127,7 +128,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
     if(event.kind==='door'){
      if(!e.door||!near(input,e,3))fail('Stand beside the door.');else{v.opened=event.open===true;result.ok=true;result.opened=v.opened;}
     }else if(!questFightVisible(e,s))fail('That quest fight is already complete.');
-    else if(['attack','hit','companion'].includes(event.kind)&&e.level<27&&v.target&&v.target!==actor)fail('Someone else is fighting that.');
+    else if(['attack','hit','companion','wardInterrupt'].includes(event.kind)&&e.level<27&&v.target&&v.target!==actor)fail('Someone else is fighting that.');
     else if(v.deadUntil>now)fail('That target is not available until it returns.');
     else if(!e.hp&&event.kind!=='harvest')fail('That target cannot fight.');
     else if(event.generation!==v.generation)fail('That encounter has already ended.');
@@ -136,26 +137,32 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
      if(!d||!near(input,v,2))fail('Stand beside the resource.');
      else if(level(s,d.skill)<d.level)fail('Your skill level is too low.');
      else if(!await cooldown(db,actor+':gather',event.id,now,1800))fail('You are still gathering.');
-     else if(Math.random()>Math.min(.95,.425+(level(s,d.skill)-d.level)*.009)){result.ok=true;result.missed=true;}
+     else if(Math.random()>Math.min(.95,.425+(level(s,d.skill)-d.level)*.009+(d.skill==='Mining'?bonus(s,'miningSuccess'):0))){result.ok=true;result.missed=true;}
      else{result.ok=true;result.item=d.item||d.raw;result.xp=d.xp;result.skill=d.skill;result.bait=d.bait||null;
       if(e.type==='ore'||e.type==='tree'&&(d.resourceId==='normal'||Math.random()<.125)){v.deadUntil=now+e.respawn;v.target=null;}
      }
     }else if(event.kind==='attack'){
      const range=event.style==='melee'?2+(e.radius||0):10+(e.radius||0);
      if(!near(input,v,range)||!npcLineOfSight(e,v,input))fail('Target is out of attack range.');
-     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
+     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.kind==='mountainwatcher'&&(s.mountainQuest?.stage!==6||s.mountainQuest?.version>=2&&!s.mountainQuest?.fieldOrders)||e.encounter==='veyr'&&!(s.mountainQuest?.stage===17||s.mountainQuest?.stage===20&&s.questRematch==='veyr'))fail('Complete the story objectives before this fight.');
+     else if(s.equipment?.weapon==='veyrOrb'&&level(s,'Magic')<20)fail('Veyr’s Orb requires Magic 20.');
      else if(!await reserveSwing(db,actor,s,event,result,now))fail('Your next attack is not ready.');
      else{result.ok=true;if(!v.target){v.owner='server';v.target=actor;v.pose=null;v.hazard=null;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}}
     }else if(event.kind==='hit'){
      const style=styles.includes(event.style)?event.style:'melee',weapon=catalog.items[s.equipment?.weapon],range=style==='melee'?2+(e.radius||0):10+(e.radius||0);
      if(!near(input,v,range)||!npcLineOfSight(e,v,input))fail('Target is out of attack range.');
-     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.scene==='quest_underiron'&&s.mountainQuest?.stage!==6||e.encounter==='veyr'&&(s.mountainQuest?.stage||0)<17)fail('Complete the story objectives before this fight.');
+     else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.kind==='mountainwatcher'&&(s.mountainQuest?.stage!==6||s.mountainQuest?.version>=2&&!s.mountainQuest?.fieldOrders)||e.encounter==='veyr'&&!(s.mountainQuest?.stage===17||s.mountainQuest?.stage===20&&s.questRematch==='veyr'))fail('Complete the story objectives before this fight.');
+     else if(s.equipment?.weapon==='veyrOrb'&&level(s,'Magic')<20)fail('Veyr’s Orb requires Magic 20.');
      else if(style==='worship'&&(!token(event.cast)||v.spiritCasts?.[actor+':'+event.cast]!==undefined))fail('That spirit effect has already struck.');
      else if(event.swing&&style!=='worship'&&!await validSwingImpact(db,actor,event,style,result))fail('That attack has no valid swing.');
      else if(style==='worship'?!await spiritCastReady(db,actor,s,event,now):!event.swing&&!await cooldown(db,actor+':attack',event.id,now,.6*(style==='magic'?5:weapon?.attackTicks||4)*1000-150))fail('Your next attack is not ready.');
-     else{if(style==='worship'){v.spiritCasts=Object.fromEntries(Object.entries(v.spiritCasts||{}).filter(([,at])=>typeof at==='number'&&at>now-60000));v.spiritCasts[actor+':'+event.cast]=now;}const damage=Math.min(v.hp,rollHit(s,e,style,event));v.hp-=damage;if(style==='worship'&&damage>0&&event.spirits?.length===1){const slow=catalog.spirits[event.spirits[0]]?.slow||0;if(slow)v.slowUntil=now+slow*1000;}if(!v.target){v.owner='server';v.target=actor;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}result.ok=true;result.damage=damage;result.style=style;result.focus=s[style+'Training']||'balanced';result.defeat=v.hp<=0;
+     else{if(style==='worship'){v.spiritCasts=Object.fromEntries(Object.entries(v.spiritCasts||{}).filter(([,at])=>typeof at==='number'&&at>now-60000));v.spiritCasts[actor+':'+event.cast]=now;}const damage=Math.min(v.hp,rollHit(s,{...e,memoryFrayUntil:v.memoryFray?.[actor]||0},style,event,now));v.hp-=damage;if(style==='magic'&&s.equipment?.weapon==='veyrOrb'&&damage>0){v.memoryFray=Object.fromEntries(Object.entries(v.memoryFray||{}).filter(([,until])=>until>now));v.memoryFray[actor]=now+4000;result.memoryFrayUntil=now+4000;}if(style==='worship'&&damage>0&&event.spirits?.length===1){const slow=catalog.spirits[event.spirits[0]]?.slow||0;if(slow)v.slowUntil=now+slow*1000;}if(!v.target){v.owner='server';v.target=actor;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}result.ok=true;result.damage=damage;result.style=style;result.focus=s[style+'Training']||'balanced';result.defeat=v.hp<=0;
       if(v.hp<=0){v.deadUntil=now+e.respawn;v.target=null;v.pose=null;loot={id:entityKey(e.id)+':loot:'+v.generation,scope,scene,kind:'loot',payload:{items:lootFor(e),x:v.x,y:v.y,owner:actor,publicAt:now+30000},expires:now+120000};}
      }
+    }else if(event.kind==='wardInterrupt'){
+     if(e.encounter!=='veyr'||s.mountainQuest?.stage!==17||v.target!==actor||!v.hazard)fail('No counter-ward can break that hazard.');
+     else if(!await cooldown(db,actor+':wardInterrupt',event.id,now,10000))fail('The counter-ward is recovering.');
+     else{v.hazard=null;v.pose=null;v.nextAttack=Math.max(v.nextAttack||0,now+1500);result.ok=true;}
     }else if(event.kind==='companion'){
      if(e.encounter!=='veyr'||s.mountainQuest?.stage!==17||v.target!==actor)fail('No companion is assisting this encounter.');
      else if(!await cooldown(db,actor+':companion',event.id,now,3900))fail('Companion spell is recovering.');
@@ -179,7 +186,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
     if(!await cooldown(db,actor+':fire',event.id,now,1800)){result.error='Wait before lighting another fire.';await record().run();continue;}
     if(!await cooldown(db,scope+':'+scene+':fire:'+event.x+':'+event.y,rid,now,150000)){result.error='Someone already lit a fire here.';await record().run();continue;}
     result.ok=true;result.xp=tree.fire;result.object={id:rid,kind:'fire',x:event.x,y:event.y,owner:actor,logType:event.log,expiresAt:now+150000};
-   }else{const items=Object.fromEntries(Object.entries(event.items||{}).filter(([id,n])=>catalog.items[id]&&Number.isSafeInteger(n)&&n>0&&n<=1000000000).slice(0,25));if(!Object.keys(items).length){result.error='Nothing to drop.';await record().run();continue;}result.ok=true;result.object={id:rid,kind:'loot',items,x:Math.round(event.x),y:Math.round(event.y),owner:actor,publicAt:now+30000,expiresAt:now+120000};}
+   }else{const items=Object.fromEntries(Object.entries(event.items||{}).filter(([id,n])=>catalog.items[id]&&catalog.items[id].tradeable!==false&&Number.isSafeInteger(n)&&n>0&&n<=1000000000).slice(0,25));if(!Object.keys(items).length){result.error='Nothing to drop.';await record().run();continue;}result.ok=true;result.object={id:rid,kind:'loot',items,x:Math.round(event.x),y:Math.round(event.y),owner:actor,publicAt:now+30000,expiresAt:now+120000};}
    const o=result.object;
    await db.batch([db.prepare('INSERT INTO shared_objects (id,scope,scene,kind,payload,expires_at,revision) VALUES (?,?,?,?,?,?,0) ON CONFLICT DO NOTHING').bind(o.id,scope,scene,o.kind,enc(o),o.expiresAt),record()]);continue;
   }
@@ -202,7 +209,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
    // not one step past it. Export this index from the actual tutorial sequence.
    const finishStage=catalog.tutorial.finishStages[s.tutorialVersion]??catalog.tutorial.finishStage;
    const completed=s.tutorialReward===true||Number(s.tutorial)>finishStage;
-   if(!['rowan','hunt','home'].includes(event.mode)|| (event.mode==='home'?scene==='tutorial'||!completed||destination!==catalog.homeTeleport.scene:event.mode==='rowan'?scene!=='tutorial'||(s.tutorial||0)<finishStage:scene==='tutorial'||!lairs.includes(destination)||destination==='lair_veyr'&&(s.mountainQuest?.stage||0)<18)){result.error='That crossing is not unlocked.';await record().run();continue;}
+   if(!['rowan','hunt','home'].includes(event.mode)|| (event.mode==='home'?scene==='tutorial'||!completed||destination!==catalog.homeTeleport.scene:event.mode==='rowan'?scene!=='tutorial'||(s.tutorial||0)<finishStage:scene==='tutorial'||!lairs.includes(destination)||destination==='lair_veyr'&&(s.mountainQuest?.stage||0)<20)){result.error='That crossing is not unlocked.';await record().run();continue;}
    if(event.mode==='rowan'&&destination!=='overworld'){result.error='Invalid island crossing.';await record().run();continue;}
    const engaged=event.mode==='home'&&(await readRows()).some(row=>{const v=parse(row.state);return v.target===actor&&v.hp>0&&!v.deadUntil;});
    const recentCombat=event.mode==='home'&&await db.prepare("SELECT id FROM shared_events WHERE actor=? AND created_at>? AND (kind='enemyHit' OR kind IN ('attack','hit','companion') AND json_extract(result,'$.ok')=1) LIMIT 1").bind(actor,now-5000).first();

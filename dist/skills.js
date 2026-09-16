@@ -82,7 +82,7 @@ function harvestResource(o){
  const skill={tree:'Woodcutting',ore:'Mining',fish:'Fishing'}[o.type],tool=o.type==='tree'?'axe':o.type==='ore'?'pickaxe':d.tool,item=d.item||d.raw;
  if(!useBeltTool(tool)){stop();return false;}if(d.bait&&!(s.bag[d.bait]>0)){stop();toast('You need '+ITEMS[d.bait].name.toLowerCase()+'.');return false;}
  if(!canCarry(item)){stop();toast('Your bag is full.');return false;}
- const chance=Math.min(.95,.4+(lv(skill)-d.level)*.009+gatheringToolRank(tool)*.025);if(Math.random()>chance)return false;
+ const chance=Math.min(.95,.4+(lv(skill)-d.level)*.009+gatheringToolRank(tool)*.025+(skill==='Mining'?equipmentBonus('miningSuccess'):0));if(Math.random()>chance)return false;
  if(!addToBag(item))return false;if(d.bait)s.bag[d.bait]--;
  gain(skill,d.xp);discoverSkillSpirit(skill);if(typeof gameMessage==='function')gameMessage((o.type==='fish'?'You catch ':o.type==='ore'?'You mine ':'You get ')+ITEMS[item].name.toLowerCase()+'.');floating('+1 '+ITEMS[item].name.toLowerCase(),o.x,o.y);o.hitAt=time;
  if(o.type==='ore'||o.type==='tree'&&(o.resourceId==='normal'||Math.random()<.125)){o.dead=time+d.respawn;o.respawnAt=Date.now()+d.respawn*1000;stop();}
@@ -228,6 +228,11 @@ addSkillItem('rangerHood',{name:'Ranger hood',slot:'head',icon:4,model:'Outfit_R
 for(const [key,name,level,bonus]of [['wizard','Wizard',1,8],['adept','Adept',20,15],['mystic','Mystic',40,20]])addSkillItem(key+'Robe',{name:name+' robe',slot:'body',icon:15,magic:0,magicAccuracy:bonus,armor:0,requirements:{Magic:level},desc:'Requires Magic '+level+'. Improves spell accuracy.'},100+level*30);
 for(const [key,name,level,defense]of [['studded','Studded leather',20,18],['greenHide','Green hide',40,35],['blueHide','Blue hide',50,42],['redHide','Red hide',60,50],['blackHide','Black hide',70,60]])addSkillItem(key+'Body',{name:name+' body',slot:'body',icon:5,armor:defense,rangedAccuracy:Math.round(defense*.35),magicAccuracy:-15,requirements:{Ranged:level,Defense:level>=40?40:20},desc:'Ranged '+level+' and Defense '+(level>=40?40:20)+'. Ranged armor with improved physical protection.'},200+level*40);
 for(const key of ['bronze','iron','steel','mithril','adamant','rune'])ITEMS[key+'_dagger']={...ITEMS[key+'_weapon'],name:METAL_RECIPES[key].name+' dagger',modelScale:.72,desc:'A light dagger. Requires Attack '+GEAR_TIERS.find(t=>t.id===key).level+'.'};
+// Conventional higher-level upgrades keep Arc One's modest wearables and Orb from becoming permanent best-in-slot.
+addSkillItem('mysticStaff',{name:'Mystic staff',slot:'weapon',icon:3,style:'magic',magicAccuracy:28,power:0,range:6,attackTicks:5,requirements:{Magic:40},desc:'Magic 40. Accuracy +28; normal spell damage and relic costs. A conventional upgrade beyond early boss weapons.'},1900);
+addSkillItem('scholarAmulet',{name:'Scholar’s amulet',slot:'neck',icon:14,magicAccuracy:4,worshipAccuracy:4,requirements:{Magic:40},desc:'Magic 40. Magic and Worship accuracy +4. A conventional upgrade to early enchanted pendants.'},1600);
+addSkillItem('temperedRing',{name:'Tempered signet',slot:'ring',icon:14,armor:4,attackBonus:2,rangedAccuracy:2,magicAccuracy:2,requirements:{Defense:40},desc:'Defence 40. Armour +4; combat accuracy +2. A forged adventurer’s signet.'},1600);
+addSkillItem('scholarMantle',{name:'Scholar’s mantle',slot:'cape',icon:15,armor:4,magicDefense:6,requirements:{Magic:40},desc:'Magic 40. Defence +4 and Magic defence +6. Woven for experienced ward scholars.'},1800);
 for(const [index,key]of ['bronze','iron','steel','mithril','adamant','rune'].entries()){
  const m=METAL_RECIPES[key],head=key==='iron'?'arrowheads':key+'Arrowheads';addSkillItem(head,{name:m.name+' arrowheads',icon:12,desc:'Combine 15 with 15 headless arrows using Fletching.'});STACKABLE.add(head);
  if(key!=='bronze'){const id=key+'Arrows';addSkillItem(id,{name:m.name+' arrows',icon:12,ammoLevel:[1,1,5,20,30,40][index],rangedStrength:[7,10,16,22,31,49][index],desc:'Stronger ammunition. A suitable bow is required.'},[1,2,4,8,16,30][index],20);STACKABLE.add(id);}

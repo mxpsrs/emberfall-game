@@ -88,10 +88,10 @@ for(const phase of [0,1]){
  for(const key of HUNT_ENCOUNTERS.veyr.phases[phase].moves){
   scheduleEnemyMove(f,key);const h=f.hazards.at(-1),a=creatureAssets.boss_veyr;
   assert.equal(creatureAttackAnimation(veyr,a,veyr.attackWindup).phase,a.clips[veyr.attackClip].release,'native impact matches the end of its warning');
-  if(key==='ring'){
-   assert.equal(veyr.attackClip,'cast2');assert(!hazardContains(h,h.x,h.y),'ring has a safe center');
+  if(key==='ring'||key==='falseRefuge'){
+   assert.equal(veyr.attackClip,key==='falseRefuge'?'cast':'cast2');assert(!hazardContains(h,h.x,h.y),'ring has a safe center');
    assert(hazardContains(h,h.x+3,h.y),'ring threatens its marked band');assert(!hazardContains(h,h.x+5,h.y),'outside the ring is safe');
-  }else if(key==='hex'){assert.equal(veyr.attackClip,'cast');assert.equal(h.style,'magic');}
+  }else if(['hex','memoryCall','stolenSelf'].includes(key)){assert.equal(veyr.attackClip,'cast');assert.equal(h.style,'magic');}
   else {assert.equal(h.style,'melee');assert.equal(veyr.attackClip,phase?'attack3':'attack');}
   f.hazards=[];
  }
@@ -99,7 +99,7 @@ for(const phase of [0,1]){
 const veyrHome=[veyr.homeX,veyr.homeY];resetEncounter();assert(veyr._recovering);assert(!veyr.attackMove);
 beginEncounter(veyr);veyr.hp=35;updateEncounterAI(0);leaveInterior();assert.equal(activeEncounter,null);assert.equal(veyr.hp,35);assert(veyr._recovering);
 activateScene('lair_veyr',veyr.homeX+3,veyr.homeY);beginEncounter(veyr);const beforeVeyrGold=carriedCoins();resolveHit(veyr,veyr.hp,'melee');
-assert.equal(carriedCoins()-beforeVeyrGold,112);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
+assert.equal(carriedCoins()-beforeVeyrGold,0);assert.equal(veyr.dead,time+60);assert(creatureDying(veyr),'Veyr uses its native death action');
 const veyrLoot=s.groundLoot.find(p=>p.scene==='lair_veyr'&&p.items.huntersMark);assert.equal(veyrLoot.items.huntersMark,3);assert(!blocked(veyrLoot.x,veyrLoot.y));assert(route(veyrLoot.x,veyrLoot.y),'Veyr loot is reachable');
 time+=60;testWallTime=veyr.respawnAt+1;updateWorldTimers();assert.equal(veyr.hp,veyr.maxhp);assert.equal(veyr.dead,0);assert.equal(JSON.stringify([veyr.x,veyr.y]),JSON.stringify(veyrHome));
 leaveInterior();assert(!blocked(px,py));activateScene('overworld',42,51);

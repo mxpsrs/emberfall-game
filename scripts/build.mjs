@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
 execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
 import {build} from 'esbuild';
 import path from 'node:path';
 import {createHash} from 'node:crypto';

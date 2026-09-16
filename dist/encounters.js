@@ -28,7 +28,7 @@ const ENEMY_TIERS={
 // A boss is released only after its approved native model, actions and lair pass review.
 // The four designs are approved; unreleased entries never spawn or expose empty lairs.
 const HUNT_ENCOUNTERS={
- veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:true,combatRadius:.7,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'The watcher',at:1,moves:['sweep','hex']},{name:'Fractured mind',at:.5,moves:['ring','hex','sweep']}],drops:{bones:3,chaosRunes:12,ironBar:2}},
+ veyr:{name:'Veyr the Mindbreaker',look:'boss_veyr',released:true,combatRadius:.7,mechanics:true,rank:'Boss',level:20,hp:78,maxHit:5,coins:70,marks:3,scene:'lair_veyr',at:[22,18],area:'The Shattered Sanctum',weak:'ranged',phases:[{name:'Borrowed authority',at:1,moves:['memoryCall','sweep']},{name:'Fractured trust',at:.66,moves:['falseRefuge','memoryCall']},{name:'The stolen self',at:.33,moves:['stolenSelf','falseRefuge','memoryCall']}],rareDrops:{veyrOrb:250},drops:{bones:3,chaosRunes:12,ironBar:2}},
  varkesh:{name:'Varkesh the Blightwing',look:'boss_varkesh',released:true,combatRadius:2.1,lockAttackHeading:true,interval:4.3,attackLabel:'Fangs and blighted breath',rank:'Boss',level:30,hp:108,maxHit:6,coins:105,marks:3,scene:'lair_varkesh',at:[29,21],area:'Blightwing Roost',weak:'magic',style:'ranged',drops:{bones:3,steelBar:2,chaosRunes:15}},
  colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
  xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:true,combatRadius:1.05,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
@@ -42,6 +42,9 @@ const HUNT_ZONES=[
  {name:'Deepforge slag fields',at:[933,363],kinds:['ashknight','crystalguard']}
 ];
 const ENCOUNTER_MOVES={
+ memoryCall:{name:'Borrowed command',style:'magic',shape:'circle',windup:2.6,radius:1.6,hint:'Leave the solid marked circle; the voice is false',voice:'Rellan: “Hold your position. That is an order.”'},
+ falseRefuge:{name:'False refuge',style:'magic',shape:'ring',windup:2.8,radius:4.6,inner:2.1,origin:'enemy',hint:'The solid ring is dangerous. Move inside or beyond it',voice:'Bera: “Stay in the shining ring. It is safe.”'},
+ stolenSelf:{name:'Stolen self',style:'magic',shape:'cross',windup:2.7,radius:.8,length:6,hint:'Step diagonally off both solid lines; follow the real shadow',voice:'Your own voice: “I remember this. Do exactly what I do.”'},
  bite:{name:'Strike',style:'melee',shape:'strike',windup:.55,range:1.65,hint:'Melee attack'},
  arrow:{name:'Arrow',style:'ranged',shape:'projectile',windup:.7,range:6,hint:'Ranged attack'},
  blight:{name:'Blighted breath',style:'ranged',shape:'cone',windup:2.1,length:9.4,halfAngle:.34,hint:'Step sideways out of the green cone'},
@@ -61,7 +64,7 @@ const durationBeforeEncounters=actionDuration;
 // Enemy stats are fixed by their tier, never by the current player's level.
 playerAccuracy=function(o,style=combatStyle()){
  const skill={melee:'Attack',ranged:'Ranged',magic:'Magic',worship:'Worship'}[style]||'Attack',focus=trainingFocus(style);
- const bonus=style==='magic'?equipmentBonus('magicAccuracy'):style==='ranged'?(equippedWeapon().attackBonus||0)+equipmentBonus('rangedAccuracy'):style==='worship'?0:equipmentBonus('attackBonus');
+ const bonus=style==='magic'?equipmentBonus('magicAccuracy')+(s.equipment.weapon==='veyrOrb'&&o._memoryFrayUntil>time?ITEMS.veyrOrb.memoryFray:0):style==='ranged'?(equippedWeapon().attackBonus||0)+equipmentBonus('rangedAccuracy'):style==='worship'?equipmentBonus('worshipAccuracy'):equipmentBonus('attackBonus');
  const stance=style==='melee'?(focus==='accurate'?3:focus==='balanced'?1:0):focus==='focused'?3:0;
  const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64),defenceStyle=style==='worship'?'magic':style;
  const weak=(o.weak||HUNT_ENCOUNTERS[o.kind]?.weak)===defenceStyle;
@@ -71,7 +74,7 @@ playerAccuracy=function(o,style=combatStyle()){
 enemyAccuracy=function(o,style='melee'){
  const focus=trainingFocus(),stance=focus==='defensive'?3:focus==='balanced'?1:0;
  const level=style==='magic'?lv('Magic')*.7+lv('Defense')*.3:lv('Defense');
- const armor=style==='magic'?Math.max(0,equipmentBonus('magicAccuracy')):equipmentBonus('armor');
+ const armor=style==='magic'?Math.max(0,equipmentBonus('magicAccuracy'))+equipmentBonus('magicDefense'):equipmentBonus('armor');
  const defense=(level+8+stance)*(64+armor+Math.floor(lv('Worship')/5)+spiritBonus('armor'));
  const attack=((o.attackLevel??o.level??1)+8)*(64+(o.attackBonus||0))*(o.accuracy===undefined?1:o.accuracy/.53);
  return attackRollChance(attack,defense);
@@ -174,7 +177,7 @@ function scheduleEnemyMove(fight,key){
   o.attackRecovery=1.35*speed;
  }
  if(o.encounter==='veyr'){
-  Object.assign(move,key==='sweep'?{name:fight.phase?'Shattering blow':'Orb strike',radius:3.2}:key==='ring'?{name:'Mindbreak pulse',inner:2.1,radius:4.6}:{name:'Rift eruption'});
+  if(key==='sweep')Object.assign(move,{name:'Orb strike',radius:3.2});
   o.attackClip=key==='sweep'?(fight.phase?'attack3':fight.move%4===0?'attack':'attack2'):key==='ring'?'cast2':'cast';
   o.attackRecovery=key==='sweep'?.85:1.0;
  }
@@ -238,12 +241,12 @@ const defeatBeforeEncounters=awardDefeat;
 awardDefeat=function(o,style){
  const p=huntProgress();p.kills[o.kind]=(p.kills[o.kind]||0)+1;
  const first=!!o.encounter&&!p.firstClears[o.kind];if(first)p.firstClears[o.kind]=true;
- defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first){const coins=Math.round(o.level*4*1.4),banked=grantQuestCoins(coins);if(typeof showQuestCompletion==='function')showQuestCompletion({title:o.name,coins,banked,hunt:true,note:'First-clear bonus awarded. Collect your marks and other drops from the ground.'});}if(!first&&typeof playGameSound==='function')playGameSound('quest');}
+ defeatBeforeEncounters(o,style);if(style==='ranged'&&o.penId&&o.kind==='rat')tutorialEvent('ranged');if(o.encounter){o.dead=time+60;o.respawnAt=Date.now()+60000;if(first&&o.encounter!=='veyr'){const coins=Math.round(o.level*4*1.4),banked=grantQuestCoins(coins);if(typeof showQuestCompletion==='function')showQuestCompletion({title:o.name,coins,banked,hunt:true,note:'First-clear bonus awarded. Collect your marks and other drops from the ground.'});}if(!first&&typeof playGameSound==='function')playGameSound('quest');}
  if(activeEncounter?.o===o)resetEncounter(false);save();
 };
 const lootBeforeEncounters=monsterDrop;
 monsterDrop=function(o){
- const e=HUNT_ENCOUNTERS[o.encounter];if(e){const drops=Object.fromEntries(Object.entries(e.drops||{}).filter(([id])=>ITEMS[id])),point=e.anchored?encounterSpawnPoint(currentScene,o.homeX,o.homeY+4,6)||[s.x,s.y]:[o.x,o.y];groundDrop({coins:e.coins,huntersMark:e.marks,...drops},...point);return;}
+ const e=HUNT_ENCOUNTERS[o.encounter];if(e){const drops=Object.fromEntries(Object.entries(e.drops||{}).filter(([id])=>ITEMS[id])),point=e.anchored?encounterSpawnPoint(currentScene,o.homeX,o.homeY+4,6)||[s.x,s.y]:[o.x,o.y];for(const [id,denominator]of Object.entries(e.rareDrops||{}))if(Math.floor(Math.random()*denominator)===0)drops[id]=1;groundDrop({coins:e.coins,huntersMark:e.marks,...drops},...point);return;}
  if(ENEMY_TIERS[o.kind]?.look){const bonus=o.kind==='forestgiant'?{bones:2,logs:3}:o.attackStyle==='magic'?{runes:3+Math.floor(o.level/5),airRunes:5+o.level}:o.attackStyle==='ranged'?{arrows:5+Math.floor(o.level/3)}:{bones:1};groundDrop({coins:o.coins,...bonus},o.x,o.y);return;}
  lootBeforeEncounters(o);
 };
@@ -251,7 +254,7 @@ function renderEncounterHud(){
  const box=$('encounterHud');if(!box)return;const f=activeEncounter;if(!f){box.hidden=true;return;}const o=f.o,e=HUNT_ENCOUNTERS[o.encounter],h=f.hazards[0];if(o.type!=='boss'&&!e?.mechanics){box.hidden=true;return;}
  const title=o.name+' · Lv. '+o.level,phase=e?.mechanics?e.rank+' · '+e.phases[f.phase].name:(e?e.rank+' · ':'')+(o.attackLabel||(o.attackStyle||'melee')+' attacks'),tell=h?h.name+' · '+h.hint:'',key=[title,phase,tell].join('|');
  box.hidden=false;if(key!==encounterHudKey){$('encounterName').textContent=title;$('encounterPhase').textContent=phase;$('encounterTell').textContent=tell;encounterHudKey=key;}
- $('encounterPhase').hidden=true;$('encounterTell').hidden=!h;box.dataset.casting=String(!!h);
+ $('encounterPhase').hidden=o.encounter!=='veyr';$('encounterTell').hidden=!h;box.dataset.casting=String(!!h);
  $('encounterHealth').style.width=Math.max(0,o.hp/o.maxhp*100)+'%';$('encounterHP').textContent=Math.max(0,o.hp)+' / '+o.maxhp;$('encounterCast').style.width=h?Math.min(100,(time-h.started)/(h.due-h.started)*100)+'%':'0%';box.dataset.style=h?.style||o.attackStyle||'melee';
 }
 function drawEncounterWarnings(){
@@ -277,7 +280,7 @@ function renderHunts(){
  for(const [kind,e]of pageItems([...rows,['rewards',null]],3)){
   const card=document.createElement('section');card.className='hunt-card';
   if(kind==='rewards'){card.innerHTML='<h3>Mark exchange</h3><p>'+(s.bag.huntersMark||0)+' marks carried · Earn more from named encounters.</p>';for(const [id,cost]of HUNT_REWARDS){if(!ITEMS[id])continue;const b=document.createElement('button');b.textContent=ITEMS[id].name+' · '+cost+' marks';b.disabled=(s.bag.huntersMark||0)<cost;b.onclick=()=>{if((s.bag.huntersMark||0)<cost||!canCarry(id)){toast('Bring enough marks and make space in your bag.');return;}s.bag.huntersMark-=cost;s.gear[id]=(s.gear[id]||0)+1;save();renderUI();};card.appendChild(b);}}
-  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+Math.round(e.level*4*1.4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
+  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(kind==='veyr'?' · Orb: 1/250 every kill':p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+Math.round(e.level*4*1.4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
   $('huntCards').appendChild(card);
  }huntSectionLink('Browse ordinary hunting grounds',true);
 }
@@ -292,3 +295,7 @@ function renderHuntingGrounds(){
 }
 const panelBeforeEncounters=renderPanel;
 renderPanel=function(){if(tab==='hunts')return renderHunts();return panelBeforeEncounters();};
+
+// A memory fracture changes follow-up accuracy, never adds an unearned hit or XP.
+const arcHitBefore=resolveHit;
+resolveHit=function(o,damage,style,...rest){const orb=style==='magic'&&s.equipment.weapon==='veyrOrb',before=o.hp;const result=arcHitBefore(o,damage,style,...rest);if(orb&&o.hp<before)o._memoryFrayUntil=time+4;return result;};

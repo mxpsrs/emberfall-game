@@ -2,966 +2,1237 @@
   "coins": {
     "name": "Coins",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "bronzeSword": {
     "name": "Bronze sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironSword": {
     "name": "Iron sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "shortbow": {
     "name": "Shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "oakStaff": {
     "name": "Oak staff",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironHelm": {
     "name": "Iron helmet",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "leatherArmor": {
     "name": "Leather armor",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironShield": {
     "name": "Iron shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "leatherBoots": {
     "name": "Leather boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "logs": {
     "name": "Oak logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ore": {
     "name": "Iron ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "fish": {
     "name": "Trout",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "fang": {
     "name": "Wolf fang",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "arrows": {
     "name": "Bronze arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "runes": {
     "name": "Mind relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "bones": {
     "name": "Bones",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ashes": {
     "name": "Ashes",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mageRobe": {
     "name": "Mage robe",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
+  },
+  "rellanSignet": {
+    "name": "Rellan’s Signet Ring",
+    "slot": "ring",
+    "stackable": false,
+    "tradeable": false
+  },
+  "ironhollowBelt": {
+    "name": "Ironhollow Miner’s Belt",
+    "slot": "belt",
+    "stackable": false,
+    "tradeable": false
+  },
+  "whisperPendant": {
+    "name": "Whisper Pendant",
+    "slot": "neck",
+    "stackable": false,
+    "tradeable": false
+  },
+  "wardkeeperCape": {
+    "name": "Wardkeeper Cape",
+    "slot": "cape",
+    "stackable": false,
+    "tradeable": false
+  },
+  "veilbreakerRing": {
+    "name": "Veilbreaker Ring",
+    "slot": "ring",
+    "stackable": false,
+    "tradeable": false
+  },
+  "memoryShard": {
+    "name": "Memory Shard",
+    "slot": null,
+    "stackable": false,
+    "tradeable": false
+  },
+  "forgedOrders": {
+    "name": "Forged Royal Orders",
+    "slot": null,
+    "stackable": false,
+    "tradeable": false
+  },
+  "veyrOrb": {
+    "name": "Veyr’s Orb",
+    "slot": "weapon",
+    "stackable": false,
+    "tradeable": true
   },
   "copperNecklace": {
     "name": "Copper necklace",
     "slot": "neck",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rangerCap": {
     "name": "Ranger cap",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_head": {
     "name": "Bronze headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_shoulders": {
     "name": "Bronze shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_body": {
     "name": "Bronze chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_hands": {
     "name": "Bronze gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_legs": {
     "name": "Bronze legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_feet": {
     "name": "Bronze boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_shield": {
     "name": "Bronze shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_weapon": {
     "name": "Bronze sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_head": {
     "name": "Iron headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_shoulders": {
     "name": "Iron shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_body": {
     "name": "Iron chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_hands": {
     "name": "Iron gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_legs": {
     "name": "Iron legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_feet": {
     "name": "Iron boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_shield": {
     "name": "Iron shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_weapon": {
     "name": "Iron sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_head": {
     "name": "Gilded headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_shoulders": {
     "name": "Gilded shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_body": {
     "name": "Gilded chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_hands": {
     "name": "Gilded gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_legs": {
     "name": "Gilded legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_feet": {
     "name": "Gilded boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_shield": {
     "name": "Gilded shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "gold_weapon": {
     "name": "Gilded sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_head": {
     "name": "Mithril headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_shoulders": {
     "name": "Mithril shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_body": {
     "name": "Mithril chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_hands": {
     "name": "Mithril gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_legs": {
     "name": "Mithril legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_feet": {
     "name": "Mithril boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_shield": {
     "name": "Mithril shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_weapon": {
     "name": "Mithril sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_head": {
     "name": "Dragonslayer headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_shoulders": {
     "name": "Dragonslayer shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_body": {
     "name": "Dragonslayer chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_hands": {
     "name": "Dragonslayer gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_legs": {
     "name": "Dragonslayer legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_feet": {
     "name": "Dragonslayer boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_shield": {
     "name": "Dragonslayer shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayer_weapon": {
     "name": "Dragonslayer sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "helmet_crest_1": {
     "name": "Crimson plume",
     "slot": "crest",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "helmet_crest_2": {
     "name": "Royal plume",
     "slot": "crest",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "helmet_crest_3": {
     "name": "Winged crest",
     "slot": "crest",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "helmet_crest_4": {
     "name": "Crown crest",
     "slot": "crest",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "helmet_crest_5": {
     "name": "Knight crest",
     "slot": "crest",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawShrimp": {
     "name": "Raw shrimp",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironBar": {
     "name": "Iron bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "arrowheads": {
     "name": "Iron arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "flour": {
     "name": "Flour",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "jugWater": {
     "name": "Jug of water",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "breadDough": {
     "name": "Bread dough",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bread": {
     "name": "Bread",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "normalLogs": {
     "name": "Logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "willowLogs": {
     "name": "Willow logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mapleLogs": {
     "name": "Maple logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "yewLogs": {
     "name": "Yew logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "magicLogs": {
     "name": "Magic logs",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "copperOre": {
     "name": "Copper ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "tinOre": {
     "name": "Tin ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "coal": {
     "name": "Coal ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "goldOre": {
     "name": "Gold ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithrilOre": {
     "name": "Mithril ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamantOre": {
     "name": "Adamantite ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "runeOre": {
     "name": "Eldrite ore",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "shrimp": {
     "name": "Shrimp",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawTrout": {
     "name": "Raw trout",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawSalmon": {
     "name": "Raw salmon",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "salmon": {
     "name": "Salmon",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawLobster": {
     "name": "Raw lobster",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "lobster": {
     "name": "Lobster",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawSwordfish": {
     "name": "Raw swordfish",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "swordfish": {
     "name": "Swordfish",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rawShark": {
     "name": "Raw shark",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "shark": {
     "name": "Shark",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronzeBar": {
     "name": "Bronze bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steelBar": {
     "name": "Steel bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "goldBar": {
     "name": "Gold bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithrilBar": {
     "name": "Mithril bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamantBar": {
     "name": "Adamant bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "runeBar": {
     "name": "Eldrite bar",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "airRunes": {
     "name": "Air relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "waterRunes": {
     "name": "Water relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "earthRunes": {
     "name": "Earth relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "fireRunes": {
     "name": "Fire relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "chaosRunes": {
     "name": "Chaos relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "deathRunes": {
     "name": "Death relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "bloodRunes": {
     "name": "Blood relic",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "feathers": {
     "name": "Feathers",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "arrowShafts": {
     "name": "Arrow shafts",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "headlessArrows": {
     "name": "Headless arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "burntFish": {
     "name": "Burnt fish",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "potatoSeeds": {
     "name": "Potato seeds",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "potato": {
     "name": "Potato",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_head": {
     "name": "Steel headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_shoulders": {
     "name": "Steel shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_body": {
     "name": "Steel chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_hands": {
     "name": "Steel gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_legs": {
     "name": "Steel legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_feet": {
     "name": "Steel boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_shield": {
     "name": "Steel shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_weapon": {
     "name": "Steel sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_head": {
     "name": "Black headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_shoulders": {
     "name": "Black shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_body": {
     "name": "Black chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_hands": {
     "name": "Black gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_legs": {
     "name": "Black legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_feet": {
     "name": "Black boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_shield": {
     "name": "Black shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "black_weapon": {
     "name": "Black sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_head": {
     "name": "Adamant headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_shoulders": {
     "name": "Adamant shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_body": {
     "name": "Adamant chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_hands": {
     "name": "Adamant gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_legs": {
     "name": "Adamant legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_feet": {
     "name": "Adamant boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_shield": {
     "name": "Adamant shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_weapon": {
     "name": "Adamant sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_head": {
     "name": "Eldrite headgear",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_shoulders": {
     "name": "Eldrite shoulder pads",
     "slot": "shoulders",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_body": {
     "name": "Eldrite chestplate",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_hands": {
     "name": "Eldrite gauntlets",
     "slot": "hands",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_legs": {
     "name": "Eldrite legguards",
     "slot": "legs",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_feet": {
     "name": "Eldrite boots",
     "slot": "feet",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_shield": {
     "name": "Eldrite shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_weapon": {
     "name": "Eldrite sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "woodenSword": {
     "name": "Wooden training sword",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "woodenShield": {
     "name": "Wooden training shield",
     "slot": "shield",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "oakShortbow": {
     "name": "Oak shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "willowShortbow": {
     "name": "Willow shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mapleShortbow": {
     "name": "Maple shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "yewShortbow": {
     "name": "Yew shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "magicShortbow": {
     "name": "Magic shortbow",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rangerHood": {
     "name": "Ranger hood",
     "slot": "head",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "wizardRobe": {
     "name": "Wizard robe",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adeptRobe": {
     "name": "Adept robe",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mysticRobe": {
     "name": "Mystic robe",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "studdedBody": {
     "name": "Studded leather body",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "greenHideBody": {
     "name": "Green hide body",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "blueHideBody": {
     "name": "Blue hide body",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "redHideBody": {
     "name": "Red hide body",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "blackHideBody": {
     "name": "Black hide body",
     "slot": "body",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronze_dagger": {
     "name": "Bronze dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "iron_dagger": {
     "name": "Iron dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steel_dagger": {
     "name": "Steel dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithril_dagger": {
     "name": "Mithril dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamant_dagger": {
     "name": "Adamant dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "rune_dagger": {
     "name": "Eldrite dagger",
     "slot": "weapon",
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
+  },
+  "mysticStaff": {
+    "name": "Mystic staff",
+    "slot": "weapon",
+    "stackable": false,
+    "tradeable": true
+  },
+  "scholarAmulet": {
+    "name": "Scholar’s amulet",
+    "slot": "neck",
+    "stackable": false,
+    "tradeable": true
+  },
+  "temperedRing": {
+    "name": "Tempered signet",
+    "slot": "ring",
+    "stackable": false,
+    "tradeable": true
+  },
+  "scholarMantle": {
+    "name": "Scholar’s mantle",
+    "slot": "cape",
+    "stackable": false,
+    "tradeable": true
   },
   "bronzeArrowheads": {
     "name": "Bronze arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "ironArrows": {
     "name": "Iron arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "steelArrowheads": {
     "name": "Steel arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "steelArrows": {
     "name": "Steel arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "mithrilArrowheads": {
     "name": "Mithril arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "mithrilArrows": {
     "name": "Mithril arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "adamantArrowheads": {
     "name": "Adamant arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "adamantArrows": {
     "name": "Adamant arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "runeArrowheads": {
     "name": "Eldrite arrowheads",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "runeArrows": {
     "name": "Eldrite arrows",
     "slot": null,
-    "stackable": true
+    "stackable": true,
+    "tradeable": true
   },
   "bronzeAxe": {
     "name": "Bronze axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "bronzePickaxe": {
     "name": "Bronze pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironAxe": {
     "name": "Iron axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "ironPickaxe": {
     "name": "Iron pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steelAxe": {
     "name": "Steel axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "steelPickaxe": {
     "name": "Steel pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "blackAxe": {
     "name": "Black axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "blackPickaxe": {
     "name": "Black pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithrilAxe": {
     "name": "Mithril axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "mithrilPickaxe": {
     "name": "Mithril pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamantAxe": {
     "name": "Adamant axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "adamantPickaxe": {
     "name": "Adamant pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "runeAxe": {
     "name": "Eldrite axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "runePickaxe": {
     "name": "Eldrite pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayerAxe": {
     "name": "Dragonslayer axe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
   },
   "dragonslayerPickaxe": {
     "name": "Dragonslayer pickaxe",
     "slot": null,
-    "stackable": false
+    "stackable": false,
+    "tradeable": true
+  },
+  "huntersMark": {
+    "name": "Hunter’s mark",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
   }
 }

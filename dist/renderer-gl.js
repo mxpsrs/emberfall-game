@@ -26,7 +26,7 @@ float unpackDepth(vec4 d){return dot(d,vec4(1.0,1.0/255.0,1.0/65025.0,1.0/165813
 void main(){
  vec4 albedo=vec4(1.0);if(vMaterial>19.5){float tile=floor(vMaterial-20.0+.01);vec2 cell=vec2(mod(tile,8.0),floor(tile/8.0));albedo=texture2D(uAtlas,(cell+(vec2(2.0)+fract(vUV)*508.0)/512.0)/8.0);if(albedo.a<.45)discard;}
  if(uDissolve>0.0&&hash(floor(vWorld.xz*21.0)+floor(vWorld.y*19.0))<uDissolve)discard;
- if(uShadowPass>.5){gl_FragColor=packDepth(gl_FragCoord.z);return;}
+ if(uShadowPass>.5){if(vMaterial>19.05&&vMaterial<19.15)discard;gl_FragColor=packDepth(gl_FragCoord.z);return;}
  vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 light=normalize(vec3(-.55,1.0,.38)),col=vColor;float gloss=.0;vec2 p=vWorld.xz;float grain=noise(p*18.0);
  if(vMaterial>19.5){col*=albedo.rgb;}
  else if(vMaterial>17.5&&vMaterial<18.5){vec2 faceP=abs(n.y)>.6?p:abs(n.x)>.5?vWorld.zy:vWorld.xy;vec2 grid=faceP*vec2(2.5,4.8);grid.x+=mod(floor(grid.y),2.0)*.5;vec2 uv=fract(grid);float mortar=smoothstep(.015,.07,min(min(uv.x,1.0-uv.x),min(uv.y,1.0-uv.y)));col*=.77+.20*mortar+.065*noise(faceP*12.0);}

@@ -1,49 +1,81 @@
 'use strict';
-// The King Beneath the Mountain: two persistent, one-time story chapters.
-// Evidence and bound quest tools live in the journal, never in droppable inventory.
+// Arc One: stable saved stage boundaries; the enemies, never the player, break the prison.
 const MOUNTAIN_STEPS=[
- ['The names below','Speak to Archivist Maerin in Ironhollow.','maerin'],
- ['Three empty homes','Examine the abandoned shift ledger, miner’s tools and royal summons around Ironhollow.','clues'],
- ['A pattern in the names','Bring the three pieces of evidence to Maerin.','maerin'],
- ['Stone remembers','Recover a bearing from the collapsed workings outside Ironhollow. Requires Mining 5.','bearing'],
- ['Iron carries','Reforge the recovered bearing at the ward workbench. Requires Smithing 5.','workbench'],
- ['Breath awakens','Install the bearing and solve the three-sigil seal at the Underworks entrance.','seal'],
- ['The last watch','Enter the Sealed Underworks and defeat the Oathbound Watcher guarding the survivors.','watcher'],
- ['A name still living','Reach Warden Edda in the Underworks and hear what happened.','edda'],
- ['Open the way home','Restore the ventilation wheel so Edda can lead the trapped miners out.','vent'],
- ['The borrowed voice','Recover the memory from the royal memory stone.','memory'],
- ['Part One: the witness returns','Bring the memory and Edda’s testimony to Maerin in Ironhollow.','maerin'],
- ['A voice that is not his','Speak to Maerin to begin Part Two.','maerin'],
- ['The inscription in the glass','Investigate the fragment in your journal, then take its inscription to Master Alaric in Ironcrown Citadel’s library.','expert'],
- ['A ward of your own','At Ironhollow’s ward workbench, bind 2 iron bars, 6 air relics and 6 mind relics. Requires Smithing 5 and Magic 5.','workbench'],
- ['The adventurer who returned','Meet Master Alaric in the castle library. Prepare together for the Sanctum.','expert'],
- ['Unbind the captives','Enter the Shattered Sanctum. Free all three captive minds by answering them with the truths in your journal.','bindings'],
- ['Before the Mindbreaker','Speak to Alaric inside the Sanctum. He will hold your ward while you fight.','expert'],
- ['Break Veyr’s hold','Defeat Veyr the Mindbreaker with Alaric’s protection. Bring food, watch the ground and keep attacking.','veyr'],
- ['What he was listening to','Examine the fractured memory left inside the Sanctum.','aftermath'],
- ['Part Two: names returned','Bring the truth back to Maerin in Ironhollow.','maerin'],
- ['The mountain still answers','Both chapters complete. Veyr can be challenged again through Huntsman Rook.','huntsman']
+ ['The Wardkeeper families','Bring the physical Memory Shard and evidence to Maerin. Mining 8, Smithing 8, Magic 8; recommended Combat 15.','maerin'],
+ ['Three empty homes','Investigate the Wardkeeper ledger, abandoned tools and false summons at three Ironhollow homes.','clues'],
+ ['An organized operation','Compare the missing families with the road, mine and shrine evidence. Speak to Maerin.','maerin'],
+ ['The service passage','Recover the Wardkeepers’ service-hatch bearing. Mining 8.','bearing'],
+ ['Repair the escape access','Repair the bearing at Ironhollow’s ward workbench. Smithing 8.','workbench'],
+ ['A way to the prison','Open only the outer service hatch with the repaired bearing and Magic 8. The prison seals remain intact.','seal'],
+ ['The occupied Underworks','Explore the occupied Underworks. Recover the agents’ field orders, then defeat the Oathbound Watcher beyond their barricades.','watcher'],
+ ['The name beneath the mountain','Reach Warden Edda. Learn what the unknown agents are attempting to awaken.','edda'],
+ ['Protect the living','Restore the escape ventilation so Edda can evacuate the Wardkeeper survivors.','vent'],
+ ['The final seal','Race north to the final prison seal. Stop the masked operatives.','memory'],
+ ['The prison is broken','Return to Maerin with Edda’s testimony. The enemy has awakened Veyr.','maerin'],
+ ['A world of borrowed voices','Begin The Borrowed King with Maerin. Magic 10, Worship 8, any usable Spirit; recommended Combat 18.','maerin'],
+ ['Alaric’s mistake','Read the shard’s Wardkeeper record in your journal, then seek Master Alaric in Ironcrown’s library.','expert'],
+ ['The counter-ward','Bind 2 iron bars, 6 air relics and 6 mind relics at the ward workbench. Magic 10.','workbench'],
+ ['Agree on the truth','Return to Alaric. Learn the counter-ward’s signal and your Spirit’s tell.','expert'],
+ ['The halls of trust','Cross the Shattered Sanctum. Test three captive memories against your journal and Spirit reactions.','bindings'],
+ ['Stand together','Meet Alaric before the inner arena. Confirm his identity and anchor the counter-ward.','expert'],
+ ['The Borrowed King','Defeat Veyr through three phases. Watch physical warnings and use Spirit insight to expose his imitations.','veyr'],
+ ['More than one prison','Search the agents’ abandoned survey chart beside the shattered throne.','aftermath'],
+ ['A battle won','Return to Maerin. Collect the Veilbreaker Ring and record the other marked locations.','maerin'],
+ ['Arc One complete','Veyr is defeated and Ironhollow is safe. Rook offers repeat echo hunts; the other targets remain unresolved.','huntsman']
 ];
 const MOUNTAIN_CLUES={
- ledger:['Abandoned shift ledger','The same three families have maintained the lower ward for generations. Their latest shifts have been crossed out in a different hand.','The missing people inherited duties at the ward.'],
- tools:['Miner’s abandoned tools','A pickaxe lies beside an unfinished repair. A child has scratched a warning into its handle: “Father heard Grandmother calling. Grandmother is buried.”','The voice imitates someone each victim trusts.'],
- summons:['Royal summons','The seal is genuine, but the signature repeats the same tiny crack on every sheet. The last order bears your name and tomorrow’s date.','The orders copy an old impression; they are not newly signed.']
+ ledger:['Wardkeeper family duty ledger','Generations of three Ironhollow families maintained a prison below the mountain. Recent missing names match the duty rotations. Someone added access dates in unfamiliar ink.','The missing families were Wardkeepers, custodians of ancient protections.'],
+ tools:['Tools outside an empty Wardkeeper home','Dinner is untouched. A child’s note says: “Father heard Grandmother at the cellar stairs. Grandmother is buried.” Boot marks include an unfamiliar adult who waited outside.','A familiar dead relative’s voice lured a Wardkeeper underground; another person followed.'],
+ summons:['Copied summons at the shuttered home','An old royal impression was copied onto new parchment. The ink and seven-point wax match the raiders’ orders. A scrap lists shifts, shrine fragments and three family names.','The forged orders, mine sabotage and missing families belong to one organized operation.']
 };
 const MOUNTAIN_BINDINGS={
- child:{name:'The child’s binding',question:'A small voice repeats, “He said he was my father. He knew my name. Why would I not follow?”',answer:'Knowing your name does not make him your father.',wrong:'You should have obeyed the king.',memory:'Alaric: a stolen name proves nothing about its speaker.'},
- miner:{name:'The miner’s binding',question:'“I left the wheel turning. If I stop working, everyone below me dies. Tell me I can rest.”',answer:'The ventilation is restored. Your watch is over.',wrong:'Keep turning the wheel. We still need you.',memory:'Edda: the ventilation wheel is turning and the miners have escaped.'},
- keeper:{name:'The keeper’s binding',question:'“My king ordered me to guard this place. If the voice is his, I must obey.”',answer:'An oath protects people, not a borrowed voice.',wrong:'An oath must be obeyed, whoever suffers.',memory:'Maerin: the purpose of the oath was to protect living people.'}
+ child:{name:'The borrowed captain',question:'Rellan’s image orders you to surrender the counter-ward: “The royal seven-point seal proves my command.” The apparition casts no shadow across a lit floor.',answer:'Rellan confirmed the current seal has five points. Keep the ward.',wrong:'Obey the seven-point order.',memory:'Orders of the Dead: the copied royal seal had seven points; the current seal has five.',spirit:'Your Spirit moves independently of you. The imitation repeats exactly when the apparition repeats: a copied human rhythm.'},
+ miner:{name:'The stolen last shift',question:'Bera calls: “I rang the bell and shouted Oren to safety.” Her lips repeat a fraction after the echo. An old rescue brace lies beneath the scene.',answer:'Dust took Bera’s voice before the bell. This memory is altered.',wrong:'Bera called Oren below after the bell.',memory:'The Last Shift: Bera could not speak before the bell. Both miners returned to Hesta.',spirit:'The Spirit’s pulse passes through the false Bera, but catches on the real iron brace beneath her.'},
+ keeper:{name:'The remembered companion',question:'Alaric’s lost companion begs: “Open the inner ward; trust my voice.” The real counter-ward burns in three steady points, while her copied light flickers in only two.',answer:'Alaric’s signal has three steady lights. Hold the ward and free the memory.',wrong:'Open the ward because the voice is familiar.',memory:'Alaric admitted following a copied friend’s voice. The agreed signal is three steady lights; no ally will ask you to lower the counter-ward.',spirit:'Your Spirit refuses the two-beat imitation. Its own movement remains irregular and alive.'}
 };
+const ARC_REWARDS={
+ rellanSignet:{npc:'rellan',main:7},ironhollowBelt:{npc:'hesta',main:18},whisperPendant:{npc:'ilyra',main:25},wardkeeperCape:{npc:'edda',mountain:11},veilbreakerRing:{npc:'expert',mountain:20}
+};
+function arcOwnsAnywhere(id){return (s.gear?.[id]||0)+(s.bag?.[id]||0)+(s.bank?.[id]||0)>0||Object.values(s.equipment||{}).includes(id)||(s.groundLoot||[]).some(p=>p.items?.[id]>0);}
+function arcGiveItem(id){
+ if(!ITEMS[id])return false;s.gear??={};s.bag??={};s.bank??={};
+ if(canCarry(id)){const bag=ITEMS[id].slot?s.gear:s.bag;bag[id]=(bag[id]||0)+1;}else{s.bank[id]=(s.bank[id]||0)+1;toast(ITEMS[id].name+' was sent to your bank.');}return true;
+}
+function arcConsumeItem(id){const bag=ITEMS[id]?.slot?s.gear:s.bag;if(bag?.[id]>0){bag[id]--;return true;}if(s.bank?.[id]>0){s.bank[id]--;return true;}return false;}
+function arcRecoveryChoices(o){
+ const key=o.mainStoryKey||o.mountainKey,choices=[];
+ for(const [id,r]of Object.entries(ARC_REWARDS))if(r.npc===key&&(r.main?mainStoryState().stage>=r.main:mountainState().stage>=r.mountain)&&!arcOwnsAnywhere(id))choices.push(['Recover '+ITEMS[id].name,()=>{if(!mountainNear(o)||arcOwnsAnywhere(id)||window.playerTrade)return;if(arcGiveItem(id)){save();renderUI();close();toast(ITEMS[id].name+' recovered.');}}]);
+ if(key==='ilyra'&&mainStoryState().stage>=24&&mountainState().stage===0&&!arcOwnsAnywhere('memoryShard'))choices.push(['Recover the Memory Shard',()=>{if(mountainNear(o)&&mountainState().stage===0&&!arcOwnsAnywhere('memoryShard')){arcGiveItem('memoryShard');save();renderUI();close();}}]);
+ return choices;
+}
+function arcUsableSpirit(){return Object.keys(s.spirits||{}).find(id=>SPIRITS[id]&&spiritRemaining(id)<=0)||null;}
+function arcGate(chapter){
+ const requirements=chapter===4?{Mining:8,Smithing:8,Magic:8}:{Magic:10,Worship:8};
+ for(const [skill,n]of Object.entries(requirements))if(lv(skill)<n)return 'Requires '+skill+' '+n+'.';
+ if(chapter===5&&!arcUsableSpirit())return 'Bring any bonded Spirit that is ready to use. Any element works; wait for its recovery if needed.';return '';
+}
+function arcWorldReaction(o){
+ const q=mountainState();if(q.stage<10)return '';
+ if(q.stage>=18)return 'The impossible voices have stopped. People are checking on their families; Ironhollow remembers who brought them home.';
+ const key=o.mainStoryKey||o.mountainKey;
+ return key==='rellan'?'Two guards heard me order opposite patrols. I gave neither command. We now check written countersigns face to face.':key==='hesta'?'A child heard his father call from the closed shaft while that same father stood beside him. We travel in pairs now.':key==='ilyra'?'Human memories are being repeated with terrible precision. Spirits are different beings; the copies fail to reproduce their independent reactions.':key==='edda'?'I still hear my dead mother at doorways. I stay with witnesses. We must stop Veyr before more people follow.':'Someone called a familiar name from an empty room. Nobody here is willing to follow a voice alone.';
+}
 function mountainState(){
  let q=s.mountainQuest;if(!q||typeof q!=='object'||Array.isArray(q))q=s.mountainQuest={};
- q.version=1;q.stage=Number.isInteger(q.stage)?Math.max(0,Math.min(20,q.stage)):0;
+ const legacy=q.version!==2&&q.stage>0;q.version=2;q.stage=Number.isInteger(q.stage)?Math.max(0,Math.min(20,q.stage)):0;
+ if(legacy){if(q.stage>=11){q.reward1=true;q.awakened=true;}if(q.stage>=20)q.reward2=true;if(q.stage>=6)q.fieldOrders=true;q.arcMigrated=true;}
  q.clues=Array.isArray(q.clues)?[...new Set(q.clues.filter(k=>MOUNTAIN_CLUES[k]))]:[];
  q.bindings=Array.isArray(q.bindings)?[...new Set(q.bindings.filter(k=>MOUNTAIN_BINDINGS[k]))]:[];
  return q;
 }
-function mountainUnlocked(){return mountainState().stage>=18;}
+function mountainUnlocked(){return mountainState().stage===20;}
 let mountainReady=false,mountainSerial=6100000,mountainWork=null,mountainJournal='story';
-CREATURE_LAIRS.quest_underiron={title:'The Sealed Underworks',subtitle:'Ironhollow · The King Beneath the Mountain',quest:true,theme:'arcane',size:[44,48],entry:[22,44],arena:[22,19],entrance:[766,156],floor:'#454b50',trim:'#9c9382',glow:'#9bcbd4',fog:[.12,.15,.17],ambient:[.85,.95,1.02],light:[.08,.14,.2],rooms:[['rect',18,30,9,16],['rect',7,23,30,12],['rect',9,6,26,19]]};
+CREATURE_LAIRS.quest_underiron={title:'The Sealed Underworks',subtitle:'Wardkeeper halls · An occupied prison',quest:true,theme:'arcane',size:[52,128],entry:[26,121],arena:[22,19],entrance:[766,156],floor:'#454b50',trim:'#9c9382',glow:'#9bcbd4',fog:[.12,.15,.17],ambient:[.85,.95,1.02],light:[.08,.14,.2],rooms:[['rect',18,30,9,16],['rect',7,23,30,12],['rect',9,6,26,19],['rect',22,105,9,19],['ellipse',26,102,13,11],['rect',11,93,20,8],['rect',10,73,9,24],['ellipse',15,71,11,10],['rect',14,62,29,8],['rect',36,43,9,24],['ellipse',38,44,10,9],['rect',21,36,20,9]]};
+// Its physical entrance belongs beneath Ironhollow, not beside unrelated ruins.
+CREATURE_LAIRS.lair_veyr.entrance=[794,157];
+CREATURE_LAIRS.lair_veyr.subtitle='The Borrowed King · Three halls of trust';
+CREATURE_LAIRS.lair_veyr.approach.name='The Shattered Sanctum';
+CREATURE_LAIRS.lair_veyr.approach.rooms=['Hall of False Orders','Gallery of the Last Shift','The Companion’s Threshold'];
 const mountainLairRelease=creatureLairReleased;
 creatureLairReleased=function(lair){return lair.quest||mountainLairRelease(lair);};
 function mountainObject(key){for(const [scene,w]of Object.entries(worldScenes)){const o=w.objects.find(o=>o.mountainKey===key);if(o)return {scene,o};}return null;}
@@ -76,17 +108,11 @@ function syncMountainExpert(){
 }
 function mountainInspectFragment(){
  const q=mountainState();if(q.stage!==12||!q.memory)return;
- dialog('The inscription in the glass','<p>Turned against the light, the memory fragment reveals writing beneath its surface:</p><p><i>“Within the broken oath, the listener waits. Return the witness to the threshold.”</i></p><p>The letters circle a key-shaped cut in the glass. This was fashioned deliberately; it is more than a preserved memory.</p>',[['Copy the strange inscription.',()=>{if(mountainState().stage!==12)return;q.inscription=true;save();close();toast('Take the inscription to Master Alaric in Ironcrown Citadel’s library.');}]]);
+ dialog('Wardkeeper record in the shard','<p>A broken entry names Master Alaric among the adventurers who repaired the prison years ago. A diagram shows three points of light surrounding an unbroken inner ward.</p><p>The record does not name the unknown attackers. Alaric may know how to resist the being they released.</p>',[['Copy the record for Alaric.',()=>{if(q.stage!==12)return;q.inscription=true;save();close();toast('Seek Master Alaric in Ironcrown’s library.');}]]);
 }
 function mountainExpertReveal(o){
- const q=mountainState();if(!q.inscription)return mountainSay(o,['Maerin’s letter mentions writing inside the glass. Examine the fragment in your quest journal and copy every word. An incomplete inscription can be dangerous.'],[['Investigate the fragment.',mountainInspectFragment]]);
- return mountainOffer(o,12,[
-  'Where did you find this? No—let me read it. “Within the broken oath…” I cut those words into the glass myself. This is a key to Veyr’s lair, the Shattered Sanctum. It was never merely a memory stone.',
-  'Before I kept this library, I was an adventurer. My companions and I tried to seal Veyr away. I mistook his silence for surrender. When I closed the binding, he spoke with my friend’s voice. I broke the seal to let her out. It was him.',
-  'I escaped with half the key. I entrusted it to Ironcrown’s ward-keepers, who hid it inside their memory stone. I thought its memories would bury the path. Instead Veyr followed those memories back to them. The missing families are paying for my failure.',
-  'I will assist you this time. Forge a counter-ward at Ironhollow’s workbench: two iron bars, six air relics and six mind relics. Smithing 5 and Magic 5. Bring it back to me; together we can wake the key without answering his voice.',
-  'Three truths will free the captive minds. Knowing a name does not prove who is speaking. The miners’ duty ends when their people are safe. An oath protects people, not a borrowed voice. I forgot that last truth once. I will not forget it again.'
- ],'Let us finish what you started.',()=>{mountainAdvance(12,o,{truths:true,lairKey:true});close();});
+ if(!mountainState().inscription)return mountainSay(o,['Read the Wardkeeper entry in your journal first. I need to know which binding failed.'],[['Read the shard’s record.',mountainInspectFragment]],'The Borrowed King');
+ return mountainOffer(o,12,['Years ago my companions and I helped contain Veyr. He spoke with a friend’s voice from beyond the ward. I believed him. I damaged a protection trying to let her out. Edda’s predecessors repaired what I broke.', 'That old mistake left scars in the prison. It did not hire these raiders, forge these orders or sabotage this mine. Living people found the weakness and deliberately opened it. I do not know who they are.', 'We will forge a counter-ward: two iron bars, six air relics and six mind relics. Bind it with Magic 10 at Ironhollow’s workbench. I will maintain it inside the Sanctum.', 'Veyr copies human memory with frightening accuracy. Your Spirit is fundamentally different. It can expose a false reaction, but you must still compare clues and choose what to trust. Any bonded Spirit can help.'],'Prepare the counter-ward together.',()=>{mountainAdvance(12,o,{truths:true,lairKey:true});close();});
 }
 function setupMountainQuest(){
  if(mountainReady)return;mountainReady=true;
@@ -102,13 +128,16 @@ function setupMountainQuest(){
  const entrance=CREATURE_LAIRS.quest_underiron.entrance;
  mountainPlace('overworld','seal','Three-sigil royal seal',entrance[0]+2,entrance[1]+1,{mountainModel:'World_BookStand'});
  const guard=mountainPlace('quest_underiron','watcher','Oathbound Watcher',22,31,{type:'enemy',kind:'mountainwatcher',sprite:species.skeleton.sprite});
- applyEnemyTier(guard,{...ENEMY_TIERS.skeleton,look:'skeleton',name:'Oathbound Watcher',hp:32,level:12,maxHit:3,weak:'magic'});
+ applyEnemyTier(guard,{...ENEMY_TIERS.skeleton,look:'skeleton',name:'Oathbound Watcher',hp:40,level:15,maxHit:4,weak:'magic'});
  mountainNPC('quest_underiron','edda','Warden Edda',12,27);
  mountainPlace('quest_underiron','vent','Ventilation wheel',31,27,{mountainModel:'World_Workbench'});
- mountainPlace('quest_underiron','memory','Royal memory stone',22,10,{mountainModel:'World_BookStand'});
+ mountainPlace('quest_underiron','memory','Final prison seal',22,10,{mountainModel:'World_BookStand'});
  mountainNPC('quest_underiron','survivor','Trapped miner Dorrin',12,29);
- for(const [key,x,y]of [['child',9,30],['miner',35,31],['keeper',15,11]])mountainPlace('lair_veyr','binding_'+key,MOUNTAIN_BINDINGS[key].name,x,y,{mountainModel:'World_BookStand'});
- mountainPlace('lair_veyr','aftermath','Fractured memory',27,11,{mountainModel:'World_BookStand'});
+ for(const [key,x,y]of [['child',22,119],['miner',12,92],['keeper',33,65]])mountainPlace('lair_veyr','binding_'+key,MOUNTAIN_BINDINGS[key].name,x,y,{mountainModel:'World_BookStand'});
+ mountainPlace('lair_veyr','aftermath','Abandoned multi-site survey chart',27,11,{mountainModel:'World_BookStand'});
+ mountainPlace('quest_underiron','fieldOrders','Masked agents’ field orders',14,69,{mountainModel:'World_BookStand'});
+ for(const [i,x,y]of [[0,27,98],[1,14,80],[2,38,52]]){const agent=mountainPlace('quest_underiron','agent_'+i,'Masked excavator',x,y,{type:'enemy',kind:'wardagent',sprite:species.bandit.sprite});applyEnemyTier(agent,{...ENEMY_TIERS.bandit,look:'bandit',name:'Masked excavator',level:13,hp:26,maxHit:3});}
+ mountainNPC('quest_underiron','saboteur','Masked seal-breaker',26,12,'human');mountainNPC('quest_underiron','accomplice','Masked lookout',18,11,'human');
  syncMountainWorld();
  if(!mountainCanEnter(currentScene)){const point=CREATURE_LAIRS[currentScene]?.returnPoint;if(point)activateScene('overworld',...point,false);}
 }
@@ -131,70 +160,39 @@ setupTutorialVillage=function(){mountainSetupBefore();setupMountainQuest();};
 function mountainNear(o){return !!o&&objects.includes(o)&&currentScene!=='tutorial'&&Math.hypot(px-o.x,py-o.y)<=2&&lineOfSight(px,py,o.x,o.y);}
 function mountainAdvance(expected,o,change={}){
  const q=mountainState();if(q.stage!==expected||o&&!mountainNear(o))return false;
- Object.assign(q,change,{stage:expected+1});syncMountainWorld();save();renderUI();toast('Quest updated: '+MOUNTAIN_STEPS[q.stage][0]);return true;
+ if(expected===0){const gate=arcGate(4);if(gate||!mainStoryComplete()){toast(gate||'Complete Whispers at Hollow Shrine.');return false;}if(!arcOwnsAnywhere('memoryShard')&&!mainStoryState().arcMigrated){toast('Retrieve the Memory Shard from your bank or Ilyra.');return false;}arcConsumeItem('memoryShard');change.memory=true;}
+ if(expected===11){const gate=arcGate(5);if(gate){toast(gate);return false;}}
+ Object.assign(q,change,{stage:expected+1});if(expected===10)mountainReward(1,false);if(expected===19)mountainReward(2,false);syncMountainWorld();save();renderUI();toast('Quest updated: '+MOUNTAIN_STEPS[q.stage][0]);return true;
 }
 function mountainSay(o,pages,choices=[],topic){openNpcDialogue(o,pages,choices,topic||'The King Beneath the Mountain');}
 function mountainOffer(o,expected,pages,label,action){mountainSay(o,pages,[[label,()=>{if(mountainState().stage!==expected||!mountainNear(o))return;action();}],['I need more time.',close]]);}
-function mountainReward(part){
+function mountainReward(part,persist=true){
  const q=mountainState(),key='reward'+part;if(q[key])return;q[key]=true;
- const rewards=part===1?{Mining:350,Smithing:350}:{Magic:560,Defense:420};
- const banked=grantQuestCoins(part===1?280:490);for(const [skill,n]of Object.entries(rewards))gain(skill,n,true);
- showExperienceDrop(rewards);save();if(typeof showQuestCompletion==='function')showQuestCompletion({title:'The King Beneath the Mountain — Part '+(part===1?'One':'Two'),coins:part===1?280:490,banked,xp:rewards,unlocks:part===2?['Repeat Veyr hunts']:[]});
+ const rewards=part===1?{Mining:600,Smithing:600,Magic:600,Defense:300,Hitpoints:300}:{Attack:750,Strength:750,Defense:750,Hitpoints:750,Magic:750,Ranged:750,Worship:750};
+ const coins=part===1?600:1000,item=part===1?'wardkeeperCape':'veilbreakerRing',banked=grantQuestCoins(coins);arcGiveItem(item);
+ for(const [skill,n]of Object.entries(rewards))gain(skill,n,true);showExperienceDrop(rewards);if(persist)save();
+ if(typeof showQuestCompletion==='function')showQuestCompletion({title:part===1?'The King Beneath the Mountain':'The Borrowed King',coins,banked,xp:rewards,unlocks:[ITEMS[item].name,part===1?'The Borrowed King':'Repeat Veyr hunts through Rook']});
 }
 function mountainTalk(o){
  const q=mountainState(),key=o.mountainKey;
  if(key==='huntsman')return openHuntsman(o);
  if(key==='maerin'){
-  if(q.stage===0)return mountainOffer(o,0,[
-   'Thirteen nights. Thirteen names spoken from shafts we sealed before my grandfather was born. By sunrise, each person named is gone. The court calls it desertion. I have read the names. They include a child.',
-   'King Thargrim has closed the lower workings. His guards will not listen to another petition. I need evidence they cannot dismiss: the shift ledger, the tools left outside the eastern homes, and the summons posted north of the square.',
-   'If you investigate, do not answer anything that calls from below—even if it knows you. Recommended Combat 20 for this story. You will need Mining 5, Smithing 5 and, in Part Two, Magic 5.'
-  ],'Investigate the disappearances.',()=>{mountainAdvance(0,o);close();});
-  if(q.stage===2){
-   const pages=['The ward-keepers’ descendants. Of course. These families inherited the right to enter the lower chamber. Someone is collecting its keys—and the keys are people.',
-    'Your summons is impossible. The stamp was made long before you arrived in Veldren. Something has added your name to an old command. That is no lawful order.',
-    'The emergency passage uses an older mechanism: stone remembers, iron carries, breath awakens. Recover its bearing from the collapsed workings, reshape it at our ward workbench, then wake the entrance seal. Should I warn the families publicly, or move them quietly?'];
-   return mountainSay(o,pages,[['Warn the families. They deserve the truth.',()=>{if(mountainAdvance(2,o,{choice:'warn'}))close();}],['Move the families quietly; keep the names sealed.',()=>{if(mountainAdvance(2,o,{choice:'shelter'}))close();}]]);
-  }
-  if(q.stage===10)return mountainOffer(o,10,[
-   'Edda is alive. So are the people the court had already written off. I will enter their testimony into the public record before anyone can seal it away.',
-   q.choice==='warn'?'Your warning reached the families. They refused the next summons together. The square was full of witnesses; the guards could not pretend not to see.':'We moved the families into the archive after dusk. None answered last night’s summons. Their names will stay under seal until the danger passes.',
-   'In this memory, the king’s voice continues after the memory stone breaks. Another voice laughs behind it. Strange writing lies beneath the fracture, too fine to read without a closer look. You have proved the disappearances can be stopped. Now we must find the speaker.'
-  ],'Complete Part One.',()=>{if(mountainAdvance(10,o)){mountainReward(1);close();}});
-  if(q.stage===11)return mountainOffer(o,11,[
-   'The fragment still speaks when no one touches it. There is an inscription beneath its cracked surface. Examine it closely before taking it to Master Alaric, the expert in Ironcrown Citadel’s library.',
-   'Edda will stay beside the archive while she recovers. Alaric has spent years collecting records of failed sealings. If anyone recognizes the writing, it will be him.',
-   'The oath beneath Ironcrown was meant to protect living people. Remember that if the voice demands obedience. A dead king has no right to spend another life.'
-  ],'Begin Part Two.',()=>{mountainAdvance(11,o);close();});
-  if(q.stage===19)return mountainOffer(o,19,[
-   'The voices stopped before dawn. The missing have begun to return, frightened and exhausted, but speaking with their own voices. Alaric sent word of what you did inside the Sanctum.',
-   'Veyr stole the ward-keepers’ memories to reach the binding beneath Ironcrown. He could imitate its keeper, but he could not enter the deepest chamber. That is why your name appeared: someone from beyond Veldren might pass where he could not.',
-   'His last memory shows three bindings beneath three kingdoms. One line repeats: “I did not wake him. I heard him wake.” Veyr is beaten. Whatever answered beneath the mountain remains there.',
-   'For now, the families are safe. Huntsman Rook can reopen a path to the Sanctum whenever you choose to hunt Veyr’s returning echo. Alaric’s ward was spent freeing the captives; those hunts will be yours to win.'
-  ],'Complete Part Two.',()=>{if(mountainAdvance(19,o)){mountainReward(2);close();}});
-  return mountainSay(o,[q.stage===20?'The archive holds every rescued name. We have not forgotten what is beneath Ironcrown. For now, the lower passages stay sealed and the families live.':MOUNTAIN_STEPS[q.stage][1]]);
+  if(q.stage===0){const gate=arcGate(4);if(gate)return mountainSay(o,[gate,'The Memory Shard links this investigation to our Wardkeeper records. Bring it when you are ready.']);
+   return mountainOffer(o,0,['This shard names families who maintained ancient protections beneath Ironhollow. Wardkeepers. Several have disappeared in the last few days.', 'The road attack hid a delivery. The mine collapse hid a dig. The shrine was searched for seal fragments. Now someone is removing the people who maintain the prison.', 'Investigate three empty family homes: the duty ledger to the west, abandoned tools east, and copied summons north. We must learn who was taken and find a way down. Recommended Combat 15.'],'Hand over the shard and investigate.',()=>{if(mountainAdvance(0,o))close();});}
+  if(q.stage===2)return mountainSay(o,['The names match. These were Wardkeepers. Familiar voices drew them into cellars; unfamiliar boots followed. The false summons uses the raiders’ copied seal.', 'This is organized. Someone is deliberately trying to open an ancient prison. We suspect they want to destabilize Veldren, but we have no proof of their larger purpose.', 'Warn the remaining families or shelter them in the archive. Then repair the outer service hatch: recover its bearing, reshape it at the ward workbench, and follow the inscription. Opening that hatch does not alter the prison seals.'],[['Warn the remaining families.',()=>{if(mountainAdvance(2,o,{choice:'warn'}))close();}],['Shelter the families in the archive.',()=>{if(mountainAdvance(2,o,{choice:'shelter'}))close();}]]);
+  if(q.stage===10)return mountainOffer(o,10,['Edda reached the archive with survivors. Her account is clear: the masked operatives completed the final rite. You did not release Veyr. They did.', q.choice==='warn'?'Your warning saved the remaining families. Neighbours checked every familiar voice before following it.':'The families you sheltered stayed together and refused voices calling from empty corridors.', 'Guards are hearing contradictory commands. Citizens hear the dead. Edda names the being Veyr. We must stop him, and we need someone who survived facing him before. Take the Wardkeeper Cape; you earned it saving their people.'],'Complete The King Beneath the Mountain.',()=>{if(mountainAdvance(10,o)){mountainReward(1);close();}});
+  if(q.stage===11){const gate=arcGate(5);if(gate)return mountainSay(o,[gate,'Veyr copies people, not Spirits perfectly. Any usable Spirit will do.']);return mountainOffer(o,11,['Veyr is awake. Rellan’s guards received conflicting orders in his voice. Hesta heard children called back into the mine. Nobody knows which memories to trust.', 'Our records name Master Alaric. Read the surviving Wardkeeper entry in your journal and find him in Ironcrown’s library. Recommended Combat 18. Bring a Spirit; no particular element is required.'],'Begin The Borrowed King.',()=>{if(mountainAdvance(11,o))close();});}
+  if(q.stage===19)return mountainOffer(o,19,['Veyr is defeated. The voices have stopped and the families are returning. You and Alaric won this battle; nothing in this chart diminishes what that took.', 'This is the intruders’ work, not Veyr’s memory. Ironhollow is marked as one completed operation. Several other locations carry different seal diagrams and unfinished survey codes.', 'They are attempting to awaken multiple ancient beings. We do not know their name, their leaders, or why they want this. Destabilizing Veldren is our interpretation, not a confession.', 'Rest. Help Ironhollow recover. We will study the other marks before sending anyone after another prison. The Veilbreaker Ring is yours. Rook can offer repeat echo hunts; they do not change what happened here.'],'Complete The Borrowed King.',()=>{if(mountainAdvance(19,o)){mountainReward(2);close();}});
+  return mountainSay(o,[q.stage===20?'Veyr is defeated. Ironhollow was one of several targets. The other marks remain under study; we will not mistake a theory for knowledge.':MOUNTAIN_STEPS[q.stage][1]],arcRecoveryChoices(o));
  }
- if(key==='edda'||key==='expert'){
-  if(key==='expert'&&q.stage===12)return mountainExpertReveal(o);
-  if(key==='edda'&&q.stage===7)return mountainOffer(o,7,[
-   'Do not say my name loudly. That thing learned it from the duty roll. It called in my mother’s voice. I knew she was dead. I followed anyway.',
-   'I was the lower ward’s keeper. The Watcher turned on us when the voice changed its orders. Dorrin got the children into a side shaft, but the air is failing.',
-   'Restore the ventilation wheel across this chamber. I will lead them through the emergency passage. Afterward, take the memory stone from the northern chamber. It heard both voices.'
-  ],'I will open the escape route.',()=>{mountainAdvance(7,o);close();});
-  if(key==='expert'&&q.stage===14)return mountainOffer(o,14,[
-   'The inscription has awakened. This fragment is the key I broke when my first sealing failed. Your counter-ward will let us carry it without surrendering our minds.',
-   'I will hold the counter-ward while you fight. I can blunt his attacks and break some eruptions, but I cannot make you invincible. Bring food. A bow gives you room to move; Veyr is vulnerable to ranged attacks.',
-   'Before we face him, free the three captive minds inside the Shattered Sanctum near the Hollow Ruins. Answer with what we learned, not with the commands he has made them repeat. I will meet you just inside the entrance.'
-  ],'Meet me in the Sanctum.',()=>{mountainAdvance(14,o);close();});
-  if(key==='expert'&&q.stage===16)return mountainOffer(o,16,[
-   'Three voices, finally quiet. The ward is taking hold. When he draws an eruption beneath your feet, move. I will break one when I can, but the binding needs time to recover.',
-   'I will keep your mind anchored and mend your wounds while you press the attack. I cannot strike the final blow for you. If we have to retreat, come back; the people you freed stay free.',
-   'Last time I entered without a counter-ward. I left my companions behind when the seal broke. I cannot undo that. This time, I stand with you until it is finished.'
-  ],'Stand with me, Alaric.',()=>{mountainAdvance(16,o);close();});
-  if(key==='expert')return mountainSay(o,[q.stage===20?'The failed sealing is no longer the last page of my story. Thank you for standing with me. The fragment remains your key; Rook can open a crossing to Veyr’s returning echo.':q.stage>=18?'We did it. I heard my own thoughts when he fell. Take the fractured memory from the north side of the Sanctum to Maerin. It may tell us why he wanted you.':q.stage===17?'The ward is ready. Stay near the fight so I can reach you. Watch the marked ground and eat when you need to.':q.stage>=13?MOUNTAIN_STEPS[q.stage][1]:'I catalogue accounts of failed bindings. Some of those accounts are my own. If you find an inscription from a broken seal, bring it to me.']);
-  return mountainSay(o,[q.stage>=10?'The families are safe, and Maerin has my testimony. Thank you for coming back for us.':q.stage>=9?'The ventilation is turning. Dorrin can lead the others out. I will tell Maerin what happened here.':'The others are alive. Defeat the Watcher and come close; it listens when we speak.']);
- }
- if(key==='survivor')return mountainSay(o,[q.stage>=9?'Fresh air. I never thought I would be grateful for a draft. The children are already heading up the passage Edda marked.':q.choice==='warn'?'Your warning reached us. We were packing when the voice came. Help Edda open the ventilation; we can get the children out.':'Edda has kept us together. We have been breathing through wet cloths. Please get the wheel turning again.']);
+ if(key==='edda'&&q.stage===7)return mountainOffer(o,7,['The being below is Veyr. Our families have maintained his prison for generations. He can enter human memories and wear the voices and identities people trust.', 'Masked strangers brought stolen shrine fragments into the Underworks. They used our names and familiar voices to lure Wardkeepers down, then took their seal tokens. Veyr did not arrange your road attack or this excavation. Those people are trying to wake him.', 'The Watcher mistook their stolen tokens for authority. You broke its hold. Restore the escape ventilation for our survivors, then hurry north. The last protection is still standing—for now.'],'Protect the survivors and reach the final seal.',()=>{if(mountainAdvance(7,o,{veyrNamed:true}))close();});
+ if(key==='expert'&&q.stage===12)return mountainExpertReveal(o);
+ if(key==='expert'&&q.stage===14)return mountainOffer(o,14,['Three steady lights: that is my counter-ward’s signal. I will never tell you to lower it. If my voice does, trust the agreement we made here.', 'Veyr may imitate Rellan, Bera, me, even you. Check their words against your journal and the physical scene. Your Spirit can expose what his human mimicry gets wrong; press Spirit insight at a memory or during combat. It gives a clue, not the answer.', 'Enter the Shattered Sanctum beneath Ironhollow. Cross the Hall of False Orders, the Gallery of the Last Shift, and the Companion’s Threshold. Free the trapped minds, then meet me at the inner arena.'],'Enter the Sanctum together.',()=>{if(mountainAdvance(14,o,{signalKnown:true}))close();});
+ if(key==='expert'&&q.stage===16)return mountainOffer(o,16,['Count the lights. Three, steady. I am holding the ward just as we agreed.', 'Veyr first borrows familiar commands, then fractures the arena, then steals your likeness. Solid marked ground is dangerous even when a voice calls it safe. Spirit insight shows the copies as hollow outlines for a short time; you still have to move and choose your target.', 'I will blunt his attacks, interrupt some hazards and mend your wounds. Keep pressure on him. If you retreat, the freed minds remain free. We finish this together.'],'Anchor the counter-ward and face Veyr.',()=>{if(mountainAdvance(16,o,{identityConfirmed:true}))close();});
+ if(key==='expert')return mountainSay(o,[q.stage>=18?'We defeated him. I will not pretend that undoes what he took. Search the operatives’ abandoned survey chart, then bring it to Maerin.':q.stage===17?'Three steady lights. Keep the ward. Watch the real ground markings; use Spirit insight if the copies confuse you.':MOUNTAIN_STEPS[q.stage][1]],arcRecoveryChoices(o),'The Borrowed King');
+ if(key==='edda')return mountainSay(o,[q.stage>=10?arcWorldReaction(o):'The strangers are moving north. We must protect the survivors and reach the final seal.'],arcRecoveryChoices(o));
+ if(key==='survivor')return mountainSay(o,[q.stage>=9?'Edda opened the escape. I will lead the families up. Do not follow the voice that sounds like your commander.':'The miners’ timber supports run straight through our ancestors’ stone halls. Those masked people knew where to dig. Edda kept us alive.']);
+ if(key==='saboteur'||key==='accomplice')return mountainSay(o,[q.stage>=10?'The operatives are gone. No identity remains.':'“The final fragments are in position. Hold the passage.”']);
 }
 function mountainWorkStart(o,stage,skill,level,label,finish,requirements={}){
  if(mountainState().stage!==stage||!mountainNear(o))return false;
@@ -221,9 +219,9 @@ function mountainTickWork(dt){
 const mountainActionBefore=renderAction;
 renderAction=function(){mountainActionBefore();if(mountainWork){$('targetTitle').textContent=mountainWork.label;$('targetSub').textContent='Working… Move to cancel.';}};
 function mountainSeal(o,index=0){
- if(mountainState().stage!==5||!mountainNear(o))return;
+ if(mountainState().stage!==5||!mountainNear(o))return;if(lv('Magic')<8){toast('Requires Magic 8.');return;}
  const order=['Stone','Iron','Breath'];
- dialog('The three-sigil seal','<p>“Stone remembers. Iron carries. Breath awakens.”</p><p>The repaired bearing fits. Touch the sigils in the order of the inscription.</p><p>'+index+' / 3 sigils awakened.</p>',
+ dialog('The three-sigil seal','<p>“Stone remembers. Iron carries. Breath awakens.”</p><p>The repaired bearing opens the outer service hatch only. It does not touch the prison seals. Trace the maintenance inscription in order.</p><p>'+index+' / 3 sigils awakened.</p>',
  ['Breath','Stone','Iron'].map(word=>[word,()=>{
   if(mountainState().stage!==5||!mountainNear(o))return;
   if(word!==order[index]){toast('The seal falls quiet. Read the inscription and start again.');return mountainSeal(o,0);}
@@ -237,25 +235,27 @@ function mountainBinding(o,key){
  if(q.stage!==15){dialog(row.name,'<p>A voice is trapped in the stone. '+(q.stage<15?'You need a prepared counter-ward and Alaric’s help.':'The binding has fallen silent.')+'</p>');return;}
  const reply=(correct)=>{if(mountainState().stage!==15||!mountainNear(o))return;if(!correct){toast('The binding tightens. That answer repeats Veyr’s command. Consult the truths in your journal.');close();return;}
   if(!q.bindings.includes(key))q.bindings.push(key);if(q.bindings.length===3)mountainAdvance(15,o);save();close();toast('A captive mind is free. '+q.bindings.length+' / 3.');};
- dialog(row.name,'<p>'+row.question+'</p>',[[row.wrong,()=>reply(false)],[row.answer,()=>reply(true)],['Step away.',close]]);
+ dialog(row.name,'<p>'+row.question+'</p>',[[row.wrong,()=>reply(false)],[row.answer,()=>reply(true)],['Ask your Spirit to examine the memory.',()=>arcSpiritInsight(o,key)],['Consult the recorded evidence.',()=>dialog('Known facts','<p>'+row.memory+'</p>',[['Return to the memory.',()=>mountainBinding(o,key)]])],['Step away.',close]]);
 }
 function mountainInteract(o){
  if(!mountainNear(o))return;
  const q=mountainState(),key=o.mountainKey;stop();
  if(o.characterSprite)return mountainTalk(o);
  if(MOUNTAIN_CLUES[key]){
+  if(q.stage===0)return dialog(o.name,'<p>An Ironhollow family has left in a hurry. Archivist Maerin is gathering their records; bring him the shrine evidence before opening this investigation.</p>');
   const row=MOUNTAIN_CLUES[key];dialog(row[0],'<p>'+row[1]+'</p>',q.stage===1&&!q.clues.includes(key)?[['Record the evidence.',()=>{if(q.stage!==1||!mountainNear(o)||q.clues.includes(key))return;q.clues.push(key);if(q.clues.length===3)mountainAdvance(1,o);save();close();}]]:[]);return;
  }
- if(key==='bearing'&&q.stage===3)return dialog(o.name,'<p>An iron bearing is trapped beneath loose stone. Recover it with your pickaxe. Mining 5 required. This quest component is kept in your journal.</p>',[['Recover the bearing.',()=>mountainWorkStart(o,3,'Mining',5,'Recovering the ward bearing',()=>mountainAdvance(3,o))]]);
+ if(key==='fieldOrders')return dialog(o.name,'<p>Separate teams: clear the road; close the legitimate shift; recover shrine fragments; take Wardkeeper tokens; finish the final seal. Every signature is coded. No group name or location of command is given.</p>',[['Copy the field orders.',()=>{if(!mountainNear(o))return;q.fieldOrders=true;save();close();toast('The coordinated operation is recorded. Reach the Oathbound Watcher.');}]]);
+ if(key==='bearing'&&q.stage===3)return dialog(o.name,'<p>An iron bearing is trapped beneath loose stone. Recover it with your pickaxe. Mining 8 required. This quest component is kept in your journal.</p>',[['Recover the bearing.',()=>mountainWorkStart(o,3,'Mining',8,'Recovering the ward bearing',()=>mountainAdvance(3,o))]]);
  if(key==='workbench'){
-  if(q.stage===4)return dialog(o.name,'<p>The recovered bearing is bent. Use the workbench to reshape it and repair the royal passage. Smithing 5 required.</p>',[['Reforge the bearing.',()=>mountainWorkStart(o,4,'Smithing',5,'Reforging the ward bearing',()=>mountainAdvance(4,o))]]);
-  if(q.stage===13)return dialog(o.name,'<p>Bind a counter-ward from <b>2 iron bars, 6 air relics and 6 mind relics</b>. Requires Smithing 5 and Magic 5. Alaric can sustain this ward during your first Veyr battle.</p>',[['Bind the counter-ward.',()=>{if(lv('Smithing')<5){toast('Requires Smithing 5.');return;}mountainWorkStart(o,13,'Magic',5,'Binding the counter-ward',()=>mountainAdvance(13,o,{ward:true}),{ironBar:2,airRunes:6,runes:6});}]]);
+  if(q.stage===4)return dialog(o.name,'<p>The recovered bearing is bent. Use the workbench to reshape it and repair the royal passage. Smithing 8 required.</p>',[['Reforge the bearing.',()=>mountainWorkStart(o,4,'Smithing',8,'Reforging the ward bearing',()=>mountainAdvance(4,o))]]);
+  if(q.stage===13)return dialog(o.name,'<p>Bind a counter-ward from <b>2 iron bars, 6 air relics and 6 mind relics</b>. Requires Magic 10. Alaric can sustain this ward during your first Veyr battle.</p>',[['Bind the counter-ward.',()=>{if(lv('Magic')<10){toast('Requires Magic 10.');return;}mountainWorkStart(o,13,'Magic',10,'Binding the counter-ward',()=>mountainAdvance(13,o,{ward:true}),{ironBar:2,airRunes:6,runes:6});}]]);
  }
  if(key==='seal'&&q.stage===5)return mountainSeal(o);
  if(key==='vent'&&q.stage===8)return dialog(o.name,'<p>The return chain has slipped. Seat it in the guide, then turn the wheel toward the open passage. Edda waits until there is enough air to move the survivors.</p>',[['Restore the ventilation.',()=>mountainWorkStart(o,8,'Smithing',1,'Restoring the escape route',()=>mountainAdvance(8,o,{rescued:true}))]]);
- if(key==='memory'&&q.stage===9)return dialog(o.name,'<p>The stone repeats a royal address. It cracks; the address continues. Behind it, another voice whispers: “Again. I almost have him.”</p><p>A glimpse of a broken observatory flashes through the glass. The memory loosens from the stone.</p>',[['Recover the memory fragment.',()=>{if(mountainAdvance(9,o,{memory:true}))close();}]]);
+ if(key==='memory'&&q.stage===9)return beginArcAwakening(o);
  if(key?.startsWith('binding_'))return mountainBinding(o,key.slice(8));
- if(key==='aftermath'&&q.stage===18)return dialog(o.name,'<p>Veyr kneels before an unseen presence. Three circles burn beneath a mountain, a forest and a crown city.</p><p>“The outsider can cross the binding. I only need the right voice.”</p><p>The presence answers with a heartbeat that shakes the glass. Veyr recoils: “I did not wake him. I heard him wake.”</p>',[['Preserve the final memory.',()=>{if(mountainAdvance(18,o,{lastMemory:true}))close();}]]);
+ if(key==='aftermath'&&q.stage===18)return dialog(o.name,'<p>A survey chart lies beneath the operatives’ abandoned tools. Several locations across Veldren carry seal diagrams. Ironhollow is one, marked “opened.” Other sites have incomplete routes and coded references.</p><p>These people are attempting to awaken multiple ancient beings. The chart names neither the organization nor every prisoner. Veyr was the first you witnessed them release.</p>',[['Preserve the enemy survey chart.',()=>{if(mountainAdvance(18,o,{lastMemory:true,multipleTargets:true}))close();}]]);
  dialog(o.name,'<p>'+MOUNTAIN_STEPS[q.stage][1]+'</p>');
 }
 const mountainInteractionBefore=handleWorldInteraction;
@@ -264,12 +264,12 @@ handleWorldInteraction=function(o){if(o.mountainKey&&!fighter(o)){mountainIntera
 function mountainCanEnter(id){const q=mountainState();return id==='quest_underiron'?q.stage>=6:id==='lair_veyr'?q.stage>=15&&!!q.lairKey:true;}
 const mountainSceneBefore=activateScene;
 activateScene=function(id,...args){
- if(mountainReady&&!mountainCanEnter(id)){toast(id==='lair_veyr'?'Prepare with Alaric during Part Two before entering the Sanctum.':'Restore the royal seal during Part One first.');stop();return false;}
+ if(mountainReady&&!mountainCanEnter(id)){toast(id==='lair_veyr'?'Prepare with Alaric during The Borrowed King before entering the Sanctum.':'Restore the Wardkeepers’ service hatch during The King Beneath the Mountain first.');stop();return false;}
  return mountainSceneBefore(id,...args);
 };
-function mountainCanFight(o){const q=mountainState();return o.mountainKey==='watcher'?q.stage===6:o.encounter==='veyr'?q.stage>=17:true;}
+function mountainCanFight(o){const q=mountainState();return o.mountainKey==='watcher'?q.stage===6&&!!q.fieldOrders:o.encounter==='veyr'?q.stage===17||q.stage===20&&s.questRematch==='veyr':o.kind==='wardagent'?q.stage>=6:true;}
 const mountainAttackBefore=performAttack,mountainBeginBefore=beginEncounter;
-performAttack=function(o){if(!mountainCanFight(o)){stop();toast(o.encounter==='veyr'?'Free the three captive minds and speak to Alaric before confronting Veyr.':'This enemy belongs to the sealed passage investigation.');return false;}return mountainAttackBefore(o);};
+performAttack=function(o){if(!mountainCanFight(o)){stop();toast(o.encounter==='veyr'?'Free the three captive minds and speak to Alaric before confronting Veyr.':'Recover the agents’ field orders from their lower camp before confronting the Watcher.');return false;}return mountainAttackBefore(o);};
 beginEncounter=function(o){if(!mountainCanFight(o))return;const previous=activeEncounter;mountainBeginBefore(o);if(activeEncounter&&activeEncounter!==previous&&o.encounter==='veyr'&&mountainState().stage===17){activeEncounter.companionWard=true;activeEncounter.companionHealAt=time+5;activeEncounter.companionPulseAt=time+3;activeEncounter.companionInterruptAt=time+7;toast('Alaric: I have the ward. Keep moving—I am with you!');}};
 function mountainAssisted(o){return mountainState().stage===17&&currentScene==='lair_veyr'&&o?.encounter==='veyr'&&activeEncounter?.o===o&&activeEncounter.companionWard;}
 const mountainHitBefore=applyEnemyHit;
@@ -280,7 +280,7 @@ updateEncounterAI=function(dt){
  if(f&&mountainAssisted(f.o)){
   const companion=mountainObject('expert')?.o;
   if(companion){
-   if(f.companionInterruptAt<=time&&f.hazards.length){f.hazards.shift();f.companionInterruptAt=time+10;companion._castAt=time;companion._castDuration=1.2;floating('Eruption broken',f.o.x,f.o.y,'#a4e0e7');}
+   if(f.companionInterruptAt<=time){const shared=typeof sharedLive==='function'&&sharedLive(),hazards=shared?sharedCombatHazards():f.hazards;if(hazards.length){if(shared)sharedTarget('wardInterrupt',f.o);else f.hazards.shift();f.companionInterruptAt=time+10;companion._castAt=time;companion._castDuration=1.2;floating('Alaric anchors the ward',f.o.x,f.o.y,'#a4e0e7');}}
    if(f.companionHealAt<=time){s.hp=Math.min(maxhp(),s.hp+3);renderUI();f.companionHealAt=time+6;companion._castAt=time;companion._castDuration=1.2;floating('+3 · Alaric',px,py,'#a4e0e7');}
    // Companion damage gives no player XP and cannot land the finishing blow.
    if(f.companionPulseAt<=time){if(typeof sharedLive==='function'&&sharedLive())sharedTarget('companion',f.o);else f.o.hp=Math.max(1,f.o.hp-2);f.companionPulseAt=time+4;companion._castAt=time;companion._castDuration=1.2;floating('−2 · Alaric',f.o.x,f.o.y,'#a4e0e7');}
@@ -293,7 +293,7 @@ awardDefeat=function(o,style){
  const q=mountainState(),watcher=o.mountainKey==='watcher'&&q.stage===6,veyr=o.encounter==='veyr'&&mountainAssisted(o);
  mountainDefeatBefore(o,style);
  if(watcher)mountainAdvance(6,null);
- if(veyr){mountainAdvance(17,null,{veyrDefeated:true});toast('Veyr’s hold is broken. Huntsman Rook can now open repeat hunts. Recover the fractured memory before leaving.');}
+ if(veyr){mountainAdvance(17,null,{veyrDefeated:true});toast('Veyr is defeated. Recover the agents’ survey chart before leaving. Complete the quest with Maerin to unlock repeat hunts.');}
 };
 const mountainDrawBefore=drawTutorialCrossing3;
 drawTutorialCrossing3=function(mesh){
@@ -305,9 +305,9 @@ drawTutorialCrossing3=function(mesh){
 };
 function openHuntsman(o){
  const q=mountainState(),choices=[];
- if(q.stage<18)choices.push(['The King Beneath the Mountain',()=>{close();openGamePanel('quests');}]);
+ if(q.stage<20)choices.push(['The King Beneath the Mountain',()=>{close();openGamePanel('quests');}]);
  for(const [kind,e]of Object.entries(HUNT_ENCOUNTERS))if(encounterReleased(kind)&&(kind!=='veyr'||mountainUnlocked()))choices.push(['Teleport: '+e.name,()=>beginHuntsmanTeleport(kind,o)]);
- mountainSay(o,[q.stage<18?'Maerin in Ironhollow is looking for someone who can investigate the voices beneath the mountain. Veyr’s trail remains sealed until you face him with Alaric. My other hunting paths are open.':'Alaric told me what happened in the Sanctum. The captive minds are free, but Veyr’s echo gathers there again. I can send you to its entrance whenever you are ready. These hunts will not have Alaric’s protection.','My crossings burn red. They take you to the entrance, where you can prepare before approaching your quarry.'],choices,'Huntsman crossings');
+ mountainSay(o,[q.stage<20?'Maerin in Ironhollow is looking for someone who can investigate the voices beneath the mountain. Repeat Veyr hunts unlock after The Borrowed King is complete. My other hunting paths are open.':'Veyr is defeated. The Sanctum retains a combat echo that my crossing can challenge. The original battle stays won. I can send you to its entrance whenever you are ready. These hunts will not have Alaric’s protection.','My crossings burn red. They take you to the entrance, where you can prepare before approaching your quarry.'],choices,'Huntsman crossings');
 }
 function beginHuntsmanTeleport(kind,speaker=null){
  const e=HUNT_ENCOUNTERS[kind];if(!e||!encounterReleased(kind)||kind==='veyr'&&!mountainUnlocked()||!worldScenes[e.scene]||currentScene==='tutorial'||!tutorialComplete(s)||tutorialCrossing)return false;
@@ -339,13 +339,14 @@ renderHunts=function(){
 function mountainGuide(){
  if(playerAction?.kind==='investigate')return true;
  const q=mountainState();let key=MOUNTAIN_STEPS[q.stage][2];
+ if(q.stage===6&&!q.fieldOrders)key='fieldOrders';
  if(key==='clues')key=Object.keys(MOUNTAIN_CLUES).find(k=>!q.clues.includes(k));
  if(key==='bindings')key='binding_'+Object.keys(MOUNTAIN_BINDINGS).find(k=>!q.bindings.includes(k));
  let found=key==='veyr'?{scene:'lair_veyr',o:worldScenes.lair_veyr.objects.find(o=>o.encounter==='veyr')}:mountainObject(key);
  if(!found)return;
  if(currentScene==='tutorial'){toast('Finish the apprenticeship to begin this mainland story.');return;}
  if(currentScene!==found.scene){
-  if(currentScene!=='overworld'){const before=currentScene;leaveInterior();if(currentScene!==before)return mountainGuide();return;}
+  if(currentScene!=='overworld'){const exit=worldScenes[currentScene]?.exit;if(exit){close();return mountainTravelTo(exit);}return false;}
   found={scene:'overworld',o:objects.find(o=>o.destination===found.scene)};
  }
  if(q.stage===12&&!q.inscription)return mountainInspectFragment();
@@ -372,23 +373,23 @@ function mountainTravelTo(o){
  stop();target=o;path=planned;elapsed=0;renderAction();if(!path.length)arrive();return true;
 }
 function renderMountainJournal(){
- pageControls(1,1);const q=mountainState(),step=MOUNTAIN_STEPS[q.stage],p=$('panel');
- p.innerHTML='<div class="questhead"><h2>The King Beneath the Mountain</h2><small>Main story · '+(q.stage===20?'Complete':q.stage<=10?'Part One · The Names Below':'Part Two · A Voice That Is Not His')+'</small></div><section class="mountain-current"><h3>'+step[0]+'</h3><p>'+step[1]+'</p></section><p class="desc">Recommended Combat 20 · Mining 5 · Smithing 5 · Magic 5</p>';
- const follow=document.createElement('button');follow.textContent=q.stage===12&&!q.inscription?'Investigate the fragment':'Follow current objective';follow.onclick=mountainGuide;follow.disabled=currentScene==='tutorial';p.appendChild(follow);
- const notes=document.createElement('details');notes.className='mountain-notes';const summary=document.createElement('summary');summary.textContent='Evidence, quest tools and completed objectives';notes.appendChild(summary);
+ pageControls(1,1);const q=mountainState(),step=MOUNTAIN_STEPS[q.stage],p=$('panel'),title=q.stage<11?'The King Beneath the Mountain':'The Borrowed King';
+ p.innerHTML='<div class="questhead"><h2>'+title+'</h2><small>Arc One · The Awakening of Veyr</small></div><section class="mountain-current"><h3>'+step[0]+'</h3><p>'+step[1]+'</p></section><p class="desc">'+(q.stage<11?'Mining 8 · Smithing 8 · Magic 8 · Recommended Combat 15':'Magic 10 · Worship 8 · Any usable Spirit · Recommended Combat 18')+'</p>';
+ const follow=document.createElement('button');follow.textContent=q.stage===12&&!q.inscription?'Read the shard’s record':'Follow current objective';follow.onclick=mountainGuide;follow.disabled=currentScene==='tutorial';p.appendChild(follow);
+ const notes=document.createElement('details');notes.className='mountain-notes';const summary=document.createElement('summary');summary.textContent='Evidence and completed objectives';notes.appendChild(summary);
  const note=text=>{const item=document.createElement('p');item.textContent=text;notes.appendChild(item);};
  for(const key of q.clues)note(MOUNTAIN_CLUES[key][2]);
- if(q.stage>=3)note('Seal inscription: Stone remembers. Iron carries. Breath awakens.');
- if(q.stage>=4&&q.stage<=5)note(q.stage===4?'Quest tool: recovered ward bearing.':'Quest tool: repaired ward bearing.');
- if(q.memory)note('Memory fragment: a second voice speaks behind the king’s preserved memory.');
- if(q.inscription)note('Inscription: “Within the broken oath, the listener waits. Return the witness to the threshold.”');
- if(q.lairKey)note('Alaric identified the fragment as his broken key to Veyr’s lair. He failed to seal Veyr away and has agreed to help you.');
+ if(q.stage>=3)note('Service-hatch inscription: Stone remembers. Iron carries. Breath awakens. This hatch is separate from the prison.');
+ if(q.fieldOrders)note('Coded field orders coordinate the road, mine, shrine and Wardkeeper abductions. The group remains unidentified.');
+ if(q.veyrNamed||q.stage>=8)note('Edda: Veyr has been imprisoned for generations. He copies trusted human voices and memories. Unknown agents deliberately seek to awaken him.');
+ if(q.awakened)note('The masked operatives completed the final rite before we could stop them. They released Veyr. I did not.');
+ if(q.inscription)note('The shard records Alaric’s earlier work repairing the prison. Seek him at Ironcrown’s library.');
  if(q.truths)for(const row of Object.values(MOUNTAIN_BINDINGS))note(row.memory);
- if(q.ward)note(q.stage<18?'Quest tool: counter-ward, ready for Alaric.':'The counter-ward was spent freeing the captive minds.');
+ if(q.signalKnown)note('Our agreed signal: three steady ward lights. No true ally will ask me to lower the counter-ward. Spirits cannot be perfectly copied.');
  for(const key of q.bindings)note(MOUNTAIN_BINDINGS[key].name+': freed.');
- if(q.lastMemory)note('Veyr: “I did not wake him. I heard him wake.” Three bindings lie beneath Veldren’s kingdoms.');
+ if(q.lastMemory)note('Enemy survey chart: Ironhollow was only one target. Several other prisons are marked. Identities, motives and the other prisoners remain unknown.');
  for(let i=0;i<q.stage;i++)note('✓ '+MOUNTAIN_STEPS[i][0]);p.appendChild(notes);
- const rewards=document.createElement('p');rewards.className='desc';rewards.textContent='Part One: 280 coins, 350 Mining XP, 350 Smithing XP. Part Two: 490 coins, 560 Magic XP, 420 Defense XP. Assisted Veyr victory unlocks repeat Huntsman crossings.';p.appendChild(rewards);
+ const rewards=document.createElement('p');rewards.className='desc';rewards.textContent=q.stage<11?'Rewards: 600 coins; 600 Mining, Smithing and Magic XP; 300 Defence and Hitpoints XP; Wardkeeper Cape.':'Rewards: 1,000 coins; 750 XP in Attack, Strength, Defence, Hitpoints, Magic, Range and Worship; Veilbreaker Ring. Veyr’s Orb is separate boss loot: 1/250 per kill, including the story kill.';p.appendChild(rewards);
 }
 const mountainPanelBefore=renderPanel;
 renderPanel=function(){

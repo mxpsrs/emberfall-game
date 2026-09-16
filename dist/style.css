@@ -107,7 +107,7 @@ body.panels-open .legend{display:none}
 
 /* All armor pieces remain reachable on desktop and short mobile screens. */
 #panel:has(.equipment-slots),#panel:has(.tool-belt-contents){overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#8c805b #243229}
-.equipment-slots{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:". head ." ". neck ." "weapon body shield" "hands legs feet";gap:5px;padding-bottom:5px}
+.equipment-slots{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"cape head ammo" "ring neck belt" "weapon body shield" "hands legs feet";gap:5px;padding-bottom:5px}
 .equipment-slots .gearslot{min-height:86px;justify-content:space-between;gap:2px;min-width:0;position:relative}
 .equipment-slots .gearslot small{font-size:10px;color:#c8cbb8;line-height:1.1;min-height:22px;display:flex;align-items:center;text-align:center}
 .equipment-slots .gearslot canvas{width:42px;height:42px;object-fit:contain}
@@ -159,3 +159,8 @@ body.panels-open .legend{display:none}
 
 /* The apprenticeship journal keeps the current instruction in one clear card. */
 .tutorial-journal{padding:16px;border:1px solid #b8a16c;border-radius:8px;background:#f0e5c7;color:#30291e}.tutorial-journal-count{font-size:11px;font-weight:800;letter-spacing:.08em;color:#685028;margin:0 0 12px}.tutorial-journal h2{font-size:20px;line-height:1.2;margin:0 0 14px}.tutorial-journal-instruction{font-size:15px;line-height:1.55;margin:0 0 14px}.tutorial-journal-progress{padding:10px;background:#dfd2af;border-left:3px solid #947437;font-size:13px;line-height:1.5}.tutorial-journal-go{width:100%;padding:12px;background:#3d5348;color:#fff5df;border:1px solid #253b30;border-radius:5px;font-weight:700;cursor:pointer}.tutorial-journal-next{font-size:12px;line-height:1.4;color:#65563e;margin:14px 0 0}
+
+.equipment-slots .gearslot[data-equipment-slot="cape"]{grid-area:cape}
+.equipment-slots .gearslot[data-equipment-slot="ring"]{grid-area:ring}
+.equipment-slots .gearslot[data-equipment-slot="belt"]{grid-area:belt}
+.equipment-slots .gearslot[data-equipment-slot="ammo"]{grid-area:ammo}

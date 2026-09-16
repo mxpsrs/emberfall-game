@@ -42,9 +42,10 @@ function applySharedWorld(data){
   try{
    if(r.kind==='attack'&&Number.isFinite(r.readyAt))sharedAttackReadyAt=Math.max(sharedAttackReadyAt,r.readyAt);
    if(r.ok){
-    if(r.kind==='hit'&&o){if(r.damage>0)awardCombatDamage(r.damage,r.style,r.focus);floating(r.damage?'−'+r.damage:'Miss',o.x,o.y,r.damage?'#ffe0bb':'#9caebd');o.hitAt=time;
+    if(r.kind==='hit'&&o){if(r.damage>0)awardCombatDamage(r.damage,r.style,r.focus);floating(r.damage?'−'+r.damage:'Miss',o.x,o.y,r.damage?'#ffe0bb':'#9caebd');o.hitAt=time;if(Number.isFinite(r.memoryFrayUntil))o._memoryFrayUntil=time+Math.max(0,(r.memoryFrayUntil-sharedNow())/1000);
      if(r.defeat){o.hp=0;if(!r.scene||r.scene===currentScene)awardDefeat(o,r.style);}
-    }else if(r.kind==='enemyHit'&&o){const hp=o.hp;if(r.dodged)floating('Dodged',px,py,'#b5e9c8');else sharedEnemyHitBefore(o,r.damage);o.hp=hp;}
+    }else if(r.kind==='wardInterrupt'&&o){floating('False warning broken',o.x,o.y,'#b5eee0');}
+    else if(r.kind==='enemyHit'&&o){const hp=o.hp;if(r.dodged)floating('Dodged',px,py,'#b5e9c8');else sharedEnemyHitBefore(o,r.damage);o.hp=hp;}
     else if(r.kind==='harvest'&&!r.missed){sharedGive(r.item,1);if(r.bait&&s.bag[r.bait]>0)s.bag[r.bait]--;gain(r.skill,r.xp);discoverSkillSpirit(r.skill);if(o){o.hitAt=time;floating('+1 '+ITEMS[r.item].name,o.x,o.y);if(['ore','tin'].includes(o.tutorialRole)){if(s.bag.copperOre>0&&s.bag.tinOre>0)tutorialEvent('ore');}else tutorialEvent(o.type);}}
     else if(r.kind==='fire'){gain('Firemaking',r.xp);discoverSkillSpirit('Firemaking');tutorialEvent('fire');playGameSound('fire');}
     else if(r.kind==='pickup'){sharedGive(r.item,r.count);tutorialEvent('loot');toast('Picked up '+ITEMS[r.item].name+(r.count>1?' ×'+r.count:'')+'.');}

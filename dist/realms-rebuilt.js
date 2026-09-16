@@ -514,6 +514,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
  if(!gear._civilian&&(!gear.head||gear.head==='rangerCap')&&!['bandit','warden'].includes(gear._kind)){const hair=['Hair_SimpleParted','Hair_Long','Hair_Buzzed'][identity.hair%3||0];if(identity.hair!==3&&identity.hair!==4)briarEmit(r,tintedHair(hair,identity.hairColor??look,sex),headTransform);if(identity.beard===1)briarEmit(r,tintedHair('Hair_Beard',identity.hairColor??look,sex),headTransform);if(race==='dwarf')briarEmit(r,rebuiltModels.Hair_Beard,headTransform);}
  else if(gear.head&&!modularModel(gear.head)){const base=mesh.gpuMesh||mesh;base.helmet??=avatarHelmet(base,mesh.avatar);if(r.skinned)r.skinned(base.helmet,root,mesh.pose);else briarEmit(r,base.helmet,root);}
  if(gear.head==='rangerCap')briarEmit(r,rebuiltModels.Ranger_Cap,affineMultiply(headTransform,briarTransform(0,a.mesh.bounds[1][1]-.052,.015,1.13)));
+ if(typeof drawArcWearables==='function')drawArcWearables(r,root,mesh,gear);
  if(bow)drawArcherQuiver(r,root,mesh,gear===s.equipment?s.equippedAmmoCount:gear._ammoCount||0,gear.ammo);
  if(casting)drawCastingLight(r,root,mesh,phase,worship?spiritEffect.color:gear._castColor||'#a7e6e0');
  if(burying&&poseAction.kind==='bury')drawBoneOffering(r,root,mesh,(time-poseAction.started)/poseAction.duration);
@@ -527,6 +528,7 @@ humanoid3=function(r,x,z,look,gear={},heading=0,walk=0,attack=0,size=1){
   const modular=wornModularMesh(sex,gear[slot]);
   if(modular)briarEmit(r,modular,world);
   else if(slot==='weapon'&&['bronzeSword','ironSword'].includes(gear.weapon)){fittedSwordRealm(r,world,gear.weapon==='bronzeSword');}
+  else if(slot==='weapon'&&gear.weapon==='veyrOrb'&&typeof buildArcItem==='function'){const q={face:(points,col)=>r.face(points.map(v=>briarPoint(v,0,world)),col)};buildArcItem(q,'veyrOrb');}
   else if(slot==='weapon'&&ITEMS[gear.weapon]?.style==='magic')briarEmit(r,fittedStaffMesh(),affineMultiply(world,briarTransform(sex==='female'?-.003:-.008,0,-.006)));
   else if(source){const k=slot==='shield'?.62:ITEMS[gear.weapon]?.style==='magic'?.68:.78;briarEmit(r,source,affineMultiply(world,slot==='shield'?[k,0,0,0,0,0,-k,0,0,k,0,0]:[k,0,0,0,0,k,0,0,0,0,k,0]));}
   else{const bow={face(p,c){r.face(p.map(v=>briarPoint(v,0,world)),c);}},points=Array.from({length:13},(_,i)=>[.13*Math.sin(i*Math.PI/12),-.45+i*.075,0]);for(let i=0;i<12;i++)beamArt(bow,points[i],points[i+1],.016,'#81613b',5);beamArt(bow,points[0],points[12],.004,'#c9bd9d',4);}
@@ -625,3 +627,17 @@ async function loadRebuiltTextures(){
  if(window.matchMedia('(pointer: coarse)').matches){const small=document.createElement('canvas');small.width=small.height=2048;small.getContext('2d').drawImage(REALM_ATLAS_IMAGE,0,0,2048,2048);REALM_ATLAS_IMAGE=small;}
 }
 function startRebuiltRealm(){boot();}
+
+function drawArcWearables(r,root,mesh,gear){
+ const local=(matrix,offset=[0,0,0],scale=1)=>({face:(points,col)=>r.face(points.map(v=>briarPoint(v.map((n,i)=>n*scale+offset[i]),0,matrix)),col)});
+ const bone=(name)=>{const i=mesh.avatar.rig.names.indexOf(name);return i>=0?affineMultiply(root,mesh.pose.subarray(i*12,i*12+12)):root;};
+ if(['wardkeeperCape','scholarMantle'].includes(gear.cape)&&typeof buildArcItem==='function')buildArcItem(local(bone('spine_03'),[0,1.08,-.22],.78),'wardkeeperCape');
+ if(gear.belt==='ironhollowBelt'&&typeof buildArcItem==='function')buildArcItem(local(bone('pelvis'),[0,.93,0],.68),'ironhollowBelt');
+ if(['whisperPendant','scholarAmulet'].includes(gear.neck)&&typeof buildArcItem==='function')buildArcItem(local(bone('spine_03'),[0,1.47,.14],.27),'whisperPendant');
+ if(ITEMS[gear.ring]?.slot==='ring'&&typeof buildArcItem==='function'){const hand=affineMultiply(root,mesh.pose.subarray(mesh.avatar.left*12,mesh.avatar.left*12+12));buildArcItem(local(hand,[.04,-.035,.015],.075),gear.ring);}
+}
+const arcProjectileBefore=drawCombatProjectiles3;
+drawCombatProjectiles3=function(r){
+ arcProjectileBefore(r);
+ for(const p of projectiles)if(p.weapon==='veyrOrb'&&p.style==='magic'&&p.age>=0){const t=Math.min(1,p.age/p.duration),x=p.x+.5+(p.tx-p.x)*t,z=p.y+.5+(p.ty-p.y)*t,q=groundedPainter(r,x,z);for(let i=0;i<3;i++){const angle=t*12+i*Math.PI*2/3;oval3(materialRealm(q,19),x+Math.cos(angle)*.16,1.1+Math.sin(angle)*.13,z+Math.sin(angle)*.16,.07,.07,.07,i?'#9272bb':'#e0c9f4',v=>v,7);}}
+};

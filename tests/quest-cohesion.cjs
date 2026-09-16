@@ -33,11 +33,12 @@ mainStoryInteract(cart);time+=2.3;updatePlayerAction();assert($('modal').open);p
 assert(worldOptionsFor(cart)[0][0].startsWith('Investigate'));
 // Every physical story objective occupies navigable land, and named locations have dressing.
 for(const [scene,w]of Object.entries(worldScenes))for(const o of w.objects.filter(o=>o.mainStoryKey||o.mountainKey)){currentScene=scene;assert(!water(o.x,o.y),o.name+' in water');assert(!worldWall(o.x,o.y),o.name+' inside wall');}
-currentScene='overworld';for(const title of ['Old pilgrim camp','Ironhollow rescue camp','Redclay Bend','Borrowed Voice','Northern Watch','Ashwatch','Riverbend'])assert(questSites.some(p=>p.name.includes(title)),title);
+for(const key of ['ledger','tools','summons'])assert(mountainObject(key).o.interiorBuilding,'Wardkeeper evidence uses a real home: '+key);
+currentScene='overworld';for(const title of ['Old pilgrim camp','Ironhollow rescue camp','Redclay Bend','Hollow Shrine','Northern Watch','Ashwatch','Riverbend'])assert(questSites.some(p=>p.name.includes(title)),title);
 assert(worldScenes.overworld.objects.filter(o=>o.raiderCamp&&o.campModel==='tent').length===3);
 const lookout=mainStoryObject('lookout');assert.equal(worldScenes.overworld.objects.find(o=>o.id===lookout.id),lookout);
 assert(route(lookout.x,lookout.y,true,1.5,205,142)!==null,'camp entrance connected');assert(route(mainStoryObject('dispatch').x,mainStoryObject('dispatch').y,true,1.5,212,142)!==null,'satchel accessible');
-// Brook boosts maximum, never base level; healing and standby honor the current cap.
-s.xp.Hitpoints=skillThreshold('Hitpoints',10);s.spirits={brook:{state:'set'}};s.hp=5;assert.equal(lv('Hitpoints'),10);assert.equal(maxhp(),18);s.bag.fish=3;eatFood('fish');eatFood('fish');assert.equal(s.hp,18);s.spirits.brook.state='standby';s.hp=Math.min(s.hp,maxhp());assert.equal(s.hp,10);assert.equal(lv('Hitpoints'),10);s.spirits.brook.state='set';assert.equal(maxhp(),18);assert.equal(s.hp,10,'activation does not silently heal');
+// Brook boosts maximum, never base level; healing and recovery honor the current cap.
+s.xp.Hitpoints=skillThreshold('Hitpoints',10);s.spirits={brook:{state:'set'}};s.hp=5;assert.equal(lv('Hitpoints'),10);assert.equal(maxhp(),18);s.bag.fish=3;eatFood('fish');eatFood('fish');assert.equal(s.hp,18);s.spirits.brook={state:'recovery',readyAt:Date.now()+30000};s.hp=Math.min(s.hp,maxhp());assert.equal(s.hp,10);assert.equal(lv('Hitpoints'),10);s.spirits.brook.state='set';assert.equal(maxhp(),18);assert.equal(s.hp,10,'activation does not silently heal');
 console.log('PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.');
 `,ctx);

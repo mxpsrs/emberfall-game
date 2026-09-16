@@ -7,7 +7,7 @@ const db=new DatabaseSync(':memory:');for(const f of fs.readdirSync('drizzle').f
 let failWrite=false;
 const env={ACCOUNT_RESET_TOKEN:'test-only-maintenance-token-1234567890',DB:{prepare(sql){return {args:[],bind(...args){this.args=args;return this},async first(){return db.prepare(sql).get(...this.args)},async all(){return {results:db.prepare(sql).all(...this.args)}},async run(){if(failWrite&&sql.startsWith('UPDATE character_saves'))throw new Error('Injected write failure');return {meta:{changes:db.prepare(sql).run(...this.args).changes}}}}},async batch(statements){db.exec('BEGIN');try{const out=[];for(const s of statements)out.push(await s.run());db.exec('COMMIT');return out;}catch(e){db.exec('ROLLBACK');throw e;}}}};
 const hash=async s=>Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))).toString('hex');
-const cookies={};for(const [i,name]of ['alice','bobby','carol'].entries()){const token=String(i+1).repeat(64);cookies[name]='ember_session='+token;db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').run(name,name,name,'unused',Date.now());db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(await hash(token),name,Date.now()+1000000);db.prepare('INSERT INTO character_saves VALUES (?,?,1,?)').run('account:'+name,JSON.stringify({bag:{arrows:100,runes:20,coins:100},gear:{woodenSword:1},equipment:{weapon:'woodenSword'},gold:100,x:10,y:10,hp:30,xp:{}}),'now');db.prepare('INSERT INTO player_presence VALUES (?,?,?,?)').run(await hash('public-player:account:'+name),'overworld',JSON.stringify({x:i===2?100:10+i,y:10}),Date.now());}
+const cookies={};for(const [i,name]of ['alice','bobby','carol'].entries()){const token=String(i+1).repeat(64);cookies[name]='ember_session='+token;db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').run(name,name,name,'unused',Date.now());db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(await hash(token),name,Date.now()+1000000);db.prepare('INSERT INTO character_saves VALUES (?,?,1,?)').run('account:'+name,JSON.stringify({bag:{arrows:100,runes:20,coins:100},gear:{woodenSword:1,rellanSignet:1,veyrOrb:1},equipment:{weapon:'woodenSword'},gold:100,x:10,y:10,hp:30,xp:{}}),'now');db.prepare('INSERT INTO player_presence VALUES (?,?,?,?)').run(await hash('public-player:account:'+name),'overworld',JSON.stringify({x:i===2?100:10+i,y:10}),Date.now());}
 const req=(name,body,query='?after=0')=>new Request('https://game.test/api/social'+query,{method:body?'POST':'GET',headers:{cookie:cookies[name]||'',origin:'https://game.test'},...(body?{body:JSON.stringify(body)}:{})});
 const call=async (name,body,status=200)=>{db.exec("DELETE FROM auth_limits WHERE key LIKE 'social:%'");const r=await handleSocial(req(name,body),env);const data=await r.json();assert.equal(r.status,status,JSON.stringify(data));return data};
 assert.equal((await handleSocial(req('unknown'),env)).status,401);
@@ -26,6 +26,9 @@ const act=async(name,action,extra={},status=200)=>{const data=await call(name,{a
 await act('bobby','acceptTrade');
 await act('alice','offer',{offer:{gold:0,items:[{id:'woodenSword',count:1}]}},400);
 await act('alice','offer',{offer:{gold:101,items:[]}},400);
+await act('alice','offer',{offer:{gold:0,items:[{id:'rellanSignet',count:1}]}},400);
+await act('alice','offer',{offer:{gold:0,items:[{id:'veyrOrb',count:1}]}});
+
 await act('alice','offer',{offer:{gold:0,items:[{id:'coins',count:1}]}},400);
 await act('alice','offer',{offer:{gold:10,items:[{id:'arrows',count:25}]}});
 await act('alice','confirmTrade',{},400);await act('alice','acceptOffer');const firstRevision=t.revision;

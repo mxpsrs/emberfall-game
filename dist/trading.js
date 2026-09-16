@@ -6,6 +6,7 @@ function tradeVerb(side){return window.realmTrade.kind==='bank'?(side==='bag'?'D
 function spareItemCount(id){const item=ITEMS[id];return Math.max(0,(item?.slot?s.gear[id]||0:s.bag[id]||0)-(item?.slot&&s.equipment[item.slot]===id?1:0));}
 function shopUnitPrice(id){const row=shopStock.find(row=>row[0]===id);return row?Math.max(1,Math.ceil(row[2]/row[1])):null;}
 function shopSalePrice(id){
+ if(ITEMS[id]?.tradeable===false)return 0;
  if(shopPrices[id])return shopPrices[id];const buy=shopUnitPrice(id);if(buy)return Math.max(1,Math.floor(buy/2));
  return ITEMS[id]?.value||{bronzeSword:3,ironSword:24,shortbow:8,oakStaff:10,leatherArmor:12,leatherBoots:5,rawTrout:1,ironBar:6,arrowheads:1,ashes:1}[id]||0;
 }

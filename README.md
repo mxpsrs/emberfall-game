@@ -69,3 +69,5 @@ are unchanged. Some historical identifiers deliberately remain compatible:
   Keep them outside source control and deployment archives.
 
 The historical Git commits retain their original contents and identities.
+
+Arc One’s current quest flow, journal behavior, equipment balance and verification are documented in [The Awakening of Veyr](docs/arc-one-awakening.md).

@@ -1,54 +1,57 @@
 'use strict';
-// Three ordered mainland quests. Evidence, bound tools and rescue progress are saved together.
+// Arc One preserves legacy stage boundaries while replacing the investigation.
 const MAIN_STORY_QUESTS=[
- {title:'The Broken Watch',start:0,end:7,coins:210,xp:{Attack:280,Defense:280}},
- {title:'The Weight of an Oath',start:7,end:18,coins:280,xp:{Mining:350,Smithing:350}},
- {title:'Echoes Without a Name',start:18,end:25,coins:350,xp:{Magic:420,Hitpoints:210}}
+ {title:'Orders of the Dead',start:0,end:7,coins:200,xp:{Attack:250,Defense:250,Hitpoints:150},item:'rellanSignet',unlocks:['The Last Shift','Northern-road evidence archive','Raider Camp access']},
+ {title:'The Last Shift',start:7,end:18,coins:300,xp:{Mining:400,Smithing:400,Hitpoints:200},item:'ironhollowBelt',unlocks:['Whispers at Hollow Shrine','Ironhollow lower workings']},
+ {title:'Whispers at Hollow Shrine',start:18,end:25,coins:400,xp:{Magic:500,Hitpoints:250,Worship:250},item:'whisperPendant',unlocks:['The King Beneath the Mountain','Hollow Shrine research']}
 ];
 const MAIN_STORY_STEPS=[
- ['Speak to Captain Rellan in Briarhaven. Recommended Combat 8.','rellan'],
- ['Ask wagon driver Tovin what happened to the courier.','driver'],
- ['Follow the southeast road out of Briarhaven to the ambush at Redclay Bend. Examine the cart, harness and bootprints.','clues'],
- ['Use the evidence to choose the courier’s trail at the road marker.','trail'],
- ['Follow the eastern trail beyond Redclay Bend to the raider camp. Defeat its lookout.','lookout'],
- ['Recover the stolen dispatch from the lookout’s satchel.','dispatch'],
- ['Bring the dispatch to Rellan and explain why its seal is forged.','rellan'],
- ['Take Rellan’s forged order to Forewoman Hesta at Ironhollow. Requires Mining 5 and Smithing 5.','hesta'],
- ['Enter the Freight Mine southeast of Ironhollow. Follow the lower workings to the broken lift and read its safety plate.','lift'],
- ['Open the ventilation beside the lift before attempting a rescue.','airway'],
- ['Mine usable iron from the collapsed support. Mining 5; pickaxe required.','support'],
- ['Return to Hesta’s surface rescue workbench and forge a locking pin. Smithing 5.','forge'],
- ['Install the locking pin and secure the lift brake.','lift'],
- ['Seat the counterweight against the secured brake to open the escape ramp.','lift'],
- ['Reach miner Bera in the lower refuge beyond the opened lift and ask her to follow.','bera'],
- ['Reach miner Oren in the lower refuge and bring him with you too.','oren'],
- ['Escort BOTH miners to Hesta. Stay close; they wait if you move too far away.','escort'],
- ['Report to Hesta with both miners safely returned.','hesta'],
- ['Bring the miners’ testimony to Scholar Ilyra at the old pilgrim camp southwest of Ironhollow. Requires Magic 5. Recommended Combat 12.','ilyra'],
- ['Walk the old pilgrim trail: Bell southwest of Ilyra, Lantern farther south, Hand to the east.','stones'],
- ['Compare the oathstones’ whispers with the living miners’ testimony. Speak to Ilyra.','ilyra'],
- ['Continue south beyond the oathstones to the ruined shrine. Trace its sigils in the remembered order.','shrine'],
- ['Defeat the echo shade bound to the cursed shrine.','shade'],
- ['Break the shrine’s enchantment and bind its final whisper into a memory shard.','shrine'],
- ['Bring the whispering shard to Ilyra.','ilyra'],
- ['Take the forged dispatch, miners’ testimony and memory shard to Archivist Maerin in Ironhollow.','maerin']
+ ['Speak to Captain Rellan in Briarhaven after Firstlight Apprenticeship. Recommended Combat 8.','rellan'],
+ ['Hear surviving wagon driver Tovin’s account of the courier attack.','driver'],
+ ['Investigate the damaged cart, cut harness, courier’s body and tracks at Redclay Bend.','clues'],
+ ['Follow the heavy eastbound prints at the split-trail marker.','trail'],
+ ['Reach the fortified raider camp and defeat its west-gate lookout.','lookout'],
+ ['Search the paid raiders’ dispatch satchel beside their stolen cargo.','dispatch'],
+ ['Hand the forged royal orders to Rellan. Explain the withdrawn patrols and passage toward Ironhollow.','rellan'],
+ ['Show Hesta your evidence at Ironhollow’s rescue camp. Requires Mining 5 and Smithing 5. Recommended Combat 10.','hesta'],
+ ['Enter the Freight Mine. Examine the sabotaged lift at the lower loading hall.','lift'],
+ ['Clear the western maintenance passage with your pickaxe. Avoid the marked falling-stone patches.','airway'],
+ ['Recover usable iron from the collapsed support farther along the alternate route.','support'],
+ ['Use the underground rescue anvil to forge a brace for the refuge entrance.','forge'],
+ ['Install the forged locking pin and secure the lift brake.','lift'],
+ ['Investigate the secret excavation, then seat the lift counterweight to open the refuge ramp.','excavation'],
+ ['Reach Bera in the western refuge. Brace the entrance and ask her to follow.','bera'],
+ ['Find Oren in the adjoining refuge. Bring both workers back together.','oren'],
+ ['Escort Bera and Oren through the winding mine to Hesta. Stay close; they wait if separated.','escort'],
+ ['Report the rescue, deliberate sabotage and impossible voices to Hesta.','hesta'],
+ ['Meet Scholar Ilyra at the abandoned pilgrim camp southwest of Ironhollow. Magic 5; recommended Combat 12.','ilyra'],
+ ['Explore Hollow Shrine: Bell on the approach, Lantern in the buried pilgrim hall, Hand in the eastern archive.','stones'],
+ ['Compare genuine and altered memories with Ilyra at the pilgrim camp.','ilyra'],
+ ['Enter the shrine’s deepest chamber. Restore the oath: warning, light, then mercy.','shrine'],
+ ['Defeat the Echo Shade feeding in the shrine’s buried reliquary.','shade'],
+ ['Stabilize the physical Memory Shard in the reliquary.','shrine'],
+ ['Bring the Memory Shard to Ilyra. The surviving energy points beneath Ironhollow.','ilyra'],
+ ['Bring the Memory Shard and your evidence journal to Archivist Maerin in Ironhollow.','maerin']
 ];
 const MAIN_STORY_CLUES={
- cart:['Abandoned courier cart','The strongbox is untouched. A narrow dispatch sleeve has been cut from beneath the seat. The attacker wanted the patrol orders, not the coins.'],
- harness:['Cut harness','The leather was sliced while the cart stood still. This was a staged raid, not an animal attack.'],
- boots:['Muddy bootprints','Heavy boots lead east through wet red clay. The western trail is dry chalk; the courier wore soft riding shoes.']
+ cart:['Attacked royal courier cart','A broken wheel and two embedded arrows mark a prepared ambush. The strongbox is untouched; the dispatch sleeve was cut away. Whoever hired the attackers wanted orders, not money.'],
+ harness:['Cut harness and discarded raider knife','The leather was sliced while the wagon stood still. The discarded knife matches raider equipment. Someone planned to stop the courier here.'],
+ body:['Fallen royal courier','The courier’s torn tabard bears Briarhaven’s crest. His stiff hand holds a duty slip: northern patrols were withdrawn before he reached the bend. Tovin’s account and the wounds agree.'],
+ boots:['Eastbound heavy bootprints','Heavy boots lead east through red clay, away from the courier’s riding-shoe prints. Beyond them, narrow crate-wheel ruts continue toward Ironhollow.']
 };
 const MAIN_STORY_STONES={
- bell:['Oathstone of the Bell','The courier’s stolen voice whispers: “First the bell warned us.” An ancient sigil for Warning shines beneath the moss.'],
- lantern:['Oathstone of the Lantern','Bera’s voice murmurs: “After the bell, I raised my lantern.” Yet Bera had lost her voice in the mine before the bell sounded. Its sigil means Light.'],
- hand:['Oathstone of the Hand','Oren’s voice answers: “Only after the lantern did I lend a hand.” The real Oren stood beside Bera when both their voices called from below. Its sigil means Mercy.']
+ bell:['Oathstone of the Bell','A genuine pilgrim memory: “First sound the bell to warn the road.” Beneath it, Tovin’s remembered words repeat: “They left the strongbox.” You heard him say this in Briarhaven.'],
+ lantern:['Oathstone of the Lantern','Bera’s voice: “I called Oren below after the warning bell.” This contradicts her testimony: dust had taken her voice before the bell. Someone altered this memory. The old sigil still means Light.'],
+ hand:['Oathstone of the Hand','An older, broken memory: “Warning, then light, then lend a hand. Wardkeepers ... Ironhollow ... keep the fragments together.” Fresh chisel scars surround an empty seal socket. Recent visitors removed something.']
 };
-CREATURE_LAIRS.story_mine={title:'Ironhollow Freight Mine',subtitle:'Abandoned workings · The Weight of an Oath',quest:true,theme:'ork',size:[50,92],entry:[25,86],arena:[25,25],entrance:[842,187],floor:'#514d46',trim:'#99866b',glow:'#d7b77d',fog:[.14,.13,.12],ambient:[.94,.9,.82],light:[.2,.15,.07],rooms:[['rect',4,5,18,19],['rect',17,12,15,9],['rect',20,72,11,17],['ellipse',25,69,13,12],['rect',9,47,8,25],['rect',10,44,30,8],['rect',32,24,8,26],['ellipse',25,22,16,15]]};
+CREATURE_LAIRS.story_mine={title:'Ironhollow Freight Mine',subtitle:'The Last Shift · Sabotaged workings and miners’ refuges',quest:true,theme:'ork',size:[50,92],entry:[25,86],arena:[25,25],entrance:[842,187],floor:'#514d46',trim:'#99866b',glow:'#d7b77d',fog:[.14,.13,.12],ambient:[.94,.9,.82],light:[.2,.15,.07],rooms:[['rect',4,5,18,19],['rect',17,12,15,9],['rect',20,72,11,17],['ellipse',25,69,13,12],['rect',9,47,8,25],['rect',10,44,30,8],['rect',32,24,8,26],['ellipse',25,22,16,15]]};
+CREATURE_LAIRS.story_shrine={title:'Hollow Shrine',subtitle:'Whispers at Hollow Shrine · The buried pilgrim halls',quest:true,theme:'arcane',size:[62,112],entry:[30,105],arena:[30,18],entrance:[677,363],floor:'#414c49',trim:'#8f9b89',glow:'#92cabb',fog:[.10,.15,.15],ambient:[.82,.94,.91],light:[.08,.15,.15],rooms:[['rect',26,88,9,20],['ellipse',30,86,12,12],['rect',10,78,22,8],['rect',9,58,9,25],['ellipse',16,56,12,12],['rect',15,47,35,9],['rect',42,27,9,26],['ellipse',45,27,12,12],['rect',27,18,22,9],['ellipse',29,18,14,13]]};
 function mainStoryFound(key){for(const [scene,w]of Object.entries(worldScenes)){const o=w.objects.find(o=>o.mainStoryKey===key);if(o)return {scene,o};}return null;}
 function mainStoryState(){
  let q=s.mainStoryQuest;if(!q||typeof q!=='object'||Array.isArray(q))q=s.mainStoryQuest={};
- q.version=2;q.stage=Number.isInteger(q.stage)?Math.max(0,Math.min(25,q.stage)):0;
+ const legacy=q.version!==3&&q.stage>0;q.version=3;q.stage=Number.isInteger(q.stage)?Math.max(0,Math.min(25,q.stage)):0;
  for(const [field,keys]of [['clues',MAIN_STORY_CLUES],['stones',MAIN_STORY_STONES]])q[field]=Array.isArray(q[field])?[...new Set(q[field].filter(k=>keys[k]))]:[];
+ if(legacy){if(q.stage>=7)q.reward1=true;if(q.stage>=18)q.reward2=true;if(q.stage>=25)q.reward3=true;if(q.stage>2&&!q.clues.includes('body'))q.clues.push('body');q.arcMigrated=true;}
  q.runes=Number.isInteger(q.runes)?Math.max(0,Math.min(2,q.runes)):0;
  q.rescued=Array.isArray(q.rescued)?[...new Set(q.rescued.filter(k=>['bera','oren'].includes(k)))]:[];return q;
 }
@@ -71,23 +74,27 @@ function setupMainStory(){
  prop('cart',MAIN_STORY_CLUES.cart[0],b.x+90,b.y+72,'World_Workbench');
  prop('harness',MAIN_STORY_CLUES.harness[0],b.x+93,b.y+75,'World_WeaponStand');
  prop('boots',MAIN_STORY_CLUES.boots[0],b.x+100,b.y+74,'Rock_Medium_1');
+ prop('body',MAIN_STORY_CLUES.body[0],b.x+88,b.y+75,'World_Bed_Twin1');
  prop('trail','Split-trail road marker',b.x+117,b.y+78,'World_BookStand');
  const lookout=mainStoryPlace('lookout','Raider lookout',212,142,{type:'enemy',kind:'storylookout',mainStoryStage:4,sprite:species.bandit?.sprite||2});
  applyEnemyTier(lookout,{...ENEMY_TIERS.bandit,look:'bandit',name:'Raider lookout',hp:18,level:8,maxHit:2});
  prop('dispatch','Lookout’s dispatch satchel',227,143,'World_BookStand');
  const mine=CREATURE_LAIRS.story_mine,entrance=mine.entrance;
  npc('hesta','Forewoman Hesta',entrance[0]-7,entrance[1]+7,'dwarf');
- prop('lift','Broken freight lift',25,28,'World_Workbench','story_mine');
- prop('airway','Blocked ventilation grate',12,18,'Rock_Medium_1','story_mine');
- prop('support','Collapsed iron support',37,21,'Rock_Medium_1','story_mine');
- prop('forge','Rescue workbench',entrance[0]-11,entrance[1]+10,'World_Workbench');
+ prop('lift','Broken freight lift',25,65,'World_Workbench','story_mine');
+ prop('airway','Blocked ventilation grate',12,57,'Rock_Medium_1','story_mine');
+ prop('support','Collapsed iron support',14,47,'Rock_Medium_1','story_mine');
+ prop('forge','Underground rescue anvil',34,45,'World_Workbench','story_mine');
+ prop('excavation','Unrecorded excavation and coded supplies',31,24,'World_BookStand','story_mine');
+ const crawler=mainStoryPlace('crawler','Disturbed cave crawler',35,34,{storyScene:'story_mine',type:'enemy',kind:'storycrawler',sprite:species.rat.sprite});
+ applyEnemyTier(crawler,{...ENEMY_TIERS.cavecrawler,look:'rat',name:'Disturbed cave crawler',level:10,hp:24,maxHit:3});
  npc('bera','Miner Bera',12,16,'dwarf','story_mine');npc('oren','Miner Oren',17,16,'dwarf','story_mine');
  npc('ilyra','Scholar Ilyra',h.x-155,h.y+156,'elf');
  prop('bell',MAIN_STORY_STONES.bell[0],h.x-185,h.y+180,'Rock_Medium_1');
- prop('lantern',MAIN_STORY_STONES.lantern[0],h.x-145,h.y+213,'Rock_Medium_1');
- prop('hand',MAIN_STORY_STONES.hand[0],h.x-99,h.y+183,'Rock_Medium_1');
- prop('shrine','Shrine of the Borrowed Voice',h.x-133,h.y+250,'Rock_Medium_1');
- const shade=mainStoryPlace('shade','Echo shade',h.x-130,h.y+255,{type:'enemy',kind:'storyshade',mainStoryStage:22,sprite:species.skeleton.sprite});
+ prop('lantern',MAIN_STORY_STONES.lantern[0],16,58,'Rock_Medium_1','story_shrine');
+ prop('hand',MAIN_STORY_STONES.hand[0],45,29,'Rock_Medium_1','story_shrine');
+ prop('shrine','Shrine of the Borrowed Voice',27,11,'Rock_Medium_1','story_shrine');
+ const shade=mainStoryPlace('shade','Echo shade',31,19,{storyScene:'story_shrine',type:'enemy',kind:'storyshade',mainStoryStage:22,sprite:species.skeleton.sprite});
  applyEnemyTier(shade,{...ENEMY_TIERS.skeleton,look:'skeleton',name:'Echo shade',hp:26,level:12,maxHit:3,style:'magic',weak:'ranged',tint:[.7,.85,1.2]});syncMainStoryWorld();
 }
 const mainStorySetupBefore=setupTutorialVillage;
@@ -122,12 +129,17 @@ leaveInterior=function(){
  }return mainStoryLeaveBefore();
 };
 function mainStoryAdvance(stage,o,change={},rewardIndex=null){
- const q=mainStoryState();if(q.stage!==stage||o&&!mountainNear(o))return false;Object.assign(q,change,{stage:stage+1});
+ const q=mainStoryState();if(q.stage!==stage||o&&!mountainNear(o))return false;if(stage===0&&!tutorialComplete(s))return false;
+ if(stage===23&&!arcGiveItem('memoryShard'))return false;
+ if(stage===5&&!arcGiveItem('forgedOrders'))return false;
+ if(stage===6){if(!arcConsumeItem('forgedOrders')&&!q.arcMigrated){toast('Recover a copy from the raiders’ dispatch satchel.');return false;}change.forgedOrdersRecorded=true;}
+ if(stage===7&&(lv('Mining')<5||lv('Smithing')<5)||stage===18&&lv('Magic')<5)return false;
+ Object.assign(q,change,{stage:stage+1});
  // Completion, XP and currency are stored atomically in the same save. Overflow goes to the bank.
  if(rewardIndex!==null){const r=MAIN_STORY_QUESTS[rewardIndex],key='reward'+(rewardIndex+1);if(!q[key]){q[key]=true;
   const carried=canCarry('coins')?Math.min(r.coins,Math.max(0,COIN_LIMIT-(s.bag.coins||0))):0;s.bag.coins=(s.bag.coins||0)+carried;
   if(carried<r.coins){s.bank??={};s.bank.coins=(s.bank.coins||0)+r.coins-carried;toast('Your quest coins were sent to the bank.');}
-  for(const [skill,xp]of Object.entries(r.xp))gain(skill,xp,true);showExperienceDrop(r.xp);if(typeof showQuestCompletion==='function')showQuestCompletion({title:r.title,coins:r.coins,xp:r.xp,note:carried<r.coins?(r.coins-carried)+' coins were sent to your bank. Experience has been awarded.':undefined});
+  arcGiveItem(r.item);for(const [skill,xp]of Object.entries(r.xp))gain(skill,xp,true);showExperienceDrop(r.xp);if(typeof showQuestCompletion==='function')showQuestCompletion({title:r.title,coins:r.coins,xp:r.xp,unlocks:[ITEMS[r.item].name,...r.unlocks],note:carried<r.coins?(r.coins-carried)+' coins were sent to your bank. Experience has been awarded.':undefined});
  }}
  for(const key of ['lift','airway','bell','lantern','hand','shrine']){const prop=mainStoryObject(key);if(prop){const variants=staticMeshes3.get(prop);if(variants&&realmGPU)for(const mesh of variants.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(prop);}}
  save();renderUI();toast(rewardIndex===null?'Quest updated: '+MAIN_STORY_STEPS[q.stage][0]:MAIN_STORY_QUESTS[rewardIndex].title+' complete · '+MAIN_STORY_QUESTS[rewardIndex].coins+' coins · '+Object.entries(MAIN_STORY_QUESTS[rewardIndex].xp).map(([k,n])=>n+' '+k+' XP').join(' · '));return true;
@@ -141,10 +153,10 @@ const mainStoryStopBefore=stop;stop=function(){mainStoryWork=null;return mainSto
 const mainStoryGatherBefore=gatheringActivity;gatheringActivity=function(){if(mainStoryWork?.skill==='Mining')return {object:mainStoryWork.o,tool:'pickaxe',phase:(mainStoryWork.age%.8)/.8};return mainStoryGatherBefore();};
 const mainStoryActionBefore=renderAction;renderAction=function(){mainStoryActionBefore();if(mainStoryWork){$('targetTitle').textContent=mainStoryWork.label;$('targetSub').textContent='Working… Move to cancel.';}};
 function mainStoryMechanism(o){
- if(![12,13].includes(mainStoryState().stage))return;
- dialog('Freight lift safety mechanism','<p>The safety plate reads: “Pin the brake. Seat the weight. Open the ramp.” The forged locking pin is ready.</p>',[
- ['Secure the brake.',()=>{if(!mountainNear(o))return;if(mainStoryState().stage===12){mainStoryAdvance(12,o,{brake:true});mainStoryMechanism(o);}else toast('The brake is secured. Seat the counterweight next.');}],
- ['Seat the counterweight.',()=>{if(!mountainNear(o))return;if(mainStoryState().stage===12){toast('The brake slips. The safety catch holds; secure the brake first.');return;}if(mainStoryAdvance(13,o,{ramp:true}))close();}]
+ const q=mainStoryState();if(![12,13].includes(q.stage))return;
+ dialog('Freight lift safety controls','<p>The safety plate reads: <b>Air before entry. Pin the brake. Seat the weight. Open the ramp.</b></p><p>'+(!q.brake?'The forged locking pin fits the brake socket.':'The brake is locked. The counterweight can now lift the refuge ramp.')+'</p>',[
+ ['Install the pin and secure the brake.',()=>{if(!mountainNear(o))return;if(q.stage!==12){toast('The brake is secured. Seat the counterweight next.');return;}mainStoryWorkStart(o,12,'Smithing',5,'Pinning the lift brake',{brake:true});}],
+ ['Seat the counterweight and open the ramp.',()=>{if(!mountainNear(o))return;if(q.stage===12){toast('The safety catch holds. Pin the brake before moving the weight.');return;}if(!q.excavation){toast('Inspect the unrecorded excavation first. Make sure nobody is working behind the ramp.');return;}mainStoryWorkStart(o,13,'Smithing',5,'Seating the lift counterweight',{ramp:true});}]
  ]);
 }
 function mainStoryRunes(o){
@@ -157,55 +169,42 @@ function mainStoryRunes(o){
 }
 function mainStoryInteract(o){
  if(!mountainNear(o))return;stop();const q=mainStoryState(),k=o.mainStoryKey,stage=q.stage;
- if(k==='rellan'&&stage===0)return mainStoryOffer(o,0,[
-  'A courier left Briarhaven with orders to withdraw our road patrols. His cart returned without him. If I obey a missing dispatch, this road will be empty of guards by nightfall.',
-  'Tovin survived and reached Briarhaven. Hear his account, then follow the southeast road to Redclay Bend. The cart is still at the ambush site. Bring evidence before you accuse anyone. A convincing tale is not the same as a true one. Recommended Combat 8.'
- ],'Investigate the missing courier.');
- if(k==='driver'&&stage===1)return mainStoryOffer(o,1,[
-  'They stopped us before the bend. The courier jumped clear and fled west in his soft riding shoes. The raider took only the dispatch sleeve, then walked east. I hid beneath the cart.',
-  'I heard a knife scrape the harness after the horses were already loose. If they wanted coin, why leave the strongbox? Follow the southeast road beyond the village to Redclay Bend. The cart, cut leather and muddy footprints are still there; the raider camp is farther east.'
- ],'Record Tovin’s account.',{witness:true});
- if(MAIN_STORY_CLUES[k])return dialog(o.name,'<p>'+MAIN_STORY_CLUES[k][1]+'</p>',stage===2&&!q.clues.includes(k)?[['Record the evidence.',()=>{const state=mainStoryState();if(state.stage!==2||!mountainNear(o)||state.clues.includes(k))return;state.clues.push(k);if(state.clues.length===3)mainStoryAdvance(2,o);else save();close();}]]:[]);
- if(k==='trail'&&stage===3)return dialog(o.name,'<p>The western trail is dry chalk. To the east, red clay bears heavy bootprints. The courier wore soft riding shoes.</p>',[
- ['Follow the courier west.',()=>{if(mountainNear(o)&&mainStoryState().stage===3)toast('The courier escaped that way. The heavy boots and stolen dispatch went east.');}],
- ['Follow the raider east.',()=>{if(mainStoryAdvance(3,o))close();}]]);
- if(k==='dispatch'&&stage===5)return dialog(o.name,'<p>The order would abandon both the road patrols and the Ironhollow lift crew. Its wax shows a seven-point crown. Rellan’s current royal orders bear five points.</p>',[['Preserve the forged dispatch.',()=>{if(mainStoryAdvance(5,o,{dispatch:true}))close();}]]);
- if(k==='rellan'&&stage===6)return openNpcDialogue(o,[
- 'The courier reached our western checkpoint alive. Tovin’s story agrees with your evidence. Now, what proves the recovered order is false?',
- 'This order bears seven crown points. Our current royal seal bears five. Whoever stamped it copied an obsolete impression. Hesta’s crew at Ironhollow is named in the order too. Take it to her before another life is spent on a lie.'
- ],[['Tovin must have forged it.',()=>toast('His account matches the tracks. Look at the seal, not the frightened witness.')],['The crown has seven points; the royal seal has five.',()=>{if(mainStoryAdvance(6,o,{dispatch:true},0))close();}]],MAIN_STORY_QUESTS[0].title);
+ if(k==='rellan'&&stage===0){
+  if(!tutorialComplete(s))return openNpcDialogue(o,['Finish Firstlight Apprenticeship before taking responsibility for a royal investigation.']);
+  return mainStoryOffer(o,0,['A royal courier was killed at Redclay Bend. He carried orders withdrawing the northern patrols. Those patrols stood down before he arrived. Nobody at court admits issuing the order.', 'Tovin, his wagon driver, survived. Hear him first. Then follow the southeast road to the wreck. Bring back what happened, not a convenient suspect. Recommended Combat 8.'],'Investigate the courier attack.');
+ }
+ if(k==='driver'&&stage===1)return mainStoryOffer(o,1,['They cut the harness, shot the courier, and took his dispatch. They left the strongbox. I hid underneath until they went east.', 'A covered load passed north while the road was empty. The guards had already gone. At Redclay Bend, examine the cart, leather, body and tracks. The heavy boots lead toward the barricaded camp.'],'Record Tovin’s testimony.',{witness:true});
+ if(MAIN_STORY_CLUES[k])return dialog(o.name,'<p>'+MAIN_STORY_CLUES[k][1]+'</p>',stage===2&&!q.clues.includes(k)?[['Record the evidence.',()=>{if(q.stage!==2||!mountainNear(o)||q.clues.includes(k))return;q.clues.push(k);if(q.clues.length===Object.keys(MAIN_STORY_CLUES).length)mainStoryAdvance(2,o);else save();close();}]]:[]);
+ if(k==='trail'&&stage===3)return dialog(o.name,'<p>The courier’s light riding prints end at the ambush. Heavy red-clay bootprints and a dragged dispatch sleeve lead east. The west path has no matching tracks.</p>',[['Follow the matching eastbound tracks.',()=>{if(mainStoryAdvance(3,o))close();}],['Check west.',()=>toast('No matching bootprints. Compare the tracks recorded in your journal.')]]);
+ if(k==='dispatch'&&stage===6&&!arcOwnsAnywhere('forgedOrders'))return dialog(o.name,'<p>A second impression survives beneath the satchel lining. Take this copy to Rellan.</p>',[['Recover the forged orders.',()=>{if(mountainNear(o)&&!arcOwnsAnywhere('forgedOrders')){arcGiveItem('forgedOrders');save();close();}}]]);
+ if(k==='dispatch'&&stage===5)return dialog(o.name,'<p>The satchel contains royal-looking orders, a payment tally for intercepting the courier, and a cargo slip: “Northern road clear. Delivery onward to Ironhollow.” The payer used no name.</p><p>The wax bears a seven-point crown. Rellan’s current orders bear five.</p>',[['Take the forged orders.',()=>{if(mainStoryAdvance(5,o,{dispatch:true,paidRaiders:true}))close();}]]);
+ if(k==='rellan'&&stage===6)return openNpcDialogue(o,['The court confirms it issued no withdrawal. Seven points: an obsolete seal copied carefully enough to fool a road sergeant.', 'The raiders were paid hands. Someone needed this road empty long enough to move people or cargo toward Ironhollow. Their orders also mention an abandoned mine shift. Hesta needs to see your findings.', 'I will hold the original orders. Your journal keeps the seal comparison, payment tally and cargo route. Take my signet; it identifies the person who brought me evidence.'],[['The false orders cleared a route to Ironhollow.',()=>{if(mainStoryAdvance(6,o,{dispatch:true,forgedOrdersRecorded:true},0))close();}]],MAIN_STORY_QUESTS[0].title);
  if(k==='hesta'&&stage===7){
-  if(lv('Mining')<5||lv('Smithing')<5)return openNpcDialogue(o,['That matches the order my supervisor received: abandon the crew. I refused. Bera and Oren are still below the freight lift. You need Mining 5 and Smithing 5 to repair its safety gear.'],[],MAIN_STORY_QUESTS[1].title);
-  return openNpcDialogue(o,['Two workers, a jammed lift, and an order telling us to leave them. Your forged dispatch explains the order. It does not get my people home.', 'Enter the mine beside our camp. The passage turns west through the old loading hall, then east to the lower lift. Open the ventilation and salvage iron there; bring it back to my surface workbench to forge a locking pin. Follow the safety plate. I will hold the surface route open.'],[['Bring both workers home.',()=>{if(lv('Mining')>=5&&lv('Smithing')>=5&&mainStoryAdvance(7,o))close();}]],MAIN_STORY_QUESTS[1].title);
+  if(lv('Mining')<5||lv('Smithing')<5)return openNpcDialogue(o,['Bera and Oren are trapped. The rescue needs Mining 5 and Smithing 5. Train with ordinary deposits and the smith, then come straight back.']);
+  return mainStoryOffer(o,7,['I received orders to seal the lower shift. I refused. My deputy obeyed a second copy and shut the return route. Then the roof came down.', 'Inspect the damaged lift in the lower loading hall. Its main route is gone; work around it through the western maintenance passage. Salvage iron and forge a locking pin and refuge brace at the underground anvil. Pin the brake before seating the counterweight to open the escape ramp. Creatures have fled the deeper workings into our refuge approach.', 'Find Bera and Oren, then bring both up the same mine mouth. Their families are waiting here. Recommended Combat 10.'],'Enter the rescue workings.');
  }
- if(k==='lift'&&stage===8)return dialog(o.name,'<p>The cage is wedged beside the lower landing. An escape ramp is folded beneath it. Safety plate: “Air before entry. Pin the brake. Seat the weight. Open the ramp.”</p>',[['Record the safety sequence.',()=>{if(mainStoryAdvance(8,o,{safety:true}))close();}]]);
- if(k==='airway'&&stage===9)return dialog(o.name,'<p>Pull the fallen slats clear and wind the grate open. The workers need fresh air before the lift can move.</p>',[['Open the ventilation.',()=>mainStoryWorkStart(o,9,'Smithing',1,'Opening the ventilation',{ventilation:true})]]);
- if(k==='support'&&stage===10)return dialog(o.name,'<p>A usable length of iron is trapped in the fallen stone. Recover it with your pickaxe. Mining 5. Rescue components stay with your journal.</p>',[['Recover the iron support.',()=>mainStoryWorkStart(o,10,'Mining',5,'Recovering usable iron',{iron:true})]]);
- if(k==='forge'&&stage===11)return dialog(o.name,'<p>Heat the salvaged iron, draw it to the brake socket’s width, then quench the locking pin. Smithing 5.</p>',[['Forge the locking pin.',()=>mainStoryWorkStart(o,11,'Smithing',5,'Forging the locking pin',{pin:true})]]);
+ if(k==='lift'&&stage===8)return dialog(o.name,'<p>The suspension was cut before the collapse. Fresh wedges were driven into the roof supports from the far side. The safety plate reads: Air before entry. Pin the brake. Seat the weight. Open the ramp. A painted maintenance arrow points west around the broken landing. This was deliberate sabotage.</p>',[['Follow the alternate rescue route.',()=>{if(mainStoryAdvance(8,o,{sabotage:true,safety:true}))close();}]]);
+ if(k==='airway'&&stage===9)return dialog(o.name,'<p>A low, ventilated maintenance passage runs around the blocked shaft. Clear its loose stone; the painted support lines mark where the roof is sound.</p>',[['Clear the maintenance passage.',()=>mainStoryWorkStart(o,9,'Mining',5,'Clearing the rescue route',{ventilation:true})]]);
+ if(k==='support'&&stage===10)return dialog(o.name,'<p>An iron tie survives inside the shattered support. Recover enough to brace the refuge entrance.</p>',[['Salvage the iron tie.',()=>mainStoryWorkStart(o,10,'Mining',5,'Recovering rescue iron',{iron:true})]]);
+ if(k==='forge'&&stage===11)return dialog(o.name,'<p>The miners’ anvil and banked hearth still work. Shape the salvaged tie into a locking pin and refuge brace. Return to the lift to pin its brake, then investigate the hidden excavation beyond the crawler before opening the ramp.</p>',[['Forge the locking pin and refuge brace.',()=>mainStoryWorkStart(o,11,'Smithing',5,'Forging a rescue brace',{pin:true})]]);
  if(k==='lift'&&[12,13].includes(stage))return mainStoryMechanism(o);
- if(k==='bera'&&stage===14)return mainStoryOffer(o,14,['Fresh air. I lost my voice in the dust before the warning bell, but Oren heard me calling him deeper into the mine. It was not me.', 'I can walk. Get Oren too, then lead us to Hesta. Stay close enough for us to see you.'],'Follow me to Hesta.');
- if(k==='oren'&&stage===15)return mainStoryOffer(o,15,['I heard Bera call from below while she stood beside me. Then my own voice answered. We passed the old oathstones at the roadside shrine that morning. I remember the carvings were warm, though the sun had not risen.', 'Both of us are here. Lead us to Hesta. If you get too far ahead, we will wait rather than take the wrong passage.'],'Come with us to the surface.');
- if(k==='hesta'&&stage===17)return mainStoryOffer(o,17,[
- 'Bera. Oren. Both accounted for. The supervisor called obedience a duty. An oath that abandons living people is worth less than the paper it is written on.',
- 'I have signed their testimony and attached your forged dispatch. They heard their own voices calling from the dark. Scholar Ilyra camps southwest of Ironhollow, where the old pilgrim road approaches the woodland. The oathstones mark different stops along that road; the ruined shrine stands farther south. Take this to her before someone else follows those whispers.'
- ],'Complete The Weight of an Oath.',{testimony:true},1);
+ if(k==='excavation'&&stage===13)return dialog(o.name,'<p>Recent picks cut through a much older wall. Unmarked supply crates match the road cargo. A coded survey points to Hollow Shrine; the same seven-point seal orders legitimate miners away.</p><p>Someone used the rescue emergency to conceal a search below Ironhollow.</p>',[['Record the excavation and shrine route.',()=>{if(q.stage!==13||!mountainNear(o))return;q.excavation=true;save();close();toast('The excavation is recorded. Return to the lift and seat its counterweight.');}]]);
+ if(k==='bera'&&stage===14)return mainStoryOffer(o,14,['You have a brace. Set it under that cracked lintel ... there. I can get through.', 'Dust took my voice before the warning bell. Oren heard me calling from below while I stood beside him. I could not speak. Then I heard my mother. She died ten winters ago.'],'Brace the refuge and help Bera out.',{bracedRefuge:true});
+ if(k==='oren'&&stage===15)return mainStoryOffer(o,15,['First Bera, then the shift supervisor, then my son calling me deeper. My son is outside with Hesta. Somebody had stripped an old carved wall before the roof fell.', 'My grandmother told stories about stolen voices at Hollow Shrine. That survey scrap names it too. We can walk now. Keep both of us close through the bends.'],'Lead both workers to Hesta.');
+ if(k==='hesta'&&stage===17)return mainStoryOffer(o,17,['Both alive. Their families can breathe again. My deputy has admitted obeying the false closure order; somebody used our duty against us.', 'You found an unrecorded dig beneath legitimate workings. The cargo, sabotage and copied orders fit a planned operation. The voices do not fit anything I know.', 'Take our testimony and the shrine survey to Scholar Ilyra at the abandoned pilgrim camp southwest of Ironhollow. The lower workings will remain open for ordinary mining. You have earned this miner’s belt.'],'Complete The Last Shift.',{testimony:true,excavation:true},1);
  if(k==='ilyra'&&stage===18){
-  if(lv('Magic')<5)return openNpcDialogue(o,['These oathstones once remembered promises freely given. Someone has cursed them to steal living voices. You need Magic 5 to loosen the enchantment without shattering the memories.'],[],MAIN_STORY_QUESTS[2].title);
-  return openNpcDialogue(o,['These oathstones once held the promises of travelers: sound a warning, carry a light, offer a helping hand. The ward-keepers blessed them so no traveler would be left alone in the dark.', 'Now their sigils are twisted. They steal the voices of people who pass and whisper false summons beneath the mountain. From my camp, seek the Bell southwest, the Lantern farther south, and the Hand on the eastern return path. The ruined shrine lies south beyond them. Listen to all three stones. Compare their memories with Hesta’s witnesses before touching the shrine. Magic 5 is required; recommended Combat 12 for what the curse may wake.'],[['Investigate the stolen voices.',()=>{if(lv('Magic')>=5&&mainStoryAdvance(18,o))close();}]],MAIN_STORY_QUESTS[2].title);
+  if(lv('Magic')<5)return openNpcDialogue(o,['You need Magic 5 to read these enchanted oathstones without destroying the surviving memories.']);
+  return mainStoryOffer(o,18,['Recent visitors dug through Hollow Shrine. They copied some inscriptions, damaged others, and removed pieces from ancient seal sockets. They left no name.', 'The Bell marks the isolated approach. A stair beneath the ruined shrine leads to the Lantern in the pilgrim hall and the Hand in the eastern archive. Follow the carved waymarkers; compare every memory with what the miners actually told you.', 'Some memories are true. A convincing voice is not proof. Return to me after all three stones. Recommended Combat 12.'],'Explore Hollow Shrine.');
  }
- if(MAIN_STORY_STONES[k])return dialog(o.name,'<p>'+MAIN_STORY_STONES[k][1]+'</p>',stage===19&&!q.stones.includes(k)?[['Remember the whisper.',()=>{const state=mainStoryState();if(state.stage!==19||!mountainNear(o)||state.stones.includes(k))return;state.stones.push(k);if(state.stones.length===3)mainStoryAdvance(19,o);else save();close();}]]:[]);
- if(k==='ilyra'&&stage===20)return openNpcDialogue(o,['Bera had lost her voice before the bell. Oren stood beside her when her voice called from below, then heard himself answer. What do the whispers tell us?'],[
- ['The miners called to each other below.',()=>toast('Bera could not speak, and Oren stood beside her. Their testimony contradicts that tale.')],
- ['The curse is stealing living voices.',()=>{if(mainStoryAdvance(20,o,{comparison:true})){close();toast('Ilyra: Restore the oath in its proper order. Warning, light, mercy: Bell, Lantern, Hand.');}}]
- ],MAIN_STORY_QUESTS[2].title);
+ if(MAIN_STORY_STONES[k]&&stage<19)return dialog(o.name,'<p>A weathered pilgrim symbol rests beneath moss and fresh chisel scars. Ilyra needs the miners’ testimony before she can compare these memories safely.</p>');
+ if(MAIN_STORY_STONES[k])return dialog(o.name,'<p>'+MAIN_STORY_STONES[k][1]+'</p>',stage===19&&!q.stones.includes(k)?[['Record this memory and its evidence.',()=>{if(q.stage!==19||!mountainNear(o)||q.stones.includes(k))return;q.stones.push(k);if(q.stones.length===3)mainStoryAdvance(19,o);else save();close();}]]:[]);
+ if(k==='ilyra'&&stage===20)return openNpcDialogue(o,['The Bell agrees with Tovin. The Lantern says Bera called after the bell. Which part can we test against a living witness?'],[['Bera could not speak before the bell; that memory was altered.',()=>{if(mainStoryAdvance(20,o,{comparison:true})){close();toast('Ilyra: The original oath remains: Bell, Lantern, Hand. Restore it in the deepest chamber.');}}],['Every voice in the shrine must be true.',()=>toast('Bera’s recorded testimony contradicts the Lantern. Read Evidence in your journal and try again.')]],MAIN_STORY_QUESTS[2].title);
  if(k==='shrine'&&stage===21)return mainStoryRunes(o);
- if(k==='shrine'&&stage===23)return dialog(o.name,'<p>The shade unravels. Beneath its stolen voices, a final whisper trembles in the stone: “Send the ward-keepers below. Let the borrowed voice carry the order.”</p><p>Break the curse and bind that memory into a fallen shard. Maerin must hear it.</p>',[['Break the curse and bind the memory.',()=>mainStoryWorkStart(o,23,'Magic',5,'Unbinding the cursed shrine',{memoryShard:true})]]);
- if(k==='ilyra'&&stage===24)return mainStoryOffer(o,24,[
- 'The oathstones have fallen quiet. Their blessing can heal now. You brought back more than a whisper: you have shown that the voice beneath the mountain can be resisted.',
- 'A forged order emptied the road. Another abandoned the lift crew. A curse stole their voices to summon the ward-keepers below. Archivist Maerin in Ironhollow has been collecting missing names. Bring him the dispatch, Hesta’s testimony and this memory shard. Keep copies of the written evidence in your journal.'
- ],'Complete Echoes Without a Name.',{memoryShard:true},2);
- const message=k==='hesta'&&stage<7?'Complete The Broken Watch with Captain Rellan before beginning this rescue.':k==='ilyra'&&stage<18?'Complete The Weight of an Oath with Hesta before investigating the shrine.':['bera','oren'].includes(k)&&stage>=17?'We are both safe. Hesta has our testimony. Thank you for coming back.':MAIN_STORY_STEPS[stage][0];
- if(o.characterSprite)return openNpcDialogue(o,[message],[],mainStoryTitle());dialog(o.name,'<p>'+message+'</p>');
+ if(k==='shrine'&&stage===23)return dialog(o.name,'<p>The Echo Shade falls, but the floor still trembles with whispers coming from the mountain. A solid shard remains in the reliquary: “Wardkeepers ... Ironhollow ... prison ... keep the seal fragments ...” The rest is missing.</p>',[['Stabilize and take the Memory Shard.',()=>mainStoryWorkStart(o,23,'Magic',5,'Stabilizing the Memory Shard',{memoryShard:true})]]);
+ if(k==='ilyra'&&stage===24)return mainStoryOffer(o,24,['The shade was feeding on this phenomenon. Killing it did not stop the current beneath the stone. The source lies deeper beneath the mountain.', 'These incomplete memories concern Wardkeepers, ancient seals, Ironhollow, and a prison. They do not tell us what is imprisoned. Someone has been researching how those protections work.', 'Keep the physical Memory Shard. Take it with your journal to Archivist Maerin. This Whisper Pendant may help you notice supernatural disturbances; it cannot tell you what every vision means.'],'Complete Whispers at Hollow Shrine.',{memoryShard:true},2);
+ const recovery=arcRecoveryChoices(o),reaction=arcWorldReaction(o);
+ const post=k==='driver'&&stage>=7?'The northern road has reopened. I still remember the covered load passing toward Ironhollow while the patrols were gone. Those raiders knew exactly when to strike.':k==='rellan'&&stage>=7?'I have secured the forged orders. The raiders were paid to clear the northern road; we still do not know their employer. Your signet can be replaced if lost.':k==='hesta'&&stage>=18?'The workers are back, and the lower mine remains open. Bera and Oren will speak with you. I can replace your miner’s belt if it is lost.':k==='ilyra'&&stage>=25?'The shrine is open for research. Spirits react differently from human memories; that difference may matter. Maerin has the Wardkeeper records.': ['bera','oren'].includes(k)&&stage>=17?(k==='bera'?'I never called from below. I remember standing beside Oren, unable to speak.':'My son was above ground. The voice knew our private names, but it did not know where he really was.'):MAIN_STORY_STEPS[stage][0];
+ if(o.characterSprite)return openNpcDialogue(o,[...(reaction?[reaction]:[]),post],recovery,mainStoryTitle());dialog(o.name,'<p>'+post+'</p>');
 }
 const mainStoryInteractionBefore=handleWorldInteraction;handleWorldInteraction=function(o){if(o.mainStoryKey&&!fighter(o)){mainStoryInteract(o);return true;}return mainStoryInteractionBefore(o);};
 const mainStoryCanFightBefore=mountainCanFight;mountainCanFight=function(o){return o.mainStoryStage!==undefined?mainStoryState().stage===o.mainStoryStage:mainStoryCanFightBefore(o);};
@@ -216,7 +215,7 @@ const mainStoryMountainGuideBefore=mountainGuide;mountainGuide=function(){if(mou
 function mainStoryGuide(){
  if(playerAction?.kind==='investigate')return true;
  const q=mainStoryState();if(currentScene==='tutorial'){toast('Finish the apprenticeship to begin the mainland story.');return false;}
- let key=MAIN_STORY_STEPS[q.stage][1];
+ let key=MAIN_STORY_STEPS[q.stage][1];if(q.stage===13&&q.excavation)key='lift';if(q.stage===6&&!arcOwnsAnywhere('forgedOrders'))key='dispatch';
  if(key==='clues')key=Object.keys(MAIN_STORY_CLUES).find(k=>!q.clues.includes(k));if(key==='stones')key=Object.keys(MAIN_STORY_STONES).find(k=>!q.stones.includes(k));
  let found=key==='maerin'?mountainObject('maerin'):mainStoryFound(key);
  if(key==='escort'){
@@ -334,7 +333,7 @@ gradeLand=function(x,y,height){const base=raiderGradeBefore(x,y,height);if(curre
 const raiderRoadBefore=roadInfluence;
 roadInfluence=function(x,y){const out=raiderRoadBefore(x,y);if(currentScene!=='overworld'||!raiderCampReady)return out;const c=RAIDER_CAMP,d=Math.max(Math.abs((x-c.x)/13),Math.abs((y-c.y)/12.5)),wear=Math.max(0,Math.min(1,(1-d)/.12));return [Math.max(out[0],wear*.9),out[1],out[2]];};
 const raiderRegionBefore=regionInfo;
-regionInfo=function(){return currentScene==='overworld'&&raiderCampContains(s.x,s.y,6)?['Redclay raider camp','The Broken Watch · Stolen patrol orders']:raiderRegionBefore();};
+regionInfo=function(){return currentScene==='overworld'&&raiderCampContains(s.x,s.y,6)?['Redclay raider camp','Orders of the Dead · Stolen patrol orders']:raiderRegionBefore();};
 const raiderPropBefore=prop3;
 prop3=function(r,o,x,z){
  if(!o.campModel)return raiderPropBefore(r,o,x,z);
