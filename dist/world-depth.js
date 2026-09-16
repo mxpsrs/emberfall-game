@@ -13,13 +13,15 @@ function landNode(x,z){
  if(!inWorld())return 0;const key=x+z*2048;if(landHeights.has(key))return landHeights.get(key);
  const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}
  let h=shoreHeight(x,z),weight=0,total=0,strength=0;
+ const excavation=currentScene==='overworld'&&typeof quarryAt==='function'&&quarryAt(x,z,8);
  if(!foundationBuckets){foundationBuckets=new Map();for(const b of buildings)for(let bz=Math.floor((b.y-13)/16);bz<=Math.floor((b.y+b.h+13)/16);bz++)for(let bx=Math.floor((b.x-13)/16);bx<=Math.floor((b.x+b.w+13)/16);bx++){const key=bx+bz*128;if(!foundationBuckets.has(key))foundationBuckets.set(key,[]);foundationBuckets.get(key).push(b);}}
- for(const b of foundationBuckets.get(Math.floor(x/16)+Math.floor(z/16)*128)||[]){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12)continue;
+ for(const b of foundationBuckets.get(Math.floor(x/16)+Math.floor(z/16)*128)||[]){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12||excavation&&d>0)continue;
   const foundation=foundationLevel(b);if(d===0){h=foundation;weight=0;break;}
   const t=d/12,blend=1-t*t*(3-2*t),w=blend/Math.max(.0001,d*d);weight+=w;total+=w*foundation;strength=Math.max(strength,blend);
  }
  if(weight)h=h*(1-strength)+total/weight*strength;
- h=Math.min(gradeLand(x,z,h),water*.45);landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
+ // Grading already happens in shoreHeight. Applying it again would tilt a level foundation.
+ h=Math.min(h,water*.45);landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
 }
 function landNormal(x,z){const a=landHeight(x-.2,z)-landHeight(x+.2,z),b=landHeight(x,z-.2)-landHeight(x,z+.2),length=Math.hypot(a,.4,b);return [a/length,.4/length,b/length];}
 function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return v>=u?landNode(ix,iz)*(1-v)+landNode(ix,iz+1)*(v-u)+landNode(ix+1,iz+1)*u:landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*(u-v)+landNode(ix+1,iz+1)*v;}

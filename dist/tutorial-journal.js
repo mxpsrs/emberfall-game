@@ -4,14 +4,16 @@
 let questJournalSelection=null,questJournalStepKey='';
 function tutorialNextAction(){const step=tutorialStep();return step?{title:step.title,instruction:step.desc,run:guide}:null;}
 function questJournalEntries(){
- const entries=[{id:'tutorial',title:'Firstlight apprenticeship',complete:!tutorialStep(),active:!!tutorialStep()}];
+ const entries=[{id:'tutorial',title:'The First Accord',complete:!tutorialStep(),active:!!tutorialStep()}];
  for(let i=1;i<quests.length-1;i++)entries.push({id:'village-'+i,title:quests[i].title,complete:s.quest>i,active:s.quest===i});
  for(let i=0;i<frontierQuests.length;i++)entries.push({id:'frontier-'+i,title:frontierQuests[i].title,complete:(s.frontier?.quest||0)>i,active:(s.frontier?.quest||0)===i&&s.frontier?.accepted});
  if(typeof mainStoryState==='function'){const stage=mainStoryState().stage;MAIN_STORY_QUESTS.forEach((q,i)=>entries.push({id:'main-'+i,title:(i+1)+'. '+q.title,complete:stage>=q.end,active:stage>q.start&&stage<q.end}));}
  if(typeof mountainState==='function'){const stage=mountainState().stage;entries.push({id:'mountain-1',title:'4. The King Beneath the Mountain',complete:stage>=11,active:stage>0&&stage<11},{id:'mountain-2',title:'5. The Borrowed King',complete:stage>=20,active:stage>11&&stage<20});}
+ if(typeof relicQuestState==='function'){const stage=relicQuestState().stage;entries.push({id:'relic-shaping',title:'The Well Between Worlds',complete:stage===7,active:stage>0&&stage<7});}
  return entries;
 }
 function questJournalRows(id){
+ if(id==='relic-shaping'&&typeof relicQuestRows==='function')return relicQuestRows();
  if(id==='tutorial'){
   const completed=new Set(s.tutorialCompleted||tutorialSteps.slice(0,s.tutorial).map(t=>t.event));
   const rows=tutorialSteps.filter(t=>completed.has(t.event)).map(t=>({text:t.title,done:true}));

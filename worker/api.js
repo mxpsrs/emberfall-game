@@ -57,6 +57,7 @@ export async function handlePlayers(request,env){
  const validTrail=Array.isArray(input.trail)&&input.trail.length<=24&&input.trail.every((n,i)=>Array.isArray(n)&&n.length===4&&n.every(Number.isFinite)&&Number.isSafeInteger(n[0])&&n[0]>0&&Number.isInteger(n[1])&&Number.isInteger(n[2])&&n[1]>=0&&n[2]>=0&&n[1]<size[0]&&n[2]<size[1]&&n[3]>=0&&n[3]<=60000&&(!i||n[0]===input.trail[i-1][0]+1&&Math.hypot(n[1]-input.trail[i-1][1],n[2]-input.trail[i-1][2])<=1.5));
  const trail=validTrail&&(!input.trail.length||Math.hypot(input.trail.at(-1)[1]-input.x,input.trail.at(-1)[2]-input.y)<=2)?input.trail:[];
  const state=JSON.parse(player.row.state);if(!state.character)return reply({error:'Create your character first.'},400);
+ if(input.scene==='fairy_between'&&(state.relicQuest?.stage||0)<4)return reply({error:'Selene has not opened that crossing.'},403);
  if(input.scene==='tutorial'&&completedApprenticeship(state))return reply({error:'Firstlight Isle is closed to mainland adventurers.'},403);
  if(state.tutorialIslandVersion>=1&&!completedApprenticeship(state)&&input.scene!=='tutorial')return reply({error:'Complete the apprenticeship before entering the mainland.'},403);
  const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('public-player:'+player.user));const id=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');

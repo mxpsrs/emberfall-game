@@ -5,6 +5,11 @@ renderUI=()=>{};renderTutorial=()=>{};save=()=>{};
 currentScene='tutorial';
 function at(event){s.tutorial=tutorialSteps.findIndex(t=>t.event===event);s.tutorialCompleted=[];s.tutorialActions={};}
 function fresh(){s=defaults();s.character={name:'Guided apprentice'};s.gear={};s.bag={};s.bank={};s.equipment={};s.tutorialGifts={};s.tutorialReward=false;}
+assert(TUTORS.guide.text.includes('My name is Rowan'),'chapter text preserves Rowan introduction');
+let classicSpellPage='field';
+fresh();at('magic');tab='spells';$('gameDock').hidden=false;
+for(const page of ['field','supplies','teleports']){classicSpellPage=page;assert.equal(tutorialGuidanceAction().selector,'[data-spell-page="combat"]','guide exposes the combat page before the spell');}
+classicSpellPage='combat';assert.equal(tutorialGuidanceAction().selector,'[data-spell-id="spark"]');
 fresh();at('talk-magic');
 talkTutor({tutor:'magic',name:'Arcanist Elowen'});
 assert.equal(tutorialStep().event,'talk-magic');assert.deepEqual(npcDialogueState.choices.map(c=>c[0]),['Continue'],'original dialogue remains, without rune-selection choices');npcDialogueState.choices[0][1]();assert.equal(tutorialStep().event,'magic');

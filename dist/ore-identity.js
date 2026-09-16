@@ -1,6 +1,7 @@
 'use strict';
 // Authored silhouettes and exposed seams, fixed by ore type across the world.
 const ORE_APPEARANCE={
+ lodestone:{stone:'#434055',vein:'#b8a0dd',sides:6,rocks:[[0,0,.40,.65],[.28,.18,.22,.35]]},
  copper:{stone:'#705449',vein:'#d78348',sides:7,rocks:[[-.15,0,.44,.59],[.30,.16,.25,.34]]},
  tin:{stone:'#788184',vein:'#d7e1df',sides:5,rocks:[[-.18,-.05,.39,.42],[.26,.12,.32,.34]]},
  iron:{stone:'#554a49',vein:'#a94f39',sides:5,rocks:[[0,0,.40,.79],[-.30,.20,.24,.37]]},

@@ -312,97 +312,97 @@
     "tradeable": true
   },
   "mithril_head": {
-    "name": "Mithril headgear",
+    "name": "Windsteel headgear",
     "slot": "head",
     "stackable": false,
     "tradeable": true
   },
   "mithril_shoulders": {
-    "name": "Mithril shoulder pads",
+    "name": "Windsteel shoulder pads",
     "slot": "shoulders",
     "stackable": false,
     "tradeable": true
   },
   "mithril_body": {
-    "name": "Mithril chestplate",
+    "name": "Windsteel chestplate",
     "slot": "body",
     "stackable": false,
     "tradeable": true
   },
   "mithril_hands": {
-    "name": "Mithril gauntlets",
+    "name": "Windsteel gauntlets",
     "slot": "hands",
     "stackable": false,
     "tradeable": true
   },
   "mithril_legs": {
-    "name": "Mithril legguards",
+    "name": "Windsteel legguards",
     "slot": "legs",
     "stackable": false,
     "tradeable": true
   },
   "mithril_feet": {
-    "name": "Mithril boots",
+    "name": "Windsteel boots",
     "slot": "feet",
     "stackable": false,
     "tradeable": true
   },
   "mithril_shield": {
-    "name": "Mithril shield",
+    "name": "Windsteel shield",
     "slot": "shield",
     "stackable": false,
     "tradeable": true
   },
   "mithril_weapon": {
-    "name": "Mithril sword",
+    "name": "Windsteel sword",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_head": {
-    "name": "Dragonslayer headgear",
+    "name": "Wyrmforged headgear",
     "slot": "head",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_shoulders": {
-    "name": "Dragonslayer shoulder pads",
+    "name": "Wyrmforged shoulder pads",
     "slot": "shoulders",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_body": {
-    "name": "Dragonslayer chestplate",
+    "name": "Wyrmforged chestplate",
     "slot": "body",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_hands": {
-    "name": "Dragonslayer gauntlets",
+    "name": "Wyrmforged gauntlets",
     "slot": "hands",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_legs": {
-    "name": "Dragonslayer legguards",
+    "name": "Wyrmforged legguards",
     "slot": "legs",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_feet": {
-    "name": "Dragonslayer boots",
+    "name": "Wyrmforged boots",
     "slot": "feet",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_shield": {
-    "name": "Dragonslayer shield",
+    "name": "Wyrmforged shield",
     "slot": "shield",
     "stackable": false,
     "tradeable": true
   },
   "dragonslayer_weapon": {
-    "name": "Dragonslayer sword",
+    "name": "Wyrmforged sword",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
@@ -534,13 +534,13 @@
     "tradeable": true
   },
   "mithrilOre": {
-    "name": "Mithril ore",
+    "name": "Windsteel ore",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "adamantOre": {
-    "name": "Adamantite ore",
+    "name": "Deepiron ore",
     "slot": null,
     "stackable": false,
     "tradeable": true
@@ -630,13 +630,13 @@
     "tradeable": true
   },
   "mithrilBar": {
-    "name": "Mithril bar",
+    "name": "Windsteel bar",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "adamantBar": {
-    "name": "Adamant bar",
+    "name": "Deepiron bar",
     "slot": null,
     "stackable": false,
     "tradeable": true
@@ -672,19 +672,19 @@
     "tradeable": true
   },
   "chaosRunes": {
-    "name": "Chaos relic",
+    "name": "Fracture relic",
     "slot": null,
     "stackable": true,
     "tradeable": true
   },
   "deathRunes": {
-    "name": "Death relic",
+    "name": "Memory relic",
     "slot": null,
     "stackable": true,
     "tradeable": true
   },
   "bloodRunes": {
-    "name": "Blood relic",
+    "name": "Heart relic",
     "slot": null,
     "stackable": true,
     "tradeable": true
@@ -774,97 +774,97 @@
     "tradeable": true
   },
   "black_head": {
-    "name": "Black headgear",
+    "name": "Charsteel headgear",
     "slot": "head",
     "stackable": false,
     "tradeable": true
   },
   "black_shoulders": {
-    "name": "Black shoulder pads",
+    "name": "Charsteel shoulder pads",
     "slot": "shoulders",
     "stackable": false,
     "tradeable": true
   },
   "black_body": {
-    "name": "Black chestplate",
+    "name": "Charsteel chestplate",
     "slot": "body",
     "stackable": false,
     "tradeable": true
   },
   "black_hands": {
-    "name": "Black gauntlets",
+    "name": "Charsteel gauntlets",
     "slot": "hands",
     "stackable": false,
     "tradeable": true
   },
   "black_legs": {
-    "name": "Black legguards",
+    "name": "Charsteel legguards",
     "slot": "legs",
     "stackable": false,
     "tradeable": true
   },
   "black_feet": {
-    "name": "Black boots",
+    "name": "Charsteel boots",
     "slot": "feet",
     "stackable": false,
     "tradeable": true
   },
   "black_shield": {
-    "name": "Black shield",
+    "name": "Charsteel shield",
     "slot": "shield",
     "stackable": false,
     "tradeable": true
   },
   "black_weapon": {
-    "name": "Black sword",
+    "name": "Charsteel sword",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
   },
   "adamant_head": {
-    "name": "Adamant headgear",
+    "name": "Deepiron headgear",
     "slot": "head",
     "stackable": false,
     "tradeable": true
   },
   "adamant_shoulders": {
-    "name": "Adamant shoulder pads",
+    "name": "Deepiron shoulder pads",
     "slot": "shoulders",
     "stackable": false,
     "tradeable": true
   },
   "adamant_body": {
-    "name": "Adamant chestplate",
+    "name": "Deepiron chestplate",
     "slot": "body",
     "stackable": false,
     "tradeable": true
   },
   "adamant_hands": {
-    "name": "Adamant gauntlets",
+    "name": "Deepiron gauntlets",
     "slot": "hands",
     "stackable": false,
     "tradeable": true
   },
   "adamant_legs": {
-    "name": "Adamant legguards",
+    "name": "Deepiron legguards",
     "slot": "legs",
     "stackable": false,
     "tradeable": true
   },
   "adamant_feet": {
-    "name": "Adamant boots",
+    "name": "Deepiron boots",
     "slot": "feet",
     "stackable": false,
     "tradeable": true
   },
   "adamant_shield": {
-    "name": "Adamant shield",
+    "name": "Deepiron shield",
     "slot": "shield",
     "stackable": false,
     "tradeable": true
   },
   "adamant_weapon": {
-    "name": "Adamant sword",
+    "name": "Deepiron sword",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
@@ -1032,13 +1032,13 @@
     "tradeable": true
   },
   "mithril_dagger": {
-    "name": "Mithril dagger",
+    "name": "Windsteel dagger",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
   },
   "adamant_dagger": {
-    "name": "Adamant dagger",
+    "name": "Deepiron dagger",
     "slot": "weapon",
     "stackable": false,
     "tradeable": true
@@ -1098,25 +1098,25 @@
     "tradeable": true
   },
   "mithrilArrowheads": {
-    "name": "Mithril arrowheads",
+    "name": "Windsteel arrowheads",
     "slot": null,
     "stackable": true,
     "tradeable": true
   },
   "mithrilArrows": {
-    "name": "Mithril arrows",
+    "name": "Windsteel arrows",
     "slot": null,
     "stackable": true,
     "tradeable": true
   },
   "adamantArrowheads": {
-    "name": "Adamant arrowheads",
+    "name": "Deepiron arrowheads",
     "slot": null,
     "stackable": true,
     "tradeable": true
   },
   "adamantArrows": {
-    "name": "Adamant arrows",
+    "name": "Deepiron arrows",
     "slot": null,
     "stackable": true,
     "tradeable": true
@@ -1170,37 +1170,37 @@
     "tradeable": true
   },
   "blackAxe": {
-    "name": "Black axe",
+    "name": "Charsteel axe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "blackPickaxe": {
-    "name": "Black pickaxe",
+    "name": "Charsteel pickaxe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "mithrilAxe": {
-    "name": "Mithril axe",
+    "name": "Windsteel axe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "mithrilPickaxe": {
-    "name": "Mithril pickaxe",
+    "name": "Windsteel pickaxe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "adamantAxe": {
-    "name": "Adamant axe",
+    "name": "Deepiron axe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "adamantPickaxe": {
-    "name": "Adamant pickaxe",
+    "name": "Deepiron pickaxe",
     "slot": null,
     "stackable": false,
     "tradeable": true
@@ -1218,19 +1218,85 @@
     "tradeable": true
   },
   "dragonslayerAxe": {
-    "name": "Dragonslayer axe",
+    "name": "Wyrmforged axe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "dragonslayerPickaxe": {
-    "name": "Dragonslayer pickaxe",
+    "name": "Wyrmforged pickaxe",
     "slot": null,
     "stackable": false,
     "tradeable": true
   },
   "huntersMark": {
     "name": "Hunter’s mark",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "lodestone": {
+    "name": "Lodestone",
+    "slot": null,
+    "stackable": false,
+    "tradeable": true
+  },
+  "relicChisel": {
+    "name": "Inscribing chisel",
+    "slot": null,
+    "stackable": false,
+    "tradeable": false
+  },
+  "lakeRecord": {
+    "name": "Lake resonance record",
+    "slot": null,
+    "stackable": false,
+    "tradeable": false
+  },
+  "unfinished_air": {
+    "name": "Unfinished air relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_mind": {
+    "name": "Unfinished mind relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_water": {
+    "name": "Unfinished water relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_earth": {
+    "name": "Unfinished earth relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_fire": {
+    "name": "Unfinished fire relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_fracture": {
+    "name": "Unfinished fracture relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_memory": {
+    "name": "Unfinished memory relic",
+    "slot": null,
+    "stackable": true,
+    "tradeable": true
+  },
+  "unfinished_heart": {
+    "name": "Unfinished heart relic",
     "slot": null,
     "stackable": true,
     "tradeable": true

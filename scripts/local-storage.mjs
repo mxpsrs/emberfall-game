@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
+import {localAccounts} from './local-accounts.mjs';
 import {RESET_VERSION_SQL} from '../worker/reset-policy.js';
 
-// Character JSON files are the source of truth at startup. SQLite is local:
-// it stores accounts/social data and supplies an atomic working index for the
-// existing game handlers. A durable outbox completes interrupted file writes.
+// Account folders supply credentials and characters at startup. SQLite is a
+// local transactional index and social/world store; no cloud service is used.
 export function openLocalStorage({root=process.cwd(),dataDirectory=process.env.VELDREN_DATA_DIR||root}={}){
  const directory=path.resolve(dataDirectory),saveDirectory=path.join(directory,'player-saves'),serverDirectory=path.join(directory,'server-data');
  for(const dir of [saveDirectory,serverDirectory])fs.mkdirSync(dir,{recursive:true,mode:0o700});
@@ -23,16 +23,20 @@ export function openLocalStorage({root=process.cwd(),dataDirectory=process.env.V
   db.exec('CREATE TABLE IF NOT EXISTS local_save_outbox (user_id TEXT PRIMARY KEY, username TEXT, state TEXT, revision INTEGER, updated_at TEXT, reset_version TEXT, deleted INTEGER NOT NULL DEFAULT 0)');
  }catch(error){db.close();throw error;}
  const resetVersion=()=>db.prepare('SELECT '+RESET_VERSION_SQL+' AS version').get().version;
- const filename=row=>path.join(saveDirectory,(/^[a-zA-Z0-9_]{3,20}$/.test(row.username||'')?row.username.toLowerCase():createHash('sha256').update(row.user_id).digest('hex'))+'.json');
+ const filename=row=>path.join(saveDirectory,row.username.toLowerCase(),'character.json');
  function atomicWrite(destination,record){
   const temporary=destination+'.'+randomUUID()+'.tmp';let fd;
-  try{fd=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(fd,JSON.stringify(record,null,2)+'\n');fs.fsyncSync(fd);fs.closeSync(fd);fd=undefined;fs.renameSync(temporary,destination);}
+  try{fd=fs.openSync(temporary,'wx',0o600);fs.writeFileSync(fd,JSON.stringify(record,null,2)+'\n');fs.fsyncSync(fd);fs.closeSync(fd);fd=undefined;fs.renameSync(temporary,destination);if(process.platform!=='win32'){const dir=fs.openSync(path.dirname(destination),'r');try{fs.fsyncSync(dir);}finally{fs.closeSync(dir);}}}
   finally{if(fd!==undefined)fs.closeSync(fd);if(fs.existsSync(temporary))fs.unlinkSync(temporary);}
  }
+ let accountFiles;try{accountFiles=localAccounts(db,saveDirectory,atomicWrite);}catch(error){db.close();throw error;}
  function flushPlayerFiles(){
+  accountFiles.reconcile();accountFiles.flush();
   const pending=db.prepare('SELECT * FROM local_save_outbox ORDER BY user_id').all();if(!pending.length)return;
   for(const row of pending){
-   const destination=filename(row);
+   const account=db.prepare('SELECT username FROM game_accounts WHERE id=?').get(row.user_id.slice(8));
+   if(!account)continue;
+   const destination=filename(account);
    if(row.deleted){if(fs.existsSync(destination))fs.unlinkSync(destination);}
    else atomicWrite(destination,{format:1,resetVersion:row.reset_version,userId:row.user_id,username:row.username||null,revision:row.revision,updatedAt:row.updated_at,state:JSON.parse(row.state)});
   }
@@ -43,10 +47,11 @@ export function openLocalStorage({root=process.cwd(),dataDirectory=process.env.V
  }
  function validSave(record){return record?.format===1&&typeof record.userId==='string'&&record.userId.startsWith('account:')&&Number.isSafeInteger(record.revision)&&record.revision>0&&record.state&&typeof record.state==='object'&&record.state.xp&&record.state.bag&&['x','y','hp','gold'].every(k=>Number.isFinite(record.state[k]));}
  try{
+  accountFiles.restore();
   flushPlayerFiles();
   // Validate the complete folder before replacing any cached character state.
   const records=[],seen=new Set();
-  for(const name of fs.readdirSync(saveDirectory).filter(n=>n.endsWith('.json'))){
+  for(const name of fs.readdirSync(saveDirectory,{withFileTypes:true}).filter(e=>e.isDirectory()&&fs.existsSync(path.join(saveDirectory,e.name,'character.json'))).map(e=>e.name+'/character.json')){
    let record;try{record=JSON.parse(fs.readFileSync(path.join(saveDirectory,name),'utf8'));}catch{throw new Error('Unreadable player save: '+name+'; repair it before restarting.');}
    if(!validSave(record)||seen.has(record.userId))throw new Error('Invalid or duplicate player save: '+name);seen.add(record.userId);
    const account=db.prepare('SELECT id,username FROM game_accounts WHERE id=?').get(record.userId.slice('account:'.length));
@@ -79,14 +84,14 @@ export function openLocalStorage({root=process.cwd(),dataDirectory=process.env.V
  class Statement{
   constructor(sql,args=[]){this.sql=sql;this.args=args;}
   bind(...args){return new Statement(this.sql,args);}
-  async first(column){const row=db.prepare(this.sql).get(...this.args);return column?row?.[column]??null:row??null;}
-  async all(){return {success:true,results:db.prepare(this.sql).all(...this.args)};}
+  async first(column){accountFiles.reconcile();const row=db.prepare(this.sql).get(...this.args);return column?row?.[column]??null:row??null;}
+  async all(){accountFiles.reconcile();return {success:true,results:db.prepare(this.sql).all(...this.args)};}
   execute(){const result=db.prepare(this.sql).run(...this.args);return {success:true,results:[],meta:{changes:Number(result.changes),last_row_id:Number(result.lastInsertRowid)}};}
-  async run(){const result=this.execute();if(/\bcharacter_saves\b/i.test(this.sql))flushPlayerFiles();return result;}
+  async run(){accountFiles.reconcile();const result=this.execute();flushPlayerFiles();return result;}
  }
  const DB={prepare:sql=>new Statement(sql),async batch(statements){
   // No await within a transaction: another HTTP request cannot interleave.
-  db.exec('BEGIN IMMEDIATE');let results;
+  accountFiles.reconcile();db.exec('BEGIN IMMEDIATE');let results;
   try{results=statements.map(statement=>statement.execute());db.exec('COMMIT');}catch(error){db.exec('ROLLBACK');throw error;}
   flushPlayerFiles();return results;
  }};

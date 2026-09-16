@@ -11,7 +11,7 @@ function normalizeSkillProgression(state,original=state){
   for(const [skill,value]of Object.entries(state.xp)){if(skill==='Worship')continue;const xp=Math.max(0,Number(value)||0),level=Math.min(99,1+Math.floor(Math.sqrt(xp/35))),fraction=level===99?0:(xp-35*(level-1)**2)/(35*level**2-35*(level-1)**2);state.xp[skill]=SKILL_XP[level]+(level<99?(SKILL_XP[level+1]-SKILL_XP[level])*fraction:0);}
   state.xp.Hitpoints=Math.max(SKILL_XP[10],state.xp.Hitpoints||0);
  }
- for(const skill of ['Fletching','Farming'])state.xp[skill]=Math.max(0,Number(state.xp[skill])||0);
+ for(const skill of ['Fletching','Farming','Relic Shaping'])state.xp[skill]=Math.max(0,Number(state.xp[skill])||0);
  state.skillProgressionVersion=1;state.xp.Hitpoints=Math.max(SKILL_XP[10],state.xp.Hitpoints||0);
  for(const [slot,id]of Object.entries(state.equipment||{}))if(ITEMS[id]&&Object.entries(ITEMS[id].requirements||{}).some(([skill,level])=>skillLevel(skill,state.xp[skill])<level)){state.equipment[slot]=null;state.gear[id]=Math.max(1,state.gear[id]||0);}
  for(const [id,n]of Object.entries({airRunes:120,feathers:30}))if(state.bag[id]===undefined)state.bag[id]=n;
@@ -27,8 +27,8 @@ const TREE_RESOURCES={
 const ORE_RESOURCES={
  copper:{name:'Copper rock',item:'copperOre',level:1,xp:17.5,respawn:5},tin:{name:'Tin rock',item:'tinOre',level:1,xp:17.5,respawn:5},
  iron:{name:'Iron rock',item:'ore',level:15,xp:35,respawn:8},coal:{name:'Coal rock',item:'coal',level:30,xp:50,respawn:30},
- gold:{name:'Gold rock',item:'goldOre',level:40,xp:65,respawn:60},mithril:{name:'Mithril rock',item:'mithrilOre',level:55,xp:80,respawn:60},
- adamant:{name:'Adamantite rock',item:'adamantOre',level:70,xp:95,respawn:120},rune:{name:'Eldrite rock',item:'runeOre',level:85,xp:125,respawn:360}
+ gold:{name:'Gold rock',item:'goldOre',level:40,xp:65,respawn:60},mithril:{name:'Windsteel rock',item:'mithrilOre',level:55,xp:80,respawn:60},
+ adamant:{name:'Deepiron rock',item:'adamantOre',level:70,xp:95,respawn:120},rune:{name:'Eldrite rock',item:'runeOre',level:85,xp:125,respawn:360}
 };
 const FISH_RESOURCES={
  shrimp:{name:'Shrimp',raw:'rawShrimp',food:'shrimp',level:1,xp:10,cookLevel:1,cookXP:30,heal:3,burnStop:34,tool:'fishingNet'},
@@ -43,8 +43,8 @@ const METAL_RECIPES={
  iron:{name:'Iron',level:15,xp:12.5,bar:'ironBar',ingredients:{ore:1},smithXP:25},
  steel:{name:'Steel',level:30,xp:17.5,bar:'steelBar',ingredients:{ore:1,coal:2},smithXP:37.5},
  gold:{name:'Gold',level:40,xp:22.5,bar:'goldBar',ingredients:{goldOre:1},smithXP:0},
- mithril:{name:'Mithril',level:50,xp:30,bar:'mithrilBar',ingredients:{mithrilOre:1,coal:4},smithXP:50},
- adamant:{name:'Adamant',level:70,xp:37.5,bar:'adamantBar',ingredients:{adamantOre:1,coal:6},smithXP:62.5},
+ mithril:{name:'Windsteel',level:50,xp:30,bar:'mithrilBar',ingredients:{mithrilOre:1,coal:4},smithXP:50},
+ adamant:{name:'Deepiron',level:70,xp:37.5,bar:'adamantBar',ingredients:{adamantOre:1,coal:6},smithXP:62.5},
  rune:{name:'Eldrite',level:85,xp:50,bar:'runeBar',ingredients:{runeOre:1,coal:8},smithXP:75}
 };
 const FOOD_BY_ID={};const SKILL_SHOP_STOCK=[];
@@ -60,7 +60,7 @@ for(const [key,f]of Object.entries(FISH_RESOURCES)){
  addSkillItem(f.food,{name:f.name,icon:10,heal:f.heal,desc:'Eat to restore up to '+f.heal+' Hitpoints.',value:f.heal});FOOD_BY_ID[f.food]=f;
 }
 for(const [key,m]of Object.entries(METAL_RECIPES))addSkillItem(m.bar,{name:m.name+' bar',metal:key,desc:'Smelt at Smithing '+m.level+'. Work this bar at an anvil.',value:m.level*2+3});
-for(const [id,name,price]of [['airRunes','Air relic',4],['waterRunes','Water relic',4],['earthRunes','Earth relic',4],['fireRunes','Fire relic',4],['chaosRunes','Chaos relic',90],['deathRunes','Death relic',180],['bloodRunes','Blood relic',400],['feathers','Feathers',2],['arrowShafts','Arrow shafts',1],['headlessArrows','Headless arrows',3]]){addSkillItem(id,{name,icon:id.includes('Rune')?13:12,desc:name+'. Used in spells or fletching.'},price,10);STACKABLE.add(id);}
+for(const [id,name,price]of [['airRunes','Air relic',4],['waterRunes','Water relic',4],['earthRunes','Earth relic',4],['fireRunes','Fire relic',4],['chaosRunes','Fracture relic',90],['deathRunes','Memory relic',180],['bloodRunes','Heart relic',400],['feathers','Feathers',2],['arrowShafts','Arrow shafts',1],['headlessArrows','Headless arrows',3]]){addSkillItem(id,{name,icon:id.includes('Rune')?13:12,desc:name+'. Used in spells or fletching.'},price,10);STACKABLE.add(id);}
 ITEMS.runes.name='Mind relic';ITEMS.runes.desc='Mind relics power strike spells. Elemental relics are also required.';
 ITEMS.arrows.name='Bronze arrows';ITEMS.arrows.rangedStrength=7;ITEMS.arrows.desc='Bronze arrows. Equip a bow to use them.';
 addSkillItem('burntFish',{name:'Burnt fish',icon:10,desc:'A spoiled catch. Higher Cooking reduces the chance of burning food.'});
@@ -198,12 +198,12 @@ const GEAR_TIERS=[
  {id:'bronze',name:'Bronze',level:1,source:'B',attack:4,strength:4,defense:8,cost:30},
  {id:'iron',name:'Iron',level:1,source:'I',attack:8,strength:6,defense:12,cost:65},
  {id:'steel',name:'Steel',level:5,source:'I',attack:12,strength:10,defense:18,cost:150,tint:[1.13,1.16,1.18]},
- {id:'black',name:'Black',level:10,source:'I',attack:17,strength:14,defense:24,cost:300,tint:[.42,.46,.48]},
- {id:'mithril',name:'Mithril',level:20,source:'M',attack:24,strength:20,defense:32,cost:600},
- {id:'adamant',name:'Adamant',level:30,source:'M',attack:33,strength:28,defense:46,cost:1200,tint:[.66,1.06,.63]},
+ {id:'black',name:'Charsteel',level:10,source:'I',attack:17,strength:14,defense:24,cost:300,tint:[.42,.46,.48]},
+ {id:'mithril',name:'Windsteel',level:20,source:'M',attack:24,strength:20,defense:32,cost:600},
+ {id:'adamant',name:'Deepiron',level:30,source:'M',attack:33,strength:28,defense:46,cost:1200,tint:[.66,1.06,.63]},
  {id:'rune',name:'Eldrite',level:40,source:'M',attack:48,strength:40,defense:65,cost:2500,tint:[.68,1.10,1.24]},
  {id:'gold',name:'Gilded',level:40,source:'G',attack:48,strength:40,defense:65,cost:3500},
- {id:'dragonslayer',name:'Dragonslayer',level:60,source:'DS',attack:67,strength:60,defense:95,cost:9000}
+ {id:'dragonslayer',name:'Wyrmforged',level:60,source:'DS',attack:67,strength:60,defense:95,cost:9000}
 ];
 const weights={head:.36,shoulders:.16,body:1,hands:.10,legs:.72,feet:.12,shield:.70};
 for(const tier of GEAR_TIERS){
@@ -248,12 +248,25 @@ function fitBeltTool(id){const item=ITEMS[id];if(!item?.beltTool||!s.bag[id])ret
 function gatheringToolRank(tool){const id=s.toolBelt?.[tool+'Item'];return id&&ITEMS[id]&&!equipmentRequirement(ITEMS[id])?ITEMS[id].toolRank||0:0;}
 
 for(const key of Object.keys(SPELLS))delete SPELLS[key];
-for(const [id,name,level,maxHit,baseXP,element,elementCount,air,catalyst]of [
- ['spark','Wind strike',1,2,5.5,'airRunes',0,1,'runes'],['frost','Water strike',5,4,7.5,'waterRunes',1,1,'runes'],['earthStrike','Earth strike',9,6,9.5,'earthRunes',2,1,'runes'],['ember','Fire strike',13,8,11.5,'fireRunes',3,2,'runes'],
- ['windBolt','Wind bolt',17,9,13.5,'airRunes',0,2,'chaosRunes'],['waterBolt','Water bolt',23,10,16.5,'waterRunes',2,2,'chaosRunes'],['earthBolt','Earth bolt',29,11,19.5,'earthRunes',3,2,'chaosRunes'],['fireBolt','Fire bolt',35,12,22.5,'fireRunes',4,3,'chaosRunes'],
- ['windBlast','Wind blast',41,13,25.5,'airRunes',0,3,'deathRunes'],['waterBlast','Water blast',47,14,28.5,'waterRunes',3,3,'deathRunes'],['earthBlast','Earth blast',53,15,31.5,'earthRunes',4,3,'deathRunes'],['fireBlast','Fire blast',59,16,34.5,'fireRunes',5,4,'deathRunes'],
- ['windWave','Wind wave',62,17,36,'airRunes',0,5,'bloodRunes'],['waterWave','Water wave',65,18,37.5,'waterRunes',7,5,'bloodRunes'],['earthWave','Earth wave',70,19,40,'earthRunes',7,5,'bloodRunes'],['fireWave','Fire wave',75,20,42.5,'fireRunes',7,5,'bloodRunes']
-]){const ingredients={airRunes:air,[catalyst]:1};if(elementCount)ingredients[element]=elementCount;SPELLS[id]={name,level,element,tier:['runes','chaosRunes','deathRunes','bloodRunes'].indexOf(catalyst)+1,power:maxHit,baseXP,ingredients,cost:1,range:8,color:element==='waterRunes'?'#79c9ed':element==='earthRunes'?'#c8ba83':element==='fireRunes'?'#e7a365':'#b6e2db',desc:'Maximum hit '+maxHit+'. '+baseXP+' base Magic XP per cast.'};}
+// Stable saved spell IDs, but distinct Veldren functions and mixed-element costs.
+for(const [id,name,level,power,baseXP,element,category,ingredients,slow]of [
+ ['spark','Gust Needle',1,2,5.5,'airRunes','Shaping',{airRunes:1,runes:1},0],
+ ['frost','Tideglass',5,4,7.5,'waterRunes','Shaping',{waterRunes:2,runes:1},0],
+ ['earthStrike','Root Tether',9,4,9.5,'earthRunes','Binding',{earthRunes:2,waterRunes:1,runes:1},1.2],
+ ['ember','Cinder Lance',13,8,11.5,'fireRunes','Shaping',{fireRunes:3,runes:1},0],
+ ['windBolt','Shear',17,9,13.5,'airRunes','Shaping',{airRunes:2,chaosRunes:1},0],
+ ['waterBolt','Undercurrent',23,8,16.5,'waterRunes','Binding',{waterRunes:2,earthRunes:1,chaosRunes:1},1.5],
+ ['earthBolt','Faultline',29,11,19.5,'earthRunes','Shaping',{earthRunes:3,chaosRunes:1},0],
+ ['fireBolt','Kilnheart',35,12,22.5,'fireRunes','Resonance',{fireRunes:3,earthRunes:1,chaosRunes:1},0],
+ ['windBlast','Storm Thread',41,11,25.5,'airRunes','Binding',{airRunes:3,waterRunes:2,deathRunes:1},1.8],
+ ['waterBlast','Glasswake',47,14,28.5,'waterRunes','Resonance',{waterRunes:3,deathRunes:1},0],
+ ['earthBlast','Graven Hold',53,12,31.5,'earthRunes','Binding',{earthRunes:4,waterRunes:2,deathRunes:1},2],
+ ['fireBlast','Ember Vow',59,16,34.5,'fireRunes','Resonance',{fireRunes:4,deathRunes:1},0],
+ ['windWave','Skybreak',62,17,36,'airRunes','Resonance',{airRunes:5,bloodRunes:1},0],
+ ['waterWave','Winterglass',65,16,37.5,'waterRunes','Binding',{waterRunes:5,airRunes:2,bloodRunes:1},2.2],
+ ['earthWave','Cairnfall',70,19,40,'earthRunes','Resonance',{earthRunes:5,bloodRunes:1},0],
+ ['fireWave','Dawnfire',75,20,42.5,'fireRunes','Resonance',{fireRunes:5,airRunes:2,bloodRunes:1},0]
+])SPELLS[id]={name,level,element,category,tier:level<17?1:level<41?2:level<62?3:4,power,baseXP,ingredients,cost:1,range:8,slow,color:element==='waterRunes'?'#79c9ed':element==='earthRunes'?'#c8ba83':element==='fireRunes'?'#e7a365':'#b6e2db',desc:category+'. Maximum hit '+power+'. '+(slow?'A damaging hit slows for '+slow+' seconds. ':'')+baseXP+' base Magic XP per cast.'};
 function selectedAmmo(){const id=s.equipment.ammo,weapon=equippedWeapon();return s.equippedAmmoCount>0&&isAmmunition(id)&&(ITEMS[id].ammoLevel||1)<=(weapon.maxAmmo||1)?id:null;}
 function attackRollChance(attack,defense){return attack>defense?1-(defense+2)/(2*(attack+1)):attack/(2*(defense+1));}
 function equipmentBonus(stat){return Object.entries(s.equipment).reduce((n,[slot,id])=>n+(slot==='shield'&&combatStyle()!=='melee'?0:ITEMS[id]?.[stat]||0),0);}
@@ -263,7 +276,7 @@ enemyAccuracy=function(o){const defensive=trainingFocus()==='defensive'?3:traini
 playerMaxHit=function(style=combatStyle()){if(style==='magic')return Math.floor(currentSpell().power*(1+magicBonus()/100))+spiritBonus('magic');const focus=trainingFocus(style),effective=lv(style==='ranged'?'Ranged':'Strength')+8+(style==='melee'?(focus==='aggressive'?3:focus==='balanced'?1:0):focus==='focused'?3:0),bonus=style==='ranged'?(ITEMS[selectedAmmo()]?.rangedStrength||0):equipmentBonus('strengthBonus');return Math.max(style==='ranged'?2:1,Math.floor(.5+effective*(bonus+64)/640))+spiritBonus(style);};
 armorValue=function(){return equipmentBonus('armor')+spiritBonus('armor');};
 function actionDuration(o){if(fighter(o))return .6*(combatStyle()==='magic'?5:equippedWeapon().attackTicks||4);return o.type==='tree'?2.4:o.type==='ore'?1.8:o.type==='fish'?3:2.4;}
-Object.assign(COMBAT_SKILL_DETAILS,{Defense:'Reduces an enemy’s chance to hit. Train with Defensive attacks.',Woodcutting:'Logs at 1; oak 15; willow 30; maple 45; yew 60; magic 75.',Mining:'Copper/tin 1; iron 15; coal 30; gold 40; mithril 55; adamantite 70; runite 85.',Fishing:'Shrimp 1; trout 20; salmon 30; lobster 40; swordfish 50; shark 76.',Firemaking:'Burn logs for XP. Better logs require higher levels. Fires leave ashes after 2½ minutes.',Cooking:'Cook raw catches at a fire. Higher levels unlock food and reduce burning.',Smithing:'Smelt ores at a furnace; work bars at an anvil. Recipes show levels and materials.',Fletching:'Logs → shafts; shafts + feathers → headless arrows; add arrowheads.',Farming:'Plant potato seeds in a patch. Crops grow while you are away.'});
+Object.assign(COMBAT_SKILL_DETAILS,{Defense:'Reduces an enemy’s chance to hit. Train with Defensive attacks.',Woodcutting:'Logs at 1; oak 15; willow 30; maple 45; yew 60; magic 75.',Mining:'Copper/tin 1; iron 15; coal 30; gold 40; Windsteel 55; Deepiron 70; Eldrite 85.',Fishing:'Shrimp 1; trout 20; salmon 30; lobster 40; swordfish 50; shark 76.',Firemaking:'Burn logs for XP. Better logs require higher levels. Fires leave ashes after 2½ minutes.',Cooking:'Cook raw catches at a fire. Higher levels unlock food and reduce burning.',Smithing:'Smelt ores at a furnace; work bars at an anvil. Recipes show levels and materials.',Fletching:'Logs → shafts; shafts + feathers → headless arrows; add arrowheads.',Farming:'Plant potato seeds in a patch. Crops grow while you are away.'});
 
 function setupSkillWorld(world){
  let id=3800000;const assigned=new Set();

@@ -40,7 +40,7 @@ assert($('inventoryGrid').children.some(b=>b.title===ITEMS.bronzeSword.name),'pr
 const worn=$('statsEquipment').children.find(b=>b.dataset.equipmentSlot==='weapon');assert(!worn.disabled);worn.onclick({preventDefault:()=>{}});
 assert.equal(s.equipment.weapon,null);assert.equal(previewWeapon,null);assert($('inventoryGrid').children.some(b=>b.title===ITEMS.shortbow.name));
 close();flushCloseEvents();assert(!window.equipmentStatsOpen);assert(!$('modal').classList.contains('combat-stats-window'));assert.equal($('gameDock').hidden,false);
-openCombatStats();dialog('Item details','<p>Details</p>');flushCloseEvents();assert(!window.equipmentStatsOpen);assert.equal($('modal').presentation,'modal');assert(!$('modal').classList.contains('combat-stats-window'));
+openCombatStats();dialog('Item details','<p>Details</p>');flushCloseEvents();assert(!window.equipmentStatsOpen);assert.equal($('modal').presentation,'nonmodal');assert(!$('modal').classList.contains('combat-stats-window'));
 openCombatStats();flushCloseEvents();assert(window.equipmentStatsOpen,'queued close from the previous dialog cannot tear down the reopened equipment window');
 openGamePanel('skills');flushCloseEvents();assert(!window.equipmentStatsOpen);assert.equal(tab,'skills');assert(!$('modal').open);
 openCombatStats();openBank();flushCloseEvents();assert(window.realmTrade);assert(!window.equipmentStatsOpen);assert(!$('modal').classList.contains('combat-stats-window'));assert.equal(tab,'bag');

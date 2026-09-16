@@ -35,7 +35,7 @@ function openNpcDialogue(speaker,html,choices=[],topic=speaker.name){
  npcDialogueState={speaker,topic,pages:Array.isArray(html)?html:dialoguePages(html),page:0,choices};
  $('modal').classList.add('npc-dialogue');$('modal').setAttribute('aria-labelledby','npcName');document.body.classList.add('npc-talking');
  $('modalBody').innerHTML='<div class="npc-portrait-frame"><canvas id="npcPortrait" width="220" height="240" aria-hidden="true"></canvas></div><section class="npc-conversation"><div class="npc-name-row"><h2 id="npcName"></h2><span id="npcPage"></span></div><small id="npcTopic"></small><p id="npcWords" aria-live="polite"></p><div id="npcChoices" class="npc-choices"></div></section>';
- $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label','Leave conversation');$('modal').showModal();renderNpcDialogue();drawNpcPortrait();
+ $('closeModal').textContent='×';$('closeModal').setAttribute('aria-label','Leave conversation');$('modal').show();renderNpcDialogue();drawNpcPortrait();
 }
 const dialogBeforePortrait=dialog;
 dialog=function(title,html,choices=[]){const speaker=findDialogueSpeaker(title);if(speaker)return openNpcDialogue(speaker,html,choices,title);if(npcDialogueState)endNpcDialogue();return dialogBeforePortrait(title,html,choices);};
@@ -49,7 +49,7 @@ const worldBeforePortrait=handleWorldInteraction;
 handleWorldInteraction=function(o){if(o.type==='villager')return withNpcSpeaker(o,()=>worldBeforePortrait(o));return worldBeforePortrait(o);};
 talkVillager=function(o){stop();openNpcDialogue(o,o.talk||'The roads are dangerous these days. Stock up on food before you leave town.');};
 $('modal').addEventListener('close',()=>{if(!$('modal').open&&npcDialogueState)endNpcDialogue();});
-document.addEventListener('keydown',e=>{if(!npcDialogueState||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;const buttons=$('npcChoices').querySelectorAll('button');if(e.key===' '&&!e.target?.closest?.('button')){e.preventDefault();buttons[0]?.click();}else if(/^[1-9]$/.test(e.key)){e.preventDefault();buttons[Number(e.key)-1]?.click();}});
+document.addEventListener('keydown',e=>{if($('modal').open&&e.key==='Escape'){e.preventDefault();close();return;}if(!npcDialogueState||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;const buttons=$('npcChoices').querySelectorAll('button');if(e.key===' '&&!e.target?.closest?.('button')){e.preventDefault();buttons[0]?.click();}else if(/^[1-9]$/.test(e.key)){e.preventDefault();buttons[Number(e.key)-1]?.click();}});
 
 const innBeforePortrait=inn;
 inn=function(){const keeper=objects.find(o=>o.type==='inn')||{name:'Innkeeper',sprite:1,characterSprite:true};return withNpcSpeaker(keeper,()=>innBeforePortrait());};

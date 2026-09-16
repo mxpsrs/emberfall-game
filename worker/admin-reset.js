@@ -19,13 +19,15 @@ export async function handleGlobalReset(request,env){
     if(request.method==='GET'){
       const id=new URL(request.url).searchParams.get('requestId');
       const row=id?await env.DB.prepare('SELECT * FROM global_resets WHERE id=? AND completed=1').bind(id).first():await env.DB.prepare('SELECT * FROM global_resets WHERE completed=1 ORDER BY rowid DESC LIMIT 1').bind().first();
-      return reply({reset:row||null});
+      const counts=await env.DB.prepare('SELECT (SELECT count(*) FROM game_accounts) AS accounts,(SELECT count(*) FROM character_saves) AS characters,(SELECT count(*) FROM game_sessions) AS sessions,(SELECT count(*) FROM archived_characters) AS archives').first();
+      return reply({reset:row||null,counts});
     }
     if(request.method!=='POST')return reply({error:'Method not allowed.'},405);
     const raw=await request.text();if(raw.length>2048)return reply({error:'Request too large.'},413);
     let body;try{body=JSON.parse(raw);}catch{return reply({error:'Invalid request.'},400);}
     const {requestId,reason,mode,restoreFrom}=body;
-    if(!['archive','restore'].includes(mode))return reply({error:'Permanent deletion is disabled. Select archive or restore.'},400);
+    if(!['archive','restore','purge'].includes(mode))return reply({error:'Select archive, restore or purge.'},400);
+    if(mode==='purge'&&body.confirmation!=='DELETE ALL ACCOUNTS')return reply({error:'Complete account removal requires DELETE ALL ACCOUNTS confirmation.'},400);
     if(typeof requestId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(requestId)||typeof reason!=='string'||!reason.trim()||reason.length>200||/[\x00-\x1f\x7f]/.test(reason))return reply({error:'Supply a request ID and a one-line reason of 1–200 characters.'},400);
     const id=requestId.toLowerCase();
     const existing=await env.DB.prepare('SELECT * FROM global_resets WHERE id=? AND completed=1').bind(id).first();
@@ -35,6 +37,20 @@ export async function handleGlobalReset(request,env){
     const locked="EXISTS (SELECT 1 FROM game_maintenance WHERE id=1 AND status='locked')";
     if(!await env.DB.prepare('SELECT 1 AS ready WHERE '+locked).first())return reply({error:'Maintenance must be locked before a beta reset or restoration.'},409);
     const pending='EXISTS (SELECT 1 FROM global_resets WHERE id=? AND completed=0)';
+    if(mode==='purge'){
+      const counts=await env.DB.prepare('SELECT (SELECT count(*) FROM game_accounts) AS accounts,(SELECT count(*) FROM character_saves) AS characters,(SELECT count(*) FROM archived_characters) AS archives').first();
+      // Child rows precede accounts. One atomic batch deletes both active data
+      // and archived copies; its non-personal receipt makes retries safe.
+      const tables=['game_sessions','player_presence','character_saves','archived_characters','beta_checkpoints','player_trades','friendships','social_messages','ignored_players','social_settings','auth_limits','shared_events','shared_objects','shared_entities','shared_clocks','game_accounts'];
+      const result=await env.DB.batch([
+        env.DB.prepare("INSERT INTO global_resets (id,reason,character_count,session_count,presence_count,reset_at,completed) SELECT ?,?,(SELECT count(*) FROM character_saves),(SELECT count(*) FROM game_sessions),(SELECT count(*) FROM player_presence),strftime('%Y-%m-%dT%H:%M:%fZ','now'),0 WHERE "+locked+" ON CONFLICT(id) DO NOTHING").bind(id,reason.trim()),
+        ...tables.map(table=>env.DB.prepare('DELETE FROM '+table+' WHERE '+pending).bind(id)),
+        env.DB.prepare('UPDATE global_resets SET completed=1 WHERE id=? AND completed=0').bind(id)
+      ]);
+      const reset=await env.DB.prepare('SELECT * FROM global_resets WHERE id=? AND completed=1').bind(id).first();
+      if(!reset)return reply({error:'Maintenance changed; no accounts were deleted.'},409);
+      return reply({reset,deleted:counts,replayed:result[0].meta.changes===0});
+    }
     // Archive every byte and revision before replacing the active saves. D1 batch
     // rolls the entire operation back if any snapshot or restoration write fails.
     const result=await env.DB.batch([

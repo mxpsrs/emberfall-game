@@ -24,6 +24,14 @@ function realmIndexedData(data,mesh,m){
 }
 function briarEmit(r,mesh,m){
  if(r.indexed){r.indexed(mesh,m);return;}
+ // Procedural scenery uses packed triangles; software and picking painters
+ // must accept the same geometry as the GPU renderer.
+ if(mesh.packed){
+  const data=mesh.packed;
+  for(let i=0;i<data.length;i+=36){const ids=[i,i+12,i+24],colors=ids.map(j=>[data[j+6],data[j+7],data[j+8]]),col='#'+[0,1,2].map(k=>Math.min(255,Math.max(0,Math.round(colors.reduce((a,c)=>a+c[k],0)/3*255))).toString(16).padStart(2,'0')).join('');
+   r.face(ids.map(j=>briarPoint(data,j,m)),col,ids.map(j=>briarNormal(data,j+3,m)),data[i+9],colors,ids.map(j=>[data[j+10],data[j+11]]));
+  }return;
+ }
  for(let i=0;i<mesh.i.length;i+=3){const ids=[mesh.i[i]*3,mesh.i[i+1]*3,mesh.i[i+2]*3],colors=ids.map(j=>{const c=r.software&&mesh.f?mesh.f:mesh.c;return [c[j],c[j+1],c[j+2]];}),col='#'+[0,1,2].map(k=>Math.min(255,Math.max(0,Math.round(ids.reduce((a,j)=>a+(mesh.f||mesh.c)[j+k],0)/3*255))).toString(16).padStart(2,'0')).join('');r.face(ids.map(j=>briarPoint(mesh.p,j,m)),col,ids.map(j=>briarNormal(mesh.n,j,m)),mesh.t?.[ids[0]/3]||(mesh.uv?20:12),colors,mesh.uv?ids.map(j=>[mesh.uv[j/3*2],mesh.uv[j/3*2+1]]):null);}
 }
 // Reuse source meshes and their atlas colors, with regional materials.

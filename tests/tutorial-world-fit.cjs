@@ -16,7 +16,7 @@ for(const key of Object.keys(ORE_RESOURCES)){
  assert(faces.every(f=>f.p.every(p=>p.every(Number.isFinite))));silhouettes.add(JSON.stringify(look.rocks));veins.add(look.vein);
  assert.equal(oreAppearance({resourceId:key,id:999}),look,'identity does not depend on random object ID');
 }
-assert.equal(silhouettes.size,8);assert.equal(veins.size,8);
+assert.equal(silhouettes.size,Object.keys(ORE_RESOURCES).length);assert.equal(veins.size,Object.keys(ORE_RESOURCES).length);
 const staff=fittedStaffMesh(),source=briarRigs.Mage.meshes['2H_Staff'];assert.notEqual(staff,source);assert.equal(staff.p.length,source.p.length);
 let radius=0;for(let i=0;i<staff.p.length;i+=3)if(Math.abs(staff.p[i+1])<.12)radius=Math.max(radius,Math.hypot(staff.p[i],staff.p[i+2]));
 assert(radius<.026,'shaft and grip fit inside the closed fingers');assert(radius>.01,'staff retains a visible shaft');
@@ -26,5 +26,5 @@ for(const sex of ['male','female'])for(const clip of ['staffIdle','magic','walk'
  const hand=cpu.pose.subarray(cpu.avatar.right*12,cpu.avatar.right*12+12),offset=briarPoint([sex==='female'?-.003:-.008,0,-.006],0,hand);
  assert(Math.hypot(offset[0]-hand[3],offset[1]-hand[7],offset[2]-hand[11])<.011,'staff stays attached to palm during '+clip);
 }
-console.log('PASS: graded smith/ore yard, eight stable ore silhouettes and veins, fitted staff geometry on both rigs through idle, casting, walking and running.');
+console.log('PASS: graded smith/ore yard, nine stable ore silhouettes and veins, fitted staff geometry on both rigs through idle, casting, walking and running.');
 `,ctx);

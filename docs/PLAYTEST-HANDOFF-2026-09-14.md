@@ -1,4 +1,25 @@
+# Work Run 2 completion — 16 September 2026
+
+See `WORK-RUN-2-2026-09-16.md` and `qa/work-run-2/`. The full-world tree/terrain review, fresh tutorial verification and Badlands naming are complete. Preserve the existing interface/cooking repairs and account state. Hosted capacity and physical-device limitations remain explicit.
+
+# Latest completion: tutorial fixes and reversible fresh start
+
+Published v119. Live verification: 14 accounts, zero active characters, 12 restorable archived characters; local verification: zero active characters. Usernames/passwords remain. Maintenance reopened. See `TUTORIAL-INTERFACES-2026-09-16.md` for fixes, evidence and browser limitations. Earlier blocked-purge and unfinished-tutorial notes below are historical.
+
+# Tutorial and interface follow-up
+
+Read `TUTORIAL-INTERFACES-2026-09-16.md`. Reproduced and repaired the kitchen guidance stop, full-bag handoff, and interface-driven world freeze. The shared-server walkthrough passed all 38 lessons (1,253 polls, 82 receipts). This update uses a reversible character reset; permanent purge remains blocked. Publication/reset completion is recorded in the repair document after verification.
+
+# Account cleanup status — 16 September 2026
+
+Read `ACCOUNT-CLEANUP-2026-09-16.md`. Local accounts were deleted. Live deletion was blocked by automatic review; 14 accounts and 12 saves remained. The tutorial repair is unfinished. Do not infer completion from earlier Phase 2 test reports.
+
 # Quarry labels and local account files — 16 September 2026
+
+## Latest completion — 2026-09-16 Phase 2
+
+The owner asked to finish the work left in progress. Read `IDENTITY-PHASE-2-2026-09-16.md` and its QA reports. Woodland/terrain, shared tree lifecycle, fieldwork, Magic/material identity, Firstlight chapters and Selene’s Relic Shaping quest are implemented. Phase 1 combat/Spirit/HUD work remains. No third overhaul is started. Hosted capacity for 39 players remains unverified. Older notes below describe their original release state.
+
 
 The owner requested a local-file account reset and quarry map labels. Read `QUARRY-MAPS-LOCAL-RESET-2026-09-16.md` and `qa/quarry-maps-2026-09-16.json`. The local SQLite account files were removed after verifying the server was stopped; this checkout contained zero accounts/saves. Hosted accounts were explicitly left untouched. All five existing surface quarries now have names, Mining icons, real ore requirements and access-ramp guidance on the atlas/minimap. This is a compatible client update and does not require hosted maintenance.
 

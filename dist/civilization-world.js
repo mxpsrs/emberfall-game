@@ -147,7 +147,7 @@ function quarryDepth(q,x,y){const edge=Math.min(q.rx-Math.abs(x-q.x),q.ry-Math.a
 }
 function quarryCliff(q,x,y){if(Math.abs(x+.5-q.x)<3&&y+.5>=q.y-9)return false;const edge=Math.min(q.rx-Math.abs(x+.5-q.x),q.ry-Math.abs(y+.5-q.y));return Array.from({length:q.levels},(_,i)=>(i+1)*5-.5).some(d=>Math.abs(edge-d)<.65);}
 const civilGradeBefore=gradeLand;
-gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;const q=quarryAt(x,y,6);if(q){const d=Math.max(Math.abs(x-q.x)-q.rx,Math.abs(y-q.y)-q.ry,0),t=Math.min(1,d/6),blend=1-t*t*(3-2*t);return before*(1-blend)+(q.level-quarryDepth(q,x,y))*blend;}
+gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;const q=quarryAt(x,y,12);if(q){const d=Math.max(Math.abs(x-q.x)-q.rx,Math.abs(y-q.y)-q.ry,0),t=Math.max(0,Math.min(1,(d-6)/6)),blend=1-t*t*(3-2*t);return before*(1-blend)+(q.level-quarryDepth(q,x,y))*blend;}
  for(const plan of settlementPlans.values()){if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;const t=SETTLEMENTS.find(t=>t.id===plan.id),d=Math.hypot(x-t.x,y-t.y),r=plan.radius+8;if(d>r+20)continue;const k=Math.max(0,Math.min(1,(r+20-d)/20));return before*(1-k)+plan.grade*k;}
  return before;};
 const civilWallBefore=worldWall;

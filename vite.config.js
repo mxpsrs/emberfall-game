@@ -21,13 +21,13 @@ export default defineConfig({
   if(path==='/__tutorial-layout__/'){res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/tutorial-layout.html','utf8'));return;}
   if(path==='/__tutorial-game__/'){
    const token='b'.repeat(64),hash=createHash('sha256').update(token).digest('hex');
-   db.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').run('tutorial-qa','TutorialQA','tutorialqa','not-a-login-hash',Date.now());
+   await env.DB.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').bind('tutorial-qa','TutorialQA','tutorialqa','$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW',Date.now()).run();
    db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'tutorial-qa',Date.now()+3600000);
    res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');
-   res.end(fs.readFileSync('dist/index.html','utf8').replace('<head>','<head><base href="/">').replace('</body>','<script>'+fs.readFileSync('tests/tutorial-preview.js','utf8')+'</script></body>'));return;
+   res.end(fs.readFileSync('dist/index.html','utf8').replace('<head>','<head><base href="/">').replace('</body>',new URL(req.url,'http://local').searchParams.get('fresh')==='1'?'</body>':'<script>'+fs.readFileSync('tests/tutorial-preview.js','utf8')+'</script></body>'));return;
   }
   if(path==='/play'||path==='/play/')req.url='/index.html'+(req.url.includes('?')?'?'+req.url.split('?').slice(1).join('?'):'');
-  if(process.env.VELDREN_ENABLE_QA==='1'&&path==='/__creator-layout__/'){const token='a'.repeat(64),hash=createHash('sha256').update(token).digest('hex');db.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').run('creator-qa','CreatorTest','creatortest','not-a-login-hash',Date.now());db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'creator-qa',Date.now()+3600000);res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/creator-layout.html','utf8'));return;}
+  if(process.env.VELDREN_ENABLE_QA==='1'&&path==='/__creator-layout__/'){const token='a'.repeat(64),hash=createHash('sha256').update(token).digest('hex');await env.DB.prepare('INSERT OR IGNORE INTO game_accounts VALUES (?,?,?,?,?)').bind('creator-qa','CreatorTest','creatortest','$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW',Date.now()).run();db.prepare('INSERT OR REPLACE INTO game_sessions VALUES (?,?,?)').run(hash,'creator-qa',Date.now()+3600000);res.setHeader('Set-Cookie','ember_session='+token+'; Path=/; HttpOnly; SameSite=Lax');res.setHeader('Content-Type','text/html');res.end(fs.readFileSync('tests/creator-layout.html','utf8'));return;}
   if(path==='/__skills-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/skills-layout.html','utf8'));return;}
   if(path==='/__armor-layout__/'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync('tests/armor-layout.html','utf8'));return;}
   if(path==='/__trade-layout__/'){

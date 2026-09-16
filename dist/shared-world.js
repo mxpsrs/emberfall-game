@@ -19,7 +19,7 @@ function outgoingSharedAction(){
  const now=sharedNow(),g=gatheringActivity(),a=typeof questVisualAction==='function'?questVisualAction():playerAction;
  if(tutorialCrossing)return sharedTimedAction(tutorialCrossing,tutorialCrossing.phase,tutorialCrossing.age,tutorialCrossing.phase==='casting'?2600:1100,{kind:'teleport',color:tutorialCrossing.kind==='home'?'purple':tutorialCrossing.kind==='hunt'?'red':'green'});
  if(spiritEffect?.sharedAction&&now-spiritEffect.sharedAction.started<spiritEffect.sharedAction.duration)return spiritEffect.sharedAction;
- if(g)return sharedTimedAction(g.object,'gather',elapsed,actionDuration(g.object)*1000,{kind:'gather',type:g.object.type,tool:g.tool});
+ if(g)return sharedTimedAction(g.object,'gather',elapsed,actionDuration(g.object)*1000,{kind:'gather',type:g.object.type,tool:g.tool,target:{entity:String(g.object.id),x:g.object.x,y:g.object.y}});
  if(a)return sharedTimedAction(mainStoryWork||mountainWork||a,a.kind,time-a.started,a.duration*1000,{kind:'work',work:a.kind});
  sharedTaskCache=null;
  if(sharedActionCache&&now-sharedActionCache.started<sharedActionCache.duration+1200)return sharedActionCache;
@@ -30,7 +30,7 @@ function outgoingSharedWorld(){
  const urgent=new Set([target,pendingWalkInDoor,activeEncounter?.o].filter(Boolean).map(o=>String(o.id)));for(const e of s.sharedOutbox||[])if(e.scene===currentScene&&e.entity)urgent.add(e.entity);
  const candidates=worldObjectsInBounds(px-92,px+92,py-92,py+92).filter(o=>sharedEntity(o)&&Math.hypot((o.building?.walkIn?o.x:o.homeX??o.x)-px,(o.building?.walkIn?o.y:o.homeY??o.y)-py)<72).sort((a,b)=>(urgent.has(String(a.id))?-1000:fighter(a)&&Math.hypot(a.x-px,a.y-py)<32?-200+Math.hypot(a.x-px,a.y-py):Math.hypot(a.x-px,a.y-py))-(urgent.has(String(b.id))?-1000:fighter(b)&&Math.hypot(b.x-px,b.y-py)<32?-200+Math.hypot(b.x-px,b.y-py):Math.hypot(b.x-px,b.y-py))).slice(0,64);
  const poses=[];
- return {protocol:1,watch:candidates.map(o=>String(o.id)),revisions:sharedScene===currentScene?Object.fromEntries([...new Set([...candidates,...worldActors().filter(o=>Math.hypot(o.x-px,o.y-py)<75)])].filter(o=>Number.isInteger(o._sharedRevision)).map(o=>[String(o.id),o._sharedRevision])):{},poses,events:(s.sharedOutbox||[]).slice(0,12),ack:!cloudDirty&&!cloudBusy?(s.sharedReceipts||[]).slice(-80):[],arrival:s.sharedArrival?.destination===currentScene?s.sharedArrival.id:null};
+ return {protocol:1,treeKey:sharedTreeView?.scene===currentScene?sharedTreeView.key:null,watch:candidates.map(o=>String(o.id)),revisions:sharedScene===currentScene?Object.fromEntries([...new Set([...candidates,...worldActors().filter(o=>Math.hypot(o.x-px,o.y-py)<75)])].filter(o=>Number.isInteger(o._sharedRevision)).map(o=>[String(o.id),o._sharedRevision])):{},poses,events:(s.sharedOutbox||[]).slice(0,12),ack:!cloudDirty&&!cloudBusy?(s.sharedReceipts||[]).slice(-80):[],arrival:s.sharedArrival?.destination===currentScene?s.sharedArrival.id:null};
 }
 function sharedGive(id,n){if(!n)return;const carried=STACKABLE.has(id)?(canCarry(id,n)?n:0):Math.min(n,bagSpaceFor(id));const bag=ITEMS[id]?.slot?(s.gear??={}):s.bag;bag[id]=(bag[id]||0)+carried;if(carried<n){s.bank??={};s.bank[id]=(s.bank[id]||0)+n-carried;toast('Supplies that did not fit were sent to your bank.');}}
 function applySharedWorld(data){
@@ -47,6 +47,8 @@ function applySharedWorld(data){
      if(r.defeat){o.hp=0;if(!r.scene||r.scene===currentScene)awardDefeat(o,r.style);}
     }else if(r.kind==='wardInterrupt'&&o){floating('False warning broken',o.x,o.y,'#b5eee0');}
     else if(r.kind==='enemyHit'&&o){const hp=o.hp;if(r.dodged)floating('Dodged',px,py,'#b5e9c8');else sharedEnemyHitBefore(o,r.damage);o.hp=hp;}
+    else if(r.kind==='relic'){applyRelicOperation(r);}
+    else if(r.kind==='fieldSpell'){applyFieldSpell(r.spell,r.readyAt,r.bondId);}
     else if(r.kind==='harvest'&&!r.missed){sharedGive(r.item,1);if(r.bait&&s.bag[r.bait]>0)s.bag[r.bait]--;gain(r.skill,r.xp);discoverSkillSpirit(r.skill);if(o){o.hitAt=time;floating('+1 '+ITEMS[r.item].name,o.x,o.y);if(['ore','tin'].includes(o.tutorialRole)){if(s.bag.copperOre>0&&s.bag.tinOre>0)tutorialEvent('ore');}else tutorialEvent(o.type);}}
     else if(r.kind==='fire'){gain('Firemaking',r.xp);discoverSkillSpirit('Firemaking');tutorialEvent('fire');playGameSound('fire');}
     else if(r.kind==='pickup'){sharedGive(r.item,r.count);tutorialEvent('loot');toast('Picked up '+ITEMS[r.item].name+(r.count>1?' ×'+r.count:'')+'.');}
@@ -80,10 +82,11 @@ function applySharedWorld(data){
   if(resourceDefinition(o)||fighter(o)){
    o.dead=v.deadUntil?Infinity:0;o.respawnAt=v.deadUntil||null;
    if(v.deadUntil&&!oldDead){o.deathAt=time;if(target===o)stop();if(activeEncounter?.o===o)resetEncounter(false);}
-   if(!v.deadUntil&&oldDead){o.deathAt=-100;o.attackAt=-100;delete o._recovering;delete o._returning;}
+   if(!v.deadUntil&&oldDead){if(o.type==='tree')o._treeRegrown=true;o.deathAt=-100;o.attackAt=-100;delete o._recovering;delete o._returning;}
   }
   if(o.building?.walkIn)sharedDoorBefore(o,v.opened,true);
  }
+ if(w.treeView)applyTreeView(w.treeView);
  applySharedEffects(w.effects||[],w.serverTime);
  // Private drops never arrive in another player's packet. Shared piles are
  // replaced from this snapshot, while protected account overflow stays private.
@@ -111,7 +114,7 @@ monsterDrop=function(o){if(sharedLive()&&sharedApplying)return;return sharedMons
 const sharedAIBefore=updateEncounterAI;
 updateEncounterAI=function(dt){if(sharedLive()){const o=activeEncounter?.o||target;if(o&&fighter(o)&&(!o._sharedReady||o._sharedOwner!==sharedActor)){if(activeEncounter&&(activeEncounter.scene!==currentScene||o.hp<=0||o.dead>time||Math.hypot(px-o.homeX,py-o.homeY)>(o.encounter?16:11)||Math.hypot(px-o.x,py-o.y)>18)){if(target===o)stop();resetEncounter(false);}if(activeEncounter){activeEncounter.phase=o._sharedPhase||0;activeEncounter.hazards=o._sharedHazard&&sharedNow()<o._sharedHazard.due?[sharedLocalHazard(o,o._sharedHazard)]:[];}renderEncounterHud();mountainTickWork(dt);return;}}return sharedAIBefore(dt);};
 const sharedHarvestBefore=harvestResource;
-harvestResource=function(o){if(!sharedLive())return sharedHarvestBefore(o);if(!o._sharedReady||sharedPending('harvest',o.id))return false;const d=resourceDefinition(o),tool=o.type==='tree'?'axe':o.type==='ore'?'pickaxe':d?.tool;if(!d||!resourceRequirement(o)||!useBeltTool(tool)||d.bait&&!(s.bag[d.bait]>0)||!canCarry(d.item||d.raw)){stop();return false;}sharedTarget('harvest',o);return true;};
+harvestResource=function(o){if(!sharedLive())return sharedHarvestBefore(o);if(!o._sharedReady||o._sharedDeadUntil||sharedPending('harvest',o.id))return false;const d=resourceDefinition(o),tool=o.type==='tree'?'axe':o.type==='ore'?'pickaxe':d?.tool;if(!d||!resourceRequirement(o)||!useBeltTool(tool)||d.bait&&!(s.bag[d.bait]>0)||!canCarry(d.item||d.raw)){stop();return false;}sharedTarget('harvest',o);return true;};
 const sharedDoorBefore=setWalkInDoor;
 setWalkInDoor=function(o,open,restoring=false){if(!sharedLive()||restoring||sharedApplying)return sharedDoorBefore(o,open,restoring);if(!sharedPending('door',o.id))sharedTarget('door',o,{open});};
 const sharedDropBefore=groundDrop;
@@ -121,7 +124,7 @@ lightLog=function(...args){sharedLocalDrop=true;try{return sharedLightBefore(...
 function publishSharedFire(action){sharedQueue('fire',{x:action.x,y:action.y,log:ITEMS[action.id].logType,item:action.id});}
 const sharedTakeBefore=takeGroundItem;
 takeGroundItem=function(pile,id,limit=Infinity){if(!sharedLive()||!pile._sharedObject)return sharedTakeBefore(pile,id,limit);if(sharedPending('pickup'))return false;const n=Math.min(pile.items[id]||0,limit,STACKABLE.has(id)?(canCarry(id)?Infinity:0):bagSpaceFor(id));if(!n){toast('Your inventory is full.');return false;}sharedQueue('pickup',{object:pile._sharedObject,item:id,count:n});return false;};
-function requestSharedTeleport(mode,destination,start){if(sharedPending('teleport'))return false;close();stop();sharedQueue('teleport',{mode,destination},r=>{if(!r.ok)return;sharedPermit=true;try{start();}finally{sharedPermit=false;}});return true;}
+function requestSharedTeleport(mode,destination,start){if(tutorialCrossing||sharedPending('teleport'))return false;close();stop();sharedQueue('teleport',{mode,destination},r=>{if(!r.ok)return;sharedPermit=true;try{start();}finally{sharedPermit=false;}});return true;}
 const sharedHuntBefore=beginHuntsmanTeleport;
 beginHuntsmanTeleport=function(kind,speaker){if(!sharedLive()||sharedPermit)return sharedHuntBefore(kind,speaker);const e=HUNT_ENCOUNTERS[kind];if(!e)return false;if(activeEncounter||time-Math.max(lastAttack,playerHitAt)<8){toast('Leave combat and wait eight seconds before teleporting.');return false;}return requestSharedTeleport('hunt',e.scene,()=>sharedHuntBefore(kind,speaker));};
 const sharedHomeBefore=beginHomeTeleport;

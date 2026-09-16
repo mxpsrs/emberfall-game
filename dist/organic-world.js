@@ -116,7 +116,7 @@ function plantSettlementGroves(world){let id=2400000;const occupied=new Set(worl
   const angle=group*2.399+town.x*.013,radius=(town.kind==='city'?65:26)+(group%3)*6,cx=town.x+Math.cos(angle)*radius,cz=town.y+Math.sin(angle)*radius;
   for(let n=0;n<5;n++){
    const x=Math.round(cx+Math.cos(n*2.399)*Math.sqrt(n)*2.2),y=Math.round(cz+Math.sin(n*2.399)*Math.sqrt(n)*2.2);id++;
-   if(x<2||y<2||x>1149||y>765||worldWaterDistance(x+.5,y+.5)<2||occupied.has(x+':'+y)||Math.hypot(s.x-x,s.y-y)<2)continue;
+   if(x<2||y<2||x>1149||y>765||worldWaterDistance(x+.5,y+.5)<2||occupied.has(x+':'+y))continue;
    if(world.buildings.some(b=>x>b.x-4&&x<b.x+b.w+4&&y>b.y-4&&y<b.y+b.h+4)||organicRoads.some(seg=>Math.abs(seg.a[0]-x)<6&&Math.abs(seg.a[1]-y)<6&&roadSegmentDistance(x+.5,y+.5,seg)<seg.width+2))continue;
    world.objects.push({id,type:'tree',name:town.kingdom==='khazdur'?'Mountain pine':'Old-growth oak',race:town.kingdom==='sylvaran'?'elf':town.kingdom==='khazdur'?'dwarf':'human',x,y,homeX:x,homeY:y,sprite:4,dead:0});occupied.add(x+':'+y);
   }

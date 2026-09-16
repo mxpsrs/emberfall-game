@@ -252,19 +252,19 @@ function beginTutorialCrossing(){
 }
 function updateTutorialCrossing(dt){
  const crossing=tutorialCrossing;if(!crossing)return;
- if(crossing.kind==='home'&&crossing.phase==='casting'&&(activeEncounter||time-Math.max(lastAttack,playerHitAt)<5)){
-  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');delete s.sharedArrival;toast('Combat interrupted your Home Teleport.');return;
+ if(['home','relic'].includes(crossing.kind)&&crossing.phase==='casting'&&(activeEncounter||time-Math.max(lastAttack,playerHitAt)<5)){
+  tutorialCrossing=null;$('tutorialCrossing')?.remove();document.body.classList.remove('tutorial-crossing');delete s.sharedArrival;toast('Combat interrupted your teleport.');return;
  }
  crossing.age+=dt;
  if(crossing.phase==='casting'&&crossing.age>=2.6){
   crossing.committing=true;crossing.phase='saving';crossing.age=0;
   delete crossing.caster._castAt;delete crossing.caster._castDuration;delete crossing.caster._castColor;
-  if(crossing.kind==='hunt')finishHuntsmanCrossing(crossing);else if(crossing.kind==='home')finishHomeCrossing();else tutorialEvent('talk-finish');
-  $('crossingCaption').textContent=crossing.kind==='hunt'?'Crossing to '+crossing.destinationName+'…':'Crossing to Briarhaven…';
+  if(crossing.kind==='hunt')finishHuntsmanCrossing(crossing);else if(crossing.kind==='home')finishHomeCrossing();else if(crossing.kind==='relic')finishRelicCrossing(crossing);else tutorialEvent('talk-finish');
+  $('crossingCaption').textContent=['hunt','relic'].includes(crossing.kind)?'Crossing to '+crossing.destinationName+'…':'Crossing to Briarhaven…';
  }
  if(crossing.phase==='saving'){
   if(cloudReady&&(cloudBusy||cloudDirty)){if(!cloudBusy&&cloudDirty)flushCloudSave();}
-  else{crossing.phase='arrival';crossing.age=0;$('crossingCaption').textContent=crossing.kind==='hunt'?crossing.destinationName:'Briarhaven · The mainland';}
+  else{crossing.phase='arrival';crossing.age=0;$('crossingCaption').textContent=['hunt','relic'].includes(crossing.kind)?crossing.destinationName:'Briarhaven · The mainland';}
  }
  const opacity=crossing.phase==='casting'?Math.max(0,(crossing.age-2.15)/.45):crossing.phase==='saving'?1:Math.max(0,1-crossing.age/.6);
  $('tutorialCrossing')?.style.setProperty?.('--crossing-opacity',String(opacity));

@@ -70,7 +70,7 @@ function buildKingdoms(){
  // Streets between the blocks remain open, and every city has resident tradespeople.
  for(const t of SETTLEMENTS.filter(t=>!t.legacy)){
   const race=KINGDOMS.find(k=>k.id===t.kingdom).race;
-  for(let i=0;i<(t.kind==='city'?8:3);i++){const x=t.x-15+(i%4)*9,y=t.y-12+Math.floor(i/4)*16;add('villager',x,y,(race==='elf'?'Elven':race==='dwarf'?'Dwarven':'Aurelian')+' '+['ranger','mason','traveler','weaver'][i%4],i%4,{race,characterSprite:true,talk:'Welcome to '+t.name+' in '+KINGDOMS.find(k=>k.id===t.kingdom).name+'. Follow the roads or use the world map to reach our neighboring settlements.'});}
+  for(let i=0;i<(t.kind==='city'?8:3);i++){const x=t.x-15+(i%4)*9,y=t.id==='ironhollow'&&i===6?t.y+1:t.y-12+Math.floor(i/4)*16;add('villager',x,y,(race==='elf'?'Elven':race==='dwarf'?'Dwarven':'Aurelian')+' '+['ranger','mason','traveler','weaver'][i%4],i%4,{race,characterSprite:true,talk:'Welcome to '+t.name+' in '+KINGDOMS.find(k=>k.id===t.kingdom).name+'. Follow the roads or use the world map to reach our neighboring settlements.'});}
  }
  for(let y=4;y<250;y+=7)for(let x=5;x<375;x+=7){if(x<96&&y<84||settlementAt(x,y)||onRealmRoad(x,y)||expandedWater(x,y)||buildings.some(b=>x>=b.x-2&&x<b.x+b.w+2&&y>=b.y-2&&y<b.y+b.h+2))continue;const race=kingdomAt(x,y).race,seed=(x*17+y*31)%11;if(race==='dwarf'){if(seed<5)add('prop',x,y,'Mountain outcrop',12,{realmScenery:true});if(seed===6)add('ore',x,y,'Mountain iron',6);}else if(seed<7)add('tree',x,y,race==='elf'?'Silverwood tree':'Highland oak',4,{race,realmScenery:true});}
  for(const [x,y,race]of [[197,32,'dwarf'],[322,122,'dwarf'],[99,174,'elf'],[237,172,'elf']]){add('camp',x,y,'Roadside camp',7);add('villager',x+2,y,'Road warden',2,{race,characterSprite:true,talk:'Rest at the fire. All three kingdoms can be reached on foot.'});spawn('wolf',x+7,y+6,{name:race==='elf'?'Silverwood wolf':'Mountain wolf',level:5,hp:35,maxhp:35});}
@@ -84,7 +84,7 @@ function buildKingdoms(){
 const setupBorderWorld=setupExpandedWorld;
 setupExpandedWorld=function(){const id=s.sceneId,x=s.x,y=s.y;setupBorderWorld();buildKingdoms();if(id&&worldScenes[id])activateScene(id,x,y,false);};
 const oldRegionInfo=regionInfo;
-regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===info.building.kingdom).name];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+(t.settlementClass||t.kind)];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [k.name,k.description];};
+regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===info.building.kingdom).name];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+(t.settlementClass||t.kind)];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [typeof forestAt==='function'&&forestAt(s.x,s.y)?.name||'Badlands',k.name+' · '+k.description];};
 expandedMap=function(page=0){
  if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Leave to return to the roads between kingdoms.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
  const k=KINGDOMS[page%3],places=SETTLEMENTS.filter(t=>t.kingdom===k.id);

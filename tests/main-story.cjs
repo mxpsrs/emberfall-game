@@ -41,7 +41,7 @@ work('Stabilize and take the Memory Shard.',24);assert(mainStoryState().memorySh
 objective();const beforeMagic=s.xp.Magic,finishEcho=npcDialogueState.choices.find(([label])=>label==='Complete Whispers at Hollow Shrine.')[1];finishEcho();stage(25);finishEcho();assert.equal(s.xp.Magic,beforeMagic+500);assert(mainStoryComplete());reload();
 assert(questJournalEntries().filter(q=>q.id.startsWith('main-')).every(q=>q.complete));for(let i=0;i<3;i++)assert(questJournalRows('main-'+i).every(row=>row.done));
 for(const k of ['Mining','Smithing','Magic'])s.xp[k]=skillThreshold(k,8);objective();assert.equal(npcDialogueState.speaker.name,'Archivist Maerin');press('Hand over the shard and investigate.');assert.equal(mountainState().stage,1);
-for(const [id,name]of Object.entries({runes:'Mind',airRunes:'Air',waterRunes:'Water',earthRunes:'Earth',fireRunes:'Fire',chaosRunes:'Chaos',deathRunes:'Death',bloodRunes:'Blood'}))assert.equal(ITEMS[id].name,name+' relic');
+for(const [id,name]of Object.entries({runes:'Mind',airRunes:'Air',waterRunes:'Water',earthRunes:'Earth',fireRunes:'Fire',chaosRunes:'Fracture',deathRunes:'Memory',bloodRunes:'Heart'}))assert.equal(ITEMS[id].name,name+' relic');
 for(const slot of ['head','body','hands','legs','feet','shield'])assert(ITEMS['rune_'+slot].name.startsWith('Eldrite '));
 assert.deepEqual(SPELLS.spark.ingredients,{airRunes:1,runes:1},'existing relic IDs keep recipes compatible');
 console.log('PASS: three ordered quests, real routes and combat, wrong answers, skill gates, interrupted work, both miners escorted, death/retry, durable rewards, journal, relic names and mountain unlock.');

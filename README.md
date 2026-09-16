@@ -17,33 +17,32 @@ account, API key or cloud server is needed. Stop with Ctrl+C and run the same
 command to resume. Use `npm run dev -- --host 0.0.0.0` to test another device
 on your local network.
 
-- **`player-saves/<username>.json`**: the character saves the server loads on startup and writes after
-  successful saves and committed trades. Each contains the character's state,
-  inventory, equipment, bank, skills, tutorial progress and save revision.
-- **`server-data/veldren.sqlite`**: local accounts, password hashes, friends, chat,
-  trades, shared world data and the transaction journal for file writes. SQLite runs entirely
-  on your computer; no database service needs installing.
+- **`player-saves/<username>/account.json`**: the account identity and password hash (never a plain-text password).
+- **`player-saves/<username>/character.json`**: character, inventory, equipment, bank, skills, tutorial progress and save revision. Created on the first save.
+- **`server-data/veldren.sqlite`**: the local working index, social/shared-world state and crash-recovery journal. No database service needs installing.
 
-Both folders are created automatically in the project root and excluded from
-Git and public web access. Back up **both folders with the server stopped** to
-move the whole local game to another computer. Restore both in the same places
-before starting it. The server loads characters from `player-saves/` on startup. To edit or restore
-a character, stop the server, edit or replace that account's JSON file, then
-restart it. The file takes precedence over cached character state. Leave its
-account ID and username intact. A malformed file stops startup with an error
-instead of silently creating an empty character. Interrupted saves or trades
-are finished from the local transaction journal before files are loaded.
-Set `VELDREN_DATA_DIR` to keep both folders in another directory.
+The server loads accounts and characters from their folders on startup and writes
+successful registrations, saves and committed trades back to those folders.
+Existing flat character files migrate automatically into the account folders.
+Malformed files stop startup instead of silently creating empty characters.
+To edit or restore character progress, stop the server, replace `character.json`
+inside that account's folder, and restart. Keep its account ID and username intact.
 
-The hosted game's existing accounts remain in its live database. Local accounts
-are separate; downloading source does not download private production saves.
+**To delete an entire local account, delete `player-saves/<username>/`.**
+The next server request (or restart) removes its cached login, sessions, character,
+archives and linked social records. Old sessions and pending saves cannot recreate
+that folder. The username becomes available for a new account with no old progress.
+Other accounts are preserved. To remove all local accounts, delete every account
+folder in `player-saves/`; you do not need to delete `server-data/`.
 
-To reset **every local account**, stop the local server and delete both
-`player-saves/` and `server-data/`. Restart with `npm run dev`. Both folders are
-recreated empty; all local players must register again. Deleting only character
-JSON files preserves usernames and passwords. Never delete these folders while
-the server is running: pending saves could write old progress back. This local
-file reset does not change the hosted game's accounts.
+Both storage folders are private and excluded from Git and public web access.
+Back up both with the server stopped to preserve the whole local world. Account
+folders alone can restore logins and characters, but not social/shared-world state.
+Set `VELDREN_DATA_DIR` to choose another storage location. Do not move folders
+away temporarily while the server is running: missing folders mean deletion.
+
+The hosted game's accounts remain separate in its live database. Local operation
+never pulls cloud saves; downloading source does not download production accounts.
 
 ## Source layout
 

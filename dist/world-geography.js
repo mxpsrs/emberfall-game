@@ -28,7 +28,9 @@ worldWaterDistance=function(x,y){
  const ironWidth=4.5+2.2*(1-Math.exp(-Math.pow((y-336)/24,2)));
  const silverPinch=Math.min(...[216,393,597,795].map(b=>Math.abs(x-b))),silverWidth=4.5+2.3*(1-Math.exp(-Math.pow(silverPinch/24,2)));
  d=Math.min(d,lake,pond,source,smallRiver,Math.max(Math.abs(x-geographyCurve(IRON_RIVER,y))-ironWidth,45-y,y-482),Math.max(Math.abs(y-geographyCurve(SILVER_RIVER,x))-silverWidth,25-x,x-1080));
- for(const l of WORLD_LAKES){if(Math.abs(x-l.x)>l.rx+6||Math.abs(y-l.y)>l.ry+6)continue;const a=Math.atan2((y-l.y)/l.ry,(x-l.x)/l.rx),edge=1+.07*Math.sin(a*3+l.x)+.045*Math.cos(a*5);d=Math.min(d,(Math.hypot((x-l.x)/l.rx,(y-l.y)/l.ry)-edge)*Math.min(l.rx,l.ry));}
+ // Lake distance also shapes the bank height. A six-tile bounding box cut
+ // that distance off abruptly, creating rectangular cliffs around lakes.
+ for(const l of WORLD_LAKES){const radius=Math.min(l.rx,l.ry),norm=Math.hypot((x-l.x)/l.rx,(y-l.y)/l.ry);if((norm-1.115)*radius>=d)continue;const a=Math.atan2((y-l.y)/l.ry,(x-l.x)/l.rx),edge=1+.07*Math.sin(a*3+l.x)+.045*Math.cos(a*5);d=Math.min(d,(norm-edge)*radius);}
  return d;
 };
 let geographyReady=false;

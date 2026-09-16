@@ -151,7 +151,7 @@ function dialog(title,html,buttons=[]){
   stop();$('modalBody').innerHTML='';const h=document.createElement('h2');h.textContent=title;$('modalBody').appendChild(h);
   const body=document.createElement('div');body.className='dialogcopy';body.innerHTML=html;$('modalBody').appendChild(body);
   for(const [label,fn,style] of buttons){const b=document.createElement('button');b.className=style||'primary';b.textContent=label;b.onclick=fn;$('modalBody').appendChild(b);}
-  if(!$('modal').open)$('modal').showModal();
+  if(!$('modal').open)$('modal').show();
 }
 function close(){if(window.realmTrade)endTrade();if(window.equipmentStatsOpen||window.equipmentOpen)endCombatStats();if(window.realmWorkbench)endWorkbench();$('modal').close();renderUI();save();}
 const quests=[
@@ -337,7 +337,7 @@ function advanceMovement(dt){
    if(typeof recordPlayerDeparture==='function')recordPlayerDeparture(s.x,s.y);
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
-  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*spiritBuild(s,lv('Worship')).runCost;
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*spiritBuild(s,lv('Worship')).runCost*(typeof fieldEquipmentEffects==='function'?fieldEquipmentEffects(s).runCost:1);
   const used=Math.min(remaining,distance/speed,running?s.runEnergy/runCost:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
   travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
@@ -352,26 +352,29 @@ function advanceMovement(dt){
 let nextFrameAt=0;
 function frame(now){
   const interval=1000/60;if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
-  if(assetsReady&&!document.hidden&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&typeof observeRenderTime==='function')observeRenderTime(now-last);
+  if(assetsReady&&!document.hidden&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
-  if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.playerTrade&&!window.maintenancePreparing)updateWorldTimers();
+  if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.maintenancePreparing)updateWorldTimers();
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
-  if(!crossing&&!window.playerTrade&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!$('modal').open&&!$('creator').open&&!$('spiritsDialog').open&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
-    time+=dt;observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=advanceMovement(dt);
+  if(!crossing&&!window.maintenancePreparing&&assetsReady&&!cloudConflict&&!cloudDisconnected&&!document.hidden&&!document.body.classList.contains('portrait-mode')){
+    time+=dt;
+    // Interfaces never pause the world. Trade/creation only lock this player's actions.
+    if(!window.playerTrade&&!$('creator').open){observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
       else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
       else{const previous=elapsed;elapsed+=dt;const duration=actionDuration(target);if(typeof soundGatheringSwing==='function')soundGatheringSwing(target,previous,elapsed,duration);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
     }
-    updatePlayerAction();updateTrainingGate();updateCombat(dt);livingWorld(dt);updateSpirits(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
+    updatePlayerAction();updateTrainingGate();updateCombat(dt);updateSpirits(dt);}
+    livingWorld(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}
     advanceWorldActors(dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     if(time>toastUntil)$('toast').style.opacity=0;
-    saveClock+=dt;if(saveClock>10){saveClock=0;save();}
+    saveClock+=dt;if(saveClock>10&&!window.playerTrade&&!$('creator').open){saveClock=0;save();}
   }
-  if($('modal').open||$('creator').open||$('spiritsDialog').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
+  if(window.playerTrade||$('creator').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
   if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));

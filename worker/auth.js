@@ -33,7 +33,7 @@ export async function handleAuth(request,env){
  if(action==='register'){
   if(account)return reply({error:'That username is already taken.'},409);
   const id=crypto.randomUUID(),hash=await bcrypt.hash(password,12);
-  const inserted=await env.DB.prepare('INSERT INTO game_accounts (id,username,normalized_username,password_hash,created_at) VALUES (?,?,?,?,?) ON CONFLICT(normalized_username) DO NOTHING').bind(id,username,normalized,hash,now).run();
+  const inserted=await env.DB.prepare(`INSERT INTO game_accounts (id,username,normalized_username,password_hash,created_at) SELECT ?,?,?,?,? WHERE ${MAINTENANCE_OPEN_SQL} ON CONFLICT(normalized_username) DO NOTHING`).bind(id,username,normalized,hash,now).run();
   if(!inserted.meta.changes)return reply({error:'That username is already taken.'},409);
   account={id,username};
  }else{

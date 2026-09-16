@@ -30,7 +30,7 @@ const TUTORIAL_REASONS={
  walk:'Your character walks around obstacles. Hold or right-click anything in the world to see its available actions.',
  bag:'Your bag holds 25 spaces. Tap a material to select Use, then tap what you want to use it with. Hold or right-click for more actions.',
  skills:'Doing an activity earns experience in that skill. More XP raises its level and unlocks better equipment and activities.',
- magic:'Wind strike spends one air relic and one mind relic per cast. The school supplies practice relics; casting trains Magic.',
+ magic:'Gust Needle spends one air relic and one mind relic per cast. The school supplies practice relics; casting trains Magic.',
  ore:'Bronze needs one copper ore and one tin ore. Mining supplies the raw material; Smithing turns it into equipment.',
  smelt:'A furnace melts the two ores into one bronze bar. Select Bronze first, then the Bronze bar recipe.',
  smith:'The anvil shapes a bar into equipment. We are making a dagger you can keep after this lesson.',
@@ -51,8 +51,8 @@ const TUTORIAL_REASONS={
  deposit:'Your bank keeps supplies between visits and on the mainland. Only items in your bag are deposited; worn equipment stays on you.',
  withdraw:'A stored item returns to your bag when you withdraw it. You need enough free bag space.',
  bury:'Worship strengthens Unleash and unlocks deeper Spirit bonds. Burying one bone gives 18 Worship XP and 4 resonance for your attuned Spirit. Combat and matching gathering also deepen that bond.',
- spirit:'Choose your first elemental companion with Sera. Unleash opens your spirit choices in the chat box without stopping combat. Unleash recovers in 30 seconds; rare twins take 45. Your one attuned passive remains active throughout. Choose it in Spirits.',
- 'talk-finish':'Your bank, belongings and skill levels travel with you. Rowan’s crossing to Briarhaven is one way.'
+ spirit:'Your attuned Spirit changes your build. Matching gathering and damaging hits grow its resonance; Worship unlocks deeper bonds. Choose Fire for pressure, Water for sustain, Air for distance or Earth for protection. Unleash opens your spirit choices in the chat box without stopping combat. Unleash recovers in 30 seconds; rare twins take 45. Your one attuned passive remains active throughout. Choose it in Spirits.',
+ 'talk-finish':'You carry Firstlight’s signal, the gear you made, your supplies and your Spirit bond. Your bank, belongings and skills travel with you. Rowan’s crossing to Briarhaven is one way; Home Teleport will later bring you back to Briarhaven for no relics and no XP.'
 };
 function tutorialGuidanceActive(){return !!s.character&&!!tutorialStep()&&currentScene==='tutorial';}
 function settleTutorialHandoffs(){
@@ -63,6 +63,7 @@ function settleTutorialHandoffs(){
   if(s.tutorialMagicPending||(event==='magic'&&(!(s.gear.oakStaff>0)||!(s.bag.airRunes>0)||!(s.bag.runes>0)))){
    if(giveTutorialMagicSupplies()&&event==='talk-magic')tutorialEvent('talk-magic');
   }
+  if(s.tutorialBakingPending&&event==='talk-cooking'&&inventorySlots().length+tutorialGiftSpace({flour:1,jugWater:1})<=BAG_SIZE&&grantTutorialItems('baking',{flour:1,jugWater:1})){s.tutorialBakingPending=false;tutorialEvent('talk-cooking');}
   settleValeLesson();
  }finally{tutorialGuidanceBusy=false;}
 }
@@ -77,23 +78,28 @@ function tutorialGuidanceWorldGoal(goal){
 function tutorialGuidanceAction(){
  if(!tutorialGuidanceActive())return null;
  const step=tutorialStep(),event=step.event,index=s.tutorial;
- const name=event==='talk-worship'&&s.tutorialBankPhase==='done'?'Banker Ada':index<5?'Elder Rowan':index<7?'Arcanist Elowen':index<11?'Smith Orin':index<21?'Captain Vale':index<23?'Forester Ash':index<27?'Fisher Nell':index<31?'Cook Bram':index<34?'Banker Ada':index<37?'Keeper Sera':'Elder Rowan';
- const make=(key,instruction,selector=null,run=guide)=>({key:event+':'+key,title:step.title,speaker:name,instruction,selector,run,button:selector?'Show control':'Show me where',progress:''});
+ const name=event==='talk-worship'&&s.tutorialBankPhase==='done'?'Banker Ada':index<5?TUTORS.guide.name:index<7?'Arcanist Elowen':index<11?'Smith Orin':index<21?'Captain Vale':index<23?'Forester Ash':index<27?'Fisher Nell':index<31?'Cook Bram':index<34?'Banker Ada':index<37?'Keeper Sera':'Elder Rowan';
+ const make=(key,instruction,selector=null,run=guide)=>({key:event+':'+key,title:(typeof firstlightChapter==='function'?firstlightChapter().title+' · ':'')+step.title,speaker:name,instruction,selector,run,button:selector?'Show control':'Show me where',progress:''});
  const nav=(id,label)=>make('open-'+id,'Open '+label+'.','#gameTabs [data-tab="'+id+'"]',()=>openGamePanel(id));
  const bagOpen=()=>$('gameDock').hidden===false&&tab==='bag';
  const item=(id,verb='Tap',suffix='')=>!bagOpen()?nav('bag','Bag'):make('item-'+id,verb+' '+ITEMS[id].name+suffix+'.','#inventoryGrid [data-item-id="'+id+'"]',()=>openGamePanel('bag'));
  const world=(text,key='world')=>make(key,text);
  const selected=typeof selectedUseItem==='string'?selectedUseItem:null;
  const bench=window.realmWorkbench;
+ if(s.tutorialBakingPending)return make('baking-space','Make two spaces in your bag for Bram’s flour and water. The lesson will continue when they fit.',null,()=>openGamePanel('bag'));
  if(s.tutorialMagicPending||s.tutorialValePendingSpace)return make('space','Make room in your bag. Your tutor will give you the supplies automatically.',null,()=>openGamePanel('bag'));
  if(valeLessonPending())return world(['monster','ranged-kit'].includes(event)?'Come back to me for your next lesson.':'Finish speaking with me to receive your practice equipment.','vale-conversation');
  if(event==='camera')return world('Swipe the game view with one finger, or drag with your mouse, to turn the camera.');
  if(event==='walk')return world('Tap a clear patch of ground to walk there.');
- if(event.startsWith('talk-'))return world(event==='talk-finish'?'Speak to Elder Rowan to finish your apprenticeship.':event==='talk-worship'&&s.tutorialBankPhase==='done'?'That is banking learned. Find Keeper Sera at the shrine in the southwest. She will teach you Worship.':'Speak to '+TUTORS[event.slice(5)].name+'.');
+ if(event.startsWith('talk-'))return world(event==='talk-finish'?'Speak to Elder Rowan to complete the First Accord.':event==='talk-worship'&&s.tutorialBankPhase==='done'?'That is banking learned. Find Keeper Sera at the shrine in the southwest. She will teach you Worship.':'Speak to '+TUTORS[event.slice(5)].name+'.');
  if(event==='bag')return {...nav('bag','Bag'),instruction:'Open your bag. This is where things go when you pick them up.'};
  if(event==='skills')return {...nav('skills','Skills'),instruction:'Open Skills. There is a lot to learn in this world, but my freedom fighters and I will show you the ropes.'};
  if(event==='magic'){
-  if(s.equipment.weapon!=='oakStaff'||s.spell!=='spark')return tab!=='spells'||$('gameDock').hidden?nav('spells','Magic'):make('spell','Tap Wind strike to ready your staff and spell.','[data-spell-id="spark"]',()=>openGamePanel('spells'));
+  if(s.equipment.weapon!=='oakStaff'||s.spell!=='spark'){
+   if(tab!=='spells'||$('gameDock').hidden)return nav('spells','Magic');
+   if(typeof classicSpellPage!=='undefined'&&classicSpellPage!=='combat')return make('combat-page','Open Combat spells.','[data-spell-page="combat"]',()=>{classicSpellPage='combat';renderClassicSpells();});
+   return make('spell','Tap Gust Needle to ready your staff and spell.','[data-spell-id="spark"]',()=>openGamePanel('spells'));
+  }
   return world('Tap the practice dummy inside Elowen’s school to cast your spell.');
  }
  if(event==='ore')return world(s.bag.copperOre>0?'You have copper. Tap the tin rock to mine one tin ore.':'Tap the copper rock to mine one copper ore.',s.bag.copperOre>0?'tin':'copper');
@@ -210,3 +216,22 @@ let tutorialGuidancePosition='';
 const guidedAdvanceMovement=advanceMovement;
 advanceMovement=function(dt){const result=guidedAdvanceMovement(dt);if(tutorialGuidanceActive()){const key=s.x+','+s.y;if(key!==tutorialGuidancePosition){tutorialGuidancePosition=key;queueTutorialGuidance();}}return result;};
 queueTutorialGuidance();
+
+// A guided trip is one action, including entering a tutor's closed room.
+// Keep the destination only until the requested door opens; manual stops cancel it.
+let tutorialDoorFollowUp=null;
+const tutorialStopBeforeDoor=stop;
+stop=function(){tutorialDoorFollowUp=null;return tutorialStopBeforeDoor();};
+const tutorialGuideBeforeDoor=guide;
+guide=function(){
+ const event=tutorialStep()?.event,goal=tutorialGoal();
+ tutorialGuideBeforeDoor();
+ if(goal?.tutorialDoor&&pendingWalkInDoor===goal.tutorialDoor)tutorialDoorFollowUp={door:goal.tutorialDoor,event};
+};
+const tutorialOperateDoorBefore=operateWalkInDoor;
+operateWalkInDoor=function(door){
+ const follow=tutorialDoorFollowUp;
+ tutorialDoorFollowUp=null;
+ tutorialOperateDoorBefore(door);
+ if(follow?.door===door&&door.openedAt!==undefined&&tutorialStep()?.event===follow.event&&!$('modal').open)guide();
+};
