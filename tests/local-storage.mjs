@@ -45,5 +45,12 @@ try{
  const interrupted=new DatabaseSync(path.join(directory,'server-data/veldren.sqlite'));newer.state.bag.arrows=444;interrupted.prepare('UPDATE character_saves SET state=?,revision=revision+1 WHERE user_id=?').run(JSON.stringify(newer.state),newer.userId);interrupted.close();
  assert.equal(file('alice').state.bag.arrows,321,'simulated interrupted file write leaves the old file');
  store=openLocalStorage({dataDirectory:directory});assert.equal(file('alice').state.bag.arrows,444,'startup completes the durable file outbox before loading characters');
- console.log('PASS: automatic JSON character files, real two-player chat/trade, transaction rollback, persistent login and saves across restart, and JSON recovery.');
+ // The owner's full local file reset must remove logins as well as progress.
+ store.close();fs.rmSync(path.join(directory,'player-saves'),{recursive:true});fs.rmSync(path.join(directory,'server-data'),{recursive:true});
+ store=openLocalStorage({dataDirectory:directory});assert.equal(store.db.prepare('SELECT count(*) AS n FROM game_accounts').get().n,0);assert.equal(store.db.prepare('SELECT count(*) AS n FROM character_saves').get().n,0);
+ assert.equal((await handleAuth(request('/api/auth/login',{username:'alice',password:'local-password'}),store.env)).status,401,'old login is removed');
+ assert.equal((await (await handleAuth(request('/api/auth/session',null,players.alice.cookie),store.env)).json()).account,null,'old session is revoked');
+ const registered=await handleAuth(request('/api/auth/register',{username:'alice',password:'new-local-password'}),store.env);assert.equal(registered.status,200,'old username can register as a new account');
+ const firstSave=await handleSave(request('/api/character',null,registered.headers.get('set-cookie').split(';')[0]),store.env);assert.equal((await firstSave.json()).state,null,'fresh account has no previous progress');
+ console.log('PASS: automatic JSON files, two-player chat/trade, rollback, persistent login/saves, JSON recovery, and full local file deletion requiring fresh registration.');
 }finally{store.close();fs.rmSync(directory,{recursive:true,force:true});}

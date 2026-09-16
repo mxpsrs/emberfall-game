@@ -1,5 +1,5 @@
 'use strict';
-const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],shop:['shop','General stores'],weapons:['attack','Weapons'],armour:['gear','Armour'],bank:['bank','Banks'],forge:['forge','Forges'],inn:['inn','Inns'],magic:['spells','Magic schools'],shrine:['shrine','Shrines'],mine:['mine','Mines']};
+const MAP_SERVICE_TYPES={all:['map','All services'],tutor:['tutor','Tutors'],shop:['shop','General stores'],weapons:['attack','Weapons'],armour:['gear','Armour'],bank:['bank','Banks'],forge:['forge','Forges'],inn:['inn','Inns'],magic:['spells','Magic schools'],shrine:['shrine','Shrines'],mine:['mine','Mines & quarries']};
 const MAP_TUTOR_SUBJECTS={guide:'First steps',woods:'Woodcutting',fishing:'Fishing & Firemaking',cooking:'Cooking',mining:'Mining & Smithing',combat:'Combat',bank:'Banking',worship:'Worship',magic:'Magic'};
 let mapServicesCache=null,miniServiceMarkers=[],localMapState=null;
 function mapObjectService(o){
@@ -13,7 +13,8 @@ function mapObjectService(o){
  return null;
 }
 function collectMapServices(){
- const key=currentScene+':'+objects.length+':'+buildings.length;
+ const quarries=currentScene==='overworld'&&typeof surfaceQuarries!=='undefined'?surfaceQuarries:[];
+ const key=currentScene+':'+objects.length+':'+buildings.length+':'+quarries.length;
  if(mapServicesCache?.key===key)return mapServicesCache.entries;
  const entries=[],represented=new Set(),rooms=new Map(buildings.filter(b=>b.service).map(b=>[b.service.destination,b]));
  for(const o of objects){const info=mapObjectService(o);if(!info)continue;const building=rooms.get(o.interiorBuilding),name=o.tutor?o.name:building?.name||o.name,id='object:'+o.id+':'+o.x+':'+o.y;
@@ -22,6 +23,11 @@ function collectMapServices(){
  for(const b of buildings){if(!b.service)continue;const kind=/bank/i.test(b.name)?'bank':/magic school/i.test(b.name)?'magic':/shrine|temple/i.test(b.name)?'shrine':/mine/i.test(b.name)?'mine':({shop:'shop',forge:'forge',inn:'inn',temple:'shrine',mine:'mine'})[b.archetype];if(!kind)continue;
   if(represented.has(b.service.destination+':'+kind)||entries.some(e=>e.building===b&&e.tags.includes(kind)))continue;
   entries.push({id:'building:'+b.service.destination,kind,tags:kind==='shop'?['shop','weapons','armour']:[kind],name:b.name,detail:kind==='shop'?'Supplies, weapons & armour':MAP_SERVICE_TYPES[kind][1],x:b.service.x,y:b.service.y,target:b.service,building:b});
+ }
+ for(const q of quarries){
+  const ores=[...new Set(objects.filter(o=>o.type==='ore'&&o.quarry===q.id).map(o=>o.resourceId))].map(id=>ORE_RESOURCES[id]).filter(Boolean);
+  if(!ores.length)continue;
+  entries.push({id:'quarry:'+q.id,kind:'mine',tags:['mine'],name:q.name,detail:'Surface Mining'+(q.type==='abandoned'?' · Abandoned quarry':'')+' · '+ores.map(o=>o.name+' (Mining '+o.level+')').join(', ')+'. Follow the work road to the south access ramp; bring a pickaxe.',x:q.x,y:q.y+q.ry+5,quarry:q});
  }
  mapServicesCache={key,entries};return entries;
 }
@@ -37,8 +43,8 @@ function layoutMapMarkers(entries,bounds,width,height,small=false){
   markers.push({entry,x:ax+offset[0],y:ay+offset[1],anchorX:ax,anchorY:ay,r:diameter/2});
  }return markers;
 }
-function drawMapServices(g,bounds,width,height,small=false,filter='all',selected=null){
- const markers=layoutMapMarkers(mapEntriesInBounds(bounds,filter),bounds,width,height,small);
+function drawMapServices(g,bounds,width,height,small=false,filter='all',selected=null,entries=mapEntriesInBounds(bounds,filter)){
+ const markers=layoutMapMarkers(entries,bounds,width,height,small);
  for(const m of markers){const active=m.entry.id===selected;g.save();if(m.x!==m.anchorX||m.y!==m.anchorY){g.strokeStyle='#ddc58c';g.lineWidth=1.5;g.beginPath();g.moveTo(m.anchorX,m.anchorY);g.lineTo(m.x,m.y);g.stroke();}
   g.fillStyle=active?'#76633a':m.entry.tags.includes('tutor')?'#53482e':'#263b2a';g.strokeStyle=active?'#ffe6a8':m.entry.tags.includes('tutor')?'#dbba76':'#a9a478';g.lineWidth=active?2.5:1.3;g.beginPath();g.arc(m.x,m.y,m.r,0,Math.PI*2);g.fill();g.stroke();drawGameIcon(g,mapIconFor(m.entry,filter),m.x-m.r+3,m.y-m.r+3,m.r*2-6);g.restore();
  }if(small)miniServiceMarkers=markers;return markers;
@@ -49,6 +55,7 @@ function mapTravelGoal(entry){
  const inside=buildings.find(b=>b.walkIn&&withinWalkIn(b,px,py)),room=entry.building?.walkIn?entry.building:null;
  const closed=inside&&inside!==room&&inside.service.openedAt===undefined?inside:room&&inside!==room&&room.service.openedAt===undefined?room:null;
  if(closed){const [x,y]=doorApproach(closed.service,closed===inside);return {target:closed.service,x,y,door:true,label:closed===inside?'Open exit door':'Go to entrance',detail:'Open the '+closed.name+' door to continue.'};}
+ if(entry.quarry)return {x:entry.x,y:entry.y,walk:true,label:'Go to quarry',detail:entry.detail};
  if(entry.target===entry.building?.service&&entry.building.walkIn){const door=entry.building.service,[x,y]=doorApproach(door,inside===room);return {target:door,x,y,walk:true,label:'Go to entrance',detail:'Entrance to '+entry.name+'.'};}
  return {target:entry.target,x:entry.x,y:entry.y,door:false,label:entry.kind==='tutor'||entry.tags.includes('tutor')?'Go to tutor':'Go here',detail:entry.detail};
 }
@@ -57,21 +64,22 @@ function selectMapService(entry){if(!localMapState)return;if(entry?.settlement){
 function renderLocalMap(){
  if(!localMapState||!$('modal').open)return;const c=$('localMap');if(!c)return;const g=c.getContext('2d'),bounds=localMapBounds(),state=localMapState,selected=collectMapServices().find(e=>e.id===state.selected),point=(x,y)=>[(x+.5-bounds.x)*c.width/bounds.w,(y+.5-bounds.y)*c.height/bounds.h];drawMapTerrain(g,bounds,c.width,c.height);
  if(selected){const goal=mapTravelGoal(selected),points=route(goal.x,goal.y,!goal.door&&!goal.walk,1.45)||[];if(points.length){g.strokeStyle='#f7d982';g.lineWidth=2;g.setLineDash([5,4]);g.beginPath();[[px,py],...points].forEach(([x,y],i)=>{if(i)g.lineTo(...point(x,y));else g.moveTo(...point(x,y));});g.stroke();g.setLineDash([]);}}
- state.markers=bounds.w>400&&state.filter==='all'?[]:drawMapServices(g,bounds,c.width,c.height,false,state.filter,state.selected);drawAtlasLabels(g,bounds,c.width,c.height,state.markers);
+ const visibleEntries=mapEntriesInBounds(bounds,state.filter).filter(e=>bounds.w<=400||state.filter!=='all'||e.quarry);
+ state.markers=drawMapServices(g,bounds,c.width,c.height,false,state.filter,state.selected,visibleEntries);drawAtlasLabels(g,bounds,c.width,c.height,state.markers);
  const p=point(px,py);g.fillStyle='#fff3c6';g.strokeStyle='#273326';g.lineWidth=2;g.beginPath();g.arc(...p,5,0,Math.PI*2);g.fill();g.stroke();
  $('mapScale').textContent=Math.round(bounds.w)+' tiles across';
  const entries=atlasEntries(bounds,state.filter).sort((a,b)=>Math.hypot(a.x-px,a.y-py)-Math.hypot(b.x-px,b.y-py)),list=$('mapPlaces');list.replaceChildren();
  for(const entry of entries){const button=document.createElement('button');button.type='button';button.setAttribute('aria-pressed',String(entry.id===state.selected));button.innerHTML=gameIcon(mapIconFor(entry,state.filter));button.title=entry.name+' — '+entry.detail;const copy=document.createElement('span'),name=document.createElement('strong'),detail=document.createElement('small');name.textContent=entry.name;detail.textContent=entry.detail;copy.append(name,detail);button.appendChild(copy);button.onclick=()=>selectMapService(entry);list.appendChild(button);}
  if(!entries.length){const empty=document.createElement('p');empty.textContent='No '+MAP_SERVICE_TYPES[state.filter][1].toLowerCase()+' in this area. Drag the map or zoom out.';list.appendChild(empty);}
  const selection=$('mapSelection');selection.replaceChildren();const copy=document.createElement('div'),name=document.createElement('strong'),detail=document.createElement('p');copy.append(name,detail);selection.appendChild(copy);
- name.textContent=selected?.name||'Choose a map icon';detail.textContent=selected?mapTravelGoal(selected).detail:'All kingdoms, towns and villages are named on the map. Select a settlement to zoom in. The white dot is you.';
+ name.textContent=selected?.name||'Choose a map icon';detail.textContent=selected?mapTravelGoal(selected).detail:'Select a settlement to zoom in, or a Mining icon for surface quarry resources and access. The white dot is you.';
  if(selected){const go=document.createElement('button'),goal=mapTravelGoal(selected);go.type='button';go.className='primary';go.textContent=goal.label;go.onclick=()=>{if(currentScene!=='overworld'){toast(currentScene==='tutorial'?'Finish Firstlight’s apprenticeship to travel to the mainland.':'Leave this area before following a mainland route.');return;}const next=mapTravelGoal(selected);close();if(next.walk)walkTo(next.x,next.y);else engage(next.target);};selection.appendChild(go);}
  document.querySelectorAll('[data-map-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapFilter===state.filter)));
 }
 function openLocalMap(selectedId=null){
  if(!assetsReady||cloudConflict||cloudDisconnected||$('creator').open||$('spiritsDialog').open)return;
  const [w,h]=sceneSizes.overworld;localMapState={x:w/2,y:h/2,span:atlasFullSpan(),filter:'all',selected:null,markers:[],player:atlasPlayerPoint(),originScene:currentScene};
- dialog('World map','<div class="map-heading"><p>Drag to explore · Pinch or use + / − to zoom</p><button id="mapKingdoms" type="button"></button></div><div id="mapFilters" class="map-filters" role="group" aria-label="Map services"></div><div class="map-content"><div><div class="local-map-frame"><canvas id="localMap" width="900" height="600" aria-label="World map showing Aurelia, Khaz-Dur, Sylvaran, and all towns and villages. Locations are also listed beside the map."></canvas><span class="map-north">N</span><span id="mapScale" class="map-scale"></span></div><div class="map-toolbar"><p id="mapFilterName">All services</p><div class="map-tools"><button id="mapZoomOut" type="button"></button><button id="mapRecenter" type="button"></button><button id="mapZoomIn" type="button"></button></div></div></div><div id="mapPlaces" class="map-places" role="group" aria-label="Services in this area"></div></div><p class="atlas-legend">Houses · Trees · Rocks · Bridges — drawn where they are in the world</p><div id="mapSelection" aria-live="polite"></div>');
+ dialog('World map','<div class="map-heading"><p>Drag to explore · Pinch or use + / − to zoom</p><button id="mapKingdoms" type="button"></button></div><div id="mapFilters" class="map-filters" role="group" aria-label="Map services"></div><div class="map-content"><div><div class="local-map-frame"><canvas id="localMap" width="900" height="600" aria-label="World map showing Aurelia, Khaz-Dur, Sylvaran, all towns and villages, and surface quarries marked with Mining icons. Locations are also listed beside the map."></canvas><span class="map-north">N</span><span id="mapScale" class="map-scale"></span></div><div class="map-toolbar"><p id="mapFilterName">All services</p><div class="map-tools"><button id="mapZoomOut" type="button"></button><button id="mapRecenter" type="button"></button><button id="mapZoomIn" type="button"></button></div></div></div><div id="mapPlaces" class="map-places" role="group" aria-label="Services in this area"></div></div><p class="atlas-legend">Mining icons mark quarry access ramps · Houses · Trees · Rocks · Bridges</p><div id="mapSelection" aria-live="polite"></div>');
  $('modal').classList.add('world-map-window');setHudButton('mapKingdoms','Show the whole world','map');setHudButton('mapZoomOut','Zoom map out','zoomOut');setHudButton('mapZoomIn','Zoom map in','zoomIn');setHudButton('mapRecenter','Centre on your character','recenter');
  for(const [id,[icon,label]]of Object.entries(MAP_SERVICE_TYPES)){const b=document.createElement('button');b.type='button';b.dataset.mapFilter=id;setHudButton(b,label,icon);b.onclick=()=>{localMapState.filter=id;localMapState.selected=null;$('mapFilterName').textContent=label;renderLocalMap();};$('mapFilters').appendChild(b);}
  $('mapKingdoms').onclick=()=>{localMapState.span=atlasFullSpan();localMapState.x=sceneSizes.overworld[0]/2;localMapState.y=sceneSizes.overworld[1]/2;localMapState.filter='all';$('mapFilterName').textContent='All locations';renderLocalMap();};

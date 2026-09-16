@@ -70,6 +70,7 @@ function drawMinimap(){
  if(typeof collectMapServices==='function')for(const entry of collectMapServices()){
   const [x,y]=point(entry.x,entry.y);if(x<13||y<13||x>cw-13||y>ch-13)continue;
   miniServiceMarkers.push({entry,x,y,r:13});g.save();g.shadowColor='#141a12';g.shadowBlur=3;drawGameIcon(g,mapIconFor(entry),x-13,y-13,26);g.restore();
+  if(entry.quarry){g.save();g.font='600 15px Georgia';g.textAlign='center';g.textBaseline='middle';const half=Math.min(cw-12,g.measureText(entry.name).width)/2,labelX=Math.max(half+6,Math.min(cw-half-6,x)),labelY=Math.min(ch-12,y+24);g.strokeStyle='#152b2a';g.lineWidth=4;g.strokeText(entry.name,labelX,labelY,cw-12);g.fillStyle='#cde6ed';g.fillText(entry.name,labelX,labelY,cw-12);g.restore();}
  }
  if(path.length){const q=point(...path[path.length-1]);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(q[0],q[1]+5);g.lineTo(q[0],q[1]-9);g.stroke();g.fillStyle='#e84436';g.fillRect(q[0]+1,q[1]-9,8,5);}
  if(typeof drawQuestMinimap==='function')drawQuestMinimap(g,point,cw,ch);

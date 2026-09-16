@@ -38,6 +38,13 @@ Set `VELDREN_DATA_DIR` to keep both folders in another directory.
 The hosted game's existing accounts remain in its live database. Local accounts
 are separate; downloading source does not download private production saves.
 
+To reset **every local account**, stop the local server and delete both
+`player-saves/` and `server-data/`. Restart with `npm run dev`. Both folders are
+recreated empty; all local players must register again. Deleting only character
+JSON files preserves usernames and passwords. Never delete these folders while
+the server is running: pending saves could write old progress back. This local
+file reset does not change the hosted game's accounts.
+
 ## Source layout
 
 - `dist/`: authored browser game, interface, world, and licensed assets.
@@ -45,8 +52,7 @@ are separate; downloading source does not download private production saves.
 - `emberfall-android/`: Veldren Android client and build instructions.
 - `scripts/`, `tests/`, `docs/`: development tools, checks, and asset records.
 
-Read `AGENTS.md` before publishing. Every production update requires the existing
-two-minute maintenance countdown and verified session lock.
+Read `AGENTS.md` before publishing and follow its server-impact maintenance rules.
 
 ## Rename compatibility
 

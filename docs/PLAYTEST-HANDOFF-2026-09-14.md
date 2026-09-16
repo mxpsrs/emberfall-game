@@ -1,3 +1,7 @@
+# Quarry labels and local account files — 16 September 2026
+
+The owner requested a local-file account reset and quarry map labels. Read `QUARRY-MAPS-LOCAL-RESET-2026-09-16.md` and `qa/quarry-maps-2026-09-16.json`. The local SQLite account files were removed after verifying the server was stopped; this checkout contained zero accounts/saves. Hosted accounts were explicitly left untouched. All five existing surface quarries now have names, Mining icons, real ore requirements and access-ramp guidance on the atlas/minimap. This is a compatible client update and does not require hosted maintenance.
+
 # Global prop placement — 16 September 2026
 
 The owner explicitly requested the prop-placement overhaul across the whole game and provided the goblin-bridge recording. Read `PROP-PLACEMENT-2026-09-16.md` and `qa/prop-placement-final-2026-09-16.json`. Shared semantic anchors now govern 680 room contexts plus roads, markets, courtyards, camps and quarry worksites. Preserve inward-facing wall furniture, counter/attendant access, protected doors/stairs/roads/bridges, all six goblin shelters and the quarry ramp exclusion. Client/server collision uses the same oriented footprints. This scoped request does not reopen unrelated development or the Skills/Magic/Equipment/Tutorial overhaul. Hosted-capacity and physical-device limits still apply.
