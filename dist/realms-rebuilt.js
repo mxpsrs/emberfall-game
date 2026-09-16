@@ -143,12 +143,25 @@ function contouredLimbPlates(sex,part){
  const body=rebuiltAvatars[sex].mesh,female=sex==='female',p=[],n=[],c=[],j=[],w=[],indices=[];
  const arm=part!=='thighs',axis=arm?0:1,u=arm?1:0,v=2,scale=female?.976:1;
  const spans=part==='upperArms'?[[.315,.525]]:part==='forearms'?[[.545,.705]]:[[.515,.935],[.455,.505]];
+ // Every ray in a sleeve row intersects the same body cross-section.
+ // Keep the exact triangle order and interpolation, but compute it once per
+ // plane instead of allocating and scanning the entire body for every ray.
+ const slices=new Map();
+ function sliceAt(position){
+  if(slices.has(position))return slices.get(position);
+  const slice=[];
+  for(let t=0;t<body.i.length;t+=3){
+   const ia=body.i[t],ib=body.i[t+1],ic=body.i[t+2],a=body.p[ia*3+axis],b=body.p[ib*3+axis],c=body.p[ic*3+axis];
+   if(position<Math.min(a,b,c)||position>Math.max(a,b,c))continue;
+   const ids=[ia,ib,ic],points=ids.map(id=>Array.from(body.p.subarray(id*3,id*3+3))),hits=[];
+   for(let a=0;a<3;a++){const b=(a+1)%3,delta=points[b][axis]-points[a][axis];if(Math.abs(delta)<1e-8)continue;const q=(position-points[a][axis])/delta;if(q<0||q>1)continue;hits.push({p:points[a].map((x,k)=>x+(points[b][k]-x)*q),weights:[0,1,2].map(k=>k===a?1-q:k===b?q:0)});}
+   if(hits.length>=2)slice.push({ids,hits});
+  }
+  slices.set(position,slice);return slice;
+ }
  function surface(center,direction){
   let best=null;
-  for(let t=0;t<body.i.length;t+=3){
-   const ids=Array.from(body.i.subarray(t,t+3)),points=ids.map(id=>Array.from(body.p.subarray(id*3,id*3+3))),hits=[];
-   for(let a=0;a<3;a++){const b=(a+1)%3,delta=points[b][axis]-points[a][axis];if(Math.abs(delta)<1e-8)continue;const q=(center[axis]-points[a][axis])/delta;if(q<0||q>1)continue;hits.push({p:points[a].map((x,k)=>x+(points[b][k]-x)*q),weights:[0,1,2].map(k=>k===a?1-q:k===b?q:0)});}
-   if(hits.length<2)continue;
+  for(const {ids,hits}of sliceAt(center[axis])){
    const a=hits[0],b=hits[1],dx=b.p[u]-a.p[u],dz=b.p[v]-a.p[v],ax=a.p[u]-center[u],az=a.p[v]-center[v],den=direction[u]*dz-direction[v]*dx;if(Math.abs(den)<1e-8)continue;
    const radius=(ax*dz-az*dx)/den,q=(ax*direction[v]-az*direction[u])/den;if(radius<=0||radius>(arm?.12:.15)||q<-.0001||q>1.0001||best&&radius>=best.radius)continue;
    const weights={};for(let z=0;z<3;z++)for(let k=0;k<4;k++){const bone=body.j[ids[z]*4+k],mix=a.weights[z]+(b.weights[z]-a.weights[z])*q;weights[bone]=(weights[bone]||0)+body.w[ids[z]*4+k]*mix;}

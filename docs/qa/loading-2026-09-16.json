@@ -1,0 +1,117 @@
+{
+  "scope": "CPU first-draw/submission probe, not total page download or GPU FPS",
+  "views": [
+    {
+      "label": "desktop tutorial near",
+      "before_ms": 1426.3,
+      "after_ms": 1651.2,
+      "before_draws": 111,
+      "after_draws": 111,
+      "before_vertices": 1098204,
+      "after_vertices": 1098204
+    },
+    {
+      "label": "desktop tutorial wide",
+      "before_ms": 19177.8,
+      "after_ms": 3330.5,
+      "before_draws": 301,
+      "after_draws": 301,
+      "before_vertices": 2808900,
+      "after_vertices": 2808900
+    },
+    {
+      "label": "phone tutorial wide",
+      "before_ms": 269.4,
+      "after_ms": 264.5,
+      "before_draws": 293,
+      "after_draws": 293,
+      "before_vertices": 2815830,
+      "after_vertices": 2815830
+    },
+    {
+      "label": "mainland wide",
+      "before_ms": 24270.4,
+      "after_ms": 10126.2,
+      "before_draws": 264,
+      "after_draws": 264,
+      "before_vertices": 3566406,
+      "after_vertices": 3566406
+    }
+  ],
+  "contours_before": [
+    {
+      "sex": "male",
+      "part": "upperArms",
+      "ms": 4000.389962,
+      "hash": "48879b00deb27a2eede95f14c9393c5f0080cec3715e29ec28f6920af93f4b4e"
+    },
+    {
+      "sex": "male",
+      "part": "forearms",
+      "ms": 3914.487725,
+      "hash": "ca03b63f140023b1e35ca520cac8c7bc52bb7fbd0738f38d81885cf20d703f4a"
+    },
+    {
+      "sex": "male",
+      "part": "thighs",
+      "ms": 7876.959874,
+      "hash": "bb14efa2dcab96741c15c9a27d1ef07d0f8932668e5c3d59c2e0527be249b69c"
+    },
+    {
+      "sex": "female",
+      "part": "upperArms",
+      "ms": 3674.531047000002,
+      "hash": "4b4325ff2ec273ded3135b30010dd126c751be09a62bdd7777771e0c905c5b3d"
+    },
+    {
+      "sex": "female",
+      "part": "forearms",
+      "ms": 3712.436823,
+      "hash": "be8dc09baae1097af594c348ecc79a018bce33867da031a7d6f980771caf4a99"
+    },
+    {
+      "sex": "female",
+      "part": "thighs",
+      "ms": 7457.547379,
+      "hash": "8f0db3955a65b84d8d40caaf457c5b740f8100415dc399e989b0fbd8d9feaaec"
+    }
+  ],
+  "contours_after": [
+    {
+      "sex": "male",
+      "part": "upperArms",
+      "ms": 43.72491400000001,
+      "hash": "48879b00deb27a2eede95f14c9393c5f0080cec3715e29ec28f6920af93f4b4e"
+    },
+    {
+      "sex": "male",
+      "part": "forearms",
+      "ms": 59.91584499999999,
+      "hash": "ca03b63f140023b1e35ca520cac8c7bc52bb7fbd0738f38d81885cf20d703f4a"
+    },
+    {
+      "sex": "male",
+      "part": "thighs",
+      "ms": 64.17899899999998,
+      "hash": "bb14efa2dcab96741c15c9a27d1ef07d0f8932668e5c3d59c2e0527be249b69c"
+    },
+    {
+      "sex": "female",
+      "part": "upperArms",
+      "ms": 49.78181300000006,
+      "hash": "4b4325ff2ec273ded3135b30010dd126c751be09a62bdd7777771e0c905c5b3d"
+    },
+    {
+      "sex": "female",
+      "part": "forearms",
+      "ms": 47.18985799999996,
+      "hash": "be8dc09baae1097af594c348ecc79a018bce33867da031a7d6f980771caf4a99"
+    },
+    {
+      "sex": "female",
+      "part": "thighs",
+      "ms": 51.56836099999998,
+      "hash": "8f0db3955a65b84d8d40caaf457c5b740f8100415dc399e989b0fbd8d9feaaec"
+    }
+  ]
+}
