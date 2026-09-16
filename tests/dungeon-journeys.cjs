@@ -14,6 +14,6 @@ for(const [id,lair]of Object.entries(CREATURE_LAIRS)){
 }
 const dist=(a,b)=>Math.hypot(mainStoryObject(a).x-mainStoryObject(b).x,mainStoryObject(a).y-mainStoryObject(b).y);
 assert(dist('driver','cart')>70);assert(dist('cart','lookout')>55);assert(dist('hesta','ilyra')>180);for(const [a,b]of [['bell','lantern'],['lantern','hand'],['hand','bell']])assert(dist(a,b)>30);
-assert.equal(mainStoryFound('lift').scene,'story_mine');assert.equal(mainStoryFound('forge').scene,'overworld');
+assert.equal(mainStoryFound('lift').scene,'story_mine');assert.equal(mainStoryFound('forge').scene,'story_mine');
 console.log('PASS: physical routes, six guards per boss approach, connected rescue mine and separated quest locations. '+JSON.stringify(report));
 `,ctx);

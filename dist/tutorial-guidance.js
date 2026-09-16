@@ -50,8 +50,8 @@ const TUTORIAL_REASONS={
  eat:'Food restores missing health. At full health, trying Eat completes this lesson and keeps your meal for later.',
  deposit:'Your bank keeps supplies between visits and on the mainland. Only items in your bag are deposited; worn equipment stays on you.',
  withdraw:'A stored item returns to your bag when you withdraw it. You need enough free bag space.',
- bury:'Worship strengthens spirit attacks and improves your protection as it levels. Burying one bone gives 18 Worship XP. First bonds and spirit damage also train it.',
- spirit:'Choose your first elemental companion with Sera. Unleash opens your spirit choices in the chat box without stopping combat. Spirits reactivate after 30 seconds; rare twins take 45 seconds.',
+ bury:'Worship strengthens Unleash and unlocks deeper Spirit bonds. Burying one bone gives 18 Worship XP and 4 resonance for your attuned Spirit. Combat and matching gathering also deepen that bond.',
+ spirit:'Choose your first elemental companion with Sera. Unleash opens your spirit choices in the chat box without stopping combat. Unleash recovers in 30 seconds; rare twins take 45. Your one attuned passive remains active throughout. Choose it in Spirits.',
  'talk-finish':'Your bank, belongings and skill levels travel with you. Rowan’s crossing to Briarhaven is one way.'
 };
 function tutorialGuidanceActive(){return !!s.character&&!!tutorialStep()&&currentScene==='tutorial';}

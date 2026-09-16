@@ -1,5 +1,5 @@
 'use strict';
-const EQUIPMENT_EMPTY_ICONS={head:'helm',neck:'necklace',ammo:'ammo',weapon:'attack',body:'gear',shield:'shield',hands:'glove',legs:'legs',feet:'boot'};
+const EQUIPMENT_EMPTY_ICONS={head:'helm',neck:'necklace',ammo:'ammo',weapon:'attack',body:'gear',shield:'shield',hands:'glove',legs:'legs',feet:'boot',ring:'ring',cape:'cape',belt:'belt'};
 let equipmentPreviewAngle=-.4,equipmentToolView=false;
 window.equipmentStatsOpen=false;window.equipmentOpen=false;
 function appendEquipmentSlots(grid,interactive=true){

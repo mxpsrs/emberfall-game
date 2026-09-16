@@ -1,6 +1,6 @@
 const {ctx,vm}=require('../scripts/game-fixture.cjs');
 vm.runInContext(`
-draw=drawPortrait=renderUI=renderTutorial=renderAction=save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();assetsReady=true;s.worldClock=380;s.character={name:'Shore review'};s.tutorial=38;s.tutorialReward=true;
+draw=drawPortrait=renderUI=renderTutorial=renderAction=save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();assetsReady=true;Date.now=()=>380000;s.character={name:'Shore review'};s.tutorial=38;s.tutorialReward=true;
 let fishCount=0,lamps=0;
 for(const scene of ['overworld','tutorial']){
  s.tutorial=scene==='tutorial'?0:38;s.tutorialReward=scene!=='tutorial';activateScene(scene);const w=worldScenes[scene];

@@ -337,11 +337,11 @@ function advanceMovement(dt){
    if(typeof recordPlayerDeparture==='function')recordPlayerDeparture(s.x,s.y);
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
-  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25;
-  const used=Math.min(remaining,distance/speed,running?s.runEnergy/1.8:Infinity),step=Math.min(distance,used*speed);
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*spiritBuild(s,lv('Worship')).runCost;
+  const used=Math.min(remaining,distance/speed,running?s.runEnergy/runCost:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
   travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
-  if(running){runningTime+=used;s.runEnergy=Math.max(0,s.runEnergy-used*1.8);if(s.runEnergy<1e-6){s.runEnergy=0;s.runEnabled=false;toast('Out of run energy. Walking while you recover.');}}
+  if(running){runningTime+=used;s.runEnergy=Math.max(0,s.runEnergy-used*runCost);if(s.runEnergy<1e-6){s.runEnergy=0;s.runEnabled=false;toast('Out of run energy. Walking while you recover.');}}
   else walkingTime+=used;
   remaining-=used;
   if(step>=distance-1e-6){px=s.x;py=s.y;tutorialEvent('walk');if(!path.length){arrive();break;}}

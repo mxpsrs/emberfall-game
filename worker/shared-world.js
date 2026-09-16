@@ -1,3 +1,4 @@
+import {spiritBuild,spiritStrike,spiritGuard} from './spirit-rules.js';
 import {rollRareBossLoot} from './boss-loot.js';
 import {questFightVisible} from './quest-fights.js';
 import {readWorldSnapshot} from './world-snapshot.js';
@@ -13,12 +14,12 @@ const styles=['melee','ranged','magic','worship'];
 function level(s,k){const xp=Math.max(0,Number(s.xp?.[k])||0);if(k==='Worship')return Math.min(99,1+Math.floor(Math.sqrt(xp/35)));let n=1;while(n<99&&xp>=catalog.xp[n+1])n++;return n;}
 function gear(s){return Object.values(s.equipment||{}).map(id=>catalog.items[id]).filter(Boolean);}
 function bonus(s,key){return gear(s).reduce((n,item)=>n+(item[key]||0),0);}
-function spiritPassive(s,key){return Object.entries(s.spirits||{}).reduce((n,[id,v])=>n+(v.state==='set'||v.readyAt&&v.readyAt<=Date.now()?catalog.spirits[id]?.passive?.[key]||0:0),key==='armor'&&s.spiritWardUntil>Date.now()&&s.spiritWardUntil<=Date.now()+8000?4:0);}
+function spiritPassive(s,key){return (spiritBuild(s,level(s,'Worship'))[key]||0)+(key==='armor'&&s.spiritWardUntil>Date.now()&&s.spiritWardUntil<=Date.now()+8000?4:0);}
 function chance(attack,defense){return attack>defense?1-(defense+2)/(2*(attack+1)):attack/(2*(defense+1));}
 function rollHit(s,e,style,event={},now=Date.now()){
  const focus=s[style+'Training']||'balanced',skill=style==='melee'?'Attack':style==='ranged'?'Ranged':style==='magic'?'Magic':'Worship';
  const aim=style==='magic'?bonus(s,'magicAccuracy')+(s.equipment?.weapon==='veyrOrb'&&e.memoryFrayUntil>now?catalog.items.veyrOrb.memoryFray:0):style==='ranged'?(catalog.items[s.equipment?.weapon]?.attackBonus||0)+bonus(s,'rangedAccuracy'):style==='worship'?bonus(s,'worshipAccuracy'):bonus(s,'attackBonus');
- const a=(level(s,skill)+8+(focus==='accurate'?3:focus==='balanced'?1:0))*(64+aim),d=(e.defenseLevel+9)*64*(e.weak===style?.8:1);
+ const a=(level(s,skill)+8+(focus==='accurate'?3:focus==='balanced'?1:0))*(64+aim+(['ranged','magic'].includes(style)&&event.distance>=3?spiritBuild(s,level(s,'Worship')).aim:0)),d=(e.defenseLevel+9)*64*(e.weak===style?.8:1);
  let max;if(style==='magic'){const spell=catalog.spells[s.spell]||catalog.spells.windStrike||Object.values(catalog.spells)[0];if(level(s,'Magic')<spell.level)return 0;max=spell.power;}
  else if(style==='worship'){const ids=[...new Set(event.spirits||[])].filter(id=>s.spirits?.[id]&&catalog.spirits[id]);max=ids.length>1?ids.length*12+Math.floor(level(s,'Worship')*.4):ids.length&&catalog.spirits[ids[0]].power?catalog.spirits[ids[0]].power+Math.floor(level(s,'Worship')*.2):0;}
  else{const effective=level(s,style==='ranged'?'Ranged':'Strength')+8+(focus==='aggressive'||focus==='focused'?3:focus==='balanced'?1:0),strength=style==='ranged'?(catalog.items[s.equipment?.ammo]?.rangedStrength||7):bonus(s,'strengthBonus');max=Math.max(style==='ranged'?2:1,Math.floor(.5+effective*(strength+64)/640));}
@@ -26,12 +27,12 @@ function rollHit(s,e,style,event={},now=Date.now()){
  if(e.type==='dummy')return Math.max(1,Math.floor(Math.random()*(max+1)));
  if(Math.random()>=chance(a,d))return 0;return Math.max(style==='ranged'?1:0,Math.floor(Math.random()*(max+1)));
 }
-function rollEnemy(s,e,style){const skill=style==='magic'?level(s,'Magic')*.7+level(s,'Defense')*.3:level(s,'Defense'),a=(e.attackLevel+8)*64,d=(skill+8)*(64+bonus(s,'armor')+(style==='magic'?bonus(s,'magicDefense'):0)+spiritPassive(s,'armor'));return Math.random()<chance(a,d)?Math.floor(Math.random()*(e.maxHit+1)):0;}
+function rollEnemy(s,e,style){const skill=style==='magic'?level(s,'Magic')*.7+level(s,'Defense')*.3:level(s,'Defense'),a=(e.attackLevel+8)*64,d=(skill+8)*(64+bonus(s,'armor')+(style==='magic'?bonus(s,'magicDefense'):0)+spiritPassive(s,'armor'));return spiritGuard(s,level(s,'Worship'),Math.random()<chance(a,d)?Math.floor(Math.random()*(e.maxHit+1)):0);}
 export function publicAction(input,now){
- const a=input.action;if(!a||typeof a!=='object'||!['combat','gather','work','teleport'].includes(a.kind))return null;
+ const a=input.action;if(!a||typeof a!=='object'||!['combat','spirit','gather','work','teleport'].includes(a.kind))return null;
  if(!Number.isFinite(a.started)||a.started<now-15000||a.started>now+1500)return null;
  const allowedTools=['axe','pickaxe','fishingRod','fishingNet','lobsterPot','harpoon'];
- return {kind:a.kind,started:Math.min(now,a.started),duration:Math.max(200,Math.min(10000,Number(a.duration)||1200)),weapon:catalog.items[a.weapon]?.slot==='weapon'?a.weapon:null,style:styles.includes(a.style)?a.style:null,tool:allowedTools.includes(a.tool)?a.tool:null,work:['bury','cook','firemaking','investigate','repair','ritual'].includes(a.work)?a.work:null,type:['tree','ore','fish'].includes(a.type)?a.type:null,color:a.color==='purple'?'purple':a.color==='red'?'red':'green',target:point(a.target?.x,a.target?.y)&&near(input,a.target,20)?{x:a.target.x,y:a.target.y,...(token(a.target.entity)&&catalog.entities[input.scene+':'+a.target.entity]?{entity:a.target.entity}:{} )}:null};
+ return {kind:a.kind,spirits:a.kind==='spirit'?[...new Set(Array.isArray(a.spirits)?a.spirits:[])].filter(id=>catalog.spirits[id]).slice(0,2):[],started:Math.min(now,a.started),duration:Math.max(200,Math.min(10000,Number(a.duration)||1200)),weapon:catalog.items[a.weapon]?.slot==='weapon'?a.weapon:null,style:styles.includes(a.style)?a.style:null,tool:allowedTools.includes(a.tool)?a.tool:null,work:['bury','cook','firemaking','investigate','repair','ritual'].includes(a.work)?a.work:null,type:['tree','ore','fish'].includes(a.type)?a.type:null,color:a.color==='purple'?'purple':a.color==='red'?'red':'green',target:point(a.target?.x,a.target?.y)&&near(input,a.target,20)?{x:a.target.x,y:a.target.y,...(token(a.target.entity)&&catalog.entities[input.scene+':'+a.target.entity]?{entity:a.target.entity}:{} )}:null};
 }
 function initial(e,now,actor){return {entity:e.id,hp:e.hp,maxhp:e.hp,x:e.x,y:e.y,generation:1,deadUntil:0,owner:e.hp?'server':actor,ownerUntil:now+5000,nextMove:now+(3+Number(e.id)%5)*1000,target:null,pose:null,hazard:null,phase:0,move:0,defender:null,returning:false,nextAttack:0,opened:false,signature:[e.kind,e.hp,e.x,e.y,'server-v1'].join(':')};}
 export function lootFor(e){
@@ -60,7 +61,7 @@ async function validSwingImpact(db,actor,event,style,result){
 }
 async function spiritCastReady(db,actor,s,event,now){
  const ids=[...new Set(event.spirits||[])];
- if(!ids.length||ids.some(id=>!catalog.spirits[id]||!s.spirits?.[id]))return false;
+ if(!ids.length||ids.length>2||ids.some(id=>!catalog.spirits[id]||!s.spirits?.[id]))return false;
  if(ids.length===1&&!catalog.spirits[ids[0]].power)return false;
  const result=await db.batch(ids.map(id=>db.prepare('INSERT INTO shared_clocks (id,ready_at,nonce) VALUES (?,?,?) ON CONFLICT(id) DO UPDATE SET ready_at=excluded.ready_at,nonce=excluded.nonce WHERE shared_clocks.ready_at<=? OR shared_clocks.nonce=excluded.nonce RETURNING nonce').bind(actor+':spirit:'+id,now+(catalog.spirits[id].twin?45000:30000),event.cast,now)));
  return result.every(r=>r.meta?.changes>0);
@@ -100,7 +101,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
  players.set(actor,{x:input.x,y:input.y});
  if(maintenance.length)rows=await readRows();const ticks=[];
  for(const row of rows){const e=catalog.entities[scene+':'+row.entity_id];if(!e.hp)continue;
-  const v=parse(row.state),before=enc(v);if(v.target===actor&&!questFightVisible(e,s)){v.target=null;v.pose=null;v.hazard=null;v.returning=true;}if(v.target===actor)v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};
+  const v=parse(row.state),before=enc(v);if(v.target===actor&&!questFightVisible(e,s)){v.target=null;v.pose=null;v.hazard=null;v.returning=true;}if(v.target===actor)v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,attunedSpirit:s.attunedSpirit,firstSpirit:s.firstSpirit,spiritWardUntil:s.spiritWardUntil};
   const effects=advanceNpc(e,v,players,now,catalog,rollEnemy);if(enc(v)===before)continue;
   ticks.push(db.prepare('UPDATE shared_entities SET state=?,revision=revision+1 WHERE id=? AND revision=?').bind(enc(v),row.id,row.revision));
   for(const effect of effects){const result={...effect.result,id:effect.id,scene,kind:effect.kind,revision:row.revision+1};
@@ -147,7 +148,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
      else if(e.mainStoryStage!=null&&s.mainStoryQuest?.stage!==e.mainStoryStage||e.kind==='mountainwatcher'&&(s.mountainQuest?.stage!==6||s.mountainQuest?.version>=2&&!s.mountainQuest?.fieldOrders)||e.encounter==='veyr'&&!(s.mountainQuest?.stage===17||s.mountainQuest?.stage===20&&s.questRematch==='veyr'))fail('Complete the story objectives before this fight.');
      else if(s.equipment?.weapon==='veyrOrb'&&level(s,'Magic')<20)fail('Veyr’s Orb requires Magic 20.');
      else if(!await reserveSwing(db,actor,s,event,result,now))fail('Your next attack is not ready.');
-     else{result.ok=true;if(!v.target){v.owner='server';v.target=actor;v.pose=null;v.hazard=null;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}}
+     else{result.ok=true;if(!v.target){v.owner='server';v.target=actor;v.pose=null;v.hazard=null;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,attunedSpirit:s.attunedSpirit,firstSpirit:s.firstSpirit,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}}
     }else if(event.kind==='hit'){
      const style=styles.includes(event.style)?event.style:'melee',weapon=catalog.items[s.equipment?.weapon],range=style==='melee'?2+(e.radius||0):10+(e.radius||0);
      if(!near(input,v,range)||!npcLineOfSight(e,v,input))fail('Target is out of attack range.');
@@ -156,7 +157,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
      else if(style==='worship'&&(!token(event.cast)||v.spiritCasts?.[actor+':'+event.cast]!==undefined))fail('That spirit effect has already struck.');
      else if(event.swing&&style!=='worship'&&!await validSwingImpact(db,actor,event,style,result))fail('That attack has no valid swing.');
      else if(style==='worship'?!await spiritCastReady(db,actor,s,event,now):!event.swing&&!await cooldown(db,actor+':attack',event.id,now,.6*(style==='magic'?5:weapon?.attackTicks||4)*1000-150))fail('Your next attack is not ready.');
-     else{if(style==='worship'){v.spiritCasts=Object.fromEntries(Object.entries(v.spiritCasts||{}).filter(([,at])=>typeof at==='number'&&at>now-60000));v.spiritCasts[actor+':'+event.cast]=now;}const damage=Math.min(v.hp,rollHit(s,{...e,memoryFrayUntil:v.memoryFray?.[actor]||0},style,event,now));v.hp-=damage;if(style==='magic'&&s.equipment?.weapon==='veyrOrb'&&damage>0){v.memoryFray=Object.fromEntries(Object.entries(v.memoryFray||{}).filter(([,until])=>until>now));v.memoryFray[actor]=now+4000;result.memoryFrayUntil=now+4000;}if(style==='worship'&&damage>0&&event.spirits?.length===1){const slow=catalog.spirits[event.spirits[0]]?.slow||0;if(slow)v.slowUntil=now+slow*1000;}if(!v.target){v.owner='server';v.target=actor;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}result.ok=true;result.damage=damage;result.style=style;result.focus=s[style+'Training']||'balanced';result.defeat=v.hp<=0;
+     else{if(style==='worship'){v.spiritCasts=Object.fromEntries(Object.entries(v.spiritCasts||{}).filter(([,at])=>typeof at==='number'&&at>now-60000));v.spiritCasts[actor+':'+event.cast]=now;}const rolled=rollHit(s,{...e,memoryFrayUntil:v.memoryFray?.[actor]||0},style,{...event,distance:Math.hypot(input.x-v.x,input.y-v.y)},now),effect=spiritStrike(s,level(s,'Worship'),v.resonance?.[actor],rolled,style,now),damage=Math.min(v.hp,effect.damage);if(effect.memory){v.resonance=Object.fromEntries(Object.entries(v.resonance||{}).filter(([,m])=>now-m.at<12000).slice(-40));v.resonance[actor]=effect.memory;}if(style!=='worship'&&damage>0)result.spirit={...effect,damage,memory:undefined};if(effect.slow&&damage>0)v.slowUntil=now+effect.slow*1000;v.hp-=damage;if(style==='magic'&&s.equipment?.weapon==='veyrOrb'&&damage>0){v.memoryFray=Object.fromEntries(Object.entries(v.memoryFray||{}).filter(([,until])=>until>now));v.memoryFray[actor]=now+4000;result.memoryFrayUntil=now+4000;}if(style==='worship'&&damage>0&&event.spirits?.length===1){const slow=catalog.spirits[event.spirits[0]]?.slow||0;if(slow)v.slowUntil=now+slow*1000;}if(!v.target){v.owner='server';v.target=actor;v.nextAttack=now+(e.encounter?2500:e.interval*1000);v.defender={xp:s.xp,equipment:s.equipment,spirits:s.spirits,attunedSpirit:s.attunedSpirit,firstSpirit:s.firstSpirit,spiritWardUntil:s.spiritWardUntil};v.assisted=s.mountainQuest?.stage===17;}result.ok=true;result.damage=damage;result.style=style;result.focus=s[style+'Training']||'balanced';result.defeat=v.hp<=0;
       if(v.hp<=0){v.deadUntil=now+e.respawn;v.target=null;v.pose=null;loot={id:entityKey(e.id)+':loot:'+v.generation,scope,scene,kind:'loot',payload:{items:lootFor(e),x:v.x,y:v.y,owner:actor,publicAt:now+30000},expires:now+120000};}
      }
     }else if(event.kind==='wardInterrupt'){
@@ -225,7 +226,7 @@ export async function syncSharedWorld(env,actor,s,input,now,scope){
  const objects=snapshot.objects.flatMap(row=>{const o=parse(row.payload);return near(input,o,75)&&(row.kind==='fire'||o.owner===actor||o.publicAt<=now)?[{...o,id:row.id,kind:row.kind,expiresAt:row.expires_at,revision:row.revision}]:[];});
  const receipts=snapshot.receipts.map(parse);
  await cleanupSharedHistory(db,now);
- const world={protocol:1,scope,actor,serverTime:Date.now(),effects:publicSharedEffects(snapshot.effects,actor,input,s,scene),entities:rows.filter(row=>questFightVisible(catalog.entities[scene+':'+row.entity_id],s)&&(!w.revisions||w.revisions[row.entity_id]!==row.revision)).map(row=>({...parse(row.state),revision:row.revision})).map(({defender,assisted,...v})=>({...v,hazard:v.hazard?(({damage,...h})=>h)(v.hazard):null})),objects,receipts,acked:ack};
+ const world={protocol:1,scope,actor,serverTime:Date.now(),effects:publicSharedEffects(snapshot.effects,actor,input,s,scene),entities:rows.filter(row=>questFightVisible(catalog.entities[scene+':'+row.entity_id],s)&&(!w.revisions||w.revisions[row.entity_id]!==row.revision)).map(row=>({...parse(row.state),revision:row.revision})).map(({defender,assisted,resonance,...v})=>({...v,hazard:v.hazard?(({damage,...h})=>h)(v.hazard):null})),objects,receipts,acked:ack};
  // The API reuses this presence read; this internal value is not serialized.
  Object.defineProperty(world,'_peers',{value:[...players].filter(([id])=>id!==actor).slice(0,60).map(([,p])=>p)});
  return world;
@@ -237,10 +238,11 @@ export async function readSharedEffects(db,scope,scene,actor,position,since,stat
  return publicSharedEffects(rows,actor,position,state,scene);
 }
 function publicSharedEffects(rows,actor,position,state,scene){
- return rows.reverse().flatMap(row=>{if(row.actor===actor&&row.kind!=='enemyAction')return [];const r=parse(row.result),e=catalog.entities[scene+':'+(r.entity||r.target?.entity)];if(row.kind!=='activity'&&state&&e&&!questFightVisible(e,state))return [];if(!near(position,r,75))return [];
+ return rows.reverse().flatMap(row=>{if(row.actor===actor&&row.kind!=='enemyAction')return [];const r=parse(row.result),e=catalog.entities[scene+':'+(r.entity||r.target?.entity)],hidden=!['activity','enemyHit'].includes(row.kind)&&state&&e&&!questFightVisible(e,state);if(hidden&&!(row.kind==='hit'&&r.ok&&r.spirit?.proc))return [];if(!near(position,r,75))return [];
   const base={id:row.id,actor:row.actor,kind:row.kind,at:row.created_at,x:r.x,y:r.y};
+  if(hidden)return [{...base,spirit:{id:r.spirit.spirit,proc:r.spirit.proc}}];
   if(row.kind==='activity')return [{...base,action:r}];
   if(row.kind==='enemyAction')return [{...base,entity:r.entity,generation:r.generation,pose:r.pose,hazard:r.hazard?(({damage,...h})=>h)(r.hazard):null}];
-  return r.ok?[{...base,entity:r.entity,generation:r.generation,revision:r.revision,damage:r.damage,dodged:!!r.dodged,hp:r.hp,maxhp:r.maxhp,defeat:!!r.defeat}]:[];
+  return r.ok?[{...base,entity:r.entity,generation:r.generation,revision:r.revision,damage:r.damage,spirit:r.spirit?.proc?{id:r.spirit.spirit,proc:r.spirit.proc}:null,dodged:!!r.dodged,hp:r.hp,maxhp:r.maxhp,defeat:!!r.defeat}]:[];
  });
 }

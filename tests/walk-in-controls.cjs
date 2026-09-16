@@ -17,7 +17,7 @@ for(const b of cases){
  select(o);walkTo(...outside);settle();assert(o.openedAt===undefined,'new destination cancels queued opening');
 }
 // Test actual rendered click targets, including the two buildings reported inaccessible.
-screen={w:1112,h:512};view3d.zoom=34;
+screen={w:1112,h:512};canvas.getBoundingClientRect=()=>({left:0,top:0,width:screen.w,height:screen.h});view3d.zoom=34;
 for(const id of ['realm_briarhaven_4','realm_briarhaven_3','village_kitchen']){
  const b=buildings.find(b=>b.service?.destination===id),o=b.service;activateScene('overworld',...doorApproach(o));setWalkInDoor(o,true,true);draw3d();
  assert(b._cutaway);assert(!hitboxes.some(hit=>hit.building===b),'hidden roof cannot intercept floor clicks');

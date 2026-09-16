@@ -18,6 +18,7 @@ function sharedTimedAction(source,key,age,duration,detail){if(!sharedTaskCache||
 function outgoingSharedAction(){
  const now=sharedNow(),g=gatheringActivity(),a=typeof questVisualAction==='function'?questVisualAction():playerAction;
  if(tutorialCrossing)return sharedTimedAction(tutorialCrossing,tutorialCrossing.phase,tutorialCrossing.age,tutorialCrossing.phase==='casting'?2600:1100,{kind:'teleport',color:tutorialCrossing.kind==='home'?'purple':tutorialCrossing.kind==='hunt'?'red':'green'});
+ if(spiritEffect?.sharedAction&&now-spiritEffect.sharedAction.started<spiritEffect.sharedAction.duration)return spiritEffect.sharedAction;
  if(g)return sharedTimedAction(g.object,'gather',elapsed,actionDuration(g.object)*1000,{kind:'gather',type:g.object.type,tool:g.tool});
  if(a)return sharedTimedAction(mainStoryWork||mountainWork||a,a.kind,time-a.started,a.duration*1000,{kind:'work',work:a.kind});
  sharedTaskCache=null;
@@ -42,7 +43,7 @@ function applySharedWorld(data){
   try{
    if(r.kind==='attack'&&Number.isFinite(r.readyAt))sharedAttackReadyAt=Math.max(sharedAttackReadyAt,r.readyAt);
    if(r.ok){
-    if(r.kind==='hit'&&o){if(r.damage>0)awardCombatDamage(r.damage,r.style,r.focus);floating(r.damage?'−'+r.damage:'Miss',o.x,o.y,r.damage?'#ffe0bb':'#9caebd');o.hitAt=time;if(Number.isFinite(r.memoryFrayUntil))o._memoryFrayUntil=time+Math.max(0,(r.memoryFrayUntil-sharedNow())/1000);
+    if(r.kind==='hit'&&o){if(r.spirit)applySpiritStrikeFeedback(r.spirit,o);if(r.damage>0)awardCombatDamage(r.damage,r.style,r.focus);floating(r.damage?'−'+r.damage:'Miss',o.x,o.y,r.damage?'#ffe0bb':'#9caebd');o.hitAt=time;if(Number.isFinite(r.memoryFrayUntil))o._memoryFrayUntil=time+Math.max(0,(r.memoryFrayUntil-sharedNow())/1000);
      if(r.defeat){o.hp=0;if(!r.scene||r.scene===currentScene)awardDefeat(o,r.style);}
     }else if(r.kind==='wardInterrupt'&&o){floating('False warning broken',o.x,o.y,'#b5eee0');}
     else if(r.kind==='enemyHit'&&o){const hp=o.hp;if(r.dodged)floating('Dodged',px,py,'#b5e9c8');else sharedEnemyHitBefore(o,r.damage);o.hp=hp;}
@@ -129,6 +130,7 @@ const sharedRowanBefore=beginTutorialCrossing;
 beginTutorialCrossing=function(...args){if(!sharedLive()||sharedPermit)return sharedRowanBefore(...args);return requestSharedTeleport('rowan','overworld',()=>sharedRowanBefore(...args));};
 function sharedActionTarget(a){const o=a?.target?.entity&&worldIndex().byId.get(a.target.entity);return o&&questFightVisible(o,s)?{x:o.drawX??o.x,y:o.drawY??o.y}:a?.target;}
 function sharedPeerGear(peer){const a=sharedVisibleAction(peer);if(!a)return {};const age=(sharedNow()-a.started)/1000,duration=a.duration/1000;if(age<0||age>duration+.25)return {};const started=time-age;
+ if(a.kind==='spirit')return {_attackAt:started,_attackStyle:'magic'};
  if(a.kind==='combat')return {weapon:a.weapon===undefined?peer.equipment?.weapon:a.weapon,_attackAt:started,_attackStyle:a.style};
  if(a.kind==='teleport')return {_castAt:started,_castDuration:duration,_castColor:a.color==='purple'?'#b785f5':a.color==='red'?'#ff6464':'#a7e6e0'};
  if(a.kind==='gather')return {_peerAction:{gathering:{object:{type:a.type},tool:a.tool,phase:Math.min(.999,age/duration)}}};
@@ -144,16 +146,17 @@ drawCombatProjectiles3=function(mesh){sharedProjectileBefore(mesh);for(const pee
 
 // Arrival-time presentation is separate from the authoritative simulation clock.
 // Delayed or repeated snapshots cannot erase or restart an observed attack.
-const sharedVisualActions=new Map(),sharedEffectIds=new Set();
+const sharedVisualActions=new Map(),sharedSpiritActions=new Map(),sharedEffectIds=new Set();
 let sharedActivityStream=null,sharedActivityScene=null,sharedActivityRetry=0,sharedActivityBackoff=250,sharedPublishedAction=null;
 function rememberSharedAction(actor,action,serverTime=sharedNow()){
- if(!action)return;const key=action.kind+':'+action.started+':'+(action.style||action.type||action.work||action.color||''),old=sharedVisualActions.get(actor);
+ if(!action)return;const actions=action.kind==='spirit'?sharedSpiritActions:sharedVisualActions;const key=action.kind+':'+action.started+':'+(action.style||action.type||action.work||action.color||''),old=actions.get(actor);
  if(old?.key===key||old&&action.started<old.originalStarted)return;
  const age=Math.max(0,serverTime-action.started);if(age>6000)return;
- sharedVisualActions.set(actor,{key,originalStarted:action.started,action:{...action,started:sharedNow()-Math.min(age,100)}});
- if(sharedVisualActions.size>128)sharedVisualActions.delete(sharedVisualActions.keys().next().value);
+ actions.set(actor,{key,originalStarted:action.started,action:{...action,started:sharedNow()-Math.min(age,100)}});
+ if(actions.size>128)actions.delete(actions.keys().next().value);
 }
 function sharedVisibleAction(peer){
+ const spirit=sharedSpiritActions.get(peer.id);if(spirit&&sharedNow()-spirit.action.started<spirit.action.duration)return spirit.action;
  const cached=sharedVisualActions.get(peer.id);
  const action=cached&&sharedNow()-cached.action.started<cached.action.duration?cached.action:peer.action;
  return action;
@@ -168,14 +171,16 @@ function applySharedEffects(effects,serverTime){
   if(sharedEffectIds.has(e.id))continue;sharedEffectIds.add(e.id);
   if(sharedEffectIds.size>512)sharedEffectIds.delete(sharedEffectIds.values().next().value);
   if(e.actor===sharedActor&&e.kind!=='enemyAction'||serverTime-e.at>6000)continue;
-  const phaseTarget=worldIndex().byId.get(String(e.entity||e.action?.target?.entity));if(e.kind!=='activity'&&phaseTarget&&!questFightVisible(phaseTarget,s))continue;
+  const phaseTarget=worldIndex().byId.get(String(e.entity||e.action?.target?.entity));if(!['activity','enemyHit','hit'].includes(e.kind)&&phaseTarget&&!questFightVisible(phaseTarget,s))continue;
   if(e.kind==='activity'){rememberSharedAction(e.actor,e.action,serverTime);continue;}
-  const o=worldIndex().byId.get(String(e.entity));if(!o||e.generation!==o._sharedGeneration)continue;
+  if(e.kind==='enemyHit'){
+   const peer=onlinePeers.get(e.actor);if(peer){floating(e.dodged?'Dodged':e.damage?'−'+e.damage:'Blocked',peer.drawX,peer.drawY,e.damage?'#ffaba1':'#9caebd');peer.sharedHitUntil=Date.now()+3000;}continue;
+  }
+  if(e.kind==='hit'&&e.spirit?.proc){const peer=onlinePeers.get(e.actor);if(peer){floating(e.spirit.proc,peer.drawX,peer.drawY,SPIRITS[e.spirit.id]?.color||'#b9eddb');peer.spiritProc={id:e.spirit.id,started:sharedNow()};}}
+  const o=worldIndex().byId.get(String(e.entity));if(!o||!questFightVisible(o,s)||e.generation!==o._sharedGeneration)continue;
   if(e.kind==='enemyAction'){if(o._sharedOwner!==sharedActor)sharedEnemyPose(o,e.pose,e.generation,serverTime);o._sharedHazard=e.hazard;continue;}
   o._sharedCombatUntil=time+4;
-  if(e.kind==='enemyHit'){
-   const peer=onlinePeers.get(e.actor);if(peer){floating(e.dodged?'Dodged':e.damage?'−'+e.damage:'Blocked',peer.drawX,peer.drawY,e.damage?'#ffaba1':'#9caebd');peer.sharedHitUntil=Date.now()+3000;}
-  }else if(e.kind==='hit'||e.kind==='companion'){
+  if(e.kind==='hit'||e.kind==='companion'){
    floating(e.damage?'−'+e.damage:'Miss',o.drawX??o.x,o.drawY??o.y,e.damage?'#ffe0bb':'#9caebd');o.hitAt=time;
    if(e.revision>=(o._sharedRevision??-1)&&e.revision>=(o._sharedHPRevision??-1)){o.hp=e.hp;o._sharedHPRevision=e.revision;}
   }
@@ -190,7 +195,7 @@ function publishSharedAction(action){
 }
 function ensureSharedActivityStream(){
  if(typeof EventSource==='undefined')return;
- if(sharedActivityScene!==currentScene||!sharedLive()||document.hidden){sharedActivityStream?.close();sharedActivityStream=null;sharedActivityScene=currentScene;sharedVisualActions.clear();sharedEffectIds.clear();}
+ if(sharedActivityScene!==currentScene||!sharedLive()||document.hidden){sharedActivityStream?.close();sharedActivityStream=null;sharedActivityScene=currentScene;sharedVisualActions.clear();sharedSpiritActions.clear();sharedEffectIds.clear();}
  if(sharedActivityStream||!sharedLive()||document.hidden||Date.now()<sharedActivityRetry)return;
  const scene=currentScene,stream=new EventSource('/api/activity?scene='+encodeURIComponent(scene));sharedActivityStream=stream;
  stream.onmessage=event=>{if(scene!==currentScene||!sharedLive()||document.hidden){stream.close();if(sharedActivityStream===stream)sharedActivityStream=null;return;}try{const packet=JSON.parse(event.data);if(packet.scene===scene){sharedActivityBackoff=250;applySharedEffects(packet.effects,packet.serverTime);}}catch{}};
@@ -205,3 +210,11 @@ function sharedEncounterVisual(kind){
  const o=worldActors().find(o=>o.encounter===kind&&!o._sharedDeadUntil);if(!o)return null;
  return {o,scene:currentScene,phase:o._sharedPhase||0,hazards:o._sharedHazard&&sharedNow()<o._sharedHazard.due?[sharedLocalHazard(o,o._sharedHazard)]:[]};
 }
+
+const drawBeforeSpiritPeers=drawOnlinePlayers;
+drawOnlinePlayers=function(mesh,labels){drawBeforeSpiritPeers(mesh,labels);for(const peer of onlinePeers.values()){
+ const proc=peer.spiritProc,procAge=proc?(sharedNow()-proc.started)/1000:2;if(proc&&procAge>=0&&procAge<.8)drawElementalCast(mesh,peer.drawX,peer.drawY,[proc.id],procAge,.8,null);
+ const a=sharedSpiritActions.get(peer.id)?.action||(peer.action?.kind==='spirit'?peer.action:null);if(!a)continue;
+ const age=(sharedNow()-a.started)/1000;if(age<0||age>a.duration/1000)continue;
+ drawElementalCast(mesh,peer.drawX,peer.drawY,a.spirits||[],age,a.duration/1000,sharedActionTarget(a));
+}};

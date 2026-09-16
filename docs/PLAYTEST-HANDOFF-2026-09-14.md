@@ -1,3 +1,7 @@
+# Identity Phase 1 — 16 September 2026
+
+The owner explicitly requested the combat/Spirit/Worship/HUD identity pass, overriding the development freeze for this scope. Read `IDENTITY-PHASE-1-2026-09-16.md` and its QA matrix before continuing. One attuned passive replaces collection-wide stacking; saved Spirit resonance and the new HUD are in place. Do not begin the separate Skills/Magic/Equipment/Tutorial overhaul without that next request.
+
 # Combat timing and quest observers — 15 September 2026
 
 See `COMBAT-TIMING-AND-OBSERVERS-2026-09-15.md` for the recorded attack-cooldown repair and visible player animations against hidden quest enemies.

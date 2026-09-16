@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-16T07:35:58.149Z",
+  "seconds": 21,
+  "passed": 4,
+  "failed": 0,
+  "total": 4,
+  "results": [
+    {
+      "test": "tests/classic-ui.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.6,
+      "output": "PASS: persistent browser fullscreen on desktop/mobile with an independent settings control; ten wired tabs with Tool belt excluded, preserved controls across panel switches, chat alongside friends, early notices, chat-only toast messages, and live map vitals.\n"
+    },
+    {
+      "test": "tests/combat-experience.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.6,
+      "output": "PASS: every combat/training style, damage scaling per hit, visible XP, misses, overkill, dead targets, spirit single/area damage, repeat prevention and spell base XP.\n"
+    },
+    {
+      "test": "tests/identity-server.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 20.6,
+      "output": "PASS: authoritative passive triggers, zero damage, slowing, two-Spirit limit, durable receipt retries, client healing and bond XP exactly once across save/reload.\n"
+    },
+    {
+      "test": "tests/identity-spirits.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 20.8,
+      "output": "PASS: eight distinct non-stacking builds, successful-action bond progression, cooldown persistence, switching restrictions, save recovery, accuracy range, misses, guard thresholds and shared/local rule parity.\n"
+    }
+  ]
+}

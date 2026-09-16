@@ -66,7 +66,7 @@ playerAccuracy=function(o,style=combatStyle()){
  const skill={melee:'Attack',ranged:'Ranged',magic:'Magic',worship:'Worship'}[style]||'Attack',focus=trainingFocus(style);
  const bonus=style==='magic'?equipmentBonus('magicAccuracy')+(s.equipment.weapon==='veyrOrb'&&o._memoryFrayUntil>time?ITEMS.veyrOrb.memoryFray:0):style==='ranged'?(equippedWeapon().attackBonus||0)+equipmentBonus('rangedAccuracy'):style==='worship'?equipmentBonus('worshipAccuracy'):equipmentBonus('attackBonus');
  const stance=style==='melee'?(focus==='accurate'?3:focus==='balanced'?1:0):focus==='focused'?3:0;
- const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64),defenceStyle=style==='worship'?'magic':style;
+ const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64+(['ranged','magic'].includes(style)&&Math.hypot(o.x-px,o.y-py)>=3?spiritBuild(s,lv('Worship')).aim:0)),defenceStyle=style==='worship'?'magic':style;
  const weak=(o.weak||HUNT_ENCOUNTERS[o.kind]?.weak)===defenceStyle;
  const defense=((o.defenseLevel??o.level??1)+9)*Math.max(1,64+(o.defenseBonuses?.[defenceStyle]||0))*(weak?.8:1);
  return attackRollChance(attack,defense);
@@ -75,7 +75,7 @@ enemyAccuracy=function(o,style='melee'){
  const focus=trainingFocus(),stance=focus==='defensive'?3:focus==='balanced'?1:0;
  const level=style==='magic'?lv('Magic')*.7+lv('Defense')*.3:lv('Defense');
  const armor=style==='magic'?Math.max(0,equipmentBonus('magicAccuracy'))+equipmentBonus('magicDefense'):equipmentBonus('armor');
- const defense=(level+8+stance)*(64+armor+Math.floor(lv('Worship')/5)+spiritBonus('armor'));
+ const defense=(level+8+stance)*(64+armor+spiritBonus('armor'));
  const attack=((o.attackLevel??o.level??1)+8)*(64+(o.attackBonus||0))*(o.accuracy===undefined?1:o.accuracy/.53);
  return attackRollChance(attack,defense);
 };
@@ -83,7 +83,7 @@ actionDuration=function(o){return fighter(o)?.6*(combatStyle()==='magic'?5:equip
 function enemyDamage(o,style='melee',special=false){
  if(Math.random()>=enemyAccuracy(o,style))return 0;
  const max=o.maxHit??Math.max(1,(o.atk||0)+(o.spread||0));
- return Math.floor(Math.random()*(max+1));
+ return spiritGuard(s,lv('Worship'),Math.floor(Math.random()*(max+1)));
 }
 function applyEnemyTier(o,row){
  const hp=o.hp>0?Math.min(1,o.hp/(o.maxhp||o.hp)):1,level=Math.max(1,row.level||1);

@@ -12,7 +12,7 @@ renderAction=renderTutorial=save=draw=drawPortrait=()=>{};setupExpandedWorld();s
 const range=tutorialObject('range'),kitchen=buildings.find(b=>b.service?.destination==='village_kitchen');activateScene('overworld',...doorApproach(kitchen.service));setWalkInDoor(kitchen.service,true,true);activateScene('overworld',range.x-1,range.y);
 let before=s.bag.rawShrimp;primaryItemAction('rawShrimp',true);assert.equal(selectedUseItem,'rawShrimp');assert.equal(s.bag.rawShrimp,before,'tapping food beside a range only selects it');assert($('inventoryGrid').children.some(b=>b.classList.contains('item-selected')),'chosen bag item is visibly highlighted');
 const bread=s.bag.breadDough;clearUseItem();engage(range);assert.equal(s.bag.rawShrimp,before);assert.equal(s.bag.breadDough,bread,'opening a range never consumes dough');assert(window.realmWorkbench);assert($('modal').modeless);assert.equal(tab,'bag');assert.equal($('gameDock').hidden,false);close();
-primaryItemAction('rawShrimp',true);assert(requestItemOnObject(range));assert.equal(s.bag.rawShrimp,before-1,'one intentional use cooks one item');
+primaryItemAction('rawShrimp',true);assert(requestItemOnObject(range));assert.equal(s.bag.rawShrimp,before,'cooking waits for its animation');time+=1;updatePlayerAction();assert.equal(s.bag.rawShrimp,before-1,'completed cooking action consumes one item');stop();before=s.bag.rawShrimp;
 assert(selectUseItem('flour'));assert(useItemOnItem('jugWater'));assert.equal(s.bag.flour,0);assert.equal(s.bag.jugWater,0);assert.equal(s.bag.breadDough,bread+1);
 assert(selectUseItem('arrowShafts'));assert(useItemOnItem('feathers'));assert.equal(s.bag.headlessArrows,15);assert(selectUseItem('bronzeArrowheads'));assert(useItemOnItem('headlessArrows'));assert.equal(s.bag.arrows,15);
 assert(selectUseItem('rawShrimp'));const material=JSON.stringify(s.bag);assert.equal(useItemOnItem('normalLogs'),false);assert.equal(JSON.stringify(s.bag),material,'invalid combinations preserve both items');
@@ -25,5 +25,5 @@ handlers.pointerdown(event);hold();assert($('modal').open===false);const menu=do
 // Banking is one interaction from either the banker or chest, with a live bag.
 const banker=tutorialTutor('bank');activateScene('overworld',banker.x+1,banker.y);handleWorldInteraction(banker);assert.equal(window.realmTrade.kind,'bank');assert.equal(tab,'bag');assert.equal($('gameDock').hidden,false);assert($('modal').modeless);assert(transferBank('rawShrimp'));assert(transferBank('rawShrimp',true));close();
 const chest=objects.find(o=>o.name==='Bank chest');assert(chest);handleWorldInteraction(chest);assert.equal(window.realmTrade.kind,'bank');close();
-console.log('PASS: highlighted material selection, non-consuming station menus, explicit one-item cooking, dough/arrow combinations, invalid-target and walk cancellation, hold release suppression, and modeless direct banking.');
+console.log('PASS: highlighted material selection, non-consuming station menus, timed cooking, dough/arrow combinations, invalid-target and walk cancellation, hold release suppression, and modeless direct banking.');
 }`,ctx);

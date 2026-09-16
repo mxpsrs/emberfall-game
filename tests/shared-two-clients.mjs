@@ -6,6 +6,8 @@ import {handlePlayers,handleSave,handleAuth,handleActivity,SAVE_RESET_VERSION} f
 const require=createRequire(import.meta.url),sql=new DatabaseSync(':memory:');
 for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')))sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));
 const env={DB:{prepare(query){return {bind(...args){assert(args.length<=100,'D1 bind limit');return {query,args,async first(){return sql.prepare(query).get(...args)},async all(){return {results:sql.prepare(query).all(...args)}},async run(){return {meta:{changes:sql.prepare(query).run(...args).changes}}}}}}},async batch(statements){sql.exec('BEGIN');try{const rows=statements.map(({query,args})=>({meta:{changes:sql.prepare(query).run(...args).changes}}));sql.exec('COMMIT');return rows;}catch(e){sql.exec('ROLLBACK');throw e;}}}};
+// Reproducible damage and roaming keep animation checks independent of lucky kills.
+let simulationSeed=91583;const realRandom=Math.random;const testRandom=()=>{simulationSeed=(Math.imul(simulationSeed,1664525)+1013904223)>>>0;return simulationSeed/4294967296;};Math.random=testRandom;
 let clock=Date.now();const realNow=Date.now;Date.now=()=>Math.floor(clock);
 const req=(url,cookie,body,method='POST')=>new Request('https://game.test'+url,{method,headers:{cookie,origin:'https://game.test'},body:JSON.stringify({...body,resetVersion:SAVE_RESET_VERSION})});
 async function client(name){
@@ -13,7 +15,7 @@ async function client(name){
  ctx.clock=()=>Math.floor(clock);ctx.AbortSignal=AbortSignal;ctx.performance={now:()=>clock};
  const run=code=>vm.runInContext(code,ctx),json=code=>JSON.parse(run('JSON.stringify('+code+')'));
  for(const f of ['multiplayer','shared-world'])run(fs.readFileSync('dist/'+f+'.js','utf8'));
- ctx.NAME=name;
+ ctx.NAME=name;ctx.testRandom=testRandom;run('Math.random=()=>testRandom();');
  run(`Date.now=()=>clock();draw=()=>{};drawPortrait=()=>{};s.character={name:NAME,look:0};s.worldScale=3;s.tutorialIslandVersion=2;s.tutorialVersion=6;s.tutorial=25;s.sceneId='tutorial';s.x=51;s.y=78;setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();renderUI=renderAction=renderEncounterHud=renderTutorial=save=playGameSound=()=>{};assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;s.equipment.weapon='woodenSword';s.equipment.shield='woodenShield';s.xp.Hitpoints=200000;s.hp=maxhp();const rat=objects.find(o=>o.kind==='rat');`);
  const registration=await handleAuth(req('/api/auth/register','',{username:name,password:'test-only-9862!'}),env);assert.equal(registration.status,200);const cookie=registration.headers.get('set-cookie').split(';')[0];
  const saved=await handleSave(req('/api/character',cookie,{state:json('s'),revision:0},'PUT'),env);assert.equal(saved.status,200,await saved.text());
@@ -47,7 +49,7 @@ for(let frame=0;frame<12000;frame++){
  if(frame%160===159&&b.run('rat.hp>0'))b.run('performAttack(rat)');
  if(b.run('rat.hp===0'))break;
 }
-assert(renderedAttack,'rendered player attack');assert(renderedEnemy,'rendered monster attack');assert(damage,'second client damages shared rat');assert(peerAttack,'observer receives attack');assert(enemyAttack,'observer receives enemy attack');assert.equal(a.run('rat.hp'),0,'observer sees defeated NPC');assert(!a.run('s.groundLoot.some(o=>o._sharedObject)'),'observer cannot see private drops');
+assert(renderedAttack,'rendered player attack');assert(renderedEnemy,'rendered monster attack '+JSON.stringify({enemyAttack,damage,rat:a.json('rat'),time:a.run('time')}));assert(damage,'second client damages shared rat');assert(peerAttack,'observer receives attack');assert(enemyAttack,'observer receives enemy attack');assert.equal(a.run('rat.hp'),0,'observer sees defeated NPC');assert(!a.run('s.groundLoot.some(o=>o._sharedObject)'),'observer cannot see private drops');
 console.log('PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.');
 // Exercise public action packets through both clients and the actual avatar renderer.
 for(const [kind,detail,clip] of [['combat','ranged','ranged'],['combat','magic','magic'],['gather','tree','melee'],['gather','ore','melee'],['gather','fish','fishing'],['work','cook','bury'],['work','firemaking','firemaking'],['teleport','red','magic'],['teleport','green','magic'],['teleport','red-arrival','magic'],['teleport','green-arrival','magic']]){
@@ -130,4 +132,4 @@ clock+=2000;a.run('time+=2;assert.equal(sharedPeerGear(remote)._attackAt,undefin
 assert.equal((await handleActivity(new Request('https://game.test/api/activity?scene=tutorial'),env)).status,401);
 assert.equal((await handleActivity(new Request('https://game.test/api/activity',{method:'POST',headers:{cookie:b.cookie,origin:'https://other.test'},body:'{}'}),env)).status,403);
 console.log('PASS: urgent combat reaches an open observer stream independently of stalled world polling; delayed animation plays once; unauthenticated/cross-origin writes rejected.');
-Date.now=realNow;
+Date.now=realNow;Math.random=realRandom;

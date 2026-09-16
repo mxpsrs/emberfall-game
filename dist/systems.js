@@ -1,6 +1,6 @@
 'use strict';
 const COMBAT_SKILLS=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'];
-const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Deal damage with spirit abilities, bury bones and form spirit bonds for XP. Strengthens spirit attacks and adds protection every 5 levels.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
+const COMBAT_SKILL_DETAILS={Hitpoints:'Raises your maximum health. Trained by dealing damage.',Attack:'Improves melee accuracy. Train with Accurate attacks.',Strength:'Raises melee damage. Train with Aggressive attacks.',Defense:'Reduces enemy accuracy and damage. Choose Defensive training.',Worship:'Deepen Spirit bonds through combat, elemental gathering and remembrance. Worship unlocks stronger bond ranks and improves Unleash abilities.',Magic:'Cast spells to improve magic accuracy and damage.',Ranged:'Use a bow to improve ranged accuracy and damage.'};
 function combatLevel(){return 1+Math.floor((lv('Hitpoints')-1)*.15+(lv('Attack')-1)*.2+(lv('Strength')-1)*.2+(lv('Defense')-1)*.2+(lv('Worship')-1)*.05+(lv('Magic')-1)*.1+(lv('Ranged')-1)*.1+1e-9);}
 function migrateCombatSkills(state,original=state){
  const old=original?.xp||{},legacy=Math.max(0,Number(old.Combat)||0);state.xp=state.xp||{};
@@ -33,7 +33,7 @@ function updatePlayerAction(){
  const action=playerAction;if(!action)return;if(action.kind!=='bury'){updateSkillingAction(action);return;}const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
  if(!action.committed&&age>=action.commitAt){
   action.committed=true;if((s.bag.bones||0)<1){playerAction=null;return;}
-  s.bag.bones--;gain('Worship',18,true);showExperienceDrop({Worship:18});tutorialEvent('bury');toast('Bones buried · +18 Worship XP');renderUI();save();
+  s.bag.bones--;gain('Worship',18,true);advanceSpiritBond('worship',4);showExperienceDrop({Worship:18});tutorialEvent('bury');toast('Bones buried · +18 Worship XP');renderUI();save();
  }
  if(age>=action.duration){playerAction=null;$('activity').style.width='0';renderAction();}
 }
@@ -252,7 +252,7 @@ function performAttack(o){
  if(style==='melee')meleeImpacts.push({o,damage,focus,due:time+.30,enemy:false});else projectiles.push({x:px,y:py,tx:o.x,ty:o.y,age:-playerAttackMotion.releaseAt,duration:.28+Math.hypot(o.x-px,o.y-py)*.025,color:s.equipment.weapon==='veyrOrb'?'#b995e1':spell.color,weapon:s.equipment.weapon,style,o,damage,focus,ammo,scene:currentScene,frame:s.character?.frame||'male',heading:Math.atan2(o.x-px,o.y-py),targetHeight:o.kind==='rat'?.32:o.combatRadius?Math.max(.7,o.combatRadius):.8,recoverable:style==='ranged'&&Math.random()>=.2,slow:style==='magic'?spell.slow||0:0});
  renderUI();save();return true;
 }
-function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const dealt=Math.min(o.hp,Math.max(0,damage));o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
+function resolveHit(o,damage,style,slow=0,focus=trainingFocus(style)){if(o.dead>time||o.hp<=0)return;const effect=spiritStrike(s,lv('Worship'),o._spiritResonance,Math.max(0,damage),style,Date.now());o._spiritResonance=effect.memory;const dealt=Math.min(o.hp,effect.damage);effect.damage=dealt;if(style!=='worship')applySpiritStrikeFeedback(effect,o);slow=Math.max(slow,effect.slow);o.hp-=dealt;o.hitAt=time;if(dealt>0){o.slowUntil=slow?time+slow:o.slowUntil||0;awardCombatDamage(dealt,style,focus);}floating(dealt?'-'+dealt:'Miss',o.x,o.y,dealt?'#ffe0bb':'#9caebd');if(o.hp<=0)awardDefeat(o,style);renderAction();renderUI();save();}
 function applyEnemyHit(o,hit){
  s.hp=Math.max(0,s.hp-hit);playerHitAt=hit>0?time:playerHitAt;floating(hit?'-'+hit:'Blocked',px,py,hit?'#ffaba1':'#a7c7cf');
  if(s.hp<=0){spendCoins(Math.min(5,carriedCoins()));returnToVillage();s.hp=maxhp();o.hp=o.maxhp;projectiles=[];meleeImpacts=[];stop();dialog('Rescued by the village','<p>You kept your equipment, items, and experience, but lost up to 5 coins.</p><p>Eat during combat, try armor, or use a bow or staff to attack from farther away.</p>');}

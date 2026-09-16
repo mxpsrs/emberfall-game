@@ -1,3 +1,4 @@
+import catalog from '../worker/shared-catalog.json' with {type:'json'};
 import {DatabaseSync} from 'node:sqlite';import assert from 'node:assert/strict';import fs from 'node:fs';import {handleSave,handlePlayers,handleAuth,SAVE_RESET_VERSION} from '../worker/api.js';
 const db=new DatabaseSync(':memory:');for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')))db.exec(fs.readFileSync('drizzle/'+f,'utf8'));
 const env={DB:{prepare(sql){return{bind(...args){return{async first(){return db.prepare(sql).get(...args)},async all(){return {results:db.prepare(sql).all(...args)}},async run(){return{meta:{changes:db.prepare(sql).run(...args).changes}}}}}}}}};
@@ -16,8 +17,8 @@ const saved=await (await handleSave(req('/api/character','GET',b),env)).json();a
 const kit={head:'rangerHood',body:'bronze_body',shoulders:'gold_shoulders',hands:'mithril_hands',legs:'iron_legs',feet:'bronze_feet',weapon:'woodenSword',shield:'woodenShield',crest:'helmet_crest_1',neck:'copperNecklace'};
 saved.state.character={...saved.state.character,frame:'female',hair:1,topStyle:5,bottomStyle:4,topColor:2,bottomColor:7};saved.state.equipment=kit;saved.state.toolBelt={axe:true,pickaxe:true,tinderbox:true};
 assert.equal((await handleSave(req('/api/character','PUT',b,{state:saved.state,revision:saved.revision}),env)).status,200);
-const visibleKit=Object.fromEntries(Object.entries(kit).filter(([slot])=>!['shoulders','crest'].includes(slot)));
-await presence(b);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'second player sees the eight equipment slots; matching shoulders come from the chest piece');
+const visibleKit={...Object.fromEntries(Object.entries(kit).filter(([slot])=>!['shoulders','crest'].includes(slot))),ring:null,belt:null,cape:null};
+await presence(b);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'second player sees all supported equipment slots; matching shoulders come from the chest piece');
 const appearance=peers.find(p=>p.name==='Player B');assert.equal(appearance.frame,'female');assert.equal(appearance.appearance.topStyle,5);assert.equal(appearance.appearance.bottomStyle,4);assert.equal(appearance.equipment.head,'rangerHood');
 const persisted=await (await handleSave(req('/api/character','GET',b),env)).json();assert.deepEqual(persisted.state.toolBelt,saved.state.toolBelt);
 const spoof=await handlePlayers(req('/api/players','POST',b,{scene:'overworld',x:14,y:17,equipment:{body:'malicious-model'}}),env);assert.equal(spoof.status,200);peers=(await (await presence(a)).json()).players;assert.deepEqual(peers.find(p=>p.name==='Player B').equipment,visibleKit,'presence body cannot override saved equipment');
@@ -46,7 +47,8 @@ assert.equal((await presence(a,'ork_warrens',19)).status,200,'released Ork dunge
 assert.equal((await presence(a,'ork_warrens',38)).status,400,'dungeon presence remains inside its actual map');
 assert.equal((await presence(a,'lair_colossus',19)).status,200,'released Colossus lair accepts player presence');
 assert.equal((await presence(a,'lair_colossus',46)).status,400,'Colossus presence respects the actual map bounds');
-for(const [scene,width] of [['quest_underiron',44],['lair_veyr',44],['lair_varkesh',58],['lair_xalith',54]]){
+for(const scene of ['quest_underiron','lair_veyr','lair_varkesh','lair_xalith']){
+ const width=catalog.scenes[scene][0];
  assert.equal((await presence(a,scene,19)).status,200,'released lair accepts presence: '+scene);
  assert.equal((await presence(a,scene,width)).status,400,'lair bounds are enforced: '+scene);
  await presence(a,scene,19);const other=await presence(b,scene,20);const peers=(await other.json()).players;assert(peers.some(p=>p.name==='Player A'),'players can see one another in '+scene);

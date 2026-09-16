@@ -25,3 +25,5 @@ const catalog=vm.runInContext(`JSON.stringify({version:2,tutorial:{version:TUTOR
 fs.writeFileSync(__dirname+'/../worker/shared-catalog.json',catalog+'\n');
 fs.writeFileSync(__dirname+'/../worker/quest-fights.js','// Generated from dist/world.js; keep client and server phasing identical.\nexport '+vm.runInContext('questFightVisible.toString()',ctx)+'\n');
 console.log('Exported '+Object.keys(JSON.parse(catalog).entities).length+' shared world entities.');
+
+fs.writeFileSync(__dirname+'/../worker/spirit-rules.js', '// Generated from dist/spirits.js; one rule set for local and shared combat.\nimport catalog from \'./shared-catalog.json\' with {type:\'json\'};\nconst SPIRITS=catalog.spirits;\n'+['spiritAttuned','spiritBondRank','spiritBuild','spiritStrike','spiritGuard'].map(name=>'export '+vm.runInContext(name+'.toString()',ctx)).join('\n')+'\n');

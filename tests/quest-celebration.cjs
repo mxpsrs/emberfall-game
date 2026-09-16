@@ -19,16 +19,16 @@ for(let i=0;i<4;i++){
  frontierTalk(npc);const fn=npcDialogueState?npcDialogueState.choices.find(([label])=>label==='Complete quest')[1]:$('modalBody').children.find(b=>b.textContent==='Complete quest').onclick;fn();if(playerAction){time+=2.3;updatePlayerAction();}assert.equal(s.frontier.quest,i+1);assert.equal(s.bag.coins,q.reward);
  assert.equal(displayed().coins,q.reward);dismiss();
 }
-assert.deepEqual(Array.from(MAIN_STORY_QUESTS,q=>q.coins),[210,280,350]);
-assert.equal(MAIN_STORY_QUESTS[0].xp.Attack,280);assert.equal(MAIN_STORY_QUESTS[1].xp.Mining,350);assert.equal(MAIN_STORY_QUESTS[2].xp.Magic,420);
+assert.deepEqual(Array.from(MAIN_STORY_QUESTS,q=>q.coins),[200,300,400]);
+assert.equal(MAIN_STORY_QUESTS[0].xp.Attack,250);assert.equal(MAIN_STORY_QUESTS[1].xp.Mining,400);assert.equal(MAIN_STORY_QUESTS[2].xp.Magic,500);
 for(let i=0;i<3;i++){
  const r=MAIN_STORY_QUESTS[i];s.mainStoryQuest={stage:r.end-1};s.bag={};assert(mainStoryAdvance(r.end-1,null,{},i));assert(!mainStoryAdvance(r.end-1,null,{},i));assert.equal(s.bag.coins,r.coins);
  const card=displayed();assert.equal(card.title,r.title);assert.deepEqual(card.xp,r.xp);dismiss();
 }
 // Mountain reward flags survive replay and the card matches actual currency/XP.
-s.mountainQuest={stage:11};s.bag={};s.bank={};const xp=s.xp.Mining;mountainReward(1);mountainReward(1);
-assert.equal(s.bag.coins,280);assert.equal(s.xp.Mining,xp+350);assert.equal(questCompletionQueue.length,1);assert.equal(displayed().xp.Mining,350);dismiss();
-s.mountainQuest.stage=20;mountainReward(2);assert.equal(displayed().coins,490);assert(activeQuestCompletion.unlocks.includes('Repeat Veyr hunts'));dismiss();
+s.mountainQuest={version:2,stage:11};s.bag={};s.bank={};const xp=s.xp.Mining;mountainReward(1);mountainReward(1);
+assert.equal(s.bag.coins,600);assert.equal(s.xp.Mining,xp+600);assert.equal(questCompletionQueue.length,1);assert.equal(displayed().xp.Mining,600);dismiss();
+s.mountainQuest.stage=20;mountainReward(2);assert.equal(displayed().coins,1000);assert(activeQuestCompletion.unlocks.includes('Repeat Veyr hunts through Rook'));dismiss();
 // Opening a celebration never grants anything. Conversations finish first, then cards queue.
 dialog('Existing conversation','Still talking');showQuestCompletion({title:'Test quest',coins:63});flushQuestCompletions();assert.equal(activeQuestCompletion,null);
 const state=JSON.stringify(s);close();displayed();assert.equal(JSON.stringify(s),state);showQuestCompletion({title:'Second quest',xp:{Magic:420}});flushQuestCompletions();assert.equal(activeQuestCompletion.title,'Test quest');dismiss();assert.equal(displayed().title,'Second quest');dismiss();assert.equal(questCompletionQueue.length,0);
