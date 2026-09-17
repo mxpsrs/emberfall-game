@@ -33,6 +33,24 @@ const HUNT_ENCOUNTERS={
  colossus:{name:'Runeforged Colossus',look:'boss_colossus',released:true,anchored:true,combatRadius:2.2,mechanics:true,rank:'Boss',level:42,hp:158,maxHit:8,coins:155,marks:4,scene:'lair_colossus',at:[23,18],area:'The Crystal Crucible',weak:'magic',phases:[{name:'Crystalbound',at:1,moves:['sweep','shot','hex']},{name:'Crimson Overload',at:.5,speed:.75,moves:['sweep','shot','hex']}],drops:{mithrilBar:2,deathRunes:15}},
  xalith:{name:'Xalith the Broodmother',look:'boss_xalith',released:true,combatRadius:1.05,rank:'Boss',level:62,hp:236,maxHit:11,coins:240,marks:5,scene:'lair_xalith',at:[27,20],area:'The Brood Hollow',weak:'melee',style:'melee',drops:{adamantBar:2,bloodRunes:15}}
 };
+const HUNT_FIELD_NOTES={
+ "veyr": {
+  "origin": "The Wardkeepers held Veyr beneath Ironhollow. The forged orders, sabotaged mine and altered shrine memories lead to that prison.",
+  "tactics": "Follow the solid ground warnings, not the voices. Complete the counter-ward preparations with Alaric for assistance in the story encounter."
+ },
+ "varkesh": {
+  "origin": "Varkesh nests above the abandoned Ashwatch galleries. The scorched watch camp and exposed ascent mark the route into its roost.",
+  "tactics": "Its breath follows a committed facing. Step sideways out of the green cone; range alone will not keep you safe."
+ },
+ "colossus": {
+  "origin": "A foundry sentinel remains bound to the Crystal Crucible. Runeforged refers to the inscriptions cut into its frame, not spell currency: Veldren mages consume Relics.",
+  "tactics": "The Colossus stays anchored. Leave the cleave circle and marked impact spots. Below half health, Crimson Overload shortens its attack intervals."
+ },
+ "xalith": {
+  "origin": "The root caverns below Moonwillow shelter Xalith and her amber nursery. The nesting chambers are an inhabited lair, not a sealed treasure room.",
+  "tactics": "The Broodmother closes for melee attacks. Watch the scythe strike, keep room to retreat, and bring food suited to a long fight."
+ }
+};
 function encounterReleased(kind){const e=HUNT_ENCOUNTERS[kind];return !!(e?.released&&creatureAssets[e.look]?.source);}
 const HUNT_ZONES=[
  {name:'Elderwood fringe',at:[69,117],kinds:['thornwolf','slinger','brambleslime']},
@@ -280,7 +298,7 @@ function renderHunts(){
  for(const [kind,e]of pageItems([...rows,['rewards',null]],3)){
   const card=document.createElement('section');card.className='hunt-card';
   if(kind==='rewards'){card.innerHTML='<h3>Mark exchange</h3><p>'+(s.bag.huntersMark||0)+' marks carried · Earn more from named encounters.</p>';for(const [id,cost]of HUNT_REWARDS){if(!ITEMS[id])continue;const b=document.createElement('button');b.textContent=ITEMS[id].name+' · '+cost+' marks';b.disabled=(s.bag.huntersMark||0)<cost;b.onclick=()=>{if((s.bag.huntersMark||0)<cost||!canCarry(id)){toast('Bring enough marks and make space in your bag.');return;}s.bag.huntersMark-=cost;s.gear[id]=(s.gear[id]||0)+1;save();renderUI();};card.appendChild(b);}}
-  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(kind==='veyr'?' · Orb: 1/250 every kill':p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+Math.round(e.level*4*1.4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);}
+  else{card.innerHTML='<h3>'+e.name+'</h3><small>'+e.rank+' · Recommended Combat '+e.level+'</small><p>'+e.area+' · '+(e.mechanics?e.phases.length+' phases':(e.style||'melee')+' attacks')+'<br>Weak to '+e.weak+' · '+e.marks+' marks per clear</p><p class="hunt-clears">'+(p.kills[kind]||0)+' clears'+(kind==='veyr'?' · Orb: 1/250 every kill':p.firstClears[kind]?' · First-clear reward earned':' · First clear: '+Math.round(e.level*4*1.4)+' bonus coins')+'</p>';const b=document.createElement('button');b.textContent=currentScene==='tutorial'?'Available on the mainland':'Find encounter';b.disabled=currentScene==='tutorial';b.onclick=()=>{const scene=worldScenes[e.scene],o=scene.objects.find(o=>o.kind===kind);if(!o)return;if(currentScene!==e.scene){if(currentScene==='overworld'){const door=objects.find(o=>o.destination===e.scene);if(door){openGamePanel('hunts',true);select(door);return;}}toast('Return to the mainland to follow this hunt.');return;}openGamePanel('hunts',true);const point=encounterSpawnPoint(currentScene,Math.round(o.homeX),Math.round(o.homeY)+4,6);if(point)walkTo(...point);toast(e.name+' · Combat '+e.level+' recommended. Bring food.');};card.appendChild(b);const notes=HUNT_FIELD_NOTES[kind];if(notes){const read=document.createElement('button');read.textContent='Read field notes';read.onclick=()=>dialog(e.name,'<p>'+notes.origin+'</p><p><b>Approach:</b> '+notes.tactics+'</p><p>Ordinary loot falls on the ground. Collect it after the fight. Leaving or losing an encounter does not complete your private quest objectives.</p>');card.appendChild(read);}}
   $('huntCards').appendChild(card);
  }huntSectionLink('Browse ordinary hunting grounds',true);
 }

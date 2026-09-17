@@ -306,6 +306,14 @@ function rebuiltRoof(r,x,y,z,w,d,rise,color){
  }
  beamArt(tiles,[x,y+rise+.06,z-depth/2],[x,y+rise+.06,z+depth/2],.12,shade3(color,.82),6);
 }
+// Authored living stems avoid the old vine mesh's black, opaque leaf cards.
+function rebuiltLivingVine(r,x,y,z,scale=1,heading=0){
+ const q=worldLocal(r,x,y,z,heading),stem=materialRealm(q,5);
+ beamArt(stem,[0,0,0],[.08*scale,1.5*scale,0],.025*scale,'#71664c',5);
+ for(let i=0;i<4;i++){const side=i%2?1:-1,yy=(.25+i*.31)*scale;
+  q.face([[.03*scale,yy,0],[side*.24*scale,yy+.22*scale,.025*scale],[side*.34*scale,yy+.12*scale,.035*scale],[side*.18*scale,yy-.05*scale,.025*scale]],i%2?'#658459':'#466b49');
+ }
+}
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||['temple','castle'].includes(b.archetype),wall=stone?'UnevenBrick':'Plaster',segments=Math.max(1,Math.round(w/2)),sideSegments=Math.max(1,Math.round(d/2)),scale=w/segments/2,sideScale=d/sideSegments/2,wallScale=scale*.85,level=2.65*scale;
  const floors=b._cutaway?1:tower?3:castle?2:['hall','temple'].includes(b.archetype)||b.archetype==='inn'&&b.variant%2===0?2:1+(b.archetype==='house'&&b.variant===3?1:0),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
@@ -329,6 +337,14 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
   const rx=x,rz=b.y+d*.55,rw=Math.min(w-3,4.2),rd=Math.min(d-4,4.8),rug=materialRealm(r,13);
   rug.face([[rx-rw/2,.072,rz-rd/2],[rx-rw/2,.072,rz+rd/2],[rx+rw/2,.072,rz+rd/2],[rx+rw/2,.072,rz-rd/2]],race==='elf'?'#405d50':'#654c44');
   for(const side of [-1,1])rug.face([[rx-rw/2+.15,.076,rz+side*(rd/2-.24)],[rx+rw/2-.15,.076,rz+side*(rd/2-.24)],[rx+rw/2-.15,.076,rz+side*(rd/2-.12)],[rx-rw/2+.15,.076,rz+side*(rd/2-.12)]],'#b39a6b');
+ }
+ // The school's four open facets surround a common center: a local craft mark,
+ // independent of each player's quest activation of the leyline altar.
+ if(b.service?.destination==='realm_briarhaven_3'){
+  const cx=b.x+b.w*.5,cz=b.y+b.h*.5;
+  for(let i=0;i<4;i++){const a=i*Math.PI/2,c=Math.cos(a),n=Math.sin(a),point=(u,v)=>[cx+u*c-v*n,.085,cz+u*n+v*c];
+   r.face([point(.35,0),point(1.1,.36),point(1.65,0),point(1.1,-.36)],['#86c6d6','#779fc6','#be9cde','#8eb9a3'][i],null,13);
+  }
  }
  if(b._cutaway)return level;
  // Service fronts use their own materials and furnishings at the same scale as residents.
@@ -355,7 +371,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const tileColor=race==='elf'?'#45635b':race==='dwarf'||b.archetype==='forge'?'#59636b':b.variant%3===1?'#746555':'#9b5038';
  const actualRoofTop=worldHouseRoof(r,b,roofY,roofRise,tileColor);
  if(!tower&&!b._castleCurtain)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
- if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltPlace(r,'Prop_Vine1',x+side*w*.35,level*.45,z+d*.5+.08,scale*.9);
+ if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltLivingVine(r,x+side*w*.35,level*.25,z+d*.5+.10,scale*.9);
  return Math.max(roofY+roofRise,actualRoofTop);
 }
 building3=function(r,b){

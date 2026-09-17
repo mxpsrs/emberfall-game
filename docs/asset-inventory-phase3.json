@@ -1,0 +1,924 @@
+{
+  "date": "2026-09-17",
+  "note": "Inventory hashes verify bytes, not ownership. Mixed bundles must be read with ASSET-AUDIT-PHASE-3.md. Unknown sources are not clearance.",
+  "files": [
+    {
+      "path": "art/ui-icons/carl-olsen--flame.svg",
+      "bytes": 802,
+      "sha256": "49e7468e3d989f6130242d024eb1f4f42686ccfc5792db6dceac2ee13edcf727",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bank.svg",
+      "bytes": 1139,
+      "sha256": "48930c419085e749d0a523bf37cfe94665c5559a0d3b5a97096b434e44ff24a9",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bed.svg",
+      "bytes": 1719,
+      "sha256": "8f7b0596f1954018ceb6a3e779b5cccfd16656a856d904816fa2c3b3af806bee",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bow-arrow.svg",
+      "bytes": 873,
+      "sha256": "80de082a9804b2afea15e54ffe61b54b72ee1307fea3386aa881786132c5c1b0",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chart.svg",
+      "bytes": 344,
+      "sha256": "1398adf03bce0a06a2459fafcc67f46b3f4892e188ea8b2cc8837eacfbb93781",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chat-bubble.svg",
+      "bytes": 333,
+      "sha256": "d46135a4bbb48edbaf075d86ccccd54e4248936f51efefeda0476b3032985d7b",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chest-armor.svg",
+      "bytes": 977,
+      "sha256": "aaffd4f871b76880a84f9330bc1ebb9416f69a0acd5e5283b81eed8dc441b7b8",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--clothes.svg",
+      "bytes": 498,
+      "sha256": "b7b9b5b29567aa2e18a6931a47d537ef3f14b68045d71d603a120e3bc9380505",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--coins.svg",
+      "bytes": 6810,
+      "sha256": "261f61209fad4adc71e6e3faa061e854ab3de6c3fa13aef9bfdac2b643f4e306",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--cooking-pot.svg",
+      "bytes": 410,
+      "sha256": "7a86da6ca8d3e35955d25c69e7075b8b2aa06fbd2f4a7829e0c02cff0f51c4a7",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--exit-door.svg",
+      "bytes": 482,
+      "sha256": "e5ef03c2f7fa3ed0a6aca4d9a89b6adcf28b35714757e7e16f1aacede50f89c6",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--fishing-pole.svg",
+      "bytes": 2526,
+      "sha256": "3aad214e0bb8a934972773a11fc69fa099009c4528600828eaf969b5ad9fe16c",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--gauntlet.svg",
+      "bytes": 3385,
+      "sha256": "659cb47a80fc197d293e2a6720aaa7c06fd1ea0c2bad60183a7162fe2f9c1b76",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--graduate-cap.svg",
+      "bytes": 854,
+      "sha256": "af13ac855ef0723fd3f715889e439936198ed6ffe088cb840df868abfb3359b6",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--histogram.svg",
+      "bytes": 251,
+      "sha256": "11dea17dcadb3d4de81457f409225db7ca1e9ecb7100344c4721aa9d9da8a45c",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--meal.svg",
+      "bytes": 853,
+      "sha256": "71648b5b6d5417a860747182cc0da1a4a71dc0b568e139bb1c27c6822cfd75b7",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--musical-notes.svg",
+      "bytes": 877,
+      "sha256": "f3a1b1bc956d4348b55cb195eaebbaebf972a2fb053ef71d6de10ddadadc4799",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--person.svg",
+      "bytes": 657,
+      "sha256": "30278f49cd97b7cd9c76bd3d2b37f219dabadc6d740438a47ce9b18e2a390d9c",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--position-marker.svg",
+      "bytes": 446,
+      "sha256": "af3ed43cd81383f98e70e091bdd821f87c29c014ab04164c8c12f9d9343ba7bd",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--quiver.svg",
+      "bytes": 3250,
+      "sha256": "25f7248b9c335a1f6c39a140975efefdb174b5430b86f6467b2f28387ed02071",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--rake.svg",
+      "bytes": 1454,
+      "sha256": "259fbfee4ae658bf4b7e80d2f4db67ba6f7f4e9c3cfd850cf050232ad3afe168",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--shop.svg",
+      "bytes": 1674,
+      "sha256": "6cc8624153d0cdc29babb993d6f1de5d50f848cc77f61df3fd1bdc7123c0e69d",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--speaker-off.svg",
+      "bytes": 334,
+      "sha256": "1582b150bad19a71daff9c47e8c54ae253ed4f29e15af4e7a83a4e01f5274b77",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--speaker.svg",
+      "bytes": 713,
+      "sha256": "9244f41ab0013ea2ca65949df5d3de65a66d73ed22d3aa6e5a1f465a239bb1d8",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--spell-book.svg",
+      "bytes": 2419,
+      "sha256": "4966d0148d28ff97f20d4528827517f7e49ea251b51d899874839a2a0573d9a2",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--stone-pile.svg",
+      "bytes": 1324,
+      "sha256": "04707432401215a91785960da28136132fcaed493839b4ea760496ecb723cd82",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--stop-sign.svg",
+      "bytes": 1780,
+      "sha256": "34db4474d0fbb2c065383cb62ace94c975fd8db0d29bccfd1e4deda969ae86c0",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--three-friends.svg",
+      "bytes": 912,
+      "sha256": "f01a57f0999c2e1369be610e30a75efad8c4b84463adf046d50f3c04128fe167",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/delapouite--war-pick.svg",
+      "bytes": 1897,
+      "sha256": "75d12ba349f7d75c62bb6e3be3af594cc5f7d2f1c3d57c1b13afdd4556944206",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--anvil.svg",
+      "bytes": 489,
+      "sha256": "8f1b9ce7c512d167719dcd77fc169c811eb69b25e30ed1ae5610d161ce9007a4",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--boots.svg",
+      "bytes": 2342,
+      "sha256": "37ec3570d287f851fdf93713b2fa871de74b5562531a10c61db6586fe5a46b7d",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--broadsword.svg",
+      "bytes": 1314,
+      "sha256": "37eda3d1e9c41d2389ed28e163472672391df6bd4e02b6e36e8acc37087e5079",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--campfire.svg",
+      "bytes": 1678,
+      "sha256": "132fff7f2222a6ffb5017f4049d556c2997f7dd40f3d2c4ef0f7b02924eb6309",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--cog.svg",
+      "bytes": 1651,
+      "sha256": "79adb133e3bc3a9a38a0db715ecd1cb08d55bc012c70157a7bb9d650fb7cea6e",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--compass.svg",
+      "bytes": 1528,
+      "sha256": "beb88d002e3f2e3759a41c626ff67f52b9d92d70605a24e8e8d3ea9915208f20",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--crossed-swords.svg",
+      "bytes": 1254,
+      "sha256": "d977de17aa347c15a311e96ee4c7194837e47d119d2b5a06bc1dbbd2cd1a92f2",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--crystal-wand.svg",
+      "bytes": 1042,
+      "sha256": "2808d06e02ed3ef5499bb6a72e5bd77bedd6e4d8970fd6d2420fde7048039abf",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--envelope.svg",
+      "bytes": 856,
+      "sha256": "5710d1eb289eff2f65bd388e386083bdb2c10df2b5193a9504cf448896472a64",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--feather.svg",
+      "bytes": 862,
+      "sha256": "263314b200652ccb2b90405e2a06161fe8f6d7c34e487e20ce567d07b13a4a5a",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--ghost.svg",
+      "bytes": 1417,
+      "sha256": "7b91616effccf4b48024902d3d905b66955f6827eea47cae5f9141f6ff553fb6",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--knapsack.svg",
+      "bytes": 994,
+      "sha256": "d5f3f1b087b23f8a1082674b9ac19f1530b936802f8f1bb2982d5f7e03547396",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--pine-tree.svg",
+      "bytes": 1288,
+      "sha256": "ca5cdeab66d3260e3850148271f8dfda398ddbdf1e9fbf570f79f32c90b470db",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--power-lightning.svg",
+      "bytes": 278,
+      "sha256": "550465e2dc16e8fa9894a828c8f4511b4844131d35bf278ffa2c8ad466a7ce95",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--prayer.svg",
+      "bytes": 1345,
+      "sha256": "f07c290c0087a1174386d364ed38870529b18becd2492b58cdf45714fc191d5f",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--run.svg",
+      "bytes": 1271,
+      "sha256": "0369d4afd39c8e363ced47bca93e9974adf77108891d38e30c68c71afcaeaac4",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--scroll-unfurled.svg",
+      "bytes": 1967,
+      "sha256": "bbbe367221e46a6d9ad8f1b0c47e8a0db223cd2b9fda67b885e906c6fe72d9c9",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--sword-slice.svg",
+      "bytes": 1455,
+      "sha256": "1a8f481ab890d0ba41e2e118944ef75f918ab77ae53017cac6a2cf26375ea1e9",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--swords-emblem.svg",
+      "bytes": 1424,
+      "sha256": "18e4d3572966c4bac31f757aab6c3841cffc8489d44380eaa6213014cf7545c5",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--target-arrows.svg",
+      "bytes": 2351,
+      "sha256": "c100e97c3796ae3b7bac0ff25529833784964aa5a52fe653de0fcf10404d33d0",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--target-shot.svg",
+      "bytes": 2121,
+      "sha256": "2bf571782b8046f6c281dd40517009a2f40e86320d2cf2f31224c63f8e132468",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--trade.svg",
+      "bytes": 857,
+      "sha256": "6006ee273ac0d814279851ea2d60afb41eecba802945c140bb65388fc9d2dcd8",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--treasure-map.svg",
+      "bytes": 2145,
+      "sha256": "514ec6a9b97e74f10cbb212357819b44feaac26e0e2d461862d59b58f67ffa52",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--visored-helm.svg",
+      "bytes": 1337,
+      "sha256": "e01c9f3989d8680677a2a71009fe44f9a79413e237cfce84698a1189eac1a5dd",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lorc--windy-stripes.svg",
+      "bytes": 787,
+      "sha256": "f6e42103bd79d0fad62866f21cfea191556dd04f0d83cb88cefaaa297be06c14",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lucasms--belt.svg",
+      "bytes": 590,
+      "sha256": "8d21f025b2d624bc3881bbe6ee4a9bd6cf15eb1cd8f8ee58f5e9aad87de2d12b",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lucasms--necklace.svg",
+      "bytes": 3249,
+      "sha256": "cd47f5817d4014eeeb738c512fcbe5eaa667f8160f0b13706c1989e20289ad7d",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/lucasms--trousers.svg",
+      "bytes": 362,
+      "sha256": "9eed868578b0fd64895f4b29aae1cf9d2429ae527a8ceb7793fa059595bbeba3",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/sbed--hand.svg",
+      "bytes": 940,
+      "sha256": "a87fd6a76295cf9cfed9fe4fa9cff5339f181b1493b198e7f04b745ad59d570e",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/sbed--help.svg",
+      "bytes": 645,
+      "sha256": "cd104a20e411728b4ce4e4acfd7aace96ead8f2731925cb4af3992e25df85cbb",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/sbed--shield.svg",
+      "bytes": 214,
+      "sha256": "7af285f360e49dbf400607423d5cf8531f7987055a338f24352843175a2036cb",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/sbed--water-drop.svg",
+      "bytes": 230,
+      "sha256": "90b5e5a161c83fe535d0a1abfec4c85efc69a5206d89b478295947d7cfeb30fa",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/skoll--fist.svg",
+      "bytes": 520,
+      "sha256": "1fceac13328dd9638eea1c7ec231e88dbd3fae298419815ce4bc9d26eaebfc96",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "art/ui-icons/skoll--hearts.svg",
+      "bytes": 330,
+      "sha256": "dd0875180c46ec9de41f2f7d7f97cd23bcb8b075b7fc57e8661e6812b9f08bdc",
+      "evidence": "game-icons.net CC BY 3.0 source icons / dist/assets/ui/CREDITS.txt"
+    },
+    {
+      "path": "dist/assets/audio/cave-theme.mp3",
+      "bytes": 3360851,
+      "sha256": "82aeba8281ae548fbcfbbc8864b83eb02e205656b25e1ab09020196bd1e11fd2",
+      "evidence": "Music / docs/music-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/field-of-dreams.mp3",
+      "bytes": 1016391,
+      "sha256": "9528ad43c89d43c1d6576b0481f8837f98267a0d60641465bed9f1fafe0ba2fe",
+      "evidence": "Music / docs/music-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/medieval-opener.mp3",
+      "bytes": 1358934,
+      "sha256": "bfc8786dadb0e1399407f19a46c0d897a9d68632a5ebb4e685af3bdb9baed56d",
+      "evidence": "Music / docs/music-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/old-tower-inn.mp3",
+      "bytes": 600418,
+      "sha256": "c9b12e9058e3ce1ab990cd7eb611671f264173c4862346d5e54285c828fe015f",
+      "evidence": "Music / docs/music-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/coins-1.mp3",
+      "bytes": 11016,
+      "sha256": "408bbee84fdcf065a9df774c15d21637535d8adcfaec5b07a06cb94fb13d398b",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/cook-1.mp3",
+      "bytes": 18226,
+      "sha256": "0e91f996e311c4b710bd553f2561dd413efced6bea92cc9afe66a42dad1b0188",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/cook-2.mp3",
+      "bytes": 11956,
+      "sha256": "2fd79c8f65b1ef4bdcd28a8b0efd2465f6ad97f5e1d747ed086a122a795c9180",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/door-1.mp3",
+      "bytes": 11956,
+      "sha256": "a06ccfd748691eb6b7576eff9b8d2fba485aa32844980c1b10e4bcf4b33407b3",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/equip-1.mp3",
+      "bytes": 4120,
+      "sha256": "459833b3c204d8302cbeef6df3ed14408546b06ceb9ee694326d9a72b2b6fd56",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/fire-1.mp3",
+      "bytes": 6314,
+      "sha256": "f9dff1a2cad07cfd3728f92e996d80d088ffdde85faaa37a43e32f474287f0ad",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/floor-1.mp3",
+      "bytes": 4120,
+      "sha256": "c1770d2b8fd459a0f100bbcf8b99cbfd4fc6b5192c07f97bc7cdca6a8aa469a2",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/floor-2.mp3",
+      "bytes": 3806,
+      "sha256": "379a52415ec3dfeef44c44c9670744efc8dbc436f7fab17f8188718145afe7aa",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/hit-1.mp3",
+      "bytes": 6000,
+      "sha256": "a5f449234e495d6fbe16235d0044ceb3f9f1ae04b8057c5d22e49f7f36574091",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/hit-2.mp3",
+      "bytes": 7254,
+      "sha256": "8d76991ebd9872ec479e01ad21d5cc456d916da43f6f47a9de488df28b3ca3aa",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-1.mp3",
+      "bytes": 11956,
+      "sha256": "557a4b1c8ed94cceff1679c7f27334483a3f07199ec25da8e3293526031aef0c",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-2.mp3",
+      "bytes": 10389,
+      "sha256": "b693526f5f5b3403d9eea201f27998412853b9123c45e67c88872400a99928bc",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-3.mp3",
+      "bytes": 10703,
+      "sha256": "6bb7ebd475c37539a4242a9da75b327f4105306be8b666c39f2d6dfb75a89f13",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-1.mp3",
+      "bytes": 4120,
+      "sha256": "4c821b271249aa25a5128a85078bc63d2be66f9fa8e45b96e860dfa43fee72f6",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-2.mp3",
+      "bytes": 2239,
+      "sha256": "2b075c1913686c03e2390d6dfa14f47d13b8f327c9508d6e3daf82aca87cf957",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-3.mp3",
+      "bytes": 2239,
+      "sha256": "d9c4fc82c4f02d79086901219755c8c292088854ebb09b790d56a9404c857521",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-1.mp3",
+      "bytes": 10076,
+      "sha256": "0eeb3976f27ffbb0317b380618b13ed0a17282b607df3e82f2a68ac41b09e5d9",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-2.mp3",
+      "bytes": 8822,
+      "sha256": "74a21a98586a68a007c31cd00cf79bd28b14f64cf482073cdb4c2ef8aa6727bc",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-3.mp3",
+      "bytes": 9135,
+      "sha256": "5246e536cf2afa7e801f6092ec8252114aa2899446e7a2467199667d4fd20ed3",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/sword-1.mp3",
+      "bytes": 7881,
+      "sha256": "82c9a52e1243abc3eab3408f30398f0c18f9d0604348abac6eafd05e1402d59e",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/sword-2.mp3",
+      "bytes": 7568,
+      "sha256": "e5726dd0ae650b462915ca3146e901e5277834db2ec65feb3ea7f7add4114775",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-1.mp3",
+      "bytes": 3806,
+      "sha256": "3fd9972c65e2c61721c362ebbf2e973b97aa4b2227bb00df48aaef54c28c1858",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-2.mp3",
+      "bytes": 4433,
+      "sha256": "a5450d9672d79972c9feb4ca26be27196df7502fe4ae963b2b8f9090efaf7a16",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-3.mp3",
+      "bytes": 4433,
+      "sha256": "3186773bbb41de15442ab66634e692f61e18af1abe10e67714bfbc1f0686123f",
+      "evidence": "Kenney CC0 / docs/sound-sources.json"
+    },
+    {
+      "path": "dist/assets/audio/the-tournament.mp3",
+      "bytes": 1441063,
+      "sha256": "e4836a6a65e70dac544a127a80245a3f72be9abc5bbd97eaa566978241eb2671",
+      "evidence": "Music / docs/music-sources.json"
+    },
+    {
+      "path": "dist/assets/bounds.json",
+      "bytes": 3241,
+      "sha256": "7c4e9c2813d256b33e2c93111c8b5da7a6899806d205d004301b9a4b57386c4c",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/briarhaven/CREDITS.txt",
+      "bytes": 559,
+      "sha256": "5485d9fd995e6308ce1059e748da29e2cd90cb72e8443b8cb10d77533544bb88",
+      "evidence": "KayKit CC0 / bundled license files"
+    },
+    {
+      "path": "dist/assets/briarhaven/dungeon-LICENSE.txt",
+      "bytes": 829,
+      "sha256": "c5f17abf619731f57f6bbff450f6484214605c13aa96bb75bbcfc70930941ff7",
+      "evidence": "KayKit CC0 / bundled license files"
+    },
+    {
+      "path": "dist/assets/briarhaven/hero-LICENSE.txt",
+      "bytes": 891,
+      "sha256": "ae322141814056dda0deea7540d74c41d87aee1da319977cd1bd84ee5a923629",
+      "evidence": "KayKit CC0 / bundled license files"
+    },
+    {
+      "path": "dist/assets/briarhaven/models.js",
+      "bytes": 4251569,
+      "sha256": "a1d9ed55f078fff91da0a6590490f5223a4a1dadc084b23dea5bc6fef7715d53",
+      "evidence": "KayKit CC0 / bundled license files"
+    },
+    {
+      "path": "dist/assets/briarhaven/town-LICENSE.txt",
+      "bytes": 1027,
+      "sha256": "881e50d3629fba90629bedc65e9e6f47cfab3609598c296dcb7f70ea83174360",
+      "evidence": "KayKit CC0 / bundled license files"
+    },
+    {
+      "path": "dist/assets/characters.png",
+      "bytes": 1433132,
+      "sha256": "49b82bf57cf6345cb060b2ab2c572d12e281489810e97bf7715f8bc00a7e7b7e",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/environment.png",
+      "bytes": 2213128,
+      "sha256": "7f798b6dfa364876673009edb89a523a38c3c122a81cac5614dc5449e6df0ec8",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/heroes.png",
+      "bytes": 1222202,
+      "sha256": "2ab814eea5580c34f8a1b18d688da3ec4dbf8be90f2242dfb01df1654d1b1321",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/items.png",
+      "bytes": 1803804,
+      "sha256": "7b75e03f86fba567879fa0df678d4e3267a921c32e8be407ce7972ff6282911c",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/landing-world.webp",
+      "bytes": 133180,
+      "sha256": "c8ed86be5549b2135071d2f894d4b119e7f17501fd8a9799e7d796d4a4290762",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/monsters.png",
+      "bytes": 1676853,
+      "sha256": "5cff7f818a86c860c9a3d200c4664e85f0f93ca8baed01e92bc337d4ef0bcda1",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/poses.png",
+      "bytes": 2488370,
+      "sha256": "3a5cac406280337531939b1d6a915fd6011744332cf7cd7945534325c0c9e466",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/realms/BESTIARY-LICENSE.txt",
+      "bytes": 4545,
+      "sha256": "83533896cc3c55c45b4dfdf46d882c99a81b3250eede94212bfee8664524627e",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/CH0SAN-provenance.json",
+      "bytes": 7850,
+      "sha256": "85eb0d1a88d83b2f2975c86c292506e9257b0ca642037ccc1dfb16cf551860c1",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/CREDITS.txt",
+      "bytes": 5217,
+      "sha256": "29df39968d6f2380b0d3fa3553e0fc49215e8e6f0d30e44a34b379e419c042d6",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/FANTASY-PROPS-LICENSE.txt",
+      "bytes": 815,
+      "sha256": "b7e28aeb924b11ab507f4b6903aeba3785b2c6f9e4ff71249851a7d21f5bb94a",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/action-motion-provenance.json",
+      "bytes": 649,
+      "sha256": "2e24ae073ceef194ab9392fcb08d4da51301316ac1dc76cb72e9528e469b89b8",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/approved-creatures.js",
+      "bytes": 14272989,
+      "sha256": "22504cfca96f29024e0364be580bd5a68f4fabdc84ccb431ceb1fe89771c9a27",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/armor-icons.png",
+      "bytes": 557171,
+      "sha256": "59499104a6d8d295f672b0f313caf3af0249ae70f46f696fec470a945396f69d",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/atlas.png",
+      "bytes": 10835511,
+      "sha256": "fe4afc515da2b90730687edbc7b0bb293cd5935035bd5711ef91cd0536bfbbd3",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/fantasy-outfits-provenance.json",
+      "bytes": 2812,
+      "sha256": "0575ce1f4c1f086b3d266e8e04935796a658e99ef32333c53eb8b4cd1b7f3763",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/models.js",
+      "bytes": 19525955,
+      "sha256": "c37b196ad7a6fa90d2f7b9c6578b981ccd40d03727c4f0b7447bb4fe014d80c7",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/monsters.js",
+      "bytes": 5223099,
+      "sha256": "7aa067fca37b701cfe5a4e4a5f8087fd1051decdb4f755b998bdee6cf3481940",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/realms/textured-trees-license.txt",
+      "bytes": 364,
+      "sha256": "83d8959f9fc56353ed571fbe2dc52e4bcd64508e2399501cd45ac2ce3df0bf8c",
+      "evidence": "Mixed model packs / assets/realms/CREDITS.txt and audit pack table"
+    },
+    {
+      "path": "dist/assets/spirit-portraits.png",
+      "bytes": 2767280,
+      "sha256": "f1ff1bacc29d2bcb45e5f3e4166e0f456a2ea9ebc783737019e9e5e115be28c5",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/spirits.png",
+      "bytes": 1506089,
+      "sha256": "ae4c82ee6296f4b9ab08c5016d45d89dfe65ddc4e77ebe05bce8a4f45d34b264",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/terrain.png",
+      "bytes": 2497799,
+      "sha256": "5ad381ebc4aa88125b2ad3ab2ea91d4f041aaafd0ea012c672566ea7808e04b8",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "dist/assets/ui/CREDITS.txt",
+      "bytes": 5936,
+      "sha256": "405a57dea175620c44b9446918b75112d376054b4c8d37d7174af5d9115d9296",
+      "evidence": "game-icons.net CC BY 3.0 / attribution required"
+    },
+    {
+      "path": "dist/assets/walking.png",
+      "bytes": 2129116,
+      "sha256": "c0a066f4f2bb80fbca66c507862d6191d6ff3b51005dd7087e1bfab1a29e6097",
+      "evidence": "Legacy sprites / provenance review"
+    },
+    {
+      "path": "docs/boss-candidates/boss-shortlist.jpg",
+      "bytes": 694345,
+      "sha256": "52d4011ea4fe0b3ec8485fcd767629ccff6e95bc515c9f1e228112db02b359c6",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/colossus.webp",
+      "bytes": 267798,
+      "sha256": "259ca27388a61c94baf4dcc3344f3cab21b9e731c9b258f920d43ca8749f1423",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/insectoid.jpg",
+      "bytes": 124842,
+      "sha256": "fca437375baa49f848205f4687ff819106ccac9b3bee8847233c651186e6d0f2",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/mindbreaker.webp",
+      "bytes": 90074,
+      "sha256": "13f5c5d355f9100abdf05da3ae1c6d9089c1ee9a078c9f52ce4b5c7a7ac07b7a",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/minotaur.webp",
+      "bytes": 42480,
+      "sha256": "7aa88b5e93a5912b6a2883daffaf1c85c269a7f24c017bacea79ea6d1e03c377",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/prowler.jpg",
+      "bytes": 255956,
+      "sha256": "9375ef1108ca4157b6199bcfbfd649b8519a13645b07455951813cbd38bf9775",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-candidates/treant2.png",
+      "bytes": 135313,
+      "sha256": "8a7abeed0179b8c4cb2d38be26e3a47a8459eb9c987af5aee644bd23bbea24b9",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/boss-design-drafts.png",
+      "bytes": 203548,
+      "sha256": "fd65bafb0e1e38b3ad6b524aaccf8dd62e17e3a5b637f3563c74df09ea2d4625",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/colossus-review/crimson-overload.png",
+      "bytes": 1121338,
+      "sha256": "05de610c45bfc5ab2bb4d5ff8cad1e3f19983760192f483f004b455d4482cd26",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/colossus-review/crystal-crucible.png",
+      "bytes": 1128203,
+      "sha256": "99f21daa2e861c366abe95540e15e5953baca6b8bdbe9cd821ae332135103727",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/firstlight-review/foresters-grove.png",
+      "bytes": 1433972,
+      "sha256": "376f5a1648a0bfa0c6544aa023924bf4671ba0c0998078ac1b181cb6de326800",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/firstlight-review/town-square.png",
+      "bytes": 1496495,
+      "sha256": "9be73cd328f6632b474ad69493822caf717c1de9a1948bb2a7f02744542d35a8",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/forest-giant-review/elderwood-grove.png",
+      "bytes": 593758,
+      "sha256": "90ec943ae0d27f2d37b7afdd1373b8d35b3c4d298bdb42a1ea998c5dff7a8d05",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/forest-giant-review/forest-giant-close.png",
+      "bytes": 675754,
+      "sha256": "1383562b1eaf67d8081a4637d36d48df583b702dbbf6f09d25f7e9228286257c",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/ork-review/native-model.png",
+      "bytes": 541253,
+      "sha256": "a79b67dcf086ca91f7904022aecd06101fd24481a1384307878326f7e169f8e9",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/ork-review/warrens.png",
+      "bytes": 1589692,
+      "sha256": "1b9b41c812821a4f686fc36195556f2899b6c009a6a7ce6046933f1b998268dd",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/staff-idle/female-idle.png",
+      "bytes": 495891,
+      "sha256": "c5458a737df1895b8bdb42e1db5498447e85ffab0bdb1a374708a4c3a86efee6",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/staff-idle/male-idle.png",
+      "bytes": 556516,
+      "sha256": "d493b5a9074470c0c4bdf1fa7233d206360ecb96655377e83633dbbf2f20b650",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/work-run-2/ashwatch-approach.jpg",
+      "bytes": 152485,
+      "sha256": "2c64091f45932759a5a952a47fab1722ee10ca7a83ba12c33d2debbc44e9f48f",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/work-run-2/deepforge.jpg",
+      "bytes": 156644,
+      "sha256": "f77c212fe5f96b42938f1a925b2e30b4d94eacfae06dd069cb25f45d15890b59",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/work-run-2/hollow-shrine-bank.jpg",
+      "bytes": 129996,
+      "sha256": "4a6105fb45076ee07c96db97bcbd056b7928a9ef772fdaec512662266497ab80",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/qa/work-run-2/tutorial-finished.jpg",
+      "bytes": 65392,
+      "sha256": "bff880b540567bb71b9210ecae1f119669627ce2dcf3cdc2f6c0abfa13149dba",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/varkesh-review/blightwing-roost.png",
+      "bytes": 632773,
+      "sha256": "cbabce25be2300b5edbc6a0a084178b332fbc2c6b35cd466c1aadcab26e4b050",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/varkesh-review/original-model.png",
+      "bytes": 590270,
+      "sha256": "e1a56264f005f74349e672bf91811cafb1ad594b284b40532c9ac077d2c286ca",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/varkesh-review/rig-motions.jpg",
+      "bytes": 91163,
+      "sha256": "ed74d2fd75d8295fe3b274874f49db1d1acc20a24bd9ab62a8033644e5ef4a82",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/veyr-review/native-cast-and-death.jpg",
+      "bytes": 99388,
+      "sha256": "82d3a2c8575f33411a1eb783b90674828b6c03c64911e270f5334e2debd4b09c",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/veyr-review/native-strikes.jpg",
+      "bytes": 100542,
+      "sha256": "d86696ef8a5fcbcea22f6281347603b513aa90eab4376ec15d8c8adfddd7e4ab",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/veyr-review/shattered-sanctum.png",
+      "bytes": 1378247,
+      "sha256": "8df8b37d91319e945be9e62d1b513d4bb7e230c0a613a22be8a6bb8c82259025",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/xalith-review/authored-death.png",
+      "bytes": 527112,
+      "sha256": "6b2754edae56845d7162b8f7c89b6575abe348a5937d2561ff76af35186b0075",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/xalith-review/brood-hollow.png",
+      "bytes": 601452,
+      "sha256": "0cec389b0a6800eaa7633abf59625f04e9560a3667e88359fecfcb18edfab39f",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    },
+    {
+      "path": "docs/xalith-review/original-model.png",
+      "bytes": 528887,
+      "sha256": "7621a9e6fef1a43f5f596cd1234cb3f11c028561bb42f1ade9b25bf9ac3fc8c4",
+      "evidence": "Development/reference image; trace in adjacent docs; not runtime clearance"
+    }
+  ]
+}

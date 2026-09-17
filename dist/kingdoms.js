@@ -20,6 +20,88 @@ const SETTLEMENTS=[
  {id:'fernwatch',name:'Fernwatch',kingdom:'sylvaran',kind:'village',x:72,y:179},
  {id:'silverbrook',name:'Silverbrook',kingdom:'sylvaran',kind:'village',x:199,y:199}
 ];
+// Regional accounts describe existing places; they do not grant quests or alter shared state.
+const REGIONAL_ACCOUNTS={
+ "crownreach": {
+  "title": "The road court",
+  "place": "Grain levies and road contracts keep Sunspire supplied. Courtyard markets leave the gate approaches clear for arriving caravans.",
+  "voice": "Our clerks keep two copies of every road order. A seal is useful; a witness is better.",
+  "belief": "We light a candle for those who keep the roads, not only those who rule them."
+ },
+ "greyhaven": {
+  "title": "The caravan exchange",
+  "place": "Storehouses and market courts gather goods from the western farms before the long roads east. Repair yards matter as much as shopfronts here.",
+  "voice": "Count your supplies before you leave. Beyond the town, the Badlands offer fewer safe places to stop.",
+  "belief": "A traveler may leave an offering for the next traveler without giving a name."
+ },
+ "briarhaven": {
+  "title": "A haven for returning travelers",
+  "place": "The bank, kitchen and market face a shared square. The Magic School teaches Relic shaping beside the gathering country that supplies it.",
+  "voice": "Firstlight teaches you to survive. Here you decide what to make of those skills. Ask Captain Rellan about the trouble on the northern road.",
+  "belief": "A bonded Spirit is a companion with its own will. Worship strengthens your practice; it does not turn that companion into property."
+ },
+ "willowcross": {
+  "title": "The working village",
+  "place": "Fields, kitchens and timber work support the nearby roads. Willowcross measures a good season in full stores and repaired homes.",
+  "voice": "Wood is shelter before it is fuel. Leave the paths clear when you work among the trees.",
+  "belief": "We remember the hands that planted and harvested before ours."
+ },
+ "stoneford": {
+  "title": "The crossing ward",
+  "place": "Masonry and roadside trade sustain Stoneford. Its lanes gather travelers before they head into rougher country.",
+  "voice": "Stay on the approaches near a crossing. A shortcut through the bank can be longer than the road.",
+  "belief": "A sound crossing is our offering to people we will never meet."
+ },
+ "ironhollow": {
+  "title": "The city above the seals",
+  "place": "Ironcrown and the mine works share a mountain. Working shafts support the city; the Wardkeepers maintained older chambers beneath them.",
+  "voice": "Hesta keeps the rescue camp. If you hear a voice in a closed shaft, bring a witness before following it.",
+  "belief": "Remembering the dead does not mean obeying every voice that uses their names."
+ },
+ "deepforge": {
+  "title": "The foundry city",
+  "place": "Workshop courts and heavy stone halls serve the eastern mineral country. Ore, fuel and finished equipment pass through different hands here.",
+  "voice": "A smith needs miners and fuel cutters. A fine blade begins long before it reaches my anvil.",
+  "belief": "We set aside the first quiet moment after the furnaces cool to remember absent workers."
+ },
+ "copperdelve": {
+  "title": "The prospectors’ village",
+  "place": "Small workshops and stores support crews traveling into mineral country. Tools are repaired here before they are replaced.",
+  "voice": "Start with ore you can actually work. A heavier pick does not make an unfamiliar seam safe.",
+  "belief": "Earth Spirits are encountered through patient work with stone, not by claiming ownership of a mountain."
+ },
+ "stonehearth": {
+  "title": "The shelter on the road",
+  "place": "Compact stone homes and shared hearths give travelers a resting place among the eastern hills. Stores are kept close to the houses.",
+  "voice": "Fill your food bag before you leave. The country beyond our lamps is not a town square.",
+  "belief": "A place beside the hearth is offered before a stranger is asked for a story."
+ },
+ "aelindor": {
+  "title": "The living court",
+  "place": "The Bough Palace governs from a city of woodland courts. Open ground belongs to paths and gathering places as well as to buildings.",
+  "voice": "A forest is not empty land waiting for houses. Its clearings already serve a purpose.",
+  "belief": "Air Spirits have their own journeys. A bond begins with attention, not a command."
+ },
+ "moonwillow": {
+  "title": "The watch beneath the canopy",
+  "place": "Woodland homes stand above root caverns. The Brood Hollow makes watching the forest floor as necessary as watching the road.",
+  "voice": "The roots hide passages. Do not mistake a quiet cave for an abandoned one.",
+  "belief": "We keep remembrance close to living trees; the forest continues after each of us."
+ },
+ "fernwatch": {
+  "title": "The woodland threshold",
+  "place": "Rangers and craftspeople share a village at the edge of the southern forest routes. Clear approaches help travelers recognize shelter.",
+  "voice": "Thick woodland needs a path, not a cleared hillside. Follow the road until you know the ground.",
+  "belief": "Cutting wood and tending what remains are parts of the same responsibility."
+ },
+ "silverbrook": {
+  "title": "The waterside craft village",
+  "place": "The village joins woodland craft with the needs of travelers moving between the elven cities. Water and timber shape its daily work.",
+  "voice": "Fishing and crafting reward patience. Bring useful materials home instead of an overflowing bag of things you cannot use.",
+  "belief": "Water Spirits are companions discovered through fishing. The water is shared even when the bond is yours."
+ }
+};
+function regionalAccount(id){return REGIONAL_ACCOUNTS[id]||REGIONAL_ACCOUNTS.briarhaven;}
 const realmRoads=[],realmSceneInfo=new Map(),realmNavigation=new Map();let kingdomsReady=false;
 function kingdomAt(x,y){return KINGDOMS[y>=153&&x>=50?2:x>=185&&y<153?1:0];}
 function realmDestination(t){return t.legacy?[t.x,t.y+1]:[t.x+2,t.y+3];}
@@ -42,9 +124,9 @@ function makeRealmInterior(info){
  const room=worldScenes[id];room.race=race;room.kingdom=info.building.kingdom;
  const oldO=objects.splice(0),oldB=buildings.splice(0),oldScene=currentScene;currentScene=id;objects.push(...room.objects);buildings.push(...room.buildings);
  const resident=(x,y,name,talk)=>add('villager',x,y,name,2,{characterSprite:true,race,talk});
- if(kind==='house'){resident(5,5,race==='elf'?'Elven artisan':race==='dwarf'?'Dwarven stoneworker':'Town resident','Welcome to '+SETTLEMENTS.find(t=>t.id===info.settlement).name+'. Our roads lead to the other kingdoms.');add('prop',3,3,'Bed',12);add('prop',10,4,'Dining table',12);add('prop',11,7,'Bookcase',12);add('camp',3,9,'Household hearth',7);}
- if(kind==='hall'){resident(5,4,race==='elf'?'Lorekeeper Ilyra':race==='dwarf'?'Archivist Borin':'Royal archivist','Aurelia, Khaz-Dur, and Sylvaran share these roads. Every capital has a castle; every town has a place for a traveler.');for(const x of [2,4,10,12])add('prop',x,2,'Bookcase',12);add('prop',8,7,'Reading table',12);}
- if(kind==='temple'){resident(5,5,race==='elf'?'Moon priestess':race==='dwarf'?'Ancestor keeper':'Temple keeper','Bury the bones you find to honor the departed and gain Worship experience.');add('prop',8,3,'Altar',12);for(const x of [3,11])add('camp',x,3,'Sacred brazier',7);}
+ if(kind==='house'){resident(5,5,race==='elf'?'Elven artisan':race==='dwarf'?'Dwarven stoneworker':'Town resident',regionalAccount(info.settlement).voice);add('prop',3,3,'Bed',12);add('prop',10,4,'Dining table',12);add('prop',11,7,'Bookcase',12);add('camp',3,9,'Household hearth',7);}
+ if(kind==='hall'){resident(5,4,SETTLEMENTS.find(t=>t.id===info.settlement).name+' archivist',regionalAccount(info.settlement).place);for(const x of [2,4,10,12])add('prop',x,2,'Bookcase',12);add('prop',8,7,'Reading table',12);}
+ if(kind==='temple'){resident(5,5,race==='elf'?'Moon priestess':race==='dwarf'?'Ancestor keeper':'Temple keeper',regionalAccount(info.settlement).belief+' Bury bones to gain Worship experience.');add('prop',8,3,'Altar',12);for(const x of [3,11])add('camp',x,3,'Sacred brazier',7);}
  if(kind==='castle'){resident(12,4,race==='elf'?'Queen Aelira':race==='dwarf'?'King Thargrim':'Queen Elowen','Welcome to '+title+'. You may explore our cities and villages, trade with our merchants, and seek shelter within our halls.');add('prop',12,2,'Royal throne',12);for(const x of [4,18]){add('camp',x,5,'Royal brazier',7);add('prop',x,10,'Banquet table',12);resident(x,15,race==='dwarf'?'Ironcrown guard':race==='elf'?'Bough sentinel':'Crown guard','The roads to our neighboring kingdoms are open.');}for(const x of [3,20])for(const y of [4,10,16])add('prop',x,y,'Stone pillar',12);}
  for(const o of objects)if(o.characterSprite||['shop','inn','villager'].includes(o.type))o.race=race;
  room.objects=objects.splice(0);room.buildings=buildings.splice(0);objects.push(...oldO);buildings.push(...oldB);currentScene=oldScene;
@@ -70,7 +152,7 @@ function buildKingdoms(){
  // Streets between the blocks remain open, and every city has resident tradespeople.
  for(const t of SETTLEMENTS.filter(t=>!t.legacy)){
   const race=KINGDOMS.find(k=>k.id===t.kingdom).race;
-  for(let i=0;i<(t.kind==='city'?8:3);i++){const x=t.x-15+(i%4)*9,y=t.id==='ironhollow'&&i===6?t.y+1:t.y-12+Math.floor(i/4)*16;add('villager',x,y,(race==='elf'?'Elven':race==='dwarf'?'Dwarven':'Aurelian')+' '+['ranger','mason','traveler','weaver'][i%4],i%4,{race,characterSprite:true,talk:'Welcome to '+t.name+' in '+KINGDOMS.find(k=>k.id===t.kingdom).name+'. Follow the roads or use the world map to reach our neighboring settlements.'});}
+  for(let i=0;i<(t.kind==='city'?8:3);i++){const x=t.x-15+(i%4)*9,y=t.id==='ironhollow'&&i===6?t.y+1:t.y-12+Math.floor(i/4)*16;add('villager',x,y,(race==='elf'?'Elven':race==='dwarf'?'Dwarven':'Aurelian')+' '+['ranger','mason','traveler','weaver'][i%4],i%4,{race,characterSprite:true,talk:[regionalAccount(t.id).voice,regionalAccount(t.id).place,regionalAccount(t.id).belief][i%3]});}
  }
  for(let y=4;y<250;y+=7)for(let x=5;x<375;x+=7){if(x<96&&y<84||settlementAt(x,y)||onRealmRoad(x,y)||expandedWater(x,y)||buildings.some(b=>x>=b.x-2&&x<b.x+b.w+2&&y>=b.y-2&&y<b.y+b.h+2))continue;const race=kingdomAt(x,y).race,seed=(x*17+y*31)%11;if(race==='dwarf'){if(seed<5)add('prop',x,y,'Mountain outcrop',12,{realmScenery:true});if(seed===6)add('ore',x,y,'Mountain iron',6);}else if(seed<7)add('tree',x,y,race==='elf'?'Silverwood tree':'Highland oak',4,{race,realmScenery:true});}
  for(const [x,y,race]of [[197,32,'dwarf'],[322,122,'dwarf'],[99,174,'elf'],[237,172,'elf']]){add('camp',x,y,'Roadside camp',7);add('villager',x+2,y,'Road warden',2,{race,characterSprite:true,talk:'Rest at the fire. All three kingdoms can be reached on foot.'});spawn('wolf',x+7,y+6,{name:race==='elf'?'Silverwood wolf':'Mountain wolf',level:5,hp:35,maxhp:35});}

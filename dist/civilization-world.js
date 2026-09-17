@@ -85,10 +85,10 @@ function expandLegacyNeighborhoods(world){
 function addSettlementIdentity(world){
  for(const t of SETTLEMENTS){const plan=settlementPlans.get(t.id),race=KINGDOMS.find(k=>k.id===t.kingdom).race;plan.center=[t.x,t.y];
   const x=t.x,y=t.y,city=t.kind==='city';
-  if(!t.legacy){civilPut(world,'prop',city?'Civic market monument':'Village well',x-5,y+3,{civilDecor:city?(race==='elf'?'grove':'monument'):null});
+  if(!t.legacy){civilPut(world,'prop',city?'Civic market monument':'Village well',x-5,y+3,{civilDecor:city?(race==='elf'?'grove':'monument'):null,civicEmblem:t.id});
    for(const [a,b]of city?[[-8,-7],[8,-7],[-8,7],[8,7]]:[[-6,2]])civilPut(world,'prop','Market stall',x+a,y+b,{collisionRadius:1.1});
   }
-  civilResident(world,city?'Market steward':'Village steward',x+4,y+2,race,plan.purpose+'. '+plan.landmark+' is our landmark. The main road meets the market here.');
+  civilResident(world,city?'Market steward':'Village steward',x+4,y+2,race,regionalAccount(t.id).place+' '+regionalAccount(t.id).belief);
   if(city){civilResident(world,'Civic banker',x-5,y-5,race,'The bank keeps your belongings safe.',{type:'banker',mapService:'bank'});for(const [dx,dy]of [[-53,0],[53,0],[0,57]])civilResident(world,'Road guard',x+dx,y+dy,race,'The avenue leads to the market. Keep the gateways clear.',{appearanceRole:'guard'});}
   if(race==='elf'&&city)for(const [dx,dy]of [[-28,-20],[27,-20],[-28,41],[27,41]])civilPut(world,'prop','Sheltering grove tree',x+dx,y+dy,{civilDecor:'grove',race,walkThrough:true});
   const townBuildings=world.buildings.filter(b=>b.settlement===t.id);plan.buildings=townBuildings.map(b=>b.service?.destination);plan.bounds={left:Math.min(...townBuildings.map(b=>b.x))-5,top:Math.min(...townBuildings.map(b=>b.y))-5,right:Math.max(...townBuildings.map(b=>b.x+b.w))+5,bottom:Math.max(...townBuildings.map(b=>b.y+b.h))+5};
@@ -205,8 +205,10 @@ setupTutorialVillage=function(){civilizationSetupBefore();if(civilizationReady)r
 };
 
 function civilStairWellAt(x,y){return civilStairWells.get(currentScene)?.some(h=>x>=h.x&&x<h.x+h.w&&y>=h.y&&y<h.y+h.h);}
-function civilPaintFloor(r,x,y,w,h,color,material,height=.04){let rects=[[x,y,w,h]];for(const hole of civilStairWells.get(currentScene)||[]){const next=[];for(const [a,b,c,d]of rects){const left=Math.max(a,hole.x),right=Math.min(a+c,hole.x+hole.w),top=Math.max(b,hole.y),bottom=Math.min(b+d,hole.y+hole.h);if(left>=right||top>=bottom){next.push([a,b,c,d]);continue;}if(top>b)next.push([a,b,c,top-b]);if(bottom<b+d)next.push([a,bottom,c,b+d-bottom]);if(left>a)next.push([a,top,left-a,bottom-top]);if(right<a+c)next.push([right,top,a+c-right,bottom-top]);}rects=next;}
- for(const [a,b,c,d]of rects)r.face([[a,height,b],[a,height,b+d],[a+c,height,b+d],[a+c,height,b]],color,null,material);
+function civilPaintFloor(r,x,y,w,h,color,material,height=.04,cutouts=[]){let rects=[[x,y,w,h]];for(const hole of [...(civilStairWells.get(currentScene)||[]),...cutouts]){const next=[];for(const [a,b,c,d]of rects){const left=Math.max(a,hole.x),right=Math.min(a+c,hole.x+hole.w),top=Math.max(b,hole.y),bottom=Math.min(b+d,hole.y+hole.h);if(left>=right||top>=bottom){next.push([a,b,c,d]);continue;}if(top>b)next.push([a,b,c,top-b]);if(bottom<b+d)next.push([a,bottom,c,b+d-bottom]);if(left>a)next.push([a,top,left-a,bottom-top]);if(right<a+c)next.push([right,top,a+c-right,bottom-top]);}rects=next;}
+ // Small floor faces sort correctly around actors in the Canvas fallback.
+ // A whole castle-sized polygon can otherwise paint over a character above it.
+ for(const [a,b,c,d]of rects)for(let xx=a;xx<a+c;xx+=2)for(let zz=b;zz<b+d;zz+=2){const right=Math.min(xx+2,a+c),bottom=Math.min(zz+2,b+d);r.face([[xx,height,zz],[xx,height,bottom],[right,height,bottom],[right,height,zz]],color,null,material);}
 }
 // Modular geometry shares materials and caches; the same wall tiles drive collision.
 function civilWallGeometry(r,tile,height=tile.height){const q=materialRealm(r,18);box3(q,tile.x+.5,height/2,tile.y+.5,1,height,1,'#858c85');box3(q,tile.x+.5,height+.06,tile.y+.5,1.07,.12,1.07,'#b0afa0');}
@@ -214,7 +216,7 @@ const civilDrawBuildingBefore=building3;
 building3=function(r,b){
  if(!b.civilWallTiles)return civilDrawBuildingBefore(r,b);
  const p=worldStyle[b.race],q=groundedPainter(r,b.x+b.w/2,b.y+b.h/2),stone=materialRealm(q,18),cut=!!b._cutaway;
- civilPaintFloor(q,b.x,b.y,b.w,b.h,'#9b9b8b',18);
+ civilPaintFloor(q,b.x,b.y,b.w,b.h,'#9b9b8b',18,.04,b.civilRooms.map(room=>({x:room.x+.8,y:room.y+.8,w:room.w-1.6,h:room.h-1.6})));
  for(const room of b.civilRooms)civilPaintFloor(q,room.x+.8,room.y+.8,room.w-1.6,room.h-1.6,room.usage==='hall'?'#807065':room.usage==='library'?'#a18b68':'#8b8a7d',room.usage==='library'?5:18,.065);
  for(const tile of b.civilWallTiles.values()){
   // The near side drops to waist height while roofs lift, preserving room boundaries.
@@ -257,7 +259,15 @@ prop3=function(r,o,x,z){
  if(o.civilDecor==='brokenRamp'){for(let i=0;i<5;i++)beamArt(wood,[x-.7,i*.12,z-i*.45],[x+.7,i*.12,z-i*.45+.2],.1,p.wood,6);return 1;}
  if(o.civilDecor==='dummy')return drawPracticeDummy(q,{tutorialRole:'melee-dummy'},x,z);
  if(o.civilDecor==='grove'){profile3(wood,x,3,z,1.8,6,1.8,[[-.5,1.3],[-.4,1],[.5,.6]],'#6d6550',a=>a,12);for(const side of [-1,1]){beamArt(wood,[x,3,z],[x+side*3,6,z],.25,'#6d6550',8);oval3(q,x+side*2,6.2,z,5,2.5,4,'#4e785d',a=>a,10);}return 8;}
- if(o.civilDecor==='monument'){box3(stone,x,.3,z,2.1,.6,2.1,p.stone);profile3(stone,x,2.3,z,.7,4,.7,[[-.5,1.3],[.4,1],[.5,.1]],p.stone,a=>a,8);return 4.5;}
+ if(o.civilDecor==='monument'){
+  // Different civic crafts, contained within the existing protected plinth.
+  if(['greyhaven','ironhollow','deepforge'].includes(o.civicEmblem)){
+   box3(stone,x,.3,z,2.1,.6,2.1,p.stone);
+   if(o.civicEmblem==='greyhaven'){beamArt(stone,[x, .6,z],[x,3.2,z],.16,p.stone,8);beamArt(stone,[x-.85,2.8,z],[x+.85,2.8,z],.10,p.stone,8);for(const side of [-1,1]){beamArt(stone,[x+side*.72,2.8,z],[x+side*.72,1.9,z],.025,p.stone,6);box3(stone,x+side*.72,1.85,z,.5,.12,.6,p.stone);}return 3.3;}
+   if(o.civicEmblem==='ironhollow'){beamArt(stone,[x,.6,z],[x,2.5,z],.18,p.stone,8);box3(stone,x,2.65,z,1.65,.65,.75,p.stone);return 3;}
+   box3(stone,x,1,z,.8,.8,.9,p.stone);box3(stone,x,1.6,z,1.8,.4,1.1,p.stone);return 1.9;
+  }
+  box3(stone,x,.3,z,2.1,.6,2.1,p.stone);profile3(stone,x,2.3,z,.7,4,.7,[[-.5,1.3],[.4,1],[.5,.1]],p.stone,a=>a,8);return 4.5;}
  return civilPropBefore(r,o,x,z);
 };
 const civilWallArtBefore=drawRealmWall;

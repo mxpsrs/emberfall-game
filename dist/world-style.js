@@ -74,7 +74,7 @@ function worldHouseRoof(r,b,y,rise){
    for(const zz of [b.y+.1,b.y+b.h-.1]){
     const root=[[xx+side*.55,.05,zz],[xx+side*.18,.95,zz],[xx,y*.66,zz],[xx-side*.52,y+.75,zz],[xx-side*1.1,y+1.28,zz]];
     for(let i=0;i<root.length-1;i++)beamArt(wood,root[i],root[i+1],.16-i*.025,p.wood,9);
-    rebuiltPlace(q,'Prop_Vine1',xx,1.1,zz,.85,side===1?Math.PI/2:0);
+    rebuiltLivingVine(q,xx,.45,zz,.85,side===1?Math.PI/2:0);
    }
   }else{
    for(const yy of [1.8,y-.12])beamArt(wood,[xx,yy,front],[xx-side*.66,yy-.60,front],.055,p.wood,5);

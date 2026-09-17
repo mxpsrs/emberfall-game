@@ -56,8 +56,8 @@ function arcGate(chapter){
 }
 function arcWorldReaction(o){
  const q=mountainState();if(q.stage<10)return '';
- if(q.stage>=18)return 'The impossible voices have stopped. People are checking on their families; Ironhollow remembers who brought them home.';
  const key=o.mainStoryKey||o.mountainKey;
+ if(q.stage>=18)return ({rellan:'The false orders have stopped. We still check our countersigns face to face. Trust deserves that much care.',hesta:'Bera and Oren came home. That is what I tell people when they ask what you did beneath the mountain.',ilyra:'Veyr copied our memories, but could not replace an independent mind. Remember that when you speak of your Spirit.',edda:'The voices have stopped. We will keep watch over the empty chambers; survival is no reason to leave them unguarded.'})[key]||'The impossible voices have stopped. People are checking on their families; Ironhollow remembers who brought them home.';
  return key==='rellan'?'Two guards heard me order opposite patrols. I gave neither command. We now check written countersigns face to face.':key==='hesta'?'A child heard his father call from the closed shaft while that same father stood beside him. We travel in pairs now.':key==='ilyra'?'Human memories are being repeated with terrible precision. Spirits are different beings; the copies fail to reproduce their independent reactions.':key==='edda'?'I still hear my dead mother at doorways. I stay with witnesses. We must stop Veyr before more people follow.':'Someone called a familiar name from an empty room. Nobody here is willing to follow a voice alone.';
 }
 function mountainState(){
