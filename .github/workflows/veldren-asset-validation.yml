@@ -1,0 +1,56 @@
+name: Veldren asset validation
+on:
+  push:
+    branches: [fix/veldren-phase1-assets]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Collect exact source snapshot and embedded asset schema
+        run: |
+          mkdir -p /tmp/veldren-audit
+          git archive --format=zip HEAD -o /tmp/veldren-audit/source.zip
+          node --input-type=module <<'NODE' > /tmp/veldren-audit/schema.json
+          import fs from 'node:fs';
+          import vm from 'node:vm';
+          const results={};
+          function shape(v, depth=0) {
+            if (v===null) return null;
+            if (typeof v==='string') return {type:'string',length:v.length,sample:v.length<160?v:undefined};
+            if (Array.isArray(v)) return {type:'array',length:v.length,sample:depth<5?v.slice(0,3).map(x=>shape(x,depth+1)):undefined};
+            if (typeof v==='object') {const keys=Object.keys(v);return {type:'object',count:keys.length,keys:keys.slice(0,100),values:depth<5?Object.fromEntries(keys.slice(0,3).map(k=>[k,shape(v[k],depth+1)])):undefined};}
+            return v;
+          }
+          for(const p of ['dist/assets/briarhaven/models.js','dist/assets/realms/models.js','dist/assets/realms/monsters.js','dist/assets/realms/approved-creatures.js']){
+            const text=fs.readFileSync(p,'utf8');
+            const names=[...text.matchAll(/(?:const|let|var)\s+([A-Z][A-Z_0-9]+)\s*=/g)].map(m=>m[1]);
+            const context=vm.createContext({});
+            vm.runInContext(text,context,{timeout:15000});
+            results[p]={bytes:Buffer.byteLength(text),libraries:{}};
+            for(const name of names){const value=vm.runInContext(name,context);results[p].libraries[name]=shape(value);}
+          }
+          console.log(JSON.stringify(results,null,2));
+          NODE
+          cat /tmp/veldren-audit/schema.json
+      - name: Install locked project dependencies
+        run: npm ci
+      - name: Run asset checks
+        run: npm run assets:check
+      - name: Build without publishing
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: veldren-asset-audit
+          path: /tmp/veldren-audit/
+          retention-days: 3
