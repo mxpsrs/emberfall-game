@@ -1,0 +1,25 @@
+name: Prepare pinned glTF validation tools
+on:
+  push:
+    branches: [veldren-phase1-assets]
+    paths: [.github/workflows/asset-tools.yml]
+permissions:
+  contents: read
+jobs:
+  tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install isolated pinned validation dependencies
+        run: |
+          mkdir -p /tmp/veldren-tools
+          cd /tmp/veldren-tools
+          npm init -y
+          npm install --save-exact three@0.180.0 gltf-validator@2.0.0-dev.3.10 esbuild@0.25.9 @napi-rs/canvas@0.1.80
+          tar czf /tmp/veldren-tools.tar.gz package.json package-lock.json node_modules
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldren-pinned-validation-tools
+          path: /tmp/veldren-tools.tar.gz
+          retention-days: 2
+          if-no-files-found: error
