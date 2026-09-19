@@ -1,0 +1,147 @@
+[
+  {
+    "path": "assets/source/stylized-nature/glTF/Bush_Common.gltf",
+    "sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+    "errors": 100,
+    "warnings": 0
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Bush_Common_Flowers.gltf",
+    "sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+    "errors": 99,
+    "warnings": 0
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/CommonTree_1.gltf",
+    "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/CommonTree_2.gltf",
+    "sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/CommonTree_3.gltf",
+    "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/CommonTree_4.gltf",
+    "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/CommonTree_5.gltf",
+    "sha256": "fb7061f2bf9fe850870b056431f8f66cd8fdeb443c90695c5efbcf1fe6876d53",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/DeadTree_1.gltf",
+    "sha256": "b7ca9e90cbd8e8e3b3b17fd9c8fd57184ebf4986ff433ee3f2212f37f3114469",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/DeadTree_2.gltf",
+    "sha256": "5cbff9f1277e905eaf8e40d9028fa80b0d6b635aa0677076ffa81fcf377ffabf",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/DeadTree_3.gltf",
+    "sha256": "aa74a47c69259f217388d7b3e2871d76c0385449fc1efd92299c2e55417fdffc",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/DeadTree_4.gltf",
+    "sha256": "cc238a6b0b4b0a1b7f2c66464afd0122b4a4af0320b95a3acb1d83e4afbfd288",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/DeadTree_5.gltf",
+    "sha256": "8502cb23774f8771b047053bef8a4a25fbcb30340a160c4b00c0af6ba614284f",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Fern_1.gltf",
+    "sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab",
+    "errors": 6,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Pine_1.gltf",
+    "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Pine_2.gltf",
+    "sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Pine_3.gltf",
+    "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Pine_4.gltf",
+    "sha256": "d8978cfd5a29a22446b9277f1789f44c3f953fb6e29adb625a8f61c3dd032952",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Pine_5.gltf",
+    "sha256": "bb060ce1420af32dc996241078d36e4c991577397474aa64f4c691362c482cfa",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/Plant_1_Big.gltf",
+    "sha256": "8c22e28d1ad79f3967c0022265b1d09319a3d82cbf14238de0cc77b5fe7e370a",
+    "errors": 6,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/TwistedTree_1.gltf",
+    "sha256": "8544b084e1fadfbec981e964ce27463f50c39c460513e0d3442160880c5908a7",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/TwistedTree_2.gltf",
+    "sha256": "7d57307e4ba817e807d84cf8020693ed31a82297593cca32e1780cfcdc6397c2",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/TwistedTree_3.gltf",
+    "sha256": "c719e6f2f26bb5f4a32f92194b71f432e2444870cb0f3b41989e05c7ad3b9ecd",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/TwistedTree_4.gltf",
+    "sha256": "9d39f221d991b50b2ac92089ff7db573717d4eaf756218d30b93c5e961093884",
+    "errors": 99,
+    "warnings": 1
+  },
+  {
+    "path": "assets/source/stylized-nature/glTF/TwistedTree_5.gltf",
+    "sha256": "c193b23d5dc52e7b9c9d5ddda2bc0b89cd1cbbd4b8f1c08fae3216424bd1e982",
+    "errors": 99,
+    "warnings": 1
+  }
+]
+

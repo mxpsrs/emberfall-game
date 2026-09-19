@@ -1,0 +1,68 @@
+name: Veldren source library verification
+on:
+  push:
+    branches: [migration/vervesis-native-assets-2026-09-19]
+    paths: [.github/workflows/veldren-source-validation.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: veldren-migration-export
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'mxpsrs/emberfall-game' && github.ref == 'refs/heads/migration/vervesis-native-assets-2026-09-19'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.14.0'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Validate source recovery and authoring derivatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          python -m pip install -r scripts/migration/requirements.txt
+          python scripts/migration/restore-source-parts.py
+          python scripts/migration/prepare-authoring.py
+          node scripts/migration/validate-gltf.mjs assets/models assets/authoring
+          node scripts/migration/validate-gltf.mjs --report migration/reports/original-validation.json assets/source || test -s migration/reports/original-validation.json
+          python scripts/migration/check-source-validation.py
+          node scripts/migration/check-world.cjs
+          python scripts/migration/validate-portable.py
+          python scripts/migration/build-inventory.py
+      - name: Commit verified individual original files and reports
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "migration/vervesis-native-assets-2026-09-19"
+          git config user.name "Veldren migration build"
+          git config user.email "codex@openai.com"
+          git add -- assets migration
+          if git ls-files --error-unmatch .migration-source-transfer/manifest.json >/dev/null 2>&1; then git add -u -- .migration-source-transfer; fi
+          git diff --cached --quiet || git commit -m "Preserve original Veldren source packs and verified authoring library"
+          git push origin HEAD:refs/heads/migration/vervesis-native-assets-2026-09-19
+      - name: Bundle resulting source and evidence
+        if: always()
+        shell: bash
+        run: |
+          git bundle create veldren-migration.bundle HEAD
+          git bundle verify veldren-migration.bundle
+          sha256sum veldren-migration.bundle > veldren-migration.bundle.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: veldren-migration-evidence
+          path: |
+            veldren-migration.bundle
+            veldren-migration.bundle.sha256
+            migration/reports
+          retention-days: 7
+          if-no-files-found: error

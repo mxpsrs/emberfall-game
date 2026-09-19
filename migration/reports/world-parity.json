@@ -1,0 +1,9 @@
+{
+  "scenes": 339,
+  "entities": 10270,
+  "scalarFields": 161570,
+  "terrainSamples": 8136,
+  "navigationSamples": 4068,
+  "relationships": 239,
+  "failures": []
+}

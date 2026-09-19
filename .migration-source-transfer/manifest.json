@@ -1,0 +1,210 @@
+[
+  {
+    "path": "assets/source/prowler-dragon/textures/Diffuse16.png",
+    "bytes": 16161208,
+    "sha": "10ccd73368665f195798d8976172a6293166f3b7",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/10ccd73368665f195798d8976172a6293166f3b7.0",
+        "sha": "7a4319636255878b777c9c8d5db35c536a479a0b",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/10ccd73368665f195798d8976172a6293166f3b7.1",
+        "sha": "0af8358a64bedd0af9a1ed99a7a68d140ae99102",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/10ccd73368665f195798d8976172a6293166f3b7.2",
+        "sha": "4c99bf5680213fda8eefa9a56b3f38f2266d1de7",
+        "bytes": 161208
+      }
+    ]
+  },
+  {
+    "path": "assets/source/demon/Demon_tex/Demon_tex/Demon_damaged_tex/Demon2_BaseColor.png",
+    "bytes": 16575969,
+    "sha": "71459551df20b0c4f6f88518e626b785dfc536f8",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/71459551df20b0c4f6f88518e626b785dfc536f8.0",
+        "sha": "89442d95bb8d4bfb40a39c560dd2797fc94b0cf5",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/71459551df20b0c4f6f88518e626b785dfc536f8.1",
+        "sha": "3970f1ae57eaedc40824c7de6b77f24820dc834e",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/71459551df20b0c4f6f88518e626b785dfc536f8.2",
+        "sha": "9f5eb2c22e5d6df5379b4db4b7194cc4fba2da1b",
+        "bytes": 575969
+      }
+    ]
+  },
+  {
+    "path": "assets/source/prowler-dragon/textures/Diffuse17.png",
+    "bytes": 16880445,
+    "sha": "18e018839ee8a13499c9110fbbf64e34c15a306d",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/18e018839ee8a13499c9110fbbf64e34c15a306d.0",
+        "sha": "698b9a2a9b915a9d4704fe2ae4e3cf78191cb4b7",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/18e018839ee8a13499c9110fbbf64e34c15a306d.1",
+        "sha": "fdfa8ed4716a0bc2a402ec47194793a703ab0857",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/18e018839ee8a13499c9110fbbf64e34c15a306d.2",
+        "sha": "575cfff0d91a81c2436f1528f62eeb7a2749f140",
+        "bytes": 880445
+      }
+    ]
+  },
+  {
+    "path": "assets/source/insectoid/source/Bugoid2.blend",
+    "bytes": 18131736,
+    "sha": "da4f1050d84f7f7ac1348a06c74e48c9ce9391a9",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/da4f1050d84f7f7ac1348a06c74e48c9ce9391a9.0",
+        "sha": "600d1cb746247139bfbe4704981b3e9dc1ccfaee",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/da4f1050d84f7f7ac1348a06c74e48c9ce9391a9.1",
+        "sha": "7dc2ddc7f452462905d4dcdc17a36758c0edf8f3",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/da4f1050d84f7f7ac1348a06c74e48c9ce9391a9.2",
+        "sha": "9059d992dcf2d751e473e189e9af49fa550e8656",
+        "bytes": 2131736
+      }
+    ]
+  },
+  {
+    "path": "assets/source/prowler-dragon/textures/Normal_Bake_3.png",
+    "bytes": 18394280,
+    "sha": "f50da88c1411302b8d869487e7a4b3bf54968fcb",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/f50da88c1411302b8d869487e7a4b3bf54968fcb.0",
+        "sha": "485665f2ed828ffea464888f58745f05f4e89e80",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/f50da88c1411302b8d869487e7a4b3bf54968fcb.1",
+        "sha": "a4dfd1da5a7cd896b47907e9dcfa2121d8b95e90",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/f50da88c1411302b8d869487e7a4b3bf54968fcb.2",
+        "sha": "91a477102917d7dae0166ca5b749e3f04efba700",
+        "bytes": 2394280
+      }
+    ]
+  },
+  {
+    "path": "assets/source/demon/Ball_tex/Ball_tex/Ball_BaseColor.png",
+    "bytes": 19478497,
+    "sha": "311e94436ddc3b170d4116badc0ce622d563067b",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/311e94436ddc3b170d4116badc0ce622d563067b.0",
+        "sha": "7dd53ac07ec97b525040472b67c66a057bb71c3b",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/311e94436ddc3b170d4116badc0ce622d563067b.1",
+        "sha": "53a6893f7b7b82b0c36486c2016adee1cf44c527",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/311e94436ddc3b170d4116badc0ce622d563067b.2",
+        "sha": "8a7e7286fb82962bf25bc83897ac66cef3be21df",
+        "bytes": 3478497
+      }
+    ]
+  },
+  {
+    "path": "assets/source/demon/Ball_tex/Ball_tex/Ball_Normal_DirectX.png",
+    "bytes": 22962571,
+    "sha": "6e55c2f4a2b60d9792ac71c0cc84f59bfd2b494c",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/6e55c2f4a2b60d9792ac71c0cc84f59bfd2b494c.0",
+        "sha": "c8f2dc33b4c2e91b055e6441f018bc832f521058",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/6e55c2f4a2b60d9792ac71c0cc84f59bfd2b494c.1",
+        "sha": "af59187a1f26f6ba26a8983cf0277cd30b606c20",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/6e55c2f4a2b60d9792ac71c0cc84f59bfd2b494c.2",
+        "sha": "dbfc49f57aff1d4dd6bd21e4aa72f0096a6c6402",
+        "bytes": 6962571
+      }
+    ]
+  },
+  {
+    "path": "assets/source/prowler-dragon/source/DragoTST.blend",
+    "bytes": 25922124,
+    "sha": "c3d308b6540bd404b815f9d320dcac80bd1e36ae",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/c3d308b6540bd404b815f9d320dcac80bd1e36ae.0",
+        "sha": "80d9c0d9d3e5398c9d36ec19a5cebcbcc77a3d78",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/c3d308b6540bd404b815f9d320dcac80bd1e36ae.1",
+        "sha": "f9df8ac38a06c7d8ef8491449921ca9e28828fa6",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/c3d308b6540bd404b815f9d320dcac80bd1e36ae.2",
+        "sha": "c34c8138825f454d27939019e45f7ae21ba3c7f7",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/c3d308b6540bd404b815f9d320dcac80bd1e36ae.3",
+        "sha": "fd4ae1b2b5e0ba103f78efa945c9efa6562a732d",
+        "bytes": 1922124
+      }
+    ]
+  },
+  {
+    "path": "assets/source/demon/Demon_tex/Demon_tex/Demon_damaged_tex/Demon2_Normal_DirectX.png",
+    "bytes": 26068151,
+    "sha": "0b8fc1637aa27bfc78a822cba2c4f9a90252257f",
+    "chunks": [
+      {
+        "path": ".migration-source-transfer/0b8fc1637aa27bfc78a822cba2c4f9a90252257f.0",
+        "sha": "b1b2aa159bddbc268181b5d9e8c27126b3e6bc6c",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/0b8fc1637aa27bfc78a822cba2c4f9a90252257f.1",
+        "sha": "c7b6aaf7c42067a43b5ce077faa5c31d97b4e8f4",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/0b8fc1637aa27bfc78a822cba2c4f9a90252257f.2",
+        "sha": "9d9c2fd5d2bc0a85b0d916c564857d9435589d2d",
+        "bytes": 8000000
+      },
+      {
+        "path": ".migration-source-transfer/0b8fc1637aa27bfc78a822cba2c4f9a90252257f.3",
+        "sha": "a34fd22a880cbf87797e79f3c57979709d8a5ce6",
+        "bytes": 2068151
+      }
+    ]
+  }
+]

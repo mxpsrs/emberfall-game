@@ -1,0 +1,33 @@
+{
+  "baseline": "439dfaaea6e144ab9f2e8ab30304f9c34c1915b2",
+  "scope": "Isolated baseline web/server build, not native",
+  "results": [
+    {
+      "command": [
+        "node",
+        "scripts/build.mjs"
+      ],
+      "seconds": 39.558850540001,
+      "exitCode": 0,
+      "output": "Built 72 shared icons from 64 credited selections.\nExported 4737 shared world entities.\nVeldren asset registry OK: 36 registered production assets.\nBuilt character-save Worker and 147 game assets; 39664 KiB module.\n"
+    },
+    {
+      "command": [
+        "node",
+        "tests/server-status.mjs"
+      ],
+      "seconds": 0.4258972839998023,
+      "exitCode": 0,
+      "output": "PASS: real cross-scene presence count, stale expiry, indexed lookup, public maintenance status, unavailable counts, HTTP methods, release page and polling recovery.\nmaintenance_database_read_retry {\n  name: 'TypeError',\n  message: \"Cannot read properties of undefined (reading 'prepare')\",\n  cause: ''\n}\nmaintenance_database_read_failed {\n  name: 'TypeError',\n  message: \"Cannot read properties of undefined (reading 'prepare')\",\n  cause: ''\n}\n"
+    },
+    {
+      "command": [
+        "node",
+        "tests/built-assets.mjs"
+      ],
+      "seconds": 0.7516479580008308,
+      "exitCode": 1,
+      "output": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n404 !== 200\n\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/.qa/migration/baseline-build/tests/built-assets.mjs:20:47\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 404,\n  expected: 200,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    }
+  ]
+}
