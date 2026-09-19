@@ -1,0 +1,924 @@
+{
+  "assets": [
+    {
+      "path": "assets/authoring/stylized-nature/Bush_Common.glb",
+      "source": "assets/source/stylized-nature/glTF/Bush_Common.gltf",
+      "sha256": "5f89b473f660782fa772726ef038b77d6afa2123cac26a04c32b8d3af90393d5",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Bush_Common_Flowers.glb",
+      "source": "assets/source/stylized-nature/glTF/Bush_Common_Flowers.gltf",
+      "sha256": "21cc63da207d685fc5c80514ac9647f481b1b26b0c9ab8ad80bad72146f64785",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Clover_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Clover_1.gltf",
+      "sha256": "2d85ba16b9cb71057cd20f90074e0459788517517c3e5e40194e4266d50cd473",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Clover_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Clover_2.gltf",
+      "sha256": "d05356cd7f1b2998dc90c0bfcffc9ca2b17bc19bc59388470dedaeba363b1977",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_1.glb",
+      "source": "assets/source/stylized-nature/glTF/CommonTree_1.gltf",
+      "sha256": "2a68d03730a6106d11b3168df6d024ee309c45e4a811fc18c3bd76e9b5e2f33d",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_2.glb",
+      "source": "assets/source/stylized-nature/glTF/CommonTree_2.gltf",
+      "sha256": "61c853f1c3546ee42e417c1531d74698746ad0155c9687a379b9f926a36c2dc7",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_3.glb",
+      "source": "assets/source/stylized-nature/glTF/CommonTree_3.gltf",
+      "sha256": "7d838ac82aed9962877ddfd99e6cd1d8cfc85d235dd6da2f99980476e0674679",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_4.glb",
+      "source": "assets/source/stylized-nature/glTF/CommonTree_4.gltf",
+      "sha256": "1c55e495d92f53369a48e08e6aae3fcc8ce0b7ff78347427af9319af6f0e2e3e",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_5.glb",
+      "source": "assets/source/stylized-nature/glTF/CommonTree_5.gltf",
+      "sha256": "d6c66f9bedbe7df4b58e29954c666000a10fc778a6bfc702b09b1e9f31528b7e",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_1.glb",
+      "source": "assets/source/stylized-nature/glTF/DeadTree_1.gltf",
+      "sha256": "d5c6bb5901c567f7554ae5f05ccb3541935cc080a0230c1ad32dd44ede852765",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_2.glb",
+      "source": "assets/source/stylized-nature/glTF/DeadTree_2.gltf",
+      "sha256": "9890971861b76a46298a9fe8aa21cc7b23d315dc48c52457630288be48bc3ec6",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_3.glb",
+      "source": "assets/source/stylized-nature/glTF/DeadTree_3.gltf",
+      "sha256": "68f688a2e328c130ebb03cc1901e685609c030f9e458f669c77a2c7ede5f6e01",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_4.glb",
+      "source": "assets/source/stylized-nature/glTF/DeadTree_4.gltf",
+      "sha256": "7130a4e89fa2d557128600c820230117b819bd42585db6fcec289bb467ff4b09",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_5.glb",
+      "source": "assets/source/stylized-nature/glTF/DeadTree_5.gltf",
+      "sha256": "539220ac18a18d61edda8ec2eeb8824fe51981fa9bce0b250f7fe10ed0768df5",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Fern_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Fern_1.gltf",
+      "sha256": "e5e67f4a39a8ac53f42fd28ffe4f37e50cea44ca274a0e47898226b41d4edd92",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_3_Group.glb",
+      "source": "assets/source/stylized-nature/glTF/Flower_3_Group.gltf",
+      "sha256": "78c6134527d42b56044fc11c3e75782eb452a15462b1a89660214376f34925e4",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_3_Single.glb",
+      "source": "assets/source/stylized-nature/glTF/Flower_3_Single.gltf",
+      "sha256": "9ec3bb9ae82b12fc6a6dc24af1e12f787703f4f9a14937f4bd554ee00b34369d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_4_Group.glb",
+      "source": "assets/source/stylized-nature/glTF/Flower_4_Group.gltf",
+      "sha256": "ebddea046540bc6f069fb4b946bf8027a6e0317eef83e6c5a5a6e3d51a6df272",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_4_Single.glb",
+      "source": "assets/source/stylized-nature/glTF/Flower_4_Single.gltf",
+      "sha256": "a6d97c61ca941cbc45e8b21918cf524ba29c9df535514cc99fb4bdb185707e88",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Common_Short.glb",
+      "source": "assets/source/stylized-nature/glTF/Grass_Common_Short.gltf",
+      "sha256": "30cc2ee1a8f7e37075311958dad8db9630d02332d9e0663b6c3fcda86167f5fa",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Common_Tall.glb",
+      "source": "assets/source/stylized-nature/glTF/Grass_Common_Tall.gltf",
+      "sha256": "16777d4d08a49796558ab34f711ce0e65fa3f214681ee21f9074056a48ef4399",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Wispy_Short.glb",
+      "source": "assets/source/stylized-nature/glTF/Grass_Wispy_Short.gltf",
+      "sha256": "e1e059fba9e9f38beb75ebd550bcf755a5446cc2b8b318e32584fc86c7e13166",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Wispy_Tall.glb",
+      "source": "assets/source/stylized-nature/glTF/Grass_Wispy_Tall.gltf",
+      "sha256": "4e868b8f02284516fcfec9a51d2a1b9de3afba83fe2e2c002d0937cf03f35485",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Mushroom_Common.glb",
+      "source": "assets/source/stylized-nature/glTF/Mushroom_Common.gltf",
+      "sha256": "0efb16ddc8226c70c6190ca684f46c7177567a212c59035187e010b6ec032aab",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Mushroom_Laetiporus.glb",
+      "source": "assets/source/stylized-nature/glTF/Mushroom_Laetiporus.gltf",
+      "sha256": "e1588d4e0526cf1207a70b16b772afb5da0296386fdc6ad2e5f2c3386f42b0fa",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Round_1.gltf",
+      "sha256": "ac47109c50c47f3c24e982008fb717af7952ef84064a46bfb4790bcc90123aeb",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Round_2.gltf",
+      "sha256": "602536259241cb194f40a547d64a182451adcb3153368353b252de9fa48fa6b5",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_3.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Round_3.gltf",
+      "sha256": "840ae71ac86134347cb0acae5e09a41d9c8f02ca79cc24099694ac356644c93a",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_4.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Round_4.gltf",
+      "sha256": "321ab951b73225251a1ec0fd7d95546d4ae4d5da0d200a1c33abc2dfb00bbe8e",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_5.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Round_5.gltf",
+      "sha256": "067da23db98b72dba54ba2284f91e3cbf6d7c3d6a226121b483f3c9e1366c3f1",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_1.gltf",
+      "sha256": "7664921f21bbb3935f391a90457a4111eb70be53a81c9ed1847b708405206b31",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_2.gltf",
+      "sha256": "9b155859febbb4c205da465c159349a7b0b897ce4b0d1fa20547e21fecc2ae1d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_3.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_3.gltf",
+      "sha256": "cc75401ace6e3d992e6e01b04e92a9584f1c4feaffcdd1eb2483acc9a8f7c9b6",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_4.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_4.gltf",
+      "sha256": "d615cea2f051f225200e6f4caaf7c1423895f20436c0f32e2c4e3716f8324b7d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_5.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_5.gltf",
+      "sha256": "5dfb6f377d2f19c9b2e700a392572df77dc5bfd29fdcdb2d0c21e65b9c06e928",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_6.glb",
+      "source": "assets/source/stylized-nature/glTF/Pebble_Square_6.gltf",
+      "sha256": "ecafea9f810cb5d3378465527c7b46e628de2dcd08488b2f141330baef5f69a2",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Petal_1.gltf",
+      "sha256": "8c8aab9e7ca979b3260f84dbe7a7ff47134d4714a47d8effec63cac0f2d177af",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Petal_2.gltf",
+      "sha256": "c49a81cd8a167daaffd4dbfa7b02ba03943d0356b23efd8754cc32df49790f3d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_3.glb",
+      "source": "assets/source/stylized-nature/glTF/Petal_3.gltf",
+      "sha256": "f18ee171363d66be15cffbb29140a072b324631ffdc1ad14d8009ecfa2d109fb",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_4.glb",
+      "source": "assets/source/stylized-nature/glTF/Petal_4.gltf",
+      "sha256": "612a12c9b8a509e72d1cea673b15e280314022d01b006cf8c1a51ad1ef447157",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_5.glb",
+      "source": "assets/source/stylized-nature/glTF/Petal_5.gltf",
+      "sha256": "5fe2e94546af3526f11bdf135b5c3e79de69e5fe295497b9a1b3efbcf67aa070",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Pine_1.gltf",
+      "sha256": "8a155a188ad6a96f5e58f9684d3b32fae820deef32b845d4f63736ff044593b1",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Pine_2.gltf",
+      "sha256": "29c67e78be18755e67773b8dca4bba3e71c7d2665e11019734ae39d89d2e7860",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_3.glb",
+      "source": "assets/source/stylized-nature/glTF/Pine_3.gltf",
+      "sha256": "542206a86a341c282aac6a7aa9f3678a06ba1fba32b3c3a86c89ba41033b48d8",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_4.glb",
+      "source": "assets/source/stylized-nature/glTF/Pine_4.gltf",
+      "sha256": "cdbb7853acf23f89a38d09bfcdc5059656bf57b3bf4ce63e78cd4d521af95312",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_5.glb",
+      "source": "assets/source/stylized-nature/glTF/Pine_5.gltf",
+      "sha256": "800e0e38c6d3665492310a4f695a027b6564c3eaeb28d347450f0119c746a5c4",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Plant_1.gltf",
+      "sha256": "45730b34c0759dd2667fa26375209e16b5a7775b702cc852cc0f40ea3766cf76",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_1_Big.glb",
+      "source": "assets/source/stylized-nature/glTF/Plant_1_Big.gltf",
+      "sha256": "c1b267c39d0e2b14ae0385227a9c1d2572747a431a76cfdca42d757dd3b8ed14",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_7.glb",
+      "source": "assets/source/stylized-nature/glTF/Plant_7.gltf",
+      "sha256": "c41b0ee40810d3ed3d2d7c69226603474c71e4be6145cc15971bbf5a0bc3afd0",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_7_Big.glb",
+      "source": "assets/source/stylized-nature/glTF/Plant_7_Big.gltf",
+      "sha256": "3b30d60a2252378e92b1d6839dd0e49e1aaeea8ae3411dd43c91923267e93439",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_1.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Round_Small_1.gltf",
+      "sha256": "112565fdcd70645ec3b072806a257281a7d41f96dbacca9c48a71fe3f22be1ac",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_2.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Round_Small_2.gltf",
+      "sha256": "212ca983d80703757d34377540f548ce87e90a5b87d8392e7ca0bdc0ebb4534c",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_3.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Round_Small_3.gltf",
+      "sha256": "3250c4abe84bf454cc0e8eb9b2e0c9207972c4a8553a6c5789a165e32c384af3",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Thin.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Round_Thin.gltf",
+      "sha256": "7ed1ca8e3bf52bd7ab5fc9f50eb6b105549060582d4f0263ff8d468c05e708b9",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Wide.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Round_Wide.gltf",
+      "sha256": "8ff546e24166419e4276d300093a8555113cea250c7bf29cf8891b0ceee01f2d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_1.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Square_Small_1.gltf",
+      "sha256": "46c253d9a9c1af984b22f9924b65e18c6b91afd38231e457acb114747b805244",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_2.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Square_Small_2.gltf",
+      "sha256": "42139c06e4c9acdafd5124a716e64b98069aff6a730a97fd6978eadd0a253373",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_3.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Square_Small_3.gltf",
+      "sha256": "58fa016919fa4339029d031edef56bcf1ac8f11488aa8c739ff902f6a092fb60",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Thin.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Square_Thin.gltf",
+      "sha256": "8dcf7300015733c96975cdd033a3952980442fb4b40cb0fc787f8e717672b02a",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Wide.glb",
+      "source": "assets/source/stylized-nature/glTF/RockPath_Square_Wide.gltf",
+      "sha256": "10cf7cbd57f4876dd120b079224a3bc525f3180a96c7c01bbb35c5041588752d",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_1.glb",
+      "source": "assets/source/stylized-nature/glTF/Rock_Medium_1.gltf",
+      "sha256": "54bdac18a276fac7b054663b329dc973b07b753d1c2f2dc3ae78f4171d5e19a5",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_2.glb",
+      "source": "assets/source/stylized-nature/glTF/Rock_Medium_2.gltf",
+      "sha256": "7f788d54aef4899e19d1f03be9f9551e148e31f7d3582c475a39a586ff221f3c",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_3.glb",
+      "source": "assets/source/stylized-nature/glTF/Rock_Medium_3.gltf",
+      "sha256": "1b899b7387a020d87328cfe2d8e7ea556557b31b11bb6393a406b2896f1e9eb9",
+      "repairs": [],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_1.glb",
+      "source": "assets/source/stylized-nature/glTF/TwistedTree_1.gltf",
+      "sha256": "93c85424eb36426231280a40c094c1615b7a8d5c6bb736382c97cb8ab5a08db0",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_2.glb",
+      "source": "assets/source/stylized-nature/glTF/TwistedTree_2.gltf",
+      "sha256": "2cc35d206e5bcc81d89335f42f1fefe0a7384ec2e0a19dda8fe0c688c79228af",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_3.glb",
+      "source": "assets/source/stylized-nature/glTF/TwistedTree_3.gltf",
+      "sha256": "b1bdf009a0f682025dec486dccf093cd89b418259d27d76545b39f968dc56774",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_4.glb",
+      "source": "assets/source/stylized-nature/glTF/TwistedTree_4.gltf",
+      "sha256": "9c628b42e8db186a249a20bd88c2ebab9229d53eace19f5248a138d2ba78e8ad",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_5.glb",
+      "source": "assets/source/stylized-nature/glTF/TwistedTree_5.gltf",
+      "sha256": "ee0d12e97c9d9955af39b9e86b442c93ea8a93033c66c2e43b8905606e0fe778",
+      "repairs": [
+        {
+          "accessor": 0,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        },
+        {
+          "accessor": 5,
+          "policy": "Clamp standard COLOR_0; original values in _SOURCE_COLOR_0"
+        }
+      ],
+      "usage": "Available for authoring; not all placed at runtime"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_1.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_1.obj",
+      "sha256": "e413d3fb8727cf3ad680b04d75cd49a62116917dcea07826693edd03a39f743f",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_10.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_10.obj",
+      "sha256": "057d38a7a9cc02aba86d1478a01250c806e4388c806778b34095a263ac95912d",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_2.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_2.obj",
+      "sha256": "04fb7363ae05f0f71d2837d0088d73b47a3e29f63da2969cd2ac45d3060785e9",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_3.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_3.obj",
+      "sha256": "b3476c7bd0e717404f48a490169267d9f2348b640db6e4e8b8d429ef569beea7",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_4.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_4.obj",
+      "sha256": "930d8d95ed74f6c08ef57c938a66aed3458990de926f2220b9d515c0222aea58",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_5.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_5.obj",
+      "sha256": "12eaf3fc9fbfc63a5f3ca0a5c1b23c770fb2826abedd210429af324f4b70907b",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_6.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_6.obj",
+      "sha256": "0e20752b01b067cca91469608d3d36a501793a47fd86f187e34be4aedceee332",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_7.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_7.obj",
+      "sha256": "510e85b471d89f8dc96980e56cafc768333b7439436786df65e62e46937e6571",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_8.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_8.obj",
+      "sha256": "46294b7bd9b20d9e96fda401e03aa128c42268b445e4d64a5c8188e7dd02aa86",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_9.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Birch_9.obj",
+      "sha256": "26f86701f4aebeb77cc0b0d1fc7754a317b79a10ab3b64c9d0cb36d4a3e3aafb",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_1.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_1.obj",
+      "sha256": "a642354d524f0cffeb99a5d7e961489d8ec91de10fd20cb8f61efa58d482827b",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_10.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_10.obj",
+      "sha256": "29c9c7a9b944154238d111d19b93612cae8bea410dcfe794fabda4f313d24712",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_2.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_2.obj",
+      "sha256": "a65d8bffa479c47f12c7d27722d3cb444752eb165d4fe807d687b984ff6f88d3",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_3.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_3.obj",
+      "sha256": "5ee3dee3a6e6f1f572b4bf413112402972182a3f12f40ae5a2e9e2ee715c565e",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_4.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_4.obj",
+      "sha256": "78e0d83f6886d6111f8548fa6b9232a639c654016ca1cdc1e262c99cb75276e5",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_5.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_5.obj",
+      "sha256": "88c1135becbc81bb4c4df5e20f90f960b52b216fbc83211f72a0cd382647a42a",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_6.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_6.obj",
+      "sha256": "5271692586a4e8433c3afa033deca1d014565dd503ec37fbbeb6779cd129673f",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_7.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_7.obj",
+      "sha256": "241cf6a0da8669b768e262c6f09f24ad1690f3e75754cb73757cb5d42cd45df3",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_8.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_8.obj",
+      "sha256": "a1d90eb8f5bb4eb93a64c34a55921a6d5d09c8c30bb48b9b8656b2660e6b595d",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_9.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadBirch_9.obj",
+      "sha256": "eda5b07e8de6f036338c4cbb6e63d74944aa07fb513bf37b607493b0d8ba25f1",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_1.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_1.obj",
+      "sha256": "6d5f5b2a0e2e203fcfff8315864ac2f54671eee1a3cc126cf72ee4ae65fd5763",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_10.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_10.obj",
+      "sha256": "6c25ed4f0e2c9ae26f6e6d6ab882609fd1dea08afd0c806e2613d1841fba0ede",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_2.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_2.obj",
+      "sha256": "c8c57c722152ade2ac99cf3dbcce59e8a89f0ea17f1f81fa0194b7a4c2c749da",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_3.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_3.obj",
+      "sha256": "e40f9b1d9c2bf86c044818d9ffad19d954ea8f42ed1cbbb29f91c26a1473c0ae",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_4.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_4.obj",
+      "sha256": "75512f3ca3d7c7ff135a161fc667d7570cc62ba8ba13fb6b198760a06bd2c76a",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_5.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_5.obj",
+      "sha256": "98732a31b4a61920acd20fc132a81f232e98d14670b80d9421dd87c0adbb8ef0",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_6.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_6.obj",
+      "sha256": "bd2c0b175396cbf5d51a79cdff45c08e731f1f5d4a858585d3edec488a942ab0",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_7.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_7.obj",
+      "sha256": "c2355eb481a78db3f9237d7fe8fa21138fca2b8dd3df9ca2cc16f624bb12171b",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_8.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_8.obj",
+      "sha256": "4f5aa298876ad653961adbbeb7f8ffbf0c93d1a651b45d028252b1a5f34647d9",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_9.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/DeadTree_9.obj",
+      "sha256": "905702471479dd0724bf9e0fff0ab691deb724eb3c05f5113cc931eade66ac6f",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_1.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Pine_1.obj",
+      "sha256": "7620bcb4682ce5f0b1ee87a57afb3a1aec8e31c3e135ccdce8e42f668af58983",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_2.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Pine_2.obj",
+      "sha256": "f919b6f1e8151fcbd3ecd1eab0652add43b550608695c41df7fce685aac501b5",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_3.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Pine_3.obj",
+      "sha256": "a03c52a21ee19b9e54a3866a773b1c7a275ba24714760dff1c6161b5f34236e1",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_4.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Pine_4.obj",
+      "sha256": "923159bab1a01462bac60efa5a074e2ffe38a3b097f4cc337aa4a9493645193c",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_5.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Pine_5.obj",
+      "sha256": "7383ab4f83ae34a61c23cc81ce188598b84acbb7ad23064c9c71ea7a93f95954",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_1.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_1.obj",
+      "sha256": "3c270708301b3329bcdb5c54762394a157f52f763b32a504f5518d8d43c81466",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_10.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_10.obj",
+      "sha256": "d41784cda8acc0a5d79b82890bd1868b49f17eff6daaea87fe0ad74accb0f217",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_2.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_2.obj",
+      "sha256": "082f0208835f600d1650d326bcf34150a61cfe3547bd4bebcb373ba94c9f895c",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_3.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_3.obj",
+      "sha256": "657927e308e75c93762b2c0b05cc088d30cefd20b927fedd74eb393f2dd1958e",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_4.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_4.obj",
+      "sha256": "2e038bb606b28e1b60e7b98ae69d2052fa60454e6d045894f6ee32cc4211d987",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_5.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_5.obj",
+      "sha256": "79669016be53619a093495dbe368925c27d4dd24300e732dcf3ef0eeadf46676",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_6.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_6.obj",
+      "sha256": "6a4e991274898455cce39415c2fe1ff7c98b008f19e891a641e1b80832e1477c",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_7.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_7.obj",
+      "sha256": "5268a323abb627b52ced5e1c22424401e1f875cc81211fc428ed59bc18e68452",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_8.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_8.obj",
+      "sha256": "8decd46cd8faf4ad4bfdea3c033ae40d23f42971e1d1ddfe6110d82905219d32",
+      "usage": "Available for authoring; production adaptations remain separate"
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_9.glb",
+      "source": "assets/source/textured-trees/Textured Stylized Trees - May 2020/OBJ/Tree_9.obj",
+      "sha256": "3ef4f36058aa841c6096c3012887ffa00bdacbb29067e4aa4449a4c9ab7b8d85",
+      "usage": "Available for authoring; production adaptations remain separate"
+    }
+  ]
+}

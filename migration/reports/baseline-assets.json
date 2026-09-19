@@ -1,0 +1,1541 @@
+{
+  "baselineCommit": "439dfaaea6e144ab9f2e8ab30304f9c34c1915b2",
+  "assets": [
+    {
+      "path": "art/ui-icons/carl-olsen--flame.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bank.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bed.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--bow-arrow.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chart.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chat-bubble.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--chest-armor.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--clothes.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--coins.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--cooking-pot.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--exit-door.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--fishing-pole.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--gauntlet.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--graduate-cap.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--histogram.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--meal.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--musical-notes.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--person.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--position-marker.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--quiver.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--rake.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--shop.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--speaker-off.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--speaker.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--spell-book.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--stone-pile.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--stop-sign.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--three-friends.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/delapouite--war-pick.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--anvil.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--boots.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--broadsword.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--campfire.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--cog.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--compass.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--crossed-swords.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--crystal-wand.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--envelope.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--feather.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--ghost.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--knapsack.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--pine-tree.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--power-lightning.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--prayer.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--run.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--scroll-unfurled.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--sword-slice.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--swords-emblem.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--target-arrows.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--target-shot.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--trade.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--treasure-map.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--visored-helm.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lorc--windy-stripes.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lucasms--belt.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lucasms--necklace.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/lucasms--trousers.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/sbed--hand.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/sbed--help.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/sbed--shield.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/sbed--water-drop.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/skoll--fist.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "art/ui-icons/skoll--hearts.svg",
+      "role": "editable-art",
+      "directTextReferences": [
+        "art/ui-icons/manifest.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/cave-theme.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/field-of-dreams.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/medieval-opener.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/old-tower-inn.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/coins-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/cook-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/cook-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/door-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/equip-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/fire-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/floor-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/floor-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/hit-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/hit-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/mine-3.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/smith-3.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/step-3.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/sword-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/sword-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-1.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-2.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/sfx/wood-3.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/sound-sources.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/audio/the-tournament.mp3",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/bounds.json",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/game.js",
+        "docs/asset-inventory-phase3.json",
+        "tests/built-assets.mjs",
+        "tests/render.cjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/briarhaven/CREDITS.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-models.json",
+        "scripts/build-boss-models.py",
+        "scripts/build-credits.py",
+        "scripts/build-icons.mjs",
+        "scripts/import-authored-motion.py",
+        "scripts/import-briarhaven-assets.py",
+        "scripts/import-fantasy-outfits.py",
+        "scripts/import-realms.py",
+        "scripts/import-world-props.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/briarhaven/dungeon-LICENSE.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/briarhaven/hero-LICENSE.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/briarhaven/models.js",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/index.html",
+        "docs/asset-inventory-phase3.json",
+        "scripts/build-boss-models.py",
+        "scripts/build-firemaking-motion.py",
+        "scripts/import-action-motion.py",
+        "scripts/import-approved-creature.py",
+        "scripts/import-authored-motion.py",
+        "scripts/import-briarhaven-assets.py",
+        "scripts/import-creatures.py",
+        "scripts/import-fantasy-outfits.py",
+        "scripts/import-modular-armor.py",
+        "scripts/import-realms.py",
+        "scripts/import-tree-species.py",
+        "scripts/import-world-props.py",
+        "scripts/review-arc-one.cjs",
+        "scripts/review-icons.cjs",
+        "scripts/review-item-equipment.cjs",
+        "tests/action-animations.cjs",
+        "tests/action-timing.cjs",
+        "tests/arc-rewards.cjs",
+        "tests/gathering-appearance.cjs",
+        "tests/item-models.cjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/briarhaven/town-LICENSE.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/landing-world.webp",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/landing.html",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/BESTIARY-LICENSE.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-models.json",
+        "scripts/build-boss-models.py",
+        "scripts/import-creatures.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/CH0SAN-provenance.json",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-modular-armor.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/CREDITS.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-models.json",
+        "scripts/build-boss-models.py",
+        "scripts/build-credits.py",
+        "scripts/build-icons.mjs",
+        "scripts/import-authored-motion.py",
+        "scripts/import-briarhaven-assets.py",
+        "scripts/import-fantasy-outfits.py",
+        "scripts/import-realms.py",
+        "scripts/import-world-props.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/FANTASY-PROPS-LICENSE.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-world-props.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/action-motion-provenance.json",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/credits.html",
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-action-motion.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/approved-creatures.js",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/index.html",
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-approved-creature.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/armor-icons.png",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/realms-rebuilt.js",
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-modular-armor.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/atlas.png",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/realms-rebuilt.js",
+        "docs/asset-inventory-phase3.json",
+        "scripts/capture-atlas.cjs",
+        "scripts/import-approved-creature.py",
+        "scripts/import-creatures.py",
+        "scripts/import-realms.py",
+        "scripts/import-tree-species.py",
+        "scripts/import-world-props.py",
+        "scripts/render-scene.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/fantasy-outfits-provenance.json",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-fantasy-outfits.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/models.js",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/index.html",
+        "docs/asset-inventory-phase3.json",
+        "scripts/build-boss-models.py",
+        "scripts/build-firemaking-motion.py",
+        "scripts/import-action-motion.py",
+        "scripts/import-approved-creature.py",
+        "scripts/import-authored-motion.py",
+        "scripts/import-briarhaven-assets.py",
+        "scripts/import-creatures.py",
+        "scripts/import-fantasy-outfits.py",
+        "scripts/import-modular-armor.py",
+        "scripts/import-realms.py",
+        "scripts/import-tree-species.py",
+        "scripts/import-world-props.py",
+        "scripts/review-arc-one.cjs",
+        "scripts/review-icons.cjs",
+        "scripts/review-item-equipment.cjs",
+        "tests/action-animations.cjs",
+        "tests/action-timing.cjs",
+        "tests/arc-rewards.cjs",
+        "tests/gathering-appearance.cjs",
+        "tests/item-models.cjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/monsters.js",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/credits.html",
+        "dist/data/asset-registry.json",
+        "dist/index.html",
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-creatures.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/realms/textured-trees-license.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "scripts/import-tree-species.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/spirit-portraits.png",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "dist/spirits.js",
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "dist/assets/ui/CREDITS.txt",
+      "role": "baseline-resource",
+      "directTextReferences": [
+        "dist/data/asset-registry.json",
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-models.json",
+        "scripts/build-boss-models.py",
+        "scripts/build-credits.py",
+        "scripts/build-icons.mjs",
+        "scripts/import-authored-motion.py",
+        "scripts/import-briarhaven-assets.py",
+        "scripts/import-fantasy-outfits.py",
+        "scripts/import-realms.py",
+        "scripts/import-world-props.py",
+        "tests/built-assets.mjs"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/boss-shortlist.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "scripts/build-boss-shortlist.py"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/colossus.webp",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/insectoid.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/mindbreaker.webp",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/minotaur.webp",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/prowler.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-candidates/treant2.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json",
+        "docs/boss-candidates/roster.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/boss-design-drafts.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/colossus-review/crimson-overload.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/colossus-review/crystal-crucible.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/firstlight-review/foresters-grove.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/firstlight-review/town-square.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/forest-giant-review/elderwood-grove.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/forest-giant-review/forest-giant-close.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/ork-review/native-model.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/ork-review/warrens.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/staff-idle/female-idle.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/staff-idle/male-idle.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/work-run-2/ashwatch-approach.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/work-run-2/deepforge.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/work-run-2/hollow-shrine-bank.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/qa/work-run-2/tutorial-finished.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/varkesh-review/blightwing-roost.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/varkesh-review/original-model.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/varkesh-review/rig-motions.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/veyr-review/native-cast-and-death.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/veyr-review/native-strikes.jpg",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/veyr-review/shattered-sanctum.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/xalith-review/authored-death.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/xalith-review/brood-hollow.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    },
+    {
+      "path": "docs/xalith-review/original-model.png",
+      "role": "documentation",
+      "directTextReferences": [
+        "docs/asset-inventory-phase3.json"
+      ],
+      "indirectReferences": "Inspect runtime capture/catalog, atlas mapping, SVG manifest and dynamic filename construction; a missing text match is not proof of obsolescence.",
+      "action": "preserved"
+    }
+  ],
+  "deletions": []
+}

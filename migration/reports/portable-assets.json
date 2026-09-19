@@ -1,549 +1,549 @@
 {
   "scope": "Recovered asset dependency closure and content IDs, not a packaged native build",
-  "files": 4157,
+  "files": 4172,
   "models": 2642,
-  "bytes": 600899874,
-  "images": 86,
+  "bytes": 637728555,
+  "images": 101,
   "svg": 91,
   "dependencies": [
     {
       "model": "assets/authoring/stylized-nature/Bush_Common.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {
       "model": "assets/authoring/stylized-nature/Bush_Common_Flowers.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/Bush_Common_Flowers.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Clover_1.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Clover_2.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_1.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_1.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_1.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_2.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_2.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_2.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_3.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_3.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_3.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_4.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_4.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_4.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_5.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_5.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/CommonTree_5.glb",
-      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
       "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_1.glb",
-      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_1.glb",
-      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
       "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_2.glb",
-      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_2.glb",
-      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
       "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_3.glb",
-      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_3.glb",
-      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
       "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_4.glb",
-      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_4.glb",
-      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
       "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_5.glb",
-      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/DeadTree_5.glb",
-      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
       "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
     },
     {
       "model": "assets/authoring/stylized-nature/Fern_1.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_3_Group.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_3_Group.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_3_Single.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_3_Single.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_4_Group.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_4_Group.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_4_Single.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Flower_4_Single.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Grass_Common_Short.glb",
-      "path": "assets/textures/nature/Grass.png",
+      "path": "assets/textures/stylized-nature/Grass.png",
       "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
     },
     {
       "model": "assets/authoring/stylized-nature/Grass_Common_Tall.glb",
-      "path": "assets/textures/nature/Grass.png",
+      "path": "assets/textures/stylized-nature/Grass.png",
       "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
     },
     {
       "model": "assets/authoring/stylized-nature/Grass_Wispy_Short.glb",
-      "path": "assets/textures/nature/Grass.png",
+      "path": "assets/textures/stylized-nature/Grass.png",
       "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
     },
     {
       "model": "assets/authoring/stylized-nature/Grass_Wispy_Tall.glb",
-      "path": "assets/textures/nature/Grass.png",
+      "path": "assets/textures/stylized-nature/Grass.png",
       "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
     },
     {
       "model": "assets/authoring/stylized-nature/Mushroom_Common.glb",
-      "path": "assets/textures/nature/Mushrooms.png",
+      "path": "assets/textures/stylized-nature/Mushrooms.png",
       "sha256": "e29eed2db831e44a29634fe25c62e9e31edf201e978a52912b9e5221ffd4a1f3"
     },
     {
       "model": "assets/authoring/stylized-nature/Mushroom_Laetiporus.glb",
-      "path": "assets/textures/nature/Mushrooms.png",
+      "path": "assets/textures/stylized-nature/Mushrooms.png",
       "sha256": "e29eed2db831e44a29634fe25c62e9e31edf201e978a52912b9e5221ffd4a1f3"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Round_1.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Round_2.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Round_3.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Round_4.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Round_5.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_1.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_2.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_3.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_4.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_5.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Pebble_Square_6.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Petal_1.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Petal_2.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Petal_3.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Petal_4.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Petal_5.glb",
-      "path": "assets/textures/nature/Flowers.png",
+      "path": "assets/textures/stylized-nature/Flowers.png",
       "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_1.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_1.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_1.glb",
-      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
       "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_2.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_2.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_2.glb",
-      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
       "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_3.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_3.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_3.glb",
-      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
       "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_4.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_4.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_4.glb",
-      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
       "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_5.glb",
-      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
       "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_5.glb",
-      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
       "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
     },
     {
       "model": "assets/authoring/stylized-nature/Pine_5.glb",
-      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
       "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
     },
     {
       "model": "assets/authoring/stylized-nature/Plant_1.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Plant_1_Big.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Plant_7.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/Plant_7_Big.glb",
-      "path": "assets/textures/nature/Leaves.png",
+      "path": "assets/textures/stylized-nature/Leaves.png",
       "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Round_Small_1.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Round_Small_2.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Round_Small_3.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Round_Thin.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Round_Wide.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Square_Small_1.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Square_Small_2.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Square_Small_3.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Square_Thin.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/RockPath_Square_Wide.glb",
-      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
       "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
     },
     {
       "model": "assets/authoring/stylized-nature/Rock_Medium_1.glb",
-      "path": "assets/textures/nature/Rocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
       "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
     },
     {
       "model": "assets/authoring/stylized-nature/Rock_Medium_2.glb",
-      "path": "assets/textures/nature/Rocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
       "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
     },
     {
       "model": "assets/authoring/stylized-nature/Rock_Medium_3.glb",
-      "path": "assets/textures/nature/Rocks_Diffuse.png",
+      "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
       "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_1.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_1.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
       "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_1.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_2.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_2.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
       "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_2.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_3.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_3.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
       "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_3.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_4.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_4.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
       "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_4.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_5.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
       "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_5.glb",
-      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
       "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
     },
     {
       "model": "assets/authoring/stylized-nature/TwistedTree_5.glb",
-      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     },
     {

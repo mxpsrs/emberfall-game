@@ -1,0 +1,141 @@
+{
+  "executedRunnableTests": 149,
+  "passedInitially": 144,
+  "failedInitially": [
+    {
+      "test": "tests/built-assets.mjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/resolve:271\n    throw new ERR_MODULE_NOT_FOUND(\n          ^\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/6bee4ce85bce/emberfall-restored/dist/server/index.js' imported from /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/built-assets.mjs\n    at finalizeResolution (node:internal/modules/esm/resolve:271:11)\n    at moduleResolve (node:internal/modules/esm/resolve:865:10)\n    at defaultResolve (node:internal/modules/esm/resolve:992:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)\n    at #resolve (node:internal/modules/esm/loader:683:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)\n    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///workspace/scratch/6bee4ce85bce/emberfall-restored/dist/server/index.js'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/game.cjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.3,
+      "output": "PASS: new routes, tutorial, inventory capacity, worn gear, ground drops, pickup, quests and spirit recovery.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(fs.existsSync(root+'assets/'+f+'.png'))\n\n    at Object.<anonymous> (/workspace/scratch/6bee4ce85bce/emberfall-restored/tests/game.cjs:15:111)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/main-story.cjs",
+      "passed": false,
+      "exitCode": null,
+      "timedOut": true,
+      "seconds": 240,
+      "output": "Stage 1 reached\nStage 2 reached\nStage 3 reached\nStage 3 reached\nStage 4 reached\nStage 5 reached\nStage 6 reached\nStage 6 reached\nStage 7 reached\nStage 7 reached\nStage 8 reached\nStage 9 reached\nStage 10 reached\nStage 10 reached\nStage 11 reached\nStage 12 reached\nStage 12 reached\nStage 13 reached\nStage 13 reached\nStage 14 reached\nStage 15 reached\nStage 16 reached\nStage 17 reached\nStage 18 reached\nStage 19 reached\nStage 20 reached\nStage 20 reached\nStage 21 reached\nStage 21 reached\nStage 22 reached\nStage 22 reached\nStage 23 reached\nStage 24 reached\nStage 25 reached\nPASS: three ordered quests, real routes and combat, wrong answers, skill gates, interrupted work, both miners escorted, death/retry, durable rewards, journal, relic names and mountain unlock.\n"
+    },
+    {
+      "test": "tests/render.cjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.3,
+      "output": "node:internal/url:840\n      href = bindingUrl.parse(input, base, true);\n                        ^\n\nTypeError: Invalid URL\n    at new URL (node:internal/url:840:25)\n    at loadImage (/workspace/scratch/6bee4ce85bce/emberfall-restored/node_modules/@napi-rs/canvas/load-image.js:43:16)\n    at async /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/render.cjs:3:595 {\n  code: 'ERR_INVALID_URL',\n  input: '/workspace/scratch/6bee4ce85bce/emberfall-restored/tests/../dist/assets/items.png'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/server-status.mjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/resolve:271\n    throw new ERR_MODULE_NOT_FOUND(\n          ^\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/6bee4ce85bce/emberfall-restored/dist/server/index.js' imported from /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/server-status.mjs\n    at finalizeResolution (node:internal/modules/esm/resolve:271:11)\n    at moduleResolve (node:internal/modules/esm/resolve:865:10)\n    at defaultResolve (node:internal/modules/esm/resolve:992:11)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)\n    at #resolve (node:internal/modules/esm/loader:683:17)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)\n    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///workspace/scratch/6bee4ce85bce/emberfall-restored/dist/server/index.js'\n}\n\nNode.js v24.19.0\n"
+    }
+  ],
+  "nonRunnableFilesAccidentallySelected": [
+    {
+      "test": "tests/armor-layout.html",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".html\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/armor-layout.html\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/armor-preview.js",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/armor-preview.js:3\n if(!assetsReady){setTimeout(prepareArmorPreview,100);return;}\n ^\n\nReferenceError: assetsReady is not defined\n    at prepareArmorPreview (file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/armor-preview.js:3:2)\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/armor-preview.js:15:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/creator-layout.html",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".html\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/creator-layout.html\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/creator-preview.js",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/creator-preview.js:1\n(function creatorPreview(){if(!assetsReady){setTimeout(creatorPreview,100);return;}const originalDraw=draw;let next=0;draw=()=>{if(performance.now()<next)return;next=performance.now()+1500;originalDraw();};const fish=document.createElement(\"button\");fish.textContent=\"Inspect fishing spot\";fish.style=\"position:fixed;left:480px;top:10px;z-index:9000\";fish.onclick=()=>{const o=tutorialObject(\"fish\");activateScene(\"overworld\",o.x+2,o.y);originalDraw();};document.body.appendChild(fish);})();\n                           ^\n\nReferenceError: assetsReady is not defined\n    at creatorPreview (file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/creator-preview.js:1:28)\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/creator-preview.js:1:489\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/import-creature-window.py",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".py\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/import-creature-window.py\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/skills-layout.html",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".html\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/skills-layout.html\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/skills-preview.js",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/skills-preview.js:3\n if(!assetsReady){setTimeout(prepareSkillsPreview,100);return;}\n ^\n\nReferenceError: assetsReady is not defined\n    at prepareSkillsPreview (file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/skills-preview.js:3:2)\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/skills-preview.js:8:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/trade-layout.html",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".html\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/trade-layout.html\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/trade-preview.js",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/trade-preview.js:3\n if(!assetsReady){setTimeout(prepareTradePreview,100);return;}\n ^\n\nReferenceError: assetsReady is not defined\n    at prepareTradePreview (file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/trade-preview.js:3:2)\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/trade-preview.js:8:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/tutorial-layout.html",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0,
+      "output": "node:internal/modules/esm/get_format:243\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".html\" for /workspace/scratch/6bee4ce85bce/emberfall-restored/tests/tutorial-layout.html\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:243:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:283:36)\n    at defaultLoadSync (node:internal/modules/esm/load:161:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:802:12)\n    at #loadSync (node:internal/modules/esm/loader:834:53)\n    at ModuleLoader.load (node:internal/modules/esm/loader:783:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:494:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/tutorial-preview.js",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/tutorial-preview.js:3\n if(!assetsReady){setTimeout(tutorialPreview,100);return;}\n ^\n\nReferenceError: assetsReady is not defined\n    at tutorialPreview (file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/tutorial-preview.js:3:2)\n    at file:///workspace/scratch/6bee4ce85bce/emberfall-restored/tests/tutorial-preview.js:14:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    }
+  ],
+  "rechecks": [
+    "baseline-build-recheck.json",
+    "main-story-recheck.json"
+  ],
+  "nativeRuntimeTestsExecuted": 0
+}

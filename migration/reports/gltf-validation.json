@@ -24,11 +24,11 @@
   "records": [
     {
       "path": "assets/authoring/stylized-nature/Bush_Common.glb",
-      "sha256": "ca72815a9c1ef337c7040a4122885c02c973dd83d0b83d3b58c071bb86c54b0a",
+      "sha256": "5f89b473f660782fa772726ef038b77d6afa2123cac26a04c32b8d3af90393d5",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -56,7 +56,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -83,15 +83,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Bush_Common_Flowers.glb",
-      "sha256": "955ef596b334d80c8b2fe2926cf9de0e48eef5140d32af81d75db55dcfedefb5",
+      "sha256": "21cc63da207d685fc5c80514ac9647f481b1b26b0c9ab8ad80bad72146f64785",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         },
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -131,7 +131,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -145,7 +145,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -172,11 +172,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Clover_1.glb",
-      "sha256": "d982bf2d7b545a054ef8b02f1563f4c735bcebfaf6dd6d9061289b2c75d909dd",
+      "sha256": "2d85ba16b9cb71057cd20f90074e0459788517517c3e5e40194e4266d50cd473",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -210,7 +210,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -237,11 +237,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Clover_2.glb",
-      "sha256": "bc8b5cf29f5565aa3e97015d994742166ff24a396124df861e04e9628068fa5b",
+      "sha256": "d05356cd7f1b2998dc90c0bfcffc9ca2b17bc19bc59388470dedaeba363b1977",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -275,7 +275,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -302,19 +302,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/CommonTree_1.glb",
-      "sha256": "d4f9c3251dd823251cd3c2792e49ec97bfa944d5874327cb5a9dd39248a5f88d",
+      "sha256": "2a68d03730a6106d11b3168df6d024ee309c45e4a811fc18c3bd76e9b5e2f33d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         }
       ],
@@ -360,7 +360,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -374,7 +374,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -388,7 +388,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -415,19 +415,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/CommonTree_2.glb",
-      "sha256": "474737701a930d329d4e4e7995ffa97bebc45141fd4592d54a59515706bd7bc4",
+      "sha256": "61c853f1c3546ee42e417c1531d74698746ad0155c9687a379b9f926a36c2dc7",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         }
       ],
@@ -473,7 +473,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -487,7 +487,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -501,7 +501,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -528,19 +528,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/CommonTree_3.glb",
-      "sha256": "30679a0d5c808a4b7bdb4c0c91aafa3a2ec2b95ad712742445da437c5644076c",
+      "sha256": "7d838ac82aed9962877ddfd99e6cd1d8cfc85d235dd6da2f99980476e0674679",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         }
       ],
@@ -586,7 +586,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -600,7 +600,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -614,7 +614,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -641,19 +641,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/CommonTree_4.glb",
-      "sha256": "8c99029398df7ce7e45f086f19307ea704a2cff7ce118c15ef2dfba0b8b5bcbd",
+      "sha256": "1c55e495d92f53369a48e08e6aae3fcc8ce0b7ff78347427af9319af6f0e2e3e",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         }
       ],
@@ -699,7 +699,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -713,7 +713,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -727,7 +727,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -754,19 +754,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/CommonTree_5.glb",
-      "sha256": "2f9adb5c1e760cfe9813054a865ba5d2d0ff3efc3ac3e7980cb673b0ac6c1172",
+      "sha256": "d6c66f9bedbe7df4b58e29954c666000a10fc778a6bfc702b09b1e9f31528b7e",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_NormalTree_C.png",
           "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
         }
       ],
@@ -812,7 +812,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -826,7 +826,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -840,7 +840,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_NormalTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_NormalTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -867,15 +867,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/DeadTree_1.glb",
-      "sha256": "21413add5ab76c21d3d507cd5354ca6446d9be3380e2f45317ef316687dc6518",
+      "sha256": "d5c6bb5901c567f7554ae5f05ccb3541935cc080a0230c1ad32dd44ede852765",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_DeadTree.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
           "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
         }
       ],
@@ -915,7 +915,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -929,7 +929,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -956,15 +956,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/DeadTree_2.glb",
-      "sha256": "c7d0c05aa905ce7e4a8742dabc08e31018e549d2698623cd82086fafb73dfd9f",
+      "sha256": "9890971861b76a46298a9fe8aa21cc7b23d315dc48c52457630288be48bc3ec6",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_DeadTree.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
           "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
         }
       ],
@@ -1004,7 +1004,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1018,7 +1018,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1045,15 +1045,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/DeadTree_3.glb",
-      "sha256": "a27359ce2f6839922e8d08c2804ab3ea0c847ba2fb8cb86ab761ef0a6ab5b908",
+      "sha256": "68f688a2e328c130ebb03cc1901e685609c030f9e458f669c77a2c7ede5f6e01",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_DeadTree.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
           "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
         }
       ],
@@ -1093,7 +1093,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1107,7 +1107,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1134,15 +1134,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/DeadTree_4.glb",
-      "sha256": "27c7808f112c4f78330f3d1a6822b4bfdd3929a687a758296222b481f5cde69c",
+      "sha256": "7130a4e89fa2d557128600c820230117b819bd42585db6fcec289bb467ff4b09",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_DeadTree.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
           "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
         }
       ],
@@ -1182,7 +1182,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1196,7 +1196,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1223,15 +1223,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/DeadTree_5.glb",
-      "sha256": "59344aaafe56f4e625bf3c96fcec284effac6b7a629fe36dd0394a40e53d64fe",
+      "sha256": "539220ac18a18d61edda8ec2eeb8824fe51981fa9bce0b250f7fe10ed0768df5",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_DeadTree.png",
+          "path": "assets/textures/stylized-nature/Bark_DeadTree.png",
           "sha256": "8f055724c35f8e8c5685a505775b3b9ebfc6b4745308ef35ce1cfe6fd976153f"
         }
       ],
@@ -1271,7 +1271,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1285,7 +1285,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_DeadTree.png",
+            "uri": "../../textures/stylized-nature/Bark_DeadTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1312,11 +1312,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Fern_1.glb",
-      "sha256": "f6f79f330674b9af2ada531ffdbb3126f9daf9eef7e06701cf177e9d616698fc",
+      "sha256": "e5e67f4a39a8ac53f42fd28ffe4f37e50cea44ca274a0e47898226b41d4edd92",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -1350,7 +1350,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1377,15 +1377,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Flower_3_Group.glb",
-      "sha256": "d119592761489f65e9782636feba65f67900c902e3726cb662360ed948a880bb",
+      "sha256": "78c6134527d42b56044fc11c3e75782eb452a15462b1a89660214376f34925e4",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         },
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -1431,7 +1431,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1445,7 +1445,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -1472,15 +1472,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Flower_3_Single.glb",
-      "sha256": "4272c47182aaf35708c4d60030192f88172499d510f0a584a7f703d623b5e314",
+      "sha256": "9ec3bb9ae82b12fc6a6dc24af1e12f787703f4f9a14937f4bd554ee00b34369d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         },
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -1526,7 +1526,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1540,7 +1540,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -1567,15 +1567,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Flower_4_Group.glb",
-      "sha256": "bc5eb0b9f8d6a8e9373bf7ca526fdd4efd79035d2d6c856e40fa5e91f0ba3ad1",
+      "sha256": "ebddea046540bc6f069fb4b946bf8027a6e0317eef83e6c5a5a6e3d51a6df272",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         },
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -1621,7 +1621,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1635,7 +1635,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -1662,15 +1662,15 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Flower_4_Single.glb",
-      "sha256": "529dfdb7c35b4d05a1b678b94fab1e1f542a556a0aab44bb9f348b06f875df79",
+      "sha256": "a6d97c61ca941cbc45e8b21918cf524ba29c9df535514cc99fb4bdb185707e88",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         },
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -1716,7 +1716,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -1730,7 +1730,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -1757,11 +1757,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Grass_Common_Short.glb",
-      "sha256": "29cc42f1c9b1264e5f006c8f779a81b0ce399b55d1c79f0d88c2c838872282ec",
+      "sha256": "30cc2ee1a8f7e37075311958dad8db9630d02332d9e0663b6c3fcda86167f5fa",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Grass.png",
+          "path": "assets/textures/stylized-nature/Grass.png",
           "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
         }
       ],
@@ -1789,7 +1789,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Grass.png",
+            "uri": "../../textures/stylized-nature/Grass.png",
             "image": {
               "width": 512,
               "height": 512,
@@ -1816,11 +1816,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Grass_Common_Tall.glb",
-      "sha256": "6281810208352e58eae23363eb6a96779c85b56b77a8327733762f5cfbbe4c92",
+      "sha256": "16777d4d08a49796558ab34f711ce0e65fa3f214681ee21f9074056a48ef4399",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Grass.png",
+          "path": "assets/textures/stylized-nature/Grass.png",
           "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
         }
       ],
@@ -1848,7 +1848,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Grass.png",
+            "uri": "../../textures/stylized-nature/Grass.png",
             "image": {
               "width": 512,
               "height": 512,
@@ -1875,11 +1875,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Grass_Wispy_Short.glb",
-      "sha256": "b4b17d1aeb5f89c89f7ca4f60798335d6fb22423b318a33a50b1ab1560b97f8b",
+      "sha256": "e1e059fba9e9f38beb75ebd550bcf755a5446cc2b8b318e32584fc86c7e13166",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Grass.png",
+          "path": "assets/textures/stylized-nature/Grass.png",
           "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
         }
       ],
@@ -1907,7 +1907,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Grass.png",
+            "uri": "../../textures/stylized-nature/Grass.png",
             "image": {
               "width": 512,
               "height": 512,
@@ -1934,11 +1934,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Grass_Wispy_Tall.glb",
-      "sha256": "b9c66d2542fb8eb6a59c2f8f03a4e37d3daf90ac741094cf145fc8f8b2880e9c",
+      "sha256": "4e868b8f02284516fcfec9a51d2a1b9de3afba83fe2e2c002d0937cf03f35485",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Grass.png",
+          "path": "assets/textures/stylized-nature/Grass.png",
           "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
         }
       ],
@@ -1966,7 +1966,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Grass.png",
+            "uri": "../../textures/stylized-nature/Grass.png",
             "image": {
               "width": 512,
               "height": 512,
@@ -1993,11 +1993,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Mushroom_Common.glb",
-      "sha256": "5aca2d7a10d83b549b96c7e55821c71bb8241b474e686a428bce4cb1579747ff",
+      "sha256": "0efb16ddc8226c70c6190ca684f46c7177567a212c59035187e010b6ec032aab",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Mushrooms.png",
+          "path": "assets/textures/stylized-nature/Mushrooms.png",
           "sha256": "e29eed2db831e44a29634fe25c62e9e31edf201e978a52912b9e5221ffd4a1f3"
         }
       ],
@@ -2025,7 +2025,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Mushrooms.png",
+            "uri": "../../textures/stylized-nature/Mushrooms.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2052,11 +2052,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Mushroom_Laetiporus.glb",
-      "sha256": "a33cf7b127bf75f00a9f873ca3aa97e99e73b32326bdb5110ab3b3d4c9afef7d",
+      "sha256": "e1588d4e0526cf1207a70b16b772afb5da0296386fdc6ad2e5f2c3386f42b0fa",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Mushrooms.png",
+          "path": "assets/textures/stylized-nature/Mushrooms.png",
           "sha256": "e29eed2db831e44a29634fe25c62e9e31edf201e978a52912b9e5221ffd4a1f3"
         }
       ],
@@ -2084,7 +2084,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Mushrooms.png",
+            "uri": "../../textures/stylized-nature/Mushrooms.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2111,11 +2111,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Round_1.glb",
-      "sha256": "5f88faf4facd97cf510ad712ece702b232fe655cd35240b0a09cdbab520a8c17",
+      "sha256": "ac47109c50c47f3c24e982008fb717af7952ef84064a46bfb4790bcc90123aeb",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2143,7 +2143,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2170,11 +2170,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Round_2.glb",
-      "sha256": "d5c8d5cfcda2937f4499e2dc2de1ac8f395aa0f708cc36b82b3630061d6c09ea",
+      "sha256": "602536259241cb194f40a547d64a182451adcb3153368353b252de9fa48fa6b5",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2202,7 +2202,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2229,11 +2229,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Round_3.glb",
-      "sha256": "a28dd3d429c0364c8adfaca8abd996a9168dacf4f224f5a58f1454c7844b9176",
+      "sha256": "840ae71ac86134347cb0acae5e09a41d9c8f02ca79cc24099694ac356644c93a",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2261,7 +2261,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2288,11 +2288,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Round_4.glb",
-      "sha256": "ada88271be48b60aa583d0a27d2d5e43ac34e316fdd84561096df169fa03f557",
+      "sha256": "321ab951b73225251a1ec0fd7d95546d4ae4d5da0d200a1c33abc2dfb00bbe8e",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2320,7 +2320,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2347,11 +2347,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Round_5.glb",
-      "sha256": "314299d9873d9fe897f5a403639967503c974b3e6f0a1233f89ce019c0c890b6",
+      "sha256": "067da23db98b72dba54ba2284f91e3cbf6d7c3d6a226121b483f3c9e1366c3f1",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2379,7 +2379,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2406,11 +2406,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_1.glb",
-      "sha256": "0b7a6b934e0cab8bc88b50a72505cae44cd0588badeffb2a62a4132171241aa9",
+      "sha256": "7664921f21bbb3935f391a90457a4111eb70be53a81c9ed1847b708405206b31",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2438,7 +2438,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2465,11 +2465,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_2.glb",
-      "sha256": "157f9345308dae181ea4ede5be3500b007f75f3893677319fba22e55e59b403e",
+      "sha256": "9b155859febbb4c205da465c159349a7b0b897ce4b0d1fa20547e21fecc2ae1d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2497,7 +2497,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2524,11 +2524,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_3.glb",
-      "sha256": "3fa7d947589d11631b146047ee3d4de720c73aa42402811bb18723fb032de521",
+      "sha256": "cc75401ace6e3d992e6e01b04e92a9584f1c4feaffcdd1eb2483acc9a8f7c9b6",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2556,7 +2556,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2583,11 +2583,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_4.glb",
-      "sha256": "0275f580f42f1e7aa33aaece3c8a24263e990d3211a08de3be6f3fb9dc513e05",
+      "sha256": "d615cea2f051f225200e6f4caaf7c1423895f20436c0f32e2c4e3716f8324b7d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2615,7 +2615,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2642,11 +2642,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_5.glb",
-      "sha256": "b2dc4768490201a31282ebcfc74aec879bc5302a1180f6fc5316f278a7a12bd3",
+      "sha256": "5dfb6f377d2f19c9b2e700a392572df77dc5bfd29fdcdb2d0c21e65b9c06e928",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2674,7 +2674,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2701,11 +2701,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pebble_Square_6.glb",
-      "sha256": "05a84c216f38f2f2c9f88e0f44aec29d0c4d6219ddb46b1a995663beeec85889",
+      "sha256": "ecafea9f810cb5d3378465527c7b46e628de2dcd08488b2f141330baef5f69a2",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -2733,7 +2733,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -2760,11 +2760,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Petal_1.glb",
-      "sha256": "0d4271f019460dd5deb12bb50e537aeb3ef00a66c6fe1f1b560833d36b1d377b",
+      "sha256": "8c8aab9e7ca979b3260f84dbe7a7ff47134d4714a47d8effec63cac0f2d177af",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -2798,7 +2798,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -2825,11 +2825,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Petal_2.glb",
-      "sha256": "bf1d08ef90f7c2275974d1e2eb598a54ea8c5fcc576d60802603824d03a2864e",
+      "sha256": "c49a81cd8a167daaffd4dbfa7b02ba03943d0356b23efd8754cc32df49790f3d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -2863,7 +2863,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -2890,11 +2890,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Petal_3.glb",
-      "sha256": "c156a473e59178dc5ca326c0612aee86651647c2930a7a67e89d533ed247a61f",
+      "sha256": "f18ee171363d66be15cffbb29140a072b324631ffdc1ad14d8009ecfa2d109fb",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -2928,7 +2928,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -2955,11 +2955,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Petal_4.glb",
-      "sha256": "8f3c0155b5e4dd6778ffd8620643b89371f308ac984f7a5f9c1e43c18157bbfe",
+      "sha256": "612a12c9b8a509e72d1cea673b15e280314022d01b006cf8c1a51ad1ef447157",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -2993,7 +2993,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -3020,11 +3020,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Petal_5.glb",
-      "sha256": "47c09d2e66919d5377ad86845764572ed484af6064a376dd57f2d38bf8e98c82",
+      "sha256": "5fe2e94546af3526f11bdf135b5c3e79de69e5fe295497b9a1b3efbcf67aa070",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Flowers.png",
+          "path": "assets/textures/stylized-nature/Flowers.png",
           "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
         }
       ],
@@ -3058,7 +3058,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Flowers.png",
+            "uri": "../../textures/stylized-nature/Flowers.png",
             "image": {
               "width": 1008,
               "height": 981,
@@ -3085,19 +3085,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pine_1.glb",
-      "sha256": "9941e80bb40c7f728c320153e29e42424bded84fbb3f4bad2402aab1e2ccb0b7",
+      "sha256": "8a155a188ad6a96f5e58f9684d3b32fae820deef32b845d4f63736ff044593b1",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaf_Pine_C.png",
+          "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
           "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
         }
       ],
@@ -3143,7 +3143,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3157,7 +3157,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3171,7 +3171,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaf_Pine_C.png",
+            "uri": "../../textures/stylized-nature/Leaf_Pine_C.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3198,19 +3198,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pine_2.glb",
-      "sha256": "ea6637f8440c5682579a5a75f08bce04b1fd73b2428fce1882c1007e63253de9",
+      "sha256": "29c67e78be18755e67773b8dca4bba3e71c7d2665e11019734ae39d89d2e7860",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaf_Pine_C.png",
+          "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
           "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
         }
       ],
@@ -3256,7 +3256,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3270,7 +3270,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3284,7 +3284,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaf_Pine_C.png",
+            "uri": "../../textures/stylized-nature/Leaf_Pine_C.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3311,19 +3311,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pine_3.glb",
-      "sha256": "bd0a8488319af984fd76711879c61b6f638acedbc3767d0727a20b50e3b4f3f4",
+      "sha256": "542206a86a341c282aac6a7aa9f3678a06ba1fba32b3c3a86c89ba41033b48d8",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaf_Pine_C.png",
+          "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
           "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
         }
       ],
@@ -3369,7 +3369,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3383,7 +3383,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3397,7 +3397,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaf_Pine_C.png",
+            "uri": "../../textures/stylized-nature/Leaf_Pine_C.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3424,19 +3424,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pine_4.glb",
-      "sha256": "6c6500253dbf4dd9b7da5d27e549e978f06b03c079f660729c91a5d14e6aa6bb",
+      "sha256": "cdbb7853acf23f89a38d09bfcdc5059656bf57b3bf4ce63e78cd4d521af95312",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaf_Pine_C.png",
+          "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
           "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
         }
       ],
@@ -3482,7 +3482,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3496,7 +3496,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3510,7 +3510,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaf_Pine_C.png",
+            "uri": "../../textures/stylized-nature/Leaf_Pine_C.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3537,19 +3537,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Pine_5.glb",
-      "sha256": "843a9093cb19c5305f0e097e6ceb81afe7ff85a9983da417686ad8385fe46b0a",
+      "sha256": "800e0e38c6d3665492310a4f695a027b6564c3eaeb28d347450f0119c746a5c4",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree_Normal.png",
           "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
         },
         {
-          "path": "assets/textures/nature/Bark_NormalTree.png",
+          "path": "assets/textures/stylized-nature/Bark_NormalTree.png",
           "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
         },
         {
-          "path": "assets/textures/nature/Leaf_Pine_C.png",
+          "path": "assets/textures/stylized-nature/Leaf_Pine_C.png",
           "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
         }
       ],
@@ -3595,7 +3595,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3609,7 +3609,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_NormalTree.png",
+            "uri": "../../textures/stylized-nature/Bark_NormalTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3623,7 +3623,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaf_Pine_C.png",
+            "uri": "../../textures/stylized-nature/Leaf_Pine_C.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3650,11 +3650,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Plant_1.glb",
-      "sha256": "0d5dd204a66d99c0482fcbecc0f5e7714809d5ce368d4196af5ae18f28e990b7",
+      "sha256": "45730b34c0759dd2667fa26375209e16b5a7775b702cc852cc0f40ea3766cf76",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -3688,7 +3688,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3715,11 +3715,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Plant_1_Big.glb",
-      "sha256": "bcc81b3a9b12a9fbc4e85664668dc1fe7c9794b8d2f57327f496cde03e64b54d",
+      "sha256": "c1b267c39d0e2b14ae0385227a9c1d2572747a431a76cfdca42d757dd3b8ed14",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -3753,7 +3753,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3780,11 +3780,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Plant_7.glb",
-      "sha256": "9da3c13f8ae9470acaddb1e67267071085eb736037fa7e3d638efe5228f9586a",
+      "sha256": "c41b0ee40810d3ed3d2d7c69226603474c71e4be6145cc15971bbf5a0bc3afd0",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -3818,7 +3818,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3845,11 +3845,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Plant_7_Big.glb",
-      "sha256": "8f6fa417102e6f0bacc6e79a107934dc46e458e490018ab41ebcda47c3178970",
+      "sha256": "3b30d60a2252378e92b1d6839dd0e49e1aaeea8ae3411dd43c91923267e93439",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Leaves.png",
+          "path": "assets/textures/stylized-nature/Leaves.png",
           "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
         }
       ],
@@ -3883,7 +3883,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves.png",
+            "uri": "../../textures/stylized-nature/Leaves.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -3910,11 +3910,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Round_Small_1.glb",
-      "sha256": "c4cb43a0b8d8b73234ad031745408c2646749fed05fe5ef9b5ee470e7c3df4ea",
+      "sha256": "112565fdcd70645ec3b072806a257281a7d41f96dbacca9c48a71fe3f22be1ac",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -3942,7 +3942,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -3969,11 +3969,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Round_Small_2.glb",
-      "sha256": "3ba88adb19b9d7ee3e47a6430c7575501a206baa8097ba6c35a4fa56f2b5aee2",
+      "sha256": "212ca983d80703757d34377540f548ce87e90a5b87d8392e7ca0bdc0ebb4534c",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4001,7 +4001,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4028,11 +4028,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Round_Small_3.glb",
-      "sha256": "a34f2e23536d5c7dc11b4a1b64e15193ef5a83b55f9d2d33393ea6f02535c2bf",
+      "sha256": "3250c4abe84bf454cc0e8eb9b2e0c9207972c4a8553a6c5789a165e32c384af3",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4060,7 +4060,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4087,11 +4087,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Round_Thin.glb",
-      "sha256": "5ddf91e3b37375128eb3f43143f3aaa2b7c2b6c19a9027d91430ec0ef17fc388",
+      "sha256": "7ed1ca8e3bf52bd7ab5fc9f50eb6b105549060582d4f0263ff8d468c05e708b9",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4119,7 +4119,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4146,11 +4146,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Round_Wide.glb",
-      "sha256": "938f551371e51f2e535ea43cf072b61baf8c4443b707a7f38da700a8cbb84e96",
+      "sha256": "8ff546e24166419e4276d300093a8555113cea250c7bf29cf8891b0ceee01f2d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4178,7 +4178,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4205,11 +4205,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Square_Small_1.glb",
-      "sha256": "5100991445f1b4582d56942c0676a2b0a81e8e7ee44d64e4982a0f0ae129fd5f",
+      "sha256": "46c253d9a9c1af984b22f9924b65e18c6b91afd38231e457acb114747b805244",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4237,7 +4237,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4264,11 +4264,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Square_Small_2.glb",
-      "sha256": "ea03165d0afb30c05a3c50991948b14c3caea8330b5e015df32d5800ebb3f98d",
+      "sha256": "42139c06e4c9acdafd5124a716e64b98069aff6a730a97fd6978eadd0a253373",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4296,7 +4296,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4323,11 +4323,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Square_Small_3.glb",
-      "sha256": "e2a5e69f598cfe493b6e9e76c402419cce48b687be3fb9a4f20e94d77f924b0f",
+      "sha256": "58fa016919fa4339029d031edef56bcf1ac8f11488aa8c739ff902f6a092fb60",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4355,7 +4355,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4382,11 +4382,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Square_Thin.glb",
-      "sha256": "feca84bec3cc8b8b52d5d58427e845ee2fcdfbafc4e924d9464c69e936f3ae1d",
+      "sha256": "8dcf7300015733c96975cdd033a3952980442fb4b40cb0fc787f8e717672b02a",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4414,7 +4414,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4441,11 +4441,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/RockPath_Square_Wide.glb",
-      "sha256": "620afeb5371b8361385a7dc3c35a636dbccf15ea778204425c515788066bac39",
+      "sha256": "10cf7cbd57f4876dd120b079224a3bc525f3180a96c7c01bbb35c5041588752d",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/PathRocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/PathRocks_Diffuse.png",
           "sha256": "85a04abb2c136fee53b376daf3b7d7f96fdf3966de0258dff6fe2b24da792b23"
         }
       ],
@@ -4473,7 +4473,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/PathRocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/PathRocks_Diffuse.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4500,11 +4500,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Rock_Medium_1.glb",
-      "sha256": "da022dd9d9beaeb08a50ecd61026fced31b7799514b9f88bc8aac743556584f2",
+      "sha256": "54bdac18a276fac7b054663b329dc973b07b753d1c2f2dc3ae78f4171d5e19a5",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Rocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
           "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
         }
       ],
@@ -4532,7 +4532,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Rocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/Rocks_Diffuse.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4559,11 +4559,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Rock_Medium_2.glb",
-      "sha256": "0426b1e4204c66f5a3af971873ec642ed6916791efbe5f39ff31b05144bbb563",
+      "sha256": "7f788d54aef4899e19d1f03be9f9551e148e31f7d3582c475a39a586ff221f3c",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Rocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
           "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
         }
       ],
@@ -4591,7 +4591,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Rocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/Rocks_Diffuse.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4618,11 +4618,11 @@
     },
     {
       "path": "assets/authoring/stylized-nature/Rock_Medium_3.glb",
-      "sha256": "0221eefc84c3fae32bd0c0a071c9e32c58c20c3199e9e4e68cbc0fc1e4c10872",
+      "sha256": "1b899b7387a020d87328cfe2d8e7ea556557b31b11bb6393a406b2896f1e9eb9",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Rocks_Diffuse.png",
+          "path": "assets/textures/stylized-nature/Rocks_Diffuse.png",
           "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
         }
       ],
@@ -4650,7 +4650,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Rocks_Diffuse.png",
+            "uri": "../../textures/stylized-nature/Rocks_Diffuse.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4677,19 +4677,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/TwistedTree_1.glb",
-      "sha256": "2fde49023f8d1133d2408b1e1c121733265a8f7da7d7fc2993ed207726fd5c21",
+      "sha256": "93c85424eb36426231280a40c094c1615b7a8d5c6bb736382c97cb8ab5a08db0",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_TwistedTree.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
           "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
         },
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -4735,7 +4735,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4749,7 +4749,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4763,7 +4763,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4790,19 +4790,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/TwistedTree_2.glb",
-      "sha256": "5daa2d6788b1eac752e72a988922a5b8f8fb95ccaf730b6121563e64a3caf246",
+      "sha256": "2cc35d206e5bcc81d89335f42f1fefe0a7384ec2e0a19dda8fe0c688c79228af",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_TwistedTree.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
           "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
         },
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -4848,7 +4848,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4862,7 +4862,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4876,7 +4876,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -4903,19 +4903,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/TwistedTree_3.glb",
-      "sha256": "e13bb275338e6112015c46df05469afa147b5e4b6919834f8aa987c518d0da57",
+      "sha256": "b1bdf009a0f682025dec486dccf093cd89b418259d27d76545b39f968dc56774",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_TwistedTree.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
           "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
         },
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -4961,7 +4961,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4975,7 +4975,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -4989,7 +4989,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -5016,19 +5016,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/TwistedTree_4.glb",
-      "sha256": "45ee24d0396ee6a1c25acbcbc018978da02d0d77487dfdcd7ca20c893071492b",
+      "sha256": "9c628b42e8db186a249a20bd88c2ebab9229d53eace19f5248a138d2ba78e8ad",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_TwistedTree.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
           "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
         },
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -5074,7 +5074,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -5088,7 +5088,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -5102,7 +5102,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -5129,19 +5129,19 @@
     },
     {
       "path": "assets/authoring/stylized-nature/TwistedTree_5.glb",
-      "sha256": "e3709a20ed3d0b967e371df0f257e398e8839f076a88106aad4b7273e74d2e00",
+      "sha256": "ee0d12e97c9d9955af39b9e86b442c93ea8a93033c66c2e43b8905606e0fe778",
       "scope": "authoring-library",
       "dependencies": [
         {
-          "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree_Normal.png",
           "sha256": "692da2f58909263f074cb17b36defd09f56bf89ab7efda567a9a3e59261747b3"
         },
         {
-          "path": "assets/textures/nature/Bark_TwistedTree.png",
+          "path": "assets/textures/stylized-nature/Bark_TwistedTree.png",
           "sha256": "01608a96c42954eb725b32824530b51e67a2f3d85432d21a8d8adff958d2084a"
         },
         {
-          "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+          "path": "assets/textures/stylized-nature/Leaves_TwistedTree_C.png",
           "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
         }
       ],
@@ -5187,7 +5187,7 @@
             "pointer": "/images/0",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree_Normal.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree_Normal.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -5201,7 +5201,7 @@
             "pointer": "/images/1",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Bark_TwistedTree.png",
+            "uri": "../../textures/stylized-nature/Bark_TwistedTree.png",
             "image": {
               "width": 2048,
               "height": 2048,
@@ -5215,7 +5215,7 @@
             "pointer": "/images/2",
             "mimeType": "image/png",
             "storage": "external",
-            "uri": "../../textures/nature/Leaves_TwistedTree_C.png",
+            "uri": "../../textures/stylized-nature/Leaves_TwistedTree_C.png",
             "image": {
               "width": 1024,
               "height": 1024,
@@ -5242,7 +5242,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_1.glb",
-      "sha256": "716a9f80c88582a919d9dab614cb93734f2824cb6f9fc4c258345faa30f46fae",
+      "sha256": "e413d3fb8727cf3ad680b04d75cd49a62116917dcea07826693edd03a39f743f",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5290,13 +5290,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 153996
+            "byteLength": 167880
           },
           {
             "pointer": "/images/0",
@@ -5334,7 +5334,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 3336,
+        "totalVertexCount": 1668,
         "totalTriangleCount": 2314,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5343,7 +5343,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_10.glb",
-      "sha256": "a7d759284324fb079ce968500ec73a5db648e9800b7cf6d5e12a8b0b3e23e1e9",
+      "sha256": "057d38a7a9cc02aba86d1478a01250c806e4388c806778b34095a263ac95912d",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5391,13 +5391,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 150672
+            "byteLength": 164256
           },
           {
             "pointer": "/images/0",
@@ -5435,7 +5435,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 3264,
+        "totalVertexCount": 1632,
         "totalTriangleCount": 2264,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5444,7 +5444,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_2.glb",
-      "sha256": "460112b8ca36309b78173360359cbd58eb12349bdf2ca22dedf6b07ed25ca1a4",
+      "sha256": "04fb7363ae05f0f71d2837d0088d73b47a3e29f63da2969cd2ac45d3060785e9",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5492,13 +5492,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 75072
+            "byteLength": 81768
           },
           {
             "pointer": "/images/0",
@@ -5536,7 +5536,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1628,
+        "totalVertexCount": 814,
         "totalTriangleCount": 1116,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5545,7 +5545,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_3.glb",
-      "sha256": "5c42ef792b5eabe7b3eeee608f7934fd3cd6e7c872338d95b0146a184aef7e19",
+      "sha256": "b3476c7bd0e717404f48a490169267d9f2348b640db6e4e8b8d429ef569beea7",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5593,13 +5593,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 165804
+            "byteLength": 180744
           },
           {
             "pointer": "/images/0",
@@ -5637,7 +5637,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 3592,
+        "totalVertexCount": 1796,
         "totalTriangleCount": 2490,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5646,7 +5646,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_4.glb",
-      "sha256": "db0cbb64e0d13e32e6c9250ec66f536eb8a720bce1e75c558f2924c95a228c23",
+      "sha256": "930d8d95ed74f6c08ef57c938a66aed3458990de926f2220b9d515c0222aea58",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5694,13 +5694,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 103620
+            "byteLength": 112824
           },
           {
             "pointer": "/images/0",
@@ -5738,7 +5738,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2248,
+        "totalVertexCount": 1124,
         "totalTriangleCount": 1534,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5747,7 +5747,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_5.glb",
-      "sha256": "259f120ba2a03f3eea615e83f769b4e4fc4c974404e800bf17ed2309d8c0fd02",
+      "sha256": "12eaf3fc9fbfc63a5f3ca0a5c1b23c770fb2826abedd210429af324f4b70907b",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5795,13 +5795,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 112536
+            "byteLength": 122508
           },
           {
             "pointer": "/images/0",
@@ -5839,7 +5839,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2442,
+        "totalVertexCount": 1221,
         "totalTriangleCount": 1662,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5848,7 +5848,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_6.glb",
-      "sha256": "f68e0c8f6d5b83330b70a9544adcce9322e03d7152be7842076fce42a191740d",
+      "sha256": "0e20752b01b067cca91469608d3d36a501793a47fd86f187e34be4aedceee332",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5896,13 +5896,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 138096
+            "byteLength": 150528
           },
           {
             "pointer": "/images/0",
@@ -5940,7 +5940,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2992,
+        "totalVertexCount": 1496,
         "totalTriangleCount": 2072,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -5949,7 +5949,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_7.glb",
-      "sha256": "c2d1d0dbcd295bb65def63fc4230872701b2714dbd1c7a38e8b382f83bbd666e",
+      "sha256": "510e85b471d89f8dc96980e56cafc768333b7439436786df65e62e46937e6571",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -5997,13 +5997,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 106428
+            "byteLength": 116004
           },
           {
             "pointer": "/images/0",
@@ -6041,7 +6041,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2306,
+        "totalVertexCount": 1153,
         "totalTriangleCount": 1596,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -6050,7 +6050,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_8.glb",
-      "sha256": "257d16da9bfeb7de5eaa1d9f8c3934cb0cab7b84d8ae00b4fc7f28b62a7e5482",
+      "sha256": "46294b7bd9b20d9e96fda401e03aa128c42268b445e4d64a5c8188e7dd02aa86",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6098,13 +6098,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 167916
+            "byteLength": 182952
           },
           {
             "pointer": "/images/0",
@@ -6142,7 +6142,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 3640,
+        "totalVertexCount": 1820,
         "totalTriangleCount": 2506,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -6151,7 +6151,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Birch_9.glb",
-      "sha256": "6d247580cb89ae8aa88ab9b5f10c403f08dbd8eb7a00c3f6b3bdd2825529a28e",
+      "sha256": "26f86701f4aebeb77cc0b0d1fc7754a317b79a10ab3b64c9d0cb36d4a3e3aafb",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6199,13 +6199,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 98796
+            "byteLength": 107628
           },
           {
             "pointer": "/images/0",
@@ -6243,7 +6243,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2142,
+        "totalVertexCount": 1071,
         "totalTriangleCount": 1472,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -6252,7 +6252,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_1.glb",
-      "sha256": "8c0af291716828a3d1fc9df4bc7f05c0e79cf3ad3e384c83183bb7f852951b81",
+      "sha256": "a642354d524f0cffeb99a5d7e961489d8ec91de10fd20cb8f61efa58d482827b",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6284,13 +6284,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 81684
+            "byteLength": 88944
           },
           {
             "pointer": "/images/0",
@@ -6323,7 +6323,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_10.glb",
-      "sha256": "c306261cf5c952f2da63bfaf79b26ec9e075e80a652afeff0cf47762540f9c13",
+      "sha256": "29c9c7a9b944154238d111d19b93612cae8bea410dcfe794fabda4f313d24712",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6355,13 +6355,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 79932
+            "byteLength": 87036
           },
           {
             "pointer": "/images/0",
@@ -6394,7 +6394,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_2.glb",
-      "sha256": "4f788ec8d3073976682e1c95f5bb5faaeda1bd476f66a3c67bb0efb11a92b811",
+      "sha256": "a65d8bffa479c47f12c7d27722d3cb444752eb165d4fe807d687b984ff6f88d3",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6426,13 +6426,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 37344
+            "byteLength": 40584
           },
           {
             "pointer": "/images/0",
@@ -6465,7 +6465,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_3.glb",
-      "sha256": "0dca8cc3eb9af949bd37d51dae04fa8f5d499b73bc34a8def0233505c14c4c85",
+      "sha256": "5ee3dee3a6e6f1f572b4bf413112402972182a3f12f40ae5a2e9e2ee715c565e",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6497,13 +6497,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 98208
+            "byteLength": 106956
           },
           {
             "pointer": "/images/0",
@@ -6536,7 +6536,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_4.glb",
-      "sha256": "e5fd739f12df4568a929b2ffd2fdaa9f844803ac0e328b4dae1513e47b840ef4",
+      "sha256": "78e0d83f6886d6111f8548fa6b9232a639c654016ca1cdc1e262c99cb75276e5",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6568,13 +6568,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 69036
+            "byteLength": 75072
           },
           {
             "pointer": "/images/0",
@@ -6607,7 +6607,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_5.glb",
-      "sha256": "2023bd5b79da698ad788fd8f07989c7363f40e01b7d1a84646f11170c0bf1c75",
+      "sha256": "88c1135becbc81bb4c4df5e20f90f960b52b216fbc83211f72a0cd382647a42a",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6639,13 +6639,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 60660
+            "byteLength": 65880
           },
           {
             "pointer": "/images/0",
@@ -6678,7 +6678,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_6.glb",
-      "sha256": "0c2eb15de4cd9c4a0efdbcea1b549b6b1a4167fa3a29ef5c705431bda3f5ce4f",
+      "sha256": "5271692586a4e8433c3afa033deca1d014565dd503ec37fbbeb6779cd129673f",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6710,13 +6710,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 79932
+            "byteLength": 87036
           },
           {
             "pointer": "/images/0",
@@ -6749,7 +6749,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_7.glb",
-      "sha256": "cf92cb977393b55e3241880ac5466730f4b914aed3f83fdb68560e6c4dac0ed2",
+      "sha256": "241cf6a0da8669b768e262c6f09f24ad1690f3e75754cb73757cb5d42cd45df3",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6781,13 +6781,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 51408
+            "byteLength": 55944
           },
           {
             "pointer": "/images/0",
@@ -6820,7 +6820,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_8.glb",
-      "sha256": "0e38c191e0cd255f8d6905e1258ae816bde0011f5a7cae55b1510ad96b4c85bd",
+      "sha256": "a1d90eb8f5bb4eb93a64c34a55921a6d5d09c8c30bb48b9b8656b2660e6b595d",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6852,13 +6852,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 94032
+            "byteLength": 102300
           },
           {
             "pointer": "/images/0",
@@ -6891,7 +6891,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadBirch_9.glb",
-      "sha256": "778bedc148f597f1dee95c56223d2160d583014f2a71b02b00d07c8128a10b88",
+      "sha256": "eda5b07e8de6f036338c4cbb6e63d74944aa07fb513bf37b607493b0d8ba25f1",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6923,13 +6923,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 56352
+            "byteLength": 61296
           },
           {
             "pointer": "/images/0",
@@ -6962,7 +6962,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_1.glb",
-      "sha256": "12fae3e24189ca37336c2ed8b17f96d36f2c56aac8669cdb980e2dd53df1f897",
+      "sha256": "6d5f5b2a0e2e203fcfff8315864ac2f54671eee1a3cc126cf72ee4ae65fd5763",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -6988,13 +6988,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 36264
+            "byteLength": 38928
           },
           {
             "pointer": "/images/0",
@@ -7025,7 +7025,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_10.glb",
-      "sha256": "c9ad8fe4d1e21194fab7bd8e048a54db58064580ddbe8851078f6c3c145e8376",
+      "sha256": "6c25ed4f0e2c9ae26f6e6d6ab882609fd1dea08afd0c806e2613d1841fba0ede",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7051,13 +7051,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 49224
+            "byteLength": 53760
           },
           {
             "pointer": "/images/0",
@@ -7088,7 +7088,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_2.glb",
-      "sha256": "6251827a363709b65e9c7afaf21d34d4c981e05e42eb2efec76012f5fe6729c9",
+      "sha256": "c8c57c722152ade2ac99cf3dbcce59e8a89f0ea17f1f81fa0194b7a4c2c749da",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7114,13 +7114,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 47676
+            "byteLength": 52092
           },
           {
             "pointer": "/images/0",
@@ -7151,7 +7151,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_3.glb",
-      "sha256": "52a52419ccd7b9ba0d7c48a6f39e85506f7b55595eed267365f651207d35df1a",
+      "sha256": "e40f9b1d9c2bf86c044818d9ffad19d954ea8f42ed1cbbb29f91c26a1473c0ae",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7177,13 +7177,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 92184
+            "byteLength": 100536
           },
           {
             "pointer": "/images/0",
@@ -7214,7 +7214,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_4.glb",
-      "sha256": "78591ce92ba8fe0754b1b9ea590b107fd1425ddf81cfbe339ab6e2f3e2af1bb1",
+      "sha256": "75512f3ca3d7c7ff135a161fc667d7570cc62ba8ba13fb6b198760a06bd2c76a",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7240,13 +7240,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 66732
+            "byteLength": 72732
           },
           {
             "pointer": "/images/0",
@@ -7277,7 +7277,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_5.glb",
-      "sha256": "2ebf15624c8b4c52cae5c37b08c720ae565e6940ae93ff2b9ac67cc36208de1c",
+      "sha256": "98732a31b4a61920acd20fc132a81f232e98d14670b80d9421dd87c0adbb8ef0",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7303,13 +7303,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 58068
+            "byteLength": 63300
           },
           {
             "pointer": "/images/0",
@@ -7340,7 +7340,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_6.glb",
-      "sha256": "dcc5b860b568a3806adfd4da3d70c77cf774008473618f4c3a2480dbea975322",
+      "sha256": "bd2c0b175396cbf5d51a79cdff45c08e731f1f5d4a858585d3edec488a942ab0",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7366,13 +7366,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 68232
+            "byteLength": 74472
           },
           {
             "pointer": "/images/0",
@@ -7403,7 +7403,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_7.glb",
-      "sha256": "106099a361954a24af7227e6d127772abe638dbe5afdb08bf34d1826b85fe7e1",
+      "sha256": "c2355eb481a78db3f9237d7fe8fa21138fca2b8dd3df9ca2cc16f624bb12171b",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7429,13 +7429,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 36696
+            "byteLength": 39792
           },
           {
             "pointer": "/images/0",
@@ -7466,7 +7466,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_8.glb",
-      "sha256": "083af58e3f19da8428da49e2137d5eee917d8634353c070cc2c69baf74ce3c73",
+      "sha256": "4f5aa298876ad653961adbbeb7f8ffbf0c93d1a651b45d028252b1a5f34647d9",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7492,13 +7492,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 43728
+            "byteLength": 47472
           },
           {
             "pointer": "/images/0",
@@ -7529,7 +7529,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/DeadTree_9.glb",
-      "sha256": "70f549ed7785797998ed608368b861452b6b62b278c6dbfcbdb54f43fb0addce",
+      "sha256": "905702471479dd0724bf9e0fff0ab691deb724eb3c05f5113cc931eade66ac6f",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7555,13 +7555,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 45048
+            "byteLength": 49104
           },
           {
             "pointer": "/images/0",
@@ -7592,7 +7592,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Pine_1.glb",
-      "sha256": "032a33d6e3b036e52ba5b79f0a0239c4f7bb2c3023207ba733589da841355f20",
+      "sha256": "7620bcb4682ce5f0b1ee87a57afb3a1aec8e31c3e135ccdce8e42f668af58983",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7634,13 +7634,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 55560
+            "byteLength": 59544
           },
           {
             "pointer": "/images/0",
@@ -7676,7 +7676,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1228,
+        "totalVertexCount": 614,
         "totalTriangleCount": 664,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -7685,7 +7685,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Pine_2.glb",
-      "sha256": "37646795314c6e398f154387c6e654b47bd9b4b48a83e2eda7d3e4812e86618b",
+      "sha256": "f919b6f1e8151fcbd3ecd1eab0652add43b550608695c41df7fce685aac501b5",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7727,13 +7727,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 49008
+            "byteLength": 52656
           },
           {
             "pointer": "/images/0",
@@ -7769,7 +7769,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1080,
+        "totalVertexCount": 540,
         "totalTriangleCount": 608,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -7778,7 +7778,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Pine_3.glb",
-      "sha256": "20c03edd75e46369aae861d55336c2dfe60225494eb4f8052ab022a6303bb415",
+      "sha256": "a03c52a21ee19b9e54a3866a773b1c7a275ba24714760dff1c6161b5f34236e1",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7820,13 +7820,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 43680
+            "byteLength": 46872
           },
           {
             "pointer": "/images/0",
@@ -7862,7 +7862,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 964,
+        "totalVertexCount": 482,
         "totalTriangleCount": 532,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -7871,7 +7871,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Pine_4.glb",
-      "sha256": "26aa9421191403f0a3e4a227618fd6ff6f59069a0d82ecf5a1819e0611813e15",
+      "sha256": "923159bab1a01462bac60efa5a074e2ffe38a3b097f4cc337aa4a9493645193c",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -7913,13 +7913,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 37200
+            "byteLength": 39960
           },
           {
             "pointer": "/images/0",
@@ -7955,7 +7955,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 820,
+        "totalVertexCount": 410,
         "totalTriangleCount": 460,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -7964,7 +7964,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Pine_5.glb",
-      "sha256": "c72e5d3cbce7ffc84a1f499e0a91cf419089c944dcac3dd988dd11963db1da28",
+      "sha256": "7383ab4f83ae34a61c23cc81ce188598b84acbb7ad23064c9c71ea7a93f95954",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8006,13 +8006,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 56232
+            "byteLength": 60216
           },
           {
             "pointer": "/images/0",
@@ -8048,7 +8048,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1244,
+        "totalVertexCount": 622,
         "totalTriangleCount": 664,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8057,7 +8057,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_1.glb",
-      "sha256": "0ae8357d02c97ef257b34105db9e3fcb297b6401e9538156ef6b431dfc5b78c3",
+      "sha256": "3c270708301b3329bcdb5c54762394a157f52f763b32a504f5518d8d43c81466",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8099,13 +8099,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 59844
+            "byteLength": 64668
           },
           {
             "pointer": "/images/0",
@@ -8141,7 +8141,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1310,
+        "totalVertexCount": 655,
         "totalTriangleCount": 804,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8150,7 +8150,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_10.glb",
-      "sha256": "a3fa7780d353a1871e1d16091575be943daca53c6041479fdf7c2dcc1a71d74e",
+      "sha256": "d41784cda8acc0a5d79b82890bd1868b49f17eff6daaea87fe0ad74accb0f217",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8192,13 +8192,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 79092
+            "byteLength": 86364
           },
           {
             "pointer": "/images/0",
@@ -8234,7 +8234,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1710,
+        "totalVertexCount": 855,
         "totalTriangleCount": 1212,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8243,7 +8243,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_2.glb",
-      "sha256": "3d7e97ccd2bb72c0e23f33f16e4fafb924b5c2cea85a9be6de2ea4e56c477b9d",
+      "sha256": "082f0208835f600d1650d326bcf34150a61cfe3547bd4bebcb373ba94c9f895c",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8285,13 +8285,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 91692
+            "byteLength": 100140
           },
           {
             "pointer": "/images/0",
@@ -8327,7 +8327,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1982,
+        "totalVertexCount": 991,
         "totalTriangleCount": 1408,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8336,7 +8336,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_3.glb",
-      "sha256": "796f997631ffc1d944218ab1b9c6c89586da6bd9725c3a99345cadc2d04c1472",
+      "sha256": "657927e308e75c93762b2c0b05cc088d30cefd20b927fedd74eb393f2dd1958e",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8378,13 +8378,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 137772
+            "byteLength": 150300
           },
           {
             "pointer": "/images/0",
@@ -8420,7 +8420,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2982,
+        "totalVertexCount": 1491,
         "totalTriangleCount": 2088,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8429,7 +8429,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_4.glb",
-      "sha256": "daacd9afb17b6bd034c6fc571cdecf9daa53f98847a460cb466058eaa5429962",
+      "sha256": "2e038bb606b28e1b60e7b98ae69d2052fa60454e6d045894f6ee32cc4211d987",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8471,13 +8471,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 110748
+            "byteLength": 120780
           },
           {
             "pointer": "/images/0",
@@ -8513,7 +8513,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2398,
+        "totalVertexCount": 1199,
         "totalTriangleCount": 1672,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8522,7 +8522,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_5.glb",
-      "sha256": "d208ba4821bcc3dc42fd245ddfd9e4aaa528a5a3e1bb71968c87abae71a16899",
+      "sha256": "79669016be53619a093495dbe368925c27d4dd24300e732dcf3ef0eeadf46676",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8564,13 +8564,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 122520
+            "byteLength": 133656
           },
           {
             "pointer": "/images/0",
@@ -8606,7 +8606,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2652,
+        "totalVertexCount": 1326,
         "totalTriangleCount": 1856,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8615,7 +8615,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_6.glb",
-      "sha256": "90c755183b741051abbc146052d3df64e7a8edae17a7d6168da2af1f4bd77965",
+      "sha256": "6a4e991274898455cce39415c2fe1ff7c98b008f19e891a641e1b80832e1477c",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8657,13 +8657,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 98100
+            "byteLength": 107076
           },
           {
             "pointer": "/images/0",
@@ -8699,7 +8699,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2122,
+        "totalVertexCount": 1061,
         "totalTriangleCount": 1496,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8708,7 +8708,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_7.glb",
-      "sha256": "858b30bc807b0b98d873aad47ba140d15886e49f3c5bd7d43f55987429acb1b2",
+      "sha256": "5268a323abb627b52ced5e1c22424401e1f875cc81211fc428ed59bc18e68452",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8750,13 +8750,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 90144
+            "byteLength": 98136
           },
           {
             "pointer": "/images/0",
@@ -8792,7 +8792,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1956,
+        "totalVertexCount": 978,
         "totalTriangleCount": 1332,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8801,7 +8801,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_8.glb",
-      "sha256": "05bd2b672817964383fb2f1bcad695553e27bbbe6f120a6ba262ecee049e64e4",
+      "sha256": "8decd46cd8faf4ad4bfdea3c033ae40d23f42971e1d1ddfe6110d82905219d32",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8843,13 +8843,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 98748
+            "byteLength": 107532
           },
           {
             "pointer": "/images/0",
@@ -8885,7 +8885,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 2142,
+        "totalVertexCount": 1071,
         "totalTriangleCount": 1464,
         "maxUVs": 1,
         "maxInfluences": 0,
@@ -8894,7 +8894,7 @@
     },
     {
       "path": "assets/authoring/textured-trees/Tree_9.glb",
-      "sha256": "1d6d1fda5b835eec00907a779d949ea1bfcd5548564a6ad91cb8bcf7ba56e7fc",
+      "sha256": "3ef4f36058aa841c6096c3012887ffa00bdacbb29067e4aa4449a4c9ab7b8d85",
       "scope": "authoring-library",
       "dependencies": [
         {
@@ -8936,13 +8936,13 @@
       ],
       "info": {
         "version": "2.0",
-        "generator": "Veldren migration exporter",
+        "generator": "Veldren adapted asset recovery",
         "resources": [
           {
             "pointer": "/buffers/0",
             "mimeType": "application/gltf-buffer",
             "storage": "glb",
-            "byteLength": 84348
+            "byteLength": 92004
           },
           {
             "pointer": "/images/0",
@@ -8978,7 +8978,7 @@
         "hasTextures": true,
         "hasDefaultScene": true,
         "drawCallCount": 2,
-        "totalVertexCount": 1826,
+        "totalVertexCount": 913,
         "totalTriangleCount": 1276,
         "maxUVs": 1,
         "maxInfluences": 0,
