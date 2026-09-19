@@ -12,4 +12,7 @@ s.frontier={quest:1,accepted:true,kills:0};for(let i=0;i<4;i++)frontierKill({kin
 s.spirits={cinder:{state:'set',recovery:0},brook:{state:'set',recovery:0}};s.attunedSpirit='cinder';assert.equal(spiritBonus('melee'),0);assert.equal(spiritBonus('health'),0);s.attunedSpirit='brook';assert.equal(spiritBonus('health'),4);s.spirits.cinder={state:'recovery',readyAt:Date.now()-1};updateSpirits(30);assert.equal(s.spirits.cinder.state,'set');
 console.log('PASS: new routes, tutorial, inventory capacity, worn gear, ground drops, pickup, quests and spirit recovery.');`,ctx);
 for(const [,f]of fs.readFileSync(root+'index.html','utf8').matchAll(/(?:src|href)="([^"#]+)"/g))if(!f.includes('://'))assert(fs.existsSync(root+f),f);
-for(const f of ['heroes','monsters','environment','items','terrain','characters','poses','walking','spirits'])assert(fs.existsSync(root+'assets/'+f+'.png'));
+// Current assets are registered explicitly; retired sprite sheets are not dependencies.
+const registry=JSON.parse(fs.readFileSync(root+'data/asset-registry.json','utf8'));
+assert(registry.assets.length>0,'production asset registry is populated');
+for(const asset of registry.assets)assert(fs.existsSync(root+asset.path),asset.id+' -> '+asset.path);

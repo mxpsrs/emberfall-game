@@ -14,7 +14,16 @@ const urls=[...html.matchAll(/(?:src|href)="([^"?#]+\?v=[a-f0-9]+)"/g)].map(m=>m
 assert(urls.some(url=>url.startsWith('startup.js?')));assert(html.indexOf('window.REALM_ASSET_VERSIONS=')<html.indexOf('src="startup.js?'));
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
-for(const path of ['assets/realms/atlas.png','assets/bounds.json','assets/items.png','assets/environment.png','assets/spirits.png'])urls.push(versions[path]);
+const registry=JSON.parse(readFileSync(new URL('../dist/data/asset-registry.json',import.meta.url)));
+for(const path of new Set(['assets/bounds.json',...registry.assets.map(asset=>asset.path)])){
+ assert.equal(typeof versions[path],'string','registered production asset must be bundled: '+path);
+ if(!urls.includes(versions[path]))urls.push(versions[path]);
+}
+for(const name of ['characters','environment','heroes','items','monsters','poses','spirits','terrain','walking']){
+ const path='assets/'+name+'.png';
+ assert.equal(versions[path],undefined,'retired sprite must not be bundled: '+path);
+ assert.equal((await request('/'+path)).status,404,'retired sprite must not be served: '+path);
+}
 let totalBytes=0;
 for(const url of urls){
  const response=await request('/'+url);assert.equal(response.status,200,url);assert(response.headers.get('Cache-Control').includes('immutable'),url);
