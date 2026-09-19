@@ -1,6 +1,7 @@
 """Acquire the public source packs referenced by Veldren from their publishers.
 
-The archives are development inputs, not runtime dependencies. Downloads land in
+The archives are development inputs, not runtime dependencies, and branch CI can
+repeat the same publisher acquisition before committing verified extractions. Downloads land in
 the ignored ``.qa`` cache unless ``--cache`` is supplied. The report records the
 publisher page, current upload identity, exact bytes and SHA-256 for reproducible
 recovery. Authentication-gated CGTrader originals are intentionally not scraped.
