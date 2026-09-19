@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "439dfaaea6e144ab9f2e8ab30304f9c34c1915b2",
+  "scope": "Targeted pre-repair baseline; built-assets was separately reproduced after a fresh build as documented in PLAYTEST-RESUME-2026-09-19.md",
+  "date": "2026-09-19T14:49:20.809Z",
+  "seconds": 60,
+  "passed": 3,
+  "failed": 2,
+  "total": 5,
+  "results": [
+    {
+      "test": "tests/game.cjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.4,
+      "output": "PASS: new routes, tutorial, inventory capacity, worn gear, ground drops, pickup, quests and spirit recovery.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(fs.existsSync(root+'assets/'+f+'.png'))\n\n    at Object.<anonymous> (/workspace/scratch/930dc3aeea7a/veldren-audit/tests/game.cjs:15:111)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/local-chat.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.2,
+      "output": "PASS: send-time local audience, exact circular 25-tile range, scenes, stale presence, no walk-in or reconnect history, private isolation/privacy, immediate sender echo, ordered burst pagination and stable cursor.\n"
+    },
+    {
+      "test": "tests/render.cjs",
+      "passed": false,
+      "exitCode": 1,
+      "timedOut": false,
+      "seconds": 0.3,
+      "output": "node:internal/url:840\n      href = bindingUrl.parse(input, base, true);\n                        ^\n\nTypeError: Invalid URL\n    at new URL (node:internal/url:840:25)\n    at loadImage (/workspace/scratch/930dc3aeea7a/veldren-audit/node_modules/@napi-rs/canvas/load-image.js:43:16)\n    at async /workspace/scratch/930dc3aeea7a/veldren-audit/tests/render.cjs:3:595 {\n  code: 'ERR_INVALID_URL',\n  input: '/workspace/scratch/930dc3aeea7a/veldren-audit/tests/../dist/assets/items.png'\n}\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "tests/shared-database-load.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.5,
+      "output": "PASS: indexed bounded expiration, cross-isolate lease exclusion, 100,000-event fixture and ten simulated minutes at 156 public effects/second without history growth; unacknowledged receipts retained.\n"
+    },
+    {
+      "test": "tests/shared-two-clients.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 59.8,
+      "output": "PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.\nPASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red/green teleport departure/arrival poses, correct colors and expiry from authenticated action packets.\nPASS: moved doors open on first click, allow real entry, and close from inside for both clients.\nPASS: trading after a completed attack and escape; active combat remains protected.\nPASS: server keeps fighting while attacker simulation is stalled; browser NPC pose injection is ignored.\nPASS: urgent combat reaches an open observer stream independently of stalled world polling; delayed animation plays once; unauthenticated/cross-origin writes rejected.\n"
+    }
+  ]
+}

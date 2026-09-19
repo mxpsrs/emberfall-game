@@ -1,3 +1,7 @@
+# Playtest resume audit — 19 September 2026
+
+Read `PLAYTEST-RESUME-2026-09-19.md` and `qa/resume-*-2026-09-19.json`. Three obsolete sprite-dependent tests are repaired on `fix/playtest-regression-2026-09-19`. The full 149-script sweep passed 148 and hit the existing main-story timeout; the unchanged story test passed its separate longer-budget recheck, including fresh-save recovery. This is full-sweep-plus-recheck evidence, not one uninterrupted green sweep. No gameplay deployment, account reset, save mutation, main-branch merge or native-engine change occurred. Hosted 39-player and physical-device/native acceptance remain outstanding; preserve the separate migration branch.
+
 # Work Run 2 completion — 16 September 2026
 
 See `WORK-RUN-2-2026-09-16.md` and `qa/work-run-2/`. The full-world tree/terrain review, fresh tutorial verification and Badlands naming are complete. Preserve the existing interface/cooking repairs and account state. Hosted capacity and physical-device limitations remain explicit.

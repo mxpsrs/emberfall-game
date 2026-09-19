@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "447275d6f1dfd297f21bb1444946735cb6881ccb",
+  "date": "2026-09-19T15:15:39.962Z",
+  "mode": "Standalone unchanged main-story test after the full sweep hit its 240-second timeout",
+  "command": "timeout 600s node tests/main-story.cjs",
+  "timeoutSeconds": 600,
+  "passed": true,
+  "exitCode": 0,
+  "output": "Stage 1 reached\nStage 2 reached\nStage 3 reached\nStage 3 reached\nStage 4 reached\nStage 5 reached\nStage 6 reached\nStage 6 reached\nStage 7 reached\nStage 7 reached\nStage 8 reached\nStage 9 reached\nStage 10 reached\nStage 10 reached\nStage 11 reached\nStage 12 reached\nStage 12 reached\nStage 13 reached\nStage 13 reached\nStage 14 reached\nStage 15 reached\nStage 16 reached\nStage 17 reached\nStage 18 reached\nStage 19 reached\nStage 20 reached\nStage 20 reached\nStage 21 reached\nStage 21 reached\nStage 22 reached\nStage 22 reached\nStage 23 reached\nStage 24 reached\nStage 25 reached\nPASS: three ordered quests, real routes and combat, wrong answers, skill gates, interrupted work, both miners escorted, death/retry, durable rewards, journal, relic names and mountain unlock.\nPASS: fresh-runtime recovery and existing mountain progress remain available.\n",
+  "limitations": "Local client VM with current production modules; not hosted/native-engine certification. Original full-sweep timeout remains in resume-full-sweep-2026-09-19.json."
+}

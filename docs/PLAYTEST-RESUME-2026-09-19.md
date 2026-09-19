@@ -26,7 +26,17 @@ No gameplay, server protocol, generated catalog, quest progression, item IDs, ac
 - Database-retention check passed with 100,000 events and ten simulated minutes at 156 public effects per second, preserving unacknowledged receipts. Local/private chat checks passed.
 - Read-only live checks around 14:52 UTC on September 19 returned HTTP 200: `/api/status` reported online with zero players; `/api/maintenance` reported open. No maintenance request was created or changed. These are momentary availability observations, not an uptime or load guarantee.
 
-The full current 149-script sweep is recorded separately after completion. The original September 14 report is preserved unchanged.
+The full current sweep executed **149 scripts in 1,156 seconds: 148 passed, one timed out**. `main-story.cjs` reached stage 25 and passed all three ordered quest journeys before the unchanged runner's 240-second limit interrupted its fresh-runtime recovery checks. An isolated rerun of the **unchanged test** with a 600-second ceiling exited 0, including all six fresh-runtime stage restores and grandfathered Mountain progress. Final coverage is therefore **149 passing checks across a full sweep plus one targeted timeout recheck**, not a single uninterrupted green sweep. The runner's default time limit was not changed, and its timeout remains visible.
+
+Fresh encounter simulation passed: median 14.70 seconds over 1,000 starter-rat fights (p95 36.30 seconds), confirming the September 14 failure is superseded. The local 39-client run passed 120 rounds over 30 seconds: 6,474 requests, 61,695 SQL calls, zero late rounds, 4,641 peer checks, 390 combat receipts, 4,797 stream frames and 39 intact synthetic character saves. This does not establish sustained hosted capacity.
+
+Evidence files:
+
+- `qa/resume-baseline-2026-09-19.json`: original targeted pre-repair failures and shared-server passes.
+- `qa/resume-full-sweep-2026-09-19.json`: all 149 results, including the timeout.
+- `qa/resume-main-story-recheck-2026-09-19.json`: unchanged standalone story test, exit code and complete output.
+
+Test-code checkpoint: `447275d6f1dfd297f21bb1444946735cb6881ccb` on `fix/playtest-regression-2026-09-19`. No main-branch merge or deployment is implied. The original September 14 report is preserved unchanged.
 
 ## Remaining acceptance work
 
