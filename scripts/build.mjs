@@ -8,6 +8,7 @@ import {createHash} from 'node:crypto';
 import {gzipSync} from 'node:zlib';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
 import './build-icons.mjs';
+execFileSync(process.execPath,['tests/asset-registry.mjs'],{stdio:'inherit'});
 // Preserve the authored browser game and bundle its assets with the API Worker.
 const assets={};
 async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p);let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.txt':'text/plain; charset=utf-8'})[ext]||'application/octet-stream';if(ext==='.png'){const img=await loadImage(bytes),c=createCanvas(img.width,img.height);c.getContext('2d').drawImage(img,0,0);bytes=await c.encode('webp',88);mime='image/webp';}assets['/'+path.relative('dist',p)]={data:bytes.toString('base64'),mime,length:bytes.length};}}}
