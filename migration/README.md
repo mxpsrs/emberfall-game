@@ -50,13 +50,16 @@ The script's 240-second timeout is too short for main-story.cjs on this containe
 ## Original acquisition and authoring
 
     python scripts/migration/acquire-kaykit.py
-    python scripts/migration/recover-source-archives.py /path/to/owner-provided-archives
+    python scripts/migration/acquire-referenced-models.py
+    python scripts/migration/recover-source-archives.py .qa/migration/model-sources/downloads /path/to/owner-provided-archives
     python scripts/migration/prepare-authoring.py
     node scripts/migration/validate-gltf.mjs --report migration/reports/original-validation.json assets/source
     python scripts/migration/check-source-validation.py
     python scripts/migration/build-inventory.py
 
-recover-source-archives.py accepts multiple archive directories and enforces recorded SHA-256 checksums. It supports the six named packs and the supplied Demon FBX/RAR files only; it is not a Unity/Godot importer. It writes complete RAR members only. The two supplied texture RARs are truncated; ten complete texture members survive. Missing members are not invented.
+acquire-referenced-models.py uses the publishers' official free-download flows for the currently public Medieval Village, Fantasy Props, Fantasy Outfits, Bestiary, Universal Animation Library 2, Modular Warrior, Human Archer and Treant files. It validates archive structure, member lengths/CRC where available and SHA-256, stores the archives only in ignored `.qa`, and writes the reproducibility report. It deliberately does not scrape authentication-gated marketplace purchases.
+
+recover-source-archives.py accepts multiple archive directories recursively and enforces the recorded SHA-256 checksums. It recovers portable glTF/GLB sources and dependencies from the verified packs, the Human Archer FBXs, the Treant FBXs, the publisher-direct Modular Warrior GLB/FBX and the supplied Demon evidence; it is not a Unity/Godot scene importer. Existing verified extractions are retained if their owner-provided archive is not present during a later run. It writes complete RAR members only. The two supplied Demon texture RARs are truncated; ten complete texture members survive. Missing members are not invented.
 
 The source validation command intentionally exits nonzero for unchanged recorded defects in original Nature files. check-source-validation.py accepts only exact recorded file hashes/error counts. Production and authoring validation remains strict. Two original Base Character references contain _png.png filename errors; copies of the matching adjacent original normal maps supply those aliases, preserving original glTF bytes.
 
