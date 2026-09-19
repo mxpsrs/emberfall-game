@@ -1,18 +1,19 @@
 # Veldren migration status: incomplete
 
-Only mxpsrs/emberfall-game was modified. Vervesis, live services, production accounts and player saves were untouched. Baseline: 439dfaaea6e144ab9f2e8ab30304f9c34c1915b2. Branch: migration/vervesis-native-assets-2026-09-19.
+Only mxpsrs/emberfall-game was modified. Vervesis, live services, production accounts and player saves were untouched. Original migration baseline: 439dfaaea6e144ab9f2e8ab30304f9c34c1915b2. This continuation starts at 616bd7448a210bb33252733711a75f43fd84caa2 on branch migration/model-source-completion-2026-09-19.
 
 ## Implemented
 
 - 869 individual adapted game GLBs: characters, creatures, fitted and authored equipment, item displays, environment pieces, legacy rigs and representative appearance presets. These contain genuine source geometry and available skinning/animation data, not replacement demonstration meshes.
 - 1,297 reusable static world mesh parts and 363 glTF regions representing 9,004 scenery/building entities. Their extras retain stable links to gameplay identities.
 - Deterministic snapshots of all 339 source scenes, 10,270 objects, 235 buildings, 122 data bindings and 33 source behavior references; terrain, bridge walk heights and resolved static navigation grids. This is conversion evidence, **not a Vervesis scene format or executable gameplay port**.
-- 113 individual Nature/Tree authoring GLBs, original source packs, pinned KayKit acquisition, local atlas textures, 91 SVG icons, existing raster UI art, 29 audio files and license/provenance records.
+- 113 individual Nature/Tree authoring GLBs and 1,457 local source files across 16 source directories. The newly restored publisher files include 406 glTFs, 20 GLBs, 146 FBXs and their buffers/textures/evidence for the village, props, outfit/armour parts, Bestiary, Universal Animation Library 2, Modular Warrior, Human Archer and Treants. KayKit acquisition, local atlas textures, 91 SVG icons, existing raster UI art, 29 audio files and license/provenance records remain intact.
 - Reproducible recovery, conversion, comparison, dependency validation and branch-scoped CI. Full source originals remain separate from adapted production candidates.
 
 ## Executed checks
 
-- Khronos validation: 2,642 recovered/authoring glTF/GLB files, zero errors. Authoring sources retain 76 warnings. Preserved original source files are reported separately: 24 Nature files produce 2,191 errors; repaired authoring derivatives pass. Original bytes remain unchanged.
+- Khronos validation: 2,642 recovered/authoring glTF/GLB files, zero errors. Authoring sources retain 76 warnings. The 426 preserved original-source glTF/GLB files are reported separately: the same 24 Nature files produce the previously recorded 2,191 errors, while the newly restored models add no validation error. Repaired authoring derivatives pass and original bytes remain unchanged.
+- Provenance checks pass for all 18 recorded Fantasy Outfit parts, the CH0SAN Modular Warrior GLB, the Human Archer publisher archive and the Forest Giant Tree02 FBX. The official Bestiary license copy is content-identical to the existing evidence after CRLF normalization.
 - Independent geometry/topology comparison for 869 models; 424 source-renderer pose samples pass, maximum vertex displacement approximately 0.00000804 game units. CPU contact sheet visually inspected. This checks geometry/poses, not native Filament material equivalence.
 - Independent world comparison: 339 scenes, 10,270 entities, 161,570 scalar fields, 239 building relationships, 8,136 terrain samples and 4,068 navigation samples; no mismatches.
 - Clean-copy asset closure and static-to-gameplay identity checks pass. This is not a native packaged build.
@@ -23,7 +24,7 @@ See machine-readable reports rather than treating this summary as proof of unexe
 
 ## Incomplete or blocked
 
-Phase 1 is partial: native project conventions are unavailable, some original packs cannot be fully recovered, and native material equivalence remains unverified. The 12 invalid source triangles in lair_veyr:object:6100018 (“Abandoned multi-site survey chart”) are excluded with an explicit defect report.
+Phase 1 is partial: native project conventions are unavailable, authenticated CGTrader originals cannot be recovered without the license account, and native material equivalence remains unverified. The 12 invalid source triangles in lair_veyr:object:6100018 (“Abandoned multi-site survey chart”) are excluded with an explicit defect report.
 
 Phase 2 is blocked at actual integration. Current Rust/Filament manifests, schemas, SDK, supported behavior/UI/network interfaces and a runnable sample were unavailable. The accessible Vervesis archive is an older Electron/Three implementation. No unsupported format, engine, JavaScript runtime, Tauri website wrapper or native loader hook is passed off as implementation.
 
