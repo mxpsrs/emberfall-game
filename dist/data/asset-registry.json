@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "project": "Veldren",
+  "generatedFor": "Phase 1 asset architecture",
+  "basePath": "/",
+  "notes": [
+    "Paths are project-relative to dist/ at runtime.",
+    "Standalone GLB/GLTF files are not present in the repository at this phase boundary; current model data is still embedded in JavaScript libraries and is explicitly marked editorAccessible:false.",
+    "Phase 2 must externalize/replace embedded production models with standalone registered model assets."
+  ],
+  "assets": [
+    {
+      "id": "audio.cave-theme",
+      "displayName": "cave-theme",
+      "path": "assets/audio/cave-theme.mp3",
+      "type": "audio",
+      "category": "audio/music",
+      "tags": [
+        "audio",
+        "music"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.coins-1",
+      "displayName": "coins-1",
+      "path": "assets/audio/sfx/coins-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.cook-1",
+      "displayName": "cook-1",
+      "path": "assets/audio/sfx/cook-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.cook-2",
+      "displayName": "cook-2",
+      "path": "assets/audio/sfx/cook-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.door-1",
+      "displayName": "door-1",
+      "path": "assets/audio/sfx/door-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.equip-1",
+      "displayName": "equip-1",
+      "path": "assets/audio/sfx/equip-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.field-of-dreams",
+      "displayName": "field-of-dreams",
+      "path": "assets/audio/field-of-dreams.mp3",
+      "type": "audio",
+      "category": "audio/music",
+      "tags": [
+        "audio",
+        "music"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.fire-1",
+      "displayName": "fire-1",
+      "path": "assets/audio/sfx/fire-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.floor-1",
+      "displayName": "floor-1",
+      "path": "assets/audio/sfx/floor-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.floor-2",
+      "displayName": "floor-2",
+      "path": "assets/audio/sfx/floor-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.hit-1",
+      "displayName": "hit-1",
+      "path": "assets/audio/sfx/hit-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.hit-2",
+      "displayName": "hit-2",
+      "path": "assets/audio/sfx/hit-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.medieval-opener",
+      "displayName": "medieval-opener",
+      "path": "assets/audio/medieval-opener.mp3",
+      "type": "audio",
+      "category": "audio/music",
+      "tags": [
+        "audio",
+        "music"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.mine-1",
+      "displayName": "mine-1",
+      "path": "assets/audio/sfx/mine-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.mine-2",
+      "displayName": "mine-2",
+      "path": "assets/audio/sfx/mine-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.mine-3",
+      "displayName": "mine-3",
+      "path": "assets/audio/sfx/mine-3.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.old-tower-inn",
+      "displayName": "old-tower-inn",
+      "path": "assets/audio/old-tower-inn.mp3",
+      "type": "audio",
+      "category": "audio/music",
+      "tags": [
+        "audio",
+        "music"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.smith-1",
+      "displayName": "smith-1",
+      "path": "assets/audio/sfx/smith-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.smith-2",
+      "displayName": "smith-2",
+      "path": "assets/audio/sfx/smith-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.smith-3",
+      "displayName": "smith-3",
+      "path": "assets/audio/sfx/smith-3.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.step-1",
+      "displayName": "step-1",
+      "path": "assets/audio/sfx/step-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.step-2",
+      "displayName": "step-2",
+      "path": "assets/audio/sfx/step-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.step-3",
+      "displayName": "step-3",
+      "path": "assets/audio/sfx/step-3.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.sword-1",
+      "displayName": "sword-1",
+      "path": "assets/audio/sfx/sword-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.sword-2",
+      "displayName": "sword-2",
+      "path": "assets/audio/sfx/sword-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.the-tournament",
+      "displayName": "the-tournament",
+      "path": "assets/audio/the-tournament.mp3",
+      "type": "audio",
+      "category": "audio/music",
+      "tags": [
+        "audio",
+        "music"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.wood-1",
+      "displayName": "wood-1",
+      "path": "assets/audio/sfx/wood-1.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.wood-2",
+      "displayName": "wood-2",
+      "path": "assets/audio/sfx/wood-2.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "audio.wood-3",
+      "displayName": "wood-3",
+      "path": "assets/audio/sfx/wood-3.mp3",
+      "type": "audio",
+      "category": "audio/sfx",
+      "tags": [
+        "audio",
+        "sfx"
+      ],
+      "sourcePack": "existing Veldren production asset",
+      "license": "See repository credits/provenance where applicable"
+    },
+    {
+      "id": "embedded.approved-creatures",
+      "displayName": "Embedded approved creature library",
+      "path": "assets/realms/approved-creatures.js",
+      "type": "embedded-model-library",
+      "category": "models/creatures/embedded",
+      "tags": [
+        "models",
+        "creatures",
+        "legacy-container",
+        "phase2-externalize"
+      ],
+      "sourcePack": "Approved Veldren creature sources",
+      "license": "See assets/realms/CREDITS.txt and provenance files",
+      "editorAccessible": false
+    },
+    {
+      "id": "embedded.realm-models",
+      "displayName": "Embedded realm model library",
+      "path": "assets/realms/models.js",
+      "type": "embedded-model-library",
+      "category": "models/embedded",
+      "tags": [
+        "models",
+        "legacy-container",
+        "phase2-externalize"
+      ],
+      "sourcePack": "Multiple packs; see realm provenance",
+      "license": "See assets/realms/CREDITS.txt and provenance files",
+      "editorAccessible": false
+    },
+    {
+      "id": "embedded.realm-monsters",
+      "displayName": "Embedded monster model library",
+      "path": "assets/realms/monsters.js",
+      "type": "embedded-model-library",
+      "category": "models/creatures/embedded",
+      "tags": [
+        "models",
+        "creatures",
+        "legacy-container",
+        "phase2-externalize"
+      ],
+      "sourcePack": "Bestiary",
+      "license": "See assets/realms/BESTIARY-LICENSE.txt",
+      "editorAccessible": false
+    },
+    {
+      "id": "realm.armor-icons",
+      "displayName": "Armor icons",
+      "path": "assets/realms/armor-icons.png",
+      "type": "image",
+      "category": "ui/equipment",
+      "tags": [
+        "ui",
+        "equipment",
+        "armor"
+      ],
+      "sourcePack": "Current Veldren realm assets",
+      "license": "See assets/realms/CREDITS.txt and provenance files"
+    },
+    {
+      "id": "realm.atlas",
+      "displayName": "Realm texture atlas",
+      "path": "assets/realms/atlas.png",
+      "type": "texture",
+      "category": "textures/realm-atlas",
+      "tags": [
+        "texture",
+        "atlas",
+        "realm"
+      ],
+      "sourcePack": "Current Veldren realm assets",
+      "license": "See assets/realms/CREDITS.txt and provenance files"
+    },
+    {
+      "id": "site.landing-world",
+      "displayName": "Landing world artwork",
+      "path": "assets/landing-world.webp",
+      "type": "image",
+      "category": "site/landing",
+      "tags": [
+        "site",
+        "landing"
+      ],
+      "sourcePack": "Veldren current site",
+      "license": "Project asset"
+    },
+    {
+      "id": "ui.spirit-portraits",
+      "displayName": "Spirit portraits",
+      "path": "assets/spirit-portraits.png",
+      "type": "image",
+      "category": "ui/spirits",
+      "tags": [
+        "ui",
+        "spirits",
+        "portraits"
+      ],
+      "sourcePack": "Veldren current UI",
+      "license": "Project asset"
+    }
+  ]
+}
