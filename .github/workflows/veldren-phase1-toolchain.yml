@@ -1,0 +1,26 @@
+name: Veldren phase 1 toolchain
+on:
+  push:
+    branches: [fix/veldren-phase1-assets]
+    paths: [.github/workflows/veldren-phase1-toolchain.yml]
+permissions:
+  contents: read
+jobs:
+  tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Package pinned test tools
+        run: |
+          mkdir -p /tmp/veldren-tools /tmp/veldren-toolchain
+          npm install --prefix /tmp/veldren-tools --ignore-scripts --no-audit --no-fund three@0.180.0 gltf-validator@2.0.0-dev.3.10 playwright-core@1.55.0 esbuild@0.28.2 @napi-rs/canvas@0.1.80
+          cp "$(command -v node)" /tmp/veldren-tools/node24
+          tar czf /tmp/veldren-toolchain/tools.tgz -C /tmp/veldren-tools .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldren-local-tools
+          path: /tmp/veldren-toolchain/tools.tgz
+          retention-days: 3
