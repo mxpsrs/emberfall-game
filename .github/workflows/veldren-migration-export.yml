@@ -1,0 +1,75 @@
+name: Veldren asset and world recovery
+on:
+  push:
+    branches: [migration/vervesis-native-assets-2026-09-19]
+    paths: [.github/workflows/veldren-migration-export.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: veldren-migration-export
+  cancel-in-progress: false
+jobs:
+  recover:
+    if: github.repository == 'mxpsrs/emberfall-game' && github.ref == 'refs/heads/migration/vervesis-native-assets-2026-09-19'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.14.0'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Recover, compare, and validate Veldren content
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 439dfaaea6e144ab9f2e8ab30304f9c34c1915b2 HEAD
+          npm ci
+          python -m pip install -r scripts/migration/requirements.txt
+          node scripts/migration/capture-assets.cjs
+          python scripts/migration/export-glb.py
+          node scripts/migration/capture-static-world.cjs
+          python scripts/migration/export-static-world.py
+          node scripts/migration/export-world.cjs
+          node scripts/migration/capture-poses.cjs
+          python scripts/migration/verify-parity.py
+          node scripts/migration/export-ui.cjs
+          node scripts/migration/check-two-clients.mjs
+          python scripts/migration/acquire-kaykit.py
+          node scripts/migration/validate-gltf.mjs assets/models assets/authoring
+          node scripts/migration/validate-gltf.mjs --report migration/reports/kaykit-validation.json assets/source/kaykit
+          python scripts/migration/validate-portable.py
+      - name: Commit recovered files to migration branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "mxpsrs/emberfall-game"
+          test "$GITHUB_REF_NAME" = "migration/vervesis-native-assets-2026-09-19"
+          git config user.name "Veldren migration build"
+          git config user.email "codex@openai.com"
+          git add -- assets migration/content migration/reports
+          git diff --cached --quiet || git commit -m "Recover Veldren local models, deterministic world and executed validation"
+          git push origin HEAD:refs/heads/migration/vervesis-native-assets-2026-09-19
+      - name: Bundle exact resulting source
+        if: always()
+        shell: bash
+        run: |
+          git bundle create veldren-migration.bundle HEAD
+          git bundle verify veldren-migration.bundle
+          sha256sum veldren-migration.bundle > veldren-migration.bundle.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: veldren-migration-evidence
+          path: |
+            veldren-migration.bundle
+            veldren-migration.bundle.sha256
+            migration/reports
+            .qa/migration/*.log
+          retention-days: 7
+          if-no-files-found: error
