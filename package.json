@@ -8,7 +8,8 @@
     "accounts:reset": "node --env-file-if-exists=.env.reset.local scripts/reset-accounts.mjs",
     "accounts:reset:check": "node tests/global-reset.mjs",
     "dev": "vite",
-    "icons:build": "node scripts/build-icons.mjs"
+    "icons:build": "node scripts/build-icons.mjs",
+    "assets:check": "node tests/asset-registry.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
