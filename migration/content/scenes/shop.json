@@ -1,0 +1,222 @@
+{
+  "id": "shop",
+  "dimensions": [
+    14,
+    12
+  ],
+  "metadata": {
+    "entry": [
+      7,
+      9
+    ],
+    "exit": {
+      "$entity": "shop:object:224"
+    },
+    "title": "Mara’s General Store"
+  },
+  "entities": [
+    {
+      "id": "shop:object:224",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 10,
+        "id": 224,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 7,
+        "y": 10
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "shop:object:225",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 3,
+        "id": 225,
+        "name": "Merchant",
+        "sprite": 5,
+        "type": "shop",
+        "x": 6,
+        "y": 3
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "shop:object:226",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 1,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 1,
+        "homeY": 3,
+        "id": 226,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0.04500000000000015,
+            2.755455298081554e-18
+          ],
+          "reason": "Against the west wall, facing the usable room",
+          "room": "shop",
+          "roomType": "shop",
+          "target": null,
+          "wall": "west",
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 1,
+        "y": 3
+      },
+      "renderPosition": [
+        1.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "shop:object:227",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 1,
+        "id": 227,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "shop",
+          "roomType": "shop",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 1
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "shop:object:228",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 1,
+        "id": 228,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "shop",
+          "roomType": "shop",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 1
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "shop:object:229",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 3,
+        "id": 229,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            -0.04500000000000015,
+            2.755455298081554e-18
+          ],
+          "reason": "Against the east wall, facing the usable room",
+          "room": "shop",
+          "roomType": "shop",
+          "target": null,
+          "wall": "east",
+          "yaw": -1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 3
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        3.5
+      ]
+    }
+  ],
+  "buildings": []
+}

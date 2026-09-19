@@ -1,0 +1,291 @@
+{
+  "id": "realm_fernwatch_0",
+  "dimensions": [
+    16,
+    14
+  ],
+  "metadata": {
+    "entry": [
+      8,
+      11
+    ],
+    "exit": {
+      "$entity": "realm_fernwatch_0:object:2367"
+    },
+    "kingdom": "sylvaran",
+    "race": "elf",
+    "title": "Fernwatch The Lantern Rest"
+  },
+  "entities": [
+    {
+      "id": "realm_fernwatch_0:object:2367",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 12,
+        "id": 2367,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 8,
+        "y": 12
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2368",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 4,
+        "id": 2368,
+        "name": "Innkeeper · Rest",
+        "race": "elf",
+        "sprite": 4,
+        "type": "inn",
+        "x": 4,
+        "y": 4
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2369",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 2,
+        "id": 2369,
+        "name": "Hearth",
+        "placement": {
+          "anchor": "fireplace-wall",
+          "offset": [
+            0,
+            -0.8799999999999999
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_fernwatch_0",
+          "roomType": "tavern",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "hearth",
+        "roomYaw": 0,
+        "sprite": 7,
+        "type": "camp",
+        "x": 9,
+        "y": 2
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2370",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 6,
+        "id": 2370,
+        "name": "Traveling storyteller",
+        "race": "elf",
+        "sprite": 7,
+        "talk": "“The pinewoods stretch beyond Willowcross. The old mine is rich, but the crypt to the south is crawling with skeletons.”",
+        "type": "villager",
+        "x": 7,
+        "y": 6
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2371",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 1,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 1,
+        "homeY": 7,
+        "id": 2371,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            -0.05499999999999994,
+            -3.3677786976552173e-18
+          ],
+          "reason": "Against the west wall, facing the usable room",
+          "room": "realm_fernwatch_0",
+          "roomType": "tavern",
+          "target": null,
+          "wall": "west",
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 1,
+        "y": 7
+      },
+      "renderPosition": [
+        1.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2372",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 1,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 1,
+        "homeY": 6,
+        "id": 2372,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            -0.05499999999999994,
+            -3.3677786976552173e-18
+          ],
+          "reason": "Against the west wall, facing the usable room",
+          "room": "realm_fernwatch_0",
+          "roomType": "tavern",
+          "target": null,
+          "wall": "west",
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 1,
+        "y": 6
+      },
+      "renderPosition": [
+        1.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2373",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 7,
+        "id": 2373,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0.05499999999999994,
+            -3.3677786976552173e-18
+          ],
+          "reason": "Against the east wall, facing the usable room",
+          "room": "realm_fernwatch_0",
+          "roomType": "tavern",
+          "target": null,
+          "wall": "east",
+          "yaw": -1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 7
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_0:object:2374",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 6,
+        "id": 2374,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0.05499999999999994,
+            -3.3677786976552173e-18
+          ],
+          "reason": "Against the east wall, facing the usable room",
+          "room": "realm_fernwatch_0",
+          "roomType": "tavern",
+          "target": null,
+          "wall": "east",
+          "yaw": -1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 6
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        6.5
+      ]
+    }
+  ],
+  "buildings": []
+}

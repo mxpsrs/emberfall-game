@@ -1,0 +1,125 @@
+[
+  {
+    "capital": true,
+    "id": "crownreach",
+    "kind": "city",
+    "kingdom": "aurelia",
+    "name": "Crownreach",
+    "settlementClass": "capital",
+    "x": 378,
+    "y": 114
+  },
+  {
+    "id": "greyhaven",
+    "kind": "city",
+    "kingdom": "aurelia",
+    "name": "Greyhaven",
+    "settlementClass": "city",
+    "x": 384,
+    "y": 336
+  },
+  {
+    "id": "briarhaven",
+    "kind": "village",
+    "kingdom": "aurelia",
+    "legacy": true,
+    "name": "Briarhaven",
+    "settlementClass": "town",
+    "x": 55,
+    "y": 61
+  },
+  {
+    "id": "willowcross",
+    "kind": "village",
+    "kingdom": "aurelia",
+    "legacy": true,
+    "name": "Willowcross",
+    "settlementClass": "town",
+    "x": 162,
+    "y": 78
+  },
+  {
+    "id": "stoneford",
+    "kind": "village",
+    "kingdom": "aurelia",
+    "legacy": true,
+    "name": "Stoneford",
+    "settlementClass": "large village",
+    "x": 225,
+    "y": 186
+  },
+  {
+    "capital": true,
+    "id": "ironhollow",
+    "kind": "city",
+    "kingdom": "khazdur",
+    "name": "Ironhollow",
+    "settlementClass": "capital",
+    "x": 762,
+    "y": 117
+  },
+  {
+    "id": "deepforge",
+    "kind": "city",
+    "kingdom": "khazdur",
+    "name": "Deepforge",
+    "settlementClass": "city",
+    "x": 870,
+    "y": 336
+  },
+  {
+    "id": "copperdelve",
+    "kind": "village",
+    "kingdom": "khazdur",
+    "name": "Copperdelve",
+    "settlementClass": "large village",
+    "x": 612,
+    "y": 252
+  },
+  {
+    "id": "stonehearth",
+    "kind": "village",
+    "kingdom": "khazdur",
+    "name": "Stonehearth",
+    "settlementClass": "large village",
+    "x": 1032,
+    "y": 186
+  },
+  {
+    "capital": true,
+    "id": "aelindor",
+    "kind": "city",
+    "kingdom": "sylvaran",
+    "name": "Aelindor",
+    "settlementClass": "capital",
+    "x": 393,
+    "y": 597
+  },
+  {
+    "id": "moonwillow",
+    "kind": "city",
+    "kingdom": "sylvaran",
+    "name": "Moonwillow",
+    "settlementClass": "city",
+    "x": 795,
+    "y": 603
+  },
+  {
+    "id": "fernwatch",
+    "kind": "village",
+    "kingdom": "sylvaran",
+    "name": "Fernwatch",
+    "settlementClass": "small village",
+    "x": 216,
+    "y": 537
+  },
+  {
+    "id": "silverbrook",
+    "kind": "village",
+    "kingdom": "sylvaran",
+    "name": "Silverbrook",
+    "settlementClass": "small village",
+    "x": 597,
+    "y": 597
+  }
+]

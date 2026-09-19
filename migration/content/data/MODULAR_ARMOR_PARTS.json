@@ -1,0 +1,32 @@
+[
+  [
+    "head",
+    "Headgear",
+    "headgear"
+  ],
+  [
+    "shoulders",
+    "Shoulder",
+    "shoulder pads"
+  ],
+  [
+    "body",
+    "Chestplate",
+    "chestplate"
+  ],
+  [
+    "hands",
+    "Gauntlets",
+    "gauntlets"
+  ],
+  [
+    "legs",
+    "Legguards",
+    "legguards"
+  ],
+  [
+    "feet",
+    "Boots",
+    "boots"
+  ]
+]

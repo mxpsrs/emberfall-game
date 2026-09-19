@@ -1,0 +1,1148 @@
+{
+  "id": "realm_ironhollow_25_lower",
+  "dimensions": [
+    49,
+    25
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      37,
+      12
+    ],
+    "exit": {
+      "$entity": "realm_ironhollow_25_lower:object:7400398"
+    },
+    "exterior": "realm_ironhollow_25",
+    "race": "dwarf",
+    "returnAt": [
+      782,
+      46
+    ],
+    "title": "Ironcrown Citadel · Vaults and dungeon"
+  },
+  "entities": [
+    {
+      "id": "realm_ironhollow_25_lower:object:7400373",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard station",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400373,
+        "interiorBuilding": null,
+        "name": "Weapon rack",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.79
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Guard station",
+          "roomType": "guard",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "rack",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400374",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard station",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "id": 7400374,
+        "interiorBuilding": null,
+        "name": "Guard duty table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_25_lower:Guard station",
+          "roomType": "guard",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400375",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 17,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 17,
+        "homeY": 2,
+        "id": 7400375,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 17,
+        "y": 2
+      },
+      "renderPosition": [
+        17.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400376",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 2,
+        "id": 7400376,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 2
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400377",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 23,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 23,
+        "homeY": 2,
+        "id": 7400377,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 23,
+        "y": 2
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400378",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 26,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 26,
+        "homeY": 2,
+        "id": 7400378,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 26,
+        "y": 2
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400379",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 29,
+        "homeY": 2,
+        "id": 7400379,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 29,
+        "y": 2
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400380",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Military stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 6,
+        "id": 7400380,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_25_lower:Military stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 6
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400381",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 2,
+        "id": 7400381,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 2
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400382",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 2,
+        "id": 7400382,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 2
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400383",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 41,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 41,
+        "homeY": 2,
+        "id": 7400383,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 41,
+        "y": 2
+      },
+      "renderPosition": [
+        41.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400384",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 2,
+        "id": 7400384,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 2
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400385",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 6,
+        "id": 7400385,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 6
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400386",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Secure cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 17,
+        "id": 7400386,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Secure cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 17
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400387",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Secure cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 16,
+        "id": 7400387,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Secure cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 16
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400388",
+      "source": {
+        "attackAt": -100,
+        "barWidth": 9,
+        "civilDecor": "cellBars",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 15,
+        "id": 7400388,
+        "name": "Cell bars",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 6,
+        "y": 15
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400389",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Holding cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 17,
+        "id": 7400389,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Holding cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 17
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400390",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Holding cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 16,
+        "id": 7400390,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Holding cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 19,
+        "y": 16
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400391",
+      "source": {
+        "attackAt": -100,
+        "barWidth": 9,
+        "civilDecor": "cellBars",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 16,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 16,
+        "homeY": 15,
+        "id": 7400391,
+        "name": "Cell bars",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 16,
+        "y": 15
+      },
+      "renderPosition": [
+        16.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400392",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestral crypt",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 29,
+        "homeY": 17,
+        "id": 7400392,
+        "interiorBuilding": null,
+        "name": "Ancestor memorial",
+        "race": "dwarf",
+        "sprite": 12,
+        "type": "prop",
+        "x": 29,
+        "y": 17
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400393",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestral crypt",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 25,
+        "homeY": 18,
+        "id": 7400393,
+        "interiorBuilding": null,
+        "name": "Sacred brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_ironhollow_25_lower:Ancestral crypt",
+          "roomType": "crypt",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "camp",
+        "x": 25,
+        "y": 18
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400394",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 16,
+        "id": 7400394,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 16
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400395",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 39,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 39,
+        "homeY": 16,
+        "id": 7400395,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 39,
+        "y": 16
+      },
+      "renderPosition": [
+        39.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400396",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 16,
+        "id": 7400396,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 16
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400397",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 39,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 39,
+        "homeY": 19,
+        "id": 7400397,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 39,
+        "y": 19
+      },
+      "renderPosition": [
+        39.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400398",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": false,
+          "entry": [
+            782,
+            46
+          ],
+          "kind": "stone"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 36,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 36,
+        "homeY": 12,
+        "id": 7400398,
+        "interiorBuilding": null,
+        "name": "Stone stairs up to the guard hall",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 36,
+        "y": 12
+      },
+      "renderPosition": [
+        36.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400400",
+      "source": {
+        "_stationary": true,
+        "attackAt": -100,
+        "characterSprite": true,
+        "civilization": true,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 5,
+        "heading": -1.3258176636680326,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 5,
+        "id": 7400400,
+        "name": "Vault warden",
+        "race": "dwarf",
+        "sprite": 12,
+        "talk": "The cells open off the guarded passage. Supplies and the historical vault are kept on separate sides.",
+        "type": "villager",
+        "workstationId": 7400374,
+        "x": 9,
+        "y": 5
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        5.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_lower:object:7400401",
+      "source": {
+        "_stationary": true,
+        "attackAt": -100,
+        "characterSprite": true,
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 19,
+        "id": 7400401,
+        "name": "Detained road smuggler",
+        "race": "dwarf",
+        "sprite": 12,
+        "talk": "I hauled untaxed cargo. The royal road is watched more closely now.",
+        "type": "villager",
+        "x": 5,
+        "y": 19
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        19.5
+      ]
+    }
+  ],
+  "buildings": []
+}

@@ -1,0 +1,26 @@
+{
+  "child": {
+    "answer": "Rellan confirmed the current seal has five points. Keep the ward.",
+    "memory": "Orders of the Dead: the copied royal seal had seven points; the current seal has five.",
+    "name": "The borrowed captain",
+    "question": "Rellan’s image orders you to surrender the counter-ward: “The royal seven-point seal proves my command.” The apparition casts no shadow across a lit floor.",
+    "spirit": "Your Spirit moves independently of you. The imitation repeats exactly when the apparition repeats: a copied human rhythm.",
+    "wrong": "Obey the seven-point order."
+  },
+  "keeper": {
+    "answer": "Alaric’s signal has three steady lights. Hold the ward and free the memory.",
+    "memory": "Alaric admitted following a copied friend’s voice. The agreed signal is three steady lights; no ally will ask you to lower the counter-ward.",
+    "name": "The remembered companion",
+    "question": "Alaric’s lost companion begs: “Open the inner ward; trust my voice.” The real counter-ward burns in three steady points, while her copied light flickers in only two.",
+    "spirit": "Your Spirit refuses the two-beat imitation. Its own movement remains irregular and alive.",
+    "wrong": "Open the ward because the voice is familiar."
+  },
+  "miner": {
+    "answer": "Dust took Bera’s voice before the bell. This memory is altered.",
+    "memory": "The Last Shift: Bera could not speak before the bell. Both miners returned to Hesta.",
+    "name": "The stolen last shift",
+    "question": "Bera calls: “I rang the bell and shouted Oren to safety.” Her lips repeat a fraction after the echo. An old rescue brace lies beneath the scene.",
+    "spirit": "The Spirit’s pulse passes through the false Bera, but catches on the real iron brace beneath her.",
+    "wrong": "Bera called Oren below after the bell."
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "lair_colossus": {
+    "guards": [
+      "cavecrawler",
+      "quarrybrute",
+      "ironhideslime"
+    ],
+    "name": "Abandoned Crystal Mine",
+    "rooms": [
+      "Miners’ refuge",
+      "Flooded workings",
+      "Crystal gallery"
+    ],
+    "stations": [
+      [
+        23,
+        122
+      ],
+      [
+        13,
+        93
+      ],
+      [
+        34,
+        66
+      ]
+    ],
+    "theme": "crystal"
+  },
+  "lair_varkesh": {
+    "guards": [
+      "ridgewolf",
+      "emberhound",
+      "ridgewolf"
+    ],
+    "name": "Ashwatch Mountain Caves",
+    "rooms": [
+      "Abandoned watch camp",
+      "Scorched galleries",
+      "Cliff ascent"
+    ],
+    "stations": [
+      [
+        29,
+        132
+      ],
+      [
+        19,
+        103
+      ],
+      [
+        40,
+        76
+      ]
+    ],
+    "theme": "blight"
+  },
+  "lair_veyr": {
+    "guards": [
+      "skeleton",
+      "hexer",
+      "skeleton"
+    ],
+    "name": "The Shattered Sanctum",
+    "rooms": [
+      "Hall of False Orders",
+      "Gallery of the Last Shift",
+      "The Companion’s Threshold"
+    ],
+    "stations": [
+      [
+        22,
+        122
+      ],
+      [
+        12,
+        93
+      ],
+      [
+        33,
+        66
+      ]
+    ],
+    "theme": "arcane"
+  },
+  "lair_xalith": {
+    "guards": [
+      "moonstalker",
+      "grovehexer",
+      "duskwraith"
+    ],
+    "name": "Moonwillow Root Caverns",
+    "rooms": [
+      "Root-bound passage",
+      "Webbed nesting ground",
+      "Amber nursery"
+    ],
+    "stations": [
+      [
+        27,
+        128
+      ],
+      [
+        17,
+        99
+      ],
+      [
+        38,
+        72
+      ]
+    ],
+    "theme": "hive"
+  }
+}

@@ -1,0 +1,413 @@
+{
+  "id": "realm_stonehearth_5",
+  "dimensions": [
+    26,
+    22
+  ],
+  "metadata": {
+    "entry": [
+      13,
+      19
+    ],
+    "exit": {
+      "$entity": "realm_stonehearth_5:object:2001"
+    },
+    "kingdom": "khazdur",
+    "race": "dwarf",
+    "title": "Stonehearth Deep Mines",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 1.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 12.5,
+        "z": 1.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 23.5,
+        "z": 1.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 11.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 11.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 10.5,
+        "z": 20.85
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "realm_stonehearth_5:object:2001",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 20,
+        "id": 2001,
+        "name": "Ladder to the surface",
+        "passageKind": "ladder",
+        "passageScene": "realm_stonehearth_5",
+        "sprite": 13,
+        "type": "exit",
+        "x": 13,
+        "y": 20
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2002",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 4,
+        "id": 2002,
+        "name": "Iron rock",
+        "resourceId": "iron",
+        "sprite": 6,
+        "type": "ore",
+        "x": 4,
+        "y": 4
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2003",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 9,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 9,
+        "id": 2003,
+        "name": "Coal rock",
+        "resourceId": "coal",
+        "sprite": 6,
+        "type": "ore",
+        "x": 7,
+        "y": 9
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        9.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2004",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 5,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 5,
+        "id": 2004,
+        "name": "Gold rock",
+        "resourceId": "gold",
+        "sprite": 6,
+        "type": "ore",
+        "x": 13,
+        "y": 5
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        5.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2005",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 18,
+        "homeY": 4,
+        "id": 2005,
+        "name": "Windsteel rock",
+        "resourceId": "mithril",
+        "sprite": 6,
+        "type": "ore",
+        "x": 18,
+        "y": 4
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2006",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 8,
+        "id": 2006,
+        "name": "Deepiron rock",
+        "resourceId": "adamant",
+        "sprite": 6,
+        "type": "ore",
+        "x": 22,
+        "y": 8
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2007",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 15,
+        "homeY": 17,
+        "id": 2007,
+        "name": "Eldrite rock",
+        "resourceId": "rune",
+        "sprite": 6,
+        "type": "ore",
+        "x": 15,
+        "y": 17
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2008",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 18,
+        "id": 2008,
+        "name": "Copper rock",
+        "resourceId": "copper",
+        "sprite": 6,
+        "type": "ore",
+        "x": 21,
+        "y": 18
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2009",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 6,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 8,
+        "hp": 2,
+        "id": 2009,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 6,
+        "xp": 8,
+        "y": 8
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2010",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 14,
+        "drawY": 9,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 9,
+        "hp": 2,
+        "id": 2010,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 14,
+        "xp": 8,
+        "y": 9
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        9.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2011",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 21,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 15,
+        "hp": 2,
+        "id": 2011,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 21,
+        "xp": 8,
+        "y": 15
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2012",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 17,
+        "id": 2012,
+        "name": "Miner Aldis",
+        "race": "dwarf",
+        "sprite": 6,
+        "talk": "“The richest iron is past the eastern passage. Bring a light, and keep an eye on those rats.”",
+        "type": "villager",
+        "x": 5,
+        "y": 17
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_stonehearth_5:object:2013",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 18,
+        "id": 2013,
+        "name": "Miners’ fire",
+        "sprite": 7,
+        "type": "camp",
+        "x": 7,
+        "y": 18
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        18.5
+      ]
+    }
+  ],
+  "buildings": []
+}

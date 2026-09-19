@@ -1,0 +1,77 @@
+{
+  "adamant": {
+    "bar": "adamantBar",
+    "ingredients": {
+      "adamantOre": 1,
+      "coal": 6
+    },
+    "level": 70,
+    "name": "Deepiron",
+    "smithXP": 62.5,
+    "xp": 37.5
+  },
+  "bronze": {
+    "bar": "bronzeBar",
+    "ingredients": {
+      "copperOre": 1,
+      "tinOre": 1
+    },
+    "level": 1,
+    "name": "Bronze",
+    "smithXP": 12.5,
+    "xp": 6.2
+  },
+  "gold": {
+    "bar": "goldBar",
+    "ingredients": {
+      "goldOre": 1
+    },
+    "level": 40,
+    "name": "Gold",
+    "smithXP": 0,
+    "xp": 22.5
+  },
+  "iron": {
+    "bar": "ironBar",
+    "ingredients": {
+      "ore": 1
+    },
+    "level": 15,
+    "name": "Iron",
+    "smithXP": 25,
+    "xp": 12.5
+  },
+  "mithril": {
+    "bar": "mithrilBar",
+    "ingredients": {
+      "coal": 4,
+      "mithrilOre": 1
+    },
+    "level": 50,
+    "name": "Windsteel",
+    "smithXP": 50,
+    "xp": 30
+  },
+  "rune": {
+    "bar": "runeBar",
+    "ingredients": {
+      "coal": 8,
+      "runeOre": 1
+    },
+    "level": 85,
+    "name": "Eldrite",
+    "smithXP": 75,
+    "xp": 50
+  },
+  "steel": {
+    "bar": "steelBar",
+    "ingredients": {
+      "coal": 2,
+      "ore": 1
+    },
+    "level": 30,
+    "name": "Steel",
+    "smithXP": 37.5,
+    "xp": 17.5
+  }
+}

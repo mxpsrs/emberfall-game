@@ -1,0 +1,117 @@
+{
+  "arrow": {
+    "hint": "Ranged attack",
+    "name": "Arrow",
+    "range": 6,
+    "shape": "projectile",
+    "style": "ranged",
+    "windup": 0.7
+  },
+  "bite": {
+    "hint": "Melee attack",
+    "name": "Strike",
+    "range": 1.65,
+    "shape": "strike",
+    "style": "melee",
+    "windup": 0.55
+  },
+  "blight": {
+    "halfAngle": 0.34,
+    "hint": "Step sideways out of the green cone",
+    "length": 9.4,
+    "name": "Blighted breath",
+    "shape": "cone",
+    "style": "ranged",
+    "windup": 2.1
+  },
+  "cross": {
+    "hint": "Step off both marked lines",
+    "length": 5,
+    "name": "Crossfire",
+    "radius": 0.75,
+    "shape": "cross",
+    "style": "ranged",
+    "windup": 2.1
+  },
+  "falseRefuge": {
+    "hint": "The solid ring is dangerous. Move inside or beyond it",
+    "inner": 2.1,
+    "name": "False refuge",
+    "origin": "enemy",
+    "radius": 4.6,
+    "shape": "ring",
+    "style": "magic",
+    "voice": "Bera: “Stay in the shining ring. It is safe.”",
+    "windup": 2.8
+  },
+  "hex": {
+    "hint": "Move away from the marked spot",
+    "name": "Arcane eruption",
+    "radius": 1.55,
+    "shape": "circle",
+    "style": "magic",
+    "windup": 1.9
+  },
+  "memoryCall": {
+    "hint": "Leave the solid marked circle; the voice is false",
+    "name": "Borrowed command",
+    "radius": 1.6,
+    "shape": "circle",
+    "style": "magic",
+    "voice": "Rellan: “Hold your position. That is an order.”",
+    "windup": 2.6
+  },
+  "pounce": {
+    "hint": "Step aside from the marked path",
+    "name": "Pounce",
+    "radius": 0.85,
+    "shape": "line",
+    "style": "melee",
+    "windup": 1.8
+  },
+  "ring": {
+    "hint": "Move close or beyond the outer ring",
+    "inner": 1.8,
+    "name": "Expanding ring",
+    "origin": "enemy",
+    "radius": 4.4,
+    "shape": "ring",
+    "style": "magic",
+    "windup": 2.3
+  },
+  "shot": {
+    "hint": "Move away from the marked spot",
+    "name": "Volley",
+    "radius": 1.15,
+    "shape": "circle",
+    "style": "ranged",
+    "windup": 1.6
+  },
+  "spell": {
+    "hint": "Magic attack",
+    "name": "Spell",
+    "range": 6,
+    "shape": "projectile",
+    "style": "magic",
+    "windup": 0.85
+  },
+  "stolenSelf": {
+    "hint": "Step diagonally off both solid lines; follow the real shadow",
+    "length": 6,
+    "name": "Stolen self",
+    "radius": 0.8,
+    "shape": "cross",
+    "style": "magic",
+    "voice": "Your own voice: “I remember this. Do exactly what I do.”",
+    "windup": 2.7
+  },
+  "sweep": {
+    "hint": "Step outside the circle",
+    "name": "Sweeping blow",
+    "origin": "enemy",
+    "radius": 2.5,
+    "shape": "circle",
+    "style": "melee",
+    "windup": 1.8
+  }
+}

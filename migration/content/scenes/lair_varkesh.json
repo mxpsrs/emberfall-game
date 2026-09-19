@@ -1,0 +1,1004 @@
+{
+  "id": "lair_varkesh",
+  "dimensions": [
+    58,
+    150
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 7.699999999999999,
+        "height": 6,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 11,
+        "z": 13
+      },
+      {
+        "heading": 32.9,
+        "height": 5.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 47,
+        "z": 13
+      },
+      {
+        "heading": 6.3,
+        "height": 4.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 9,
+        "z": 29
+      },
+      {
+        "heading": 34.3,
+        "height": 6,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 49,
+        "z": 29
+      },
+      {
+        "heading": 11.899999999999999,
+        "height": 4,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 17,
+        "z": 7
+      },
+      {
+        "heading": 29.4,
+        "height": 4.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 42,
+        "z": 8
+      },
+      {
+        "heading": 11.2,
+        "height": 3.8,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 16,
+        "z": 39
+      },
+      {
+        "heading": 30.799999999999997,
+        "height": 4.2,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.83,
+          0.82,
+          0.63
+        ],
+        "x": 44,
+        "z": 38
+      },
+      {
+        "kind": "pool",
+        "size": 2.3,
+        "x": 12,
+        "z": 21
+      },
+      {
+        "heading": 12,
+        "height": 3.8,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": [
+          0.58,
+          0.58,
+          0.31
+        ],
+        "x": 10,
+        "z": 22
+      },
+      {
+        "kind": "pool",
+        "size": 2.3,
+        "x": 46,
+        "z": 20
+      },
+      {
+        "heading": 46,
+        "height": 3.8,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": [
+          0.58,
+          0.58,
+          0.31
+        ],
+        "x": 44,
+        "z": 21
+      },
+      {
+        "kind": "pool",
+        "size": 2.3,
+        "x": 18,
+        "z": 37
+      },
+      {
+        "heading": 18,
+        "height": 3.8,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": [
+          0.58,
+          0.58,
+          0.31
+        ],
+        "x": 16,
+        "z": 38
+      },
+      {
+        "kind": "pool",
+        "size": 2.3,
+        "x": 40,
+        "z": 39
+      },
+      {
+        "heading": 40,
+        "height": 3.8,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": [
+          0.58,
+          0.58,
+          0.31
+        ],
+        "x": 38,
+        "z": 40
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 44,
+        "z": 22
+      },
+      {
+        "heading": 0.8975979010256552,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 38.352347027881,
+        "z": 31.381977789616357
+      },
+      {
+        "heading": 1.7951958020513104,
+        "height": 1,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 25.662185990655285,
+        "z": 33.699134946181886
+      },
+      {
+        "heading": 2.6927937030769655,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 15.485466981463714,
+        "z": 27.206604869410697
+      },
+      {
+        "heading": 3.5903916041026207,
+        "height": 1,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 15.485466981463713,
+        "z": 16.793395130589303
+      },
+      {
+        "heading": 4.487989505128276,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 25.66218599065528,
+        "z": 10.300865053818116
+      },
+      {
+        "heading": 5.385587406153931,
+        "height": 1,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.85,
+          0.82,
+          0.65
+        ],
+        "x": 38.352347027881,
+        "z": 12.618022210383641
+      },
+      {
+        "kind": "nest",
+        "size": 6,
+        "x": 29,
+        "z": 19
+      },
+      {
+        "kind": "arch",
+        "size": 1.7,
+        "x": 29,
+        "z": 43
+      },
+      {
+        "heading": 0,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 23,
+        "z": 134
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 34,
+        "z": 135
+      },
+      {
+        "heading": 0,
+        "height": 2.5,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 34,
+        "z": 128
+      },
+      {
+        "kind": "hearth",
+        "size": 0.6,
+        "x": 25,
+        "z": 130
+      },
+      {
+        "heading": 1,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 13,
+        "z": 105
+      },
+      {
+        "heading": 0.7,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 24,
+        "z": 106
+      },
+      {
+        "heading": 1,
+        "height": 2.5,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 24,
+        "z": 99
+      },
+      {
+        "heading": 2,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 34,
+        "z": 78
+      },
+      {
+        "heading": 1.4,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 45,
+        "z": 79
+      },
+      {
+        "heading": 2,
+        "height": 2.5,
+        "kind": "model",
+        "model": "TwistedTree_1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 45,
+        "z": 72
+      }
+    ],
+    "entry": [
+      29,
+      144
+    ],
+    "exit": {
+      "$entity": "lair_varkesh:object:5800004"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "lair_varkesh",
+    "openAir": true,
+    "subtitle": "Varkesh the Blightwing · Blighted mountain eyrie",
+    "title": "Blightwing Roost",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 23.15,
+        "z": 5.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 34.5,
+        "z": 6.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 48.85,
+        "z": 17.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 10.15,
+        "z": 17.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 23.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 12.15,
+        "z": 32.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 22.5,
+        "z": 39.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 11.15,
+        "z": 38.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 35.5,
+        "z": 38.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 49.85,
+        "z": 23.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 47.85,
+        "z": 33.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 32.85,
+        "z": 44.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 26.15,
+        "z": 45.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 32.85,
+        "z": 50.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 26.15,
+        "z": 51.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 30.85,
+        "z": 56.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 28.15,
+        "z": 62.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 33.5,
+        "z": 66.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 39.5,
+        "z": 66.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 36.15,
+        "z": 72.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 43.85,
+        "z": 70.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 45.85,
+        "z": 76.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 35.15,
+        "z": 79.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 43.85,
+        "z": 82.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 39.15,
+        "z": 86.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 39.15,
+        "z": 92.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 32.5,
+        "z": 93.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 26.5,
+        "z": 93.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 19.85,
+        "z": 92.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 15.15,
+        "z": 97.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 100.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 14.15,
+        "z": 103.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 106.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 15.15,
+        "z": 109.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 20.85,
+        "z": 111.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 20.85,
+        "z": 117.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 26.5,
+        "z": 121.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 123.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 31.85,
+        "z": 124.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 25.15,
+        "z": 127.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 34.85,
+        "z": 130.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 24.15,
+        "z": 133.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 34.85,
+        "z": 136.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 25.15,
+        "z": 139.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 30.85,
+        "z": 141.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "lair_varkesh:object:5800004",
+      "source": {
+        "dead": 0,
+        "id": 5800004,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "lair_varkesh",
+        "sprite": 13,
+        "type": "exit",
+        "x": 29,
+        "y": 145
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        145.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:4700043",
+      "source": {
+        "_stationary": true,
+        "area": "Blightwing Roost",
+        "at": [
+          29,
+          21
+        ],
+        "atk": 6,
+        "attackAt": -100,
+        "attackLabel": "Fangs and blighted breath",
+        "attackLevel": 21,
+        "attackStyle": "ranged",
+        "coins": 105,
+        "combatRadius": 2.1,
+        "creatureLook": "boss_varkesh",
+        "dead": 0,
+        "defenseLevel": 19,
+        "drawX": 29,
+        "drawY": 21,
+        "drops": {
+          "bones": 3,
+          "chaosRunes": 15,
+          "steelBar": 2
+        },
+        "encounter": "varkesh",
+        "hitAt": -100,
+        "homeX": 29,
+        "homeY": 21,
+        "hp": 108,
+        "id": 4700043,
+        "interval": 4.3,
+        "kind": "varkesh",
+        "level": 30,
+        "lockAttackHeading": true,
+        "look": "boss_varkesh",
+        "marks": 3,
+        "maxHit": 6,
+        "maxhp": 108,
+        "name": "Varkesh the Blightwing",
+        "rank": "Boss",
+        "released": true,
+        "repeatable": true,
+        "scene": "lair_varkesh",
+        "spread": 0,
+        "sprite": 11,
+        "style": "ranged",
+        "type": "boss",
+        "weak": "magic",
+        "x": 29,
+        "y": 21
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        21.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400012",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 10,
+        "attackStyle": "melee",
+        "coins": 24,
+        "dead": 0,
+        "defenseLevel": 9,
+        "drawX": 26,
+        "drawY": 128,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 26,
+        "homeY": 128,
+        "hp": 28,
+        "id": 6400012,
+        "interval": 3.1,
+        "kind": "ridgewolf",
+        "level": 15,
+        "maxHit": 4,
+        "maxhp": 28,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 26,
+        "y": 128
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        128.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400013",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 10,
+        "attackStyle": "melee",
+        "coins": 24,
+        "dead": 0,
+        "defenseLevel": 9,
+        "drawX": 32,
+        "drawY": 128,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 32,
+        "homeY": 128,
+        "hp": 28,
+        "id": 6400013,
+        "interval": 3.1,
+        "kind": "ridgewolf",
+        "level": 15,
+        "maxHit": 4,
+        "maxhp": 28,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 32,
+        "y": 128
+      },
+      "renderPosition": [
+        32.5,
+        0,
+        128.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400014",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 21,
+        "attackStyle": "magic",
+        "coins": 48,
+        "creatureLook": "wolf",
+        "dead": 0,
+        "defenseLevel": 19,
+        "drawX": 16,
+        "drawY": 99,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 16,
+        "homeY": 99,
+        "hp": 49,
+        "id": 6400014,
+        "interval": 3.1,
+        "kind": "emberhound",
+        "level": 30,
+        "look": "wolf",
+        "maxHit": 5,
+        "maxhp": 49,
+        "name": "Ember hound",
+        "size": 1.2,
+        "spread": 0,
+        "sprite": 10,
+        "style": "magic",
+        "tint": [
+          1.25,
+          0.7,
+          0.45
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 16,
+        "y": 99
+      },
+      "renderPosition": [
+        16.5,
+        0,
+        99.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400015",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 21,
+        "attackStyle": "magic",
+        "coins": 48,
+        "creatureLook": "wolf",
+        "dead": 0,
+        "defenseLevel": 19,
+        "drawX": 22,
+        "drawY": 99,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 99,
+        "hp": 49,
+        "id": 6400015,
+        "interval": 3.1,
+        "kind": "emberhound",
+        "level": 30,
+        "look": "wolf",
+        "maxHit": 5,
+        "maxhp": 49,
+        "name": "Ember hound",
+        "size": 1.2,
+        "spread": 0,
+        "sprite": 10,
+        "style": "magic",
+        "tint": [
+          1.25,
+          0.7,
+          0.45
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 22,
+        "y": 99
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        99.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400016",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 10,
+        "attackStyle": "melee",
+        "coins": 24,
+        "dead": 0,
+        "defenseLevel": 9,
+        "drawX": 37,
+        "drawY": 72,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 72,
+        "hp": 28,
+        "id": 6400016,
+        "interval": 3.1,
+        "kind": "ridgewolf",
+        "level": 15,
+        "maxHit": 4,
+        "maxhp": 28,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 37,
+        "y": 72
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        72.5
+      ]
+    },
+    {
+      "id": "lair_varkesh:object:6400017",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 10,
+        "attackStyle": "melee",
+        "coins": 24,
+        "dead": 0,
+        "defenseLevel": 9,
+        "drawX": 43,
+        "drawY": 72,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 43,
+        "homeY": 72,
+        "hp": 28,
+        "id": 6400017,
+        "interval": 3.1,
+        "kind": "ridgewolf",
+        "level": 15,
+        "maxHit": 4,
+        "maxhp": 28,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 43,
+        "y": 72
+      },
+      "renderPosition": [
+        43.5,
+        0,
+        72.5
+      ]
+    }
+  ],
+  "buildings": []
+}

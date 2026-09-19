@@ -1,0 +1,14 @@
+{
+  "ammo": "ammo",
+  "belt": "belt",
+  "body": "gear",
+  "cape": "cape",
+  "feet": "boot",
+  "hands": "glove",
+  "head": "helm",
+  "legs": "legs",
+  "neck": "necklace",
+  "ring": "ring",
+  "shield": "shield",
+  "weapon": "attack"
+}

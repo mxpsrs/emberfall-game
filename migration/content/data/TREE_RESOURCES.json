@@ -1,0 +1,50 @@
+{
+  "magic": {
+    "fire": 303.8,
+    "item": "magicLogs",
+    "level": 75,
+    "name": "Magic tree",
+    "respawn": 120,
+    "xp": 250
+  },
+  "maple": {
+    "fire": 135,
+    "item": "mapleLogs",
+    "level": 45,
+    "name": "Maple tree",
+    "respawn": 35,
+    "xp": 100
+  },
+  "normal": {
+    "fire": 40,
+    "item": "normalLogs",
+    "level": 1,
+    "name": "Tree",
+    "respawn": 8,
+    "xp": 25
+  },
+  "oak": {
+    "fire": 60,
+    "item": "logs",
+    "level": 15,
+    "name": "Oak tree",
+    "respawn": 14,
+    "xp": 37.5
+  },
+  "willow": {
+    "fire": 90,
+    "item": "willowLogs",
+    "level": 30,
+    "name": "Willow tree",
+    "respawn": 15,
+    "xp": 67.5
+  },
+  "yew": {
+    "fire": 202.5,
+    "item": "yewLogs",
+    "level": 60,
+    "name": "Yew tree",
+    "respawn": 60,
+    "xp": 175
+  }
+}

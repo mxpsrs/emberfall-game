@@ -1,0 +1,52 @@
+{
+  "axe": {
+    "description": "Used automatically when you chop a tree.",
+    "name": "Axe",
+    "skill": "Woodcutting"
+  },
+  "fishingNet": {
+    "description": "Used for shrimp.",
+    "name": "Small fishing net",
+    "skill": "Fishing"
+  },
+  "fishingRod": {
+    "description": "Used automatically at fishing spots.",
+    "name": "Fishing rod",
+    "skill": "Fishing"
+  },
+  "hammer": {
+    "description": "Used automatically at a forge.",
+    "name": "Smithing hammer",
+    "skill": "Smithing"
+  },
+  "harpoon": {
+    "description": "Used for swordfish and sharks.",
+    "name": "Harpoon",
+    "skill": "Fishing"
+  },
+  "knife": {
+    "description": "Cuts logs into arrow shafts.",
+    "name": "Knife",
+    "skill": "Fletching"
+  },
+  "lobsterPot": {
+    "description": "Used for lobsters from level 40.",
+    "name": "Lobster pot",
+    "skill": "Fishing"
+  },
+  "pickaxe": {
+    "description": "Used automatically when you mine an ore deposit.",
+    "name": "Pickaxe",
+    "skill": "Mining"
+  },
+  "seedDibber": {
+    "description": "Plants seeds in cleared farming patches.",
+    "name": "Seed dibber",
+    "skill": "Farming"
+  },
+  "tinderbox": {
+    "description": "Used automatically when you light logs.",
+    "name": "Tinderbox",
+    "skill": "Firemaking"
+  }
+}

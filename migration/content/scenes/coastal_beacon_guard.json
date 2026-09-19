@@ -1,0 +1,185 @@
+{
+  "id": "coastal_beacon_guard",
+  "dimensions": [
+    15,
+    16
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      6,
+      12
+    ],
+    "exit": {
+      "$entity": "coastal_beacon_guard:object:7401523"
+    },
+    "exterior": "coastal_beacon_guard",
+    "race": "human",
+    "returnAt": [
+      265,
+      211
+    ],
+    "title": "Coastal beacon · Guard room"
+  },
+  "entities": [
+    {
+      "id": "coastal_beacon_guard:object:7401521",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard room",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7401521,
+        "interiorBuilding": null,
+        "name": "Weapon rack",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.79
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "coastal_beacon_guard:Guard room",
+          "roomType": "guard",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "rack",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "coastal_beacon_guard:object:7401522",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard room",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 8,
+        "id": 7401522,
+        "interiorBuilding": null,
+        "name": "Guard duty table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "coastal_beacon_guard:Guard room",
+          "roomType": "guard",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 4,
+        "y": 8
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "coastal_beacon_guard:object:7401523",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": false,
+          "entry": [
+            265,
+            211
+          ],
+          "kind": "spiral"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 13,
+        "id": 7401523,
+        "interiorBuilding": null,
+        "name": "Door to the coastal road",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 7,
+        "y": 13
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        13.5
+      ]
+    },
+    {
+      "id": "coastal_beacon_guard:object:7401524",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "coastal_beacon_watch",
+          "down": false,
+          "entry": [
+            6,
+            12
+          ],
+          "kind": "spiral"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 11,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 11,
+        "homeY": 10,
+        "id": 7401524,
+        "interiorBuilding": null,
+        "name": "Spiral stairs to Watch barracks",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 11,
+        "y": 10
+      },
+      "renderPosition": [
+        11.5,
+        0,
+        10.5
+      ]
+    }
+  ],
+  "buildings": []
+}

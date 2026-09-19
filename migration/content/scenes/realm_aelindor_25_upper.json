@@ -1,0 +1,1432 @@
+{
+  "id": "realm_aelindor_25_upper",
+  "dimensions": [
+    49,
+    26
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      36,
+      13
+    ],
+    "exit": {
+      "$entity": "realm_aelindor_25_upper:object:7400475"
+    },
+    "exterior": "realm_aelindor_25",
+    "race": "elf",
+    "returnAt": [
+      409,
+      526
+    ],
+    "title": "The Bough Palace · Upper chambers"
+  },
+  "entities": [
+    {
+      "id": "realm_aelindor_25_upper:object:7400444",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400444,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400445",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 3,
+        "id": 7400445,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 3
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400446",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 10,
+        "id": 7400446,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 10
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400447",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "id": 7400447,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400448",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 8,
+        "id": 7400448,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_aelindor_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": 7400447,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 8
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400449",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 18,
+        "homeY": 2,
+        "id": 7400449,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 18,
+        "y": 2
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400450",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 2,
+        "id": 7400450,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 2
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400451",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 2,
+        "id": 7400451,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 24,
+        "y": 2
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400452",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 27,
+        "homeY": 2,
+        "id": 7400452,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 27,
+        "y": 2
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400453",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 30,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 30,
+        "homeY": 2,
+        "id": 7400453,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 30,
+        "y": 2
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400454",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 6,
+        "id": 7400454,
+        "interiorBuilding": null,
+        "name": "Council table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 6
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400455",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 8,
+        "id": 7400455,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_aelindor_25_upper:Private council",
+          "roomType": "council",
+          "target": 7400454,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 8
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400456",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 2,
+        "id": 7400456,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 2
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400457",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 2,
+        "id": 7400457,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 2
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400458",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 41,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 41,
+        "homeY": 2,
+        "id": 7400458,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 41,
+        "y": 2
+      },
+      "renderPosition": [
+        41.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400459",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 2,
+        "id": 7400459,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 2
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400460",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 6,
+        "id": 7400460,
+        "interiorBuilding": null,
+        "name": "Reading table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 6
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400461",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 8,
+        "id": 7400461,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_aelindor_25_upper:Private study",
+          "roomType": "study",
+          "target": 7400460,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 8
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400462",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 18,
+        "id": 7400462,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 18
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400463",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 18,
+        "id": 7400463,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 18
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400464",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 23,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 23,
+        "id": 7400464,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 23
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400465",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 20,
+        "id": 7400465,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 20
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400466",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 22,
+        "id": 7400466,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_aelindor_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": 7400465,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 22
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400467",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 22,
+        "id": 7400467,
+        "interiorBuilding": null,
+        "name": "Altar",
+        "placement": {
+          "anchor": "focal-axis",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "The ceremonial focal point faces the entrance",
+          "room": "realm_aelindor_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "altar",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 24,
+        "y": 22
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400468",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 19,
+        "id": 7400468,
+        "interiorBuilding": null,
+        "name": "Sacred brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_aelindor_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "camp",
+        "x": 19,
+        "y": 19
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400469",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 22,
+        "id": 7400469,
+        "interiorBuilding": null,
+        "name": "Bench",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces the room focal point",
+          "room": "realm_aelindor_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": 7400467,
+          "wall": null,
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "bench",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 22
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400470",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 18,
+        "id": 7400470,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 18
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400471",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 45,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 45,
+        "homeY": 18,
+        "id": 7400471,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 45,
+        "y": 18
+      },
+      "renderPosition": [
+        45.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400472",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 45,
+        "drawY": 23,
+        "hitAt": -100,
+        "homeX": 45,
+        "homeY": 23,
+        "id": 7400472,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_aelindor_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 45,
+        "y": 23
+      },
+      "renderPosition": [
+        45.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400473",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 20,
+        "id": 7400473,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 20
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400474",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 22,
+        "id": 7400474,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_aelindor_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": 7400473,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 22
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400475",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": true,
+          "entry": [
+            409,
+            526
+          ],
+          "kind": "stone"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 13,
+        "id": 7400475,
+        "interiorBuilding": null,
+        "name": "Stone stairs down to the guard hall",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 35,
+        "y": 13
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        13.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_25_upper:object:7400477",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "realm_aelindor_25_tower",
+          "down": false,
+          "entry": [
+            6,
+            10
+          ],
+          "kind": "spiral"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 13,
+        "id": 7400477,
+        "interiorBuilding": null,
+        "name": "Spiral stairs to the watchtower",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 44,
+        "y": 13
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        13.5
+      ]
+    }
+  ],
+  "buildings": []
+}

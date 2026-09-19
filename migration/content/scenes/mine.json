@@ -1,0 +1,438 @@
+{
+  "id": "mine",
+  "dimensions": [
+    26,
+    22
+  ],
+  "metadata": {
+    "entry": [
+      13,
+      19
+    ],
+    "exit": {
+      "$entity": "mine:object:250"
+    },
+    "race": "dwarf",
+    "title": "Pinewatch Mine",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 1.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 12.5,
+        "z": 1.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 23.5,
+        "z": 1.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 9.85,
+        "z": 11.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 23.15,
+        "z": 12.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 19.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "mine:object:250",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 20,
+        "id": 250,
+        "name": "Ladder to the surface",
+        "passageKind": "ladder",
+        "passageScene": "mine",
+        "sprite": 13,
+        "type": "exit",
+        "x": 13,
+        "y": 20
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "mine:object:251",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 4,
+        "id": 251,
+        "name": "Copper rock",
+        "resourceId": "copper",
+        "sprite": 6,
+        "type": "ore",
+        "x": 4,
+        "y": 4
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "mine:object:252",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 9,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 9,
+        "id": 252,
+        "name": "Tin rock",
+        "resourceId": "tin",
+        "sprite": 6,
+        "type": "ore",
+        "x": 7,
+        "y": 9
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        9.5
+      ]
+    },
+    {
+      "id": "mine:object:253",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 5,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 5,
+        "id": 253,
+        "name": "Iron rock",
+        "resourceId": "iron",
+        "sprite": 6,
+        "type": "ore",
+        "x": 13,
+        "y": 5
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        5.5
+      ]
+    },
+    {
+      "id": "mine:object:254",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 18,
+        "homeY": 4,
+        "id": 254,
+        "name": "Coal rock",
+        "resourceId": "coal",
+        "sprite": 6,
+        "type": "ore",
+        "x": 18,
+        "y": 4
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "mine:object:255",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 8,
+        "id": 255,
+        "name": "Gold rock",
+        "resourceId": "gold",
+        "sprite": 6,
+        "type": "ore",
+        "x": 22,
+        "y": 8
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "mine:object:256",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 15,
+        "homeY": 17,
+        "id": 256,
+        "name": "Windsteel rock",
+        "resourceId": "mithril",
+        "sprite": 6,
+        "type": "ore",
+        "x": 15,
+        "y": 17
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "mine:object:257",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 18,
+        "id": 257,
+        "name": "Deepiron rock",
+        "resourceId": "adamant",
+        "sprite": 6,
+        "type": "ore",
+        "x": 21,
+        "y": 18
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "mine:object:258",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 6,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 8,
+        "hp": 2,
+        "id": 258,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 6,
+        "xp": 8,
+        "y": 8
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "mine:object:259",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 14,
+        "drawY": 9,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 9,
+        "hp": 2,
+        "id": 259,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 14,
+        "xp": 8,
+        "y": 9
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        9.5
+      ]
+    },
+    {
+      "id": "mine:object:260",
+      "source": {
+        "accuracy": 0.3,
+        "atk": 1,
+        "attackAt": -100,
+        "attackLevel": 1,
+        "attackStyle": "melee",
+        "coins": 2,
+        "dead": 0,
+        "defenseLevel": 1,
+        "drawX": 21,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 15,
+        "hp": 2,
+        "id": 260,
+        "interval": 3.6,
+        "kind": "rat",
+        "level": 1,
+        "maxHit": 1,
+        "maxhp": 2,
+        "name": "Mine rat",
+        "spread": 0,
+        "sprite": 15,
+        "type": "enemy",
+        "x": 21,
+        "xp": 8,
+        "y": 15
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "mine:object:261",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 17,
+        "id": 261,
+        "name": "Aldis the dwarf",
+        "race": "dwarf",
+        "sprite": 6,
+        "talk": "“The richest iron is past the eastern passage. Bring a light, and keep an eye on those rats.”",
+        "type": "villager",
+        "x": 5,
+        "y": 17
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "mine:object:262",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 18,
+        "id": 262,
+        "name": "Miners’ fire",
+        "sprite": 7,
+        "type": "camp",
+        "x": 7,
+        "y": 18
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "mine:object:2489",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 17,
+        "id": 2489,
+        "name": "Dwarven prospector",
+        "race": "dwarf",
+        "sprite": 1,
+        "talk": "Our people come from Khaz-Dur, east across the mountain road. Visit Ironhollow and Deepforge to see our halls.",
+        "type": "villager",
+        "x": 19,
+        "y": 17
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        17.5
+      ]
+    }
+  ],
+  "buildings": []
+}

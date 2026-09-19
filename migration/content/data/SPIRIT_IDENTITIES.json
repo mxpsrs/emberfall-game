@@ -1,0 +1,34 @@
+{
+  "brook": [
+    "Undertow",
+    "+4 maximum health, rising to +6. Every fifth damaging weapon hit heals 1 (+2 at bond III)."
+  ],
+  "cairn": [
+    "Bedrock",
+    "+4 armour, rising to +6. Hits of 4 or more deal 1 less damage (3 or more at bond III)."
+  ],
+  "cinder": [
+    "Kindle",
+    "Every fourth damaging weapon hit on the same foe deals +1 damage (+2 at bond III)."
+  ],
+  "flint": [
+    "Fault",
+    "+2 armour. Every fifth damaging weapon hit adds +2 damage (+3 at bond III) and slows its target for 1 second."
+  ],
+  "gale": [
+    "Slipstream",
+    "20% less run energy used; +2 accuracy from 3 tiles. Every fourth damaging weapon hit restores 4–6 run energy."
+  ],
+  "pyre": [
+    "Crossfire",
+    "Switching between melee, ranged and magic damaging hits adds +1 damage (+2 at bond III), at most once per 6 seconds."
+  ],
+  "rill": [
+    "Quiet current",
+    "+1 armour (+2 at bond II). Every fourth damaging weapon hit on the same foe restores 1 health (+2 at bond III)."
+  ],
+  "zephyr": [
+    "Farwind",
+    "15% less run energy used. At least 3 tiles away, ranged and magic gain +4 accuracy, rising to +6."
+  ]
+}

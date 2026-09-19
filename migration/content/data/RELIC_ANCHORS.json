@@ -1,0 +1,37 @@
+{
+  "altar": {
+    "scene": "overworld",
+    "x": 73,
+    "y": 80
+  },
+  "archive": {
+    "scene": "overworld",
+    "x": 741,
+    "y": 41
+  },
+  "crossing": {
+    "scene": "overworld",
+    "x": 76,
+    "y": 80
+  },
+  "keeper": {
+    "scene": "fairy_between",
+    "x": 32,
+    "y": 42
+  },
+  "lake": {
+    "scene": "fairy_between",
+    "x": 38,
+    "y": 43
+  },
+  "return": {
+    "scene": "fairy_between",
+    "x": 20,
+    "y": 51
+  },
+  "teacher": {
+    "scene": "overworld",
+    "x": 74,
+    "y": 82
+  }
+}

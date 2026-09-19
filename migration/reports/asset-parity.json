@@ -1,0 +1,7327 @@
+{
+  "geometry": [
+    {
+      "id": "veldren:environment:Wall_Plaster_Straight",
+      "meshes": 1,
+      "vertices": 134
+    },
+    {
+      "id": "veldren:environment:Wall_Plaster_WoodGrid",
+      "meshes": 1,
+      "vertices": 394
+    },
+    {
+      "id": "veldren:environment:Wall_Plaster_Window_Wide_Flat",
+      "meshes": 1,
+      "vertices": 120
+    },
+    {
+      "id": "veldren:environment:Wall_Plaster_Door_Round",
+      "meshes": 1,
+      "vertices": 201
+    },
+    {
+      "id": "veldren:environment:Wall_UnevenBrick_Straight",
+      "meshes": 1,
+      "vertices": 76
+    },
+    {
+      "id": "veldren:environment:Wall_UnevenBrick_Window_Wide_Flat",
+      "meshes": 1,
+      "vertices": 102
+    },
+    {
+      "id": "veldren:environment:Wall_UnevenBrick_Door_Round",
+      "meshes": 1,
+      "vertices": 142
+    },
+    {
+      "id": "veldren:environment:Wall_Arch",
+      "meshes": 1,
+      "vertices": 260
+    },
+    {
+      "id": "veldren:environment:Window_Wide_Flat1",
+      "meshes": 1,
+      "vertices": 317
+    },
+    {
+      "id": "veldren:environment:Door_1_Round",
+      "meshes": 1,
+      "vertices": 772
+    },
+    {
+      "id": "veldren:environment:DoorFrame_Round_WoodDark",
+      "meshes": 1,
+      "vertices": 364
+    },
+    {
+      "id": "veldren:environment:Roof_RoundTiles_4x4",
+      "meshes": 1,
+      "vertices": 2380
+    },
+    {
+      "id": "veldren:environment:Roof_RoundTiles_4x6",
+      "meshes": 1,
+      "vertices": 2868
+    },
+    {
+      "id": "veldren:environment:Roof_Front_Brick4",
+      "meshes": 1,
+      "vertices": 368
+    },
+    {
+      "id": "veldren:environment:Floor_UnevenBrick",
+      "meshes": 1,
+      "vertices": 8
+    },
+    {
+      "id": "veldren:environment:Prop_Chimney",
+      "meshes": 1,
+      "vertices": 524
+    },
+    {
+      "id": "veldren:environment:Prop_Chimney2",
+      "meshes": 1,
+      "vertices": 122
+    },
+    {
+      "id": "veldren:environment:Prop_Crate",
+      "meshes": 1,
+      "vertices": 460
+    },
+    {
+      "id": "veldren:environment:Prop_Wagon",
+      "meshes": 1,
+      "vertices": 2331
+    },
+    {
+      "id": "veldren:environment:Prop_Vine1",
+      "meshes": 1,
+      "vertices": 159
+    },
+    {
+      "id": "veldren:environment:Prop_WoodenFence_Single",
+      "meshes": 1,
+      "vertices": 80
+    },
+    {
+      "id": "veldren:environment:CommonTree_1",
+      "meshes": 1,
+      "vertices": 9458
+    },
+    {
+      "id": "veldren:environment:CommonTree_4",
+      "meshes": 1,
+      "vertices": 5900
+    },
+    {
+      "id": "veldren:environment:TwistedTree_1",
+      "meshes": 1,
+      "vertices": 14064
+    },
+    {
+      "id": "veldren:environment:Pine_1",
+      "meshes": 1,
+      "vertices": 5246
+    },
+    {
+      "id": "veldren:environment:Pine_3",
+      "meshes": 1,
+      "vertices": 6573
+    },
+    {
+      "id": "veldren:environment:Rock_Medium_1",
+      "meshes": 1,
+      "vertices": 351
+    },
+    {
+      "id": "veldren:environment:Rock_Medium_3",
+      "meshes": 1,
+      "vertices": 531
+    },
+    {
+      "id": "veldren:environment:Bush_Common",
+      "meshes": 1,
+      "vertices": 1800
+    },
+    {
+      "id": "veldren:environment:Fern_1",
+      "meshes": 1,
+      "vertices": 243
+    },
+    {
+      "id": "veldren:environment:Grass_Wispy_Short",
+      "meshes": 1,
+      "vertices": 559
+    },
+    {
+      "id": "veldren:environment:Flower_3_Group",
+      "meshes": 1,
+      "vertices": 581
+    },
+    {
+      "id": "veldren:environment:Hair_SimpleParted",
+      "meshes": 1,
+      "vertices": 757
+    },
+    {
+      "id": "veldren:environment:Hair_Long",
+      "meshes": 1,
+      "vertices": 3080
+    },
+    {
+      "id": "veldren:environment:Hair_Beard",
+      "meshes": 1,
+      "vertices": 596
+    },
+    {
+      "id": "veldren:environment:Hair_Buzzed",
+      "meshes": 1,
+      "vertices": 466
+    },
+    {
+      "id": "veldren:environment:World_Anvil_Log",
+      "meshes": 1,
+      "vertices": 3376
+    },
+    {
+      "id": "veldren:environment:World_Barrel",
+      "meshes": 1,
+      "vertices": 1305
+    },
+    {
+      "id": "veldren:environment:World_Bed_Twin1",
+      "meshes": 1,
+      "vertices": 1694
+    },
+    {
+      "id": "veldren:environment:World_Bed_Twin2",
+      "meshes": 1,
+      "vertices": 1678
+    },
+    {
+      "id": "veldren:environment:World_Bench",
+      "meshes": 1,
+      "vertices": 422
+    },
+    {
+      "id": "veldren:environment:World_Bookcase_2",
+      "meshes": 1,
+      "vertices": 2002
+    },
+    {
+      "id": "veldren:environment:World_BookGroup_Medium_1",
+      "meshes": 1,
+      "vertices": 576
+    },
+    {
+      "id": "veldren:environment:World_BookStand",
+      "meshes": 1,
+      "vertices": 1652
+    },
+    {
+      "id": "veldren:environment:World_Bucket_Wooden_1",
+      "meshes": 1,
+      "vertices": 834
+    },
+    {
+      "id": "veldren:environment:World_CandleStick",
+      "meshes": 1,
+      "vertices": 533
+    },
+    {
+      "id": "veldren:environment:World_Chair_1",
+      "meshes": 1,
+      "vertices": 628
+    },
+    {
+      "id": "veldren:environment:World_Chest_Wood",
+      "meshes": 1,
+      "vertices": 3200
+    },
+    {
+      "id": "veldren:environment:World_Crate_Wooden",
+      "meshes": 1,
+      "vertices": 1426
+    },
+    {
+      "id": "veldren:environment:World_FarmCrate_Apple",
+      "meshes": 1,
+      "vertices": 2758
+    },
+    {
+      "id": "veldren:environment:World_Lantern_Wall",
+      "meshes": 1,
+      "vertices": 3222
+    },
+    {
+      "id": "veldren:environment:World_Mug",
+      "meshes": 1,
+      "vertices": 340
+    },
+    {
+      "id": "veldren:environment:World_Pickaxe_Bronze",
+      "meshes": 1,
+      "vertices": 652
+    },
+    {
+      "id": "veldren:environment:World_Potion_1",
+      "meshes": 1,
+      "vertices": 389
+    },
+    {
+      "id": "veldren:environment:World_Pouch_Large",
+      "meshes": 1,
+      "vertices": 680
+    },
+    {
+      "id": "veldren:environment:World_Stall_Cart_Empty",
+      "meshes": 1,
+      "vertices": 4451
+    },
+    {
+      "id": "veldren:environment:World_Table_Large",
+      "meshes": 1,
+      "vertices": 1262
+    },
+    {
+      "id": "veldren:environment:World_Table_Plate",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:environment:World_WeaponStand",
+      "meshes": 1,
+      "vertices": 1994
+    },
+    {
+      "id": "veldren:environment:World_Workbench",
+      "meshes": 1,
+      "vertices": 1380
+    },
+    {
+      "id": "veldren:environment:ResourceTree_normal",
+      "meshes": 1,
+      "vertices": 655
+    },
+    {
+      "id": "veldren:environment:ResourceTree_oak",
+      "meshes": 1,
+      "vertices": 1326
+    },
+    {
+      "id": "veldren:environment:ResourceTree_willow",
+      "meshes": 1,
+      "vertices": 913
+    },
+    {
+      "id": "veldren:environment:ResourceTree_maple",
+      "meshes": 1,
+      "vertices": 1796
+    },
+    {
+      "id": "veldren:environment:ResourceTree_yew",
+      "meshes": 1,
+      "vertices": 482
+    },
+    {
+      "id": "veldren:environment:ResourceTree_magic",
+      "meshes": 1,
+      "vertices": 855
+    },
+    {
+      "id": "veldren:environment:Archer_Bow",
+      "meshes": 1,
+      "vertices": 744
+    },
+    {
+      "id": "veldren:environment:Archer_Quiver",
+      "meshes": 1,
+      "vertices": 1014
+    },
+    {
+      "id": "veldren:environment:Archer_Arrow",
+      "meshes": 1,
+      "vertices": 432
+    },
+    {
+      "id": "veldren:environment:Ranger_Cap",
+      "meshes": 1,
+      "vertices": 1428
+    },
+    {
+      "id": "veldren:kaykit-adapted:inn-human",
+      "meshes": 1,
+      "vertices": 4778
+    },
+    {
+      "id": "veldren:kaykit-adapted:inn-elf",
+      "meshes": 1,
+      "vertices": 4778
+    },
+    {
+      "id": "veldren:kaykit-adapted:inn-dwarf",
+      "meshes": 1,
+      "vertices": 4778
+    },
+    {
+      "id": "veldren:kaykit-adapted:shop-human",
+      "meshes": 1,
+      "vertices": 4169
+    },
+    {
+      "id": "veldren:kaykit-adapted:shop-elf",
+      "meshes": 1,
+      "vertices": 4169
+    },
+    {
+      "id": "veldren:kaykit-adapted:shop-dwarf",
+      "meshes": 1,
+      "vertices": 4169
+    },
+    {
+      "id": "veldren:kaykit-adapted:forge-human",
+      "meshes": 1,
+      "vertices": 3393
+    },
+    {
+      "id": "veldren:kaykit-adapted:forge-elf",
+      "meshes": 1,
+      "vertices": 3393
+    },
+    {
+      "id": "veldren:kaykit-adapted:forge-dwarf",
+      "meshes": 1,
+      "vertices": 3393
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeA-human",
+      "meshes": 1,
+      "vertices": 1540
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeA-elf",
+      "meshes": 1,
+      "vertices": 1540
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeA-dwarf",
+      "meshes": 1,
+      "vertices": 1540
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeB-human",
+      "meshes": 1,
+      "vertices": 2305
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeB-elf",
+      "meshes": 1,
+      "vertices": 2305
+    },
+    {
+      "id": "veldren:kaykit-adapted:homeB-dwarf",
+      "meshes": 1,
+      "vertices": 2305
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeA-human",
+      "meshes": 1,
+      "vertices": 95
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeA-elf",
+      "meshes": 1,
+      "vertices": 95
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeA-dwarf",
+      "meshes": 1,
+      "vertices": 95
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeB-human",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeB-elf",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:kaykit-adapted:treeB-dwarf",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:kaykit-adapted:rock-human",
+      "meshes": 1,
+      "vertices": 35
+    },
+    {
+      "id": "veldren:kaykit-adapted:rock-elf",
+      "meshes": 1,
+      "vertices": 35
+    },
+    {
+      "id": "veldren:kaykit-adapted:rock-dwarf",
+      "meshes": 1,
+      "vertices": 35
+    },
+    {
+      "id": "veldren:kaykit-adapted:barrel-human",
+      "meshes": 1,
+      "vertices": 441
+    },
+    {
+      "id": "veldren:kaykit-adapted:barrel-elf",
+      "meshes": 1,
+      "vertices": 441
+    },
+    {
+      "id": "veldren:kaykit-adapted:barrel-dwarf",
+      "meshes": 1,
+      "vertices": 441
+    },
+    {
+      "id": "veldren:kaykit-adapted:crate-human",
+      "meshes": 1,
+      "vertices": 194
+    },
+    {
+      "id": "veldren:kaykit-adapted:crate-elf",
+      "meshes": 1,
+      "vertices": 194
+    },
+    {
+      "id": "veldren:kaykit-adapted:crate-dwarf",
+      "meshes": 1,
+      "vertices": 194
+    },
+    {
+      "id": "veldren:kaykit-adapted:castle-human",
+      "meshes": 1,
+      "vertices": 8868
+    },
+    {
+      "id": "veldren:kaykit-adapted:castle-elf",
+      "meshes": 1,
+      "vertices": 8868
+    },
+    {
+      "id": "veldren:kaykit-adapted:castle-dwarf",
+      "meshes": 1,
+      "vertices": 8868
+    },
+    {
+      "id": "veldren:kaykit-adapted:hall-human",
+      "meshes": 1,
+      "vertices": 6426
+    },
+    {
+      "id": "veldren:kaykit-adapted:hall-elf",
+      "meshes": 1,
+      "vertices": 6426
+    },
+    {
+      "id": "veldren:kaykit-adapted:hall-dwarf",
+      "meshes": 1,
+      "vertices": 6426
+    },
+    {
+      "id": "veldren:kaykit-adapted:temple-human",
+      "meshes": 1,
+      "vertices": 2504
+    },
+    {
+      "id": "veldren:kaykit-adapted:temple-elf",
+      "meshes": 1,
+      "vertices": 2504
+    },
+    {
+      "id": "veldren:kaykit-adapted:temple-dwarf",
+      "meshes": 1,
+      "vertices": 2504
+    },
+    {
+      "id": "veldren:kaykit-adapted:mine-human",
+      "meshes": 1,
+      "vertices": 1852
+    },
+    {
+      "id": "veldren:kaykit-adapted:mine-elf",
+      "meshes": 1,
+      "vertices": 1852
+    },
+    {
+      "id": "veldren:kaykit-adapted:mine-dwarf",
+      "meshes": 1,
+      "vertices": 1852
+    },
+    {
+      "id": "veldren:kaykit-adapted:tower-human",
+      "meshes": 1,
+      "vertices": 3639
+    },
+    {
+      "id": "veldren:kaykit-adapted:tower-elf",
+      "meshes": 1,
+      "vertices": 3639
+    },
+    {
+      "id": "veldren:kaykit-adapted:tower-dwarf",
+      "meshes": 1,
+      "vertices": 3639
+    },
+    {
+      "id": "veldren:kaykit-adapted:well-human",
+      "meshes": 1,
+      "vertices": 1187
+    },
+    {
+      "id": "veldren:kaykit-adapted:well-elf",
+      "meshes": 1,
+      "vertices": 1187
+    },
+    {
+      "id": "veldren:kaykit-adapted:well-dwarf",
+      "meshes": 1,
+      "vertices": 1187
+    },
+    {
+      "id": "veldren:kaykit-adapted:bridge-human",
+      "meshes": 1,
+      "vertices": 686
+    },
+    {
+      "id": "veldren:kaykit-adapted:bridge-elf",
+      "meshes": 1,
+      "vertices": 686
+    },
+    {
+      "id": "veldren:kaykit-adapted:bridge-dwarf",
+      "meshes": 1,
+      "vertices": 686
+    },
+    {
+      "id": "veldren:kaykit-adapted:gate-human",
+      "meshes": 1,
+      "vertices": 1324
+    },
+    {
+      "id": "veldren:kaykit-adapted:gate-elf",
+      "meshes": 1,
+      "vertices": 1324
+    },
+    {
+      "id": "veldren:kaykit-adapted:gate-dwarf",
+      "meshes": 1,
+      "vertices": 1324
+    },
+    {
+      "id": "veldren:kaykit-adapted:mountain-human",
+      "meshes": 1,
+      "vertices": 216
+    },
+    {
+      "id": "veldren:kaykit-adapted:mountain-elf",
+      "meshes": 1,
+      "vertices": 216
+    },
+    {
+      "id": "veldren:kaykit-adapted:mountain-dwarf",
+      "meshes": 1,
+      "vertices": 216
+    },
+    {
+      "id": "veldren:kaykit-adapted:rockB-human",
+      "meshes": 1,
+      "vertices": 61
+    },
+    {
+      "id": "veldren:kaykit-adapted:rockB-elf",
+      "meshes": 1,
+      "vertices": 61
+    },
+    {
+      "id": "veldren:kaykit-adapted:rockB-dwarf",
+      "meshes": 1,
+      "vertices": 61
+    },
+    {
+      "id": "veldren:kaykit-adapted:lumber-human",
+      "meshes": 1,
+      "vertices": 330
+    },
+    {
+      "id": "veldren:kaykit-adapted:lumber-elf",
+      "meshes": 1,
+      "vertices": 330
+    },
+    {
+      "id": "veldren:kaykit-adapted:lumber-dwarf",
+      "meshes": 1,
+      "vertices": 330
+    },
+    {
+      "id": "veldren:kaykit-adapted:stone-human",
+      "meshes": 1,
+      "vertices": 320
+    },
+    {
+      "id": "veldren:kaykit-adapted:stone-elf",
+      "meshes": 1,
+      "vertices": 320
+    },
+    {
+      "id": "veldren:kaykit-adapted:stone-dwarf",
+      "meshes": 1,
+      "vertices": 320
+    },
+    {
+      "id": "veldren:kaykit-adapted:rack-human",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:rack-elf",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:rack-dwarf",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:sack-human",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:sack-elf",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:sack-dwarf",
+      "meshes": 1,
+      "vertices": 84
+    },
+    {
+      "id": "veldren:kaykit-adapted:tent-human",
+      "meshes": 1,
+      "vertices": 176
+    },
+    {
+      "id": "veldren:kaykit-adapted:tent-elf",
+      "meshes": 1,
+      "vertices": 176
+    },
+    {
+      "id": "veldren:kaykit-adapted:tent-dwarf",
+      "meshes": 1,
+      "vertices": 176
+    },
+    {
+      "id": "veldren:kaykit-adapted:cart-human",
+      "meshes": 1,
+      "vertices": 520
+    },
+    {
+      "id": "veldren:kaykit-adapted:cart-elf",
+      "meshes": 1,
+      "vertices": 520
+    },
+    {
+      "id": "veldren:kaykit-adapted:cart-dwarf",
+      "meshes": 1,
+      "vertices": 520
+    },
+    {
+      "id": "veldren:kaykit-adapted:bed-human",
+      "meshes": 1,
+      "vertices": 2162
+    },
+    {
+      "id": "veldren:kaykit-adapted:bed-elf",
+      "meshes": 1,
+      "vertices": 2162
+    },
+    {
+      "id": "veldren:kaykit-adapted:bed-dwarf",
+      "meshes": 1,
+      "vertices": 2162
+    },
+    {
+      "id": "veldren:kaykit-adapted:table-human",
+      "meshes": 1,
+      "vertices": 1825
+    },
+    {
+      "id": "veldren:kaykit-adapted:table-elf",
+      "meshes": 1,
+      "vertices": 1825
+    },
+    {
+      "id": "veldren:kaykit-adapted:table-dwarf",
+      "meshes": 1,
+      "vertices": 1825
+    },
+    {
+      "id": "veldren:kaykit-adapted:banquet-human",
+      "meshes": 1,
+      "vertices": 2961
+    },
+    {
+      "id": "veldren:kaykit-adapted:banquet-elf",
+      "meshes": 1,
+      "vertices": 2961
+    },
+    {
+      "id": "veldren:kaykit-adapted:banquet-dwarf",
+      "meshes": 1,
+      "vertices": 2961
+    },
+    {
+      "id": "veldren:kaykit-adapted:pillar-human",
+      "meshes": 1,
+      "vertices": 1276
+    },
+    {
+      "id": "veldren:kaykit-adapted:pillar-elf",
+      "meshes": 1,
+      "vertices": 1276
+    },
+    {
+      "id": "veldren:kaykit-adapted:pillar-dwarf",
+      "meshes": 1,
+      "vertices": 1276
+    },
+    {
+      "id": "veldren:kaykit-adapted:chest-human",
+      "meshes": 1,
+      "vertices": 1204
+    },
+    {
+      "id": "veldren:kaykit-adapted:chest-elf",
+      "meshes": 1,
+      "vertices": 1204
+    },
+    {
+      "id": "veldren:kaykit-adapted:chest-dwarf",
+      "meshes": 1,
+      "vertices": 1204
+    },
+    {
+      "id": "veldren:kaykit-adapted:shelf-human",
+      "meshes": 1,
+      "vertices": 142
+    },
+    {
+      "id": "veldren:kaykit-adapted:shelf-elf",
+      "meshes": 1,
+      "vertices": 142
+    },
+    {
+      "id": "veldren:kaykit-adapted:shelf-dwarf",
+      "meshes": 1,
+      "vertices": 142
+    },
+    {
+      "id": "veldren:kaykit-adapted:chair-human",
+      "meshes": 1,
+      "vertices": 544
+    },
+    {
+      "id": "veldren:kaykit-adapted:chair-elf",
+      "meshes": 1,
+      "vertices": 544
+    },
+    {
+      "id": "veldren:kaykit-adapted:chair-dwarf",
+      "meshes": 1,
+      "vertices": 544
+    },
+    {
+      "id": "veldren:kaykit-adapted:wall-human",
+      "meshes": 1,
+      "vertices": 1037
+    },
+    {
+      "id": "veldren:kaykit-adapted:wall-elf",
+      "meshes": 1,
+      "vertices": 1037
+    },
+    {
+      "id": "veldren:kaykit-adapted:wall-dwarf",
+      "meshes": 1,
+      "vertices": 1037
+    },
+    {
+      "id": "veldren:characters:male",
+      "meshes": 1,
+      "vertices": 4964
+    },
+    {
+      "id": "veldren:equipment-authored-male:Headgear.B.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Headgear.B.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-male:Shoulder.B.001",
+      "meshes": 1,
+      "vertices": 1806
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Shoulder.B.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Chestplate.B.001",
+      "meshes": 1,
+      "vertices": 4081
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Chestplate.B.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-male:Gauntlets.B.001",
+      "meshes": 1,
+      "vertices": 6055
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Gauntlets.B.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-male:Legguards.B.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Legguards.B.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-male:Boots.B.001",
+      "meshes": 1,
+      "vertices": 988
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Boots.B.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-male:Belt.B.001",
+      "meshes": 1,
+      "vertices": 1628
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Belt.B.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-male:Headgear.I.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Headgear.I.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-male:Shoulder.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Shoulder.I.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Chestplate.I.001",
+      "meshes": 1,
+      "vertices": 4081
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Chestplate.I.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-male:Gauntlets.I.001",
+      "meshes": 1,
+      "vertices": 6009
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Gauntlets.I.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-male:Legguards.I.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Legguards.I.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-male:Boots.I.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Boots.I.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-male:Belt.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Belt.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-male:Headgear.G.001",
+      "meshes": 1,
+      "vertices": 2050
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Headgear.G.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-male:Shoulder.G.001",
+      "meshes": 1,
+      "vertices": 2460
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Shoulder.G.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Chestplate.G.001",
+      "meshes": 1,
+      "vertices": 4159
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Chestplate.G.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-male:Gauntlets.G.001",
+      "meshes": 1,
+      "vertices": 6009
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Gauntlets.G.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-male:Legguards.G.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Legguards.G.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-male:Boots.G.001",
+      "meshes": 1,
+      "vertices": 1142
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Boots.G.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-male:Belt.G.001",
+      "meshes": 1,
+      "vertices": 1688
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Belt.G.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-male:Headgear.M.001",
+      "meshes": 1,
+      "vertices": 1580
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Headgear.M.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-male:Shoulder.M.001",
+      "meshes": 1,
+      "vertices": 1918
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Shoulder.M.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Chestplate.M.001",
+      "meshes": 1,
+      "vertices": 3088
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Chestplate.M.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-male:Gauntlets.M.001",
+      "meshes": 1,
+      "vertices": 5733
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Gauntlets.M.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-male:Legguards.M.001",
+      "meshes": 1,
+      "vertices": 3345
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Legguards.M.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-male:Boots.M.001",
+      "meshes": 1,
+      "vertices": 1142
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Boots.M.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-male:Belt.M.001",
+      "meshes": 1,
+      "vertices": 1082
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Belt.M.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-male:Headgear.DS.001",
+      "meshes": 1,
+      "vertices": 1630
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Headgear.DS.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-male:Shoulder.DS.001",
+      "meshes": 1,
+      "vertices": 1882
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Shoulder.DS.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Chestplate.DS.001",
+      "meshes": 1,
+      "vertices": 3428
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Chestplate.DS.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-male:Gauntlets.DS.001",
+      "meshes": 1,
+      "vertices": 6077
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Gauntlets.DS.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-male:Legguards.DS.001",
+      "meshes": 1,
+      "vertices": 3161
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Legguards.DS.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-male:Boots.DS.001",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Boots.DS.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-male:Belt.DS.001",
+      "meshes": 1,
+      "vertices": 1092
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Belt.DS.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-male:HeadAttach.001",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:equipment-fitted-male:HeadAttach.001",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:equipment-authored-male:HeadAttach.002",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:equipment-fitted-male:HeadAttach.002",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:equipment-authored-male:HeadAttach.003",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:equipment-fitted-male:HeadAttach.003",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:equipment-authored-male:HeadAttach.004",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:equipment-fitted-male:HeadAttach.004",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:equipment-authored-male:HeadAttach.005",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:equipment-fitted-male:HeadAttach.005",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:equipment-authored-male:BeltAttch.001",
+      "meshes": 1,
+      "vertices": 758
+    },
+    {
+      "id": "veldren:equipment-fitted-male:BeltAttch.001",
+      "meshes": 1,
+      "vertices": 758
+    },
+    {
+      "id": "veldren:equipment-authored-male:BeltAttch.002",
+      "meshes": 1,
+      "vertices": 1445
+    },
+    {
+      "id": "veldren:equipment-fitted-male:BeltAttch.002",
+      "meshes": 1,
+      "vertices": 1445
+    },
+    {
+      "id": "veldren:equipment-authored-male:Default_Male_Head_Medium",
+      "meshes": 1,
+      "vertices": 1876
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Default_Male_Head_Medium",
+      "meshes": 1,
+      "vertices": 1876
+    },
+    {
+      "id": "veldren:equipment-authored-male:Default_Male_Arms_Medium",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Default_Male_Arms_Medium",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:equipment-authored-male:Default_Male_Feet_Medium",
+      "meshes": 1,
+      "vertices": 426
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Default_Male_Feet_Medium",
+      "meshes": 1,
+      "vertices": 426
+    },
+    {
+      "id": "veldren:equipment-authored-male:Default_Male_Legs_Medium",
+      "meshes": 1,
+      "vertices": 864
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Default_Male_Legs_Medium",
+      "meshes": 1,
+      "vertices": 864
+    },
+    {
+      "id": "veldren:equipment-authored-male:Default_Male_Torso_Medium",
+      "meshes": 1,
+      "vertices": 946
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Default_Male_Torso_Medium",
+      "meshes": 1,
+      "vertices": 946
+    },
+    {
+      "id": "veldren:equipment-authored-male:Male_Shirt.002",
+      "meshes": 1,
+      "vertices": 1618
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Male_Shirt.002",
+      "meshes": 1,
+      "vertices": 1618
+    },
+    {
+      "id": "veldren:equipment-authored-male:Male_Pants.002",
+      "meshes": 1,
+      "vertices": 1303
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Male_Pants.002",
+      "meshes": 1,
+      "vertices": 1303
+    },
+    {
+      "id": "veldren:equipment-authored-male:Beard.007",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Beard.007",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:equipment-authored-male:Hair.007",
+      "meshes": 1,
+      "vertices": 658
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Hair.007",
+      "meshes": 1,
+      "vertices": 658
+    },
+    {
+      "id": "veldren:equipment-authored-male:B_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-male:B_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-male:I_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-male:I_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-male:G_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-male:G_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-male:M_Sword",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:equipment-fitted-male:M_Sword",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:equipment-authored-male:DS_Sword",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:equipment-fitted-male:DS_Sword",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:equipment-authored-male:B_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-male:B_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-male:I_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-male:I_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-male:G__Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-male:G__Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-male:M_Shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:equipment-fitted-male:M_Shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:equipment-authored-male:DS_Shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:equipment-fitted-male:DS_Shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Peasant_Body",
+      "meshes": 1,
+      "vertices": 3006
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Peasant_Body",
+      "meshes": 1,
+      "vertices": 3006
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Peasant_Arms",
+      "meshes": 1,
+      "vertices": 3315
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Peasant_Arms",
+      "meshes": 1,
+      "vertices": 3315
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Peasant_Legs",
+      "meshes": 1,
+      "vertices": 656
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Peasant_Legs",
+      "meshes": 1,
+      "vertices": 656
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Peasant_Feet",
+      "meshes": 1,
+      "vertices": 1878
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Peasant_Feet",
+      "meshes": 1,
+      "vertices": 1878
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Ranger_Body",
+      "meshes": 1,
+      "vertices": 4681
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Ranger_Body",
+      "meshes": 1,
+      "vertices": 4681
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Ranger_Arms",
+      "meshes": 1,
+      "vertices": 3042
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Ranger_Arms",
+      "meshes": 1,
+      "vertices": 3042
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Ranger_Legs",
+      "meshes": 1,
+      "vertices": 644
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Ranger_Legs",
+      "meshes": 1,
+      "vertices": 644
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Ranger_Feet",
+      "meshes": 1,
+      "vertices": 10174
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Ranger_Feet",
+      "meshes": 1,
+      "vertices": 10174
+    },
+    {
+      "id": "veldren:equipment-authored-male:Outfit_Ranger_Head_Hood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:equipment-fitted-male:Outfit_Ranger_Head_Hood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:items-male:bronzeSword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:ironSword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:ironHelm",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:ironShield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:copperNecklace",
+      "meshes": 1,
+      "vertices": 150
+    },
+    {
+      "id": "veldren:items-male:bronze_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:bronze_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:bronze_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:bronze_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:bronze_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:bronze_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:bronze_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:bronze_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:iron_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:iron_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:iron_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:iron_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:iron_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:iron_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:iron_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:iron_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:gold_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:gold_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:gold_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:gold_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:gold_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:gold_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:gold_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:gold_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:mithril_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:mithril_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:mithril_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:mithril_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:mithril_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:mithril_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:mithril_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-male:mithril_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:items-male:dragonslayer_weapon",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:items-male:helmet_crest_1",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:items-male:helmet_crest_2",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:items-male:helmet_crest_3",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:items-male:helmet_crest_4",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:items-male:helmet_crest_5",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:items-male:steel_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:steel_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:steel_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:steel_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:steel_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:steel_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:steel_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:steel_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:black_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:black_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:black_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:black_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:black_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:black_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:black_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-male:black_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:adamant_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:adamant_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:adamant_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:adamant_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:adamant_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:adamant_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:adamant_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-male:adamant_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-male:rune_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-male:rune_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-male:rune_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-male:rune_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-male:rune_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-male:rune_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-male:rune_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-male:rune_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-male:woodenSword",
+      "meshes": 1,
+      "vertices": 156
+    },
+    {
+      "id": "veldren:items-male:woodenShield",
+      "meshes": 1,
+      "vertices": 398
+    },
+    {
+      "id": "veldren:items-male:rangerHood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:items-male:bronze_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:iron_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:steel_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-male:mithril_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-male:adamant_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-male:rune_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:characters:female",
+      "meshes": 1,
+      "vertices": 4741
+    },
+    {
+      "id": "veldren:equipment-authored-female:Headgear.B.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Headgear.B.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-female:Shoulder.B.001",
+      "meshes": 1,
+      "vertices": 1806
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Shoulder.B.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Chestplate.B.001",
+      "meshes": 1,
+      "vertices": 4081
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Chestplate.B.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-female:Gauntlets.B.001",
+      "meshes": 1,
+      "vertices": 6055
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Gauntlets.B.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-female:Legguards.B.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Legguards.B.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-female:Boots.B.001",
+      "meshes": 1,
+      "vertices": 988
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Boots.B.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-female:Belt.B.001",
+      "meshes": 1,
+      "vertices": 1628
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Belt.B.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-female:Headgear.I.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Headgear.I.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-female:Shoulder.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Shoulder.I.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Chestplate.I.001",
+      "meshes": 1,
+      "vertices": 4081
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Chestplate.I.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-female:Gauntlets.I.001",
+      "meshes": 1,
+      "vertices": 6009
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Gauntlets.I.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-female:Legguards.I.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Legguards.I.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-female:Boots.I.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Boots.I.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-female:Belt.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Belt.I.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-female:Headgear.G.001",
+      "meshes": 1,
+      "vertices": 2050
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Headgear.G.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-female:Shoulder.G.001",
+      "meshes": 1,
+      "vertices": 2460
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Shoulder.G.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Chestplate.G.001",
+      "meshes": 1,
+      "vertices": 4159
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Chestplate.G.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-female:Gauntlets.G.001",
+      "meshes": 1,
+      "vertices": 6009
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Gauntlets.G.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-female:Legguards.G.001",
+      "meshes": 1,
+      "vertices": 2905
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Legguards.G.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-female:Boots.G.001",
+      "meshes": 1,
+      "vertices": 1142
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Boots.G.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-female:Belt.G.001",
+      "meshes": 1,
+      "vertices": 1688
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Belt.G.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-female:Headgear.M.001",
+      "meshes": 1,
+      "vertices": 1580
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Headgear.M.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-female:Shoulder.M.001",
+      "meshes": 1,
+      "vertices": 1918
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Shoulder.M.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Chestplate.M.001",
+      "meshes": 1,
+      "vertices": 3088
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Chestplate.M.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-female:Gauntlets.M.001",
+      "meshes": 1,
+      "vertices": 5733
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Gauntlets.M.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-female:Legguards.M.001",
+      "meshes": 1,
+      "vertices": 3345
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Legguards.M.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-female:Boots.M.001",
+      "meshes": 1,
+      "vertices": 1142
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Boots.M.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-female:Belt.M.001",
+      "meshes": 1,
+      "vertices": 1082
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Belt.M.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-female:Headgear.DS.001",
+      "meshes": 1,
+      "vertices": 1630
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Headgear.DS.001",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:equipment-authored-female:Shoulder.DS.001",
+      "meshes": 1,
+      "vertices": 1882
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Shoulder.DS.001",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Chestplate.DS.001",
+      "meshes": 1,
+      "vertices": 3428
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Chestplate.DS.001",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:equipment-authored-female:Gauntlets.DS.001",
+      "meshes": 1,
+      "vertices": 6077
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Gauntlets.DS.001",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:equipment-authored-female:Legguards.DS.001",
+      "meshes": 1,
+      "vertices": 3161
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Legguards.DS.001",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:equipment-authored-female:Boots.DS.001",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Boots.DS.001",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:equipment-authored-female:Belt.DS.001",
+      "meshes": 1,
+      "vertices": 1092
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Belt.DS.001",
+      "meshes": 1,
+      "vertices": 1794
+    },
+    {
+      "id": "veldren:equipment-authored-female:HeadAttach.001",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:equipment-fitted-female:HeadAttach.001",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:equipment-authored-female:HeadAttach.002",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:equipment-fitted-female:HeadAttach.002",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:equipment-authored-female:HeadAttach.003",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:equipment-fitted-female:HeadAttach.003",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:equipment-authored-female:HeadAttach.004",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:equipment-fitted-female:HeadAttach.004",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:equipment-authored-female:HeadAttach.005",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:equipment-fitted-female:HeadAttach.005",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:equipment-authored-female:BeltAttch.001",
+      "meshes": 1,
+      "vertices": 758
+    },
+    {
+      "id": "veldren:equipment-fitted-female:BeltAttch.001",
+      "meshes": 1,
+      "vertices": 758
+    },
+    {
+      "id": "veldren:equipment-authored-female:BeltAttch.002",
+      "meshes": 1,
+      "vertices": 1445
+    },
+    {
+      "id": "veldren:equipment-fitted-female:BeltAttch.002",
+      "meshes": 1,
+      "vertices": 1445
+    },
+    {
+      "id": "veldren:equipment-authored-female:Default_Male_Head_Medium",
+      "meshes": 1,
+      "vertices": 1876
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Default_Male_Head_Medium",
+      "meshes": 1,
+      "vertices": 1876
+    },
+    {
+      "id": "veldren:equipment-authored-female:Default_Male_Arms_Medium",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Default_Male_Arms_Medium",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:equipment-authored-female:Default_Male_Feet_Medium",
+      "meshes": 1,
+      "vertices": 426
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Default_Male_Feet_Medium",
+      "meshes": 1,
+      "vertices": 426
+    },
+    {
+      "id": "veldren:equipment-authored-female:Default_Male_Legs_Medium",
+      "meshes": 1,
+      "vertices": 864
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Default_Male_Legs_Medium",
+      "meshes": 1,
+      "vertices": 864
+    },
+    {
+      "id": "veldren:equipment-authored-female:Default_Male_Torso_Medium",
+      "meshes": 1,
+      "vertices": 946
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Default_Male_Torso_Medium",
+      "meshes": 1,
+      "vertices": 946
+    },
+    {
+      "id": "veldren:equipment-authored-female:Male_Shirt.002",
+      "meshes": 1,
+      "vertices": 1618
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Male_Shirt.002",
+      "meshes": 1,
+      "vertices": 1618
+    },
+    {
+      "id": "veldren:equipment-authored-female:Male_Pants.002",
+      "meshes": 1,
+      "vertices": 1303
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Male_Pants.002",
+      "meshes": 1,
+      "vertices": 1303
+    },
+    {
+      "id": "veldren:equipment-authored-female:Beard.007",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Beard.007",
+      "meshes": 1,
+      "vertices": 189
+    },
+    {
+      "id": "veldren:equipment-authored-female:Hair.007",
+      "meshes": 1,
+      "vertices": 658
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Hair.007",
+      "meshes": 1,
+      "vertices": 658
+    },
+    {
+      "id": "veldren:equipment-authored-female:B_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-female:B_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-female:I_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-female:I_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-female:G_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-fitted-female:G_Sword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:equipment-authored-female:M_Sword",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:equipment-fitted-female:M_Sword",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:equipment-authored-female:DS_Sword",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:equipment-fitted-female:DS_Sword",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:equipment-authored-female:B_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-female:B_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-female:I_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-female:I_Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-female:G__Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-fitted-female:G__Shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:equipment-authored-female:M_Shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:equipment-fitted-female:M_Shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:equipment-authored-female:DS_Shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:equipment-fitted-female:DS_Shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Peasant_Body",
+      "meshes": 1,
+      "vertices": 1730
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Peasant_Body",
+      "meshes": 1,
+      "vertices": 1730
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Peasant_Arms",
+      "meshes": 1,
+      "vertices": 5436
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Peasant_Arms",
+      "meshes": 1,
+      "vertices": 5436
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Peasant_Legs",
+      "meshes": 1,
+      "vertices": 1126
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Peasant_Legs",
+      "meshes": 1,
+      "vertices": 1126
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Peasant_Feet",
+      "meshes": 1,
+      "vertices": 1892
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Peasant_Feet",
+      "meshes": 1,
+      "vertices": 1892
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Ranger_Body",
+      "meshes": 1,
+      "vertices": 4641
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Ranger_Body",
+      "meshes": 1,
+      "vertices": 4641
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Ranger_Arms",
+      "meshes": 1,
+      "vertices": 6976
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Ranger_Arms",
+      "meshes": 1,
+      "vertices": 6976
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Ranger_Legs",
+      "meshes": 1,
+      "vertices": 685
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Ranger_Legs",
+      "meshes": 1,
+      "vertices": 685
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Ranger_Feet",
+      "meshes": 1,
+      "vertices": 10174
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Ranger_Feet",
+      "meshes": 1,
+      "vertices": 10174
+    },
+    {
+      "id": "veldren:equipment-authored-female:Outfit_Ranger_Head_Hood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:equipment-fitted-female:Outfit_Ranger_Head_Hood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:items-female:bronzeSword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:ironSword",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:ironHelm",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:ironShield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:copperNecklace",
+      "meshes": 1,
+      "vertices": 150
+    },
+    {
+      "id": "veldren:items-female:bronze_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:bronze_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:bronze_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:bronze_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:bronze_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:bronze_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:bronze_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:bronze_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:iron_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:iron_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:iron_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:iron_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:iron_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:iron_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:iron_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:iron_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:gold_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:gold_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:gold_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:gold_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:gold_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:gold_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:gold_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:gold_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:mithril_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:mithril_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:mithril_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:mithril_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:mithril_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:mithril_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:mithril_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-female:mithril_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_shield",
+      "meshes": 1,
+      "vertices": 812
+    },
+    {
+      "id": "veldren:items-female:dragonslayer_weapon",
+      "meshes": 1,
+      "vertices": 338
+    },
+    {
+      "id": "veldren:items-female:helmet_crest_1",
+      "meshes": 1,
+      "vertices": 308
+    },
+    {
+      "id": "veldren:items-female:helmet_crest_2",
+      "meshes": 1,
+      "vertices": 412
+    },
+    {
+      "id": "veldren:items-female:helmet_crest_3",
+      "meshes": 1,
+      "vertices": 1022
+    },
+    {
+      "id": "veldren:items-female:helmet_crest_4",
+      "meshes": 1,
+      "vertices": 638
+    },
+    {
+      "id": "veldren:items-female:helmet_crest_5",
+      "meshes": 1,
+      "vertices": 616
+    },
+    {
+      "id": "veldren:items-female:steel_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:steel_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:steel_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:steel_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:steel_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:steel_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:steel_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:steel_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:black_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:black_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:black_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:black_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:black_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:black_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:black_shield",
+      "meshes": 1,
+      "vertices": 760
+    },
+    {
+      "id": "veldren:items-female:black_weapon",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:adamant_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:adamant_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:adamant_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:adamant_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:adamant_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:adamant_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:adamant_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-female:adamant_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-female:rune_head",
+      "meshes": 1,
+      "vertices": 1506
+    },
+    {
+      "id": "veldren:items-female:rune_shoulders",
+      "meshes": 1,
+      "vertices": 2946
+    },
+    {
+      "id": "veldren:items-female:rune_body",
+      "meshes": 1,
+      "vertices": 4409
+    },
+    {
+      "id": "veldren:items-female:rune_hands",
+      "meshes": 1,
+      "vertices": 7161
+    },
+    {
+      "id": "veldren:items-female:rune_legs",
+      "meshes": 1,
+      "vertices": 5209
+    },
+    {
+      "id": "veldren:items-female:rune_feet",
+      "meshes": 1,
+      "vertices": 1132
+    },
+    {
+      "id": "veldren:items-female:rune_shield",
+      "meshes": 1,
+      "vertices": 968
+    },
+    {
+      "id": "veldren:items-female:rune_weapon",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-female:woodenSword",
+      "meshes": 1,
+      "vertices": 156
+    },
+    {
+      "id": "veldren:items-female:woodenShield",
+      "meshes": 1,
+      "vertices": 398
+    },
+    {
+      "id": "veldren:items-female:rangerHood",
+      "meshes": 1,
+      "vertices": 1240
+    },
+    {
+      "id": "veldren:items-female:bronze_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:iron_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:steel_dagger",
+      "meshes": 1,
+      "vertices": 324
+    },
+    {
+      "id": "veldren:items-female:mithril_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-female:adamant_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:items-female:rune_dagger",
+      "meshes": 1,
+      "vertices": 492
+    },
+    {
+      "id": "veldren:creatures:goblin",
+      "meshes": 1,
+      "vertices": 4499
+    },
+    {
+      "id": "veldren:creatures:king",
+      "meshes": 1,
+      "vertices": 11230
+    },
+    {
+      "id": "veldren:creatures:wolf",
+      "meshes": 1,
+      "vertices": 3994
+    },
+    {
+      "id": "veldren:creatures:rat",
+      "meshes": 1,
+      "vertices": 8008
+    },
+    {
+      "id": "veldren:creatures:skeleton",
+      "meshes": 1,
+      "vertices": 9143
+    },
+    {
+      "id": "veldren:creatures:slime",
+      "meshes": 1,
+      "vertices": 2912
+    },
+    {
+      "id": "veldren:creatures:forestgiant",
+      "meshes": 1,
+      "vertices": 4201
+    },
+    {
+      "id": "veldren:creatures:ork",
+      "meshes": 1,
+      "vertices": 3015
+    },
+    {
+      "id": "veldren:creatures:boss_colossus",
+      "meshes": 1,
+      "vertices": 6973
+    },
+    {
+      "id": "veldren:creatures:boss_veyr",
+      "meshes": 1,
+      "vertices": 9646
+    },
+    {
+      "id": "veldren:creatures:boss_xalith",
+      "meshes": 1,
+      "vertices": 9094
+    },
+    {
+      "id": "veldren:creatures:boss_varkesh",
+      "meshes": 1,
+      "vertices": 12390
+    },
+    {
+      "id": "veldren:kaykit-legacy-rigs:Rogue",
+      "meshes": 6,
+      "vertices": 3511
+    },
+    {
+      "id": "veldren:kaykit-legacy-rigs:Knight",
+      "meshes": 9,
+      "vertices": 4864
+    },
+    {
+      "id": "veldren:kaykit-legacy-rigs:Mage",
+      "meshes": 7,
+      "vertices": 3846
+    },
+    {
+      "id": "veldren:kaykit-legacy-rigs:Barbarian",
+      "meshes": 6,
+      "vertices": 3342
+    },
+    {
+      "id": "veldren:item-display:coins",
+      "meshes": 1,
+      "vertices": 864
+    },
+    {
+      "id": "veldren:item-display:bronzeSword",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:ironSword",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:shortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:oakStaff",
+      "meshes": 1,
+      "vertices": 408
+    },
+    {
+      "id": "veldren:item-display:ironHelm",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:leatherArmor",
+      "meshes": 1,
+      "vertices": 372
+    },
+    {
+      "id": "veldren:item-display:ironShield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:leatherBoots",
+      "meshes": 1,
+      "vertices": 960
+    },
+    {
+      "id": "veldren:item-display:logs",
+      "meshes": 1,
+      "vertices": 1116
+    },
+    {
+      "id": "veldren:item-display:ore",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:fish",
+      "meshes": 1,
+      "vertices": 924
+    },
+    {
+      "id": "veldren:item-display:fang",
+      "meshes": 1,
+      "vertices": 270
+    },
+    {
+      "id": "veldren:item-display:arrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:runes",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:bones",
+      "meshes": 1,
+      "vertices": 1464
+    },
+    {
+      "id": "veldren:item-display:ashes",
+      "meshes": 1,
+      "vertices": 450
+    },
+    {
+      "id": "veldren:item-display:mageRobe",
+      "meshes": 1,
+      "vertices": 636
+    },
+    {
+      "id": "veldren:item-display:rellanSignet",
+      "meshes": 1,
+      "vertices": 1164
+    },
+    {
+      "id": "veldren:item-display:ironhollowBelt",
+      "meshes": 1,
+      "vertices": 2052
+    },
+    {
+      "id": "veldren:item-display:whisperPendant",
+      "meshes": 1,
+      "vertices": 1176
+    },
+    {
+      "id": "veldren:item-display:wardkeeperCape",
+      "meshes": 1,
+      "vertices": 1548
+    },
+    {
+      "id": "veldren:item-display:veilbreakerRing",
+      "meshes": 1,
+      "vertices": 1164
+    },
+    {
+      "id": "veldren:item-display:memoryShard",
+      "meshes": 1,
+      "vertices": 168
+    },
+    {
+      "id": "veldren:item-display:forgedOrders",
+      "meshes": 1,
+      "vertices": 414
+    },
+    {
+      "id": "veldren:item-display:veyrOrb",
+      "meshes": 1,
+      "vertices": 2766
+    },
+    {
+      "id": "veldren:item-display:copperNecklace",
+      "meshes": 1,
+      "vertices": 600
+    },
+    {
+      "id": "veldren:item-display:rangerCap",
+      "meshes": 1,
+      "vertices": 1428
+    },
+    {
+      "id": "veldren:item-display:bronze_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:bronze_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:bronze_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:bronze_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:bronze_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:bronze_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:bronze_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:bronze_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:iron_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:iron_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:iron_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:iron_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:iron_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:iron_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:iron_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:iron_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:gold_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:gold_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:gold_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:gold_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:gold_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:gold_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:gold_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:gold_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:mithril_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:mithril_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:mithril_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:mithril_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:mithril_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:mithril_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:mithril_shield",
+      "meshes": 1,
+      "vertices": 1044
+    },
+    {
+      "id": "veldren:item-display:mithril_weapon",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:dragonslayer_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:helmet_crest_1",
+      "meshes": 1,
+      "vertices": 402
+    },
+    {
+      "id": "veldren:item-display:helmet_crest_2",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:helmet_crest_3",
+      "meshes": 1,
+      "vertices": 1140
+    },
+    {
+      "id": "veldren:item-display:helmet_crest_4",
+      "meshes": 1,
+      "vertices": 912
+    },
+    {
+      "id": "veldren:item-display:helmet_crest_5",
+      "meshes": 1,
+      "vertices": 648
+    },
+    {
+      "id": "veldren:item-display:rawShrimp",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:item-display:ironBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:arrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:flour",
+      "meshes": 1,
+      "vertices": 264
+    },
+    {
+      "id": "veldren:item-display:jugWater",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:breadDough",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:bread",
+      "meshes": 1,
+      "vertices": 432
+    },
+    {
+      "id": "veldren:item-display:normalLogs",
+      "meshes": 1,
+      "vertices": 1116
+    },
+    {
+      "id": "veldren:item-display:willowLogs",
+      "meshes": 1,
+      "vertices": 1116
+    },
+    {
+      "id": "veldren:item-display:mapleLogs",
+      "meshes": 1,
+      "vertices": 1116
+    },
+    {
+      "id": "veldren:item-display:yewLogs",
+      "meshes": 1,
+      "vertices": 1116
+    },
+    {
+      "id": "veldren:item-display:magicLogs",
+      "meshes": 1,
+      "vertices": 1224
+    },
+    {
+      "id": "veldren:item-display:copperOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:tinOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:coal",
+      "meshes": 1,
+      "vertices": 258
+    },
+    {
+      "id": "veldren:item-display:goldOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:mithrilOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:adamantOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:runeOre",
+      "meshes": 1,
+      "vertices": 546
+    },
+    {
+      "id": "veldren:item-display:shrimp",
+      "meshes": 1,
+      "vertices": 1968
+    },
+    {
+      "id": "veldren:item-display:rawTrout",
+      "meshes": 1,
+      "vertices": 1368
+    },
+    {
+      "id": "veldren:item-display:rawSalmon",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:salmon",
+      "meshes": 1,
+      "vertices": 924
+    },
+    {
+      "id": "veldren:item-display:rawLobster",
+      "meshes": 1,
+      "vertices": 2856
+    },
+    {
+      "id": "veldren:item-display:lobster",
+      "meshes": 1,
+      "vertices": 2856
+    },
+    {
+      "id": "veldren:item-display:rawSwordfish",
+      "meshes": 1,
+      "vertices": 840
+    },
+    {
+      "id": "veldren:item-display:swordfish",
+      "meshes": 1,
+      "vertices": 948
+    },
+    {
+      "id": "veldren:item-display:rawShark",
+      "meshes": 1,
+      "vertices": 888
+    },
+    {
+      "id": "veldren:item-display:shark",
+      "meshes": 1,
+      "vertices": 996
+    },
+    {
+      "id": "veldren:item-display:bronzeBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:steelBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:goldBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:mithrilBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:adamantBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:runeBar",
+      "meshes": 1,
+      "vertices": 72
+    },
+    {
+      "id": "veldren:item-display:airRunes",
+      "meshes": 1,
+      "vertices": 708
+    },
+    {
+      "id": "veldren:item-display:waterRunes",
+      "meshes": 1,
+      "vertices": 588
+    },
+    {
+      "id": "veldren:item-display:earthRunes",
+      "meshes": 1,
+      "vertices": 528
+    },
+    {
+      "id": "veldren:item-display:fireRunes",
+      "meshes": 1,
+      "vertices": 648
+    },
+    {
+      "id": "veldren:item-display:chaosRunes",
+      "meshes": 1,
+      "vertices": 408
+    },
+    {
+      "id": "veldren:item-display:deathRunes",
+      "meshes": 1,
+      "vertices": 948
+    },
+    {
+      "id": "veldren:item-display:bloodRunes",
+      "meshes": 1,
+      "vertices": 648
+    },
+    {
+      "id": "veldren:item-display:feathers",
+      "meshes": 1,
+      "vertices": 600
+    },
+    {
+      "id": "veldren:item-display:arrowShafts",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:headlessArrows",
+      "meshes": 1,
+      "vertices": 396
+    },
+    {
+      "id": "veldren:item-display:burntFish",
+      "meshes": 1,
+      "vertices": 924
+    },
+    {
+      "id": "veldren:item-display:potatoSeeds",
+      "meshes": 1,
+      "vertices": 840
+    },
+    {
+      "id": "veldren:item-display:potato",
+      "meshes": 1,
+      "vertices": 612
+    },
+    {
+      "id": "veldren:item-display:steel_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:steel_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:steel_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:steel_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:steel_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:steel_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:steel_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:steel_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:black_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:black_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:black_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:black_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:black_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:black_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:black_shield",
+      "meshes": 1,
+      "vertices": 876
+    },
+    {
+      "id": "veldren:item-display:black_weapon",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:adamant_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:adamant_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:adamant_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:adamant_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:adamant_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:adamant_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:adamant_shield",
+      "meshes": 1,
+      "vertices": 1044
+    },
+    {
+      "id": "veldren:item-display:adamant_weapon",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:rune_head",
+      "meshes": 1,
+      "vertices": 1686
+    },
+    {
+      "id": "veldren:item-display:rune_shoulders",
+      "meshes": 1,
+      "vertices": 3696
+    },
+    {
+      "id": "veldren:item-display:rune_body",
+      "meshes": 1,
+      "vertices": 8406
+    },
+    {
+      "id": "veldren:item-display:rune_hands",
+      "meshes": 1,
+      "vertices": 6522
+    },
+    {
+      "id": "veldren:item-display:rune_legs",
+      "meshes": 1,
+      "vertices": 5628
+    },
+    {
+      "id": "veldren:item-display:rune_feet",
+      "meshes": 1,
+      "vertices": 1434
+    },
+    {
+      "id": "veldren:item-display:rune_shield",
+      "meshes": 1,
+      "vertices": 1044
+    },
+    {
+      "id": "veldren:item-display:rune_weapon",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:woodenSword",
+      "meshes": 1,
+      "vertices": 240
+    },
+    {
+      "id": "veldren:item-display:woodenShield",
+      "meshes": 1,
+      "vertices": 618
+    },
+    {
+      "id": "veldren:item-display:oakShortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:willowShortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:mapleShortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:yewShortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:magicShortbow",
+      "meshes": 1,
+      "vertices": 768
+    },
+    {
+      "id": "veldren:item-display:rangerHood",
+      "meshes": 1,
+      "vertices": 6408
+    },
+    {
+      "id": "veldren:item-display:wizardRobe",
+      "meshes": 1,
+      "vertices": 636
+    },
+    {
+      "id": "veldren:item-display:adeptRobe",
+      "meshes": 1,
+      "vertices": 636
+    },
+    {
+      "id": "veldren:item-display:mysticRobe",
+      "meshes": 1,
+      "vertices": 636
+    },
+    {
+      "id": "veldren:item-display:studdedBody",
+      "meshes": 1,
+      "vertices": 1614
+    },
+    {
+      "id": "veldren:item-display:greenHideBody",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:blueHideBody",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:redHideBody",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:blackHideBody",
+      "meshes": 1,
+      "vertices": 516
+    },
+    {
+      "id": "veldren:item-display:bronze_dagger",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:iron_dagger",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:steel_dagger",
+      "meshes": 1,
+      "vertices": 468
+    },
+    {
+      "id": "veldren:item-display:mithril_dagger",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:adamant_dagger",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:rune_dagger",
+      "meshes": 1,
+      "vertices": 684
+    },
+    {
+      "id": "veldren:item-display:mysticStaff",
+      "meshes": 1,
+      "vertices": 408
+    },
+    {
+      "id": "veldren:item-display:scholarAmulet",
+      "meshes": 1,
+      "vertices": 1176
+    },
+    {
+      "id": "veldren:item-display:temperedRing",
+      "meshes": 1,
+      "vertices": 1164
+    },
+    {
+      "id": "veldren:item-display:scholarMantle",
+      "meshes": 1,
+      "vertices": 1548
+    },
+    {
+      "id": "veldren:item-display:bronzeArrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:ironArrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:steelArrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:steelArrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:mithrilArrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:mithrilArrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:adamantArrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:adamantArrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:runeArrowheads",
+      "meshes": 1,
+      "vertices": 180
+    },
+    {
+      "id": "veldren:item-display:runeArrows",
+      "meshes": 1,
+      "vertices": 1296
+    },
+    {
+      "id": "veldren:item-display:bronzeAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:bronzePickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:ironAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:ironPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:steelAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:steelPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:blackAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:blackPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:mithrilAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:mithrilPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:adamantAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:adamantPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:runeAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:runePickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:item-display:dragonslayerAxe",
+      "meshes": 1,
+      "vertices": 288
+    },
+    {
+      "id": "veldren:item-display:dragonslayerPickaxe",
+      "meshes": 1,
+      "vertices": 252
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-0",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-1",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-2",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-3",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-4",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:male-skin-5",
+      "meshes": 1,
+      "vertices": 6758
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-0",
+      "meshes": 1,
+      "vertices": 6535
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-1",
+      "meshes": 1,
+      "vertices": 6535
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-2",
+      "meshes": 1,
+      "vertices": 6535
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-3",
+      "meshes": 1,
+      "vertices": 6535
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-4",
+      "meshes": 1,
+      "vertices": 6535
+    },
+    {
+      "id": "veldren:appearance-presets:female-skin-5",
+      "meshes": 1,
+      "vertices": 6535
+    }
+  ],
+  "poses": [
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 2.716629164898732e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle_staff",
+      "time": 0,
+      "maxVertexDisplacement": 2.775817900230106e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 3.458265564919807e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle_staff",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 2.213699278820339e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle",
+      "time": 2.5,
+      "maxVertexDisplacement": 4.3753959119647817e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "idle_staff",
+      "time": 2.5,
+      "maxVertexDisplacement": 2.2644278713994782e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 2.480685146537178e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk_staff",
+      "time": 0,
+      "maxVertexDisplacement": 2.056685265517154e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk",
+      "time": 0.6665,
+      "maxVertexDisplacement": 2.784283579696523e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk_staff",
+      "time": 0.6665,
+      "maxVertexDisplacement": 2.519801079282127e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk",
+      "time": 1.333,
+      "maxVertexDisplacement": 2.480685146537178e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "walk_staff",
+      "time": 1.333,
+      "maxVertexDisplacement": 2.056685265517154e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 5.209338548952057e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run_staff",
+      "time": 0,
+      "maxVertexDisplacement": 1.9456606199703214e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run",
+      "time": 0.4665,
+      "maxVertexDisplacement": 3.518750551701271e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run_staff",
+      "time": 0.4665,
+      "maxVertexDisplacement": 2.0668741861252162e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run",
+      "time": 0.933,
+      "maxVertexDisplacement": 3.861888669284384e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "run_staff",
+      "time": 0.933,
+      "maxVertexDisplacement": 1.9456606199703214e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 2.7676132913220025e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "melee",
+      "time": 0.525,
+      "maxVertexDisplacement": 4.1115692080729623e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "melee",
+      "time": 1.05,
+      "maxVertexDisplacement": 3.266910319058079e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 5.594691677397906e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "ranged",
+      "time": 0.8,
+      "maxVertexDisplacement": 4.5938871033201364e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "ranged",
+      "time": 1.6,
+      "maxVertexDisplacement": 5.29017492131365e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 3.45388541773914e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "magic",
+      "time": 0.6333333333333333,
+      "maxVertexDisplacement": 3.4088438740240095e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "magic",
+      "time": 1.3,
+      "maxVertexDisplacement": 3.45388541773914e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "swordIdle",
+      "time": 0,
+      "maxVertexDisplacement": 2.5919882808784126e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "swordIdle",
+      "time": 0.817156862745098,
+      "maxVertexDisplacement": 2.941640021188023e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "swordIdle",
+      "time": 1.667,
+      "maxVertexDisplacement": 3.296571230972638e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 3.638086585703147e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "unarmed",
+      "time": 0.325,
+      "maxVertexDisplacement": 4.0783790543229835e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "unarmed",
+      "time": 0.65,
+      "maxVertexDisplacement": 3.638086585703147e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "fishing",
+      "time": 0,
+      "maxVertexDisplacement": 1.877723191630563e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "fishing",
+      "time": 0.4,
+      "maxVertexDisplacement": 2.044920633732362e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "fishing",
+      "time": 0.8,
+      "maxVertexDisplacement": 1.877723191630563e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bowIdle",
+      "time": 0,
+      "maxVertexDisplacement": 3.0925997178792265e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bowIdle",
+      "time": 0.6665,
+      "maxVertexDisplacement": 3.490868142399161e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bowIdle",
+      "time": 1.333,
+      "maxVertexDisplacement": 3.0925997178792265e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bury",
+      "time": 0,
+      "maxVertexDisplacement": 4.17241333360374e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bury",
+      "time": 0.9,
+      "maxVertexDisplacement": 3.1119580777429634e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "bury",
+      "time": 1.8,
+      "maxVertexDisplacement": 4.17241333360374e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "staffIdle",
+      "time": 0,
+      "maxVertexDisplacement": 2.3151740701759307e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "staffIdle",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 3.062021613288727e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "staffIdle",
+      "time": 2.5,
+      "maxVertexDisplacement": 2.2068664246865827e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "firemaking",
+      "time": 0,
+      "maxVertexDisplacement": 4.17241333360374e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "firemaking",
+      "time": 1.2,
+      "maxVertexDisplacement": 1.9988500191084764e-07
+    },
+    {
+      "group": "characters",
+      "name": "male",
+      "clip": "firemaking",
+      "time": 2.4,
+      "maxVertexDisplacement": 4.17241333360374e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 3.179347007297723e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle_staff",
+      "time": 0,
+      "maxVertexDisplacement": 1.8316950138874112e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 2.3448985600532152e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle_staff",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 2.0509854983195148e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle",
+      "time": 2.5,
+      "maxVertexDisplacement": 3.2417567746818113e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "idle_staff",
+      "time": 2.5,
+      "maxVertexDisplacement": 1.8390193149106837e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 2.651201936964953e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk_staff",
+      "time": 0,
+      "maxVertexDisplacement": 2.1699010622004188e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk",
+      "time": 0.6665,
+      "maxVertexDisplacement": 2.7755472880586454e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk_staff",
+      "time": 0.6665,
+      "maxVertexDisplacement": 1.9736863311252572e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk",
+      "time": 1.333,
+      "maxVertexDisplacement": 2.651201936964953e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "walk_staff",
+      "time": 1.333,
+      "maxVertexDisplacement": 2.1699010622004188e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 2.505282689139364e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run_staff",
+      "time": 0,
+      "maxVertexDisplacement": 2.1109122864792062e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run",
+      "time": 0.4665,
+      "maxVertexDisplacement": 2.8394145085523583e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run_staff",
+      "time": 0.4665,
+      "maxVertexDisplacement": 2.2514505288593844e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run",
+      "time": 0.933,
+      "maxVertexDisplacement": 2.0717259875642612e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "run_staff",
+      "time": 0.933,
+      "maxVertexDisplacement": 2.1109122864792062e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 2.6996311239343376e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "melee",
+      "time": 0.525,
+      "maxVertexDisplacement": 5.864272206962333e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "melee",
+      "time": 1.05,
+      "maxVertexDisplacement": 2.7290924653393674e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 3.682169676408057e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "ranged",
+      "time": 0.8,
+      "maxVertexDisplacement": 3.117491800361375e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "ranged",
+      "time": 1.6,
+      "maxVertexDisplacement": 2.8855111407237467e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 3.432013917514219e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "magic",
+      "time": 0.6333333333333333,
+      "maxVertexDisplacement": 2.8311942550030333e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "magic",
+      "time": 1.3,
+      "maxVertexDisplacement": 3.432013917514219e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "swordIdle",
+      "time": 0,
+      "maxVertexDisplacement": 2.320182454495664e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "swordIdle",
+      "time": 0.817156862745098,
+      "maxVertexDisplacement": 3.160068163838094e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "swordIdle",
+      "time": 1.667,
+      "maxVertexDisplacement": 3.216236651697154e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 4.550279122026537e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "unarmed",
+      "time": 0.325,
+      "maxVertexDisplacement": 3.0279316439260905e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "unarmed",
+      "time": 0.65,
+      "maxVertexDisplacement": 4.550279122026537e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "fishing",
+      "time": 0,
+      "maxVertexDisplacement": 2.3184566883374224e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "fishing",
+      "time": 0.4,
+      "maxVertexDisplacement": 2.319528635694518e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "fishing",
+      "time": 0.8,
+      "maxVertexDisplacement": 2.3184566883374224e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bowIdle",
+      "time": 0,
+      "maxVertexDisplacement": 2.915966574705201e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bowIdle",
+      "time": 0.6665,
+      "maxVertexDisplacement": 3.719395348032782e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bowIdle",
+      "time": 1.333,
+      "maxVertexDisplacement": 2.915966574705201e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bury",
+      "time": 0,
+      "maxVertexDisplacement": 2.5141802850532535e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bury",
+      "time": 0.9,
+      "maxVertexDisplacement": 2.6010688908462336e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "bury",
+      "time": 1.8,
+      "maxVertexDisplacement": 2.5141802850532535e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "staffIdle",
+      "time": 0,
+      "maxVertexDisplacement": 2.0450571102385856e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "staffIdle",
+      "time": 1.2333333333333334,
+      "maxVertexDisplacement": 1.93235841295022e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "staffIdle",
+      "time": 2.5,
+      "maxVertexDisplacement": 2.1230003630157516e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "firemaking",
+      "time": 0,
+      "maxVertexDisplacement": 2.5141802850532535e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "firemaking",
+      "time": 1.2,
+      "maxVertexDisplacement": 1.5602108011726935e-07
+    },
+    {
+      "group": "characters",
+      "name": "female",
+      "clip": "firemaking",
+      "time": 2.4,
+      "maxVertexDisplacement": 2.5141802850532535e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 1.5882222302758768e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "idle",
+      "time": 0.8146341463414634,
+      "maxVertexDisplacement": 1.3848070948771465e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "idle",
+      "time": 1.67,
+      "maxVertexDisplacement": 1.5032215840046117e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 1.9147458128393675e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "walk",
+      "time": 0.5296296296296297,
+      "maxVertexDisplacement": 1.2034150213855426e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "walk",
+      "time": 1.1,
+      "maxVertexDisplacement": 1.9147458128393675e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 2.181392750739198e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "run",
+      "time": 0.37,
+      "maxVertexDisplacement": 9.980711871550549e-08
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "run",
+      "time": 0.74,
+      "maxVertexDisplacement": 2.3012684117413315e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 1.1366020195473378e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "attack",
+      "time": 0.525,
+      "maxVertexDisplacement": 1.7380260540257333e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "attack",
+      "time": 1.05,
+      "maxVertexDisplacement": 1.219242586071753e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 1.2564814813847646e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "hit",
+      "time": 0.165,
+      "maxVertexDisplacement": 1.7140156294982464e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "hit",
+      "time": 0.33,
+      "maxVertexDisplacement": 1.696844752292838e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 1.5430050107383778e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "death",
+      "time": 0.7042857142857143,
+      "maxVertexDisplacement": 1.8667589402442796e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "death",
+      "time": 1.45,
+      "maxVertexDisplacement": 1.8310184915537618e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "cast",
+      "time": 0,
+      "maxVertexDisplacement": 1.1000197591028145e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "cast",
+      "time": 0.6333333333333333,
+      "maxVertexDisplacement": 1.6526602847522925e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "cast",
+      "time": 1.3,
+      "maxVertexDisplacement": 1.1000197591028145e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "throw",
+      "time": 0,
+      "maxVertexDisplacement": 1.7705143140392327e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "throw",
+      "time": 0.325,
+      "maxVertexDisplacement": 1.6113104392702702e-07
+    },
+    {
+      "group": "creatures",
+      "name": "goblin",
+      "clip": "throw",
+      "time": 0.65,
+      "maxVertexDisplacement": 1.7705143140392327e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 3.0231907408072806e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "idle",
+      "time": 0.8146341463414634,
+      "maxVertexDisplacement": 3.236999702012672e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "idle",
+      "time": 1.67,
+      "maxVertexDisplacement": 3.030994474254833e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 2.427153850521735e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "walk",
+      "time": 0.5296296296296297,
+      "maxVertexDisplacement": 2.2796211208876068e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "walk",
+      "time": 1.1,
+      "maxVertexDisplacement": 2.427153850521735e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 2.9942548442087157e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "run",
+      "time": 0.37,
+      "maxVertexDisplacement": 2.453282058283751e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "run",
+      "time": 0.74,
+      "maxVertexDisplacement": 2.9942548442087157e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 2.6048139637159346e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "attack",
+      "time": 0.525,
+      "maxVertexDisplacement": 3.193338615921877e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "attack",
+      "time": 1.05,
+      "maxVertexDisplacement": 2.601157305850189e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 2.96514377409633e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "hit",
+      "time": 0.165,
+      "maxVertexDisplacement": 3.4808746420905716e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "hit",
+      "time": 0.33,
+      "maxVertexDisplacement": 2.6664361462512306e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 3.5241933469487867e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "death",
+      "time": 0.7042857142857143,
+      "maxVertexDisplacement": 4.194614215334564e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "death",
+      "time": 1.45,
+      "maxVertexDisplacement": 3.0502929576293307e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "cast",
+      "time": 0,
+      "maxVertexDisplacement": 3.658781114190713e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "cast",
+      "time": 0.6333333333333333,
+      "maxVertexDisplacement": 2.2786962787342569e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "cast",
+      "time": 1.3,
+      "maxVertexDisplacement": 3.658781114190713e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "throw",
+      "time": 0,
+      "maxVertexDisplacement": 2.587997520018058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "throw",
+      "time": 0.325,
+      "maxVertexDisplacement": 2.4983972834533786e-07
+    },
+    {
+      "group": "creatures",
+      "name": "king",
+      "clip": "throw",
+      "time": 0.65,
+      "maxVertexDisplacement": 2.587997520018058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 6.833851863611475e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "idle",
+      "time": 2,
+      "maxVertexDisplacement": 9.160738467615627e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "idle",
+      "time": 4,
+      "maxVertexDisplacement": 6.833851863611475e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 4.97526925939774e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "walk",
+      "time": 0.49999998092651365,
+      "maxVertexDisplacement": 4.6926198621117496e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "walk",
+      "time": 1.0416666269302368,
+      "maxVertexDisplacement": 6.010698969239716e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 6.332304786695724e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "run",
+      "time": 0.2708333432674408,
+      "maxVertexDisplacement": 5.459245252637613e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "run",
+      "time": 0.5416666865348816,
+      "maxVertexDisplacement": 6.297293113002302e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 5.967637213741065e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "attack",
+      "time": 0.45,
+      "maxVertexDisplacement": 6.483842428860223e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "attack",
+      "time": 0.9,
+      "maxVertexDisplacement": 5.967637213741065e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 6.833851863611475e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "hit",
+      "time": 0.3137254995458266,
+      "maxVertexDisplacement": 7.01003942498138e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "hit",
+      "time": 0.6666666865348816,
+      "maxVertexDisplacement": 6.833851863611475e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 6.70882184966875e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "death",
+      "time": 0.49999998092651365,
+      "maxVertexDisplacement": 5.915021546346726e-07
+    },
+    {
+      "group": "creatures",
+      "name": "wolf",
+      "clip": "death",
+      "time": 1.0416666269302368,
+      "maxVertexDisplacement": 6.10536723727929e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 3.638794631842385e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "idle",
+      "time": 1.1666666666666665,
+      "maxVertexDisplacement": 3.281969473288757e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "idle",
+      "time": 2.375,
+      "maxVertexDisplacement": 3.638794631842385e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 3.522915965366673e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "walk",
+      "time": 0.6464646657307943,
+      "maxVertexDisplacement": 2.9890562481381647e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "walk",
+      "time": 1.3333333730697632,
+      "maxVertexDisplacement": 4.0539229671566806e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 5.478131774598327e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "run",
+      "time": 0.25,
+      "maxVertexDisplacement": 4.4002981893182267e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "run",
+      "time": 0.5,
+      "maxVertexDisplacement": 6.029922440663675e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 3.1967101713908386e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "attack",
+      "time": 0.45,
+      "maxVertexDisplacement": 5.219006624598395e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "attack",
+      "time": 0.9,
+      "maxVertexDisplacement": 3.1967101713908386e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 4.870990158290382e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "death",
+      "time": 0.5216049574039601,
+      "maxVertexDisplacement": 5.771937917926146e-07
+    },
+    {
+      "group": "creatures",
+      "name": "rat",
+      "clip": "death",
+      "time": 1.0833333730697632,
+      "maxVertexDisplacement": 4.228643196549059e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 2.3577524722048212e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "idle",
+      "time": 0.5,
+      "maxVertexDisplacement": 2.6772126535174806e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "idle",
+      "time": 1,
+      "maxVertexDisplacement": 2.3577524722048212e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 2.0564148681445418e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "walk",
+      "time": 0.5,
+      "maxVertexDisplacement": 2.5196629225350954e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "walk",
+      "time": 1,
+      "maxVertexDisplacement": 2.0564148681445418e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 2.42446264801657e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "run",
+      "time": 0.3333333239835851,
+      "maxVertexDisplacement": 2.668978321817744e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "run",
+      "time": 0.7083333134651184,
+      "maxVertexDisplacement": 2.8297095682936117e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 1.9491459802919264e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "attack",
+      "time": 0.45,
+      "maxVertexDisplacement": 1.9273718712065754e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "attack",
+      "time": 0.9,
+      "maxVertexDisplacement": 1.9445168191255598e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 1.8864200619988582e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "hit",
+      "time": 0.2916666567325592,
+      "maxVertexDisplacement": 2.4617665252081894e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "hit",
+      "time": 0.5833333134651184,
+      "maxVertexDisplacement": 1.9403452389779917e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 2.2391941617895644e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "death",
+      "time": 0.375,
+      "maxVertexDisplacement": 3.6067842476973984e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "death",
+      "time": 0.75,
+      "maxVertexDisplacement": 2.7071384166076355e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "cast",
+      "time": 0,
+      "maxVertexDisplacement": 1.8950267319350807e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "cast",
+      "time": 0.6333333333333333,
+      "maxVertexDisplacement": 2.657251809677339e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "cast",
+      "time": 1.3,
+      "maxVertexDisplacement": 1.8950267319350807e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "throw",
+      "time": 0,
+      "maxVertexDisplacement": 2.673923709773631e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "throw",
+      "time": 0.325,
+      "maxVertexDisplacement": 2.6105775867767877e-07
+    },
+    {
+      "group": "creatures",
+      "name": "skeleton",
+      "clip": "throw",
+      "time": 0.65,
+      "maxVertexDisplacement": 2.673923709773631e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 3.0878492109405634e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "idle",
+      "time": 1.25,
+      "maxVertexDisplacement": 3.670197068298002e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "idle",
+      "time": 2.5,
+      "maxVertexDisplacement": 3.0878492109405634e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 3.1290286733932434e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "walk",
+      "time": 0.4166666567325592,
+      "maxVertexDisplacement": 2.7928014078907226e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "walk",
+      "time": 0.8333333134651184,
+      "maxVertexDisplacement": 3.1290286733932434e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 3.1290286733932434e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "run",
+      "time": 0.4166666567325592,
+      "maxVertexDisplacement": 2.7928014078907226e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "run",
+      "time": 0.8333333134651184,
+      "maxVertexDisplacement": 3.1290286733932434e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 3.0878492109405634e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "attack",
+      "time": 0.45,
+      "maxVertexDisplacement": 4.811979106141663e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "attack",
+      "time": 0.9,
+      "maxVertexDisplacement": 3.0878492109405634e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 2.9508349131611437e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "death",
+      "time": 0.2083333283662796,
+      "maxVertexDisplacement": 1.9942116083583194e-07
+    },
+    {
+      "group": "creatures",
+      "name": "slime",
+      "clip": "death",
+      "time": 0.4166666567325592,
+      "maxVertexDisplacement": 2.3589081598427094e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "idle",
+      "time": 0.833333335,
+      "maxVertexDisplacement": 1.0812252577229339e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "idle",
+      "time": 1.66666667,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 8.211574637551199e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "walk",
+      "time": 1.1,
+      "maxVertexDisplacement": 1.0915806266347225e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "walk",
+      "time": 2.2,
+      "maxVertexDisplacement": 8.211574637551199e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 8.211574637551199e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "run",
+      "time": 0.833333335,
+      "maxVertexDisplacement": 1.0915806266347225e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "run",
+      "time": 1.66666667,
+      "maxVertexDisplacement": 8.211574637551199e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 7.551962934699586e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack",
+      "time": 0.833333335,
+      "maxVertexDisplacement": 1.291912021137029e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack",
+      "time": 1.66666667,
+      "maxVertexDisplacement": 7.551962934699586e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack2",
+      "time": 0,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack2",
+      "time": 0.5000000015999999,
+      "maxVertexDisplacement": 1.3381726510502606e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack2",
+      "time": 1.04166667,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack3",
+      "time": 0,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack3",
+      "time": 0.625,
+      "maxVertexDisplacement": 8.904210099733256e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "attack3",
+      "time": 1.25,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 6.890693724954571e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death",
+      "time": 0.625,
+      "maxVertexDisplacement": 6.277817554874321e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death",
+      "time": 1.25,
+      "maxVertexDisplacement": 5.916130462858229e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death2",
+      "time": 0,
+      "maxVertexDisplacement": 6.890693724954571e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death2",
+      "time": 0.583333335,
+      "maxVertexDisplacement": 1.1810536692732011e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death2",
+      "time": 1.16666667,
+      "maxVertexDisplacement": 6.121248876628331e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death3",
+      "time": 0,
+      "maxVertexDisplacement": 6.890693724954571e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death3",
+      "time": 0.583333335,
+      "maxVertexDisplacement": 7.15967418566531e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "death3",
+      "time": 1.16666667,
+      "maxVertexDisplacement": 9.736449352234769e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "taunt",
+      "time": 0,
+      "maxVertexDisplacement": 6.888642845854084e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "taunt",
+      "time": 1.041666665,
+      "maxVertexDisplacement": 1.1793638035266677e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "taunt",
+      "time": 2.08333333,
+      "maxVertexDisplacement": 7.173768087146211e-07
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "dance",
+      "time": 0,
+      "maxVertexDisplacement": 1.2041584349204921e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "dance",
+      "time": 0.833333335,
+      "maxVertexDisplacement": 1.1324269372751205e-06
+    },
+    {
+      "group": "creatures",
+      "name": "forestgiant",
+      "clip": "dance",
+      "time": 1.66666667,
+      "maxVertexDisplacement": 1.1585151372972374e-06
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 1.417169286736501e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "idle",
+      "time": 4.316666665,
+      "maxVertexDisplacement": 1.167592271370702e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "idle",
+      "time": 8.63333333,
+      "maxVertexDisplacement": 1.417169286736501e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 2.636939622977401e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "walk",
+      "time": 0.566666665,
+      "maxVertexDisplacement": 1.614908756071462e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "walk",
+      "time": 1.13333333,
+      "maxVertexDisplacement": 2.636939622977401e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 1.4165049687916424e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "run",
+      "time": 0.4,
+      "maxVertexDisplacement": 2.3287433653198567e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "run",
+      "time": 0.8,
+      "maxVertexDisplacement": 1.4165049687916424e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 1.2383329675941368e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "attack",
+      "time": 0.583333335,
+      "maxVertexDisplacement": 2.2210816647856538e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "attack",
+      "time": 1.16666667,
+      "maxVertexDisplacement": 1.2383329675941368e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 8.566490149514554e-09
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "death",
+      "time": 0.666666665,
+      "maxVertexDisplacement": 1.6150398384348734e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "death",
+      "time": 1.33333333,
+      "maxVertexDisplacement": 1.9704992697798895e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 1.4228977472187704e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "hit",
+      "time": 0.583333335,
+      "maxVertexDisplacement": 3.029818241398858e-08
+    },
+    {
+      "group": "creatures",
+      "name": "ork",
+      "clip": "hit",
+      "time": 1.16666667,
+      "maxVertexDisplacement": 1.5614948191061395e-08
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "idle",
+      "time": 1.8750000016483517,
+      "maxVertexDisplacement": 9.547023717046238e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "idle",
+      "time": 3.79166667,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "walk",
+      "time": 1.8750000016483517,
+      "maxVertexDisplacement": 9.547023717046238e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "walk",
+      "time": 3.79166667,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "run",
+      "time": 1.8750000016483517,
+      "maxVertexDisplacement": 9.547023717046238e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "run",
+      "time": 3.79166667,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 6.034827950711944e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "attack",
+      "time": 1.458333335,
+      "maxVertexDisplacement": 5.94378335937312e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "attack",
+      "time": 2.91666667,
+      "maxVertexDisplacement": 6.034827950711944e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_colossus",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 6.295618290761058e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 6.58998176231464e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "idle",
+      "time": 1.1796610169491526,
+      "maxVertexDisplacement": 7.468000304216762e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "idle",
+      "time": 2.4,
+      "maxVertexDisplacement": 9.194818340073178e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 1.3787213507638354e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "walk",
+      "time": 0.6,
+      "maxVertexDisplacement": 7.52367746628792e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "walk",
+      "time": 1.2,
+      "maxVertexDisplacement": 8.329956194517361e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 8.765513758630789e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "run",
+      "time": 0.4,
+      "maxVertexDisplacement": 8.51881145064351e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "run",
+      "time": 0.8,
+      "maxVertexDisplacement": 1.025632592848445e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 8.478728870383736e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack",
+      "time": 0.4,
+      "maxVertexDisplacement": 6.763598752646418e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack",
+      "time": 0.8,
+      "maxVertexDisplacement": 1.1767969034615175e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack2",
+      "time": 0,
+      "maxVertexDisplacement": 7.262346305381629e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack2",
+      "time": 0.4,
+      "maxVertexDisplacement": 1.000975513443192e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack2",
+      "time": 0.8,
+      "maxVertexDisplacement": 7.524892504006776e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack3",
+      "time": 0,
+      "maxVertexDisplacement": 9.250585173353354e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack3",
+      "time": 0.7794871794871795,
+      "maxVertexDisplacement": 1.8984167957118962e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "attack3",
+      "time": 1.6,
+      "maxVertexDisplacement": 8.226226406681895e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast",
+      "time": 0,
+      "maxVertexDisplacement": 7.262346305381629e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast",
+      "time": 1.1796610169491526,
+      "maxVertexDisplacement": 1.2847208533560248e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast",
+      "time": 2.4,
+      "maxVertexDisplacement": 1.0296112332421661e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 7.262346305381629e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "death",
+      "time": 1.2793650793650793,
+      "maxVertexDisplacement": 5.087390096785127e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "death",
+      "time": 2.6,
+      "maxVertexDisplacement": 6.114753840285392e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 7.262346305381629e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "hit",
+      "time": 0.6,
+      "maxVertexDisplacement": 8.481974714635763e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "hit",
+      "time": 1.2,
+      "maxVertexDisplacement": 8.201928232950079e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast2",
+      "time": 0,
+      "maxVertexDisplacement": 7.262346305381629e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast2",
+      "time": 1.1796610169491526,
+      "maxVertexDisplacement": 9.387961208042445e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_veyr",
+      "clip": "cast2",
+      "time": 2.4,
+      "maxVertexDisplacement": 1.0672630358907784e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "idle",
+      "time": 1.4,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "idle",
+      "time": 2.8,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 9.704385948927364e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "walk",
+      "time": 0.5296296296296297,
+      "maxVertexDisplacement": 8.822032104953715e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "walk",
+      "time": 1.1,
+      "maxVertexDisplacement": 9.704385948927364e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 9.410811298956437e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "run",
+      "time": 0.3694736842105263,
+      "maxVertexDisplacement": 1.1046743950719942e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "run",
+      "time": 0.78,
+      "maxVertexDisplacement": 9.410811298956437e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack",
+      "time": 0.7042857142857143,
+      "maxVertexDisplacement": 9.777409305596463e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack",
+      "time": 1.45,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack2",
+      "time": 0,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack2",
+      "time": 0.7042857142857143,
+      "maxVertexDisplacement": 1.1130077394805934e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "attack2",
+      "time": 1.45,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "hit",
+      "time": 0.25,
+      "maxVertexDisplacement": 9.170184184352989e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "hit",
+      "time": 0.5,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 9.882047257768599e-07
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "death",
+      "time": 1.15,
+      "maxVertexDisplacement": 1.0256611520062019e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_xalith",
+      "clip": "death",
+      "time": 2.3,
+      "maxVertexDisplacement": 1.1259262816639263e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 5.694482881285348e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "idle",
+      "time": 1.5792207792207793,
+      "maxVertexDisplacement": 8.036298493002445e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "idle",
+      "time": 3.2,
+      "maxVertexDisplacement": 5.694482881285348e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.0709702532334494e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "walk",
+      "time": 2.416666666666667,
+      "maxVertexDisplacement": 7.374835114107561e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "walk",
+      "time": 4.875,
+      "maxVertexDisplacement": 6.072027832494177e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "run",
+      "time": 0,
+      "maxVertexDisplacement": 6.0709702532334494e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "run",
+      "time": 1.65,
+      "maxVertexDisplacement": 6.098634760221739e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "run",
+      "time": 3.3,
+      "maxVertexDisplacement": 6.072027832494177e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "attack",
+      "time": 0,
+      "maxVertexDisplacement": 6.195026750123045e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "attack",
+      "time": 0.775,
+      "maxVertexDisplacement": 7.068920467465726e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "attack",
+      "time": 1.55,
+      "maxVertexDisplacement": 6.195026750123045e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "cast",
+      "time": 0,
+      "maxVertexDisplacement": 5.694482881285348e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "cast",
+      "time": 1.15,
+      "maxVertexDisplacement": 7.694503652264786e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "cast",
+      "time": 2.3,
+      "maxVertexDisplacement": 5.694482881285348e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "hit",
+      "time": 0,
+      "maxVertexDisplacement": 6.195026750123045e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "hit",
+      "time": 0.275,
+      "maxVertexDisplacement": 6.332181660328758e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "hit",
+      "time": 0.55,
+      "maxVertexDisplacement": 6.195026750123045e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "death",
+      "time": 0,
+      "maxVertexDisplacement": 6.195026750123045e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "death",
+      "time": 1.4,
+      "maxVertexDisplacement": 5.763293293996604e-06
+    },
+    {
+      "group": "creatures",
+      "name": "boss_varkesh",
+      "clip": "death",
+      "time": 2.8,
+      "maxVertexDisplacement": 7.13562617199805e-06
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "idle",
+      "time": 0.533335,
+      "maxVertexDisplacement": 1.021553538851797e-06
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "idle",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.74024052596526e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "walk",
+      "time": 0.533335,
+      "maxVertexDisplacement": 7.392952808990943e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "walk",
+      "time": 1.06667,
+      "maxVertexDisplacement": 6.74024052596526e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "melee",
+      "time": 0.533335,
+      "maxVertexDisplacement": 9.912150357048455e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "melee",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.21770257477414e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "ranged",
+      "time": 0.533335,
+      "maxVertexDisplacement": 5.570800748665246e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "ranged",
+      "time": 1.06667,
+      "maxVertexDisplacement": 5.784691977491358e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "magic",
+      "time": 0.44637521739130437,
+      "maxVertexDisplacement": 8.24018243037705e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "magic",
+      "time": 0.93333,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 6.022708516697762e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "unarmed",
+      "time": 0.733335,
+      "maxVertexDisplacement": 5.790675985396228e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Rogue",
+      "clip": "unarmed",
+      "time": 1.46667,
+      "maxVertexDisplacement": 6.022708516697762e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "idle",
+      "time": 0.533335,
+      "maxVertexDisplacement": 1.021553538851797e-06
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "idle",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.74024052596526e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "walk",
+      "time": 0.533335,
+      "maxVertexDisplacement": 7.392952808990943e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "walk",
+      "time": 1.06667,
+      "maxVertexDisplacement": 6.74024052596526e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "melee",
+      "time": 0.533335,
+      "maxVertexDisplacement": 9.912150357048455e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "melee",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.21770257477414e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "ranged",
+      "time": 0.533335,
+      "maxVertexDisplacement": 5.570800748665246e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "ranged",
+      "time": 1.06667,
+      "maxVertexDisplacement": 5.784691977491358e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "magic",
+      "time": 0.44637521739130437,
+      "maxVertexDisplacement": 8.24018243037705e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "magic",
+      "time": 0.93333,
+      "maxVertexDisplacement": 9.217835083171686e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 6.022708516697762e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "unarmed",
+      "time": 0.733335,
+      "maxVertexDisplacement": 5.790675985396228e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Knight",
+      "clip": "unarmed",
+      "time": 1.46667,
+      "maxVertexDisplacement": 6.022708516697762e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "idle",
+      "time": 0.533335,
+      "maxVertexDisplacement": 1.009468153192006e-06
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "idle",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.685733867585483e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "walk",
+      "time": 0.533335,
+      "maxVertexDisplacement": 7.333846881655106e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "walk",
+      "time": 1.06667,
+      "maxVertexDisplacement": 6.685733867585483e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "melee",
+      "time": 0.533335,
+      "maxVertexDisplacement": 9.809603395855783e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "melee",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.153219565939456e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "ranged",
+      "time": 0.533335,
+      "maxVertexDisplacement": 5.537058164973259e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "ranged",
+      "time": 1.06667,
+      "maxVertexDisplacement": 5.755432812357648e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "magic",
+      "time": 0.44637521739130437,
+      "maxVertexDisplacement": 8.249845258721e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "magic",
+      "time": 0.93333,
+      "maxVertexDisplacement": 9.153335875721656e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 5.924089637839038e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "unarmed",
+      "time": 0.733335,
+      "maxVertexDisplacement": 5.809651345833246e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Mage",
+      "clip": "unarmed",
+      "time": 1.46667,
+      "maxVertexDisplacement": 5.924089637839038e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "idle",
+      "time": 0,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "idle",
+      "time": 0.533335,
+      "maxVertexDisplacement": 1.0077802997837258e-06
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "idle",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "walk",
+      "time": 0,
+      "maxVertexDisplacement": 6.681587119971484e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "walk",
+      "time": 0.533335,
+      "maxVertexDisplacement": 7.323437572027243e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "walk",
+      "time": 1.06667,
+      "maxVertexDisplacement": 6.681587119971484e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "melee",
+      "time": 0,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "melee",
+      "time": 0.533335,
+      "maxVertexDisplacement": 9.787986973988277e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "melee",
+      "time": 1.06667,
+      "maxVertexDisplacement": 9.132017317971642e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "ranged",
+      "time": 0,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "ranged",
+      "time": 0.533335,
+      "maxVertexDisplacement": 5.532346278698731e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "ranged",
+      "time": 1.06667,
+      "maxVertexDisplacement": 5.750683987725725e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "magic",
+      "time": 0,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "magic",
+      "time": 0.44637521739130437,
+      "maxVertexDisplacement": 8.232120316894233e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "magic",
+      "time": 0.93333,
+      "maxVertexDisplacement": 9.132134618106262e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "unarmed",
+      "time": 0,
+      "maxVertexDisplacement": 5.966465761158254e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "unarmed",
+      "time": 0.733335,
+      "maxVertexDisplacement": 5.794059823904217e-07
+    },
+    {
+      "group": "kaykit-legacy-rigs",
+      "name": "Barbarian",
+      "clip": "unarmed",
+      "time": 1.46667,
+      "maxVertexDisplacement": 5.966465761158254e-07
+    }
+  ],
+  "failures": [],
+  "scope": "Independent glTF CPU decoding vs current JavaScript asset and pose functions; not native runtime verification",
+  "summary": {
+    "models": 869,
+    "poseSamples": 424,
+    "maxVertexDisplacement": 8.036298493002445e-06,
+    "failures": 0
+  }
+}

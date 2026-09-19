@@ -1,0 +1,22 @@
+{
+  "ironhollowBelt": {
+    "main": 18,
+    "npc": "hesta"
+  },
+  "rellanSignet": {
+    "main": 7,
+    "npc": "rellan"
+  },
+  "veilbreakerRing": {
+    "mountain": 20,
+    "npc": "expert"
+  },
+  "wardkeeperCape": {
+    "mountain": 11,
+    "npc": "edda"
+  },
+  "whisperPendant": {
+    "main": 25,
+    "npc": "ilyra"
+  }
+}

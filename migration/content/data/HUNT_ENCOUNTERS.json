@@ -1,0 +1,155 @@
+{
+  "colossus": {
+    "anchored": true,
+    "area": "The Crystal Crucible",
+    "at": [
+      23,
+      18
+    ],
+    "coins": 155,
+    "combatRadius": 2.2,
+    "drops": {
+      "deathRunes": 15,
+      "mithrilBar": 2
+    },
+    "hp": 158,
+    "level": 42,
+    "look": "boss_colossus",
+    "marks": 4,
+    "maxHit": 8,
+    "mechanics": true,
+    "name": "Runeforged Colossus",
+    "phases": [
+      {
+        "at": 1,
+        "moves": [
+          "sweep",
+          "shot",
+          "hex"
+        ],
+        "name": "Crystalbound"
+      },
+      {
+        "at": 0.5,
+        "moves": [
+          "sweep",
+          "shot",
+          "hex"
+        ],
+        "name": "Crimson Overload",
+        "speed": 0.75
+      }
+    ],
+    "rank": "Boss",
+    "released": true,
+    "scene": "lair_colossus",
+    "weak": "magic"
+  },
+  "varkesh": {
+    "area": "Blightwing Roost",
+    "at": [
+      29,
+      21
+    ],
+    "attackLabel": "Fangs and blighted breath",
+    "coins": 105,
+    "combatRadius": 2.1,
+    "drops": {
+      "bones": 3,
+      "chaosRunes": 15,
+      "steelBar": 2
+    },
+    "hp": 108,
+    "interval": 4.3,
+    "level": 30,
+    "lockAttackHeading": true,
+    "look": "boss_varkesh",
+    "marks": 3,
+    "maxHit": 6,
+    "name": "Varkesh the Blightwing",
+    "rank": "Boss",
+    "released": true,
+    "scene": "lair_varkesh",
+    "style": "ranged",
+    "weak": "magic"
+  },
+  "veyr": {
+    "area": "The Shattered Sanctum",
+    "at": [
+      22,
+      18
+    ],
+    "coins": 70,
+    "combatRadius": 0.7,
+    "drops": {
+      "bones": 3,
+      "chaosRunes": 12,
+      "ironBar": 2
+    },
+    "hp": 78,
+    "level": 20,
+    "look": "boss_veyr",
+    "marks": 3,
+    "maxHit": 5,
+    "mechanics": true,
+    "name": "Veyr the Mindbreaker",
+    "phases": [
+      {
+        "at": 1,
+        "moves": [
+          "memoryCall",
+          "sweep"
+        ],
+        "name": "Borrowed authority"
+      },
+      {
+        "at": 0.66,
+        "moves": [
+          "falseRefuge",
+          "memoryCall"
+        ],
+        "name": "Fractured trust"
+      },
+      {
+        "at": 0.33,
+        "moves": [
+          "stolenSelf",
+          "falseRefuge",
+          "memoryCall"
+        ],
+        "name": "The stolen self"
+      }
+    ],
+    "rank": "Boss",
+    "rareDrops": {
+      "veyrOrb": 250
+    },
+    "released": true,
+    "scene": "lair_veyr",
+    "weak": "ranged"
+  },
+  "xalith": {
+    "area": "The Brood Hollow",
+    "at": [
+      27,
+      20
+    ],
+    "coins": 240,
+    "combatRadius": 1.05,
+    "drops": {
+      "adamantBar": 2,
+      "bloodRunes": 15
+    },
+    "hp": 236,
+    "level": 62,
+    "look": "boss_xalith",
+    "marks": 5,
+    "maxHit": 11,
+    "name": "Xalith the Broodmother",
+    "rank": "Boss",
+    "released": true,
+    "scene": "lair_xalith",
+    "style": "melee",
+    "weak": "melee"
+  }
+}

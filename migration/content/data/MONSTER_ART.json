@@ -1,0 +1,57 @@
+{
+  "ashknight": 3,
+  "bandit": 6,
+  "brambleslime": 1,
+  "cavecrawler": 5,
+  "colossus": {
+    "$undefined": true
+  },
+  "crystalguard": 4,
+  "duskwraith": 3,
+  "emberhound": 2,
+  "forestgiant": {
+    "$undefined": true
+  },
+  "goblin": 0,
+  "grovehexer": {
+    "$undefined": true
+  },
+  "hexer": {
+    "$undefined": true
+  },
+  "ironhideslime": 1,
+  "ironrevenant": 3,
+  "king": 4,
+  "moonstalker": 2,
+  "mountainwatcher": 3,
+  "ork": {
+    "$undefined": true
+  },
+  "quarrybrute": {
+    "$undefined": true
+  },
+  "rat": 5,
+  "ridgewolf": 2,
+  "sentinel": 7,
+  "skeleton": 3,
+  "slime": 1,
+  "slinger": {
+    "$undefined": true
+  },
+  "storycrawler": 5,
+  "storylookout": 6,
+  "storyshade": 3,
+  "thornwolf": 2,
+  "varkesh": {
+    "$undefined": true
+  },
+  "veyr": {
+    "$undefined": true
+  },
+  "wardagent": 6,
+  "warden": 7,
+  "wolf": 2,
+  "xalith": {
+    "$undefined": true
+  }
+}

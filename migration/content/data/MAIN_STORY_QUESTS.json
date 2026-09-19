@@ -1,0 +1,51 @@
+[
+  {
+    "coins": 200,
+    "end": 7,
+    "item": "rellanSignet",
+    "start": 0,
+    "title": "Orders of the Dead",
+    "unlocks": [
+      "The Last Shift",
+      "Northern-road evidence archive",
+      "Raider Camp access"
+    ],
+    "xp": {
+      "Attack": 250,
+      "Defense": 250,
+      "Hitpoints": 150
+    }
+  },
+  {
+    "coins": 300,
+    "end": 18,
+    "item": "ironhollowBelt",
+    "start": 7,
+    "title": "The Last Shift",
+    "unlocks": [
+      "Whispers at Hollow Shrine",
+      "Ironhollow lower workings"
+    ],
+    "xp": {
+      "Hitpoints": 200,
+      "Mining": 400,
+      "Smithing": 400
+    }
+  },
+  {
+    "coins": 400,
+    "end": 25,
+    "item": "whisperPendant",
+    "start": 18,
+    "title": "Whispers at Hollow Shrine",
+    "unlocks": [
+      "The King Beneath the Mountain",
+      "Hollow Shrine research"
+    ],
+    "xp": {
+      "Hitpoints": 250,
+      "Magic": 500,
+      "Worship": 250
+    }
+  }
+]

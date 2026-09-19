@@ -1,0 +1,344 @@
+[
+  {
+    "desc": "Swipe with one finger to turn the camera. Pinch to zoom. On a computer, drag the view or hold the arrow keys.",
+    "event": "camera",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Look around"
+  },
+  {
+    "desc": "Tap any clear ground and walk a few steps. Tap Run to travel faster; your energy recovers while walking or resting.",
+    "event": "walk",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Take your first steps"
+  },
+  {
+    "desc": "A mysterious man is calling you over from the square. Find out where you are—and why he brought you here.",
+    "event": "talk-guide",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "The crossing keeper"
+  },
+  {
+    "desc": "Open Bag in the navigation bar. Tap a material to highlight it, then tap another item or a world target. Press and hold any item for Use and its other actions.",
+    "event": "bag",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Your belongings"
+  },
+  {
+    "desc": "Open the Skills tab. Each skill has its own level and XP, including Attack, Strength, Defense and Hitpoints.",
+    "event": "skills",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Your skills"
+  },
+  {
+    "desc": "Rowan sends you to Arcanist Elowen inside the magic school in the island’s southeast. Open the door and walk in.",
+    "event": "talk-magic",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Carry Firstlight’s signal"
+  },
+  {
+    "desc": "Equip Elowen’s staff using the Magic icon, then attack the practice dummy. Each spell uses relics and trains your Magic level.",
+    "event": "magic",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Shape the signal"
+  },
+  {
+    "desc": "Elowen sends you to Smith Orin beside the island’s forge. He teaches both Mining and Smithing.",
+    "event": "talk-mining",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Visit the smith"
+  },
+  {
+    "desc": "Mine one copper ore and one tin ore in the yard. Both rocks can be mined at level 1.",
+    "event": "ore",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Mine copper and tin"
+  },
+  {
+    "desc": "Tap copper or tin ore in your bag, then tap the furnace. Choose the bronze bar recipe to combine both ores.",
+    "event": "smelt",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Smelt a bronze bar"
+  },
+  {
+    "desc": "Tap your bronze bar, then tap the practice anvil. Choose Dagger in the smithing menu. Your bag stays visible as you work.",
+    "event": "smith",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "A blade made by your hands"
+  },
+  {
+    "desc": "Orin sends you to Captain Vale at the training yard.",
+    "event": "talk-combat",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Protect the stores"
+  },
+  {
+    "desc": "Open Equipment, then tap the bronze dagger in the bag beside it to equip it.",
+    "event": "equip-dagger",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Equip your bronze dagger"
+  },
+  {
+    "desc": "Captain Vale will give you a wooden training sword and shield.",
+    "event": "training-kit",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "A better practice weapon"
+  },
+  {
+    "desc": "Equip both the wooden training sword and wooden shield from your bag. Keep your bronze dagger; you made it yourself.",
+    "event": "training-gear",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Prepare for practice"
+  },
+  {
+    "desc": "With your wooden sword and shield equipped, tap the training dummy. Choose Attack, Strength, Defense or balanced training using the selector.",
+    "event": "dummy",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Practice your attacks"
+  },
+  {
+    "desc": "Go through the gate beside Vale and defeat a giant rat inside the pen. The gate closes behind you. Tap Eat if your health gets low.",
+    "event": "monster",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Enter the rat pen"
+  },
+  {
+    "desc": "Return to Captain Vale for a shortbow and arrows. He will teach you to fight across the low fence.",
+    "event": "ranged-kit",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Learn ranged combat"
+  },
+  {
+    "desc": "Equip the shortbow, then equip the arrows in your ammunition slot. Arrows left in your bag cannot be fired.",
+    "event": "ranged-gear",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Equip your bow and arrows"
+  },
+  {
+    "desc": "Stand outside the rat pen and attack a giant rat with your shortbow. Stay within bow range. Low fences stop feet, but arrows and spells can pass over them. Defeat a rat to complete the lesson.",
+    "event": "ranged",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Shoot across the fence"
+  },
+  {
+    "desc": "Collect the coins and bones where the rat fell. Each tap takes the next item; keep the bones for Keeper Sera.",
+    "event": "loot",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Pick up the drops"
+  },
+  {
+    "desc": "Vale sends you to Forester Ash beside the timber yard to learn how to make camp.",
+    "event": "talk-woods",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Fill the crossing stores"
+  },
+  {
+    "desc": "Tap the marked tree. Your axe is carried with you; gathering trains Woodcutting.",
+    "event": "tree",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Cut your first log"
+  },
+  {
+    "desc": "Find Fisher Nell at Stillwater, just west of the village.",
+    "event": "talk-fishing",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Follow Ash’s directions"
+  },
+  {
+    "desc": "Tap the highlighted fishing spot. Your catch goes into your bag as raw food.",
+    "event": "fish",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Net some shrimp"
+  },
+  {
+    "desc": "Stay beside Fisher Nell. Hold a log in your bag and choose Light fire on clear ground. If you need another log, chop the tree beside her.",
+    "event": "fire",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Light a fire beside Nell"
+  },
+  {
+    "desc": "Tap raw shrimp in your bag to highlight it, then tap the fire you lit beside Nell. You will walk to that fire and cook one shrimp.",
+    "event": "cook-shrimp",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Cook with Nell"
+  },
+  {
+    "desc": "Nell sends you to Cook Bram inside the kitchen on the island’s eastern lane. He will supply a new recipe.",
+    "event": "talk-cooking",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Food for a new wayfarer"
+  },
+  {
+    "desc": "Bram has given you flour and water. Tap the flour to highlight it, then tap the jug of water to mix bread dough.",
+    "event": "mix-dough",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Mix your bread dough"
+  },
+  {
+    "desc": "Tap bread dough in your bag to highlight it, then tap the range inside the kitchen to bake bread.",
+    "event": "bake-bread",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Bake at the range"
+  },
+  {
+    "desc": "Try Eat with your cooked bread or shrimp. Food restores health. If your health is full, keep that food for a fight.",
+    "event": "eat",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Food for the road"
+  },
+  {
+    "desc": "Bram sends you to Banker Ada inside Firstlight Bank to the north. Open the bank door and walk inside.",
+    "event": "talk-bank",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Supplies that travel with you"
+  },
+  {
+    "desc": "Talk to Ada and open your bank. Deposit an item from your bag. Stored items persist with your character.",
+    "event": "deposit",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Store a supply"
+  },
+  {
+    "desc": "Withdraw an item from your bank. Worn equipment stays separate from stored supplies.",
+    "event": "withdraw",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Take it back"
+  },
+  {
+    "desc": "Ada sends you to Keeper Sera at the shrine in the island’s southwest. Worship and spirits are taught together.",
+    "event": "talk-worship",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "The First Accord"
+  },
+  {
+    "desc": "Tap bones in your bag to bury them for Worship XP. Sera can provide practice bones if you need them.",
+    "event": "bury",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Honour the fallen"
+  },
+  {
+    "desc": "Speak to Keeper Sera and choose Fire, Water, Air or Earth. Your first companion joins your party with an elemental awakening.",
+    "event": "spirit",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Choose the bond you will carry"
+  },
+  {
+    "desc": "Return to Rowan. The freedom fighters have prepared you. Ask him to open the one-way crossing to Briarhaven on the mainland.",
+    "event": "talk-finish",
+    "point": {
+      "$behavior": "d6a72ee5f3a1f774c4eed4615e23e44c1e5d1f9f0989e50aa02ba7adb1d081a3",
+      "executable": false
+    },
+    "title": "Carry the accord to Briarhaven"
+  }
+]

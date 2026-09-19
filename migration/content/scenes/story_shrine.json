@@ -1,0 +1,1116 @@
+{
+  "id": "story_shrine",
+  "dimensions": [
+    62,
+    112
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 18,
+        "z": 10
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 19,
+        "z": 9
+      },
+      {
+        "heading": 1.6507963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 18,
+        "z": 15
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 19,
+        "z": 14
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 18,
+        "z": 20
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 19,
+        "z": 19
+      },
+      {
+        "heading": 1.6507963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 18,
+        "z": 25
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 19,
+        "z": 24
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 18,
+        "z": 24
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 19,
+        "z": 26
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 20,
+        "z": 27
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 42,
+        "z": 10
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 41,
+        "z": 9
+      },
+      {
+        "heading": -1.4907963267948965,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 42,
+        "z": 15
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 41,
+        "z": 14
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 42,
+        "z": 20
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 41,
+        "z": 19
+      },
+      {
+        "heading": -1.4907963267948965,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 42,
+        "z": 25
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 41,
+        "z": 24
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 46,
+        "z": 25
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 46,
+        "z": 27
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 46,
+        "z": 31
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Table_Large",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 23,
+        "z": 28
+      },
+      {
+        "heading": 0,
+        "height": 1.15,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 20,
+        "z": 25
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Table_Large",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 48,
+        "z": 29
+      },
+      {
+        "heading": 0,
+        "height": 1.15,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 43,
+        "z": 27
+      },
+      {
+        "kind": "dais",
+        "size": 5.1,
+        "x": 30,
+        "z": 18
+      },
+      {
+        "kind": "arch",
+        "size": 1.35,
+        "x": 30,
+        "z": 35
+      },
+      {
+        "kind": "orrery",
+        "size": 1.35,
+        "x": 30,
+        "z": 8
+      },
+      {
+        "heading": -0.45,
+        "height": 1.25,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 23,
+        "z": 8
+      },
+      {
+        "heading": -0.25,
+        "height": 0.85,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 17,
+        "z": 22
+      },
+      {
+        "kind": "runeBasin",
+        "size": 1,
+        "x": 20,
+        "z": 26
+      },
+      {
+        "heading": 0.45,
+        "height": 1.25,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 36,
+        "z": 8
+      },
+      {
+        "heading": 0.25,
+        "height": 0.85,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 46,
+        "z": 23
+      },
+      {
+        "kind": "runeBasin",
+        "size": 1,
+        "x": 40,
+        "z": 26
+      },
+      {
+        "heading": 0,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 44,
+        "z": 18
+      },
+      {
+        "heading": 0.7853981633974483,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 39.89949493661167,
+        "z": 26.485281374238568
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 0.95,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 30,
+        "z": 30
+      },
+      {
+        "heading": 2.356194490192345,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 20.100505063388336,
+        "z": 26.48528137423857
+      },
+      {
+        "heading": 3.141592653589793,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 16,
+        "z": 18
+      },
+      {
+        "heading": 3.9269908169872414,
+        "height": 0.95,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 20.100505063388333,
+        "z": 9.51471862576143
+      },
+      {
+        "heading": 4.71238898038469,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 29.999999999999996,
+        "z": 6
+      },
+      {
+        "heading": 5.497787143782138,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 39.89949493661166,
+        "z": 9.514718625761429
+      }
+    ],
+    "entry": [
+      30,
+      105
+    ],
+    "exit": {
+      "$entity": "story_shrine:object:5800014"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "story_shrine",
+    "openAir": false,
+    "subtitle": "Whispers at Hollow Shrine · The buried pilgrim halls",
+    "title": "Hollow Shrine",
+    "wallTorches": [
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 28.5,
+        "z": 6.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 38.5,
+        "z": 9.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 11.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 47.5,
+        "z": 16.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 19.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 25.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 28.5,
+        "z": 30.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 35.15,
+        "z": 32.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 39.15,
+        "z": 37.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 53.85,
+        "z": 19.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 42.15,
+        "z": 43.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 56.85,
+        "z": 25.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 50.85,
+        "z": 38.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 55.85,
+        "z": 32.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 20.85,
+        "z": 45.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 28.5,
+        "z": 47.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 34.5,
+        "z": 47.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 14.5,
+        "z": 45.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 50.85,
+        "z": 44.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 50.85,
+        "z": 50.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 33.5,
+        "z": 55.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 39.5,
+        "z": 55.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 8.15,
+        "z": 48.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 45.5,
+        "z": 55.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 27.85,
+        "z": 58.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 64.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 54.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 19.5,
+        "z": 67.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 60.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 65.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 30.85,
+        "z": 74.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 76.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 24.15,
+        "z": 76.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 71.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 82.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 40.85,
+        "z": 81.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 19.15,
+        "z": 87.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 41.85,
+        "z": 87.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 25.5,
+        "z": 96.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 34.85,
+        "z": 103.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "story_shrine:object:5800014",
+      "source": {
+        "dead": 0,
+        "id": 5800014,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "story_shrine",
+        "sprite": 13,
+        "type": "exit",
+        "x": 30,
+        "y": 106
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        106.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6300020",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 16,
+        "drawY": 58,
+        "homeX": 16,
+        "homeY": 58,
+        "id": 6300020,
+        "mainStoryKey": "lantern",
+        "mountainModel": "Rock_Medium_1",
+        "name": "Oathstone of the Lantern",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored lantern scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "sprite": 12,
+        "storyScene": "story_shrine",
+        "type": "prop",
+        "x": 16,
+        "y": 58
+      },
+      "renderPosition": [
+        16.5,
+        0,
+        58.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6300021",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 28,
+        "homeX": 44,
+        "homeY": 28,
+        "id": 6300021,
+        "mainStoryKey": "hand",
+        "mountainModel": "Rock_Medium_1",
+        "name": "Oathstone of the Hand",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored hand scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "sprite": 12,
+        "storyScene": "story_shrine",
+        "type": "prop",
+        "x": 44,
+        "y": 28
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        28.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6300022",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 11,
+        "homeX": 27,
+        "homeY": 11,
+        "id": 6300022,
+        "mainStoryKey": "shrine",
+        "mountainModel": "Rock_Medium_1",
+        "name": "Shrine of the Borrowed Voice",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored shrine scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "sprite": 12,
+        "storyScene": "story_shrine",
+        "type": "prop",
+        "x": 27,
+        "y": 11
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6300023",
+      "source": {
+        "_stationary": true,
+        "atk": 3,
+        "attackLevel": 8,
+        "attackStyle": "magic",
+        "creatureLook": "skeleton",
+        "dead": 0,
+        "defenseLevel": 7,
+        "drawX": 31,
+        "drawY": 19,
+        "homeX": 31,
+        "homeY": 19,
+        "hp": 26,
+        "id": 6300023,
+        "interval": 3.1,
+        "kind": "storyshade",
+        "level": 12,
+        "look": "skeleton",
+        "mainStoryKey": "shade",
+        "mainStoryStage": 22,
+        "maxHit": 3,
+        "maxhp": 26,
+        "name": "Echo shade",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored shade scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "spread": 0,
+        "sprite": 11,
+        "storyScene": "story_shrine",
+        "style": "magic",
+        "tint": [
+          0.7,
+          0.85,
+          1.2
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 31,
+        "y": 19
+      },
+      "renderPosition": [
+        31.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600021",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 90,
+        "homeX": 25,
+        "homeY": 90,
+        "id": 6600021,
+        "name": "Abandoned pilgrim bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 25,
+        "y": 90
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        90.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600022",
+      "source": {
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 81,
+        "homeX": 20,
+        "homeY": 81,
+        "id": 6600022,
+        "name": "Recent excavation tools",
+        "placementContext": {
+          "anchor": "workbench",
+          "reason": "Authored Recent excavation tools scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "tools",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 81
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        81.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600023",
+      "source": {
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 63,
+        "homeX": 13,
+        "homeY": 63,
+        "id": 6600023,
+        "name": "Moved ancient stone",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Moved ancient stone scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "rubble",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 63
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        63.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600024",
+      "source": {
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 34,
+        "homeX": 44,
+        "homeY": 34,
+        "id": 6600024,
+        "name": "Damaged inscription",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Damaged inscription scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "ledger",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 34
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        34.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600025",
+      "source": {
+        "dead": 0,
+        "drawX": 48,
+        "drawY": 23,
+        "homeX": 48,
+        "homeY": 23,
+        "id": 6600025,
+        "name": "Unmarked research supplies",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Unmarked research supplies scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "papers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 48,
+        "y": 23
+      },
+      "renderPosition": [
+        48.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600026",
+      "source": {
+        "dead": 0,
+        "drawX": 26,
+        "drawY": 17,
+        "homeX": 26,
+        "homeY": 17,
+        "id": 6600026,
+        "name": "Empty seal-fragment socket",
+        "placementContext": {
+          "anchor": "ritual",
+          "reason": "Authored Empty seal-fragment socket scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "seal",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 26,
+        "y": 17
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600027",
+      "source": {
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 88,
+        "homeX": 35,
+        "homeY": 88,
+        "id": 6600027,
+        "name": "Weathered pilgrim statue",
+        "placementContext": {
+          "anchor": "shrine",
+          "reason": "Authored Weathered pilgrim statue scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "wardStatue",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 88
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        88.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600028",
+      "source": {
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 50,
+        "homeX": 13,
+        "homeY": 50,
+        "id": 6600028,
+        "name": "Old waymarker",
+        "placementContext": {
+          "anchor": "roadside",
+          "reason": "Authored Old waymarker scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "waymarker",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 50
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        50.5
+      ]
+    },
+    {
+      "id": "story_shrine:object:6600029",
+      "source": {
+        "dead": 0,
+        "drawX": 46,
+        "drawY": 43,
+        "homeX": 46,
+        "homeY": 43,
+        "id": 6600029,
+        "name": "Old waymarker",
+        "placementContext": {
+          "anchor": "roadside",
+          "reason": "Authored Old waymarker scene; gameplay identity and approach retained",
+          "scene": "story_shrine"
+        },
+        "questModel": "waymarker",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 46,
+        "y": 43
+      },
+      "renderPosition": [
+        46.5,
+        0,
+        43.5
+      ]
+    }
+  ],
+  "buildings": []
+}

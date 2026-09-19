@@ -1,0 +1,3867 @@
+{
+  "adamantArrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Deepiron arrowheads"
+  },
+  "adamantArrows": {
+    "ammoLevel": 30,
+    "desc": "Stronger ammunition. A suitable bow is required.",
+    "icon": 12,
+    "name": "Deepiron arrows",
+    "rangedStrength": 31
+  },
+  "adamantAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 31. Improves gathering success.",
+    "icon": 8,
+    "name": "Deepiron axe",
+    "requirements": {
+      "Woodcutting": 31
+    },
+    "toolRank": 5,
+    "toolTier": "adamant"
+  },
+  "adamantBar": {
+    "desc": "Smelt at Smithing 70. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "adamant",
+    "name": "Deepiron bar",
+    "value": 143
+  },
+  "adamantOre": {
+    "desc": "Mine at Mining 70 for 95 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Deepiron ore",
+    "resource": "adamant",
+    "value": 71
+  },
+  "adamantPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 31. Improves gathering success.",
+    "icon": 9,
+    "name": "Deepiron pickaxe",
+    "requirements": {
+      "Mining": 31
+    },
+    "toolRank": 5,
+    "toolTier": "adamant"
+  },
+  "adamant_body": {
+    "affinity": "Earth",
+    "armor": 53,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron chestplate. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Deepiron: dense quarry metal for holding ground. Weight 5.1. Affinity: Earth.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.M.001",
+    "modelTint": [
+      0.66,
+      1.06,
+      0.63
+    ],
+    "name": "Deepiron chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 5.1
+  },
+  "adamant_dagger": {
+    "armor": 0,
+    "armorSet": "adamant",
+    "attackBonus": 33,
+    "attackLevel": 30,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 30.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron dagger",
+    "power": 28,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 30
+    },
+    "slot": "weapon",
+    "strengthBonus": 28,
+    "style": "melee"
+  },
+  "adamant_feet": {
+    "affinity": "Earth",
+    "armor": 6,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron boots. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Deepiron: dense quarry metal for holding ground. Weight 1. Affinity: Earth.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1
+  },
+  "adamant_hands": {
+    "affinity": "Earth",
+    "armor": 5,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron gauntlets. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Deepiron: dense quarry metal for holding ground. Weight 0.7. Affinity: Earth.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.7
+  },
+  "adamant_head": {
+    "affinity": "Earth",
+    "armor": 17,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron headgear. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Deepiron: dense quarry metal for holding ground. Weight 1.7. Affinity: Earth.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.7
+  },
+  "adamant_legs": {
+    "affinity": "Earth",
+    "armor": 33,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron legguards. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Deepiron: dense quarry metal for holding ground. Weight 3.4. Affinity: Earth.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 3.4
+  },
+  "adamant_shield": {
+    "armor": 32,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Deepiron shield. Requires Defense 30. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "M_Shield",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "adamant_shoulders": {
+    "armor": 7,
+    "armorSet": "adamant",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 30,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 30
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "adamant_weapon": {
+    "armor": 0,
+    "armorSet": "adamant",
+    "attackBonus": 33,
+    "attackLevel": 30,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Deepiron sword. Requires Attack 30. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelTint": {
+      "$pointer": "data:ITEMS/adamant_body/modelTint"
+    },
+    "name": "Deepiron sword",
+    "power": 28,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/adamant_dagger/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 28,
+    "style": "melee"
+  },
+  "adeptRobe": {
+    "armor": 0,
+    "desc": "Requires Magic 20. Improves spell accuracy.",
+    "icon": 15,
+    "magic": 0,
+    "magicAccuracy": 15,
+    "name": "Adept robe",
+    "requirements": {
+      "Magic": 20
+    },
+    "slot": "body"
+  },
+  "airRunes": {
+    "desc": "Air relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Air relic"
+  },
+  "arrowShafts": {
+    "desc": "Arrow shafts. Used in spells or fletching.",
+    "icon": 12,
+    "name": "Arrow shafts"
+  },
+  "arrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Iron arrowheads"
+  },
+  "arrows": {
+    "desc": "Bronze arrows. Equip a bow to use them.",
+    "icon": 12,
+    "name": "Bronze arrows",
+    "rangedStrength": 7
+  },
+  "ashes": {
+    "desc": "Cool ashes left after a log fire burns out.",
+    "icon": 9,
+    "name": "Ashes"
+  },
+  "blackAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 11. Improves gathering success.",
+    "icon": 8,
+    "name": "Charsteel axe",
+    "requirements": {
+      "Woodcutting": 11
+    },
+    "toolRank": 3,
+    "toolTier": "black"
+  },
+  "blackHideBody": {
+    "armor": 60,
+    "desc": "Ranged 70 and Defense 40. Ranged armor with improved physical protection.",
+    "icon": 5,
+    "magicAccuracy": -15,
+    "name": "Black hide body",
+    "rangedAccuracy": 21,
+    "requirements": {
+      "Defense": 40,
+      "Ranged": 70
+    },
+    "slot": "body"
+  },
+  "blackPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 11. Improves gathering success.",
+    "icon": 9,
+    "name": "Charsteel pickaxe",
+    "requirements": {
+      "Mining": 11
+    },
+    "toolRank": 3,
+    "toolTier": "black"
+  },
+  "black_body": {
+    "affinity": null,
+    "armor": 28,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel chestplate. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Charsteel: kiln-tempered armour for ward resistance. Weight 3.9.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.I.001",
+    "modelTint": [
+      0.42,
+      0.46,
+      0.48
+    ],
+    "name": "Charsteel chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 2,
+    "weight": 3.9
+  },
+  "black_feet": {
+    "affinity": null,
+    "armor": 3,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel boots. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Charsteel: kiln-tempered armour for ward resistance. Weight 0.8.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 2,
+    "weight": 0.8
+  },
+  "black_hands": {
+    "affinity": null,
+    "armor": 2,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel gauntlets. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Charsteel: kiln-tempered armour for ward resistance. Weight 0.5.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 2,
+    "weight": 0.5
+  },
+  "black_head": {
+    "affinity": null,
+    "armor": 9,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel headgear. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Charsteel: kiln-tempered armour for ward resistance. Weight 1.3.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 2,
+    "weight": 1.3
+  },
+  "black_legs": {
+    "affinity": null,
+    "armor": 17,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel legguards. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Charsteel: kiln-tempered armour for ward resistance. Weight 2.6.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 2,
+    "weight": 2.6
+  },
+  "black_shield": {
+    "armor": 17,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Charsteel shield. Requires Defense 10. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "I_Shield",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "black_shoulders": {
+    "armor": 4,
+    "armorSet": "black",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 10,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 10
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "black_weapon": {
+    "armor": 0,
+    "armorSet": "black",
+    "attackBonus": 17,
+    "attackLevel": 10,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Charsteel sword. Requires Attack 10. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelTint": {
+      "$pointer": "data:ITEMS/black_body/modelTint"
+    },
+    "name": "Charsteel sword",
+    "power": 14,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 10
+    },
+    "slot": "weapon",
+    "strengthBonus": 14,
+    "style": "melee"
+  },
+  "bloodRunes": {
+    "desc": "Heart relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Heart relic"
+  },
+  "blueHideBody": {
+    "armor": 42,
+    "desc": "Ranged 50 and Defense 40. Ranged armor with improved physical protection.",
+    "icon": 5,
+    "magicAccuracy": -15,
+    "name": "Blue hide body",
+    "rangedAccuracy": 15,
+    "requirements": {
+      "Defense": 40,
+      "Ranged": 50
+    },
+    "slot": "body"
+  },
+  "bones": {
+    "desc": "Tap to bury one for 18 Worship XP. Dropped by creatures throughout the realm. Can also be sold for 4 coins.",
+    "icon": 14,
+    "name": "Bones"
+  },
+  "bread": {
+    "desc": "A freshly baked loaf. Restores up to 5 Hitpoints.",
+    "heal": 5,
+    "icon": 9,
+    "name": "Bread",
+    "value": 5
+  },
+  "breadDough": {
+    "desc": "Bake at a cooking range to make bread.",
+    "icon": 9,
+    "name": "Bread dough"
+  },
+  "bronzeArrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Bronze arrowheads"
+  },
+  "bronzeAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 1. Improves gathering success.",
+    "icon": 8,
+    "name": "Bronze axe",
+    "requirements": {
+      "Woodcutting": 1
+    },
+    "toolRank": 0,
+    "toolTier": "bronze"
+  },
+  "bronzeBar": {
+    "desc": "Smelt at Smithing 1. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "bronze",
+    "name": "Bronze bar",
+    "value": 5
+  },
+  "bronzePickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 1. Improves gathering success.",
+    "icon": 9,
+    "name": "Bronze pickaxe",
+    "requirements": {
+      "Mining": 1
+    },
+    "toolRank": 0,
+    "toolTier": "bronze"
+  },
+  "bronzeSword": {
+    "armor": 0,
+    "armorSet": "bronze",
+    "attackBonus": 4,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Bronze sword. Requires Attack 1. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "B_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze sword",
+    "power": 4,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 1
+    },
+    "slot": "weapon",
+    "strengthBonus": 4,
+    "style": "melee"
+  },
+  "bronze_body": {
+    "affinity": null,
+    "armor": 9,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze chestplate. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Repairable starter metal. Weight 3.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 3
+  },
+  "bronze_dagger": {
+    "armor": 0,
+    "armorSet": "bronze",
+    "attackBonus": 4,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 1.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "B_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze dagger",
+    "power": 4,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/bronzeSword/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 4,
+    "style": "melee"
+  },
+  "bronze_feet": {
+    "affinity": null,
+    "armor": 1,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze boots. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Repairable starter metal. Weight 0.6.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.6
+  },
+  "bronze_hands": {
+    "affinity": null,
+    "armor": 1,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze gauntlets. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Repairable starter metal. Weight 0.4.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.4
+  },
+  "bronze_head": {
+    "affinity": null,
+    "armor": 3,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze headgear. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Repairable starter metal. Weight 1.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1
+  },
+  "bronze_legs": {
+    "affinity": null,
+    "armor": 6,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze legguards. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Repairable starter metal. Weight 2.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2
+  },
+  "bronze_shield": {
+    "armor": 6,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Bronze shield. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "B_Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "bronze_shoulders": {
+    "armor": 1,
+    "armorSet": "bronze",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.B.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "bronze_weapon": {
+    "armor": 0,
+    "armorSet": "bronze",
+    "attackBonus": 4,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Bronze sword. Requires Attack 1. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "B_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Bronze sword",
+    "power": 4,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/bronzeSword/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 4,
+    "style": "melee"
+  },
+  "burntFish": {
+    "desc": "A spoiled catch. Higher Cooking reduces the chance of burning food.",
+    "icon": 10,
+    "name": "Burnt fish"
+  },
+  "chaosRunes": {
+    "desc": "Fracture relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Fracture relic"
+  },
+  "coal": {
+    "desc": "Mine at Mining 30 for 50 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Coal ore",
+    "resource": "coal",
+    "value": 31
+  },
+  "coins": {
+    "desc": "Money carried in your inventory. Add to pouch to store it, or offer it in a player trade.",
+    "icon": 0,
+    "name": "Coins"
+  },
+  "copperNecklace": {
+    "desc": "A simple copper necklace with a green stone. Worn in the necklace slot.",
+    "icon": 14,
+    "model": "Veldren_Necklace",
+    "name": "Copper necklace",
+    "slot": "neck"
+  },
+  "copperOre": {
+    "desc": "Mine at Mining 1 for 17.5 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Copper ore",
+    "resource": "copper",
+    "value": 2
+  },
+  "deathRunes": {
+    "desc": "Memory relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Memory relic"
+  },
+  "dragonslayerAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 61. Improves gathering success.",
+    "icon": 8,
+    "name": "Wyrmforged axe",
+    "requirements": {
+      "Woodcutting": 61
+    },
+    "toolRank": 7,
+    "toolTier": "dragonslayer"
+  },
+  "dragonslayerPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 61. Improves gathering success.",
+    "icon": 9,
+    "name": "Wyrmforged pickaxe",
+    "requirements": {
+      "Mining": 61
+    },
+    "toolRank": 7,
+    "toolTier": "dragonslayer"
+  },
+  "dragonslayer_body": {
+    "affinity": null,
+    "armor": 110,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged chestplate. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Wyrmforged: reinforced metal for dangerous expeditions. Weight 5.4.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 3,
+    "weight": 5.4
+  },
+  "dragonslayer_feet": {
+    "affinity": null,
+    "armor": 11,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged boots. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Wyrmforged: reinforced metal for dangerous expeditions. Weight 1.1.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 3,
+    "weight": 1.1
+  },
+  "dragonslayer_hands": {
+    "affinity": null,
+    "armor": 10,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged gauntlets. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Wyrmforged: reinforced metal for dangerous expeditions. Weight 0.7.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 3,
+    "weight": 0.7
+  },
+  "dragonslayer_head": {
+    "affinity": null,
+    "armor": 34,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged headgear. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Wyrmforged: reinforced metal for dangerous expeditions. Weight 1.8.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 3,
+    "weight": 1.8
+  },
+  "dragonslayer_legs": {
+    "affinity": null,
+    "armor": 68,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged legguards. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Wyrmforged: reinforced metal for dangerous expeditions. Weight 3.6.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 3,
+    "weight": 3.6
+  },
+  "dragonslayer_shield": {
+    "armor": 67,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Wyrmforged shield. Requires Defense 60. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "DS_Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "dragonslayer_shoulders": {
+    "armor": 15,
+    "armorSet": "dragonslayer",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 60,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.DS.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 60
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "dragonslayer_weapon": {
+    "armor": 0,
+    "armorSet": "dragonslayer",
+    "attackBonus": 67,
+    "attackLevel": 60,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Wyrmforged sword. Requires Attack 60. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "DS_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Wyrmforged sword",
+    "power": 60,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 60
+    },
+    "slot": "weapon",
+    "strengthBonus": 60,
+    "style": "melee"
+  },
+  "earthRunes": {
+    "desc": "Earth relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Earth relic"
+  },
+  "fang": {
+    "desc": "A trophy from a briar wolf. Sell for 6 coins.",
+    "icon": 11,
+    "name": "Wolf fang"
+  },
+  "feathers": {
+    "desc": "Feathers. Used in spells or fletching.",
+    "icon": 12,
+    "name": "Feathers"
+  },
+  "fireRunes": {
+    "desc": "Fire relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Fire relic"
+  },
+  "fish": {
+    "desc": "Eat to restore up to 7 Hitpoints.",
+    "heal": 7,
+    "icon": 10,
+    "name": "Trout",
+    "value": 7
+  },
+  "flour": {
+    "desc": "Mix with a jug of water to make bread dough.",
+    "icon": 9,
+    "name": "Flour"
+  },
+  "forgedOrders": {
+    "bound": true,
+    "desc": "Paid raiders’ dispatch. Hand to Rellan; its seal, payment and cargo evidence remain in your journal.",
+    "icon": 13,
+    "name": "Forged Royal Orders",
+    "tradeable": false
+  },
+  "goldBar": {
+    "desc": "Smelt at Smithing 40. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "gold",
+    "name": "Gold bar",
+    "value": 83
+  },
+  "goldOre": {
+    "desc": "Mine at Mining 40 for 65 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Gold ore",
+    "resource": "gold",
+    "value": 41
+  },
+  "gold_body": {
+    "affinity": null,
+    "armor": 75,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded chestplate. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Gilded metalwork: ceremonial finish, Eldrite-grade protection. Weight 4.2.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 4.2
+  },
+  "gold_feet": {
+    "affinity": null,
+    "armor": 8,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded boots. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Gilded metalwork: ceremonial finish, Eldrite-grade protection. Weight 0.8.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.8
+  },
+  "gold_hands": {
+    "affinity": null,
+    "armor": 7,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded gauntlets. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Gilded metalwork: ceremonial finish, Eldrite-grade protection. Weight 0.6.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.6
+  },
+  "gold_head": {
+    "affinity": null,
+    "armor": 23,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded headgear. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Gilded metalwork: ceremonial finish, Eldrite-grade protection. Weight 1.4.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.4
+  },
+  "gold_legs": {
+    "affinity": null,
+    "armor": 47,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded legguards. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Gilded metalwork: ceremonial finish, Eldrite-grade protection. Weight 2.8.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2.8
+  },
+  "gold_shield": {
+    "armor": 46,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Gilded shield. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "G__Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "gold_shoulders": {
+    "armor": 10,
+    "armorSet": "gold",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.G.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "gold_weapon": {
+    "armor": 0,
+    "armorSet": "gold",
+    "attackBonus": 48,
+    "attackLevel": 40,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Gilded sword. Requires Attack 40. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "G_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Gilded sword",
+    "power": 40,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 40
+    },
+    "slot": "weapon",
+    "strengthBonus": 40,
+    "style": "melee"
+  },
+  "greenHideBody": {
+    "armor": 35,
+    "desc": "Ranged 40 and Defense 40. Ranged armor with improved physical protection.",
+    "icon": 5,
+    "magicAccuracy": -15,
+    "name": "Green hide body",
+    "rangedAccuracy": 12,
+    "requirements": {
+      "Defense": 40,
+      "Ranged": 40
+    },
+    "slot": "body"
+  },
+  "headlessArrows": {
+    "desc": "Headless arrows. Used in spells or fletching.",
+    "icon": 12,
+    "name": "Headless arrows"
+  },
+  "helmet_crest_1": {
+    "desc": "A keepsake helmet ornament. Headgear now uses a single equipment slot. This older ornament can be stored or sold.",
+    "icon": 4,
+    "model": "HeadAttach.001",
+    "name": "Crimson plume",
+    "slot": "crest"
+  },
+  "helmet_crest_2": {
+    "desc": "A keepsake helmet ornament. Headgear now uses a single equipment slot. This older ornament can be stored or sold.",
+    "icon": 4,
+    "model": "HeadAttach.002",
+    "name": "Royal plume",
+    "slot": "crest"
+  },
+  "helmet_crest_3": {
+    "desc": "A keepsake helmet ornament. Headgear now uses a single equipment slot. This older ornament can be stored or sold.",
+    "icon": 4,
+    "model": "HeadAttach.003",
+    "name": "Winged crest",
+    "slot": "crest"
+  },
+  "helmet_crest_4": {
+    "desc": "A keepsake helmet ornament. Headgear now uses a single equipment slot. This older ornament can be stored or sold.",
+    "icon": 4,
+    "model": "HeadAttach.004",
+    "name": "Crown crest",
+    "slot": "crest"
+  },
+  "helmet_crest_5": {
+    "desc": "A keepsake helmet ornament. Headgear now uses a single equipment slot. This older ornament can be stored or sold.",
+    "icon": 4,
+    "model": "HeadAttach.005",
+    "name": "Knight crest",
+    "slot": "crest"
+  },
+  "herbs": {
+    "atlas": "environment",
+    "desc": "Harvested on the farm. Eat to restore 6 health, or sell at a shop.",
+    "icon": 14,
+    "name": "Fresh herbs"
+  },
+  "huntersMark": {
+    "desc": "Earned from minibosses and bosses. Trade marks for equipment in the Hunts panel.",
+    "icon": 11,
+    "name": "Hunter’s mark"
+  },
+  "ironArrows": {
+    "ammoLevel": 1,
+    "desc": "Stronger ammunition. A suitable bow is required.",
+    "icon": 12,
+    "name": "Iron arrows",
+    "rangedStrength": 10
+  },
+  "ironAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 1. Improves gathering success.",
+    "icon": 8,
+    "name": "Iron axe",
+    "requirements": {
+      "Woodcutting": 1
+    },
+    "toolRank": 1,
+    "toolTier": "iron"
+  },
+  "ironBar": {
+    "desc": "Smelt at Smithing 15. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "iron",
+    "name": "Iron bar",
+    "value": 33
+  },
+  "ironHelm": {
+    "affinity": null,
+    "armor": 4,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron headgear. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Sturdy general-purpose metal. Weight 1.2.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron helmet",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.2
+  },
+  "ironPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 1. Improves gathering success.",
+    "icon": 9,
+    "name": "Iron pickaxe",
+    "requirements": {
+      "Mining": 1
+    },
+    "toolRank": 1,
+    "toolTier": "iron"
+  },
+  "ironShield": {
+    "armor": 8,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron shield. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "I_Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "ironSword": {
+    "armor": 0,
+    "armorSet": "iron",
+    "attackBonus": 8,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Iron sword. Requires Attack 1. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron sword",
+    "power": 6,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 1
+    },
+    "slot": "weapon",
+    "strengthBonus": 6,
+    "style": "melee"
+  },
+  "iron_body": {
+    "affinity": null,
+    "armor": 14,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron chestplate. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Sturdy general-purpose metal. Weight 3.6.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 3.6
+  },
+  "iron_dagger": {
+    "armor": 0,
+    "armorSet": "iron",
+    "attackBonus": 8,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 1.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron dagger",
+    "power": 6,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/ironSword/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 6,
+    "style": "melee"
+  },
+  "iron_feet": {
+    "affinity": null,
+    "armor": 1,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron boots. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Sturdy general-purpose metal. Weight 0.7.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.7
+  },
+  "iron_hands": {
+    "affinity": null,
+    "armor": 1,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron gauntlets. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Sturdy general-purpose metal. Weight 0.5.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.5
+  },
+  "iron_head": {
+    "affinity": null,
+    "armor": 4,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron headgear. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Sturdy general-purpose metal. Weight 1.2.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "$pointer": "data:ITEMS/ironHelm/requirements"
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.2
+  },
+  "iron_legs": {
+    "affinity": null,
+    "armor": 9,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron legguards. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Sturdy general-purpose metal. Weight 2.4.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2.4
+  },
+  "iron_shield": {
+    "armor": 8,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Iron shield. Requires Defense 1. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "I_Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "$pointer": "data:ITEMS/ironShield/requirements"
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "iron_shoulders": {
+    "armor": 2,
+    "armorSet": "iron",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 1,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.I.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "iron_weapon": {
+    "armor": 0,
+    "armorSet": "iron",
+    "attackBonus": 8,
+    "attackLevel": 1,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Iron sword. Requires Attack 1. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Iron sword",
+    "power": 6,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/ironSword/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 6,
+    "style": "melee"
+  },
+  "ironhollowBelt": {
+    "bound": true,
+    "desc": "Adds 2 percentage points to Mining success, within the normal success cap. Your fitted tools remain on the belt. Recover from Hesta. Non-tradeable; bankable.",
+    "icon": 9,
+    "miningSuccess": 0.02,
+    "name": "Ironhollow Miner’s Belt",
+    "slot": "belt",
+    "tradeable": false
+  },
+  "jugWater": {
+    "desc": "Mix with flour to make bread dough.",
+    "icon": 9,
+    "name": "Jug of water"
+  },
+  "lakeRecord": {
+    "desc": "Proof that the Fairy Lands lake can restore relics. Bring it to Arcanist Selene.",
+    "icon": 13,
+    "name": "Lake resonance record",
+    "tradeable": false
+  },
+  "leatherArmor": {
+    "armor": 8,
+    "desc": "Light leather body armor. Defense 1; suitable for early ranged training.",
+    "icon": 5,
+    "magicAccuracy": -2,
+    "name": "Leather armor",
+    "rangedAccuracy": 2,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "body"
+  },
+  "leatherBoots": {
+    "armor": 1,
+    "desc": "Light leather boots. Requires Defense 1.",
+    "icon": 7,
+    "name": "Leather boots",
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "feet"
+  },
+  "lobster": {
+    "desc": "Eat to restore up to 12 Hitpoints.",
+    "heal": 12,
+    "icon": 10,
+    "name": "Lobster",
+    "value": 12
+  },
+  "lodestone": {
+    "desc": "A stone that holds an inscription. Use a chisel on it to choose a relic type.",
+    "icon": 9,
+    "name": "Lodestone",
+    "value": 5
+  },
+  "logs": {
+    "desc": "Light at Firemaking 15 for 60 XP. Gather at Woodcutting 15.",
+    "icon": 8,
+    "logType": "oak",
+    "name": "Oak logs",
+    "value": 6
+  },
+  "mageRobe": {
+    "armor": 0,
+    "desc": "Light robes that improve magic accuracy.",
+    "icon": 15,
+    "magic": 0,
+    "magicAccuracy": 5,
+    "name": "Mage robe",
+    "requirements": {
+      "Magic": 1
+    },
+    "slot": "body"
+  },
+  "magicLogs": {
+    "desc": "Light at Firemaking 75 for 303.8 XP. Gather at Woodcutting 75.",
+    "icon": 8,
+    "logType": "magic",
+    "name": "Magic logs",
+    "value": 26
+  },
+  "magicShortbow": {
+    "attackBonus": 69,
+    "attackTicks": 4,
+    "desc": "Requires Ranged 50. Better ranged accuracy and support for stronger arrows.",
+    "icon": 2,
+    "maxAmmo": 60,
+    "name": "Magic shortbow",
+    "power": 0,
+    "range": 7,
+    "requirements": {
+      "Ranged": 50
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  },
+  "mapleLogs": {
+    "desc": "Light at Firemaking 45 for 135 XP. Gather at Woodcutting 45.",
+    "icon": 8,
+    "logType": "maple",
+    "name": "Maple logs",
+    "value": 16
+  },
+  "mapleShortbow": {
+    "attackBonus": 29,
+    "attackTicks": 4,
+    "desc": "Requires Ranged 30. Better ranged accuracy and support for stronger arrows.",
+    "icon": 2,
+    "maxAmmo": 30,
+    "name": "Maple shortbow",
+    "power": 0,
+    "range": 7,
+    "requirements": {
+      "Ranged": 30
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  },
+  "memoryShard": {
+    "bound": true,
+    "desc": "A physical fragment recovered at Hollow Shrine. Bring it to Maerin; Ilyra can recover it before handover.",
+    "icon": 13,
+    "name": "Memory Shard",
+    "tradeable": false
+  },
+  "mithrilArrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Windsteel arrowheads"
+  },
+  "mithrilArrows": {
+    "ammoLevel": 20,
+    "desc": "Stronger ammunition. A suitable bow is required.",
+    "icon": 12,
+    "name": "Windsteel arrows",
+    "rangedStrength": 22
+  },
+  "mithrilAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 21. Improves gathering success.",
+    "icon": 8,
+    "name": "Windsteel axe",
+    "requirements": {
+      "Woodcutting": 21
+    },
+    "toolRank": 4,
+    "toolTier": "mithril"
+  },
+  "mithrilBar": {
+    "desc": "Smelt at Smithing 50. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "mithril",
+    "name": "Windsteel bar",
+    "value": 103
+  },
+  "mithrilOre": {
+    "desc": "Mine at Mining 55 for 80 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Windsteel ore",
+    "resource": "mithril",
+    "value": 56
+  },
+  "mithrilPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 21. Improves gathering success.",
+    "icon": 9,
+    "name": "Windsteel pickaxe",
+    "requirements": {
+      "Mining": 21
+    },
+    "toolRank": 4,
+    "toolTier": "mithril"
+  },
+  "mithril_body": {
+    "affinity": "Air",
+    "armor": 37,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel chestplate. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Windsteel: light alloy for long gathering routes. Weight 2. Affinity: Air.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2
+  },
+  "mithril_dagger": {
+    "armor": 0,
+    "armorSet": "mithril",
+    "attackBonus": 24,
+    "attackLevel": 20,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 20.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel dagger",
+    "power": 20,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 20
+    },
+    "slot": "weapon",
+    "strengthBonus": 20,
+    "style": "melee"
+  },
+  "mithril_feet": {
+    "affinity": "Air",
+    "armor": 4,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel boots. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Windsteel: light alloy for long gathering routes. Weight 0.4. Affinity: Air.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.4
+  },
+  "mithril_hands": {
+    "affinity": "Air",
+    "armor": 3,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel gauntlets. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Windsteel: light alloy for long gathering routes. Weight 0.3. Affinity: Air.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.3
+  },
+  "mithril_head": {
+    "affinity": "Air",
+    "armor": 12,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel headgear. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Windsteel: light alloy for long gathering routes. Weight 0.7. Affinity: Air.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.7
+  },
+  "mithril_legs": {
+    "affinity": "Air",
+    "armor": 23,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel legguards. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Windsteel: light alloy for long gathering routes. Weight 1.3. Affinity: Air.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.3
+  },
+  "mithril_shield": {
+    "armor": 22,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Windsteel shield. Requires Defense 20. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "M_Shield",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "mithril_shoulders": {
+    "armor": 5,
+    "armorSet": "mithril",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 20,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.M.001",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 20
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "mithril_weapon": {
+    "armor": 0,
+    "armorSet": "mithril",
+    "attackBonus": 24,
+    "attackLevel": 20,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Windsteel sword. Requires Attack 20. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelTint": {
+      "$undefined": true
+    },
+    "name": "Windsteel sword",
+    "power": 20,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/mithril_dagger/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 20,
+    "style": "melee"
+  },
+  "mysticRobe": {
+    "armor": 0,
+    "desc": "Requires Magic 40. Improves spell accuracy.",
+    "icon": 15,
+    "magic": 0,
+    "magicAccuracy": 20,
+    "name": "Mystic robe",
+    "requirements": {
+      "Magic": 40
+    },
+    "slot": "body"
+  },
+  "mysticStaff": {
+    "attackTicks": 5,
+    "desc": "Magic 40. Accuracy +28; normal spell damage and relic costs. A conventional upgrade beyond early boss weapons.",
+    "icon": 3,
+    "magicAccuracy": 28,
+    "name": "Mystic staff",
+    "power": 0,
+    "range": 6,
+    "requirements": {
+      "Magic": 40
+    },
+    "slot": "weapon",
+    "style": "magic"
+  },
+  "normalLogs": {
+    "desc": "Light at Firemaking 1 for 40 XP. Gather at Woodcutting 1.",
+    "icon": 8,
+    "logType": "normal",
+    "name": "Logs",
+    "value": 2
+  },
+  "oakShortbow": {
+    "attackBonus": 14,
+    "attackTicks": 4,
+    "desc": "Requires Ranged 5. Better ranged accuracy and support for stronger arrows.",
+    "icon": 2,
+    "maxAmmo": 5,
+    "name": "Oak shortbow",
+    "power": 0,
+    "range": 7,
+    "requirements": {
+      "Ranged": 5
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  },
+  "oakStaff": {
+    "attackBonus": 0,
+    "attackTicks": 5,
+    "desc": "A staff for autocasting spells. Requires Magic 1. Select a spell in your spellbook.",
+    "icon": 3,
+    "magicAccuracy": 10,
+    "name": "Oak staff",
+    "power": 0,
+    "range": 4,
+    "requirements": {
+      "Magic": 1
+    },
+    "slot": "weapon",
+    "style": "magic"
+  },
+  "ore": {
+    "desc": "Mine at Mining 15 for 35 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Iron ore",
+    "resource": "iron",
+    "value": 16
+  },
+  "potato": {
+    "desc": "A crop harvested from a planted potato patch.",
+    "icon": 9,
+    "name": "Potato",
+    "value": 2
+  },
+  "potatoSeeds": {
+    "desc": "Plant in a farming patch at Farming 1.",
+    "icon": 9,
+    "name": "Potato seeds"
+  },
+  "rangerCap": {
+    "armor": 1,
+    "desc": "A feathered archer’s cap. A little protection and +1 ranged accuracy.",
+    "icon": 4,
+    "name": "Ranger cap",
+    "rangedAccuracy": 1,
+    "slot": "head"
+  },
+  "rangerHood": {
+    "armor": 1,
+    "desc": "A cloth ranger hood, worn separately from your everyday clothes. Requires Defense 1.",
+    "icon": 4,
+    "model": "Outfit_Ranger_Head_Hood",
+    "name": "Ranger hood",
+    "openFace": true,
+    "rangedAccuracy": 1,
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "head"
+  },
+  "rawLobster": {
+    "desc": "Requires Cooking 40. Cooking grants 120 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw lobster",
+    "rawFish": "lobster",
+    "value": 6
+  },
+  "rawSalmon": {
+    "desc": "Requires Cooking 25. Cooking grants 90 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw salmon",
+    "rawFish": "salmon",
+    "value": 4
+  },
+  "rawShark": {
+    "desc": "Requires Cooking 80. Cooking grants 210 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw shark",
+    "rawFish": "shark",
+    "value": 10
+  },
+  "rawShrimp": {
+    "desc": "Requires Cooking 1. Cooking grants 30 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw shrimp",
+    "rawFish": "shrimp",
+    "value": 1
+  },
+  "rawSwordfish": {
+    "desc": "Requires Cooking 45. Cooking grants 140 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw swordfish",
+    "rawFish": "swordfish",
+    "value": 7
+  },
+  "rawTrout": {
+    "desc": "Requires Cooking 15. Cooking grants 70 XP; food can burn.",
+    "icon": 10,
+    "name": "Raw trout",
+    "rawFish": "trout",
+    "value": 3
+  },
+  "redHideBody": {
+    "armor": 50,
+    "desc": "Ranged 60 and Defense 40. Ranged armor with improved physical protection.",
+    "icon": 5,
+    "magicAccuracy": -15,
+    "name": "Red hide body",
+    "rangedAccuracy": 18,
+    "requirements": {
+      "Defense": 40,
+      "Ranged": 60
+    },
+    "slot": "body"
+  },
+  "relicChisel": {
+    "desc": "Selene’s tool. Use it on lodestone to inscribe unfinished relics.",
+    "icon": 12,
+    "name": "Inscribing chisel",
+    "tradeable": false
+  },
+  "rellanSignet": {
+    "armor": 1,
+    "bound": true,
+    "desc": "Defence +1. Rellan’s early signet; recover it from him if lost. Non-tradeable; bankable.",
+    "icon": 14,
+    "name": "Rellan’s Signet Ring",
+    "slot": "ring",
+    "tradeable": false
+  },
+  "runeArrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Eldrite arrowheads"
+  },
+  "runeArrows": {
+    "ammoLevel": 40,
+    "desc": "Stronger ammunition. A suitable bow is required.",
+    "icon": 12,
+    "name": "Eldrite arrows",
+    "rangedStrength": 49
+  },
+  "runeAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 41. Improves gathering success.",
+    "icon": 8,
+    "name": "Eldrite axe",
+    "requirements": {
+      "Woodcutting": 41
+    },
+    "toolRank": 6,
+    "toolTier": "rune"
+  },
+  "runeBar": {
+    "desc": "Smelt at Smithing 85. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "rune",
+    "name": "Eldrite bar",
+    "value": 173
+  },
+  "runeOre": {
+    "desc": "Mine at Mining 85 for 125 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Eldrite ore",
+    "resource": "rune",
+    "value": 86
+  },
+  "runePickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 41. Improves gathering success.",
+    "icon": 9,
+    "name": "Eldrite pickaxe",
+    "requirements": {
+      "Mining": 41
+    },
+    "toolRank": 6,
+    "toolTier": "rune"
+  },
+  "rune_body": {
+    "affinity": "Attuned",
+    "armor": 75,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite chestplate. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Eldrite: a conductor for Spirit-attuned equipment. Weight 3.5. Affinity: Attuned.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.M.001",
+    "modelTint": [
+      0.68,
+      1.1,
+      1.24
+    ],
+    "name": "Eldrite chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 3.5
+  },
+  "rune_dagger": {
+    "armor": 0,
+    "armorSet": "rune",
+    "attackBonus": 48,
+    "attackLevel": 40,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 40.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite dagger",
+    "power": 40,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 40
+    },
+    "slot": "weapon",
+    "strengthBonus": 40,
+    "style": "melee"
+  },
+  "rune_feet": {
+    "affinity": "Attuned",
+    "armor": 8,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite boots. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Eldrite: a conductor for Spirit-attuned equipment. Weight 0.7. Affinity: Attuned.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.7
+  },
+  "rune_hands": {
+    "affinity": "Attuned",
+    "armor": 7,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite gauntlets. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Eldrite: a conductor for Spirit-attuned equipment. Weight 0.5. Affinity: Attuned.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.5
+  },
+  "rune_head": {
+    "affinity": "Attuned",
+    "armor": 23,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite headgear. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Eldrite: a conductor for Spirit-attuned equipment. Weight 1.2. Affinity: Attuned.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.2
+  },
+  "rune_legs": {
+    "affinity": "Attuned",
+    "armor": 47,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite legguards. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Eldrite: a conductor for Spirit-attuned equipment. Weight 2.3. Affinity: Attuned.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2.3
+  },
+  "rune_shield": {
+    "armor": 46,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Eldrite shield. Requires Defense 40. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "M_Shield",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "rune_shoulders": {
+    "armor": 10,
+    "armorSet": "rune",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 40,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.M.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "rune_weapon": {
+    "armor": 0,
+    "armorSet": "rune",
+    "attackBonus": 48,
+    "attackLevel": 40,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Eldrite sword. Requires Attack 40. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "M_Sword",
+    "modelTint": {
+      "$pointer": "data:ITEMS/rune_body/modelTint"
+    },
+    "name": "Eldrite sword",
+    "power": 40,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/rune_dagger/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 40,
+    "style": "melee"
+  },
+  "runes": {
+    "desc": "Mind relics power strike spells. Elemental relics are also required.",
+    "icon": 13,
+    "name": "Mind relic"
+  },
+  "salmon": {
+    "desc": "Eat to restore up to 9 Hitpoints.",
+    "heal": 9,
+    "icon": 10,
+    "name": "Salmon",
+    "value": 9
+  },
+  "scholarAmulet": {
+    "desc": "Magic 40. Magic and Worship accuracy +4. A conventional upgrade to early enchanted pendants.",
+    "icon": 14,
+    "magicAccuracy": 4,
+    "name": "Scholar’s amulet",
+    "requirements": {
+      "Magic": 40
+    },
+    "slot": "neck",
+    "worshipAccuracy": 4
+  },
+  "scholarMantle": {
+    "armor": 4,
+    "desc": "Magic 40. Defence +4 and Magic defence +6. Woven for experienced ward scholars.",
+    "icon": 15,
+    "magicDefense": 6,
+    "name": "Scholar’s mantle",
+    "requirements": {
+      "Magic": 40
+    },
+    "slot": "cape"
+  },
+  "shark": {
+    "desc": "Eat to restore up to 20 Hitpoints.",
+    "heal": 20,
+    "icon": 10,
+    "name": "Shark",
+    "value": 20
+  },
+  "shortbow": {
+    "attackBonus": 8,
+    "attackTicks": 4,
+    "desc": "A basic bow. Requires Ranged 1; fires bronze or iron arrows.",
+    "icon": 2,
+    "maxAmmo": 1,
+    "name": "Shortbow",
+    "power": 0,
+    "range": 5,
+    "requirements": {
+      "Ranged": 1
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  },
+  "shrimp": {
+    "desc": "Eat to restore up to 3 Hitpoints.",
+    "heal": 3,
+    "icon": 10,
+    "name": "Shrimp",
+    "value": 3
+  },
+  "steelArrowheads": {
+    "desc": "Combine 15 with 15 headless arrows using Fletching.",
+    "icon": 12,
+    "name": "Steel arrowheads"
+  },
+  "steelArrows": {
+    "ammoLevel": 5,
+    "desc": "Stronger ammunition. A suitable bow is required.",
+    "icon": 12,
+    "name": "Steel arrows",
+    "rangedStrength": 16
+  },
+  "steelAxe": {
+    "beltTool": "axe",
+    "desc": "Add to your tool belt. Requires Woodcutting 6. Improves gathering success.",
+    "icon": 8,
+    "name": "Steel axe",
+    "requirements": {
+      "Woodcutting": 6
+    },
+    "toolRank": 2,
+    "toolTier": "steel"
+  },
+  "steelBar": {
+    "desc": "Smelt at Smithing 30. Work this bar at an anvil.",
+    "icon": 9,
+    "metal": "steel",
+    "name": "Steel bar",
+    "value": 63
+  },
+  "steelPickaxe": {
+    "beltTool": "pickaxe",
+    "desc": "Add to your tool belt. Requires Mining 6. Improves gathering success.",
+    "icon": 9,
+    "name": "Steel pickaxe",
+    "requirements": {
+      "Mining": 6
+    },
+    "toolRank": 2,
+    "toolTier": "steel"
+  },
+  "steel_body": {
+    "affinity": null,
+    "armor": 21,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel chestplate. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Includes matching shoulder armor. Tempered physical protection. Weight 4.2.",
+    "icon": 4,
+    "magicAccuracy": -16,
+    "model": "Chestplate.I.001",
+    "modelTint": [
+      1.13,
+      1.16,
+      1.18
+    ],
+    "name": "Steel chestplate",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -8,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "body",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 4.2
+  },
+  "steel_dagger": {
+    "armor": 0,
+    "armorSet": "steel",
+    "attackBonus": 12,
+    "attackLevel": 5,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "A light dagger. Requires Attack 5.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelScale": 0.72,
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel dagger",
+    "power": 10,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "Attack": 5
+    },
+    "slot": "weapon",
+    "strengthBonus": 10,
+    "style": "melee"
+  },
+  "steel_feet": {
+    "affinity": null,
+    "armor": 2,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel boots. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Tempered physical protection. Weight 0.8.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Boots.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel boots",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "feet",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.8
+  },
+  "steel_hands": {
+    "affinity": null,
+    "armor": 2,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel gauntlets. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Tempered physical protection. Weight 0.6.",
+    "icon": 4,
+    "magicAccuracy": -2,
+    "model": "Gauntlets.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel gauntlets",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "hands",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 0.6
+  },
+  "steel_head": {
+    "affinity": null,
+    "armor": 6,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel headgear. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Tempered physical protection. Weight 1.4.",
+    "icon": 4,
+    "magicAccuracy": -6,
+    "model": "Headgear.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel headgear",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -3,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "head",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 1.4
+  },
+  "steel_legs": {
+    "affinity": null,
+    "armor": 13,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel legguards. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy. Tempered physical protection. Weight 2.8.",
+    "icon": 4,
+    "magicAccuracy": -12,
+    "model": "Legguards.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel legguards",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "legs",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    },
+    "wardResistance": 0,
+    "weight": 2.8
+  },
+  "steel_shield": {
+    "armor": 13,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Steel shield. Requires Defense 5. Protects against physical attacks; heavy metal reduces ranged and magic accuracy.",
+    "icon": 6,
+    "magicAccuracy": -11,
+    "model": "I_Shield",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel shield",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -6,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "shield",
+    "strengthBonus": 0,
+    "style": "melee"
+  },
+  "steel_shoulders": {
+    "armor": 3,
+    "armorSet": "steel",
+    "attackBonus": 0,
+    "attackLevel": {
+      "$undefined": true
+    },
+    "attackTicks": {
+      "$undefined": true
+    },
+    "defenseLevel": 5,
+    "desc": "Shoulder armor is now included with its matching chest piece. This older part can be stored or sold.",
+    "icon": 4,
+    "magicAccuracy": -3,
+    "model": "Shoulder.I.001",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel shoulder pads",
+    "power": 0,
+    "range": {
+      "$undefined": true
+    },
+    "rangedAccuracy": -1,
+    "requirements": {
+      "Defense": 5
+    },
+    "slot": "shoulders",
+    "strengthBonus": 0,
+    "style": {
+      "$undefined": true
+    }
+  },
+  "steel_weapon": {
+    "armor": 0,
+    "armorSet": "steel",
+    "attackBonus": 12,
+    "attackLevel": 5,
+    "attackTicks": 4,
+    "defenseLevel": {
+      "$undefined": true
+    },
+    "desc": "Steel sword. Requires Attack 5. Four-tick sword; higher accuracy and Strength bonus.",
+    "icon": 0,
+    "magicAccuracy": 0,
+    "model": "I_Sword",
+    "modelTint": {
+      "$pointer": "data:ITEMS/steel_body/modelTint"
+    },
+    "name": "Steel sword",
+    "power": 10,
+    "range": 1.45,
+    "rangedAccuracy": 0,
+    "requirements": {
+      "$pointer": "data:ITEMS/steel_dagger/requirements"
+    },
+    "slot": "weapon",
+    "strengthBonus": 10,
+    "style": "melee"
+  },
+  "studdedBody": {
+    "armor": 18,
+    "desc": "Ranged 20 and Defense 20. Ranged armor with improved physical protection.",
+    "icon": 5,
+    "magicAccuracy": -15,
+    "name": "Studded leather body",
+    "rangedAccuracy": 6,
+    "requirements": {
+      "Defense": 20,
+      "Ranged": 20
+    },
+    "slot": "body"
+  },
+  "swordfish": {
+    "desc": "Eat to restore up to 14 Hitpoints.",
+    "heal": 14,
+    "icon": 10,
+    "name": "Swordfish",
+    "value": 14
+  },
+  "temperedRing": {
+    "armor": 4,
+    "attackBonus": 2,
+    "desc": "Defence 40. Armour +4; combat accuracy +2. A forged adventurer’s signet.",
+    "icon": 14,
+    "magicAccuracy": 2,
+    "name": "Tempered signet",
+    "rangedAccuracy": 2,
+    "requirements": {
+      "Defense": 40
+    },
+    "slot": "ring"
+  },
+  "tinOre": {
+    "desc": "Mine at Mining 1 for 17.5 XP. Smelt the ore at a furnace.",
+    "icon": 9,
+    "name": "Tin ore",
+    "resource": "tin",
+    "value": 2
+  },
+  "unfinished_air": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished air relic",
+    "relicType": "air"
+  },
+  "unfinished_earth": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished earth relic",
+    "relicType": "earth"
+  },
+  "unfinished_fire": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished fire relic",
+    "relicType": "fire"
+  },
+  "unfinished_fracture": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished fracture relic",
+    "relicType": "fracture"
+  },
+  "unfinished_heart": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished heart relic",
+    "relicType": "heart"
+  },
+  "unfinished_memory": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished memory relic",
+    "relicType": "memory"
+  },
+  "unfinished_mind": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished mind relic",
+    "relicType": "mind"
+  },
+  "unfinished_water": {
+    "desc": "Inscribed lodestone. Use on the leyline altar inside Briarhaven’s magic school after Selene opens the connection.",
+    "icon": 13,
+    "name": "Unfinished water relic",
+    "relicType": "water"
+  },
+  "veilbreakerRing": {
+    "armor": 2,
+    "attackBonus": 1,
+    "bound": true,
+    "desc": "Defence +2; melee, ranged and Magic accuracy +1. Extends Spirit insight by one second. Recover from Alaric. Non-tradeable; bankable.",
+    "icon": 14,
+    "magicAccuracy": 1,
+    "name": "Veilbreaker Ring",
+    "rangedAccuracy": 1,
+    "slot": "ring",
+    "tradeable": false
+  },
+  "veyrOrb": {
+    "attackTicks": 5,
+    "desc": "Magic 20. Accuracy +18; normal spell damage and relic costs. Successful hits fracture the target’s memory for 4 seconds, adding +6 accuracy to your next Orb casts against it. A rare 1/250 Veyr drop.",
+    "icon": 3,
+    "magic": 0,
+    "magicAccuracy": 18,
+    "memoryFray": 6,
+    "name": "Veyr’s Orb",
+    "power": 0,
+    "range": 6,
+    "requirements": {
+      "Magic": 20
+    },
+    "slot": "weapon",
+    "style": "magic",
+    "tradeable": true
+  },
+  "wardkeeperCape": {
+    "armor": 3,
+    "bound": true,
+    "desc": "Defence +3; Magic defence +4. The silver three-point Wardkeeper emblem. Recover from Edda. Non-tradeable; bankable.",
+    "icon": 15,
+    "magicDefense": 4,
+    "name": "Wardkeeper Cape",
+    "slot": "cape",
+    "tradeable": false
+  },
+  "waterRunes": {
+    "desc": "Water relic. Used in spells or fletching.",
+    "icon": 13,
+    "name": "Water relic"
+  },
+  "whisperPendant": {
+    "bound": true,
+    "desc": "Magic accuracy +2; Worship accuracy +2. Reacts softly near disturbed memories. Recover from Ilyra. Non-tradeable; bankable.",
+    "icon": 14,
+    "magicAccuracy": 2,
+    "name": "Whisper Pendant",
+    "slot": "neck",
+    "tradeable": false,
+    "worshipAccuracy": 2
+  },
+  "willowLogs": {
+    "desc": "Light at Firemaking 30 for 90 XP. Gather at Woodcutting 30.",
+    "icon": 8,
+    "logType": "willow",
+    "name": "Willow logs",
+    "value": 11
+  },
+  "willowShortbow": {
+    "attackBonus": 20,
+    "attackTicks": 4,
+    "desc": "Requires Ranged 20. Better ranged accuracy and support for stronger arrows.",
+    "icon": 2,
+    "maxAmmo": 20,
+    "name": "Willow shortbow",
+    "power": 0,
+    "range": 7,
+    "requirements": {
+      "Ranged": 20
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  },
+  "wizardRobe": {
+    "armor": 0,
+    "desc": "Requires Magic 1. Improves spell accuracy.",
+    "icon": 15,
+    "magic": 0,
+    "magicAccuracy": 8,
+    "name": "Wizard robe",
+    "requirements": {
+      "Magic": 1
+    },
+    "slot": "body"
+  },
+  "woodenShield": {
+    "armor": 3,
+    "desc": "A wooden practice shield from Captain Vale. Offers modest protection with a melee weapon.",
+    "icon": 6,
+    "model": "Veldren_WoodenShield",
+    "name": "Wooden training shield",
+    "requirements": {
+      "Defense": 1
+    },
+    "slot": "shield",
+    "style": "melee"
+  },
+  "woodenSword": {
+    "attackBonus": 4,
+    "attackTicks": 4,
+    "desc": "Captain Vale’s wooden practice sword. A broader grip and reach than your first dagger; yours to keep.",
+    "icon": 0,
+    "model": "Veldren_WoodenSword",
+    "name": "Wooden training sword",
+    "power": 0,
+    "range": 1.45,
+    "requirements": {
+      "Attack": 1
+    },
+    "slot": "weapon",
+    "strengthBonus": 4,
+    "style": "melee"
+  },
+  "yewLogs": {
+    "desc": "Light at Firemaking 60 for 202.5 XP. Gather at Woodcutting 60.",
+    "icon": 8,
+    "logType": "yew",
+    "name": "Yew logs",
+    "value": 21
+  },
+  "yewShortbow": {
+    "attackBonus": 47,
+    "attackTicks": 4,
+    "desc": "Requires Ranged 40. Better ranged accuracy and support for stronger arrows.",
+    "icon": 2,
+    "maxAmmo": 40,
+    "name": "Yew shortbow",
+    "power": 0,
+    "range": 7,
+    "requirements": {
+      "Ranged": 40
+    },
+    "slot": "weapon",
+    "style": "ranged"
+  }
+}

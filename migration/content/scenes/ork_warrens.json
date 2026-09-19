@@ -1,0 +1,605 @@
+{
+  "id": "ork_warrens",
+  "dimensions": [
+    38,
+    44
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 0,
+        "height": 1.6,
+        "kind": "model",
+        "model": "World_WeaponStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 7,
+        "z": 10
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 10,
+        "z": 10
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 8,
+        "z": 12
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 7,
+        "z": 14
+      },
+      {
+        "kind": "hearth",
+        "size": 0.65,
+        "x": 10,
+        "z": 12
+      },
+      {
+        "heading": 0,
+        "height": 1.6,
+        "kind": "model",
+        "model": "World_WeaponStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 12
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 31,
+        "z": 11
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 30,
+        "z": 14
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 28,
+        "z": 15
+      },
+      {
+        "kind": "hearth",
+        "size": 0.65,
+        "x": 31,
+        "z": 16
+      },
+      {
+        "heading": 0,
+        "height": 1.6,
+        "kind": "model",
+        "model": "World_WeaponStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 8,
+        "z": 28
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 10,
+        "z": 27
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 9,
+        "z": 30
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 7,
+        "z": 31
+      },
+      {
+        "kind": "hearth",
+        "size": 0.65,
+        "x": 11,
+        "z": 30
+      },
+      {
+        "heading": 0,
+        "height": 1.6,
+        "kind": "model",
+        "model": "World_WeaponStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 30,
+        "z": 29
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 31,
+        "z": 31
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 31
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 27,
+        "z": 32
+      },
+      {
+        "kind": "hearth",
+        "size": 0.65,
+        "x": 31,
+        "z": 33
+      },
+      {
+        "heading": 0,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 14,
+        "z": 5
+      },
+      {
+        "heading": 1,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 14,
+        "z": 12
+      },
+      {
+        "heading": 2,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 14,
+        "z": 19
+      },
+      {
+        "heading": 3,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 14,
+        "z": 26
+      },
+      {
+        "heading": 4,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 14,
+        "z": 33
+      },
+      {
+        "heading": 0,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 24,
+        "z": 5
+      },
+      {
+        "heading": 1,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 24,
+        "z": 12
+      },
+      {
+        "heading": 2,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 24,
+        "z": 19
+      },
+      {
+        "heading": 3,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 24,
+        "z": 26
+      },
+      {
+        "heading": 4,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.81,
+          0.77,
+          0.66
+        ],
+        "x": 24,
+        "z": 33
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Workbench",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 27,
+        "z": 29
+      },
+      {
+        "heading": 0,
+        "height": 0.9,
+        "kind": "model",
+        "model": "World_Anvil_Log",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 9,
+        "z": 32
+      }
+    ],
+    "entry": [
+      19,
+      39
+    ],
+    "exit": {
+      "$entity": "ork_warrens:object:5800008"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "ork_warrens",
+    "openAir": false,
+    "subtitle": "Ork camps · Raided dwarven workings",
+    "title": "Ork Warrens",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 4.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 6.15,
+        "z": 11.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 25.5,
+        "z": 10.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 17.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 6.15,
+        "z": 26.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 22.85,
+        "z": 26.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 31.85,
+        "z": 34.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 35.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "ork_warrens:object:5800008",
+      "source": {
+        "dead": 0,
+        "id": 5800008,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "ork_warrens",
+        "sprite": 13,
+        "type": "exit",
+        "x": 19,
+        "y": 40
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        40.5
+      ]
+    },
+    {
+      "id": "ork_warrens:object:4700049",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 18,
+        "attackStyle": "melee",
+        "coins": 42,
+        "combatRadius": 0.45,
+        "creatureLook": "ork",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 12,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 13,
+        "hp": 46,
+        "id": 4700049,
+        "interval": 3.5,
+        "kind": "ork",
+        "level": 26,
+        "look": "ork",
+        "maxHit": 5,
+        "maxhp": 46,
+        "name": "Ork",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "weak": "magic",
+        "x": 12,
+        "y": 13
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        13.5
+      ]
+    },
+    {
+      "id": "ork_warrens:object:4700050",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 18,
+        "attackStyle": "melee",
+        "coins": 42,
+        "combatRadius": 0.45,
+        "creatureLook": "ork",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 26,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 26,
+        "homeY": 15,
+        "hp": 46,
+        "id": 4700050,
+        "interval": 3.5,
+        "kind": "ork",
+        "level": 26,
+        "look": "ork",
+        "maxHit": 5,
+        "maxhp": 46,
+        "name": "Ork",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "weak": "magic",
+        "x": 26,
+        "y": 15
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "ork_warrens:object:4700051",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 18,
+        "attackStyle": "melee",
+        "coins": 42,
+        "combatRadius": 0.45,
+        "creatureLook": "ork",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 12,
+        "drawY": 30,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 30,
+        "hp": 46,
+        "id": 4700051,
+        "interval": 3.5,
+        "kind": "ork",
+        "level": 26,
+        "look": "ork",
+        "maxHit": 5,
+        "maxhp": 46,
+        "name": "Ork",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "weak": "magic",
+        "x": 12,
+        "y": 30
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        30.5
+      ]
+    },
+    {
+      "id": "ork_warrens:object:4700052",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 18,
+        "attackStyle": "melee",
+        "coins": 42,
+        "combatRadius": 0.45,
+        "creatureLook": "ork",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 25,
+        "drawY": 32,
+        "hitAt": -100,
+        "homeX": 25,
+        "homeY": 32,
+        "hp": 46,
+        "id": 4700052,
+        "interval": 3.5,
+        "kind": "ork",
+        "level": 26,
+        "look": "ork",
+        "maxHit": 5,
+        "maxhp": 46,
+        "name": "Ork",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "weak": "magic",
+        "x": 25,
+        "y": 32
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        32.5
+      ]
+    }
+  ],
+  "buildings": []
+}

@@ -1,0 +1,80 @@
+{
+  "aelindor": {
+    "belief": "Air Spirits have their own journeys. A bond begins with attention, not a command.",
+    "place": "The Bough Palace governs from a city of woodland courts. Open ground belongs to paths and gathering places as well as to buildings.",
+    "title": "The living court",
+    "voice": "A forest is not empty land waiting for houses. Its clearings already serve a purpose."
+  },
+  "briarhaven": {
+    "belief": "A bonded Spirit is a companion with its own will. Worship strengthens your practice; it does not turn that companion into property.",
+    "place": "The bank, kitchen and market face a shared square. The Magic School teaches Relic shaping beside the gathering country that supplies it.",
+    "title": "A haven for returning travelers",
+    "voice": "Firstlight teaches you to survive. Here you decide what to make of those skills. Ask Captain Rellan about the trouble on the northern road."
+  },
+  "copperdelve": {
+    "belief": "Earth Spirits are encountered through patient work with stone, not by claiming ownership of a mountain.",
+    "place": "Small workshops and stores support crews traveling into mineral country. Tools are repaired here before they are replaced.",
+    "title": "The prospectors’ village",
+    "voice": "Start with ore you can actually work. A heavier pick does not make an unfamiliar seam safe."
+  },
+  "crownreach": {
+    "belief": "We light a candle for those who keep the roads, not only those who rule them.",
+    "place": "Grain levies and road contracts keep Sunspire supplied. Courtyard markets leave the gate approaches clear for arriving caravans.",
+    "title": "The road court",
+    "voice": "Our clerks keep two copies of every road order. A seal is useful; a witness is better."
+  },
+  "deepforge": {
+    "belief": "We set aside the first quiet moment after the furnaces cool to remember absent workers.",
+    "place": "Workshop courts and heavy stone halls serve the eastern mineral country. Ore, fuel and finished equipment pass through different hands here.",
+    "title": "The foundry city",
+    "voice": "A smith needs miners and fuel cutters. A fine blade begins long before it reaches my anvil."
+  },
+  "fernwatch": {
+    "belief": "Cutting wood and tending what remains are parts of the same responsibility.",
+    "place": "Rangers and craftspeople share a village at the edge of the southern forest routes. Clear approaches help travelers recognize shelter.",
+    "title": "The woodland threshold",
+    "voice": "Thick woodland needs a path, not a cleared hillside. Follow the road until you know the ground."
+  },
+  "greyhaven": {
+    "belief": "A traveler may leave an offering for the next traveler without giving a name.",
+    "place": "Storehouses and market courts gather goods from the western farms before the long roads east. Repair yards matter as much as shopfronts here.",
+    "title": "The caravan exchange",
+    "voice": "Count your supplies before you leave. Beyond the town, the Badlands offer fewer safe places to stop."
+  },
+  "ironhollow": {
+    "belief": "Remembering the dead does not mean obeying every voice that uses their names.",
+    "place": "Ironcrown and the mine works share a mountain. Working shafts support the city; the Wardkeepers maintained older chambers beneath them.",
+    "title": "The city above the seals",
+    "voice": "Hesta keeps the rescue camp. If you hear a voice in a closed shaft, bring a witness before following it."
+  },
+  "moonwillow": {
+    "belief": "We keep remembrance close to living trees; the forest continues after each of us.",
+    "place": "Woodland homes stand above root caverns. The Brood Hollow makes watching the forest floor as necessary as watching the road.",
+    "title": "The watch beneath the canopy",
+    "voice": "The roots hide passages. Do not mistake a quiet cave for an abandoned one."
+  },
+  "silverbrook": {
+    "belief": "Water Spirits are companions discovered through fishing. The water is shared even when the bond is yours.",
+    "place": "The village joins woodland craft with the needs of travelers moving between the elven cities. Water and timber shape its daily work.",
+    "title": "The waterside craft village",
+    "voice": "Fishing and crafting reward patience. Bring useful materials home instead of an overflowing bag of things you cannot use."
+  },
+  "stoneford": {
+    "belief": "A sound crossing is our offering to people we will never meet.",
+    "place": "Masonry and roadside trade sustain Stoneford. Its lanes gather travelers before they head into rougher country.",
+    "title": "The crossing ward",
+    "voice": "Stay on the approaches near a crossing. A shortcut through the bank can be longer than the road."
+  },
+  "stonehearth": {
+    "belief": "A place beside the hearth is offered before a stranger is asked for a story.",
+    "place": "Compact stone homes and shared hearths give travelers a resting place among the eastern hills. Stores are kept close to the houses.",
+    "title": "The shelter on the road",
+    "voice": "Fill your food bag before you leave. The country beyond our lamps is not a town square."
+  },
+  "willowcross": {
+    "belief": "We remember the hands that planted and harvested before ours.",
+    "place": "Fields, kitchens and timber work support the nearby roads. Willowcross measures a good season in full stores and repaired homes.",
+    "title": "The working village",
+    "voice": "Wood is shelter before it is fuel. Leave the paths clear when you work among the trees."
+  }
+}

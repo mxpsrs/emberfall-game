@@ -1,0 +1,1220 @@
+{
+  "id": "quest_underiron",
+  "dimensions": [
+    52,
+    128
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 11,
+        "z": 25
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 15,
+        "z": 26
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 9,
+        "z": 30
+      },
+      {
+        "heading": 0,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 12,
+        "z": 9
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 12
+      }
+    ],
+    "entry": [
+      26,
+      121
+    ],
+    "exit": {
+      "$entity": "quest_underiron:object:5800010"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "quest_underiron",
+    "openAir": false,
+    "subtitle": "Wardkeeper halls · An occupied prison",
+    "title": "The Sealed Underworks",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 6.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 20.5,
+        "z": 6.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 31.5,
+        "z": 6.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 16.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 34.85,
+        "z": 16.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 22.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 34.85,
+        "z": 22.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 17.5,
+        "z": 34.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 28.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 7.15,
+        "z": 28.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 27.5,
+        "z": 34.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 11.5,
+        "z": 34.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 33.5,
+        "z": 34.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 41.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 39.5,
+        "z": 36.15
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 27.5,
+        "z": 44.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 45.85,
+        "z": 38.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 31.15,
+        "z": 50.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 47.85,
+        "z": 45.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 36.15,
+        "z": 54.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 44.85,
+        "z": 51.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 15.85,
+        "z": 61.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 22.5,
+        "z": 62.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 28.5,
+        "z": 62.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 36.15,
+        "z": 60.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 63.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 44.85,
+        "z": 57.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 44.85,
+        "z": 63.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 26.5,
+        "z": 69.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 68.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 32.5,
+        "z": 69.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 38.5,
+        "z": 69.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 76.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 74.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 19.85,
+        "z": 80.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 79.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 10.15,
+        "z": 90.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 26.85,
+        "z": 91.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 96.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 14.15,
+        "z": 101.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 20.5,
+        "z": 93.15
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 20.5,
+        "z": 111.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 32.5,
+        "z": 111.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 23.5,
+        "z": 123.85
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "quest_underiron:object:5800010",
+      "source": {
+        "dead": 0,
+        "id": 5800010,
+        "name": "Ladder to the surface",
+        "passageKind": "ladder",
+        "passageScene": "quest_underiron",
+        "sprite": 13,
+        "type": "exit",
+        "x": 26,
+        "y": 122
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        122.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100010",
+      "source": {
+        "_stationary": true,
+        "atk": 4,
+        "attackLevel": 10,
+        "attackStyle": "melee",
+        "creatureLook": "skeleton",
+        "dead": 0,
+        "defenseLevel": 9,
+        "drawX": 22,
+        "drawY": 31,
+        "homeX": 22,
+        "homeY": 31,
+        "hp": 40,
+        "id": 6100010,
+        "interval": 3.1,
+        "kind": "mountainwatcher",
+        "level": 15,
+        "look": "skeleton",
+        "maxHit": 4,
+        "maxhp": 40,
+        "mountainKey": "watcher",
+        "name": "Oathbound Watcher",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored watcher scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "weak": "magic",
+        "x": 22,
+        "y": 31
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        31.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100011",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 27,
+        "homeX": 12,
+        "homeY": 27,
+        "id": 6100011,
+        "mountainKey": "edda",
+        "name": "Warden Edda",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored edda scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "race": "dwarf",
+        "sprite": 2,
+        "type": "questgiver",
+        "x": 12,
+        "y": 27
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        27.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100012",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 31,
+        "drawY": 27,
+        "homeX": 31,
+        "homeY": 27,
+        "id": 6100012,
+        "mountainKey": "vent",
+        "mountainModel": "World_Workbench",
+        "name": "Ventilation wheel",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored vent scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 31,
+        "y": 27
+      },
+      "renderPosition": [
+        31.5,
+        0,
+        27.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100013",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 10,
+        "homeX": 22,
+        "homeY": 10,
+        "id": 6100013,
+        "mountainKey": "memory",
+        "mountainModel": "World_BookStand",
+        "name": "Final prison seal",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored memory scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 22,
+        "y": 10
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100014",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 29,
+        "homeX": 12,
+        "homeY": 29,
+        "id": 6100014,
+        "mountainKey": "survivor",
+        "name": "Trapped miner Dorrin",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored survivor scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "race": "dwarf",
+        "sprite": 2,
+        "type": "questgiver",
+        "x": 12,
+        "y": 29
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        29.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100019",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 69,
+        "homeX": 14,
+        "homeY": 69,
+        "id": 6100019,
+        "mountainKey": "fieldOrders",
+        "mountainModel": "World_BookStand",
+        "name": "Masked agents’ field orders",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored fieldOrders scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 69
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        69.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100020",
+      "source": {
+        "_stationary": true,
+        "atk": 3,
+        "attackLevel": 9,
+        "attackStyle": "melee",
+        "creatureLook": "bandit",
+        "dead": 0,
+        "defenseLevel": 8,
+        "drawX": 27,
+        "drawY": 98,
+        "homeX": 27,
+        "homeY": 98,
+        "hp": 26,
+        "id": 6100020,
+        "interval": 3.1,
+        "kind": "wardagent",
+        "level": 13,
+        "look": "bandit",
+        "maxHit": 3,
+        "maxhp": 26,
+        "mountainKey": "agent_0",
+        "name": "Masked excavator",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored agent_0 scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "spread": 0,
+        "sprite": 13,
+        "type": "enemy",
+        "x": 27,
+        "y": 98
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        98.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100021",
+      "source": {
+        "_stationary": true,
+        "atk": 3,
+        "attackLevel": 9,
+        "attackStyle": "melee",
+        "creatureLook": "bandit",
+        "dead": 0,
+        "defenseLevel": 8,
+        "drawX": 14,
+        "drawY": 80,
+        "homeX": 14,
+        "homeY": 80,
+        "hp": 26,
+        "id": 6100021,
+        "interval": 3.1,
+        "kind": "wardagent",
+        "level": 13,
+        "look": "bandit",
+        "maxHit": 3,
+        "maxhp": 26,
+        "mountainKey": "agent_1",
+        "name": "Masked excavator",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored agent_1 scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "spread": 0,
+        "sprite": 13,
+        "type": "enemy",
+        "x": 14,
+        "y": 80
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        80.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100022",
+      "source": {
+        "_stationary": true,
+        "atk": 3,
+        "attackLevel": 9,
+        "attackStyle": "melee",
+        "creatureLook": "bandit",
+        "dead": 0,
+        "defenseLevel": 8,
+        "drawX": 38,
+        "drawY": 52,
+        "homeX": 38,
+        "homeY": 52,
+        "hp": 26,
+        "id": 6100022,
+        "interval": 3.1,
+        "kind": "wardagent",
+        "level": 13,
+        "look": "bandit",
+        "maxHit": 3,
+        "maxhp": 26,
+        "mountainKey": "agent_2",
+        "name": "Masked excavator",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored agent_2 scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "spread": 0,
+        "sprite": 13,
+        "type": "enemy",
+        "x": 38,
+        "y": 52
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        52.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100023",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "collected": false,
+        "dead": 0,
+        "drawX": 26,
+        "drawY": 12,
+        "homeX": 26,
+        "homeY": 12,
+        "id": 6100023,
+        "mountainKey": "saboteur",
+        "name": "Masked seal-breaker",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored saboteur scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "race": "human",
+        "sprite": 2,
+        "type": "questgiver",
+        "x": 26,
+        "y": 12
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6100024",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "collected": false,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 11,
+        "homeX": 18,
+        "homeY": 11,
+        "id": 6100024,
+        "mountainKey": "accomplice",
+        "name": "Masked lookout",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored accomplice scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "race": "human",
+        "sprite": 2,
+        "type": "questgiver",
+        "x": 18,
+        "y": 11
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600046",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 28,
+        "homeX": 10,
+        "homeY": 28,
+        "id": 6600046,
+        "name": "Survivors’ bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 10,
+        "y": 28
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        28.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600047",
+      "source": {
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 29,
+        "homeX": 15,
+        "homeY": 29,
+        "id": 6600047,
+        "name": "Survivors’ water barrel",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 15,
+        "y": 29
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        29.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600048",
+      "source": {
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 38,
+        "homeX": 21,
+        "homeY": 38,
+        "id": 6600048,
+        "name": "Ward support frame",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Ward support frame scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "timbers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 38
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        38.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600049",
+      "source": {
+        "dead": 0,
+        "drawX": 23,
+        "drawY": 115,
+        "homeX": 23,
+        "homeY": 115,
+        "id": 6600049,
+        "name": "Wardkeeper threshold",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Wardkeeper threshold scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "ruinPillar",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 23,
+        "y": 115
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        115.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600050",
+      "source": {
+        "dead": 0,
+        "drawX": 30,
+        "drawY": 113,
+        "homeX": 30,
+        "homeY": 113,
+        "id": 6600050,
+        "name": "Broken ward relief",
+        "placementContext": {
+          "anchor": "ritual",
+          "reason": "Authored Broken ward relief scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "seal",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 30,
+        "y": 113
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        113.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600051",
+      "source": {
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 106,
+        "homeX": 25,
+        "homeY": 106,
+        "id": 6600051,
+        "name": "Fresh mining frame",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Fresh mining frame scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "timbers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 25,
+        "y": 106
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        106.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600052",
+      "source": {
+        "campModel": "tent",
+        "dead": 0,
+        "drawX": 32,
+        "drawY": 100,
+        "homeX": 32,
+        "homeY": 100,
+        "id": 6600052,
+        "name": "Intruders’ supply tent",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 32,
+        "y": 100
+      },
+      "renderPosition": [
+        32.5,
+        0,
+        100.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600053",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 101,
+        "homeX": 29,
+        "homeY": 101,
+        "id": 6600053,
+        "name": "Discarded field bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 29,
+        "y": 101
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        101.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600054",
+      "source": {
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 97,
+        "homeX": 22,
+        "homeY": 97,
+        "id": 6600054,
+        "name": "Barricade beside the supply route",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Barricade beside the supply route scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "ruinWall",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 22,
+        "y": 97
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        97.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600055",
+      "source": {
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 86,
+        "homeX": 14,
+        "homeY": 86,
+        "id": 6600055,
+        "name": "Stolen seal-token chest",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Stolen seal-token chest scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "papers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 86
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        86.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600056",
+      "source": {
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 75,
+        "homeX": 12,
+        "homeY": 75,
+        "id": 6600056,
+        "name": "Abandoned excavation tools",
+        "placementContext": {
+          "anchor": "workbench",
+          "reason": "Authored Abandoned excavation tools scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "tools",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 75
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        75.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600057",
+      "source": {
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 70,
+        "homeX": 20,
+        "homeY": 70,
+        "id": 6600057,
+        "name": "Damaged ward inscription",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Damaged ward inscription scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "ledger",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 70
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        70.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600058",
+      "source": {
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 57,
+        "homeX": 38,
+        "homeY": 57,
+        "id": 6600058,
+        "name": "Wardkeeper statue",
+        "placementContext": {
+          "anchor": "shrine",
+          "reason": "Authored Wardkeeper statue scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "wardStatue",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 57
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        57.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600059",
+      "source": {
+        "dead": 0,
+        "drawX": 40,
+        "drawY": 48,
+        "homeX": 40,
+        "homeY": 48,
+        "id": 6600059,
+        "name": "Agent barricade",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Agent barricade scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "ruinWall",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 40,
+        "y": 48
+      },
+      "renderPosition": [
+        40.5,
+        0,
+        48.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600060",
+      "source": {
+        "dead": 0,
+        "drawX": 33,
+        "drawY": 42,
+        "homeX": 33,
+        "homeY": 42,
+        "id": 6600060,
+        "name": "Recent mining struts",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Recent mining struts scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "timbers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 33,
+        "y": 42
+      },
+      "renderPosition": [
+        33.5,
+        0,
+        42.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600061",
+      "source": {
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 35,
+        "homeX": 18,
+        "homeY": 35,
+        "id": 6600061,
+        "name": "Broken inner seal",
+        "placementContext": {
+          "anchor": "ritual",
+          "reason": "Authored Broken inner seal scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "seal",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 18,
+        "y": 35
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        35.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600062",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 31,
+        "homeX": 10,
+        "homeY": 31,
+        "id": 6600062,
+        "name": "Evacuated family bedding",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 10,
+        "y": 31
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        31.5
+      ]
+    },
+    {
+      "id": "quest_underiron:object:6600063",
+      "source": {
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 15,
+        "homeX": 27,
+        "homeY": 15,
+        "id": 6600063,
+        "name": "Final seal anchor",
+        "placementContext": {
+          "anchor": "ritual",
+          "reason": "Authored Final seal anchor scene; gameplay identity and approach retained",
+          "scene": "quest_underiron"
+        },
+        "questModel": "seal",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 27,
+        "y": 15
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        15.5
+      ]
+    }
+  ],
+  "buildings": []
+}

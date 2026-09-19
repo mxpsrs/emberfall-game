@@ -1,0 +1,43 @@
+{
+  "adamant": {
+    "affinity": "Earth",
+    "purpose": "Deepiron: dense quarry metal for holding ground",
+    "weight": 1.7
+  },
+  "black": {
+    "magicDefense": 2,
+    "purpose": "Charsteel: kiln-tempered armour for ward resistance",
+    "weight": 1.3
+  },
+  "bronze": {
+    "purpose": "Repairable starter metal",
+    "weight": 1
+  },
+  "dragonslayer": {
+    "magicDefense": 3,
+    "purpose": "Wyrmforged: reinforced metal for dangerous expeditions",
+    "weight": 1.8
+  },
+  "gold": {
+    "purpose": "Gilded metalwork: ceremonial finish, Eldrite-grade protection",
+    "weight": 1.4
+  },
+  "iron": {
+    "purpose": "Sturdy general-purpose metal",
+    "weight": 1.2
+  },
+  "mithril": {
+    "affinity": "Air",
+    "purpose": "Windsteel: light alloy for long gathering routes",
+    "weight": 0.65
+  },
+  "rune": {
+    "affinity": "Attuned",
+    "purpose": "Eldrite: a conductor for Spirit-attuned equipment",
+    "weight": 1.15
+  },
+  "steel": {
+    "purpose": "Tempered physical protection",
+    "weight": 1.4
+  }
+}

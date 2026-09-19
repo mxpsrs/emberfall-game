@@ -1,0 +1,226 @@
+[
+  [
+    "lamp",
+    {
+      "$behavior": "42c81091f783c5e7771b0d431130674bdbf09e29dbbeb2ae2d0ba13e4c63bb01",
+      "executable": false
+    }
+  ],
+  [
+    "counter",
+    {
+      "$behavior": "ec9a0f0904ba34f3c5fc710f6782b5950d490ad4dd0c182d55e7897dd05da034",
+      "executable": false
+    }
+  ],
+  [
+    "bookcase",
+    {
+      "$behavior": "85982a6d59c61e91b74e8bfce185f5ce0209146aad11cb4d7bd63813017d8d1c",
+      "executable": false
+    }
+  ],
+  [
+    "shelf",
+    {
+      "$behavior": "5ef0ec11ec8c21e833a6b96e993eb87000feb235ab68b8b11fcba3cbd0a3bd2a",
+      "executable": false
+    }
+  ],
+  [
+    "range",
+    {
+      "$behavior": "7418d82ab9c642af80951cd4b2ba9f0af526bb352f8dfec867d49424c5494f21",
+      "executable": false
+    }
+  ],
+  [
+    "hearth",
+    {
+      "$behavior": "170ea633067831b30e464cb77651d6fb221cf0a77738f4917c7d16102477768b",
+      "executable": false
+    }
+  ],
+  [
+    "fire",
+    {
+      "$behavior": "13117297c3a1a610fc3b09e7cfff95e0825500ea11dbb5bbaa39b466e22ed2aa",
+      "executable": false
+    }
+  ],
+  [
+    "anvil",
+    {
+      "$behavior": "c144be6681c119397c0ebc44d5acf17152f11a911de10d6f772a272bdd91bf44",
+      "executable": false
+    }
+  ],
+  [
+    "furnace",
+    {
+      "$behavior": "7fa226c90ab667d1154f349c87217b8836d8341cf148b64d6451ee4dd5915955",
+      "executable": false
+    }
+  ],
+  [
+    "tent",
+    {
+      "$behavior": "5f37588cc965bb43532ddb77a202ddeb93cd6fa545d60fc868ee060d589f4c38",
+      "executable": false
+    }
+  ],
+  [
+    "bedroll",
+    {
+      "$behavior": "79d6671e5d094419a02b9ad69d25eed044ccb6c143c857f7d3224957b5bed5a9",
+      "executable": false
+    }
+  ],
+  [
+    "barrier",
+    {
+      "$behavior": "8aaeceaca5e21c82296e2211fe5d556427f29547c1e07e0d93e62daa8264eb83",
+      "executable": false
+    }
+  ],
+  [
+    "bed",
+    {
+      "$behavior": "249b6b59cf15dd4cbaf4b8e0b54d2b8dfdf5a3fbacf5d0af951208fc6f1429c0",
+      "executable": false
+    }
+  ],
+  [
+    "rack",
+    {
+      "$behavior": "a314fbce0e2a333855e3c2e4f802bd09b60e71ecd2577742e4566d861537f0f8",
+      "executable": false
+    }
+  ],
+  [
+    "throne",
+    {
+      "$behavior": "b578e17d88f7e0768647e182c6f219feac02e1b401a1674e4dd4227670d94a81",
+      "executable": false
+    }
+  ],
+  [
+    "altar",
+    {
+      "$behavior": "7d6fc4bb25ad6e0d6088a9810b32c0204f9c2121591a958071d88ac281dc7f78",
+      "executable": false
+    }
+  ],
+  [
+    "workbench",
+    {
+      "$behavior": "66958562c71558f64f9905c864add6c7554598ff2710725fa80945c780637531",
+      "executable": false
+    }
+  ],
+  [
+    "table",
+    {
+      "$behavior": "b6c60d47cdb3c1cdd5df379e570d9584001c012230c1c3ce46ee465f3eedd1bc",
+      "executable": false
+    }
+  ],
+  [
+    "chair",
+    {
+      "$behavior": "eee513b7369859712ef2d12520d5eb3e1e698416bb2c74bffd6ab250fea95f1f",
+      "executable": false
+    }
+  ],
+  [
+    "bench",
+    {
+      "$behavior": "0f2a9df95f61cca66298d9eafed3c90b4317847486877fe4621fd4ce106f0af9",
+      "executable": false
+    }
+  ],
+  [
+    "well",
+    {
+      "$behavior": "3c0352f2d7c92eea7c20d9382f94b3ffe24ed6071fa467d8608a9ff5a92c2614",
+      "executable": false
+    }
+  ],
+  [
+    "monument",
+    {
+      "$behavior": "4d502e48b4fcbbf016965fc4fc3323ae9bd450292de25c5312e7ea5a46c1a13e",
+      "executable": false
+    }
+  ],
+  [
+    "stall",
+    {
+      "$behavior": "853e67d1b74009772d827031422bd4c2993f13d521739f9b62ea0af0f4301277",
+      "executable": false
+    }
+  ],
+  [
+    "cart",
+    {
+      "$behavior": "2fc948d5a4ff6fb0f61df324632489808ddb19921b4ef430ec67de2466404a00",
+      "executable": false
+    }
+  ],
+  [
+    "barrel",
+    {
+      "$behavior": "d691495f1047fbc61bfd7330ed6e9510cf0702ddb47404564e2c0338a6312f26",
+      "executable": false
+    }
+  ],
+  [
+    "logs",
+    {
+      "$behavior": "ea3519a673c6b6819c9a0736aed448e4944c6fd89d3180c58e67fce34c786246",
+      "executable": false
+    }
+  ],
+  [
+    "sign",
+    {
+      "$behavior": "101d1c6291d18bdd9f19e0469879008a0907add82715746c689d372127b0aefa",
+      "executable": false
+    }
+  ],
+  [
+    "planter",
+    {
+      "$behavior": "d2828072877911b828ac9740723d4471259c102db53605b8650b83a4e05b36d9",
+      "executable": false
+    }
+  ],
+  [
+    "watchpost",
+    {
+      "$behavior": "91e45bf6a7bda3cbc223f0f16134911e939ff881d19e2df67ee9fe862cb3ed4c",
+      "executable": false
+    }
+  ],
+  [
+    "crane",
+    {
+      "$behavior": "7c0743b66b9bfab1ec49c870046591195abe9d5f194d51830d2f48e97639aba5",
+      "executable": false
+    }
+  ],
+  [
+    "stoneStock",
+    {
+      "$behavior": "d7cf013c5ec8ed162491f5d5678744878ec6067822cb29d9cf6a7f8eacf78aca",
+      "executable": false
+    }
+  ],
+  [
+    "storage",
+    {
+      "$behavior": "b31511a8a888cc40305e58f8399a3c5eb25ac7ea08a01688daf2ed4741a80c0a",
+      "executable": false
+    }
+  ]
+]

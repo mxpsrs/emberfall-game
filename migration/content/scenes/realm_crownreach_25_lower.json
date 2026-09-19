@@ -1,0 +1,1148 @@
+{
+  "id": "realm_crownreach_25_lower",
+  "dimensions": [
+    49,
+    25
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      37,
+      12
+    ],
+    "exit": {
+      "$entity": "realm_crownreach_25_lower:object:7400293"
+    },
+    "exterior": "realm_crownreach_25",
+    "race": "human",
+    "returnAt": [
+      398,
+      43
+    ],
+    "title": "Sunspire Castle · Cellars and secure rooms"
+  },
+  "entities": [
+    {
+      "id": "realm_crownreach_25_lower:object:7400268",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard station",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400268,
+        "interiorBuilding": null,
+        "name": "Weapon rack",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.79
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Guard station",
+          "roomType": "guard",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "rack",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400269",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guard station",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "id": 7400269,
+        "interiorBuilding": null,
+        "name": "Guard duty table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_lower:Guard station",
+          "roomType": "guard",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400270",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 17,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 17,
+        "homeY": 2,
+        "id": 7400270,
+        "interiorBuilding": null,
+        "name": "Secure treasury chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 17,
+        "y": 2
+      },
+      "renderPosition": [
+        17.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400271",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 2,
+        "id": 7400271,
+        "interiorBuilding": null,
+        "name": "Secure treasury chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 2
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400272",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 23,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 23,
+        "homeY": 2,
+        "id": 7400272,
+        "interiorBuilding": null,
+        "name": "Secure treasury chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 23,
+        "y": 2
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400273",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 26,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 26,
+        "homeY": 2,
+        "id": 7400273,
+        "interiorBuilding": null,
+        "name": "Secure treasury chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 26,
+        "y": 2
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400274",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 29,
+        "homeY": 2,
+        "id": 7400274,
+        "interiorBuilding": null,
+        "name": "Secure treasury chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 29,
+        "y": 2
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400275",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Treasury vault",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 6,
+        "id": 7400275,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_lower:Treasury vault",
+          "roomType": "treasury",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 6
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400276",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 2,
+        "id": 7400276,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 2
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400277",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 2,
+        "id": 7400277,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 2
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400278",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 41,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 41,
+        "homeY": 2,
+        "id": 7400278,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 41,
+        "y": 2
+      },
+      "renderPosition": [
+        41.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400279",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 2,
+        "id": 7400279,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 2
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400280",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Food cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 6,
+        "id": 7400280,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_lower:Food cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 6
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400281",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Secure cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 17,
+        "id": 7400281,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Secure cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 17
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400282",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Secure cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 16,
+        "id": 7400282,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Secure cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 16
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400283",
+      "source": {
+        "attackAt": -100,
+        "barWidth": 9,
+        "civilDecor": "cellBars",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 15,
+        "id": 7400283,
+        "name": "Cell bars",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 6,
+        "y": 15
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400284",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Holding cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 17,
+        "id": 7400284,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Holding cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 17
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400285",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Holding cell",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 16,
+        "id": 7400285,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Holding cell",
+          "roomType": "cell",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 19,
+        "y": 16
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400286",
+      "source": {
+        "attackAt": -100,
+        "barWidth": 9,
+        "civilDecor": "cellBars",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 16,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 16,
+        "homeY": 15,
+        "id": 7400286,
+        "name": "Cell bars",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 16,
+        "y": 15
+      },
+      "renderPosition": [
+        16.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400287",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestral crypt",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 29,
+        "homeY": 17,
+        "id": 7400287,
+        "interiorBuilding": null,
+        "name": "Ancestor memorial",
+        "race": "human",
+        "sprite": 12,
+        "type": "prop",
+        "x": 29,
+        "y": 17
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400288",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestral crypt",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 25,
+        "homeY": 18,
+        "id": 7400288,
+        "interiorBuilding": null,
+        "name": "Sacred brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_crownreach_25_lower:Ancestral crypt",
+          "roomType": "crypt",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "camp",
+        "x": 25,
+        "y": 18
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400289",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 16,
+        "id": 7400289,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 16
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400290",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 39,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 39,
+        "homeY": 16,
+        "id": 7400290,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 39,
+        "y": 16
+      },
+      "renderPosition": [
+        39.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400291",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 16,
+        "id": 7400291,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 16
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400292",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Service stores",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 39,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 39,
+        "homeY": 19,
+        "id": 7400292,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_lower:Service stores",
+          "roomType": "supply",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 39,
+        "y": 19
+      },
+      "renderPosition": [
+        39.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400293",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": false,
+          "entry": [
+            398,
+            43
+          ],
+          "kind": "stone"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 36,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 36,
+        "homeY": 12,
+        "id": 7400293,
+        "interiorBuilding": null,
+        "name": "Stone stairs up to the guard hall",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 36,
+        "y": 12
+      },
+      "renderPosition": [
+        36.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400295",
+      "source": {
+        "_stationary": true,
+        "attackAt": -100,
+        "characterSprite": true,
+        "civilization": true,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 5,
+        "heading": -1.3258176636680326,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 5,
+        "id": 7400295,
+        "name": "Vault warden",
+        "race": "human",
+        "sprite": 12,
+        "talk": "The cells open off the guarded passage. Supplies and the historical vault are kept on separate sides.",
+        "type": "villager",
+        "workstationId": 7400269,
+        "x": 9,
+        "y": 5
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        5.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_lower:object:7400296",
+      "source": {
+        "_stationary": true,
+        "attackAt": -100,
+        "characterSprite": true,
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 19,
+        "id": 7400296,
+        "name": "Detained road smuggler",
+        "race": "human",
+        "sprite": 12,
+        "talk": "I hauled untaxed cargo. The royal road is watched more closely now.",
+        "type": "villager",
+        "x": 5,
+        "y": 19
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        19.5
+      ]
+    }
+  ],
+  "buildings": []
+}

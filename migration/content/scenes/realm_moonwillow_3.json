@@ -1,0 +1,268 @@
+{
+  "id": "realm_moonwillow_3",
+  "dimensions": [
+    16,
+    14
+  ],
+  "metadata": {
+    "entry": [
+      8,
+      11
+    ],
+    "exit": {
+      "$entity": "realm_moonwillow_3:object:2235"
+    },
+    "kingdom": "sylvaran",
+    "race": "elf",
+    "title": "Moonwillow Archive"
+  },
+  "entities": [
+    {
+      "id": "realm_moonwillow_3:object:2235",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 12,
+        "id": 2235,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 8,
+        "y": 12
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2236",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 4,
+        "heading": 0,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 4,
+        "id": 2236,
+        "name": "Moonwillow archivist",
+        "race": "elf",
+        "sprite": 2,
+        "talk": "Woodland homes stand above root caverns. The Brood Hollow makes watching the forest floor as necessary as watching the road.",
+        "type": "villager",
+        "workstationId": 2241,
+        "x": 5,
+        "y": 4
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2237",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 2,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 2,
+        "homeY": 1,
+        "id": 2237,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_3",
+          "roomType": "library",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 2,
+        "y": 1
+      },
+      "renderPosition": [
+        2.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2238",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 1,
+        "id": 2238,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_3",
+          "roomType": "library",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 4,
+        "y": 1
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2239",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 10,
+        "homeY": 1,
+        "id": 2239,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_3",
+          "roomType": "library",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 10,
+        "y": 1
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2240",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 1,
+        "id": 2240,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_3",
+          "roomType": "library",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 1
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_3:object:2241",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 7,
+        "id": 2241,
+        "name": "Reading table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_moonwillow_3",
+          "roomType": "library",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 7
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        7.5
+      ]
+    }
+  ],
+  "buildings": []
+}

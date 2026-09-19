@@ -1,0 +1,189 @@
+{
+  "note": "Kenney recorded foley is mixed with original procedural fishing, fire, cooking, spell, and interface sounds. Clips are normalized, limited to 1.8 seconds and encoded as mono 96 kbps MP3.",
+  "license": "CC0-1.0",
+  "commercial_use": true,
+  "attribution_required": false,
+  "verified_on": "2026-09-12",
+  "packs": {
+    "rpg": {
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/rpg-audio",
+      "download": "https://kenney.nl/media/pages/assets/rpg-audio/8e99002d76-1677590336/kenney_rpg-audio.zip"
+    },
+    "impact": {
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "download": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip"
+    }
+  },
+  "samples": [
+    {
+      "file": "wood-1.mp3",
+      "source_file": "chop.ogg",
+      "pack": "rpg",
+      "source_sha256": "d00c2b3c9fff07e376145c8c8c45c90e5084ec192f6ce0387db233f7b86f1486",
+      "asset_sha256": "3fd9972c65e2c61721c362ebbf2e973b97aa4b2227bb00df48aaef54c28c1858"
+    },
+    {
+      "file": "wood-2.mp3",
+      "source_file": "impactWood_heavy_000.ogg",
+      "pack": "impact",
+      "source_sha256": "15ff82332f342c30e469215539e1cc57e11b221aa2cf7e11e811d313a9927f3d",
+      "asset_sha256": "a5450d9672d79972c9feb4ca26be27196df7502fe4ae963b2b8f9090efaf7a16"
+    },
+    {
+      "file": "wood-3.mp3",
+      "source_file": "impactWood_heavy_002.ogg",
+      "pack": "impact",
+      "source_sha256": "ce1e06f2a05f2634c645cb72f6a1623e64bc2d92be34917430a61031fb6597d4",
+      "asset_sha256": "3186773bbb41de15442ab66634e692f61e18af1abe10e67714bfbc1f0686123f"
+    },
+    {
+      "file": "mine-1.mp3",
+      "source_file": "impactMining_000.ogg",
+      "pack": "impact",
+      "source_sha256": "36b4ea107222d073c67ca64dde26944975609202d5090b2f2021213c1a7e35cd",
+      "asset_sha256": "557a4b1c8ed94cceff1679c7f27334483a3f07199ec25da8e3293526031aef0c"
+    },
+    {
+      "file": "mine-2.mp3",
+      "source_file": "impactMining_002.ogg",
+      "pack": "impact",
+      "source_sha256": "059558ec751115ca6b1441e00f0adc837c1a3eeb0a066b109e0fd879fc5d0b0c",
+      "asset_sha256": "b693526f5f5b3403d9eea201f27998412853b9123c45e67c88872400a99928bc"
+    },
+    {
+      "file": "mine-3.mp3",
+      "source_file": "impactMining_004.ogg",
+      "pack": "impact",
+      "source_sha256": "8ca3a99d85d845751ad8ce7b40509da58263a62e48cde70e5a30b5ccef4c9a3b",
+      "asset_sha256": "6bb7ebd475c37539a4242a9da75b327f4105306be8b666c39f2d6dfb75a89f13"
+    },
+    {
+      "file": "smith-1.mp3",
+      "source_file": "impactMetal_medium_000.ogg",
+      "pack": "impact",
+      "source_sha256": "a96f879fec0864a8938e0c745b6996a6c5679c16a234ce31a01cc995e8401003",
+      "asset_sha256": "4c821b271249aa25a5128a85078bc63d2be66f9fa8e45b96e860dfa43fee72f6"
+    },
+    {
+      "file": "smith-2.mp3",
+      "source_file": "impactMetal_medium_002.ogg",
+      "pack": "impact",
+      "source_sha256": "7e89ce2ca0dbda95ea2b78d4b50791cab35c10d20e9f5ccd45dd0b00e99ff548",
+      "asset_sha256": "2b075c1913686c03e2390d6dfa14f47d13b8f327c9508d6e3daf82aca87cf957"
+    },
+    {
+      "file": "smith-3.mp3",
+      "source_file": "impactMetal_medium_004.ogg",
+      "pack": "impact",
+      "source_sha256": "03e10f800199c7166208e41c11cf4acfac6cc265467f02357da71972bc967295",
+      "asset_sha256": "d9c4fc82c4f02d79086901219755c8c292088854ebb09b790d56a9404c857521"
+    },
+    {
+      "file": "sword-1.mp3",
+      "source_file": "knifeSlice.ogg",
+      "pack": "rpg",
+      "source_sha256": "4cd96dc630bed9840c15f1dd2306da2cc56a4da26a5d3f1a03c5a7265ac5e54f",
+      "asset_sha256": "82c9a52e1243abc3eab3408f30398f0c18f9d0604348abac6eafd05e1402d59e"
+    },
+    {
+      "file": "sword-2.mp3",
+      "source_file": "knifeSlice2.ogg",
+      "pack": "rpg",
+      "source_sha256": "6c2064d0ef988d1ec3d56868e823ea8823a5cac00f2742560052633529407def",
+      "asset_sha256": "e5726dd0ae650b462915ca3146e901e5277834db2ec65feb3ea7f7add4114775"
+    },
+    {
+      "file": "hit-1.mp3",
+      "source_file": "impactPunch_medium_000.ogg",
+      "pack": "impact",
+      "source_sha256": "486988aa2d6440ffc4c62a0e8ccf3c23673ba84424bd4723378d451b7255eb5c",
+      "asset_sha256": "a5f449234e495d6fbe16235d0044ceb3f9f1ae04b8057c5d22e49f7f36574091"
+    },
+    {
+      "file": "hit-2.mp3",
+      "source_file": "impactPunch_medium_002.ogg",
+      "pack": "impact",
+      "source_sha256": "6492f9ccbc8d24dcef607bb1b48790b7870961474561f7fe5601e1c73a3018ef",
+      "asset_sha256": "8d76991ebd9872ec479e01ad21d5cc456d916da43f6f47a9de488df28b3ca3aa"
+    },
+    {
+      "file": "cook-1.mp3",
+      "source_file": "metalPot1.ogg",
+      "pack": "rpg",
+      "source_sha256": "159def979e8e386c2c539f5e99cc30a080eb2dcb6c911fa2e4ccc0785b2522fd",
+      "asset_sha256": "0e91f996e311c4b710bd553f2561dd413efced6bea92cc9afe66a42dad1b0188"
+    },
+    {
+      "file": "cook-2.mp3",
+      "source_file": "metalPot2.ogg",
+      "pack": "rpg",
+      "source_sha256": "8e1f820d217d380fde10e969d109db34303e3f4d11c3951926eddef813d04ae2",
+      "asset_sha256": "2fd79c8f65b1ef4bdcd28a8b0efd2465f6ad97f5e1d747ed086a122a795c9180"
+    },
+    {
+      "file": "fire-1.mp3",
+      "source_file": "metalClick.ogg",
+      "pack": "rpg",
+      "source_sha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3",
+      "asset_sha256": "f9dff1a2cad07cfd3728f92e996d80d088ffdde85faaa37a43e32f474287f0ad"
+    },
+    {
+      "file": "door-1.mp3",
+      "source_file": "doorOpen_1.ogg",
+      "pack": "rpg",
+      "source_sha256": "4ab93bab96522d8eb109ff96dc57cb6765deb02448fe14c10472084be5bb2a0b",
+      "asset_sha256": "a06ccfd748691eb6b7576eff9b8d2fba485aa32844980c1b10e4bcf4b33407b3"
+    },
+    {
+      "file": "coins-1.mp3",
+      "source_file": "handleCoins.ogg",
+      "pack": "rpg",
+      "source_sha256": "8a91f969e932df709df80ee124d86a51389eed9b67f22e5e716bc2bbf60d8dab",
+      "asset_sha256": "408bbee84fdcf065a9df774c15d21637535d8adcfaec5b07a06cb94fb13d398b"
+    },
+    {
+      "file": "equip-1.mp3",
+      "source_file": "beltHandle1.ogg",
+      "pack": "rpg",
+      "source_sha256": "2ef665bd8b65dbe669f4560be38a6d8f04a162e618b15a49e3e71b58e558aab0",
+      "asset_sha256": "459833b3c204d8302cbeef6df3ed14408546b06ceb9ee694326d9a72b2b6fd56"
+    },
+    {
+      "file": "step-1.mp3",
+      "source_file": "footstep_grass_000.ogg",
+      "pack": "impact",
+      "source_sha256": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f",
+      "asset_sha256": "0eeb3976f27ffbb0317b380618b13ed0a17282b607df3e82f2a68ac41b09e5d9"
+    },
+    {
+      "file": "step-2.mp3",
+      "source_file": "footstep_grass_001.ogg",
+      "pack": "impact",
+      "source_sha256": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04",
+      "asset_sha256": "74a21a98586a68a007c31cd00cf79bd28b14f64cf482073cdb4c2ef8aa6727bc"
+    },
+    {
+      "file": "step-3.mp3",
+      "source_file": "footstep_grass_002.ogg",
+      "pack": "impact",
+      "source_sha256": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc",
+      "asset_sha256": "5246e536cf2afa7e801f6092ec8252114aa2899446e7a2467199667d4fd20ed3"
+    },
+    {
+      "file": "floor-1.mp3",
+      "source_file": "footstep_wood_000.ogg",
+      "pack": "impact",
+      "source_sha256": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e",
+      "asset_sha256": "c1770d2b8fd459a0f100bbcf8b99cbfd4fc6b5192c07f97bc7cdca6a8aa469a2"
+    },
+    {
+      "file": "floor-2.mp3",
+      "source_file": "footstep_wood_001.ogg",
+      "pack": "impact",
+      "source_sha256": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462",
+      "asset_sha256": "379a52415ec3dfeef44c44c9670744efc8dbc436f7fab17f8188718145afe7aa"
+    }
+  ]
+}

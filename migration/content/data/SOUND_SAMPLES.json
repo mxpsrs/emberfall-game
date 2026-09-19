@@ -1,0 +1,57 @@
+{
+  "bank": [
+    "coins-1"
+  ],
+  "coins": [
+    "coins-1"
+  ],
+  "cook": [
+    "cook-1",
+    "cook-2"
+  ],
+  "door": [
+    "door-1"
+  ],
+  "equip": [
+    "equip-1"
+  ],
+  "fire": [
+    "fire-1"
+  ],
+  "floor": [
+    "floor-1",
+    "floor-2"
+  ],
+  "hit": [
+    "hit-1",
+    "hit-2"
+  ],
+  "hurt": [
+    "hit-1",
+    "hit-2"
+  ],
+  "mine": [
+    "mine-1",
+    "mine-2",
+    "mine-3"
+  ],
+  "smith": [
+    "smith-1",
+    "smith-2",
+    "smith-3"
+  ],
+  "step": [
+    "step-1",
+    "step-2",
+    "step-3"
+  ],
+  "sword": [
+    "sword-1",
+    "sword-2"
+  ],
+  "wood": [
+    "wood-1",
+    "wood-2",
+    "wood-3"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "air": {
+    "count": 10,
+    "item": "airRunes",
+    "level": 1,
+    "name": "Air",
+    "unfinished": "unfinished_air",
+    "xp": 8
+  },
+  "earth": {
+    "count": 10,
+    "item": "earthRunes",
+    "level": 9,
+    "name": "Earth",
+    "unfinished": "unfinished_earth",
+    "xp": 12
+  },
+  "fire": {
+    "count": 10,
+    "item": "fireRunes",
+    "level": 14,
+    "name": "Fire",
+    "unfinished": "unfinished_fire",
+    "xp": 15
+  },
+  "fracture": {
+    "count": 5,
+    "item": "chaosRunes",
+    "level": 25,
+    "name": "Fracture",
+    "unfinished": "unfinished_fracture",
+    "xp": 24
+  },
+  "heart": {
+    "count": 5,
+    "item": "bloodRunes",
+    "level": 65,
+    "name": "Heart",
+    "unfinished": "unfinished_heart",
+    "xp": 48
+  },
+  "memory": {
+    "count": 5,
+    "item": "deathRunes",
+    "level": 45,
+    "name": "Memory",
+    "unfinished": "unfinished_memory",
+    "xp": 36
+  },
+  "mind": {
+    "count": 10,
+    "item": "runes",
+    "level": 1,
+    "name": "Mind",
+    "unfinished": "unfinished_mind",
+    "xp": 8
+  },
+  "water": {
+    "count": 10,
+    "item": "waterRunes",
+    "level": 5,
+    "name": "Water",
+    "unfinished": "unfinished_water",
+    "xp": 10
+  }
+}

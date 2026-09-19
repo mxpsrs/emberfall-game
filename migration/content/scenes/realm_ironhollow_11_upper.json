@@ -1,0 +1,407 @@
+{
+  "id": "realm_ironhollow_11_upper",
+  "dimensions": [
+    20,
+    15
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      10,
+      12
+    ],
+    "exit": {
+      "$entity": "realm_ironhollow_11_upper:object:7400950"
+    },
+    "exterior": "realm_ironhollow_11",
+    "race": "dwarf",
+    "returnAt": [
+      739,
+      132
+    ],
+    "title": "Ironhollow Cottage 12 · Upstairs"
+  },
+  "entities": [
+    {
+      "id": "realm_ironhollow_11_upper:object:7400941",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Family bedroom",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400941,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_11_upper:Family bedroom",
+          "roomType": "guest",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400942",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Family bedroom",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 7,
+        "id": 7400942,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            -0.04500000000000015,
+            2.755455298081554e-18
+          ],
+          "reason": "Against the east wall, facing the usable room",
+          "room": "realm_ironhollow_11_upper:Family bedroom",
+          "roomType": "guest",
+          "target": null,
+          "wall": "east",
+          "yaw": -1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 8,
+        "y": 7
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400943",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Family bedroom",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 4,
+        "id": 7400943,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_11_upper:Family bedroom",
+          "roomType": "guest",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 7,
+        "y": 4
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400944",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Family bedroom",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 7,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 6,
+        "id": 7400944,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_ironhollow_11_upper:Family bedroom",
+          "roomType": "guest",
+          "target": 7400943,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 7,
+        "y": 6
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400945",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 2,
+        "id": 7400945,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_11_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 2
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400946",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 15,
+        "homeY": 2,
+        "id": 7400946,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_11_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 15,
+        "y": 2
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400947",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 4,
+        "id": 7400947,
+        "interiorBuilding": null,
+        "name": "Reading table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_11_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 4
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400948",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 6,
+        "id": 7400948,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_ironhollow_11_upper:Private study",
+          "roomType": "study",
+          "target": 7400947,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 6
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_11_upper:object:7400950",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": false,
+          "entry": [
+            739,
+            132
+          ],
+          "kind": "wood"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 10,
+        "homeY": 13,
+        "id": 7400950,
+        "interiorBuilding": null,
+        "name": "Wooden stairs to the ground floor",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 10,
+        "y": 13
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        13.5
+      ]
+    }
+  ],
+  "buildings": []
+}

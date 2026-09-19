@@ -1,0 +1,278 @@
+{
+  "id": "realm_moonwillow_0_cellar",
+  "dimensions": [
+    16,
+    13
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      8,
+      9
+    ],
+    "exit": {
+      "$entity": "realm_moonwillow_0_cellar:object:7401305"
+    },
+    "exterior": "realm_moonwillow_0",
+    "race": "elf",
+    "returnAt": [
+      745,
+      573
+    ],
+    "title": "Moonwillow The Lantern Rest · Store cellar"
+  },
+  "entities": [
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401299",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Supplies cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 2,
+        "id": 7401299,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_0_cellar:Supplies cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 2
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401300",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Supplies cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 2,
+        "id": 7401300,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_0_cellar:Supplies cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 6,
+        "y": 2
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401301",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Supplies cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 2,
+        "id": 7401301,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_0_cellar:Supplies cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 2
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401302",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Supplies cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 2,
+        "id": 7401302,
+        "interiorBuilding": null,
+        "name": "Barrel",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            -0.05499999999999994
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_moonwillow_0_cellar:Supplies cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "barrel",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 2
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401303",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Supplies cellar",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "id": 7401303,
+        "interiorBuilding": null,
+        "name": "Service table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_moonwillow_0_cellar:Supplies cellar",
+          "roomType": "cellar",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "elf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_moonwillow_0_cellar:object:7401305",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "realm_moonwillow_0_upper",
+          "down": false,
+          "entry": [
+            16,
+            12
+          ],
+          "kind": "stone"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 10,
+        "id": 7401305,
+        "interiorBuilding": null,
+        "name": "Service stairs up to the guest hallway",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 8,
+        "y": 10
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        10.5
+      ]
+    }
+  ],
+  "buildings": []
+}

@@ -1,0 +1,56 @@
+{
+  "magic": {
+    "height": 6.1,
+    "model": "ResourceTree_magic",
+    "tint": [
+      0.58,
+      0.76,
+      0.77
+    ]
+  },
+  "maple": {
+    "height": 7.2,
+    "model": "ResourceTree_maple",
+    "tint": [
+      0.82,
+      0.74,
+      0.59
+    ]
+  },
+  "normal": {
+    "height": 4.2,
+    "model": "ResourceTree_normal",
+    "tint": [
+      0.62,
+      0.74,
+      0.57
+    ]
+  },
+  "oak": {
+    "height": 6.1,
+    "model": "ResourceTree_oak",
+    "tint": [
+      0.47,
+      0.64,
+      0.47
+    ]
+  },
+  "willow": {
+    "height": 4.8,
+    "model": "ResourceTree_willow",
+    "tint": [
+      0.52,
+      0.68,
+      0.53
+    ]
+  },
+  "yew": {
+    "height": 6.8,
+    "model": "ResourceTree_yew",
+    "tint": [
+      0.57,
+      0.71,
+      0.58
+    ]
+  }
+}

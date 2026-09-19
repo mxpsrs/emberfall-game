@@ -1,0 +1,18 @@
+{
+  "colossus": {
+    "origin": "A foundry sentinel remains bound to the Crystal Crucible. Runeforged refers to the inscriptions cut into its frame, not spell currency: Veldren mages consume Relics.",
+    "tactics": "The Colossus stays anchored. Leave the cleave circle and marked impact spots. Below half health, Crimson Overload shortens its attack intervals."
+  },
+  "varkesh": {
+    "origin": "Varkesh nests above the abandoned Ashwatch galleries. The scorched watch camp and exposed ascent mark the route into its roost.",
+    "tactics": "Its breath follows a committed facing. Step sideways out of the green cone; range alone will not keep you safe."
+  },
+  "veyr": {
+    "origin": "The Wardkeepers held Veyr beneath Ironhollow. The forged orders, sabotaged mine and altered shrine memories lead to that prison.",
+    "tactics": "Follow the solid ground warnings, not the voices. Complete the counter-ward preparations with Alaric for assistance in the story encounter."
+  },
+  "xalith": {
+    "origin": "The root caverns below Moonwillow shelter Xalith and her amber nursery. The nesting chambers are an inhabited lair, not a sealed treasure room.",
+    "tactics": "The Broodmother closes for melee attacks. Watch the scythe strike, keep room to retreat, and bring food suited to a long fight."
+  }
+}

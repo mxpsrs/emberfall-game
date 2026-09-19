@@ -1,0 +1,297 @@
+{
+  "earthBlast": {
+    "baseXP": 31.5,
+    "category": "Binding",
+    "color": "#c8ba83",
+    "cost": 1,
+    "desc": "Binding. Maximum hit 12. A damaging hit slows for 2 seconds. 31.5 base Magic XP per cast.",
+    "element": "earthRunes",
+    "ingredients": {
+      "deathRunes": 1,
+      "earthRunes": 4,
+      "waterRunes": 2
+    },
+    "level": 53,
+    "name": "Graven Hold",
+    "power": 12,
+    "range": 8,
+    "slow": 2,
+    "tier": 3
+  },
+  "earthBolt": {
+    "baseXP": 19.5,
+    "category": "Shaping",
+    "color": "#c8ba83",
+    "cost": 1,
+    "desc": "Shaping. Maximum hit 11. 19.5 base Magic XP per cast.",
+    "element": "earthRunes",
+    "ingredients": {
+      "chaosRunes": 1,
+      "earthRunes": 3
+    },
+    "level": 29,
+    "name": "Faultline",
+    "power": 11,
+    "range": 8,
+    "slow": 0,
+    "tier": 2
+  },
+  "earthStrike": {
+    "baseXP": 9.5,
+    "category": "Binding",
+    "color": "#c8ba83",
+    "cost": 1,
+    "desc": "Binding. Maximum hit 4. A damaging hit slows for 1.2 seconds. 9.5 base Magic XP per cast.",
+    "element": "earthRunes",
+    "ingredients": {
+      "earthRunes": 2,
+      "runes": 1,
+      "waterRunes": 1
+    },
+    "level": 9,
+    "name": "Root Tether",
+    "power": 4,
+    "range": 8,
+    "slow": 1.2,
+    "tier": 1
+  },
+  "earthWave": {
+    "baseXP": 40,
+    "category": "Resonance",
+    "color": "#c8ba83",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 19. 40 base Magic XP per cast.",
+    "element": "earthRunes",
+    "ingredients": {
+      "bloodRunes": 1,
+      "earthRunes": 5
+    },
+    "level": 70,
+    "name": "Cairnfall",
+    "power": 19,
+    "range": 8,
+    "slow": 0,
+    "tier": 4
+  },
+  "ember": {
+    "baseXP": 11.5,
+    "category": "Shaping",
+    "color": "#e7a365",
+    "cost": 1,
+    "desc": "Shaping. Maximum hit 8. 11.5 base Magic XP per cast.",
+    "element": "fireRunes",
+    "ingredients": {
+      "fireRunes": 3,
+      "runes": 1
+    },
+    "level": 13,
+    "name": "Cinder Lance",
+    "power": 8,
+    "range": 8,
+    "slow": 0,
+    "tier": 1
+  },
+  "fireBlast": {
+    "baseXP": 34.5,
+    "category": "Resonance",
+    "color": "#e7a365",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 16. 34.5 base Magic XP per cast.",
+    "element": "fireRunes",
+    "ingredients": {
+      "deathRunes": 1,
+      "fireRunes": 4
+    },
+    "level": 59,
+    "name": "Ember Vow",
+    "power": 16,
+    "range": 8,
+    "slow": 0,
+    "tier": 3
+  },
+  "fireBolt": {
+    "baseXP": 22.5,
+    "category": "Resonance",
+    "color": "#e7a365",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 12. 22.5 base Magic XP per cast.",
+    "element": "fireRunes",
+    "ingredients": {
+      "chaosRunes": 1,
+      "earthRunes": 1,
+      "fireRunes": 3
+    },
+    "level": 35,
+    "name": "Kilnheart",
+    "power": 12,
+    "range": 8,
+    "slow": 0,
+    "tier": 2
+  },
+  "fireWave": {
+    "baseXP": 42.5,
+    "category": "Resonance",
+    "color": "#e7a365",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 20. 42.5 base Magic XP per cast.",
+    "element": "fireRunes",
+    "ingredients": {
+      "airRunes": 2,
+      "bloodRunes": 1,
+      "fireRunes": 5
+    },
+    "level": 75,
+    "name": "Dawnfire",
+    "power": 20,
+    "range": 8,
+    "slow": 0,
+    "tier": 4
+  },
+  "frost": {
+    "baseXP": 7.5,
+    "category": "Shaping",
+    "color": "#79c9ed",
+    "cost": 1,
+    "desc": "Shaping. Maximum hit 4. 7.5 base Magic XP per cast.",
+    "element": "waterRunes",
+    "ingredients": {
+      "runes": 1,
+      "waterRunes": 2
+    },
+    "level": 5,
+    "name": "Tideglass",
+    "power": 4,
+    "range": 8,
+    "slow": 0,
+    "tier": 1
+  },
+  "spark": {
+    "baseXP": 5.5,
+    "category": "Shaping",
+    "color": "#b6e2db",
+    "cost": 1,
+    "desc": "Shaping. Maximum hit 2. 5.5 base Magic XP per cast.",
+    "element": "airRunes",
+    "ingredients": {
+      "airRunes": 1,
+      "runes": 1
+    },
+    "level": 1,
+    "name": "Gust Needle",
+    "power": 2,
+    "range": 8,
+    "slow": 0,
+    "tier": 1
+  },
+  "waterBlast": {
+    "baseXP": 28.5,
+    "category": "Resonance",
+    "color": "#79c9ed",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 14. 28.5 base Magic XP per cast.",
+    "element": "waterRunes",
+    "ingredients": {
+      "deathRunes": 1,
+      "waterRunes": 3
+    },
+    "level": 47,
+    "name": "Glasswake",
+    "power": 14,
+    "range": 8,
+    "slow": 0,
+    "tier": 3
+  },
+  "waterBolt": {
+    "baseXP": 16.5,
+    "category": "Binding",
+    "color": "#79c9ed",
+    "cost": 1,
+    "desc": "Binding. Maximum hit 8. A damaging hit slows for 1.5 seconds. 16.5 base Magic XP per cast.",
+    "element": "waterRunes",
+    "ingredients": {
+      "chaosRunes": 1,
+      "earthRunes": 1,
+      "waterRunes": 2
+    },
+    "level": 23,
+    "name": "Undercurrent",
+    "power": 8,
+    "range": 8,
+    "slow": 1.5,
+    "tier": 2
+  },
+  "waterWave": {
+    "baseXP": 37.5,
+    "category": "Binding",
+    "color": "#79c9ed",
+    "cost": 1,
+    "desc": "Binding. Maximum hit 16. A damaging hit slows for 2.2 seconds. 37.5 base Magic XP per cast.",
+    "element": "waterRunes",
+    "ingredients": {
+      "airRunes": 2,
+      "bloodRunes": 1,
+      "waterRunes": 5
+    },
+    "level": 65,
+    "name": "Winterglass",
+    "power": 16,
+    "range": 8,
+    "slow": 2.2,
+    "tier": 4
+  },
+  "windBlast": {
+    "baseXP": 25.5,
+    "category": "Binding",
+    "color": "#b6e2db",
+    "cost": 1,
+    "desc": "Binding. Maximum hit 11. A damaging hit slows for 1.8 seconds. 25.5 base Magic XP per cast.",
+    "element": "airRunes",
+    "ingredients": {
+      "airRunes": 3,
+      "deathRunes": 1,
+      "waterRunes": 2
+    },
+    "level": 41,
+    "name": "Storm Thread",
+    "power": 11,
+    "range": 8,
+    "slow": 1.8,
+    "tier": 3
+  },
+  "windBolt": {
+    "baseXP": 13.5,
+    "category": "Shaping",
+    "color": "#b6e2db",
+    "cost": 1,
+    "desc": "Shaping. Maximum hit 9. 13.5 base Magic XP per cast.",
+    "element": "airRunes",
+    "ingredients": {
+      "airRunes": 2,
+      "chaosRunes": 1
+    },
+    "level": 17,
+    "name": "Shear",
+    "power": 9,
+    "range": 8,
+    "slow": 0,
+    "tier": 2
+  },
+  "windWave": {
+    "baseXP": 36,
+    "category": "Resonance",
+    "color": "#b6e2db",
+    "cost": 1,
+    "desc": "Resonance. Maximum hit 17. 36 base Magic XP per cast.",
+    "element": "airRunes",
+    "ingredients": {
+      "airRunes": 5,
+      "bloodRunes": 1
+    },
+    "level": 62,
+    "name": "Skybreak",
+    "power": 17,
+    "range": 8,
+    "slow": 0,
+    "tier": 4
+  }
+}

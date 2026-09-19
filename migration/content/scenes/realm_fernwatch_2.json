@@ -1,0 +1,147 @@
+{
+  "id": "realm_fernwatch_2",
+  "dimensions": [
+    16,
+    14
+  ],
+  "metadata": {
+    "entry": [
+      8,
+      11
+    ],
+    "exit": {
+      "$entity": "realm_fernwatch_2:object:2382"
+    },
+    "kingdom": "sylvaran",
+    "race": "elf",
+    "title": "Fernwatch Forge"
+  },
+  "entities": [
+    {
+      "id": "realm_fernwatch_2:object:2382",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 12,
+        "id": 2382,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 8,
+        "y": 12
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_2:object:2383",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 7,
+        "id": 2383,
+        "name": "Smithing anvil",
+        "placement": {
+          "anchor": "workbench",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_fernwatch_2",
+          "roomType": "workshop",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "anvil",
+        "roomYaw": 0,
+        "sprite": 8,
+        "type": "forge",
+        "x": 5,
+        "y": 7
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_2:object:2384",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 3,
+        "id": 2384,
+        "name": "Forge fire",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_fernwatch_2",
+          "roomType": "workshop",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "roomYaw": 0,
+        "sprite": 7,
+        "type": "camp",
+        "x": 12,
+        "y": 3
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_fernwatch_2:object:2385",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 2385,
+        "name": "Coal rock",
+        "resourceId": "coal",
+        "sprite": 6,
+        "type": "ore",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    }
+  ],
+  "buildings": []
+}

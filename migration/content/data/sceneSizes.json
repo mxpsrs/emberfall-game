@@ -1,0 +1,1358 @@
+{
+  "civil_briarhaven_0": [
+    11,
+    10
+  ],
+  "civil_briarhaven_1": [
+    11,
+    10
+  ],
+  "civil_briarhaven_1_upper": [
+    20,
+    15
+  ],
+  "civil_briarhaven_2": [
+    11,
+    10
+  ],
+  "civil_briarhaven_3": [
+    11,
+    10
+  ],
+  "civil_briarhaven_4": [
+    11,
+    10
+  ],
+  "civil_briarhaven_4_upper": [
+    20,
+    15
+  ],
+  "civil_briarhaven_5": [
+    11,
+    10
+  ],
+  "civil_copperdelve_102": [
+    11,
+    10
+  ],
+  "civil_crownreach_103": [
+    11,
+    10
+  ],
+  "civil_deepforge_104": [
+    11,
+    10
+  ],
+  "civil_ironhollow_101": [
+    11,
+    10
+  ],
+  "civil_stoneford_0": [
+    11,
+    10
+  ],
+  "civil_stoneford_1": [
+    11,
+    10
+  ],
+  "civil_stoneford_105": [
+    11,
+    10
+  ],
+  "civil_stoneford_1_upper": [
+    20,
+    15
+  ],
+  "civil_stoneford_2": [
+    11,
+    10
+  ],
+  "civil_stoneford_3": [
+    11,
+    10
+  ],
+  "civil_stoneford_4": [
+    11,
+    10
+  ],
+  "civil_stoneford_4_upper": [
+    20,
+    15
+  ],
+  "civil_stoneford_5": [
+    11,
+    10
+  ],
+  "civil_stoneford_6": [
+    11,
+    10
+  ],
+  "civil_stoneford_6_upper": [
+    20,
+    15
+  ],
+  "civil_willowcross_0": [
+    11,
+    10
+  ],
+  "civil_willowcross_1": [
+    11,
+    10
+  ],
+  "civil_willowcross_1_upper": [
+    20,
+    15
+  ],
+  "civil_willowcross_2": [
+    11,
+    10
+  ],
+  "civil_willowcross_3": [
+    11,
+    10
+  ],
+  "civil_willowcross_4": [
+    11,
+    10
+  ],
+  "civil_willowcross_4_upper": [
+    20,
+    15
+  ],
+  "civil_willowcross_5": [
+    11,
+    10
+  ],
+  "civil_willowcross_6": [
+    11,
+    10
+  ],
+  "civil_willowcross_6_upper": [
+    20,
+    15
+  ],
+  "civil_willowcross_7": [
+    11,
+    10
+  ],
+  "coastal_beacon_guard": [
+    15,
+    16
+  ],
+  "coastal_beacon_roof": [
+    15,
+    16
+  ],
+  "coastal_beacon_watch": [
+    15,
+    16
+  ],
+  "dungeon": [
+    28,
+    25
+  ],
+  "fairy_between": [
+    76,
+    68
+  ],
+  "forge": [
+    14,
+    12
+  ],
+  "inn": [
+    14,
+    12
+  ],
+  "lair_colossus": [
+    46,
+    140
+  ],
+  "lair_varkesh": [
+    58,
+    150
+  ],
+  "lair_veyr": [
+    44,
+    140
+  ],
+  "lair_xalith": [
+    54,
+    146
+  ],
+  "mine": [
+    26,
+    22
+  ],
+  "ork_warrens": [
+    38,
+    44
+  ],
+  "overworld": [
+    1152,
+    768
+  ],
+  "quest_underiron": [
+    52,
+    128
+  ],
+  "realm_aelindor_0": [
+    16,
+    14
+  ],
+  "realm_aelindor_0_cellar": [
+    16,
+    13
+  ],
+  "realm_aelindor_0_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_1": [
+    16,
+    14
+  ],
+  "realm_aelindor_10": [
+    16,
+    14
+  ],
+  "realm_aelindor_11": [
+    16,
+    14
+  ],
+  "realm_aelindor_11_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_12": [
+    16,
+    14
+  ],
+  "realm_aelindor_13": [
+    16,
+    14
+  ],
+  "realm_aelindor_14": [
+    16,
+    14
+  ],
+  "realm_aelindor_14_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_15": [
+    16,
+    14
+  ],
+  "realm_aelindor_16": [
+    16,
+    14
+  ],
+  "realm_aelindor_16_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_17": [
+    16,
+    14
+  ],
+  "realm_aelindor_18": [
+    16,
+    14
+  ],
+  "realm_aelindor_19": [
+    16,
+    14
+  ],
+  "realm_aelindor_19_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_2": [
+    16,
+    14
+  ],
+  "realm_aelindor_20": [
+    16,
+    14
+  ],
+  "realm_aelindor_21": [
+    16,
+    14
+  ],
+  "realm_aelindor_21_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_22": [
+    16,
+    14
+  ],
+  "realm_aelindor_23": [
+    16,
+    14
+  ],
+  "realm_aelindor_24": [
+    16,
+    14
+  ],
+  "realm_aelindor_24_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_25": [
+    24,
+    22
+  ],
+  "realm_aelindor_25_lower": [
+    49,
+    25
+  ],
+  "realm_aelindor_25_tower": [
+    13,
+    14
+  ],
+  "realm_aelindor_25_upper": [
+    49,
+    26
+  ],
+  "realm_aelindor_3": [
+    16,
+    14
+  ],
+  "realm_aelindor_4": [
+    16,
+    14
+  ],
+  "realm_aelindor_5": [
+    16,
+    14
+  ],
+  "realm_aelindor_6": [
+    16,
+    14
+  ],
+  "realm_aelindor_6_upper": [
+    20,
+    15
+  ],
+  "realm_aelindor_7": [
+    16,
+    14
+  ],
+  "realm_aelindor_8": [
+    16,
+    14
+  ],
+  "realm_aelindor_9": [
+    16,
+    14
+  ],
+  "realm_aelindor_9_upper": [
+    20,
+    15
+  ],
+  "realm_briarhaven_3": [
+    16,
+    14
+  ],
+  "realm_briarhaven_4": [
+    16,
+    14
+  ],
+  "realm_copperdelve_0": [
+    16,
+    14
+  ],
+  "realm_copperdelve_0_cellar": [
+    16,
+    13
+  ],
+  "realm_copperdelve_0_upper": [
+    20,
+    15
+  ],
+  "realm_copperdelve_1": [
+    16,
+    14
+  ],
+  "realm_copperdelve_10": [
+    16,
+    14
+  ],
+  "realm_copperdelve_11": [
+    16,
+    14
+  ],
+  "realm_copperdelve_11_upper": [
+    20,
+    15
+  ],
+  "realm_copperdelve_2": [
+    16,
+    14
+  ],
+  "realm_copperdelve_3": [
+    16,
+    14
+  ],
+  "realm_copperdelve_4": [
+    16,
+    14
+  ],
+  "realm_copperdelve_5": [
+    26,
+    22
+  ],
+  "realm_copperdelve_6": [
+    16,
+    14
+  ],
+  "realm_copperdelve_6_upper": [
+    20,
+    15
+  ],
+  "realm_copperdelve_7": [
+    16,
+    14
+  ],
+  "realm_copperdelve_8": [
+    16,
+    14
+  ],
+  "realm_copperdelve_9": [
+    16,
+    14
+  ],
+  "realm_copperdelve_9_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_0": [
+    16,
+    14
+  ],
+  "realm_crownreach_0_cellar": [
+    16,
+    13
+  ],
+  "realm_crownreach_0_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_1": [
+    16,
+    14
+  ],
+  "realm_crownreach_10": [
+    16,
+    14
+  ],
+  "realm_crownreach_11": [
+    16,
+    14
+  ],
+  "realm_crownreach_11_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_12": [
+    16,
+    14
+  ],
+  "realm_crownreach_13": [
+    16,
+    14
+  ],
+  "realm_crownreach_14": [
+    16,
+    14
+  ],
+  "realm_crownreach_14_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_15": [
+    16,
+    14
+  ],
+  "realm_crownreach_16": [
+    16,
+    14
+  ],
+  "realm_crownreach_16_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_17": [
+    16,
+    14
+  ],
+  "realm_crownreach_18": [
+    16,
+    14
+  ],
+  "realm_crownreach_19": [
+    16,
+    14
+  ],
+  "realm_crownreach_19_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_2": [
+    16,
+    14
+  ],
+  "realm_crownreach_20": [
+    16,
+    14
+  ],
+  "realm_crownreach_21": [
+    16,
+    14
+  ],
+  "realm_crownreach_21_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_22": [
+    16,
+    14
+  ],
+  "realm_crownreach_23": [
+    16,
+    14
+  ],
+  "realm_crownreach_24": [
+    16,
+    14
+  ],
+  "realm_crownreach_24_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_25": [
+    24,
+    22
+  ],
+  "realm_crownreach_25_lower": [
+    49,
+    25
+  ],
+  "realm_crownreach_25_tower": [
+    13,
+    14
+  ],
+  "realm_crownreach_25_upper": [
+    49,
+    26
+  ],
+  "realm_crownreach_3": [
+    16,
+    14
+  ],
+  "realm_crownreach_4": [
+    16,
+    14
+  ],
+  "realm_crownreach_5": [
+    16,
+    14
+  ],
+  "realm_crownreach_6": [
+    16,
+    14
+  ],
+  "realm_crownreach_6_upper": [
+    20,
+    15
+  ],
+  "realm_crownreach_7": [
+    16,
+    14
+  ],
+  "realm_crownreach_8": [
+    16,
+    14
+  ],
+  "realm_crownreach_9": [
+    16,
+    14
+  ],
+  "realm_crownreach_9_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_0": [
+    16,
+    14
+  ],
+  "realm_deepforge_0_cellar": [
+    16,
+    13
+  ],
+  "realm_deepforge_0_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_1": [
+    16,
+    14
+  ],
+  "realm_deepforge_10": [
+    16,
+    14
+  ],
+  "realm_deepforge_11": [
+    16,
+    14
+  ],
+  "realm_deepforge_11_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_12": [
+    16,
+    14
+  ],
+  "realm_deepforge_13": [
+    16,
+    14
+  ],
+  "realm_deepforge_14": [
+    16,
+    14
+  ],
+  "realm_deepforge_14_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_15": [
+    16,
+    14
+  ],
+  "realm_deepforge_16": [
+    16,
+    14
+  ],
+  "realm_deepforge_16_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_17": [
+    16,
+    14
+  ],
+  "realm_deepforge_18": [
+    16,
+    14
+  ],
+  "realm_deepforge_19": [
+    16,
+    14
+  ],
+  "realm_deepforge_19_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_2": [
+    16,
+    14
+  ],
+  "realm_deepforge_20": [
+    16,
+    14
+  ],
+  "realm_deepforge_21": [
+    16,
+    14
+  ],
+  "realm_deepforge_21_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_22": [
+    16,
+    14
+  ],
+  "realm_deepforge_23": [
+    16,
+    14
+  ],
+  "realm_deepforge_24": [
+    16,
+    14
+  ],
+  "realm_deepforge_24_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_3": [
+    16,
+    14
+  ],
+  "realm_deepforge_4": [
+    16,
+    14
+  ],
+  "realm_deepforge_5": [
+    26,
+    22
+  ],
+  "realm_deepforge_6": [
+    16,
+    14
+  ],
+  "realm_deepforge_6_upper": [
+    20,
+    15
+  ],
+  "realm_deepforge_7": [
+    16,
+    14
+  ],
+  "realm_deepforge_8": [
+    16,
+    14
+  ],
+  "realm_deepforge_9": [
+    16,
+    14
+  ],
+  "realm_deepforge_9_upper": [
+    20,
+    15
+  ],
+  "realm_fernwatch_0": [
+    16,
+    14
+  ],
+  "realm_fernwatch_0_cellar": [
+    16,
+    13
+  ],
+  "realm_fernwatch_0_upper": [
+    20,
+    15
+  ],
+  "realm_fernwatch_1": [
+    16,
+    14
+  ],
+  "realm_fernwatch_2": [
+    16,
+    14
+  ],
+  "realm_fernwatch_3": [
+    16,
+    14
+  ],
+  "realm_fernwatch_4": [
+    16,
+    14
+  ],
+  "realm_fernwatch_5": [
+    16,
+    14
+  ],
+  "realm_greyhaven_0": [
+    16,
+    14
+  ],
+  "realm_greyhaven_0_cellar": [
+    16,
+    13
+  ],
+  "realm_greyhaven_0_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_1": [
+    16,
+    14
+  ],
+  "realm_greyhaven_10": [
+    16,
+    14
+  ],
+  "realm_greyhaven_11": [
+    16,
+    14
+  ],
+  "realm_greyhaven_11_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_12": [
+    16,
+    14
+  ],
+  "realm_greyhaven_13": [
+    16,
+    14
+  ],
+  "realm_greyhaven_14": [
+    16,
+    14
+  ],
+  "realm_greyhaven_14_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_15": [
+    16,
+    14
+  ],
+  "realm_greyhaven_16": [
+    16,
+    14
+  ],
+  "realm_greyhaven_16_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_17": [
+    16,
+    14
+  ],
+  "realm_greyhaven_18": [
+    16,
+    14
+  ],
+  "realm_greyhaven_19": [
+    16,
+    14
+  ],
+  "realm_greyhaven_19_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_2": [
+    16,
+    14
+  ],
+  "realm_greyhaven_20": [
+    16,
+    14
+  ],
+  "realm_greyhaven_21": [
+    16,
+    14
+  ],
+  "realm_greyhaven_21_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_22": [
+    16,
+    14
+  ],
+  "realm_greyhaven_23": [
+    16,
+    14
+  ],
+  "realm_greyhaven_24": [
+    16,
+    14
+  ],
+  "realm_greyhaven_24_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_3": [
+    16,
+    14
+  ],
+  "realm_greyhaven_4": [
+    16,
+    14
+  ],
+  "realm_greyhaven_5": [
+    16,
+    14
+  ],
+  "realm_greyhaven_6": [
+    16,
+    14
+  ],
+  "realm_greyhaven_6_upper": [
+    20,
+    15
+  ],
+  "realm_greyhaven_7": [
+    16,
+    14
+  ],
+  "realm_greyhaven_8": [
+    16,
+    14
+  ],
+  "realm_greyhaven_9": [
+    16,
+    14
+  ],
+  "realm_greyhaven_9_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_0": [
+    16,
+    14
+  ],
+  "realm_ironhollow_0_cellar": [
+    16,
+    13
+  ],
+  "realm_ironhollow_0_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_1": [
+    16,
+    14
+  ],
+  "realm_ironhollow_10": [
+    16,
+    14
+  ],
+  "realm_ironhollow_11": [
+    16,
+    14
+  ],
+  "realm_ironhollow_11_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_12": [
+    16,
+    14
+  ],
+  "realm_ironhollow_13": [
+    16,
+    14
+  ],
+  "realm_ironhollow_14": [
+    16,
+    14
+  ],
+  "realm_ironhollow_14_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_15": [
+    16,
+    14
+  ],
+  "realm_ironhollow_16": [
+    16,
+    14
+  ],
+  "realm_ironhollow_16_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_17": [
+    16,
+    14
+  ],
+  "realm_ironhollow_18": [
+    16,
+    14
+  ],
+  "realm_ironhollow_19": [
+    16,
+    14
+  ],
+  "realm_ironhollow_19_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_2": [
+    16,
+    14
+  ],
+  "realm_ironhollow_20": [
+    16,
+    14
+  ],
+  "realm_ironhollow_21": [
+    16,
+    14
+  ],
+  "realm_ironhollow_21_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_22": [
+    16,
+    14
+  ],
+  "realm_ironhollow_23": [
+    16,
+    14
+  ],
+  "realm_ironhollow_24": [
+    16,
+    14
+  ],
+  "realm_ironhollow_24_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_25": [
+    24,
+    22
+  ],
+  "realm_ironhollow_25_lower": [
+    49,
+    25
+  ],
+  "realm_ironhollow_25_tower": [
+    13,
+    14
+  ],
+  "realm_ironhollow_25_upper": [
+    49,
+    26
+  ],
+  "realm_ironhollow_3": [
+    16,
+    14
+  ],
+  "realm_ironhollow_4": [
+    16,
+    14
+  ],
+  "realm_ironhollow_5": [
+    26,
+    22
+  ],
+  "realm_ironhollow_6": [
+    16,
+    14
+  ],
+  "realm_ironhollow_6_upper": [
+    20,
+    15
+  ],
+  "realm_ironhollow_7": [
+    16,
+    14
+  ],
+  "realm_ironhollow_8": [
+    16,
+    14
+  ],
+  "realm_ironhollow_9": [
+    16,
+    14
+  ],
+  "realm_ironhollow_9_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_0": [
+    16,
+    14
+  ],
+  "realm_moonwillow_0_cellar": [
+    16,
+    13
+  ],
+  "realm_moonwillow_0_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_1": [
+    16,
+    14
+  ],
+  "realm_moonwillow_10": [
+    16,
+    14
+  ],
+  "realm_moonwillow_11": [
+    16,
+    14
+  ],
+  "realm_moonwillow_11_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_12": [
+    16,
+    14
+  ],
+  "realm_moonwillow_13": [
+    16,
+    14
+  ],
+  "realm_moonwillow_14": [
+    16,
+    14
+  ],
+  "realm_moonwillow_14_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_15": [
+    16,
+    14
+  ],
+  "realm_moonwillow_16": [
+    16,
+    14
+  ],
+  "realm_moonwillow_16_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_17": [
+    16,
+    14
+  ],
+  "realm_moonwillow_18": [
+    16,
+    14
+  ],
+  "realm_moonwillow_19": [
+    16,
+    14
+  ],
+  "realm_moonwillow_19_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_2": [
+    16,
+    14
+  ],
+  "realm_moonwillow_20": [
+    16,
+    14
+  ],
+  "realm_moonwillow_21": [
+    16,
+    14
+  ],
+  "realm_moonwillow_21_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_22": [
+    16,
+    14
+  ],
+  "realm_moonwillow_23": [
+    16,
+    14
+  ],
+  "realm_moonwillow_24": [
+    16,
+    14
+  ],
+  "realm_moonwillow_24_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_3": [
+    16,
+    14
+  ],
+  "realm_moonwillow_4": [
+    16,
+    14
+  ],
+  "realm_moonwillow_5": [
+    16,
+    14
+  ],
+  "realm_moonwillow_6": [
+    16,
+    14
+  ],
+  "realm_moonwillow_6_upper": [
+    20,
+    15
+  ],
+  "realm_moonwillow_7": [
+    16,
+    14
+  ],
+  "realm_moonwillow_8": [
+    16,
+    14
+  ],
+  "realm_moonwillow_9": [
+    16,
+    14
+  ],
+  "realm_moonwillow_9_upper": [
+    20,
+    15
+  ],
+  "realm_silverbrook_0": [
+    16,
+    14
+  ],
+  "realm_silverbrook_0_cellar": [
+    16,
+    13
+  ],
+  "realm_silverbrook_0_upper": [
+    20,
+    15
+  ],
+  "realm_silverbrook_1": [
+    16,
+    14
+  ],
+  "realm_silverbrook_2": [
+    16,
+    14
+  ],
+  "realm_silverbrook_3": [
+    16,
+    14
+  ],
+  "realm_silverbrook_4": [
+    16,
+    14
+  ],
+  "realm_silverbrook_5": [
+    16,
+    14
+  ],
+  "realm_stoneford_2": [
+    16,
+    14
+  ],
+  "realm_stoneford_3": [
+    16,
+    14
+  ],
+  "realm_stoneford_4": [
+    16,
+    14
+  ],
+  "realm_stoneford_4_upper": [
+    20,
+    15
+  ],
+  "realm_stonehearth_0": [
+    16,
+    14
+  ],
+  "realm_stonehearth_0_cellar": [
+    16,
+    13
+  ],
+  "realm_stonehearth_0_upper": [
+    20,
+    15
+  ],
+  "realm_stonehearth_1": [
+    16,
+    14
+  ],
+  "realm_stonehearth_10": [
+    16,
+    14
+  ],
+  "realm_stonehearth_11": [
+    16,
+    14
+  ],
+  "realm_stonehearth_11_upper": [
+    20,
+    15
+  ],
+  "realm_stonehearth_2": [
+    16,
+    14
+  ],
+  "realm_stonehearth_3": [
+    16,
+    14
+  ],
+  "realm_stonehearth_4": [
+    16,
+    14
+  ],
+  "realm_stonehearth_5": [
+    26,
+    22
+  ],
+  "realm_stonehearth_6": [
+    16,
+    14
+  ],
+  "realm_stonehearth_6_upper": [
+    20,
+    15
+  ],
+  "realm_stonehearth_7": [
+    16,
+    14
+  ],
+  "realm_stonehearth_8": [
+    16,
+    14
+  ],
+  "realm_stonehearth_9": [
+    16,
+    14
+  ],
+  "realm_stonehearth_9_upper": [
+    20,
+    15
+  ],
+  "realm_willowcross_2": [
+    16,
+    14
+  ],
+  "realm_willowcross_3": [
+    16,
+    14
+  ],
+  "realm_willowcross_4": [
+    16,
+    14
+  ],
+  "realm_willowcross_4_upper": [
+    20,
+    15
+  ],
+  "shop": [
+    14,
+    12
+  ],
+  "stoneInn": [
+    14,
+    12
+  ],
+  "stoneShop": [
+    14,
+    12
+  ],
+  "story_mine": [
+    50,
+    92
+  ],
+  "story_shrine": [
+    62,
+    112
+  ],
+  "tutorial": [
+    128,
+    136
+  ],
+  "willowInn": [
+    14,
+    12
+  ],
+  "willowShop": [
+    14,
+    12
+  ]
+}

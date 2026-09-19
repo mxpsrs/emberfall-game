@@ -1,0 +1,106 @@
+[
+  [
+    "Speak to Captain Rellan in Briarhaven after Firstlight Apprenticeship. Recommended Combat 8.",
+    "rellan"
+  ],
+  [
+    "Hear surviving wagon driver Tovin’s account of the courier attack.",
+    "driver"
+  ],
+  [
+    "Investigate the damaged cart, cut harness, courier’s body and tracks at Redclay Bend.",
+    "clues"
+  ],
+  [
+    "Follow the heavy eastbound prints at the split-trail marker.",
+    "trail"
+  ],
+  [
+    "Reach the fortified raider camp and defeat its west-gate lookout.",
+    "lookout"
+  ],
+  [
+    "Search the paid raiders’ dispatch satchel beside their stolen cargo.",
+    "dispatch"
+  ],
+  [
+    "Hand the forged royal orders to Rellan. Explain the withdrawn patrols and passage toward Ironhollow.",
+    "rellan"
+  ],
+  [
+    "Show Hesta your evidence at Ironhollow’s rescue camp. Requires Mining 5 and Smithing 5. Recommended Combat 10.",
+    "hesta"
+  ],
+  [
+    "Enter the Freight Mine. Examine the sabotaged lift at the lower loading hall.",
+    "lift"
+  ],
+  [
+    "Clear the western maintenance passage with your pickaxe. Avoid the marked falling-stone patches.",
+    "airway"
+  ],
+  [
+    "Recover usable iron from the collapsed support farther along the alternate route.",
+    "support"
+  ],
+  [
+    "Use the underground rescue anvil to forge a brace for the refuge entrance.",
+    "forge"
+  ],
+  [
+    "Install the forged locking pin and secure the lift brake.",
+    "lift"
+  ],
+  [
+    "Investigate the secret excavation, then seat the lift counterweight to open the refuge ramp.",
+    "excavation"
+  ],
+  [
+    "Reach Bera in the western refuge. Brace the entrance and ask her to follow.",
+    "bera"
+  ],
+  [
+    "Find Oren in the adjoining refuge. Bring both workers back together.",
+    "oren"
+  ],
+  [
+    "Escort Bera and Oren through the winding mine to Hesta. Stay close; they wait if separated.",
+    "escort"
+  ],
+  [
+    "Report the rescue, deliberate sabotage and impossible voices to Hesta.",
+    "hesta"
+  ],
+  [
+    "Meet Scholar Ilyra at the abandoned pilgrim camp southwest of Ironhollow. Magic 5; recommended Combat 12.",
+    "ilyra"
+  ],
+  [
+    "Explore Hollow Shrine: Bell on the approach, Lantern in the buried pilgrim hall, Hand in the eastern archive.",
+    "stones"
+  ],
+  [
+    "Compare genuine and altered memories with Ilyra at the pilgrim camp.",
+    "ilyra"
+  ],
+  [
+    "Enter the shrine’s deepest chamber. Restore the oath: warning, light, then mercy.",
+    "shrine"
+  ],
+  [
+    "Defeat the Echo Shade feeding in the shrine’s buried reliquary.",
+    "shade"
+  ],
+  [
+    "Stabilize the physical Memory Shard in the reliquary.",
+    "shrine"
+  ],
+  [
+    "Bring the Memory Shard to Ilyra. The surviving energy points beneath Ironhollow.",
+    "ilyra"
+  ],
+  [
+    "Bring the Memory Shard and your evidence journal to Archivist Maerin in Ironhollow.",
+    "maerin"
+  ]
+]

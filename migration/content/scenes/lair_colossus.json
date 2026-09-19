@@ -1,0 +1,920 @@
+{
+  "id": "lair_colossus",
+  "dimensions": [
+    46,
+    140
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "kind": "crystal",
+        "size": 1.25,
+        "x": 10.5,
+        "z": 10.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.55,
+        "x": 9.5,
+        "z": 14.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.85,
+        "x": 10.5,
+        "z": 18.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.25,
+        "x": 9.5,
+        "z": 22.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.55,
+        "x": 10.5,
+        "z": 26.5
+      },
+      {
+        "heading": 0,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 17.5,
+        "z": 36
+      },
+      {
+        "heading": 0.9,
+        "height": 1.85,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 17.3,
+        "z": 38
+      },
+      {
+        "heading": 1.8,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 17.1,
+        "z": 40
+      },
+      {
+        "heading": 2.7,
+        "height": 1.85,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 16.9,
+        "z": 42
+      },
+      {
+        "kind": "crystal",
+        "size": 1.25,
+        "x": 36.5,
+        "z": 10.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.55,
+        "x": 37.5,
+        "z": 14.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.85,
+        "x": 36.5,
+        "z": 18.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.25,
+        "x": 37.5,
+        "z": 22.5
+      },
+      {
+        "kind": "crystal",
+        "size": 1.55,
+        "x": 36.5,
+        "z": 26.5
+      },
+      {
+        "heading": 0,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 29.5,
+        "z": 36
+      },
+      {
+        "heading": 0.9,
+        "height": 1.85,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 29.7,
+        "z": 38
+      },
+      {
+        "heading": 1.8,
+        "height": 1.5,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 29.9,
+        "z": 40
+      },
+      {
+        "heading": 2.7,
+        "height": 1.85,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.61,
+          0.76,
+          0.91
+        ],
+        "x": 30.1,
+        "z": 42
+      },
+      {
+        "kind": "pillar",
+        "size": 0.72,
+        "x": 34.5,
+        "z": 18.5
+      },
+      {
+        "kind": "pillar",
+        "size": 1,
+        "x": 31.27817459305202,
+        "z": 25.571067811865476
+      },
+      {
+        "kind": "pillar",
+        "size": 1,
+        "x": 23.5,
+        "z": 28.5
+      },
+      {
+        "kind": "pillar",
+        "size": 0.72,
+        "x": 15.721825406947978,
+        "z": 25.571067811865476
+      },
+      {
+        "kind": "pillar",
+        "size": 1,
+        "x": 12.5,
+        "z": 18.5
+      },
+      {
+        "kind": "pillar",
+        "size": 1,
+        "x": 15.721825406947975,
+        "z": 11.428932188134524
+      },
+      {
+        "kind": "pillar",
+        "size": 0.72,
+        "x": 23.499999999999996,
+        "z": 8.5
+      },
+      {
+        "kind": "pillar",
+        "size": 1,
+        "x": 31.27817459305202,
+        "z": 11.428932188134523
+      },
+      {
+        "kind": "dais",
+        "size": 5.7,
+        "x": 23.5,
+        "z": 18.5
+      },
+      {
+        "kind": "plinth",
+        "size": 2.1,
+        "x": 23.5,
+        "z": 18.5
+      },
+      {
+        "kind": "arch",
+        "size": 1.3,
+        "x": 23,
+        "z": 34
+      },
+      {
+        "heading": 0,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 17,
+        "z": 124
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 28,
+        "z": 125
+      },
+      {
+        "kind": "crystal",
+        "size": 1,
+        "x": 28,
+        "z": 118
+      },
+      {
+        "kind": "hearth",
+        "size": 0.6,
+        "x": 19,
+        "z": 119
+      },
+      {
+        "heading": 1,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 7,
+        "z": 95
+      },
+      {
+        "heading": 0.7,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 18,
+        "z": 96
+      },
+      {
+        "kind": "crystal",
+        "size": 1,
+        "x": 18,
+        "z": 89
+      },
+      {
+        "heading": 2,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 28,
+        "z": 68
+      },
+      {
+        "heading": 1.4,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 39,
+        "z": 69
+      },
+      {
+        "kind": "crystal",
+        "size": 1,
+        "x": 39,
+        "z": 62
+      }
+    ],
+    "entry": [
+      23,
+      134
+    ],
+    "exit": {
+      "$entity": "lair_colossus:object:5800000"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "lair_colossus",
+    "openAir": false,
+    "subtitle": "Runeforged Colossus · Ancient crystal foundry",
+    "title": "The Crystal Crucible",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 24.15,
+        "z": 6.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 13.15,
+        "z": 10.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 34.5,
+        "z": 11.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 16.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 28.5,
+        "z": 30.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 16.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 24.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 16.5,
+        "z": 30.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 24.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 34.5,
+        "z": 29.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 21.15,
+        "z": 35.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 9.85,
+        "z": 30.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 25.85,
+        "z": 39.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 21.15,
+        "z": 43.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 25.85,
+        "z": 48.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 22.15,
+        "z": 53.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 27.85,
+        "z": 55.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 34.5,
+        "z": 56.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 30.15,
+        "z": 61.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 61.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 29.15,
+        "z": 67.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 39.85,
+        "z": 67.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 32.15,
+        "z": 73.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 35.85,
+        "z": 78.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 29.85,
+        "z": 82.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 12.15,
+        "z": 83.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 18.85,
+        "z": 92.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 8.15,
+        "z": 96.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 14.85,
+        "z": 105.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 24.85,
+        "z": 111.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 120.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 28.85,
+        "z": 123.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 22.15,
+        "z": 132.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "lair_colossus:object:5800000",
+      "source": {
+        "dead": 0,
+        "id": 5800000,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "lair_colossus",
+        "sprite": 13,
+        "type": "exit",
+        "x": 23,
+        "y": 135
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        135.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:4700044",
+      "source": {
+        "_stationary": true,
+        "anchored": true,
+        "area": "The Crystal Crucible",
+        "at": [
+          23,
+          18
+        ],
+        "atk": 8,
+        "attackAt": -100,
+        "attackLevel": 29,
+        "attackStyle": "melee",
+        "coins": 155,
+        "combatRadius": 2.2,
+        "creatureLook": "boss_colossus",
+        "dead": 0,
+        "defenseLevel": 27,
+        "drawX": 23,
+        "drawY": 18,
+        "drops": {
+          "deathRunes": 15,
+          "mithrilBar": 2
+        },
+        "encounter": "colossus",
+        "hitAt": -100,
+        "homeX": 23,
+        "homeY": 18,
+        "hp": 158,
+        "id": 4700044,
+        "kind": "colossus",
+        "level": 42,
+        "look": "boss_colossus",
+        "marks": 4,
+        "maxHit": 8,
+        "maxhp": 158,
+        "mechanics": true,
+        "name": "Runeforged Colossus",
+        "phases": [
+          {
+            "at": 1,
+            "moves": [
+              "sweep",
+              "shot",
+              "hex"
+            ],
+            "name": "Crystalbound"
+          },
+          {
+            "at": 0.5,
+            "moves": [
+              "sweep",
+              "shot",
+              "hex"
+            ],
+            "name": "Crimson Overload",
+            "speed": 0.75
+          }
+        ],
+        "rank": "Boss",
+        "released": true,
+        "repeatable": true,
+        "scene": "lair_colossus",
+        "spread": 0,
+        "sprite": 11,
+        "type": "boss",
+        "weak": "magic",
+        "x": 23,
+        "y": 18
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400000",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 11,
+        "attackStyle": "melee",
+        "coins": 26,
+        "creatureLook": "rat",
+        "dead": 0,
+        "defenseLevel": 10,
+        "drawX": 20,
+        "drawY": 118,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 118,
+        "hp": 27,
+        "id": 6400000,
+        "interval": 3.3,
+        "kind": "cavecrawler",
+        "level": 16,
+        "look": "rat",
+        "maxHit": 4,
+        "maxhp": 27,
+        "name": "Cave crawler",
+        "size": 2.15,
+        "spread": 0,
+        "sprite": 15,
+        "tint": [
+          0.8,
+          0.9,
+          1.15
+        ],
+        "type": "enemy",
+        "weak": "melee",
+        "x": 20,
+        "y": 118
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        118.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400001",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 11,
+        "attackStyle": "melee",
+        "coins": 26,
+        "creatureLook": "rat",
+        "dead": 0,
+        "defenseLevel": 10,
+        "drawX": 26,
+        "drawY": 118,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 26,
+        "homeY": 118,
+        "hp": 27,
+        "id": 6400001,
+        "interval": 3.3,
+        "kind": "cavecrawler",
+        "level": 16,
+        "look": "rat",
+        "maxHit": 4,
+        "maxhp": 27,
+        "name": "Cave crawler",
+        "size": 2.15,
+        "spread": 0,
+        "sprite": 15,
+        "tint": [
+          0.8,
+          0.9,
+          1.15
+        ],
+        "type": "enemy",
+        "weak": "melee",
+        "x": 26,
+        "y": 118
+      },
+      "renderPosition": [
+        26.5,
+        0,
+        118.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400002",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 14,
+        "attackStyle": "melee",
+        "coins": 32,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 13,
+        "drawX": 10,
+        "drawY": 89,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 10,
+        "homeY": 89,
+        "hp": 34,
+        "id": 6400002,
+        "interval": 3.8,
+        "kind": "quarrybrute",
+        "level": 20,
+        "look": "goblin",
+        "maxHit": 4,
+        "maxhp": 34,
+        "name": "Quarry brute",
+        "size": 1.45,
+        "spread": 0,
+        "sprite": 8,
+        "tint": [
+          1.1,
+          0.8,
+          0.7
+        ],
+        "type": "enemy",
+        "weak": "magic",
+        "x": 10,
+        "y": 89
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        89.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400003",
+      "source": {
+        "atk": 4,
+        "attackAt": -100,
+        "attackLevel": 14,
+        "attackStyle": "melee",
+        "coins": 32,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 13,
+        "drawX": 16,
+        "drawY": 89,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 16,
+        "homeY": 89,
+        "hp": 34,
+        "id": 6400003,
+        "interval": 3.8,
+        "kind": "quarrybrute",
+        "level": 20,
+        "look": "goblin",
+        "maxHit": 4,
+        "maxhp": 34,
+        "name": "Quarry brute",
+        "size": 1.45,
+        "spread": 0,
+        "sprite": 8,
+        "tint": [
+          1.1,
+          0.8,
+          0.7
+        ],
+        "type": "enemy",
+        "weak": "magic",
+        "x": 16,
+        "y": 89
+      },
+      "renderPosition": [
+        16.5,
+        0,
+        89.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400004",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 17,
+        "attackStyle": "melee",
+        "coins": 40,
+        "creatureLook": "slime",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 31,
+        "drawY": 62,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 31,
+        "homeY": 62,
+        "hp": 42,
+        "id": 6400004,
+        "interval": 3.6,
+        "kind": "ironhideslime",
+        "level": 25,
+        "look": "slime",
+        "maxHit": 5,
+        "maxhp": 42,
+        "name": "Ironhide slime",
+        "size": 1.2,
+        "spread": 0,
+        "sprite": 9,
+        "tint": [
+          0.7,
+          0.85,
+          1.1
+        ],
+        "type": "enemy",
+        "weak": "magic",
+        "x": 31,
+        "y": 62
+      },
+      "renderPosition": [
+        31.5,
+        0,
+        62.5
+      ]
+    },
+    {
+      "id": "lair_colossus:object:6400005",
+      "source": {
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 17,
+        "attackStyle": "melee",
+        "coins": 40,
+        "creatureLook": "slime",
+        "dead": 0,
+        "defenseLevel": 16,
+        "drawX": 37,
+        "drawY": 62,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 62,
+        "hp": 42,
+        "id": 6400005,
+        "interval": 3.6,
+        "kind": "ironhideslime",
+        "level": 25,
+        "look": "slime",
+        "maxHit": 5,
+        "maxhp": 42,
+        "name": "Ironhide slime",
+        "size": 1.2,
+        "spread": 0,
+        "sprite": 9,
+        "tint": [
+          0.7,
+          0.85,
+          1.1
+        ],
+        "type": "enemy",
+        "weak": "magic",
+        "x": 37,
+        "y": 62
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        62.5
+      ]
+    }
+  ],
+  "buildings": []
+}

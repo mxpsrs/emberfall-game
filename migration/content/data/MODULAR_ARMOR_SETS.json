@@ -1,0 +1,42 @@
+[
+  {
+    "armor": 1,
+    "cost": 28,
+    "id": "bronze",
+    "level": 1,
+    "name": "Bronze",
+    "source": "B"
+  },
+  {
+    "armor": 2,
+    "cost": 55,
+    "id": "iron",
+    "level": 1,
+    "name": "Iron",
+    "source": "I"
+  },
+  {
+    "armor": 2,
+    "cost": 95,
+    "id": "gold",
+    "level": 40,
+    "name": "Gilded",
+    "source": "G"
+  },
+  {
+    "armor": 3,
+    "cost": 180,
+    "id": "mithril",
+    "level": 20,
+    "name": "Windsteel",
+    "source": "M"
+  },
+  {
+    "armor": 4,
+    "cost": 360,
+    "id": "dragonslayer",
+    "level": 60,
+    "name": "Wyrmforged",
+    "source": "DS"
+  }
+]

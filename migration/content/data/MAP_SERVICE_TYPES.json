@@ -1,0 +1,50 @@
+{
+  "all": [
+    "map",
+    "All services"
+  ],
+  "armour": [
+    "gear",
+    "Armour"
+  ],
+  "bank": [
+    "bank",
+    "Banks"
+  ],
+  "forge": [
+    "forge",
+    "Forges"
+  ],
+  "inn": [
+    "inn",
+    "Inns"
+  ],
+  "magic": [
+    "spells",
+    "Magic schools"
+  ],
+  "mine": [
+    "mine",
+    "Mines & quarries"
+  ],
+  "quest": [
+    "quests",
+    "Story quests"
+  ],
+  "shop": [
+    "shop",
+    "General stores"
+  ],
+  "shrine": [
+    "shrine",
+    "Shrines"
+  ],
+  "tutor": [
+    "tutor",
+    "Tutors"
+  ],
+  "weapons": [
+    "attack",
+    "Weapons"
+  ]
+}

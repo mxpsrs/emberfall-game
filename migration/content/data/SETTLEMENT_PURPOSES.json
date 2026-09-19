@@ -1,0 +1,93 @@
+{
+  "aelindor": [
+    "capital",
+    "Grove palace",
+    "Forest stewardship and learning",
+    "forest springs",
+    "The Bough Palace"
+  ],
+  "briarhaven": [
+    "town",
+    "Market crossroads",
+    "Mainland services and farming",
+    "Stillwater and town well",
+    "Briarhaven well"
+  ],
+  "copperdelve": [
+    "large village",
+    "Mining green",
+    "Copper and local stone",
+    "spring-fed well",
+    "Quarry headframe"
+  ],
+  "crownreach": [
+    "capital",
+    "Royal enclosure",
+    "Crown administration and grain trade",
+    "wells and the western river",
+    "Sunspire Castle"
+  ],
+  "deepforge": [
+    "city",
+    "Foundry terraces",
+    "Metalworking and deep mining",
+    "Ironmirror watershed",
+    "Foundry headframe"
+  ],
+  "fernwatch": [
+    "small village",
+    "Woodland grove",
+    "Forestry and forest watch",
+    "grove spring",
+    "Ancient watch tree"
+  ],
+  "greyhaven": [
+    "city",
+    "Market crossroads",
+    "Regional trade and river transport",
+    "western watershed",
+    "Guild bell tower"
+  ],
+  "ironhollow": [
+    "capital",
+    "Mountain citadel",
+    "Ore, masonry and royal foundries",
+    "cisterns and mountain springs",
+    "Ironcrown Citadel"
+  ],
+  "moonwillow": [
+    "city",
+    "Connected groves",
+    "Herbalism, weaving and forest trade",
+    "Silver River",
+    "Moon sanctuary"
+  ],
+  "silverbrook": [
+    "small village",
+    "Shrine green",
+    "Fishing and medicinal herbs",
+    "Silver River tributary",
+    "Waterside shrine"
+  ],
+  "stoneford": [
+    "large village",
+    "Roadside green",
+    "Highland provisions and husbandry",
+    "village well",
+    "Militia watchtower"
+  ],
+  "stonehearth": [
+    "large village",
+    "Masons’ green",
+    "Stone cutting and mountain supplies",
+    "cistern",
+    "Masons’ hall"
+  ],
+  "willowcross": [
+    "town",
+    "Market crossroads",
+    "Grain milling and river trade",
+    "Eastbank river",
+    "Mill and market"
+  ]
+}

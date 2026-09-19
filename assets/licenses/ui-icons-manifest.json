@@ -1,0 +1,456 @@
+{
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "https://github.com/game-icons/icons",
+  "revision": "82d948812bfe3f269ef8f731dcdb07b08160edc4",
+  "icons": {
+    "bag": {
+      "label": "Inventory",
+      "source": "lorc--knapsack.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/knapsack.html",
+      "color": "#dec48e"
+    },
+    "gear": {
+      "label": "Worn equipment",
+      "source": "delapouite--chest-armor.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/chest-armor.html",
+      "color": "#c1ced3"
+    },
+    "skills": {
+      "label": "Skills",
+      "source": "delapouite--histogram.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/histogram.html",
+      "color": "#ded0ad"
+    },
+    "quests": {
+      "label": "Quest list",
+      "source": "lorc--scroll-unfurled.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/scroll-unfurled.html",
+      "color": "#dec48e"
+    },
+    "spells": {
+      "label": "Magic spellbook",
+      "source": "delapouite--spell-book.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/spell-book.html",
+      "color": "#a9bade"
+    },
+    "melee": {
+      "label": "Combat options",
+      "source": "lorc--crossed-swords.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/crossed-swords.html",
+      "color": "#c1ced3"
+    },
+    "ranged": {
+      "label": "Ranged",
+      "source": "delapouite--bow-arrow.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/bow-arrow.html",
+      "color": "#a9ca81"
+    },
+    "magic": {
+      "label": "Magic",
+      "source": "lorc--crystal-wand.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/crystal-wand.html",
+      "color": "#a9bade"
+    },
+    "shrine": {
+      "label": "Worship",
+      "source": "lorc--prayer.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/prayer.html",
+      "color": "#bcdad0"
+    },
+    "followers": {
+      "label": "Elemental spirits",
+      "source": "lorc--ghost.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/ghost.html",
+      "color": "#bcdad0"
+    },
+    "spirit": {
+      "label": "Special attack",
+      "source": "lorc--power-lightning.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/power-lightning.html",
+      "color": "#dfcb7a"
+    },
+    "friends": {
+      "label": "Friends list",
+      "source": "delapouite--three-friends.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/three-friends.html",
+      "color": "#b9d0a6"
+    },
+    "person": {
+      "label": "Player",
+      "source": "delapouite--person.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/person.html",
+      "color": "#d9c6a0"
+    },
+    "settings": {
+      "label": "Settings",
+      "source": "lorc--cog.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/cog.html",
+      "color": "#d9c6a0"
+    },
+    "music": {
+      "label": "Music",
+      "source": "delapouite--musical-notes.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/musical-notes.html",
+      "color": "#d9c6a0"
+    },
+    "tools": {
+      "label": "Tool belt",
+      "source": "lucasms--belt.svg",
+      "author": "Lucas",
+      "url": "https://game-icons.net/1x1/lucasms/belt.html",
+      "color": "#dec48e"
+    },
+    "wave": {
+      "label": "Emotes",
+      "source": "sbed--hand.svg",
+      "author": "sbed",
+      "url": "https://game-icons.net/1x1/sbed/hand.html",
+      "color": "#dec48e"
+    },
+    "exit": {
+      "label": "Logout",
+      "source": "delapouite--exit-door.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/exit-door.html",
+      "color": "#d9c6a0"
+    },
+    "chat": {
+      "label": "Chat",
+      "source": "delapouite--chat-bubble.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/chat-bubble.html",
+      "color": "#d9c6a0"
+    },
+    "stats": {
+      "label": "Combat statistics",
+      "source": "delapouite--chart.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/chart.html",
+      "color": "#dec48e"
+    },
+    "attack": {
+      "label": "Attack",
+      "source": "lorc--broadsword.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/broadsword.html",
+      "color": "#c1ced3"
+    },
+    "strength": {
+      "label": "Strength",
+      "source": "skoll--fist.svg",
+      "author": "Skoll",
+      "url": "https://game-icons.net/1x1/skoll/fist.html",
+      "color": "#df6b58"
+    },
+    "shield": {
+      "label": "Defence / shield",
+      "source": "sbed--shield.svg",
+      "author": "sbed",
+      "url": "https://game-icons.net/1x1/sbed/shield.html",
+      "color": "#c1ced3"
+    },
+    "heart": {
+      "label": "Hitpoints",
+      "source": "skoll--hearts.svg",
+      "author": "Skoll",
+      "url": "https://game-icons.net/1x1/skoll/hearts.html",
+      "color": "#df6b58"
+    },
+    "woodcutting": {
+      "label": "Woodcutting",
+      "source": "lorc--pine-tree.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/pine-tree.html",
+      "color": "#a9ca81"
+    },
+    "mine": {
+      "label": "Mining",
+      "source": "delapouite--war-pick.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/war-pick.html",
+      "color": "#c1ced3"
+    },
+    "fish": {
+      "label": "Fishing",
+      "source": "delapouite--fishing-pole.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/fishing-pole.html",
+      "color": "#c1d9e2"
+    },
+    "forge": {
+      "label": "Smithing",
+      "source": "lorc--anvil.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/anvil.html",
+      "color": "#c1ced3"
+    },
+    "firemaking": {
+      "label": "Firemaking",
+      "source": "lorc--campfire.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/campfire.html",
+      "color": "#e98e4e"
+    },
+    "cooking": {
+      "label": "Cooking",
+      "source": "delapouite--cooking-pot.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/cooking-pot.html",
+      "color": "#e98e4e"
+    },
+    "fletching": {
+      "label": "Fletching",
+      "source": "lorc--feather.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/feather.html",
+      "color": "#eee2c4"
+    },
+    "farming": {
+      "label": "Farming",
+      "source": "delapouite--rake.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/rake.html",
+      "color": "#a9ca81"
+    },
+    "helm": {
+      "label": "Head slot",
+      "source": "lorc--visored-helm.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/visored-helm.html",
+      "color": "#c1ced3"
+    },
+    "necklace": {
+      "label": "Neck slot",
+      "source": "lucasms--necklace.svg",
+      "author": "Lucas",
+      "url": "https://game-icons.net/1x1/lucasms/necklace.html",
+      "color": "#d9c6a0"
+    },
+    "ammo": {
+      "label": "Ammunition",
+      "source": "delapouite--quiver.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/quiver.html",
+      "color": "#d9c6a0"
+    },
+    "glove": {
+      "label": "Hands slot",
+      "source": "delapouite--gauntlet.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/gauntlet.html",
+      "color": "#c1ced3"
+    },
+    "legs": {
+      "label": "Legs slot",
+      "source": "lucasms--trousers.svg",
+      "author": "Lucas",
+      "url": "https://game-icons.net/1x1/lucasms/trousers.html",
+      "color": "#c1ced3"
+    },
+    "boot": {
+      "label": "Feet slot",
+      "source": "lorc--boots.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/boots.html",
+      "color": "#c1ced3"
+    },
+    "map": {
+      "label": "World map",
+      "source": "lorc--treasure-map.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/treasure-map.html",
+      "color": "#dec48e"
+    },
+    "tutor": {
+      "label": "Tutor",
+      "source": "delapouite--graduate-cap.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/graduate-cap.html",
+      "color": "#dec48e"
+    },
+    "shop": {
+      "label": "General store",
+      "source": "delapouite--shop.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/shop.html",
+      "color": "#a9ca81"
+    },
+    "bank": {
+      "label": "Bank",
+      "source": "delapouite--bank.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/bank.html",
+      "color": "#d9c6a0"
+    },
+    "inn": {
+      "label": "Inn",
+      "source": "delapouite--bed.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/bed.html",
+      "color": "#d9c6a0"
+    },
+    "coins": {
+      "label": "Coins",
+      "source": "delapouite--coins.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/coins.html",
+      "color": "#dec48e"
+    },
+    "run": {
+      "label": "Run",
+      "source": "lorc--run.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/run.html",
+      "color": "#dec48e"
+    },
+    "eat": {
+      "label": "Eat food",
+      "source": "delapouite--meal.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/meal.html",
+      "color": "#dec48e"
+    },
+    "stop": {
+      "label": "Stop action",
+      "source": "delapouite--stop-sign.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/stop-sign.html",
+      "color": "#df6b58"
+    },
+    "sound": {
+      "label": "Sound on",
+      "source": "delapouite--speaker.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/speaker.html",
+      "color": "#d9c6a0"
+    },
+    "mute": {
+      "label": "Sound off",
+      "source": "delapouite--speaker-off.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/speaker-off.html",
+      "color": "#d9c6a0"
+    },
+    "compass": {
+      "label": "Face north",
+      "source": "lorc--compass.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/compass.html",
+      "color": "#d9c6a0"
+    },
+    "help": {
+      "label": "Help",
+      "source": "sbed--help.svg",
+      "author": "sbed",
+      "url": "https://game-icons.net/1x1/sbed/help.html",
+      "color": "#dec48e"
+    },
+    "hunting": {
+      "label": "Hunting journal",
+      "source": "lorc--target-arrows.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/target-arrows.html",
+      "color": "#d9c6a0"
+    },
+    "appearance": {
+      "label": "Appearance",
+      "source": "delapouite--clothes.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/clothes.html",
+      "color": "#d9c6a0"
+    },
+    "recenter": {
+      "label": "Centre map on player",
+      "source": "delapouite--position-marker.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/position-marker.html",
+      "color": "#d9c6a0"
+    },
+    "air": {
+      "label": "Air",
+      "source": "lorc--windy-stripes.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/windy-stripes.html",
+      "color": "#eee2c4"
+    },
+    "water": {
+      "label": "Water",
+      "source": "sbed--water-drop.svg",
+      "author": "sbed",
+      "url": "https://game-icons.net/1x1/sbed/water-drop.html",
+      "color": "#c1d9e2"
+    },
+    "earth": {
+      "label": "Earth",
+      "source": "delapouite--stone-pile.svg",
+      "author": "Delapouite",
+      "url": "https://game-icons.net/1x1/delapouite/stone-pile.html",
+      "color": "#c6bc99"
+    },
+    "fire": {
+      "label": "Fire",
+      "source": "carl-olsen--flame.svg",
+      "author": "Carl Olsen",
+      "url": "https://game-icons.net/1x1/carl-olsen/flame.html",
+      "color": "#e98e4e"
+    },
+    "feather": {
+      "label": "Feather",
+      "source": "lorc--feather.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/feather.html",
+      "color": "#eee2c4"
+    },
+    "trade": {
+      "label": "Trade",
+      "source": "lorc--trade.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/trade.html",
+      "color": "#d9c6a0"
+    },
+    "privateChat": {
+      "label": "Private message",
+      "source": "lorc--envelope.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/envelope.html",
+      "color": "#d9c6a0"
+    },
+    "accurate": {
+      "label": "Accurate attack",
+      "source": "lorc--target-shot.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/target-shot.html",
+      "color": "#d9c6a0"
+    },
+    "balanced": {
+      "label": "Balanced attack",
+      "source": "lorc--swords-emblem.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/swords-emblem.html",
+      "color": "#d9c6a0"
+    },
+    "aggressive": {
+      "label": "Aggressive attack",
+      "source": "lorc--sword-slice.svg",
+      "author": "Lorc",
+      "url": "https://game-icons.net/1x1/lorc/sword-slice.html",
+      "color": "#e98e4e"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "castle": "Sunspire Castle",
+    "description": "Crown cities, farmland and the old border villages.",
+    "id": "aurelia",
+    "name": "Kingdom of Aurelia",
+    "race": "human"
+  },
+  {
+    "castle": "Ironcrown Citadel",
+    "description": "Dwarven mountain halls, foundries and deep mines.",
+    "id": "khazdur",
+    "name": "Kingdom of Khaz-Dur",
+    "race": "dwarf"
+  },
+  {
+    "castle": "The Bough Palace",
+    "description": "Elven forest cities beneath ancient silverwoods.",
+    "id": "sylvaran",
+    "name": "Kingdom of Sylvaran",
+    "race": "elf"
+  }
+]

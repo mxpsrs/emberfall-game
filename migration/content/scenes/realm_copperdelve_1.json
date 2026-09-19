@@ -1,0 +1,225 @@
+{
+  "id": "realm_copperdelve_1",
+  "dimensions": [
+    16,
+    14
+  ],
+  "metadata": {
+    "entry": [
+      8,
+      11
+    ],
+    "exit": {
+      "$entity": "realm_copperdelve_1:object:1898"
+    },
+    "kingdom": "khazdur",
+    "race": "dwarf",
+    "title": "Copperdelve Market Hall"
+  },
+  "entities": [
+    {
+      "id": "realm_copperdelve_1:object:1898",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 12,
+        "id": 1898,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 8,
+        "y": 12
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_copperdelve_1:object:1899",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 3,
+        "id": 1899,
+        "name": "Merchant",
+        "race": "dwarf",
+        "sprite": 5,
+        "type": "shop",
+        "x": 6,
+        "y": 3
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_copperdelve_1:object:1900",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 1,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 1,
+        "homeY": 3,
+        "id": 1900,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0.04500000000000015,
+            2.755455298081554e-18
+          ],
+          "reason": "Against the west wall, facing the usable room",
+          "room": "realm_copperdelve_1",
+          "roomType": "shop",
+          "target": null,
+          "wall": "west",
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 1,
+        "y": 3
+      },
+      "renderPosition": [
+        1.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_copperdelve_1:object:1901",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 1,
+        "id": 1901,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_copperdelve_1",
+          "roomType": "shop",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 1
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_copperdelve_1:object:1902",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 1,
+        "id": 1902,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_copperdelve_1",
+          "roomType": "shop",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 1
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        1.5
+      ]
+    },
+    {
+      "id": "realm_copperdelve_1:object:1903",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 11,
+        "drawY": 1,
+        "hitAt": -100,
+        "homeX": 11,
+        "homeY": 1,
+        "id": 1903,
+        "name": "Supplies",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            0,
+            0.04500000000000015
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_copperdelve_1",
+          "roomType": "shop",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "storage",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 11,
+        "y": 1
+      },
+      "renderPosition": [
+        11.5,
+        0,
+        1.5
+      ]
+    }
+  ],
+  "buildings": []
+}

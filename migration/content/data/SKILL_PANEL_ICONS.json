@@ -1,0 +1,18 @@
+{
+  "Attack": "attack",
+  "Cooking": "cooking",
+  "Defense": "shield",
+  "Farming": "farming",
+  "Firemaking": "firemaking",
+  "Fishing": "fish",
+  "Fletching": "fletching",
+  "Hitpoints": "heart",
+  "Magic": "magic",
+  "Mining": "mine",
+  "Ranged": "ranged",
+  "Relic Shaping": "spells",
+  "Smithing": "forge",
+  "Strength": "strength",
+  "Woodcutting": "woodcutting",
+  "Worship": "shrine"
+}

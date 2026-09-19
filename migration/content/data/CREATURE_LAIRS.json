@@ -1,0 +1,1176 @@
+{
+  "lair_colossus": {
+    "ambient": [
+      0.86,
+      0.97,
+      1.13
+    ],
+    "approach": {
+      "guards": [
+        "cavecrawler",
+        "quarrybrute",
+        "ironhideslime"
+      ],
+      "name": "Abandoned Crystal Mine",
+      "rooms": [
+        "Miners’ refuge",
+        "Flooded workings",
+        "Crystal gallery"
+      ],
+      "stations": [
+        [
+          23,
+          122
+        ],
+        [
+          13,
+          93
+        ],
+        [
+          34,
+          66
+        ]
+      ],
+      "theme": "crystal"
+    },
+    "arena": [
+      23.5,
+      18.5
+    ],
+    "arenaEntry": [
+      23,
+      44
+    ],
+    "boss": "colossus",
+    "entrance": [
+      945,
+      387
+    ],
+    "entry": [
+      23,
+      134
+    ],
+    "floor": "#3d4d58",
+    "fog": [
+      0.11,
+      0.18,
+      0.25
+    ],
+    "glow": "#72cfff",
+    "light": [
+      0.08,
+      0.24,
+      0.37
+    ],
+    "returnPoint": [
+      945,
+      389
+    ],
+    "rooms": [
+      [
+        "ellipse",
+        23,
+        19,
+        17,
+        15
+      ],
+      [
+        "rect",
+        19,
+        30,
+        9,
+        16
+      ],
+      [
+        "ellipse",
+        10,
+        27,
+        5,
+        5
+      ],
+      [
+        "ellipse",
+        36,
+        27,
+        5,
+        5
+      ],
+      [
+        "rect",
+        20,
+        42,
+        7,
+        19
+      ],
+      [
+        "rect",
+        20,
+        54,
+        18,
+        7
+      ],
+      [
+        "ellipse",
+        34,
+        66,
+        8,
+        10
+      ],
+      [
+        "rect",
+        31,
+        67,
+        7,
+        20
+      ],
+      [
+        "rect",
+        10,
+        81,
+        28,
+        7
+      ],
+      [
+        "ellipse",
+        13,
+        93,
+        8,
+        11
+      ],
+      [
+        "rect",
+        10,
+        92,
+        7,
+        23
+      ],
+      [
+        "rect",
+        10,
+        109,
+        17,
+        7
+      ],
+      [
+        "ellipse",
+        23,
+        122,
+        8,
+        11
+      ],
+      [
+        "rect",
+        20,
+        122,
+        7,
+        15
+      ]
+    ],
+    "size": [
+      46,
+      140
+    ],
+    "spawn": [
+      23,
+      18
+    ],
+    "subtitle": "Runeforged Colossus · Ancient crystal foundry",
+    "theme": "crystal",
+    "title": "The Crystal Crucible",
+    "trim": "#8a9ea6"
+  },
+  "lair_varkesh": {
+    "ambient": [
+      1.08,
+      1.02,
+      0.84
+    ],
+    "approach": {
+      "guards": [
+        "ridgewolf",
+        "emberhound",
+        "ridgewolf"
+      ],
+      "name": "Ashwatch Mountain Caves",
+      "rooms": [
+        "Abandoned watch camp",
+        "Scorched galleries",
+        "Cliff ascent"
+      ],
+      "stations": [
+        [
+          29,
+          132
+        ],
+        [
+          19,
+          103
+        ],
+        [
+          40,
+          76
+        ]
+      ],
+      "theme": "blight"
+    },
+    "arena": [
+      29,
+      22
+    ],
+    "arenaEntry": [
+      29,
+      54
+    ],
+    "boss": "varkesh",
+    "entrance": [
+      303,
+      63
+    ],
+    "entry": [
+      29,
+      144
+    ],
+    "floor": "#555342",
+    "fog": [
+      0.22,
+      0.25,
+      0.16
+    ],
+    "glow": "#a6c776",
+    "light": [
+      0.15,
+      0.19,
+      0.05
+    ],
+    "openAir": true,
+    "returnPoint": [
+      303,
+      65
+    ],
+    "rooms": [
+      [
+        "ellipse",
+        29,
+        22,
+        23,
+        19
+      ],
+      [
+        "rect",
+        24,
+        37,
+        11,
+        19
+      ],
+      [
+        "ellipse",
+        16,
+        36,
+        8,
+        7
+      ],
+      [
+        "ellipse",
+        42,
+        35,
+        8,
+        7
+      ],
+      [
+        "rect",
+        26,
+        52,
+        7,
+        19
+      ],
+      [
+        "rect",
+        26,
+        64,
+        18,
+        7
+      ],
+      [
+        "ellipse",
+        40,
+        76,
+        8,
+        10
+      ],
+      [
+        "rect",
+        37,
+        77,
+        7,
+        20
+      ],
+      [
+        "rect",
+        16,
+        91,
+        28,
+        7
+      ],
+      [
+        "ellipse",
+        19,
+        103,
+        8,
+        11
+      ],
+      [
+        "rect",
+        16,
+        102,
+        7,
+        23
+      ],
+      [
+        "rect",
+        16,
+        119,
+        17,
+        7
+      ],
+      [
+        "ellipse",
+        29,
+        132,
+        8,
+        11
+      ],
+      [
+        "rect",
+        26,
+        132,
+        7,
+        15
+      ]
+    ],
+    "size": [
+      58,
+      150
+    ],
+    "spawn": [
+      29,
+      21
+    ],
+    "subtitle": "Varkesh the Blightwing · Blighted mountain eyrie",
+    "theme": "blight",
+    "title": "Blightwing Roost",
+    "trim": "#a29265"
+  },
+  "lair_veyr": {
+    "ambient": [
+      0.95,
+      0.94,
+      1.04
+    ],
+    "approach": {
+      "guards": [
+        "skeleton",
+        "hexer",
+        "skeleton"
+      ],
+      "name": "The Shattered Sanctum",
+      "rooms": [
+        "Hall of False Orders",
+        "Gallery of the Last Shift",
+        "The Companion’s Threshold"
+      ],
+      "stations": [
+        [
+          22,
+          122
+        ],
+        [
+          12,
+          93
+        ],
+        [
+          33,
+          66
+        ]
+      ],
+      "theme": "arcane"
+    },
+    "arena": [
+      22,
+      19
+    ],
+    "arenaEntry": [
+      22,
+      44
+    ],
+    "boss": "veyr",
+    "entrance": [
+      774,
+      137
+    ],
+    "entry": [
+      22,
+      134
+    ],
+    "floor": "#4d484c",
+    "fog": [
+      0.12,
+      0.1,
+      0.16
+    ],
+    "glow": "#bd96f5",
+    "light": [
+      0.12,
+      0.07,
+      0.19
+    ],
+    "returnPoint": [
+      774,
+      139
+    ],
+    "rooms": [
+      [
+        "ellipse",
+        22,
+        19,
+        15,
+        14
+      ],
+      [
+        "rect",
+        8,
+        18,
+        28,
+        16
+      ],
+      [
+        "rect",
+        18,
+        31,
+        9,
+        15
+      ],
+      [
+        "rect",
+        3,
+        24,
+        7,
+        11
+      ],
+      [
+        "rect",
+        34,
+        24,
+        7,
+        11
+      ],
+      [
+        "rect",
+        19,
+        42,
+        7,
+        19
+      ],
+      [
+        "rect",
+        19,
+        54,
+        18,
+        7
+      ],
+      [
+        "ellipse",
+        33,
+        66,
+        8,
+        10
+      ],
+      [
+        "rect",
+        30,
+        67,
+        7,
+        20
+      ],
+      [
+        "rect",
+        9,
+        81,
+        28,
+        7
+      ],
+      [
+        "ellipse",
+        12,
+        93,
+        8,
+        11
+      ],
+      [
+        "rect",
+        9,
+        92,
+        7,
+        23
+      ],
+      [
+        "rect",
+        9,
+        109,
+        17,
+        7
+      ],
+      [
+        "ellipse",
+        22,
+        122,
+        8,
+        11
+      ],
+      [
+        "rect",
+        19,
+        122,
+        7,
+        15
+      ]
+    ],
+    "size": [
+      44,
+      140
+    ],
+    "spawn": [
+      22,
+      18
+    ],
+    "subtitle": "The Borrowed King · Three halls of trust",
+    "theme": "arcane",
+    "title": "The Shattered Sanctum",
+    "trim": "#a3967d"
+  },
+  "lair_xalith": {
+    "ambient": [
+      1.1,
+      0.96,
+      0.79
+    ],
+    "approach": {
+      "guards": [
+        "moonstalker",
+        "grovehexer",
+        "duskwraith"
+      ],
+      "name": "Moonwillow Root Caverns",
+      "rooms": [
+        "Root-bound passage",
+        "Webbed nesting ground",
+        "Amber nursery"
+      ],
+      "stations": [
+        [
+          27,
+          128
+        ],
+        [
+          17,
+          99
+        ],
+        [
+          38,
+          72
+        ]
+      ],
+      "theme": "hive"
+    },
+    "arena": [
+      27,
+      21
+    ],
+    "arenaEntry": [
+      27,
+      50
+    ],
+    "boss": "xalith",
+    "entrance": [
+      720,
+      516
+    ],
+    "entry": [
+      27,
+      140
+    ],
+    "floor": "#554333",
+    "fog": [
+      0.2,
+      0.15,
+      0.09
+    ],
+    "glow": "#e1b666",
+    "light": [
+      0.29,
+      0.16,
+      0.035
+    ],
+    "returnPoint": [
+      720,
+      518
+    ],
+    "rooms": [
+      [
+        "ellipse",
+        27,
+        21,
+        19,
+        17
+      ],
+      [
+        "rect",
+        23,
+        36,
+        9,
+        16
+      ],
+      [
+        "ellipse",
+        10,
+        32,
+        6,
+        8
+      ],
+      [
+        "ellipse",
+        44,
+        32,
+        6,
+        8
+      ],
+      [
+        "rect",
+        24,
+        48,
+        7,
+        19
+      ],
+      [
+        "rect",
+        24,
+        60,
+        18,
+        7
+      ],
+      [
+        "ellipse",
+        38,
+        72,
+        8,
+        10
+      ],
+      [
+        "rect",
+        35,
+        73,
+        7,
+        20
+      ],
+      [
+        "rect",
+        14,
+        87,
+        28,
+        7
+      ],
+      [
+        "ellipse",
+        17,
+        99,
+        8,
+        11
+      ],
+      [
+        "rect",
+        14,
+        98,
+        7,
+        23
+      ],
+      [
+        "rect",
+        14,
+        115,
+        17,
+        7
+      ],
+      [
+        "ellipse",
+        27,
+        128,
+        8,
+        11
+      ],
+      [
+        "rect",
+        24,
+        128,
+        7,
+        15
+      ]
+    ],
+    "size": [
+      54,
+      146
+    ],
+    "spawn": [
+      27,
+      20
+    ],
+    "subtitle": "Xalith the Broodmother · Amber hive cavern",
+    "theme": "hive",
+    "title": "The Brood Hollow",
+    "trim": "#9e7850"
+  },
+  "ork_warrens": {
+    "ambient": [
+      1.02,
+      0.95,
+      0.85
+    ],
+    "arena": [
+      19,
+      20
+    ],
+    "entrance": [
+      657,
+      198
+    ],
+    "entry": [
+      19,
+      39
+    ],
+    "floor": "#615646",
+    "fog": [
+      0.2,
+      0.17,
+      0.13
+    ],
+    "glow": "#e2ac62",
+    "light": [
+      0.25,
+      0.14,
+      0.045
+    ],
+    "returnPoint": [
+      657,
+      200
+    ],
+    "rooms": [
+      [
+        "rect",
+        14,
+        3,
+        10,
+        38
+      ],
+      [
+        "rect",
+        4,
+        7,
+        12,
+        11
+      ],
+      [
+        "rect",
+        22,
+        8,
+        12,
+        11
+      ],
+      [
+        "rect",
+        4,
+        24,
+        12,
+        11
+      ],
+      [
+        "rect",
+        22,
+        25,
+        12,
+        11
+      ]
+    ],
+    "size": [
+      38,
+      44
+    ],
+    "spawns": [
+      [
+        12,
+        13
+      ],
+      [
+        26,
+        15
+      ],
+      [
+        12,
+        30
+      ],
+      [
+        25,
+        32
+      ]
+    ],
+    "subtitle": "Ork camps · Raided dwarven workings",
+    "theme": "ork",
+    "title": "Ork Warrens",
+    "trim": "#99866b"
+  },
+  "quest_underiron": {
+    "ambient": [
+      0.85,
+      0.95,
+      1.02
+    ],
+    "arena": [
+      22,
+      19
+    ],
+    "entrance": [
+      756,
+      136
+    ],
+    "entry": [
+      26,
+      121
+    ],
+    "floor": "#454b50",
+    "fog": [
+      0.12,
+      0.15,
+      0.17
+    ],
+    "glow": "#9bcbd4",
+    "light": [
+      0.08,
+      0.14,
+      0.2
+    ],
+    "quest": true,
+    "returnPoint": [
+      756,
+      138
+    ],
+    "rooms": [
+      [
+        "rect",
+        18,
+        30,
+        9,
+        16
+      ],
+      [
+        "rect",
+        7,
+        23,
+        30,
+        12
+      ],
+      [
+        "rect",
+        9,
+        6,
+        26,
+        19
+      ],
+      [
+        "rect",
+        22,
+        105,
+        9,
+        19
+      ],
+      [
+        "ellipse",
+        26,
+        102,
+        13,
+        11
+      ],
+      [
+        "rect",
+        11,
+        93,
+        20,
+        8
+      ],
+      [
+        "rect",
+        10,
+        73,
+        9,
+        24
+      ],
+      [
+        "ellipse",
+        15,
+        71,
+        11,
+        10
+      ],
+      [
+        "rect",
+        14,
+        62,
+        29,
+        8
+      ],
+      [
+        "rect",
+        36,
+        43,
+        9,
+        24
+      ],
+      [
+        "ellipse",
+        38,
+        44,
+        10,
+        9
+      ],
+      [
+        "rect",
+        21,
+        36,
+        20,
+        9
+      ]
+    ],
+    "size": [
+      52,
+      128
+    ],
+    "subtitle": "Wardkeeper halls · An occupied prison",
+    "theme": "arcane",
+    "title": "The Sealed Underworks",
+    "trim": "#9c9382"
+  },
+  "story_mine": {
+    "ambient": [
+      0.94,
+      0.9,
+      0.82
+    ],
+    "arena": [
+      25,
+      25
+    ],
+    "entrance": [
+      842,
+      187
+    ],
+    "entry": [
+      25,
+      86
+    ],
+    "floor": "#514d46",
+    "fog": [
+      0.14,
+      0.13,
+      0.12
+    ],
+    "glow": "#d7b77d",
+    "light": [
+      0.2,
+      0.15,
+      0.07
+    ],
+    "quest": true,
+    "returnPoint": [
+      842,
+      189
+    ],
+    "rooms": [
+      [
+        "rect",
+        4,
+        5,
+        18,
+        19
+      ],
+      [
+        "rect",
+        17,
+        12,
+        15,
+        9
+      ],
+      [
+        "rect",
+        20,
+        72,
+        11,
+        17
+      ],
+      [
+        "ellipse",
+        25,
+        69,
+        13,
+        12
+      ],
+      [
+        "rect",
+        9,
+        47,
+        8,
+        25
+      ],
+      [
+        "rect",
+        10,
+        44,
+        30,
+        8
+      ],
+      [
+        "rect",
+        32,
+        24,
+        8,
+        26
+      ],
+      [
+        "ellipse",
+        25,
+        22,
+        16,
+        15
+      ]
+    ],
+    "size": [
+      50,
+      92
+    ],
+    "subtitle": "The Last Shift · Sabotaged workings and miners’ refuges",
+    "theme": "ork",
+    "title": "Ironhollow Freight Mine",
+    "trim": "#99866b"
+  },
+  "story_shrine": {
+    "ambient": [
+      0.82,
+      0.94,
+      0.91
+    ],
+    "arena": [
+      30,
+      18
+    ],
+    "entrance": [
+      677,
+      363
+    ],
+    "entry": [
+      30,
+      105
+    ],
+    "floor": "#414c49",
+    "fog": [
+      0.1,
+      0.15,
+      0.15
+    ],
+    "glow": "#92cabb",
+    "light": [
+      0.08,
+      0.15,
+      0.15
+    ],
+    "quest": true,
+    "returnPoint": [
+      677,
+      365
+    ],
+    "rooms": [
+      [
+        "rect",
+        26,
+        88,
+        9,
+        20
+      ],
+      [
+        "ellipse",
+        30,
+        86,
+        12,
+        12
+      ],
+      [
+        "rect",
+        10,
+        78,
+        22,
+        8
+      ],
+      [
+        "rect",
+        9,
+        58,
+        9,
+        25
+      ],
+      [
+        "ellipse",
+        16,
+        56,
+        12,
+        12
+      ],
+      [
+        "rect",
+        15,
+        47,
+        35,
+        9
+      ],
+      [
+        "rect",
+        42,
+        27,
+        9,
+        26
+      ],
+      [
+        "ellipse",
+        45,
+        27,
+        12,
+        12
+      ],
+      [
+        "rect",
+        27,
+        18,
+        22,
+        9
+      ],
+      [
+        "ellipse",
+        29,
+        18,
+        14,
+        13
+      ]
+    ],
+    "size": [
+      62,
+      112
+    ],
+    "subtitle": "Whispers at Hollow Shrine · The buried pilgrim halls",
+    "theme": "arcane",
+    "title": "Hollow Shrine",
+    "trim": "#8f9b89"
+  }
+}

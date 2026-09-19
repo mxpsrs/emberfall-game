@@ -1,0 +1,179 @@
+{
+  "id": "realm_ironhollow_25_tower",
+  "dimensions": [
+    13,
+    14
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      6,
+      10
+    ],
+    "exit": {
+      "$entity": "realm_ironhollow_25_tower:object:7400404"
+    },
+    "exterior": "realm_ironhollow_25",
+    "race": "dwarf",
+    "returnAt": [
+      777,
+      46
+    ],
+    "title": "Ironcrown Citadel · Tower lookout"
+  },
+  "entities": [
+    {
+      "id": "realm_ironhollow_25_tower:object:7400402",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Watch room",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400402,
+        "interiorBuilding": null,
+        "name": "Weapon rack",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.79
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_ironhollow_25_tower:Watch room",
+          "roomType": "guard",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "rack",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_tower:object:7400403",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Watch room",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 7,
+        "id": 7400403,
+        "interiorBuilding": null,
+        "name": "Guard duty table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_ironhollow_25_tower:Watch room",
+          "roomType": "guard",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "dwarf",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 7
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_tower:object:7400404",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "realm_ironhollow_25_upper",
+          "down": false,
+          "entry": [
+            43,
+            13
+          ],
+          "kind": "spiral"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 6,
+        "drawY": 11,
+        "hitAt": -100,
+        "homeX": 6,
+        "homeY": 11,
+        "id": 7400404,
+        "interiorBuilding": null,
+        "name": "Spiral stairs to the upper corridor",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 6,
+        "y": 11
+      },
+      "renderPosition": [
+        6.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25_tower:object:7400405",
+      "source": {
+        "_stationary": true,
+        "attackAt": -100,
+        "characterSprite": true,
+        "civilization": true,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 4,
+        "heading": -1.0303768265243125,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 4,
+        "id": 7400405,
+        "name": "Tower lookout",
+        "race": "dwarf",
+        "sprite": 12,
+        "talk": "The main avenue runs from our gate to the civic square. Watch the approaches before the rooftops.",
+        "type": "villager",
+        "workstationId": 7400403,
+        "x": 8,
+        "y": 4
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        4.5
+      ]
+    }
+  ],
+  "buildings": []
+}

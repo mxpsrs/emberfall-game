@@ -1,0 +1,26 @@
+[
+  {
+    "end": "magic",
+    "id": "signal",
+    "title": "I · A signal across the water",
+    "why": "Firstlight was built around a surviving crossing stone. Rowan needs a new wayfarer who can carry its signal to Briarhaven."
+  },
+  {
+    "end": "loot",
+    "id": "hands",
+    "title": "II · A blade made by your hands",
+    "why": "The crossing cannot promise safe roads. Forge your own tool, then help Vale deal with the giant rats threatening the stores."
+  },
+  {
+    "end": "withdraw",
+    "id": "provisions",
+    "title": "III · Supplies for the crossing",
+    "why": "Firstlight survives because its people share their work. Bring timber to Nell, prepare food with Bram and secure supplies with Ada."
+  },
+  {
+    "end": "talk-finish",
+    "id": "accord",
+    "title": "IV · The First Accord",
+    "why": "The crossing answers a living bond. Sera will help you choose the Spirit that shapes your first journey into Veldren."
+  }
+]

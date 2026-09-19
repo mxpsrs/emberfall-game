@@ -1,0 +1,401 @@
+{
+  "id": "dungeon",
+  "dimensions": [
+    28,
+    25
+  ],
+  "metadata": {
+    "entry": [
+      14,
+      22
+    ],
+    "exit": {
+      "$entity": "dungeon:object:263"
+    },
+    "title": "Sunken Crypt",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 1.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 12.5,
+        "z": 1.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 23.5,
+        "z": 1.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 8.85,
+        "z": 11.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 19.15,
+        "z": 12.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 1.15,
+        "z": 20.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 26.85,
+        "z": 21.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 11.5,
+        "z": 23.85
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "dungeon:object:263",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 23,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 23,
+        "id": 263,
+        "name": "Ladder to the surface",
+        "passageKind": "ladder",
+        "passageScene": "dungeon",
+        "sprite": 13,
+        "type": "exit",
+        "x": 14,
+        "y": 23
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "dungeon:object:264",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "hp": 20,
+        "id": 264,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 5,
+        "xp": 42,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "dungeon:object:265",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 7,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 7,
+        "homeY": 13,
+        "hp": 20,
+        "id": 265,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 7,
+        "xp": 42,
+        "y": 13
+      },
+      "renderPosition": [
+        7.5,
+        0,
+        13.5
+      ]
+    },
+    {
+      "id": "dungeon:object:266",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 12,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 6,
+        "hp": 20,
+        "id": 266,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 12,
+        "xp": 42,
+        "y": 6
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "dungeon:object:267",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 14,
+        "drawY": 17,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 17,
+        "hp": 20,
+        "id": 267,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 14,
+        "xp": 42,
+        "y": 17
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        17.5
+      ]
+    },
+    {
+      "id": "dungeon:object:268",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 21,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 7,
+        "hp": 20,
+        "id": 268,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 21,
+        "xp": 42,
+        "y": 7
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "dungeon:object:269",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 13,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 22,
+        "drawY": 15,
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 15,
+        "hp": 20,
+        "id": 269,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 20,
+        "name": "Restless skeleton",
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 22,
+        "xp": 42,
+        "y": 15
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "dungeon:object:270",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 8,
+        "attackStyle": "melee",
+        "coins": 70,
+        "dead": 0,
+        "defenseLevel": 7,
+        "drawX": 23,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 23,
+        "homeY": 20,
+        "hp": 28,
+        "id": 270,
+        "interval": 3.5,
+        "kind": "warden",
+        "level": 12,
+        "loot": "bones",
+        "maxHit": 3,
+        "maxhp": 28,
+        "name": "Crypt guard",
+        "repeatable": true,
+        "spread": 0,
+        "sprite": 12,
+        "type": "enemy",
+        "x": 23,
+        "xp": 150,
+        "y": 20
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "dungeon:object:271",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 22,
+        "id": 271,
+        "name": "Crypt supply cache",
+        "sprite": 12,
+        "type": "cache",
+        "x": 24,
+        "y": 22
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "dungeon:object:272",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 20,
+        "id": 272,
+        "name": "Abandoned brazier",
+        "sprite": 7,
+        "type": "camp",
+        "x": 4,
+        "y": 20
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        20.5
+      ]
+    }
+  ],
+  "buildings": []
+}

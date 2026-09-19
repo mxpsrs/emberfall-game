@@ -1,0 +1,112 @@
+[
+  {
+    "attack": 4,
+    "cost": 30,
+    "defense": 8,
+    "id": "bronze",
+    "level": 1,
+    "name": "Bronze",
+    "source": "B",
+    "strength": 4
+  },
+  {
+    "attack": 8,
+    "cost": 65,
+    "defense": 12,
+    "id": "iron",
+    "level": 1,
+    "name": "Iron",
+    "source": "I",
+    "strength": 6
+  },
+  {
+    "attack": 12,
+    "cost": 150,
+    "defense": 18,
+    "id": "steel",
+    "level": 5,
+    "name": "Steel",
+    "source": "I",
+    "strength": 10,
+    "tint": [
+      1.13,
+      1.16,
+      1.18
+    ]
+  },
+  {
+    "attack": 17,
+    "cost": 300,
+    "defense": 24,
+    "id": "black",
+    "level": 10,
+    "name": "Charsteel",
+    "source": "I",
+    "strength": 14,
+    "tint": [
+      0.42,
+      0.46,
+      0.48
+    ]
+  },
+  {
+    "attack": 24,
+    "cost": 600,
+    "defense": 32,
+    "id": "mithril",
+    "level": 20,
+    "name": "Windsteel",
+    "source": "M",
+    "strength": 20
+  },
+  {
+    "attack": 33,
+    "cost": 1200,
+    "defense": 46,
+    "id": "adamant",
+    "level": 30,
+    "name": "Deepiron",
+    "source": "M",
+    "strength": 28,
+    "tint": [
+      0.66,
+      1.06,
+      0.63
+    ]
+  },
+  {
+    "attack": 48,
+    "cost": 2500,
+    "defense": 65,
+    "id": "rune",
+    "level": 40,
+    "name": "Eldrite",
+    "source": "M",
+    "strength": 40,
+    "tint": [
+      0.68,
+      1.1,
+      1.24
+    ]
+  },
+  {
+    "attack": 48,
+    "cost": 3500,
+    "defense": 65,
+    "id": "gold",
+    "level": 40,
+    "name": "Gilded",
+    "source": "G",
+    "strength": 40
+  },
+  {
+    "attack": 67,
+    "cost": 9000,
+    "defense": 95,
+    "id": "dragonslayer",
+    "level": 60,
+    "name": "Wyrmforged",
+    "source": "DS",
+    "strength": 60
+  }
+]

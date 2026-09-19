@@ -1,0 +1,61 @@
+[
+  {
+    "at": [
+      69,
+      117
+    ],
+    "kinds": [
+      "thornwolf",
+      "slinger",
+      "brambleslime"
+    ],
+    "name": "Elderwood fringe"
+  },
+  {
+    "at": [
+      193,
+      36
+    ],
+    "kinds": [
+      "hexer",
+      "cavecrawler",
+      "quarrybrute"
+    ],
+    "name": "Pinewatch trails"
+  },
+  {
+    "at": [
+      633,
+      177
+    ],
+    "kinds": [
+      "ironhideslime",
+      "emberhound",
+      "ironrevenant"
+    ],
+    "name": "Khaz-Dur foothills"
+  },
+  {
+    "at": [
+      333,
+      489
+    ],
+    "kinds": [
+      "moonstalker",
+      "grovehexer",
+      "duskwraith"
+    ],
+    "name": "Sylvaran border groves"
+  },
+  {
+    "at": [
+      933,
+      363
+    ],
+    "kinds": [
+      "ashknight",
+      "crystalguard"
+    ],
+    "name": "Deepforge slag fields"
+  }
+]

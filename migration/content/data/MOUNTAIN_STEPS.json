@@ -1,0 +1,107 @@
+[
+  [
+    "The Wardkeeper families",
+    "Bring the physical Memory Shard and evidence to Maerin. Mining 8, Smithing 8, Magic 8; recommended Combat 15.",
+    "maerin"
+  ],
+  [
+    "Three empty homes",
+    "Investigate the Wardkeeper ledger, abandoned tools and false summons at three Ironhollow homes.",
+    "clues"
+  ],
+  [
+    "An organized operation",
+    "Compare the missing families with the road, mine and shrine evidence. Speak to Maerin.",
+    "maerin"
+  ],
+  [
+    "The service passage",
+    "Recover the Wardkeepers’ service-hatch bearing. Mining 8.",
+    "bearing"
+  ],
+  [
+    "Repair the escape access",
+    "Repair the bearing at Ironhollow’s ward workbench. Smithing 8.",
+    "workbench"
+  ],
+  [
+    "A way to the prison",
+    "Open only the outer service hatch with the repaired bearing and Magic 8. The prison seals remain intact.",
+    "seal"
+  ],
+  [
+    "The occupied Underworks",
+    "Explore the occupied Underworks. Recover the agents’ field orders, then defeat the Oathbound Watcher beyond their barricades.",
+    "watcher"
+  ],
+  [
+    "The name beneath the mountain",
+    "Reach Warden Edda. Learn what the unknown agents are attempting to awaken.",
+    "edda"
+  ],
+  [
+    "Protect the living",
+    "Restore the escape ventilation so Edda can evacuate the Wardkeeper survivors.",
+    "vent"
+  ],
+  [
+    "The final seal",
+    "Race north to the final prison seal. Stop the masked operatives.",
+    "memory"
+  ],
+  [
+    "The prison is broken",
+    "Return to Maerin with Edda’s testimony. The enemy has awakened Veyr.",
+    "maerin"
+  ],
+  [
+    "A world of borrowed voices",
+    "Begin The Borrowed King with Maerin. Magic 10, Worship 8, any usable Spirit; recommended Combat 18.",
+    "maerin"
+  ],
+  [
+    "Alaric’s mistake",
+    "Read the shard’s Wardkeeper record in your journal, then seek Master Alaric in Ironcrown’s library.",
+    "expert"
+  ],
+  [
+    "The counter-ward",
+    "Bind 2 iron bars, 6 air relics and 6 mind relics at the ward workbench. Magic 10.",
+    "workbench"
+  ],
+  [
+    "Agree on the truth",
+    "Return to Alaric. Learn the counter-ward’s signal and your Spirit’s tell.",
+    "expert"
+  ],
+  [
+    "The halls of trust",
+    "Cross the Shattered Sanctum. Test three captive memories against your journal and Spirit reactions.",
+    "bindings"
+  ],
+  [
+    "Stand together",
+    "Meet Alaric before the inner arena. Confirm his identity and anchor the counter-ward.",
+    "expert"
+  ],
+  [
+    "The Borrowed King",
+    "Defeat Veyr through three phases. Watch physical warnings and use Spirit insight to expose his imitations.",
+    "veyr"
+  ],
+  [
+    "More than one prison",
+    "Search the agents’ abandoned survey chart beside the shattered throne.",
+    "aftermath"
+  ],
+  [
+    "A battle won",
+    "Return to Maerin. Collect the Veilbreaker Ring and record the other marked locations.",
+    "maerin"
+  ],
+  [
+    "Arc One complete",
+    "Veyr is defeated and Ironhollow is safe. Rook offers repeat echo hunts; the other targets remain unresolved.",
+    "huntsman"
+  ]
+]

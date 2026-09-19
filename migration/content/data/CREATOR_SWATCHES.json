@@ -1,0 +1,31 @@
+{
+  "bottomColor": [
+    "#456e8b",
+    "#8d4240",
+    "#4b7855",
+    "#75558d",
+    "#b19a56",
+    "#45494d",
+    "#c6bfa2",
+    "#795139"
+  ],
+  "hairColor": [
+    "#272728",
+    "#60432d",
+    "#924c30",
+    "#bb9552",
+    "#b2b4b0",
+    "#e2dece"
+  ],
+  "skin": [
+    "#e1c3a2",
+    "#cda782",
+    "#b99370",
+    "#aa7c58",
+    "#805b42",
+    "#593e2d"
+  ],
+  "topColor": {
+    "$pointer": "data:CREATOR_SWATCHES/bottomColor"
+  }
+}

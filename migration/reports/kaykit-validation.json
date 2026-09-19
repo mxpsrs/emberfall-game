@@ -1,0 +1,3974 @@
+{
+  "validator": "Khronos gltf-validator 2.0.0-dev.3.10",
+  "scope": "Local glTF structure and dependencies; no native engine execution",
+  "files": 38,
+  "errors": 0,
+  "warnings": 24,
+  "byScope": {
+    "recovered-game-asset": {
+      "files": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "authoring-library": {
+      "files": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "original-source": {
+      "files": 38,
+      "errors": 0,
+      "warnings": 24
+    }
+  },
+  "records": [
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/bed_decorated.gltf.glb",
+      "sha256": "253e40b87607ac3646c0b3ecf6d252a198e175dd7cd89fd47fec64a7dcb545c4",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 93440
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 2162,
+        "totalTriangleCount": 1410,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/chair.gltf.glb",
+      "sha256": "5f133281686d398304c0a458c4d407dd483eeea8aba67220b585ceb89366efa2",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 34968
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 544,
+        "totalTriangleCount": 294,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/chest.glb",
+      "sha256": "f72fd2201cd42ad399928a0b7bcc34d5b0e6d0624aeaf824fef81852109955f8",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TANGENT"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        },
+        {
+          "code": "UNUSED_MESH_TANGENT",
+          "message": "Tangents are not used because the material has no normal texture.",
+          "severity": 2,
+          "pointer": "/meshes/0/primitives/0/attributes/TANGENT"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TANGENT"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/indices"
+        },
+        {
+          "code": "UNUSED_MESH_TANGENT",
+          "message": "Tangents are not used because the material has no normal texture.",
+          "severity": 2,
+          "pointer": "/meshes/1/primitives/0/attributes/TANGENT"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 77956
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 2,
+        "totalVertexCount": 1204,
+        "totalTriangleCount": 728,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 4
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/pillar_decorated.gltf.glb",
+      "sha256": "eecf7d454a1b6767a113e2490cb1536134abea0b57329a50cf2250d3ed8e2f65",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 61196
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1276,
+        "totalTriangleCount": 761,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/shelf_large.gltf.glb",
+      "sha256": "886feece503686307dd041c986b1ea6f1fd63792c7e4217eb16f95904e6a9767",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 20796
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 142,
+        "totalTriangleCount": 76,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/table_long_tablecloth_decorated_A.gltf.glb",
+      "sha256": "43becc5ada637e494e617e5abdb13f15b53054d3581679162e3098d8fc0d5376",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 122760
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 2961,
+        "totalTriangleCount": 2035,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/table_medium_decorated_A.gltf.glb",
+      "sha256": "dc5beae322011acbce5c3dccb3c5cbaffae9757ad67d6ab0cf574c11b7ce014c",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 81312
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1825,
+        "totalTriangleCount": 1186,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/dungeon/gltf/wall.gltf.glb",
+      "sha256": "f2f343a7bdf2d45947e3f354494e16095a923485e05637e3804e3b81ce11d921",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v0.9.36",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 51944
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1037,
+        "totalTriangleCount": 494,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/hero/Characters/gltf/Barbarian.glb",
+      "sha256": "cefc311a0e10c7858b6141f5ada7e33268727564fb8ac1347aab97d000669cc6",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 6,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/indices"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/48"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/49"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/50"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/51"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/52"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/53"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v1.7.33",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 1642732
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 76,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": true,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 13,
+        "totalVertexCount": 5922,
+        "totalTriangleCount": 6543,
+        "maxUVs": 1,
+        "maxInfluences": 4,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "path": "assets/source/kaykit/hero/Characters/gltf/Knight.glb",
+      "sha256": "60428e3abc09ba83e595d256e3af8c5c976b46cdae599f0802fc82b4a3445168",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 6,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/12/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/13/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/14/primitives/0/indices"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/50"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/51"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/52"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/53"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/54"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/55"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v1.7.33",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 1686852
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 76,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": true,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 15,
+        "totalVertexCount": 7024,
+        "totalTriangleCount": 6952,
+        "maxUVs": 1,
+        "maxInfluences": 4,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "path": "assets/source/kaykit/hero/Characters/gltf/Mage.glb",
+      "sha256": "cf898585da33fab50c724d31605fb931eb2912e6d2280092141e98ca81ad507d",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 6,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/indices"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/47"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/48"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/49"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/50"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/51"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/52"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v1.7.33",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 1619980
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 76,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": true,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 12,
+        "totalVertexCount": 5279,
+        "totalTriangleCount": 5683,
+        "maxUVs": 1,
+        "maxInfluences": 4,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "path": "assets/source/kaykit/hero/Characters/gltf/Rogue.glb",
+      "sha256": "e825437cd4d2ee9c1960b517a74a69101e33eb409ae7fa8cedc7134a998fbb7d",
+      "scope": "original-source",
+      "dependencies": [],
+      "errors": 0,
+      "warnings": 6,
+      "messages": [
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/0/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/1/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/2/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/3/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/5/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/6/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/7/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/8/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/9/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/10/primitives/0/indices"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/POSITION"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/NORMAL"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/JOINTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/attributes/WEIGHTS_0"
+        },
+        {
+          "code": "BUFFER_VIEW_TARGET_MISSING",
+          "message": "bufferView.target should be set for vertex or index data.",
+          "severity": 3,
+          "pointer": "/meshes/11/primitives/0/indices"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/47"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/48"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/49"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/50"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/51"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/52"
+        }
+      ],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v1.7.33",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 1646636
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 76,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": true,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 12,
+        "totalVertexCount": 5901,
+        "totalTriangleCount": 6377,
+        "maxUVs": 1,
+        "maxInfluences": 4,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_barracks_blue.gltf",
+      "sha256": "a4f3aaa7ebb33cf0d86a139941b350e580e3e1376e3ead99a5aaecb5de2f3817",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_barracks_blue.bin",
+          "sha256": "e3613795eeb9a6366920771b7b1c2b67b2b1df8c39b3ac82edc22d816c18499e"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_barracks_blue.bin",
+            "byteLength": 229676
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 6426,
+        "totalTriangleCount": 4007,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_blacksmith_blue.gltf",
+      "sha256": "b9b76474cde5a379334b31cf8ef108c26e8051b6f7560402cd7c2a100fb4bf54",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_blacksmith_blue.bin",
+          "sha256": "2b5f91972249f3b4acee5d293b0291769213f3bd6272bd3fdacbd2b113b82853"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_blacksmith_blue.bin",
+            "byteLength": 123036
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 3393,
+        "totalTriangleCount": 2410,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_castle_blue.gltf",
+      "sha256": "f23ede8641122d2226f02a5fdb4957dfedec99accf27240f07ef7fb312696759",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_castle_blue.bin",
+          "sha256": "519004b02fe38eeadecf1f12722e47e40c342fa4bb01ade370734c63936d66a5"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_castle_blue.bin",
+            "byteLength": 317732
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 8868,
+        "totalTriangleCount": 5659,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_church_blue.gltf",
+      "sha256": "ac2d9dfbdcffd1604e1522ddb26fe27c1feae2bc01bf90664c8044b22926867b",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_church_blue.bin",
+          "sha256": "f1609a2910972dd82f948b7265e65646a93cbe303d5deb7c69d5b3d6f4f50dda"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_church_blue.bin",
+            "byteLength": 89736
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 2504,
+        "totalTriangleCount": 1601,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_home_A_blue.gltf",
+      "sha256": "60b3568e086d586b491eed8168c46acb61bb9670fb2c296faa64929b18dfcbea",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_home_A_blue.bin",
+          "sha256": "31c30bc9d4fb9ac6182e20331f2501ec153131ca01a57d8412a6b8e6219c23fd"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_home_A_blue.bin",
+            "byteLength": 55348
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1540,
+        "totalTriangleCount": 1011,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_home_B_blue.gltf",
+      "sha256": "bf503f4edcd3a744a021ccdd5b9215f6c8934ef87fa44d95632cb653422797eb",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_home_B_blue.bin",
+          "sha256": "a9736eef43b33d8963f1f54b709eb4395cd5069aa6317b09856687d4045059ca"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_home_B_blue.bin",
+            "byteLength": 82120
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 2305,
+        "totalTriangleCount": 1393,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_market_blue.gltf",
+      "sha256": "24874a4651dfff0d1aea31e15a32b9c35122958764c6f968ca55f286285ffbe9",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_market_blue.bin",
+          "sha256": "35713e17b24a26274ba38def66f17fe838987e4e8f803cf680140b3754676442"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_market_blue.bin",
+            "byteLength": 152160
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 4169,
+        "totalTriangleCount": 3125,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_mine_blue.gltf",
+      "sha256": "fe21db192f3ee7d40bd5f64a1d3782c6301b92a6676ca8a4d43e8c3e85ab7695",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_mine_blue.bin",
+          "sha256": "aaceea5aebc4039839feeade050616c9dd49e1c67d0f90442fa9a24f5aef186e"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_mine_blue.bin",
+            "byteLength": 66020
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1852,
+        "totalTriangleCount": 1126,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_tavern_blue.gltf",
+      "sha256": "58a3573cf468f9c5f1d03a6da74fbc884f5f662ccddbfef2a10860abfe50109b",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_tavern_blue.bin",
+          "sha256": "00a4f91c275d168a4fcaea5f35cd4839047b498232f5f807d29ec17aa9490fe9"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_tavern_blue.bin",
+            "byteLength": 170848
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 4778,
+        "totalTriangleCount": 2992,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_tower_B_blue.gltf",
+      "sha256": "41c06933eec6ddcd043c2411e4e6c82ba2efd8371e09d8565b22e14b7d57b33e",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_tower_B_blue.bin",
+          "sha256": "3b01d5ece1aa3a8f5ebb48ae344f0be8678d329ec68822634955e27468a5bc85"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_tower_B_blue.bin",
+            "byteLength": 130956
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 2,
+        "totalVertexCount": 3639,
+        "totalTriangleCount": 2418,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_well_blue.gltf",
+      "sha256": "66305823322b2e6a7f1cb8d8bf0d91ed9b94b8d96f61d0f7af77bd0d09f6463e",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/building_well_blue.bin",
+          "sha256": "5c50811c6666df2a9b43afc1a83ccccf19678c0f8e40c3ca0bf341722dc5133f"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/blue/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_well_blue.bin",
+            "byteLength": 42340
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 1187,
+        "totalTriangleCount": 726,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/building_bridge_A.gltf",
+      "sha256": "7f3a7e8b3e72a66dec70d6a00eb87e62d3ca5c6892b9b965c675cb9d193e4d29",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/building_bridge_A.bin",
+          "sha256": "dc78350862e173e7d948dab4dbb3e32234f3ab2302a149da8d0c0da9380040d5"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "building_bridge_A.bin",
+            "byteLength": 25576
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 686,
+        "totalTriangleCount": 604,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/wall_straight_gate.gltf",
+      "sha256": "877f3e95f89c23741c38b9d2f8f307c1369042ec5c354d7858d72ab2b9666c3a",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/wall_straight_gate.bin",
+          "sha256": "9e64ec5b8c23113bc1bdb57ae824e067216dcf3d8475e6303e3198556fb8da28"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/buildings/neutral/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "wall_straight_gate.bin",
+            "byteLength": 47288
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 3,
+        "totalVertexCount": 1324,
+        "totalTriangleCount": 820,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/mountain_A.gltf",
+      "sha256": "b29375a487ee0e86519bf8f483b644cfe688b4c8321d7db558164a96750ed59e",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/mountain_A.bin",
+          "sha256": "7c6db7d27fba6452e31e3b534c9a60ede073e3e49828d404b0a510f2afd8082a"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "mountain_A.bin",
+            "byteLength": 7632
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 216,
+        "totalTriangleCount": 120,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/rock_single_A.gltf",
+      "sha256": "ddf307987fb18aa8e7594bb399de3943e497b50bc01aae0e7292a38418944915",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/rock_single_A.bin",
+          "sha256": "0f038d45b8df2c9efa034e5d3c3635a475a2683e2e741aa9a0cd197c5689e2ce"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "rock_single_A.bin",
+            "byteLength": 1228
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 35,
+        "totalTriangleCount": 18,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/rock_single_C.gltf",
+      "sha256": "4cbf4a67fa176d2374b4863348fddf7879b892e612dd455ad14173f17172d45b",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/rock_single_C.bin",
+          "sha256": "7d63c76a9f576bda17a63c77d8f7c9f617e11ed57e3459d9c8d5da7ebdf0b8f1"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "rock_single_C.bin",
+            "byteLength": 2192
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 61,
+        "totalTriangleCount": 40,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/tree_single_A.gltf",
+      "sha256": "ac913af6eaed6f15d26a2b75a877aa8dd10de90f26298f3f953abad86a4b4606",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/tree_single_A.bin",
+          "sha256": "437deac68f35338bb309b01e4d346dd4be37557d7a2f033d04765f63e1b88825"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "tree_single_A.bin",
+            "byteLength": 3340
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 95,
+        "totalTriangleCount": 50,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/tree_single_B.gltf",
+      "sha256": "1c038591301947c485937e9fdbab182c813ef32df48c02fad3daeb2f1f0421e0",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/tree_single_B.bin",
+          "sha256": "c6a7423ce62f61216f7d8c77e1bd1d8665cbbee59718e59e0e42485f9acfca36"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/nature/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "tree_single_B.bin",
+            "byteLength": 7368
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 189,
+        "totalTriangleCount": 220,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/barrel.gltf",
+      "sha256": "24673663eb53ffab6c8db612654856f051c4877bfc02ea25fee89cd95ee4d100",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/barrel.bin",
+          "sha256": "ff1b034f1ac95b063a2baa3d72a0ad0b33f25337f776e7a25fbc811d9c77dee8"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "barrel.bin",
+            "byteLength": 15552
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 441,
+        "totalTriangleCount": 240,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/crate_A_small.gltf",
+      "sha256": "3a7fee2b962949d44bdac360405f2cd9c442bf41eea65e057f08b6b2e2d6f6d8",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/crate_A_small.bin",
+          "sha256": "f46debeb9ad1f44b174f9bd62c382412172676b1cdfa714d15e3b11227f1eeb3"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "crate_A_small.bin",
+            "byteLength": 7000
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 194,
+        "totalTriangleCount": 132,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/resource_lumber.gltf",
+      "sha256": "601a69f44f0c4a9b5070a80bd4a20887960e01f1523a6125c1edc8ba19168f1f",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/resource_lumber.bin",
+          "sha256": "90bb1e1f23dbc3de372059b45ae289ec414b1fb50b49852ce0a3b30dc370db8b"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "resource_lumber.bin",
+            "byteLength": 11880
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 330,
+        "totalTriangleCount": 220,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/resource_stone.gltf",
+      "sha256": "427a22daaec3934ac85cd7e538415157264b96527577a3c9bbf793c1b5df8dca",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/resource_stone.bin",
+          "sha256": "8af67e8fb7272c0d5e439361f9ebb33f55406bb65a4dcf0d7156fc2959ddb744"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "resource_stone.bin",
+            "byteLength": 11560
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 320,
+        "totalTriangleCount": 220,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/sack.gltf",
+      "sha256": "b61929d6161907aff4f1fd211cd0a8300d002d1a686ba43d07c4aff171fbd9f0",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/sack.bin",
+          "sha256": "5c3e6f5c63f8c4420ed3dfb2027beffc981740b5af9c89be148b56c19b993e02"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "sack.bin",
+            "byteLength": 3240
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 84,
+        "totalTriangleCount": 92,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/tent.gltf",
+      "sha256": "d8920394ddec09d8afa0cfaa2dad1c75b55fd21819fbd7c31392b3b8dce5dca0",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/tent.bin",
+          "sha256": "fce10cd8e153d14b53a4f0fd902124c214ea29fac370707bb3a604ce2a718fc2"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "tent.bin",
+            "byteLength": 6148
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 176,
+        "totalTriangleCount": 86,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/weaponrack.gltf",
+      "sha256": "e6985e05285ae219a0a6317522debb9d48c8b39334820e0c9694f195f1519be5",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/weaponrack.bin",
+          "sha256": "3773a0eab3da0c7526a13880b3dc7f2c8c42f97e5b8970d5bf5a522f0ea7f0ea"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "weaponrack.bin",
+            "byteLength": 2940
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 84,
+        "totalTriangleCount": 42,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/wheelbarrow.gltf",
+      "sha256": "bb037662a3e5be1f4fe597ffc4927d2a6ad88d307da10388cfb178ca5fdae63d",
+      "scope": "original-source",
+      "dependencies": [
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/wheelbarrow.bin",
+          "sha256": "72ca612b0dc940c856ed5abbbb9df9562c09bff52cfb2258375b16cbaad29e12"
+        },
+        {
+          "path": "assets/source/kaykit/town/Assets/gltf/decoration/props/hexagons_medieval.png",
+          "sha256": "5301a06866ba3be68dcc14cc429bd6d0f69004b72884283715d7e233f2e9782e"
+        }
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v3.4.50",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "external",
+            "uri": "wheelbarrow.bin",
+            "byteLength": 19016
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "external",
+            "uri": "hexagons_medieval.png",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 520,
+        "totalTriangleCount": 396,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    }
+  ]
+}

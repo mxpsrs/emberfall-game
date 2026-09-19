@@ -1,0 +1,229 @@
+{
+  "id": "realm_aelindor_20",
+  "dimensions": [
+    16,
+    14
+  ],
+  "metadata": {
+    "entry": [
+      8,
+      11
+    ],
+    "exit": {
+      "$entity": "realm_aelindor_20:object:2171"
+    },
+    "kingdom": "sylvaran",
+    "race": "elf",
+    "title": "Aelindor Townhouse 21"
+  },
+  "entities": [
+    {
+      "id": "realm_aelindor_20:object:2171",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 8,
+        "drawY": 12,
+        "hitAt": -100,
+        "homeX": 8,
+        "homeY": 12,
+        "id": 2171,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 8,
+        "y": 12
+      },
+      "renderPosition": [
+        8.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_20:object:2172",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 5,
+        "heading": 0,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 5,
+        "id": 2172,
+        "name": "Elven artisan",
+        "race": "elf",
+        "sprite": 2,
+        "talk": "A forest is not empty land waiting for houses. Its clearings already serve a purpose.",
+        "type": "villager",
+        "workstationId": 2174,
+        "x": 5,
+        "y": 5
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        5.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_20:object:2173",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 2,
+        "id": 2173,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_aelindor_20",
+          "roomType": "house",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 2
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_20:object:2174",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 7,
+        "id": 2174,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_aelindor_20",
+          "roomType": "house",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 7
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_20:object:2175",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 7,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 7,
+        "id": 2175,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0.20999999999999996,
+            -1.2858791391047206e-17
+          ],
+          "reason": "Against the east wall, facing the usable room",
+          "room": "realm_aelindor_20",
+          "roomType": "house",
+          "target": null,
+          "wall": "east",
+          "yaw": -1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 7
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        7.5
+      ]
+    },
+    {
+      "id": "realm_aelindor_20:object:2176",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 2,
+        "drawY": 9,
+        "hitAt": -100,
+        "homeX": 2,
+        "homeY": 9,
+        "id": 2176,
+        "name": "Household hearth",
+        "placement": {
+          "anchor": "fireplace-wall",
+          "offset": [
+            -0.8799999999999999,
+            -5.388445916248353e-17
+          ],
+          "reason": "Against the west wall, facing the usable room",
+          "room": "realm_aelindor_20",
+          "roomType": "house",
+          "target": null,
+          "wall": "west",
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "hearth",
+        "roomYaw": 0,
+        "sprite": 7,
+        "type": "camp",
+        "x": 2,
+        "y": 9
+      },
+      "renderPosition": [
+        2.5,
+        0,
+        9.5
+      ]
+    }
+  ],
+  "buildings": []
+}

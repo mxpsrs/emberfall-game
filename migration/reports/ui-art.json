@@ -1,0 +1,642 @@
+{
+  "assets": [
+    {
+      "id": "veldren:ui:bag",
+      "path": "assets/ui/icons/bag.svg",
+      "sha256": "b1acb5ec37248b3c026e172dcf2e7568e6261dd9e9f9e53e586395a8e7181be2",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:gear",
+      "path": "assets/ui/icons/gear.svg",
+      "sha256": "103ee1eb16cb80fe0b931d1732e6dcd61dedeba410beae19a92fcb34c1976fc9",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:skills",
+      "path": "assets/ui/icons/skills.svg",
+      "sha256": "d1ea35a50cd045099f3f44d6c3aad2f57b88af8e2af4172c933bdb4beac41fd4",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:quests",
+      "path": "assets/ui/icons/quests.svg",
+      "sha256": "67ba5c3fecc7dd6b1ac7ce9146cccff8adb5436be2acbd861e7dd098541914fe",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spells",
+      "path": "assets/ui/icons/spells.svg",
+      "sha256": "7c43d29d8862c88b87a59efb722a2004e011b3c5dbe008517ee553e7c3c3d866",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:melee",
+      "path": "assets/ui/icons/melee.svg",
+      "sha256": "f01ecd69706ac023d8d23dc11991038b099e0c8843d387c484a16a99d45aab63",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:ranged",
+      "path": "assets/ui/icons/ranged.svg",
+      "sha256": "2e3663cc1984139290542ef607af9d9e7ddbcb3aac13090a068f11930b5abd34",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:magic",
+      "path": "assets/ui/icons/magic.svg",
+      "sha256": "4c2c7948d403aed90b7dc8238a075cec8e15898258265de7cea72236e8501132",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:shrine",
+      "path": "assets/ui/icons/shrine.svg",
+      "sha256": "c5b6004e630224c5c05bee9e117487d690157369baf0dae23258053443990dbd",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:followers",
+      "path": "assets/ui/icons/followers.svg",
+      "sha256": "2b467f905de1e8c147d33907e128c0c8713d99f3192d42c61224a713c7e28c71",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spirit",
+      "path": "assets/ui/icons/spirit.svg",
+      "sha256": "c5b6004e630224c5c05bee9e117487d690157369baf0dae23258053443990dbd",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:friends",
+      "path": "assets/ui/icons/friends.svg",
+      "sha256": "d7b77bffef5486af1c569232062607bff7a5aa7e69f37d4eec2c63da980c89fa",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:person",
+      "path": "assets/ui/icons/person.svg",
+      "sha256": "027c53004fb596df080cdaba85643a87ac92d00399dbb5f6f8ac98f86893a366",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:settings",
+      "path": "assets/ui/icons/settings.svg",
+      "sha256": "20c83706745946be6458f5a90d5d860357d13e39bcc7a37de1f1f48e0d85b0c8",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:music",
+      "path": "assets/ui/icons/music.svg",
+      "sha256": "99b186b9e2ea5f9fb3ede46e3f2f66619fd7d094a9d9168523ea235cd1a6bfc7",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:tools",
+      "path": "assets/ui/icons/tools.svg",
+      "sha256": "ec9b31229d5d07beed1c38a04ff457912b4d5d6299643a872fb21f0baf536c13",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:wave",
+      "path": "assets/ui/icons/wave.svg",
+      "sha256": "7dc0c7aca87099517e792b90421d2ea5e669e41d35e072f50e704e46832971bd",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:exit",
+      "path": "assets/ui/icons/exit.svg",
+      "sha256": "21ac5f665c5f122f100ffd348cc452b39922f4fb5b3c66f4ce391c7098e4fc37",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:chat",
+      "path": "assets/ui/icons/chat.svg",
+      "sha256": "35d1dc1739dc6a297657da62f29664c75c1be5fa461ff7f862ec97e1463250a9",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:stats",
+      "path": "assets/ui/icons/stats.svg",
+      "sha256": "64a9903e3354d74643e202b57d2d66e1d47f037488e37d7690189081e712b232",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:attack",
+      "path": "assets/ui/icons/attack.svg",
+      "sha256": "0593978cd63ca26803945632b3e30f292a5efc3b81875621154e4c0519d6ab71",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:strength",
+      "path": "assets/ui/icons/strength.svg",
+      "sha256": "b27847c0c4a5dbbe437c34449d3acf319517c1255baa0382e55d8567a0a86349",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:shield",
+      "path": "assets/ui/icons/shield.svg",
+      "sha256": "5a3a831257eaf97576ed86bfa93bb29ea1c9e0ef464b065a2ce884ef78b01e83",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:heart",
+      "path": "assets/ui/icons/heart.svg",
+      "sha256": "5d777d2869386687712a1b76dc7355418157fd396b0be6aef5165dea10843d70",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:woodcutting",
+      "path": "assets/ui/icons/woodcutting.svg",
+      "sha256": "5fef21427eef7ebfd85faa6b9a46438896e5269b1e9670a149bb9d2892ce8923",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:mine",
+      "path": "assets/ui/icons/mine.svg",
+      "sha256": "738087ee2cdcde308a68f195b1d41e4624b03cd777e540d5bf62e263d2d75532",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:fish",
+      "path": "assets/ui/icons/fish.svg",
+      "sha256": "4631dbd890e72600f0e653da11c1ba9ad8737b389ec0a90628e1638737a67c1a",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:forge",
+      "path": "assets/ui/icons/forge.svg",
+      "sha256": "5cec6c0860150aa9730aaaf48cc836ad5b75d579271c13a24b1007a5d40b0ba5",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:firemaking",
+      "path": "assets/ui/icons/firemaking.svg",
+      "sha256": "0d957c158a861c0f52824b07cd12ec6e707e1a2e92c16153cd2c21d34b1ab99b",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:cooking",
+      "path": "assets/ui/icons/cooking.svg",
+      "sha256": "a7076d796a7cfb50bac3eb6a7f4ac6da0669a70f92fdbeef165af254e9cd1b54",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:fletching",
+      "path": "assets/ui/icons/fletching.svg",
+      "sha256": "10e1e3ba704fe3a5e61da6eed5e247dda05b0108f93e2db4dd5e78983b40b8fe",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:farming",
+      "path": "assets/ui/icons/farming.svg",
+      "sha256": "f5383aae478455d528d33ca8267e5c2432631ce2b04e34dad4d72845d67efe61",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:helm",
+      "path": "assets/ui/icons/helm.svg",
+      "sha256": "9a13ae694f3da7246c5224148f5303054c7557e3e8debb2ad10cbaff37e25f31",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:necklace",
+      "path": "assets/ui/icons/necklace.svg",
+      "sha256": "b93ffe7d78c52a491d49436d9e9065dbbc371320f66ce32d82f1baf8a570b854",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:ammo",
+      "path": "assets/ui/icons/ammo.svg",
+      "sha256": "68e62568e566681e3cd4830700e16408374bbb84ecaf0a597105659327d3797e",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:glove",
+      "path": "assets/ui/icons/glove.svg",
+      "sha256": "9b9262768b63342599617dd81ee997309037365871e112286f95c1b30420b38e",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:legs",
+      "path": "assets/ui/icons/legs.svg",
+      "sha256": "0f15c7caf25b71a28782c812d70beac3e03db605e8168327d1a489f83579cb69",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:boot",
+      "path": "assets/ui/icons/boot.svg",
+      "sha256": "74c23a1d740b986787bdd35cfc424246daadb993570d027a4a00df016c4c3ce9",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:map",
+      "path": "assets/ui/icons/map.svg",
+      "sha256": "a9a8b6500416ef5ebe7799bebdd75ff44f1ce38e08985b2070080acbc82a21f2",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:tutor",
+      "path": "assets/ui/icons/tutor.svg",
+      "sha256": "0789ba459579dd24869bb0dc71bf82e3c8f8331b5deb746b891543a7b2d6d2c7",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:shop",
+      "path": "assets/ui/icons/shop.svg",
+      "sha256": "c33b7255b5c46430d6dd7cac5e89a79ddcc52f1c122c6af0d2f10fd78d9448b4",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:bank",
+      "path": "assets/ui/icons/bank.svg",
+      "sha256": "06a06977dbe8d61e21e3a058531b2d937c2a67b3c73e701686c6703906c0c40f",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:inn",
+      "path": "assets/ui/icons/inn.svg",
+      "sha256": "cac8660f2ad2b51cec23f21b370a99fa3e77e94d9a977893491afcf7016f8baf",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:coins",
+      "path": "assets/ui/icons/coins.svg",
+      "sha256": "e7068d08a4891a66350e3edb3fd92bbc1b85bc002d9db9557d992ca4c7192ec2",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:run",
+      "path": "assets/ui/icons/run.svg",
+      "sha256": "2fc638bd459a91f20e2d12fcc1337ab05f17f877fd7b69d1ab87531144e963fb",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:eat",
+      "path": "assets/ui/icons/eat.svg",
+      "sha256": "f781a3413c9d2f04e3e823acffd549311895ac13cf122404f4d19e1b61c2605f",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:stop",
+      "path": "assets/ui/icons/stop.svg",
+      "sha256": "4da399a6f786981eb986aec79c4540f588f3f6c3f275d805750b3a7304356e09",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:sound",
+      "path": "assets/ui/icons/sound.svg",
+      "sha256": "8a8fdf7141edec81bad8933c354f1b1df480b5632c8ad07955080b6c0748024c",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:mute",
+      "path": "assets/ui/icons/mute.svg",
+      "sha256": "75a2806db084e424f0e14ada04b19d3a755369ea393a5112fe38317bd5b4597d",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:compass",
+      "path": "assets/ui/icons/compass.svg",
+      "sha256": "17f1e8a02a1526124fa45cc593dbbbbef0381ac7cd9da27fd28863b9ffc46a1c",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:help",
+      "path": "assets/ui/icons/help.svg",
+      "sha256": "e3740cb0f430bd2be40ae2fbbe508170dd6f1b7dd13589d6e340dfa5be7446ba",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:hunting",
+      "path": "assets/ui/icons/hunting.svg",
+      "sha256": "0fa35124960df5bb38d5bdcba82b67498cba51167049aa0f623e16eb8091ada2",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:appearance",
+      "path": "assets/ui/icons/appearance.svg",
+      "sha256": "7ce4afa65add66929e428691908b26b050ac42badde0c4ebe5a0f3057168c9f2",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:recenter",
+      "path": "assets/ui/icons/recenter.svg",
+      "sha256": "0b14786e056849dd431e718c871411492005871bdbb2f918aa6267f416d8a181",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:air",
+      "path": "assets/ui/icons/air.svg",
+      "sha256": "2e94e81116985c3647fbff7d4c5f89c77e1eb70746f9c7c1e6dc66e6e9069545",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:water",
+      "path": "assets/ui/icons/water.svg",
+      "sha256": "2196a654cf957ab7951dd0874080b135fb09bb69dff729f5a357b861da10bfbe",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:earth",
+      "path": "assets/ui/icons/earth.svg",
+      "sha256": "dd6720b0134662b0deb1d8466434e33f547049e36d4c76b73ed1246bb78c8784",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:fire",
+      "path": "assets/ui/icons/fire.svg",
+      "sha256": "6cf20e407414a589865eb512e011d09972ca07095afd0bf8e3f9eb4b9891b77d",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:feather",
+      "path": "assets/ui/icons/feather.svg",
+      "sha256": "10e1e3ba704fe3a5e61da6eed5e247dda05b0108f93e2db4dd5e78983b40b8fe",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:trade",
+      "path": "assets/ui/icons/trade.svg",
+      "sha256": "6eaae191329149b6a0d5256de055751f1959413b77866ce2d088d1426040f5b3",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:privateChat",
+      "path": "assets/ui/icons/privateChat.svg",
+      "sha256": "eb7c0615859ad3402b6b70170b6adc6f687d3ca73887dc08536000587100070d",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:accurate",
+      "path": "assets/ui/icons/accurate.svg",
+      "sha256": "f97987165c984a7f971d63c5308dc434a47d335338891293c6d38d5c368ad3e4",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:balanced",
+      "path": "assets/ui/icons/balanced.svg",
+      "sha256": "98f196ad337852d37ca000e6a2e910c97a8f43867733ff1695985392e8db0b65",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:aggressive",
+      "path": "assets/ui/icons/aggressive.svg",
+      "sha256": "6a47ddd33a3bf6b71491f0792ef8ecade0c62c4e4af7e146d0d1752070a5a5fe",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:close",
+      "path": "assets/ui/icons/close.svg",
+      "sha256": "cc8caede71aa5a89bb244055410206bf107e9674ae362a8d43cde4cc4e8ef4f7",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:fullscreen",
+      "path": "assets/ui/icons/fullscreen.svg",
+      "sha256": "f08b9423d4ab9d01249268321d5828bf5d37c2c4af61aba278356ee94d1f8aa9",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:restore",
+      "path": "assets/ui/icons/restore.svg",
+      "sha256": "01ee2233c17b9728164a5e49cda7616d7bb2315c8c1ef91bc881da12d388e42f",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:zoomIn",
+      "path": "assets/ui/icons/zoomIn.svg",
+      "sha256": "365e94b9e3c4536724694d238071b5fc3a42eb507056307ddbe0c217bc4ce622",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:zoomOut",
+      "path": "assets/ui/icons/zoomOut.svg",
+      "sha256": "65778573d3b833ce9e1aabc586dc8e48e7b72f4c21a55e05fe1b35b624ec478a",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:previous",
+      "path": "assets/ui/icons/previous.svg",
+      "sha256": "dfa10a15b8ae2288fc160b4965eaf4d1e8bdf0edc4f1531f93e6e2f1dda61e69",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:next",
+      "path": "assets/ui/icons/next.svg",
+      "sha256": "e3fc47e1df6f6eb45a490014f20ebcccb6a1dbb26960930e6a6234212d31ae21",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:ignore",
+      "path": "assets/ui/icons/ignore.svg",
+      "sha256": "b53654a04a117da7c84bbd6551853c7be7428425ce840b7f2869cb09f06952ba",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:ring",
+      "path": "assets/ui/icons/ring.svg",
+      "sha256": "b841983ca0619e3f0adba3d90b6c525ad5da3c2847e8390387d610494f555a87",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:cape",
+      "path": "assets/ui/icons/cape.svg",
+      "sha256": "0b3e4f399035c42a724f2e342918f633f1af035eaaa3d95152271fa753203d60",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:belt",
+      "path": "assets/ui/icons/belt.svg",
+      "sha256": "dc3175ef9861fe7cc825cbeb53dcd75c4951bbacad712488f60c9fe6dc727475",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-spark",
+      "path": "assets/ui/icons/spell-spark.svg",
+      "sha256": "765e032846f9718bfb06e403b91b0b2355b8f29ce86b8ba945dd07097e63ce73",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-frost",
+      "path": "assets/ui/icons/spell-frost.svg",
+      "sha256": "7a235721dc0e18fd7c56724f510ca6dc948ca964994dc4c4d5c02ee932a8ef87",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-earthStrike",
+      "path": "assets/ui/icons/spell-earthStrike.svg",
+      "sha256": "81a12c1de5d435bf88ba92eb50bb94c0e48bd2082043ba6cc17cb748a64e733a",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-ember",
+      "path": "assets/ui/icons/spell-ember.svg",
+      "sha256": "2546a0ec1859608f04791803a11bf74ff7ddb304b37372c810dc2fdda9c07508",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-windBolt",
+      "path": "assets/ui/icons/spell-windBolt.svg",
+      "sha256": "ed020c26b0b5b8bbe17a5c999e08b55202d929cab9b6f3c5602df25ae6afeb4d",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-waterBolt",
+      "path": "assets/ui/icons/spell-waterBolt.svg",
+      "sha256": "74e7d633a0a309135be6a6203b18d16ecb6b59f2b81d5ac4a3d6e398870eda49",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-earthBolt",
+      "path": "assets/ui/icons/spell-earthBolt.svg",
+      "sha256": "8bd79530a743a44e582e34fa226cf14f04fb4a1179e91b6919471764ab62ac3b",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-fireBolt",
+      "path": "assets/ui/icons/spell-fireBolt.svg",
+      "sha256": "35b6457a243ff4d469e9b650ff1cbeb0e2d52d7d53a28bdfdedd421864bd9941",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-windBlast",
+      "path": "assets/ui/icons/spell-windBlast.svg",
+      "sha256": "b18998fc44df0818d151b538fdc922c93cad1dfa7ed1f3b4fa0b2baf46192a56",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-waterBlast",
+      "path": "assets/ui/icons/spell-waterBlast.svg",
+      "sha256": "753e7a80542f7364e653f1c97d42c7ed8fa57c87d5842078d5674afced32377f",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-earthBlast",
+      "path": "assets/ui/icons/spell-earthBlast.svg",
+      "sha256": "8f05236dea508ade49c3cfc1dc47fe407cd37c2758f6147430a00203716150d8",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-fireBlast",
+      "path": "assets/ui/icons/spell-fireBlast.svg",
+      "sha256": "22be621cd1fa4a975a1a288de5eb124a5eac145b65003ad6bf8ece9ae841880c",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-windWave",
+      "path": "assets/ui/icons/spell-windWave.svg",
+      "sha256": "ab6ed457acc98e44ae629d72890304926d853bbd557b6150e2c94ca77cbd809f",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-waterWave",
+      "path": "assets/ui/icons/spell-waterWave.svg",
+      "sha256": "5ebdcd1f8fe8406dde328511ecdf8505c3970b9ac8854c2dd8e644b931a83cfc",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-earthWave",
+      "path": "assets/ui/icons/spell-earthWave.svg",
+      "sha256": "4c6a9579f8b9d89f2b926c5c0f760d6cdfd4bd6c24205989024c2528a508439a",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    },
+    {
+      "id": "veldren:ui:spell-fireWave",
+      "path": "assets/ui/icons/spell-fireWave.svg",
+      "sha256": "0e4f459ea61b5614675809e334ce91729880806568bd3f8370a0bd8ce77c7b85",
+      "source": "dist/game-icons.js",
+      "licenseEvidence": "art/ui-icons/manifest.json"
+    }
+  ],
+  "nativeUIImplemented": false
+}

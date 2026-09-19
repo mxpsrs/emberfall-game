@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Reedwater Mere",
+    "rx": 32,
+    "ry": 18,
+    "x": 300,
+    "y": 232
+  },
+  {
+    "name": "Lake Fenmere",
+    "rx": 28,
+    "ry": 42,
+    "x": 168,
+    "y": 355
+  },
+  {
+    "name": "Ironmirror Lake",
+    "rx": 35,
+    "ry": 22,
+    "x": 724,
+    "y": 379
+  },
+  {
+    "name": "Silverglass Lake",
+    "rx": 34,
+    "ry": 20,
+    "x": 554,
+    "y": 681
+  }
+]

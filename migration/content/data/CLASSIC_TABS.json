@@ -1,0 +1,52 @@
+[
+  [
+    "combat",
+    "melee",
+    "Combat options"
+  ],
+  [
+    "skills",
+    "skills",
+    "Skills"
+  ],
+  [
+    "quests",
+    "quests",
+    "Quest list"
+  ],
+  [
+    "bag",
+    "bag",
+    "Inventory"
+  ],
+  [
+    "gear",
+    "gear",
+    "Worn equipment"
+  ],
+  [
+    "worship",
+    "shrine",
+    "Worship"
+  ],
+  [
+    "spells",
+    "spells",
+    "Magic"
+  ],
+  [
+    "friends",
+    "friends",
+    "Friends list"
+  ],
+  [
+    "ignore",
+    "ignore",
+    "Ignore list"
+  ],
+  [
+    "settings",
+    "settings",
+    "Settings"
+  ]
+]

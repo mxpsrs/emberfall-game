@@ -1,0 +1,462 @@
+{
+  "id": "realm_ironhollow_25",
+  "dimensions": [
+    24,
+    22
+  ],
+  "metadata": {
+    "entry": [
+      12,
+      19
+    ],
+    "exit": {
+      "$entity": "realm_ironhollow_25:object:1717"
+    },
+    "kingdom": "khazdur",
+    "race": "dwarf",
+    "title": "Ironcrown Citadel"
+  },
+  "entities": [
+    {
+      "id": "realm_ironhollow_25:object:1717",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 20,
+        "id": 1717,
+        "name": "Exit to the road",
+        "sprite": 13,
+        "type": "exit",
+        "x": 12,
+        "y": 20
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1718",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 4,
+        "heading": -0.4048917862850834,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 4,
+        "id": 1718,
+        "name": "King Thargrim",
+        "race": "dwarf",
+        "sprite": 2,
+        "talk": "Welcome to Ironcrown Citadel. You may explore our cities and villages, trade with our merchants, and seek shelter within our halls.",
+        "type": "villager",
+        "workstationId": 1721,
+        "x": 12,
+        "y": 4
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1719",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 12,
+        "homeY": 2,
+        "id": 1719,
+        "name": "Royal throne",
+        "placement": {
+          "anchor": "focal-axis",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "The ceremonial focal point faces the entrance",
+          "room": "realm_ironhollow_25",
+          "roomType": "hall",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "throne",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 2
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1720",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 1720,
+        "name": "Royal brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_ironhollow_25",
+          "roomType": "hall",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "roomYaw": 0,
+        "sprite": 7,
+        "type": "camp",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1721",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 11,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 11,
+        "id": 1721,
+        "name": "Banquet table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Long tables frame the great hall aisle",
+          "room": "realm_ironhollow_25",
+          "roomType": "hall",
+          "target": null,
+          "wall": null,
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "table",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 9,
+        "y": 11
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1722",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 4,
+        "drawY": 15,
+        "heading": 2.2455372690184494,
+        "hitAt": -100,
+        "homeX": 4,
+        "homeY": 15,
+        "id": 1722,
+        "name": "Ironcrown guard",
+        "race": "dwarf",
+        "sprite": 2,
+        "talk": "The roads to our neighboring kingdoms are open.",
+        "type": "villager",
+        "workstationId": 1721,
+        "x": 4,
+        "y": 15
+      },
+      "renderPosition": [
+        4.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1723",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 3,
+        "id": 1723,
+        "name": "Royal brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_ironhollow_25",
+          "roomType": "hall",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "roomYaw": 0,
+        "sprite": 7,
+        "type": "camp",
+        "x": 20,
+        "y": 3
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1724",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 11,
+        "hitAt": -100,
+        "homeX": 15,
+        "homeY": 11,
+        "id": 1724,
+        "name": "Banquet table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Long tables frame the great hall aisle",
+          "room": "realm_ironhollow_25",
+          "roomType": "hall",
+          "target": null,
+          "wall": null,
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "table",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 15,
+        "y": 11
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1725",
+      "source": {
+        "attackAt": -100,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 15,
+        "heading": -2.498091544796509,
+        "hitAt": -100,
+        "homeX": 18,
+        "homeY": 15,
+        "id": 1725,
+        "name": "Ironcrown guard",
+        "race": "dwarf",
+        "sprite": 2,
+        "talk": "The roads to our neighboring kingdoms are open.",
+        "type": "villager",
+        "workstationId": 1724,
+        "x": 18,
+        "y": 15
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        15.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1726",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 4,
+        "id": 1726,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 4
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1727",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 10,
+        "id": 1727,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 10
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1728",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 16,
+        "id": 1728,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 16
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1729",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 4,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 4,
+        "id": 1729,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 4
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        4.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1730",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 10,
+        "id": 1730,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 10
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "realm_ironhollow_25:object:1731",
+      "source": {
+        "attackAt": -100,
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 16,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 16,
+        "id": 1731,
+        "name": "Stone pillar",
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 16
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        16.5
+      ]
+    }
+  ],
+  "buildings": []
+}

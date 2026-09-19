@@ -1,0 +1,448 @@
+{
+  "id": "fairy_between",
+  "dimensions": [
+    76,
+    68
+  ],
+  "metadata": {
+    "entry": [
+      20,
+      49
+    ],
+    "title": "Fairy Lands · The Remembering Lake"
+  },
+  "entities": [
+    {
+      "id": "fairy_between:object:9300011",
+      "source": {
+        "dead": 0,
+        "drawX": 20,
+        "drawY": 51,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 51,
+        "id": 9300011,
+        "name": "Crossing back to Briarhaven",
+        "questModel": "seal",
+        "relicKey": "return",
+        "sprite": 12,
+        "type": "prop",
+        "x": 20,
+        "y": 51
+      },
+      "renderPosition": [
+        20.5,
+        0.6,
+        51.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300012",
+      "source": {
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 43,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 43,
+        "id": 9300012,
+        "name": "Lake immersion stone",
+        "questModel": "seal",
+        "relicKey": "lake",
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 43
+      },
+      "renderPosition": [
+        38.5,
+        0.6,
+        43.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300013",
+      "source": {
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 32,
+        "drawY": 42,
+        "hitAt": -100,
+        "homeX": 32,
+        "homeY": 42,
+        "id": 9300013,
+        "name": "Nim · Keeper of the lake",
+        "race": "elf",
+        "relicKey": null,
+        "sprite": 12,
+        "talk": "This is the space between your worlds. The lake remembers power; your inscriptions give it a shape. Selene may draw a thread home, but the source stays here.",
+        "type": "villager",
+        "x": 32,
+        "y": 42
+      },
+      "renderPosition": [
+        32.5,
+        0.6,
+        42.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300023",
+      "source": {
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 47,
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 47,
+        "id": 9300023,
+        "name": "Lake path lantern",
+        "relicKey": null,
+        "sprite": 12,
+        "type": "camp",
+        "walkThrough": true,
+        "x": 22,
+        "y": 47
+      },
+      "renderPosition": [
+        22.5,
+        0.6,
+        47.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300024",
+      "source": {
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 46,
+        "hitAt": -100,
+        "homeX": 27,
+        "homeY": 46,
+        "id": 9300024,
+        "name": "Lake path lantern",
+        "relicKey": null,
+        "sprite": 12,
+        "type": "camp",
+        "walkThrough": true,
+        "x": 27,
+        "y": 46
+      },
+      "renderPosition": [
+        27.5,
+        0.6,
+        46.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300025",
+      "source": {
+        "dead": 0,
+        "drawX": 32,
+        "drawY": 45,
+        "hitAt": -100,
+        "homeX": 32,
+        "homeY": 45,
+        "id": 9300025,
+        "name": "Lake path lantern",
+        "relicKey": null,
+        "sprite": 12,
+        "type": "camp",
+        "walkThrough": true,
+        "x": 32,
+        "y": 45
+      },
+      "renderPosition": [
+        32.5,
+        0.6,
+        45.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300026",
+      "source": {
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 44,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 44,
+        "id": 9300026,
+        "name": "Lake path lantern",
+        "relicKey": null,
+        "sprite": 12,
+        "type": "camp",
+        "walkThrough": true,
+        "x": 37,
+        "y": 44
+      },
+      "renderPosition": [
+        37.5,
+        0.6,
+        44.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300014",
+      "source": {
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 24,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 24,
+        "id": 9300014,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 13,
+        "y": 24
+      },
+      "renderPosition": [
+        13.5,
+        0.6,
+        24.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300015",
+      "source": {
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 19,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 19,
+        "id": 9300015,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 21,
+        "y": 19
+      },
+      "renderPosition": [
+        21.5,
+        0.6,
+        19.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300016",
+      "source": {
+        "dead": 0,
+        "drawX": 31,
+        "drawY": 13,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 31,
+        "homeY": 13,
+        "id": 9300016,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 31,
+        "y": 13
+      },
+      "renderPosition": [
+        31.5,
+        0.6,
+        13.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300017",
+      "source": {
+        "dead": 0,
+        "drawX": 48,
+        "drawY": 12,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 48,
+        "homeY": 12,
+        "id": 9300017,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 48,
+        "y": 12
+      },
+      "renderPosition": [
+        48.5,
+        0.6,
+        12.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300018",
+      "source": {
+        "dead": 0,
+        "drawX": 59,
+        "drawY": 21,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 59,
+        "homeY": 21,
+        "id": 9300018,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 59,
+        "y": 21
+      },
+      "renderPosition": [
+        59.5,
+        0.6,
+        21.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300019",
+      "source": {
+        "dead": 0,
+        "drawX": 62,
+        "drawY": 37,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 62,
+        "homeY": 37,
+        "id": 9300019,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 62,
+        "y": 37
+      },
+      "renderPosition": [
+        62.5,
+        0.6,
+        37.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300020",
+      "source": {
+        "dead": 0,
+        "drawX": 63,
+        "drawY": 55,
+        "ecology": {
+          "purpose": "relocated woodland resource",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 63,
+        "homeY": 55,
+        "id": 9300020,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 63,
+        "y": 55
+      },
+      "renderPosition": [
+        63.5,
+        0.6,
+        55.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300021",
+      "source": {
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 60,
+        "ecology": {
+          "purpose": "relocated woodland resource",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 60,
+        "id": 9300021,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 24,
+        "y": 60
+      },
+      "renderPosition": [
+        24.5,
+        0.6,
+        60.5
+      ]
+    },
+    {
+      "id": "fairy_between:object:9300022",
+      "source": {
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 43,
+        "ecology": {
+          "purpose": "resource grove",
+          "version": 6
+        },
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 43,
+        "id": 9300022,
+        "name": "Moonwillow tree",
+        "relicKey": null,
+        "resourceId": "willow",
+        "sprite": 12,
+        "treeArt": "broadleaf",
+        "type": "tree",
+        "x": 14,
+        "y": 43
+      },
+      "renderPosition": [
+        14.5,
+        0.6,
+        43.5
+      ]
+    }
+  ],
+  "buildings": []
+}

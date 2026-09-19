@@ -1,0 +1,22 @@
+{
+  "danger": {
+    "file": "cave-theme",
+    "title": "Cave Theme"
+  },
+  "hero": {
+    "file": "medieval-opener",
+    "title": "Medieval Opener"
+  },
+  "refuge": {
+    "file": "field-of-dreams",
+    "title": "The Field of Dreams"
+  },
+  "title": {
+    "file": "the-tournament",
+    "title": "The Tournament"
+  },
+  "town": {
+    "file": "old-tower-inn",
+    "title": "The Old Tower Inn"
+  }
+}

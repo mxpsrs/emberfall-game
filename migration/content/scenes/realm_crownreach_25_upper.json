@@ -1,0 +1,1432 @@
+{
+  "id": "realm_crownreach_25_upper",
+  "dimensions": [
+    49,
+    26
+  ],
+  "metadata": {
+    "civilFloor": true,
+    "entry": [
+      36,
+      13
+    ],
+    "exit": {
+      "$entity": "realm_crownreach_25_upper:object:7400265"
+    },
+    "exterior": "realm_crownreach_25",
+    "race": "human",
+    "returnAt": [
+      394,
+      43
+    ],
+    "title": "Sunspire Castle · Upper chambers"
+  },
+  "entities": [
+    {
+      "id": "realm_crownreach_25_upper:object:7400234",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 3,
+        "id": 7400234,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 3
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400235",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 3,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 3,
+        "id": 7400235,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 3
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400236",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 10,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 10,
+        "id": 7400236,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 10
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        10.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400237",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 6,
+        "id": 7400237,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 6
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400238",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Royal chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 8,
+        "id": 7400238,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_crownreach_25_upper:Royal chambers",
+          "roomType": "bedroom",
+          "target": 7400237,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 8
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400239",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 18,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 18,
+        "homeY": 2,
+        "id": 7400239,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 18,
+        "y": 2
+      },
+      "renderPosition": [
+        18.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400240",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 2,
+        "id": 7400240,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 2
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400241",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 2,
+        "id": 7400241,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 24,
+        "y": 2
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400242",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 27,
+        "homeY": 2,
+        "id": 7400242,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 27,
+        "y": 2
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400243",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 30,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 30,
+        "homeY": 2,
+        "id": 7400243,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 30,
+        "y": 2
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400244",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 6,
+        "id": 7400244,
+        "interiorBuilding": null,
+        "name": "Council table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 6
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400245",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private council",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 8,
+        "id": 7400245,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_crownreach_25_upper:Private council",
+          "roomType": "council",
+          "target": 7400244,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 8
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400246",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 2,
+        "id": 7400246,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 2
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400247",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 38,
+        "homeY": 2,
+        "id": 7400247,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 38,
+        "y": 2
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400248",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 41,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 41,
+        "homeY": 2,
+        "id": 7400248,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 41,
+        "y": 2
+      },
+      "renderPosition": [
+        41.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400249",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 2,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 2,
+        "id": 7400249,
+        "interiorBuilding": null,
+        "name": "Bookcase",
+        "placement": {
+          "anchor": "wall",
+          "offset": [
+            0,
+            -0.20999999999999996
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bookcase",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 44,
+        "y": 2
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        2.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400250",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 6,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 6,
+        "id": 7400250,
+        "interiorBuilding": null,
+        "name": "Reading table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 6
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        6.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400251",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Private study",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 8,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 8,
+        "id": 7400251,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_crownreach_25_upper:Private study",
+          "roomType": "study",
+          "target": 7400250,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 8
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        8.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400252",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 3,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 3,
+        "homeY": 18,
+        "id": 7400252,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 3,
+        "y": 18
+      },
+      "renderPosition": [
+        3.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400253",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 18,
+        "id": 7400253,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 18
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400254",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 13,
+        "drawY": 23,
+        "hitAt": -100,
+        "homeX": 13,
+        "homeY": 23,
+        "id": 7400254,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 13,
+        "y": 23
+      },
+      "renderPosition": [
+        13.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400255",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 20,
+        "id": 7400255,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 20
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400256",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Guest chambers",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 5,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 5,
+        "homeY": 22,
+        "id": 7400256,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_crownreach_25_upper:Guest chambers",
+          "roomType": "guest",
+          "target": 7400255,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 5,
+        "y": 22
+      },
+      "renderPosition": [
+        5.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400257",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 22,
+        "id": 7400257,
+        "interiorBuilding": null,
+        "name": "Altar",
+        "placement": {
+          "anchor": "focal-axis",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "The ceremonial focal point faces the entrance",
+          "room": "realm_crownreach_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "altar",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 24,
+        "y": 22
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400258",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 19,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 19,
+        "id": 7400258,
+        "interiorBuilding": null,
+        "name": "Sacred brazier",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Brazier lights the edge of the ceremonial or working area",
+          "room": "realm_crownreach_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "fire",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "camp",
+        "x": 19,
+        "y": 19
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400259",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Ancestor chapel",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 21,
+        "homeY": 22,
+        "id": 7400259,
+        "interiorBuilding": null,
+        "name": "Bench",
+        "placement": {
+          "anchor": "courtyard-edge",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces the room focal point",
+          "room": "realm_crownreach_25_upper:Ancestor chapel",
+          "roomType": "chapel",
+          "target": 7400257,
+          "wall": null,
+          "yaw": 1.5707963267948966,
+          "zone": null
+        },
+        "propKind": "bench",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 22
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400260",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 18,
+        "id": 7400260,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 18
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400261",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 45,
+        "drawY": 18,
+        "hitAt": -100,
+        "homeX": 45,
+        "homeY": 18,
+        "id": 7400261,
+        "interiorBuilding": null,
+        "name": "Bed",
+        "placement": {
+          "anchor": "bedside",
+          "offset": [
+            0,
+            -0.06999999999999984
+          ],
+          "reason": "Against the north wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "north",
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "bed",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 45,
+        "y": 18
+      },
+      "renderPosition": [
+        45.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400262",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 45,
+        "drawY": 23,
+        "hitAt": -100,
+        "homeX": 45,
+        "homeY": 23,
+        "id": 7400262,
+        "interiorBuilding": null,
+        "name": "Storage chest",
+        "placement": {
+          "anchor": "corner",
+          "offset": [
+            5.510910596163108e-18,
+            -0.04500000000000015
+          ],
+          "reason": "Against the south wall, facing the usable room",
+          "room": "realm_crownreach_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": "south",
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "storage",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 45,
+        "y": 23
+      },
+      "renderPosition": [
+        45.5,
+        0,
+        23.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400263",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 20,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 20,
+        "id": 7400263,
+        "interiorBuilding": null,
+        "name": "Dining table",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Work or dining group beside the circulation spine",
+          "room": "realm_crownreach_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": null,
+          "wall": null,
+          "yaw": 0,
+          "zone": null
+        },
+        "propKind": "table",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 20
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400264",
+      "source": {
+        "attackAt": -100,
+        "civilRoom": "Servants’ quarters",
+        "civilization": true,
+        "dead": 0,
+        "drawX": 37,
+        "drawY": 22,
+        "hitAt": -100,
+        "homeX": 37,
+        "homeY": 22,
+        "id": 7400264,
+        "interiorBuilding": null,
+        "name": "Chair",
+        "placement": {
+          "anchor": "table",
+          "offset": [
+            0,
+            0
+          ],
+          "reason": "Seating faces its table; the surrounding aisle stays open",
+          "room": "realm_crownreach_25_upper:Servants’ quarters",
+          "roomType": "servant",
+          "target": 7400263,
+          "wall": null,
+          "yaw": 3.141592653589793,
+          "zone": null
+        },
+        "propKind": "chair",
+        "race": "human",
+        "roomYaw": 0,
+        "sprite": 12,
+        "type": "prop",
+        "x": 37,
+        "y": 22
+      },
+      "renderPosition": [
+        37.5,
+        0,
+        22.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400265",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "overworld",
+          "down": true,
+          "entry": [
+            394,
+            43
+          ],
+          "kind": "stone"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 13,
+        "id": 7400265,
+        "interiorBuilding": null,
+        "name": "Stone stairs down to the guard hall",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 35,
+        "y": 13
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        13.5
+      ]
+    },
+    {
+      "id": "realm_crownreach_25_upper:object:7400267",
+      "source": {
+        "attackAt": -100,
+        "blocksSight": false,
+        "civilStair": {
+          "destination": "realm_crownreach_25_tower",
+          "down": false,
+          "entry": [
+            6,
+            10
+          ],
+          "kind": "spiral"
+        },
+        "civilization": true,
+        "dead": 0,
+        "drawX": 44,
+        "drawY": 13,
+        "hitAt": -100,
+        "homeX": 44,
+        "homeY": 13,
+        "id": 7400267,
+        "interiorBuilding": null,
+        "name": "Spiral stairs to the watchtower",
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": false,
+        "x": 44,
+        "y": 13
+      },
+      "renderPosition": [
+        44.5,
+        0,
+        13.5
+      ]
+    }
+  ],
+  "buildings": []
+}

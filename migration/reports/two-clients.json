@@ -1,0 +1,9 @@
+{
+  "test": "Existing authenticated two-client worker integration with full current script order",
+  "scope": "In-memory local SQLite; synthetic accounts only; no hosted service or native client",
+  "seconds": 66.389202055,
+  "exitCode": 0,
+  "passed": true,
+  "stdout": "PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.\nPASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red/green teleport departure/arrival poses, correct colors and expiry from authenticated action packets.\nPASS: moved doors open on first click, allow real entry, and close from inside for both clients.\nPASS: trading after a completed attack and escape; active combat remains protected.\nPASS: server keeps fighting while attacker simulation is stalled; browser NPC pose injection is ignored.\nPASS: urgent combat reaches an open observer stream independently of stalled world polling; delayed animation plays once; unauthenticated/cross-origin writes rejected.\n",
+  "stderr": "(node:2375) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+}

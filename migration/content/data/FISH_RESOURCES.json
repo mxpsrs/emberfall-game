@@ -1,0 +1,76 @@
+{
+  "lobster": {
+    "burnStop": 74,
+    "cookLevel": 40,
+    "cookXP": 120,
+    "food": "lobster",
+    "heal": 12,
+    "level": 40,
+    "name": "Lobster",
+    "raw": "rawLobster",
+    "tool": "lobsterPot",
+    "xp": 90
+  },
+  "salmon": {
+    "bait": "feathers",
+    "burnStop": 58,
+    "cookLevel": 25,
+    "cookXP": 90,
+    "food": "salmon",
+    "heal": 9,
+    "level": 30,
+    "name": "Salmon",
+    "raw": "rawSalmon",
+    "tool": "fishingRod",
+    "xp": 70
+  },
+  "shark": {
+    "burnStop": 99,
+    "cookLevel": 80,
+    "cookXP": 210,
+    "food": "shark",
+    "heal": 20,
+    "level": 76,
+    "name": "Shark",
+    "raw": "rawShark",
+    "tool": "harpoon",
+    "xp": 110
+  },
+  "shrimp": {
+    "burnStop": 34,
+    "cookLevel": 1,
+    "cookXP": 30,
+    "food": "shrimp",
+    "heal": 3,
+    "level": 1,
+    "name": "Shrimp",
+    "raw": "rawShrimp",
+    "tool": "fishingNet",
+    "xp": 10
+  },
+  "swordfish": {
+    "burnStop": 86,
+    "cookLevel": 45,
+    "cookXP": 140,
+    "food": "swordfish",
+    "heal": 14,
+    "level": 50,
+    "name": "Swordfish",
+    "raw": "rawSwordfish",
+    "tool": "harpoon",
+    "xp": 100
+  },
+  "trout": {
+    "bait": "feathers",
+    "burnStop": 50,
+    "cookLevel": 15,
+    "cookXP": 70,
+    "food": "fish",
+    "heal": 7,
+    "level": 20,
+    "name": "Trout",
+    "raw": "rawTrout",
+    "tool": "fishingRod",
+    "xp": 50
+  }
+}

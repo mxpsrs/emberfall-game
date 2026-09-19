@@ -1,0 +1,46 @@
+{
+  "bondlight": {
+    "baseXP": 12,
+    "bond": 4,
+    "category": "Spirit",
+    "color": "#9ecec1",
+    "cooldown": 45,
+    "desc": "Give your attuned Spirit 4 resonance. Requires Worship 5 and an attuned Spirit. 45 second recovery.",
+    "ingredients": {
+      "earthRunes": 2,
+      "runes": 2,
+      "waterRunes": 2
+    },
+    "level": 25,
+    "name": "Bondlight",
+    "worship": 5
+  },
+  "mendingCurrent": {
+    "baseXP": 9,
+    "category": "Support",
+    "color": "#79c9ed",
+    "cooldown": 30,
+    "desc": "Restore up to 6 of your Hitpoints. 30 second recovery.",
+    "heal": 6,
+    "ingredients": {
+      "runes": 2,
+      "waterRunes": 3
+    },
+    "level": 18,
+    "name": "Mending Current"
+  },
+  "trailwind": {
+    "baseXP": 6,
+    "category": "Fieldcraft",
+    "color": "#b8e5dc",
+    "cooldown": 30,
+    "desc": "Recover up to 24 run energy. Useful between gathering sites. 30 second recovery.",
+    "energy": 24,
+    "ingredients": {
+      "airRunes": 2,
+      "runes": 1
+    },
+    "level": 8,
+    "name": "Trailwind"
+  }
+}

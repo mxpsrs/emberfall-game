@@ -1,0 +1,753 @@
+{
+  "id": "story_mine",
+  "dimensions": [
+    50,
+    92
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 7.5,
+        "z": 10
+      },
+      {
+        "heading": 0,
+        "height": 0.7,
+        "kind": "model",
+        "model": "World_Bed_Twin1",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 7.5,
+        "z": 17
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 17,
+        "z": 8
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 19,
+        "z": 10
+      },
+      {
+        "kind": "hearth",
+        "size": 0.65,
+        "x": 17,
+        "z": 21
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Workbench",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 22
+      },
+      {
+        "heading": 0,
+        "height": 1.6,
+        "kind": "model",
+        "model": "World_WeaponStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 31,
+        "z": 19
+      },
+      {
+        "heading": 0,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 68
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 30,
+        "z": 70
+      }
+    ],
+    "entry": [
+      25,
+      86
+    ],
+    "exit": {
+      "$entity": "story_mine:object:5800012"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "story_mine",
+    "openAir": false,
+    "subtitle": "The Last Shift · Sabotaged workings and miners’ refuges",
+    "title": "Ironhollow Freight Mine",
+    "wallTorches": [
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 6.15,
+        "z": 7.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 18.5,
+        "z": 7.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 29.5,
+        "z": 11.15
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 10.5,
+        "z": 21.85
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 38.5,
+        "z": 18.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 13.15,
+        "z": 27.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 17.15,
+        "z": 32.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 23.5,
+        "z": 34.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 29.5,
+        "z": 34.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 26.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 32.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 12.5,
+        "z": 7.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 6.15,
+        "z": 17.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 34.15,
+        "z": 39.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 25.5,
+        "z": 46.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 31.5,
+        "z": 46.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 44.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 19.5,
+        "z": 46.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 11.15,
+        "z": 48.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 15.85,
+        "z": 52.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 26.5,
+        "z": 60.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 11.15,
+        "z": 63.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 35.85,
+        "z": 66.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 72.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 30.85,
+        "z": 78.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 23.15,
+        "z": 85.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "story_mine:object:5800012",
+      "source": {
+        "dead": 0,
+        "id": 5800012,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "story_mine",
+        "sprite": 13,
+        "type": "exit",
+        "x": 25,
+        "y": 87
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        87.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300010",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 65,
+        "homeX": 25,
+        "homeY": 65,
+        "id": 6300010,
+        "mainStoryKey": "lift",
+        "mountainModel": "World_Workbench",
+        "name": "Broken freight lift",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored lift scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "sprite": 12,
+        "storyScene": "story_mine",
+        "type": "prop",
+        "x": 25,
+        "y": 65
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        65.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300011",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 57,
+        "homeX": 12,
+        "homeY": 57,
+        "id": 6300011,
+        "mainStoryKey": "airway",
+        "mountainModel": "Rock_Medium_1",
+        "name": "Blocked ventilation grate",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored airway scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "sprite": 12,
+        "storyScene": "story_mine",
+        "type": "prop",
+        "x": 12,
+        "y": 57
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        57.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300012",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 47,
+        "homeX": 14,
+        "homeY": 47,
+        "id": 6300012,
+        "mainStoryKey": "support",
+        "mountainModel": "Rock_Medium_1",
+        "name": "Collapsed iron support",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored support scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "sprite": 12,
+        "storyScene": "story_mine",
+        "type": "prop",
+        "x": 14,
+        "y": 47
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        47.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300013",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 34,
+        "drawY": 45,
+        "homeX": 34,
+        "homeY": 45,
+        "id": 6300013,
+        "mainStoryKey": "forge",
+        "mountainModel": "World_Workbench",
+        "name": "Underground rescue anvil",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored forge scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "sprite": 12,
+        "storyScene": "story_mine",
+        "type": "prop",
+        "x": 34,
+        "y": 45
+      },
+      "renderPosition": [
+        34.5,
+        0,
+        45.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300014",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 31,
+        "drawY": 24,
+        "homeX": 31,
+        "homeY": 24,
+        "id": 6300014,
+        "mainStoryKey": "excavation",
+        "mountainModel": "World_BookStand",
+        "name": "Unrecorded excavation and coded supplies",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored excavation scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "sprite": 12,
+        "storyScene": "story_mine",
+        "type": "prop",
+        "x": 31,
+        "y": 24
+      },
+      "renderPosition": [
+        31.5,
+        0,
+        24.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300015",
+      "source": {
+        "_stationary": true,
+        "atk": 3,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "creatureLook": "rat",
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 35,
+        "drawY": 34,
+        "homeX": 35,
+        "homeY": 34,
+        "hp": 24,
+        "id": 6300015,
+        "interval": 3.3,
+        "kind": "storycrawler",
+        "level": 10,
+        "look": "rat",
+        "mainStoryKey": "crawler",
+        "maxHit": 3,
+        "maxhp": 24,
+        "name": "Disturbed cave crawler",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored crawler scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "size": 2.15,
+        "spread": 0,
+        "sprite": 15,
+        "storyScene": "story_mine",
+        "tint": [
+          0.8,
+          0.9,
+          1.15
+        ],
+        "type": "enemy",
+        "weak": "melee",
+        "x": 35,
+        "y": 34
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        34.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300016",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 16,
+        "homeX": 12,
+        "homeY": 16,
+        "id": 6300016,
+        "mainStoryKey": "bera",
+        "name": "Miner Bera",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored bera scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "race": "dwarf",
+        "sprite": 2,
+        "storyScene": "story_mine",
+        "type": "questgiver",
+        "x": 12,
+        "y": 16
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6300017",
+      "source": {
+        "_stationary": true,
+        "characterSprite": true,
+        "dead": 0,
+        "drawX": 17,
+        "drawY": 16,
+        "homeX": 17,
+        "homeY": 16,
+        "id": 6300017,
+        "mainStoryKey": "oren",
+        "name": "Miner Oren",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored oren scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "race": "dwarf",
+        "sprite": 2,
+        "storyScene": "story_mine",
+        "type": "questgiver",
+        "x": 17,
+        "y": 16
+      },
+      "renderPosition": [
+        17.5,
+        0,
+        16.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600041",
+      "source": {
+        "dead": 0,
+        "drawX": 25,
+        "drawY": 67,
+        "homeX": 25,
+        "homeY": 67,
+        "id": 6600041,
+        "name": "Freight rail cart",
+        "placementContext": {
+          "anchor": "loading-area",
+          "reason": "Authored Freight rail cart scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "questModel": "cart",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 25,
+        "y": 67
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        67.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600042",
+      "source": {
+        "dead": 0,
+        "drawX": 14,
+        "drawY": 57,
+        "homeX": 14,
+        "homeY": 57,
+        "id": 6600042,
+        "name": "Mine support frame",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Mine support frame scene; gameplay identity and approach retained",
+          "scene": "story_mine"
+        },
+        "questModel": "timbers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 14,
+        "y": 57
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        57.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600043",
+      "source": {
+        "dead": 0,
+        "drawX": 35,
+        "drawY": 42,
+        "homeX": 35,
+        "homeY": 42,
+        "id": 6600043,
+        "name": "Salvage crate",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 35,
+        "y": 42
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        42.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600044",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 12,
+        "homeX": 10,
+        "homeY": 12,
+        "id": 6600044,
+        "name": "Miners’ refuge bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 10,
+        "y": 12
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600045",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 10,
+        "drawY": 19,
+        "homeX": 10,
+        "homeY": 19,
+        "id": 6600045,
+        "name": "Miners’ refuge bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 10,
+        "y": 19
+      },
+      "renderPosition": [
+        10.5,
+        0,
+        19.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600072",
+      "source": {
+        "dead": 0,
+        "drawX": 9,
+        "drawY": 53,
+        "homeX": 9,
+        "homeY": 53,
+        "id": 6600072,
+        "name": "Ironhollow copper seam",
+        "questScenery": true,
+        "resourceId": "copper",
+        "sprite": 12,
+        "type": "ore",
+        "x": 9,
+        "y": 53
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        53.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600073",
+      "source": {
+        "dead": 0,
+        "drawX": 38,
+        "drawY": 31,
+        "homeX": 38,
+        "homeY": 31,
+        "id": 6600073,
+        "name": "Ironhollow tin seam",
+        "questScenery": true,
+        "resourceId": "tin",
+        "sprite": 12,
+        "type": "ore",
+        "x": 38,
+        "y": 31
+      },
+      "renderPosition": [
+        38.5,
+        0,
+        31.5
+      ]
+    },
+    {
+      "id": "story_mine:object:6600074",
+      "source": {
+        "dead": 0,
+        "drawX": 24,
+        "drawY": 25,
+        "homeX": 24,
+        "homeY": 25,
+        "id": 6600074,
+        "name": "Lower-workings iron seam",
+        "questScenery": true,
+        "resourceId": "iron",
+        "sprite": 12,
+        "type": "ore",
+        "x": 24,
+        "y": 25
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        25.5
+      ]
+    }
+  ],
+  "buildings": []
+}

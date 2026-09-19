@@ -1,0 +1,18 @@
+{
+  "Attack": "Accuracy makes Spirit hit chains reliable. Choose a weapon and an attuned passive; only damaging hits advance chains.",
+  "Cooking": "Turn gathered food into expedition supplies. Higher levels reduce burning; ranges and campfires support different journeys.",
+  "Defense": "Avoid hits and choose protection for the job: light Windsteel routes, Deepiron holding power or Eldrite attunement.",
+  "Farming": "Plant potato seeds in a patch. Crops grow while you are away.",
+  "Firemaking": "Fire discovery and resonance. Matching fieldwork strengthens your attuned Spirit. Fires leave ashes when spent.",
+  "Fishing": "Water discovery and resonance. Supply Cooking from coastal and river routes; matching fieldwork strengthens your attuned Spirit.",
+  "Fletching": "Connect woodland logs, feathers and smithed arrowheads to ranged ammunition.",
+  "Hitpoints": "Your health reserve. Cooking and Mending Current replenish it; an attuned Water Spirit adds sustain.",
+  "Magic": "Cast with charged relics. Learn Shaping, Binding and Resonance combat spells plus Fieldcraft, Support and Spirit magic.",
+  "Mining": "Earth discovery and resonance. Copper/tin 1; iron 15; coal 30; gold 40; Windsteel 55; Deepiron 70; Eldrite 85. Mine lodestone to supply Relic Shaping.",
+  "Ranged": "Use Fletching to supply equipped arrows. An Air attunement rewards attacks made from a distance.",
+  "Relic Shaping": "Mine lodestone, inscribe a chosen pattern with a chisel, then charge unfinished relics at Selene’s leyline altar. The Well Between Worlds unlocks the craft. Higher skill unlocks more intricate patterns.",
+  "Smithing": "Ores become metal, arrows and fitted equipment. Materials offer route, guard and attunement builds. Mine lodestone separately for the Relic Shaping craft.",
+  "Strength": "Controls melee impact. Fire rewards sustained pressure; the rare Fire twin rewards switching successful weapon styles.",
+  "Woodcutting": "Air discovery and resonance. Work reachable woodland groves; matching fieldwork strengthens your attuned Spirit.",
+  "Worship": "One attuned passive shapes your build. Matching fieldwork, damaging hits and remembrance grow its bond. Unleash any ready owned Spirit."
+}

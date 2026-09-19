@@ -1,0 +1,65 @@
+{
+  "adamant": {
+    "item": "adamantOre",
+    "level": 70,
+    "name": "Deepiron rock",
+    "respawn": 120,
+    "xp": 95
+  },
+  "coal": {
+    "item": "coal",
+    "level": 30,
+    "name": "Coal rock",
+    "respawn": 30,
+    "xp": 50
+  },
+  "copper": {
+    "item": "copperOre",
+    "level": 1,
+    "name": "Copper rock",
+    "respawn": 5,
+    "xp": 17.5
+  },
+  "gold": {
+    "item": "goldOre",
+    "level": 40,
+    "name": "Gold rock",
+    "respawn": 60,
+    "xp": 65
+  },
+  "iron": {
+    "item": "ore",
+    "level": 15,
+    "name": "Iron rock",
+    "respawn": 8,
+    "xp": 35
+  },
+  "lodestone": {
+    "item": "lodestone",
+    "level": 1,
+    "name": "Lodestone seam",
+    "respawn": 10,
+    "xp": 18
+  },
+  "mithril": {
+    "item": "mithrilOre",
+    "level": 55,
+    "name": "Windsteel rock",
+    "respawn": 60,
+    "xp": 80
+  },
+  "rune": {
+    "item": "runeOre",
+    "level": 85,
+    "name": "Eldrite rock",
+    "respawn": 360,
+    "xp": 125
+  },
+  "tin": {
+    "item": "tinOre",
+    "level": 1,
+    "name": "Tin rock",
+    "respawn": 5,
+    "xp": 17.5
+  }
+}

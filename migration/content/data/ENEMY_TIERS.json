@@ -1,0 +1,304 @@
+{
+  "ashknight": {
+    "hp": 96,
+    "interval": 3.4,
+    "level": 60,
+    "look": "skeleton",
+    "maxHit": 9,
+    "name": "Ashen knight",
+    "size": 1.15,
+    "tint": [
+      1.15,
+      0.65,
+      0.5
+    ],
+    "weak": "magic"
+  },
+  "bandit": {
+    "hp": 24,
+    "interval": 3.1,
+    "level": 12,
+    "maxHit": 3
+  },
+  "brambleslime": {
+    "hp": 18,
+    "interval": 3.5,
+    "level": 9,
+    "look": "slime",
+    "maxHit": 3,
+    "name": "Bramble slime",
+    "style": "magic",
+    "tint": [
+      0.7,
+      1.1,
+      0.6
+    ],
+    "weak": "ranged"
+  },
+  "cavecrawler": {
+    "hp": 27,
+    "interval": 3.3,
+    "level": 16,
+    "look": "rat",
+    "maxHit": 4,
+    "name": "Cave crawler",
+    "size": 2.15,
+    "tint": [
+      0.8,
+      0.9,
+      1.15
+    ],
+    "weak": "melee"
+  },
+  "crystalguard": {
+    "hp": 108,
+    "interval": 3.8,
+    "level": 66,
+    "look": "king",
+    "maxHit": 10,
+    "name": "Crystal guardian",
+    "size": 0.8,
+    "style": "ranged",
+    "tint": [
+      0.65,
+      1.1,
+      1.2
+    ],
+    "weak": "melee"
+  },
+  "duskwraith": {
+    "hp": 86,
+    "interval": 3.5,
+    "level": 54,
+    "look": "skeleton",
+    "maxHit": 8,
+    "name": "Dusk wraith",
+    "style": "magic",
+    "tint": [
+      0.9,
+      0.6,
+      1.25
+    ],
+    "weak": "ranged"
+  },
+  "emberhound": {
+    "hp": 49,
+    "interval": 3.1,
+    "level": 30,
+    "look": "wolf",
+    "maxHit": 5,
+    "name": "Ember hound",
+    "size": 1.2,
+    "style": "magic",
+    "tint": [
+      1.25,
+      0.7,
+      0.45
+    ],
+    "weak": "ranged"
+  },
+  "forestgiant": {
+    "combatRadius": 0.7,
+    "hp": 34,
+    "interval": 3.8,
+    "level": 18,
+    "look": "forestgiant",
+    "maxHit": 4,
+    "name": "Forest Giant",
+    "weak": "magic"
+  },
+  "goblin": {
+    "hp": 14,
+    "interval": 3.2,
+    "level": 6,
+    "maxHit": 2
+  },
+  "grovehexer": {
+    "hp": 76,
+    "interval": 3.6,
+    "level": 48,
+    "look": "goblin",
+    "maxHit": 7,
+    "name": "Grove hexer",
+    "style": "magic",
+    "tint": [
+      0.6,
+      1.1,
+      0.85
+    ],
+    "weak": "ranged"
+  },
+  "hexer": {
+    "hp": 23,
+    "interval": 3.5,
+    "level": 13,
+    "look": "goblin",
+    "maxHit": 3,
+    "name": "Goblin hexer",
+    "style": "magic",
+    "tint": [
+      0.85,
+      0.7,
+      1.25
+    ],
+    "weak": "ranged"
+  },
+  "ironhideslime": {
+    "hp": 42,
+    "interval": 3.6,
+    "level": 25,
+    "look": "slime",
+    "maxHit": 5,
+    "name": "Ironhide slime",
+    "size": 1.2,
+    "tint": [
+      0.7,
+      0.85,
+      1.1
+    ],
+    "weak": "magic"
+  },
+  "ironrevenant": {
+    "hp": 58,
+    "interval": 3.4,
+    "level": 36,
+    "look": "skeleton",
+    "maxHit": 6,
+    "name": "Iron revenant",
+    "tint": [
+      0.75,
+      0.85,
+      1.1
+    ],
+    "weak": "magic"
+  },
+  "king": {
+    "hp": 48,
+    "interval": 3.5,
+    "level": 18,
+    "maxHit": 4,
+    "name": "Ruins guardian"
+  },
+  "man": {
+    "accuracy": 0.3,
+    "hp": 10,
+    "interval": 3.6,
+    "level": 1,
+    "maxHit": 1
+  },
+  "moonstalker": {
+    "hp": 67,
+    "interval": 3.1,
+    "level": 42,
+    "look": "wolf",
+    "maxHit": 7,
+    "name": "Moonstalker",
+    "size": 1.3,
+    "tint": [
+      0.65,
+      0.9,
+      1.25
+    ],
+    "weak": "melee"
+  },
+  "ork": {
+    "combatRadius": 0.45,
+    "hp": 46,
+    "interval": 3.5,
+    "level": 26,
+    "look": "ork",
+    "maxHit": 5,
+    "name": "Ork",
+    "weak": "magic"
+  },
+  "quarrybrute": {
+    "hp": 34,
+    "interval": 3.8,
+    "level": 20,
+    "look": "goblin",
+    "maxHit": 4,
+    "name": "Quarry brute",
+    "size": 1.45,
+    "tint": [
+      1.1,
+      0.8,
+      0.7
+    ],
+    "weak": "magic"
+  },
+  "rat": {
+    "accuracy": 0.3,
+    "hp": 2,
+    "interval": 3.6,
+    "level": 1,
+    "maxHit": 1
+  },
+  "ridgewolf": {
+    "hp": 28,
+    "interval": 3.1,
+    "level": 15,
+    "maxHit": 4
+  },
+  "sentinel": {
+    "hp": 68,
+    "interval": 3.5,
+    "level": 30,
+    "maxHit": 5,
+    "name": "Ashwatch guardian"
+  },
+  "skeleton": {
+    "hp": 20,
+    "interval": 3.1,
+    "level": 10,
+    "maxHit": 3
+  },
+  "slime": {
+    "accuracy": 0.36,
+    "hp": 6,
+    "interval": 3.5,
+    "level": 2,
+    "maxHit": 1
+  },
+  "slinger": {
+    "hp": 15,
+    "interval": 3.4,
+    "level": 7,
+    "look": "goblin",
+    "maxHit": 2,
+    "name": "Goblin slinger",
+    "style": "ranged",
+    "tint": [
+      1.2,
+      1,
+      0.7
+    ],
+    "weak": "melee"
+  },
+  "thornwolf": {
+    "hp": 12,
+    "interval": 3.3,
+    "level": 5,
+    "look": "wolf",
+    "maxHit": 2,
+    "name": "Thornback wolf",
+    "tint": [
+      0.75,
+      1,
+      0.65
+    ],
+    "weak": "magic"
+  },
+  "warden": {
+    "hp": 28,
+    "interval": 3.5,
+    "level": 12,
+    "maxHit": 3,
+    "name": "Crypt guard"
+  },
+  "wolf": {
+    "hp": 10,
+    "interval": 3.3,
+    "level": 4,
+    "maxHit": 2
+  }
+}

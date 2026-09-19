@@ -1,0 +1,106 @@
+[
+  [
+    "frame",
+    "Body",
+    [
+      "Male",
+      "Female"
+    ]
+  ],
+  [
+    "hair",
+    "Hairstyle",
+    [
+      "Side part",
+      "Long",
+      "Cropped",
+      "Shaved",
+      "Tousled"
+    ]
+  ],
+  [
+    "hairColor",
+    "Hair colour",
+    [
+      "Black",
+      "Brown",
+      "Auburn",
+      "Blond",
+      "Silver",
+      "White"
+    ]
+  ],
+  [
+    "beard",
+    "Facial hair",
+    [
+      "Clean shaven",
+      "Full beard",
+      "Shaped beard"
+    ]
+  ],
+  [
+    "skin",
+    "Skin colour",
+    [
+      "Porcelain",
+      "Fair",
+      "Warm",
+      "Tan",
+      "Brown",
+      "Deep"
+    ]
+  ],
+  [
+    "topStyle",
+    "Top",
+    [
+      "Peasant shirt",
+      "Ranger tunic"
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  [
+    "topColor",
+    "Top colour",
+    [
+      "Blue",
+      "Red",
+      "Green",
+      "Purple",
+      "Ochre",
+      "Charcoal",
+      "Linen",
+      "Brown"
+    ]
+  ],
+  [
+    "bottomStyle",
+    "Legs & footwear",
+    [
+      "Peasant breeches",
+      "Ranger trousers"
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  [
+    "bottomColor",
+    "Leg colour",
+    [
+      "Blue",
+      "Red",
+      "Green",
+      "Purple",
+      "Ochre",
+      "Charcoal",
+      "Linen",
+      "Brown"
+    ]
+  ]
+]

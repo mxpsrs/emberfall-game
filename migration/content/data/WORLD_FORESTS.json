@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Elderwood",
+    "race": "human",
+    "rx": 70,
+    "ry": 92,
+    "x": 80,
+    "y": 240
+  },
+  {
+    "name": "Crownwood",
+    "race": "human",
+    "rx": 110,
+    "ry": 55,
+    "x": 280,
+    "y": 224
+  },
+  {
+    "name": "Westmere Woods",
+    "race": "human",
+    "rx": 98,
+    "ry": 86,
+    "x": 209,
+    "y": 359
+  },
+  {
+    "name": "Ironpine Foothills",
+    "race": "dwarf",
+    "rx": 144,
+    "ry": 107,
+    "x": 663,
+    "y": 215
+  },
+  {
+    "name": "Stonehearth Pines",
+    "race": "dwarf",
+    "rx": 110,
+    "ry": 92,
+    "x": 994,
+    "y": 287
+  },
+  {
+    "name": "Silverwood Forest",
+    "race": "elf",
+    "rx": 363,
+    "ry": 116,
+    "x": 524,
+    "y": 601
+  }
+]

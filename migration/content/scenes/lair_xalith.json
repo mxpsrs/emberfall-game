@@ -1,0 +1,1020 @@
+{
+  "id": "lair_xalith",
+  "dimensions": [
+    54,
+    146
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "kind": "egg",
+        "size": 1,
+        "x": 13,
+        "z": 10
+      },
+      {
+        "heading": 0,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 9,
+        "z": 12
+      },
+      {
+        "kind": "egg",
+        "size": 1.25,
+        "x": 12,
+        "z": 15
+      },
+      {
+        "heading": 1,
+        "height": 2.7,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 9,
+        "z": 17
+      },
+      {
+        "kind": "egg",
+        "size": 1.5,
+        "x": 13,
+        "z": 20
+      },
+      {
+        "heading": 2,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 9,
+        "z": 22
+      },
+      {
+        "kind": "egg",
+        "size": 1,
+        "x": 12,
+        "z": 25
+      },
+      {
+        "heading": 3,
+        "height": 2.7,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 9,
+        "z": 27
+      },
+      {
+        "kind": "egg",
+        "size": 1.25,
+        "x": 13,
+        "z": 30
+      },
+      {
+        "heading": 4,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 9,
+        "z": 32
+      },
+      {
+        "kind": "egg",
+        "size": 1,
+        "x": 41,
+        "z": 10
+      },
+      {
+        "heading": 0,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 45,
+        "z": 12
+      },
+      {
+        "kind": "egg",
+        "size": 1.25,
+        "x": 42,
+        "z": 15
+      },
+      {
+        "heading": 1,
+        "height": 2.7,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 45,
+        "z": 17
+      },
+      {
+        "kind": "egg",
+        "size": 1.5,
+        "x": 41,
+        "z": 20
+      },
+      {
+        "heading": 2,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 45,
+        "z": 22
+      },
+      {
+        "kind": "egg",
+        "size": 1,
+        "x": 42,
+        "z": 25
+      },
+      {
+        "heading": 3,
+        "height": 2.7,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 45,
+        "z": 27
+      },
+      {
+        "kind": "egg",
+        "size": 1.25,
+        "x": 41,
+        "z": 30
+      },
+      {
+        "heading": 4,
+        "height": 2.2,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.95,
+          0.72,
+          0.42
+        ],
+        "x": 45,
+        "z": 32
+      },
+      {
+        "kind": "egg",
+        "size": 1.6,
+        "x": 11,
+        "z": 31
+      },
+      {
+        "kind": "web",
+        "size": 2.3,
+        "x": 11,
+        "z": 31
+      },
+      {
+        "kind": "egg",
+        "size": 1.6,
+        "x": 43,
+        "z": 31
+      },
+      {
+        "kind": "web",
+        "size": 2.3,
+        "x": 43,
+        "z": 31
+      },
+      {
+        "kind": "egg",
+        "size": 1.6,
+        "x": 18,
+        "z": 8
+      },
+      {
+        "kind": "web",
+        "size": 2.3,
+        "x": 18,
+        "z": 8
+      },
+      {
+        "kind": "egg",
+        "size": 1.6,
+        "x": 37,
+        "z": 7
+      },
+      {
+        "kind": "web",
+        "size": 2.3,
+        "x": 37,
+        "z": 7
+      },
+      {
+        "kind": "arch",
+        "size": 1.5,
+        "x": 27,
+        "z": 38
+      },
+      {
+        "kind": "nest",
+        "size": 5.5,
+        "x": 27,
+        "z": 19
+      },
+      {
+        "heading": 0,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 21,
+        "z": 130
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 32,
+        "z": 131
+      },
+      {
+        "kind": "web",
+        "size": 2,
+        "x": 23,
+        "z": 125
+      },
+      {
+        "kind": "egg",
+        "size": 0.8,
+        "x": 32,
+        "z": 124
+      },
+      {
+        "kind": "hearth",
+        "size": 0.6,
+        "x": 23,
+        "z": 125
+      },
+      {
+        "heading": 1,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 11,
+        "z": 101
+      },
+      {
+        "heading": 0.7,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 22,
+        "z": 102
+      },
+      {
+        "kind": "web",
+        "size": 2,
+        "x": 13,
+        "z": 96
+      },
+      {
+        "kind": "egg",
+        "size": 0.8,
+        "x": 22,
+        "z": 95
+      },
+      {
+        "heading": 2,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 32,
+        "z": 74
+      },
+      {
+        "heading": 1.4,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 43,
+        "z": 75
+      },
+      {
+        "kind": "web",
+        "size": 2,
+        "x": 34,
+        "z": 69
+      },
+      {
+        "kind": "egg",
+        "size": 0.8,
+        "x": 43,
+        "z": 68
+      }
+    ],
+    "entry": [
+      27,
+      140
+    ],
+    "exit": {
+      "$entity": "lair_xalith:object:5800006"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "lair_xalith",
+    "openAir": false,
+    "subtitle": "Xalith the Broodmother · Amber hive cavern",
+    "title": "The Brood Hollow",
+    "wallTorches": [
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 25.85,
+        "z": 6.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 9.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 15.15,
+        "z": 11.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 11.15,
+        "z": 17.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 11.15,
+        "z": 23.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 43.85,
+        "z": 19.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 22.5,
+        "z": 34.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 35.5,
+        "z": 33.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 16.5,
+        "z": 32.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 29.85,
+        "z": 37.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 7.15,
+        "z": 29.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 25.15,
+        "z": 41.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 47.85,
+        "z": 29.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 42.15,
+        "z": 36.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 29.85,
+        "z": 45.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 11.5,
+        "z": 37.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 24.15,
+        "z": 47.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 28.85,
+        "z": 51.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 26.15,
+        "z": 57.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 30.5,
+        "z": 62.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 36.5,
+        "z": 62.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 41.85,
+        "z": 66.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 34.15,
+        "z": 68.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 43.85,
+        "z": 72.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 34.15,
+        "z": 75.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 41.85,
+        "z": 78.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 37.15,
+        "z": 82.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 30.5,
+        "z": 88.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 24.5,
+        "z": 89.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 39.85,
+        "z": 88.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 18.5,
+        "z": 89.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 13.15,
+        "z": 93.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 22.85,
+        "z": 96.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 12.15,
+        "z": 99.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 22.85,
+        "z": 102.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 13.15,
+        "z": 105.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 19.5,
+        "z": 107.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 113.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 25.5,
+        "z": 117.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 119.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 30.85,
+        "z": 120.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 22.15,
+        "z": 122.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 32.85,
+        "z": 126.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 22.15,
+        "z": 128.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 31.85,
+        "z": 132.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 22.15,
+        "z": 134.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 28.85,
+        "z": 138.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "lair_xalith:object:5800006",
+      "source": {
+        "dead": 0,
+        "id": 5800006,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "lair_xalith",
+        "sprite": 13,
+        "type": "exit",
+        "x": 27,
+        "y": 141
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        141.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:4700045",
+      "source": {
+        "_stationary": true,
+        "area": "The Brood Hollow",
+        "at": [
+          27,
+          20
+        ],
+        "atk": 11,
+        "attackAt": -100,
+        "attackLevel": 43,
+        "attackStyle": "melee",
+        "coins": 240,
+        "combatRadius": 1.05,
+        "creatureLook": "boss_xalith",
+        "dead": 0,
+        "defenseLevel": 40,
+        "drawX": 27,
+        "drawY": 20,
+        "drops": {
+          "adamantBar": 2,
+          "bloodRunes": 15
+        },
+        "encounter": "xalith",
+        "hitAt": -100,
+        "homeX": 27,
+        "homeY": 20,
+        "hp": 236,
+        "id": 4700045,
+        "kind": "xalith",
+        "level": 62,
+        "look": "boss_xalith",
+        "marks": 5,
+        "maxHit": 11,
+        "maxhp": 236,
+        "name": "Xalith the Broodmother",
+        "rank": "Boss",
+        "released": true,
+        "repeatable": true,
+        "scene": "lair_xalith",
+        "spread": 0,
+        "sprite": 11,
+        "style": "melee",
+        "type": "boss",
+        "weak": "melee",
+        "x": 27,
+        "y": 20
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        20.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400018",
+      "source": {
+        "atk": 7,
+        "attackAt": -100,
+        "attackLevel": 29,
+        "attackStyle": "melee",
+        "coins": 67,
+        "creatureLook": "wolf",
+        "dead": 0,
+        "defenseLevel": 27,
+        "drawX": 24,
+        "drawY": 124,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 24,
+        "homeY": 124,
+        "hp": 67,
+        "id": 6400018,
+        "interval": 3.1,
+        "kind": "moonstalker",
+        "level": 42,
+        "look": "wolf",
+        "maxHit": 7,
+        "maxhp": 67,
+        "name": "Moonstalker",
+        "size": 1.3,
+        "spread": 0,
+        "sprite": 10,
+        "tint": [
+          0.65,
+          0.9,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "melee",
+        "x": 24,
+        "y": 124
+      },
+      "renderPosition": [
+        24.5,
+        0,
+        124.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400019",
+      "source": {
+        "atk": 7,
+        "attackAt": -100,
+        "attackLevel": 29,
+        "attackStyle": "melee",
+        "coins": 67,
+        "creatureLook": "wolf",
+        "dead": 0,
+        "defenseLevel": 27,
+        "drawX": 30,
+        "drawY": 124,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 30,
+        "homeY": 124,
+        "hp": 67,
+        "id": 6400019,
+        "interval": 3.1,
+        "kind": "moonstalker",
+        "level": 42,
+        "look": "wolf",
+        "maxHit": 7,
+        "maxhp": 67,
+        "name": "Moonstalker",
+        "size": 1.3,
+        "spread": 0,
+        "sprite": 10,
+        "tint": [
+          0.65,
+          0.9,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "melee",
+        "x": 30,
+        "y": 124
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        124.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400020",
+      "source": {
+        "atk": 7,
+        "attackAt": -100,
+        "attackLevel": 33,
+        "attackStyle": "magic",
+        "coins": 77,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 31,
+        "drawX": 14,
+        "drawY": 95,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 14,
+        "homeY": 95,
+        "hp": 76,
+        "id": 6400020,
+        "interval": 3.6,
+        "kind": "grovehexer",
+        "level": 48,
+        "look": "goblin",
+        "maxHit": 7,
+        "maxhp": 76,
+        "name": "Grove hexer",
+        "spread": 0,
+        "sprite": 8,
+        "style": "magic",
+        "tint": [
+          0.6,
+          1.1,
+          0.85
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 14,
+        "y": 95
+      },
+      "renderPosition": [
+        14.5,
+        0,
+        95.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400021",
+      "source": {
+        "atk": 7,
+        "attackAt": -100,
+        "attackLevel": 33,
+        "attackStyle": "magic",
+        "coins": 77,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 31,
+        "drawX": 20,
+        "drawY": 95,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 20,
+        "homeY": 95,
+        "hp": 76,
+        "id": 6400021,
+        "interval": 3.6,
+        "kind": "grovehexer",
+        "level": 48,
+        "look": "goblin",
+        "maxHit": 7,
+        "maxhp": 76,
+        "name": "Grove hexer",
+        "spread": 0,
+        "sprite": 8,
+        "style": "magic",
+        "tint": [
+          0.6,
+          1.1,
+          0.85
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 20,
+        "y": 95
+      },
+      "renderPosition": [
+        20.5,
+        0,
+        95.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400022",
+      "source": {
+        "atk": 8,
+        "attackAt": -100,
+        "attackLevel": 37,
+        "attackStyle": "magic",
+        "coins": 86,
+        "creatureLook": "skeleton",
+        "dead": 0,
+        "defenseLevel": 35,
+        "drawX": 35,
+        "drawY": 68,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 35,
+        "homeY": 68,
+        "hp": 86,
+        "id": 6400022,
+        "interval": 3.5,
+        "kind": "duskwraith",
+        "level": 54,
+        "look": "skeleton",
+        "maxHit": 8,
+        "maxhp": 86,
+        "name": "Dusk wraith",
+        "spread": 0,
+        "sprite": 11,
+        "style": "magic",
+        "tint": [
+          0.9,
+          0.6,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 35,
+        "y": 68
+      },
+      "renderPosition": [
+        35.5,
+        0,
+        68.5
+      ]
+    },
+    {
+      "id": "lair_xalith:object:6400023",
+      "source": {
+        "atk": 8,
+        "attackAt": -100,
+        "attackLevel": 37,
+        "attackStyle": "magic",
+        "coins": 86,
+        "creatureLook": "skeleton",
+        "dead": 0,
+        "defenseLevel": 35,
+        "drawX": 41,
+        "drawY": 68,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 41,
+        "homeY": 68,
+        "hp": 86,
+        "id": 6400023,
+        "interval": 3.5,
+        "kind": "duskwraith",
+        "level": 54,
+        "look": "skeleton",
+        "maxHit": 8,
+        "maxhp": 86,
+        "name": "Dusk wraith",
+        "spread": 0,
+        "sprite": 11,
+        "style": "magic",
+        "tint": [
+          0.9,
+          0.6,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 41,
+        "y": 68
+      },
+      "renderPosition": [
+        41.5,
+        0,
+        68.5
+      ]
+    }
+  ],
+  "buildings": []
+}

@@ -1,0 +1,11 @@
+{
+  "bank": "bank",
+  "combat": "melee",
+  "cooking": "cooking",
+  "fishing": "fish",
+  "guide": "tutor",
+  "magic": "spells",
+  "mining": "mine",
+  "woods": "woodcutting",
+  "worship": "shrine"
+}

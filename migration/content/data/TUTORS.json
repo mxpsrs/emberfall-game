@@ -1,0 +1,83 @@
+{
+  "bank": {
+    "at": [
+      56,
+      68
+    ],
+    "look": 3,
+    "name": "Banker Ada",
+    "text": "Your supplies should outlast a crowded bag. Open the bank and click the highlighted inventory item to deposit it. I will then highlight that same stored item to withdraw. Next, try the 1, 5, 10 and All quantity controls; close the bank when the lesson says you are ready. These stores follow your character to Briarhaven. Sera waits at the southwest shrine to complete the accord."
+  },
+  "combat": {
+    "at": [
+      45,
+      80
+    ],
+    "look": 1,
+    "name": "Captain Vale",
+    "text": "I swore to protect the people when the garrisons turned against them. Here, you can make mistakes with someone watching your back.\nFirst show me the bronze dagger you made. Then we will practise with a wooden sword and shield, fight a rat, and learn to use a bow from outside the fence."
+  },
+  "cooking": {
+    "at": [
+      57,
+      52
+    ],
+    "look": 3,
+    "name": "Cook Bram",
+    "text": "A journey begins with food you can make again. Take this flour and water. Select the flour and then the jug to make dough; use the dough on our range to bake bread. Try eating it: food restores health lost in a fight. Take your supplies to Banker Ada in the northern bank. She will show you how Firstlight’s stores stay available on the mainland."
+  },
+  "fishing": {
+    "at": [
+      28,
+      63
+    ],
+    "look": 1,
+    "name": "Fisher Nell",
+    "text": "Ash’s timber is our cooking fuel. Net shrimp at the marked ripples, light your log beside me and use the raw shrimp on that fire. Fishing can reveal Water Spirits; lighting fires can reveal Fire Spirits. Matching fieldwork strengthens an attuned Spirit. Then take your new cooking experience to Bram in the eastern kitchen. He is packing food for the crossing."
+  },
+  "guide": {
+    "at": [
+      43,
+      52
+    ],
+    "look": 0,
+    "name": "Mysterious man",
+    "text": "Welcome to the land of Veldren. My name is Rowan. I summoned you from another world. A blight is spreading across Veldren’s three kingdoms, and everyone born under our skies is bound by its curse. You alone came from beyond its reach. You may be the only one who can stop him.\nThis is Firstlight Isle, a refuge between worlds. I cannot send you into ours unprepared. I gathered these freedom fighters to teach you how to survive there. Each of them has kept our people alive in a different way.\nFirst, open your bag. This is where things go when you pick them up. When every lesson is done, return to me. I will open your one-way crossing to Briarhaven.\nFirstlight began as a refuge around this crossing stone. Its keepers made an accord: teach each newcomer how to live from the land, then help them reach the mainland. Today you carry our next signal to Briarhaven. First open your bag and Skills. Then find Elowen in the southeast school; she will show you how an elemental relic holds the power you gather."
+  },
+  "magic": {
+    "at": [
+      76,
+      65
+    ],
+    "look": 3,
+    "name": "Arcanist Elowen",
+    "text": "A charged relic holds elemental power; the Mind relic gives it direction. Take my staff and practice supplies. Equip the staff with the Magic icon and cast Gust Needle at the practice dummy: one Air relic and one Mind relic per cast. Your signal is the first part of Rowan’s crossing. Relic supplies are dwindling. Arcanist Selene at Briarhaven’s mainland school is searching for a way to make more; speak to her after your crossing. Next, Orin will help you make something that lasts after the spell is spent."
+  },
+  "mining": {
+    "at": [
+      68,
+      43
+    ],
+    "look": 0,
+    "name": "Smith Orin",
+    "text": "A wayfarer should know the hands that made their equipment. Mine copper and tin in my yard, use an ore on the furnace to smelt bronze, then use the bar on the anvil and choose Dagger. Mining stirs Earth Spirits; Smithing turns the rock into tools, arrows and armour. Once you have made your dagger, find Captain Vale at the yard. He needs help protecting our stores."
+  },
+  "woods": {
+    "at": [
+      28,
+      49
+    ],
+    "look": 2,
+    "name": "Forester Ash",
+    "text": "Vale keeps the stores safe; now we must fill them. Cut the marked tree for a log and carry it to Nell by the water. Woodcutting awakens Air Spirits. Each felled tree leaves a stump for everyone until it regrows, so work another tree while it rests. Nell will use your timber for the fire that cooks your first catch."
+  },
+  "worship": {
+    "at": [
+      42,
+      63
+    ],
+    "look": 2,
+    "name": "Keeper Sera",
+    "text": "The land has answered you already: Air through Woodcutting, Water through Fishing, Earth through Mining and Fire through Firemaking. Worship is how you understand that bond. Bury the bones you kept to honour the fallen. Then choose your first Spirit. One attuned Spirit gives a passive that changes your build: Fire rewards pressure, Water sustains you, Air helps distance and travel, Earth helps you hold ground. Unleash a ready Spirit from the chat controls; its passive stays active during recovery. Unleash recovers in 30 seconds; rare twins take 45. Matching gathering and damaging hits grow resonance. Higher Worship unlocks deeper bonds. Bond II needs 80 resonance and Worship 5; Bond III needs 240 and Worship 12. Rowan can open your crossing once you have chosen."
+  }
+}

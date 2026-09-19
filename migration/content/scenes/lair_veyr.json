@@ -1,0 +1,1632 @@
+{
+  "id": "lair_veyr",
+  "dimensions": [
+    44,
+    140
+  ],
+  "metadata": {
+    "decor": [
+      {
+        "heading": 1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 10,
+        "z": 10
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 11,
+        "z": 9
+      },
+      {
+        "heading": 1.6507963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 10,
+        "z": 15
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 11,
+        "z": 14
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 10,
+        "z": 20
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 11,
+        "z": 19
+      },
+      {
+        "heading": 1.6507963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 10,
+        "z": 25
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 11,
+        "z": 24
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 6,
+        "z": 25
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 6,
+        "z": 28
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 6,
+        "z": 31
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 34,
+        "z": 10
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 33,
+        "z": 9
+      },
+      {
+        "heading": -1.4907963267948965,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 34,
+        "z": 15
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 33,
+        "z": 14
+      },
+      {
+        "heading": -1.5707963267948966,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 34,
+        "z": 20
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 33,
+        "z": 19
+      },
+      {
+        "heading": -1.4907963267948965,
+        "height": 2.5,
+        "kind": "model",
+        "model": "Wall_UnevenBrick_Straight",
+        "tint": [
+          0.8,
+          0.72,
+          0.92
+        ],
+        "x": 34,
+        "z": 25
+      },
+      {
+        "kind": "crystal",
+        "size": 0.55,
+        "x": 33,
+        "z": 24
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 38,
+        "z": 25
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 38,
+        "z": 28
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1.8,
+        "kind": "model",
+        "model": "World_Bookcase_2",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 38,
+        "z": 31
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Table_Large",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 9,
+        "z": 30
+      },
+      {
+        "heading": 0,
+        "height": 1.15,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 8.5,
+        "z": 27
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 1,
+        "kind": "model",
+        "model": "World_Table_Large",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 35,
+        "z": 30
+      },
+      {
+        "heading": 0,
+        "height": 1.15,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 35.5,
+        "z": 27
+      },
+      {
+        "kind": "dais",
+        "size": 5.1,
+        "x": 22,
+        "z": 19
+      },
+      {
+        "kind": "arch",
+        "size": 1.35,
+        "x": 22,
+        "z": 35
+      },
+      {
+        "kind": "orrery",
+        "size": 1.35,
+        "x": 22,
+        "z": 9
+      },
+      {
+        "heading": -0.45,
+        "height": 1.25,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 15,
+        "z": 9
+      },
+      {
+        "heading": -0.25,
+        "height": 0.85,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 4,
+        "z": 25
+      },
+      {
+        "kind": "runeBasin",
+        "size": 1,
+        "x": 12,
+        "z": 27
+      },
+      {
+        "heading": 0.45,
+        "height": 1.25,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 29,
+        "z": 9
+      },
+      {
+        "heading": 0.25,
+        "height": 0.85,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 36,
+        "z": 24
+      },
+      {
+        "kind": "runeBasin",
+        "size": 1,
+        "x": 32,
+        "z": 27
+      },
+      {
+        "heading": 0,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 36,
+        "z": 19
+      },
+      {
+        "heading": 0.7853981633974483,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 31.899494936611667,
+        "z": 27.485281374238568
+      },
+      {
+        "heading": 1.5707963267948966,
+        "height": 0.95,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 22,
+        "z": 31
+      },
+      {
+        "heading": 2.356194490192345,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 12.100505063388336,
+        "z": 27.48528137423857
+      },
+      {
+        "heading": 3.141592653589793,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 8,
+        "z": 19
+      },
+      {
+        "heading": 3.9269908169872414,
+        "height": 0.95,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 12.100505063388333,
+        "z": 10.51471862576143
+      },
+      {
+        "heading": 4.71238898038469,
+        "height": 0.65,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 21.999999999999996,
+        "z": 7
+      },
+      {
+        "heading": 5.497787143782138,
+        "height": 0.8,
+        "kind": "model",
+        "model": "Rock_Medium_3",
+        "tint": [
+          0.8,
+          0.72,
+          0.88
+        ],
+        "x": 31.899494936611664,
+        "z": 10.514718625761429
+      },
+      {
+        "heading": 0,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 16,
+        "z": 124
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Crate_Wooden",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 27,
+        "z": 125
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 27,
+        "z": 119
+      },
+      {
+        "kind": "hearth",
+        "size": 0.6,
+        "x": 17,
+        "z": 119
+      },
+      {
+        "heading": 1,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 6,
+        "z": 95
+      },
+      {
+        "heading": 0.7,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 17,
+        "z": 96
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 17,
+        "z": 90
+      },
+      {
+        "heading": 2,
+        "height": 1.7,
+        "kind": "model",
+        "model": "Rock_Medium_1",
+        "tint": [
+          0.72,
+          0.76,
+          0.7
+        ],
+        "x": 27,
+        "z": 68
+      },
+      {
+        "heading": 1.4,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_Barrel",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 38,
+        "z": 69
+      },
+      {
+        "heading": 0,
+        "height": 1.1,
+        "kind": "model",
+        "model": "World_BookStand",
+        "tint": {
+          "$undefined": true
+        },
+        "x": 38,
+        "z": 63
+      }
+    ],
+    "entry": [
+      22,
+      134
+    ],
+    "exit": {
+      "$entity": "lair_veyr:object:5800002"
+    },
+    "floorChunks": {
+      "$map": []
+    },
+    "lair": "lair_veyr",
+    "openAir": false,
+    "subtitle": "The Borrowed King · Three halls of trust",
+    "title": "The Shattered Sanctum",
+    "wallTorches": [
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 22.85,
+        "z": 5.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 12.15,
+        "z": 9.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 33.85,
+        "z": 10.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 8.15,
+        "z": 16.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 16.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 22.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 8.15,
+        "z": 22.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 17.5,
+        "z": 33.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 27.5,
+        "z": 33.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 11.5,
+        "z": 33.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 33.5,
+        "z": 33.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 40.85,
+        "z": 27.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 3.15,
+        "z": 26.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 18.15,
+        "z": 40.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 26.85,
+        "z": 40.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 5.5,
+        "z": 34.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 39.5,
+        "z": 34.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 25.85,
+        "z": 46.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 19.15,
+        "z": 46.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 19.15,
+        "z": 52.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 25.85,
+        "z": 52.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 32.5,
+        "z": 54.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 19.15,
+        "z": 58.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 25.5,
+        "z": 60.85
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 37.85,
+        "z": 58.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 40.85,
+        "z": 64.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 26.15,
+        "z": 70.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 40.85,
+        "z": 70.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 30.15,
+        "z": 75.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 75.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 23.5,
+        "z": 81.15
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 17.5,
+        "z": 81.15
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 36.85,
+        "z": 81.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 11.5,
+        "z": 81.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 7.15,
+        "z": 85.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 21.5,
+        "z": 87.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 27.5,
+        "z": 87.85
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 33.5,
+        "z": 87.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 91.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 19.85,
+        "z": 94.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 5.15,
+        "z": 97.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 18.85,
+        "z": 100.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 103.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 15.85,
+        "z": 106.5
+      },
+      {
+        "dx": 0,
+        "dz": -1,
+        "x": 23.5,
+        "z": 109.15
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 109.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 27.85,
+        "z": 114.5
+      },
+      {
+        "dx": 0,
+        "dz": 1,
+        "x": 15.5,
+        "z": 115.85
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 9.15,
+        "z": 115.5
+      },
+      {
+        "dx": 1,
+        "dz": 0,
+        "x": 29.85,
+        "z": 120.5
+      },
+      {
+        "dx": -1,
+        "dz": 0,
+        "x": 16.15,
+        "z": 128.5
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "lair_veyr:object:5800002",
+      "source": {
+        "dead": 0,
+        "id": 5800002,
+        "name": "Cave opening to the surface",
+        "passageKind": "cave",
+        "passageScene": "lair_veyr",
+        "sprite": 13,
+        "type": "exit",
+        "x": 22,
+        "y": 135
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        135.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:4700042",
+      "source": {
+        "_stationary": true,
+        "area": "The Shattered Sanctum",
+        "at": [
+          22,
+          18
+        ],
+        "atk": 5,
+        "attackAt": -100,
+        "attackLevel": 14,
+        "attackStyle": "melee",
+        "coins": 70,
+        "combatRadius": 0.7,
+        "creatureLook": "boss_veyr",
+        "dead": 0,
+        "defenseLevel": 13,
+        "drawX": 22,
+        "drawY": 18,
+        "drops": {
+          "bones": 3,
+          "chaosRunes": 12,
+          "ironBar": 2
+        },
+        "encounter": "veyr",
+        "hitAt": -100,
+        "homeX": 22,
+        "homeY": 18,
+        "hp": 78,
+        "id": 4700042,
+        "kind": "veyr",
+        "level": 20,
+        "look": "boss_veyr",
+        "marks": 3,
+        "maxHit": 5,
+        "maxhp": 78,
+        "mechanics": true,
+        "name": "Veyr the Mindbreaker",
+        "phases": [
+          {
+            "at": 1,
+            "moves": [
+              "memoryCall",
+              "sweep"
+            ],
+            "name": "Borrowed authority"
+          },
+          {
+            "at": 0.66,
+            "moves": [
+              "falseRefuge",
+              "memoryCall"
+            ],
+            "name": "Fractured trust"
+          },
+          {
+            "at": 0.33,
+            "moves": [
+              "stolenSelf",
+              "falseRefuge",
+              "memoryCall"
+            ],
+            "name": "The stolen self"
+          }
+        ],
+        "rank": "Boss",
+        "rareDrops": {
+          "veyrOrb": 250
+        },
+        "released": true,
+        "repeatable": true,
+        "scene": "lair_veyr",
+        "spread": 0,
+        "sprite": 11,
+        "type": "boss",
+        "weak": "ranged",
+        "x": 22,
+        "y": 18
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400006",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 16,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 19,
+        "drawY": 118,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 19,
+        "homeY": 118,
+        "hp": 20,
+        "id": 6400006,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "maxHit": 3,
+        "maxhp": 20,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 19,
+        "y": 118
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        118.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400007",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 16,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 25,
+        "drawY": 118,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 25,
+        "homeY": 118,
+        "hp": 20,
+        "id": 6400007,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "maxHit": 3,
+        "maxhp": 20,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 25,
+        "y": 118
+      },
+      "renderPosition": [
+        25.5,
+        0,
+        118.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400008",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 9,
+        "attackStyle": "magic",
+        "coins": 21,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 8,
+        "drawX": 9,
+        "drawY": 89,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 9,
+        "homeY": 89,
+        "hp": 23,
+        "id": 6400008,
+        "interval": 3.5,
+        "kind": "hexer",
+        "level": 13,
+        "look": "goblin",
+        "maxHit": 3,
+        "maxhp": 23,
+        "name": "Goblin hexer",
+        "spread": 0,
+        "sprite": 8,
+        "style": "magic",
+        "tint": [
+          0.85,
+          0.7,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 9,
+        "y": 89
+      },
+      "renderPosition": [
+        9.5,
+        0,
+        89.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400009",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 9,
+        "attackStyle": "magic",
+        "coins": 21,
+        "creatureLook": "goblin",
+        "dead": 0,
+        "defenseLevel": 8,
+        "drawX": 15,
+        "drawY": 89,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 15,
+        "homeY": 89,
+        "hp": 23,
+        "id": 6400009,
+        "interval": 3.5,
+        "kind": "hexer",
+        "level": 13,
+        "look": "goblin",
+        "maxHit": 3,
+        "maxhp": 23,
+        "name": "Goblin hexer",
+        "spread": 0,
+        "sprite": 8,
+        "style": "magic",
+        "tint": [
+          0.85,
+          0.7,
+          1.25
+        ],
+        "type": "enemy",
+        "weak": "ranged",
+        "x": 15,
+        "y": 89
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        89.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400010",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 16,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 30,
+        "drawY": 62,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 30,
+        "homeY": 62,
+        "hp": 20,
+        "id": 6400010,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "maxHit": 3,
+        "maxhp": 20,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 30,
+        "y": 62
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        62.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6400011",
+      "source": {
+        "atk": 3,
+        "attackAt": -100,
+        "attackLevel": 7,
+        "attackStyle": "melee",
+        "coins": 16,
+        "dead": 0,
+        "defenseLevel": 6,
+        "drawX": 36,
+        "drawY": 62,
+        "dungeonGuard": true,
+        "hitAt": -100,
+        "homeX": 36,
+        "homeY": 62,
+        "hp": 20,
+        "id": 6400011,
+        "interval": 3.1,
+        "kind": "skeleton",
+        "level": 10,
+        "maxHit": 3,
+        "maxhp": 20,
+        "spread": 0,
+        "sprite": 11,
+        "type": "enemy",
+        "x": 36,
+        "y": 62
+      },
+      "renderPosition": [
+        36.5,
+        0,
+        62.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6100015",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 22,
+        "drawY": 119,
+        "homeX": 22,
+        "homeY": 119,
+        "id": 6100015,
+        "mountainKey": "binding_child",
+        "mountainModel": "World_BookStand",
+        "name": "The borrowed captain",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored binding_child scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 22,
+        "y": 119
+      },
+      "renderPosition": [
+        22.5,
+        0,
+        119.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6100016",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 12,
+        "drawY": 92,
+        "homeX": 12,
+        "homeY": 92,
+        "id": 6100016,
+        "mountainKey": "binding_miner",
+        "mountainModel": "World_BookStand",
+        "name": "The stolen last shift",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored binding_miner scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 12,
+        "y": 92
+      },
+      "renderPosition": [
+        12.5,
+        0,
+        92.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6100017",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 33,
+        "drawY": 65,
+        "homeX": 33,
+        "homeY": 65,
+        "id": 6100017,
+        "mountainKey": "binding_keeper",
+        "mountainModel": "World_BookStand",
+        "name": "The remembered companion",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored binding_keeper scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 33,
+        "y": 65
+      },
+      "renderPosition": [
+        33.5,
+        0,
+        65.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6100018",
+      "source": {
+        "_stationary": true,
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 11,
+        "homeX": 27,
+        "homeY": 11,
+        "id": 6100018,
+        "mountainKey": "aftermath",
+        "mountainModel": "World_BookStand",
+        "name": "Abandoned multi-site survey chart",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored aftermath scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "sprite": 12,
+        "type": "prop",
+        "x": 27,
+        "y": 11
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        11.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600064",
+      "source": {
+        "dead": 0,
+        "drawX": 21,
+        "drawY": 128,
+        "homeX": 21,
+        "homeY": 128,
+        "id": 6600064,
+        "name": "Broken road orders",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Broken road orders scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "papers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 21,
+        "y": 128
+      },
+      "renderPosition": [
+        21.5,
+        0,
+        128.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600065",
+      "source": {
+        "dead": 0,
+        "drawX": 27,
+        "drawY": 115,
+        "homeX": 27,
+        "homeY": 115,
+        "id": 6600065,
+        "name": "A familiar seven-point seal",
+        "placementContext": {
+          "anchor": "ritual",
+          "reason": "Authored A familiar seven-point seal scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "seal",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 27,
+        "y": 115
+      },
+      "renderPosition": [
+        27.5,
+        0,
+        115.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600066",
+      "source": {
+        "dead": 0,
+        "drawX": 11,
+        "drawY": 89,
+        "homeX": 11,
+        "homeY": 89,
+        "id": 6600066,
+        "name": "Last-shift refuge brace",
+        "placementContext": {
+          "anchor": "authored-quest",
+          "reason": "Authored Last-shift refuge brace scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "timbers",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 11,
+        "y": 89
+      },
+      "renderPosition": [
+        11.5,
+        0,
+        89.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600067",
+      "source": {
+        "dead": 0,
+        "drawX": 17,
+        "drawY": 84,
+        "homeX": 17,
+        "homeY": 84,
+        "id": 6600067,
+        "name": "Discarded family memento",
+        "placementContext": {
+          "anchor": "table",
+          "reason": "Authored Discarded family memento scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "ledger",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 17,
+        "y": 84
+      },
+      "renderPosition": [
+        17.5,
+        0,
+        84.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600068",
+      "source": {
+        "dead": 0,
+        "drawX": 34,
+        "drawY": 69,
+        "homeX": 34,
+        "homeY": 69,
+        "id": 6600068,
+        "name": "Counter-ward waymarker",
+        "placementContext": {
+          "anchor": "roadside",
+          "reason": "Authored Counter-ward waymarker scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "waymarker",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 34,
+        "y": 69
+      },
+      "renderPosition": [
+        34.5,
+        0,
+        69.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600069",
+      "source": {
+        "campModel": "bedroll",
+        "dead": 0,
+        "drawX": 28,
+        "drawY": 61,
+        "homeX": 28,
+        "homeY": 61,
+        "id": 6600069,
+        "name": "Empty companion’s bedroll",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 28,
+        "y": 61
+      },
+      "renderPosition": [
+        28.5,
+        0,
+        61.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600070",
+      "source": {
+        "dead": 0,
+        "drawX": 19,
+        "drawY": 47,
+        "homeX": 19,
+        "homeY": 47,
+        "id": 6600070,
+        "name": "Shattered ward statue",
+        "placementContext": {
+          "anchor": "shrine",
+          "reason": "Authored Shattered ward statue scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "wardStatue",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 19,
+        "y": 47
+      },
+      "renderPosition": [
+        19.5,
+        0,
+        47.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600071",
+      "source": {
+        "dead": 0,
+        "drawX": 30,
+        "drawY": 12,
+        "homeX": 30,
+        "homeY": 12,
+        "id": 6600071,
+        "name": "Operatives’ survey instruments",
+        "placementContext": {
+          "anchor": "workbench",
+          "reason": "Authored Operatives’ survey instruments scene; gameplay identity and approach retained",
+          "scene": "lair_veyr"
+        },
+        "questModel": "tools",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "x": 30,
+        "y": 12
+      },
+      "renderPosition": [
+        30.5,
+        0,
+        12.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600077",
+      "source": {
+        "arcPhantom": 1,
+        "collected": true,
+        "dead": 0,
+        "drawX": 15,
+        "drawY": 18,
+        "homeX": 15,
+        "homeY": 18,
+        "id": 6600077,
+        "name": "Borrowed Captain Rellan",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 15,
+        "y": 18
+      },
+      "renderPosition": [
+        15.5,
+        0,
+        18.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600078",
+      "source": {
+        "arcPhantom": 2,
+        "collected": true,
+        "dead": 0,
+        "drawX": 29,
+        "drawY": 21,
+        "homeX": 29,
+        "homeY": 21,
+        "id": 6600078,
+        "name": "Borrowed Miner Bera",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 29,
+        "y": 21
+      },
+      "renderPosition": [
+        29.5,
+        0,
+        21.5
+      ]
+    },
+    {
+      "id": "lair_veyr:object:6600079",
+      "source": {
+        "arcPhantom": 3,
+        "collected": true,
+        "dead": 0,
+        "drawX": 23,
+        "drawY": 26,
+        "homeX": 23,
+        "homeY": 26,
+        "id": 6600079,
+        "name": "Borrowed companion",
+        "questScenery": true,
+        "sprite": 12,
+        "type": "prop",
+        "walkThrough": true,
+        "x": 23,
+        "y": 26
+      },
+      "renderPosition": [
+        23.5,
+        0,
+        26.5
+      ]
+    }
+  ],
+  "buildings": []
+}
