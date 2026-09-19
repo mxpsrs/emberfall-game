@@ -1,0 +1,30 @@
+name: Veldren asset Phase 1 validation
+on:
+  push:
+    branches: [veldren-phase1-assets]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture tracked source for isolated validation
+        run: |
+          mkdir -p /tmp/veldren-validation
+          git archive --format=tar.gz HEAD > /tmp/veldren-validation/veldren-source.tar.gz
+          git rev-parse HEAD > /tmp/veldren-validation/source-commit.txt
+      - name: Run asset validation when available
+        run: |
+          if [ -f tests/asset-pipeline.mjs ]; then
+            node tests/asset-pipeline.mjs
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldren-source-validation
+          path: /tmp/veldren-validation/
+          retention-days: 2
+          if-no-files-found: error
