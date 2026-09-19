@@ -1,0 +1,1353 @@
+{
+  "baseline": "439dfaaea6e144ab9f2e8ab30304f9c34c1915b2",
+  "format": "Recovery checkpoint; not Vervesis registry",
+  "files": [
+    {
+      "path": "assets/ui/spirit-portraits.png",
+      "bytes": 2767280,
+      "sha": "534ebfec94659860eeb0656c8bd71bbf75a8bfd8",
+      "text": false
+    },
+    {
+      "path": "assets/ui/armor-icons.png",
+      "bytes": 557171,
+      "sha": "8654cc18c58003e7560d913fc88ddcb9defbc0c7",
+      "text": false
+    },
+    {
+      "path": "assets/audio/cave-theme.mp3",
+      "bytes": 3360851,
+      "sha": "547a534ae3f517b0c9723fee49f598e9ef57e262",
+      "text": false
+    },
+    {
+      "path": "assets/audio/field-of-dreams.mp3",
+      "bytes": 1016391,
+      "sha": "d5e4c5e5bc755153890be9652d52bd67c54880d9",
+      "text": false
+    },
+    {
+      "path": "assets/audio/medieval-opener.mp3",
+      "bytes": 1358934,
+      "sha": "1609112d69201a959841a394c4b5309f5abb1516",
+      "text": false
+    },
+    {
+      "path": "assets/audio/the-tournament.mp3",
+      "bytes": 1441063,
+      "sha": "4ca544c229c40e0f8febfa72981b7a03b3c8f55c",
+      "text": false
+    },
+    {
+      "path": "assets/audio/old-tower-inn.mp3",
+      "bytes": 600418,
+      "sha": "e93c24827e3728bf95cacfc546591bef4b35efe2",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_2.glb",
+      "bytes": 11052,
+      "sha": "2656024cba77e50cd0cce117ebc2b4877ae0219e",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Mushroom_Common.glb",
+      "bytes": 24656,
+      "sha": "20be032c67401c12baf3e32dc3dbe28e17254d56",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Common_Short.glb",
+      "bytes": 8816,
+      "sha": "e2c0d284380ffb907db1278c2fc813712b852b09",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_5.glb",
+      "bytes": 7068,
+      "sha": "e0ac5af9c7f22d29aa2e5bb47c76fbddd682d2e5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_3_Group.glb",
+      "bytes": 30740,
+      "sha": "b498bc54012be82ea4bd52b2613af830273425d9",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Thin.glb",
+      "bytes": 131688,
+      "sha": "9a4d4208497bea989501fc61a89b4be79574612c",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Bush_Common.glb",
+      "bytes": 122712,
+      "sha": "aa56c195c14f26b244548c9dd729273ed3b04811",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_5.glb",
+      "bytes": 161732,
+      "sha": "e3ded9d4063ef93f5c428e34a2a36942ccba8195",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Clover_2.glb",
+      "bytes": 22820,
+      "sha": "a54b773a5cfb1d04fbacc1fb33e3e7e03d7248a7",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_5.glb",
+      "bytes": 516032,
+      "sha": "fa730756fba10646fba9afd1657f3c551ada6dea",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_4.glb",
+      "bytes": 405740,
+      "sha": "63dfbf4947e83e248a2604ce0b0379260ff7f7d5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_1.glb",
+      "bytes": 7308,
+      "sha": "fa19a80479cc9d2efaac5f95846ae39075cca7d3",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_2.glb",
+      "bytes": 80872,
+      "sha": "2760b1e9b9f99397da40bcdd13e716821feb88a7",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_1.glb",
+      "bytes": 2160,
+      "sha": "8b16e075880d98d7b756283d5ecebd26bc689ef5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_2.glb",
+      "bytes": 340868,
+      "sha": "526df11b098199f72d13252af1fbec572f7a9e9a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_7_Big.glb",
+      "bytes": 6348,
+      "sha": "8135ec15bcad379bc1c31ab87c3dca6b287f5e4b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_4.glb",
+      "bytes": 10904,
+      "sha": "de20b72e867027d0db7b9f605b5cd8bede4f241a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_6.glb",
+      "bytes": 6484,
+      "sha": "82bbf9bfa4e6180efa31c447780af97a291f11bc",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_3.glb",
+      "bytes": 72512,
+      "sha": "b1e728655200f05613d952b3bda819d8636b4697",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_1.glb",
+      "bytes": 58624,
+      "sha": "4738c94603bf4eb4704849f353d8297b287c6a95",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_2.glb",
+      "bytes": 916556,
+      "sha": "e152b64186633020acc506aa1bda399656f8cf04",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_5.glb",
+      "bytes": 10512,
+      "sha": "293c249c926ef729b4dca5b89adaf701de9c5aa1",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Common_Tall.glb",
+      "bytes": 15840,
+      "sha": "0ead610424769ae3496981ae03b55a9045c6d527",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_1.glb",
+      "bytes": 961192,
+      "sha": "88d79fc45429444a800ec50bc93ab6e9aac906c7",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_5.glb",
+      "bytes": 2236,
+      "sha": "edaea87c34c4d7c4da21785503f19a0896baf9d5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_2.glb",
+      "bytes": 42304,
+      "sha": "df64fd8f35660234ba156924ec98f4f9f49aedb9",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_3.glb",
+      "bytes": 21752,
+      "sha": "96baefbccaaeb9d645aa3dccde9913fdf66c3dcd",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_1.glb",
+      "bytes": 9180,
+      "sha": "eae646b1fdb6a723ce4d4b6d5b488133294f3c18",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_1_Big.glb",
+      "bytes": 18756,
+      "sha": "eea8b8f32f7fefd63252f6161908e8b582d3207b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Wide.glb",
+      "bytes": 249352,
+      "sha": "ed2352d5ef91af56565b1b40759bd3171d322289",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Clover_1.glb",
+      "bytes": 14760,
+      "sha": "0f403345eb9c93d68298da684687c0566fe4cf87",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_4.glb",
+      "bytes": 994172,
+      "sha": "449cad7f65d10e5d2c68b89e4b4b43c63ff53f9b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Fern_1.glb",
+      "bytes": 13628,
+      "sha": "c0099b98c88743a81c7439c80534d3521f35662c",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_1.glb",
+      "bytes": 553524,
+      "sha": "fe0cbce4b6bced579b4059908446e05a4fdc1389",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_4.glb",
+      "bytes": 2616,
+      "sha": "ac016125d470c9a1850839bb9ff6769750cfaad5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_3.glb",
+      "bytes": 454164,
+      "sha": "fa0f257c30e8b1a999d1d0ae21bc2f36013b215f",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Wispy_Short.glb",
+      "bytes": 27088,
+      "sha": "2636ad3cd1a2576c7805122732be14091928909a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_3.glb",
+      "bytes": 1011764,
+      "sha": "de86c4bd4ee4c04ddfce7b43bff31bd25da64ee0",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_2.glb",
+      "bytes": 2216,
+      "sha": "15898c82a4db420bad64e46d938177c548aeea7a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_3_Single.glb",
+      "bytes": 13764,
+      "sha": "295ef0ed79177984e65767be0b3006ffe4cbcb2c",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_3.glb",
+      "bytes": 544924,
+      "sha": "009c734a94d498b91f4031849e413375db6d1252",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Thin.glb",
+      "bytes": 160980,
+      "sha": "c4b033203c28e1496f2752a6555734d8f72cb5a2",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_2.glb",
+      "bytes": 556484,
+      "sha": "5f1fcb8bbf49253a9358683a6bb996620c610bd9",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_3.glb",
+      "bytes": 10220,
+      "sha": "fda4a180a91180fa4be4b4388480a3fd24d76ad4",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Wide.glb",
+      "bytes": 165988,
+      "sha": "d8d7222f85fe306d411bf709645025d6df6b93e6",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/TwistedTree_5.glb",
+      "bytes": 1065744,
+      "sha": "3e5c69b9ad27877ae1d60b77e2d81714e634fbdd",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Bush_Common_Flowers.glb",
+      "bytes": 172724,
+      "sha": "59e51c4f98be606b9c759d5699ca6f301ad8324d",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Square_Small_3.glb",
+      "bytes": 42708,
+      "sha": "e55c819db13669c18ec87bc37dca0233e80dde0a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_1.glb",
+      "bytes": 363140,
+      "sha": "9db24531c9f2c2524820bece00131b36ed9faa1b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Grass_Wispy_Tall.glb",
+      "bytes": 31256,
+      "sha": "acf903b6405500e547289ed4bea4ef6f9a7aa143",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Petal_3.glb",
+      "bytes": 2240,
+      "sha": "0daeb2bc3783a76169978c6591396998732fbff9",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_2.glb",
+      "bytes": 7292,
+      "sha": "f6d332bddf7e7c29fa76a4e748317225e2e9c7d3",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_3.glb",
+      "bytes": 5408,
+      "sha": "ae249ca7666d0da43d790012904706eaea46b13a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pine_4.glb",
+      "bytes": 336764,
+      "sha": "6286dbc35583f1369ce533f69327448ecf79d6e6",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_1.glb",
+      "bytes": 11804,
+      "sha": "e8c327a318c598bb1c4dddee8db679b279002499",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Plant_7.glb",
+      "bytes": 3648,
+      "sha": "a79e1077e3675d95aa8687a2cb8fb78d0542a679",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_1.glb",
+      "bytes": 646656,
+      "sha": "cef0ef4bfa41846c5aafe789d94973a11c911e15",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_2.glb",
+      "bytes": 594196,
+      "sha": "84e6302a29824a60e2a874152c523dd3bb6b45eb",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_5.glb",
+      "bytes": 334704,
+      "sha": "c54c59ce4221df3b6cb700e66226694a62945c9a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_4_Single.glb",
+      "bytes": 26780,
+      "sha": "352d9bbdb79f40692066b86a6657a19fd26b3464",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Rock_Medium_1.glb",
+      "bytes": 14908,
+      "sha": "1de07437ea7e4fdc8b8c13506f7c802a8d943993",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Flower_4_Group.glb",
+      "bytes": 65204,
+      "sha": "155c58b1bd43bde8a1b9b1db0271f54bbee9f1ee",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Mushroom_Laetiporus.glb",
+      "bytes": 78716,
+      "sha": "f977d67a90110e16cadf12fd38b57f338c9cb3da",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Round_2.glb",
+      "bytes": 9112,
+      "sha": "37cbc65d249408208fa7e5acc8293fa04fa0d667",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/DeadTree_4.glb",
+      "bytes": 526212,
+      "sha": "ac22294ace71492d67f9ddfd8a1fae833739830a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/RockPath_Round_Small_1.glb",
+      "bytes": 72804,
+      "sha": "7fe9524e6cc62828927ee92e8bbc8961de4d1b2f",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/Pebble_Square_4.glb",
+      "bytes": 5000,
+      "sha": "08591a8c4622aebe946ad3055f8ecb559402c160",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/stylized-nature/CommonTree_3.glb",
+      "bytes": 392712,
+      "sha": "15b52602116e8c03856beed25baec4c3aea93566",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_2.glb",
+      "bytes": 95340,
+      "sha": "cd93061c26197566d8efaa4183eab499f8cf4556",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_3.glb",
+      "bytes": 101172,
+      "sha": "36c5a181efba4bd6b3f1652957c05ee9565d20e5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_5.glb",
+      "bytes": 126180,
+      "sha": "5d10c56441d47a71fea5e25f3be8ae4390e802cc",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_9.glb",
+      "bytes": 102476,
+      "sha": "8e1caaae5fe72f63a1239fcf8ec630f18279aa36",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_6.glb",
+      "bytes": 71160,
+      "sha": "19d52007c8e7a3aff2ffb2c2eb01c8e175dd9712",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_8.glb",
+      "bytes": 96996,
+      "sha": "7fd6733b4973d4ee2a0b9bfff620ca064a2bfa31",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_5.glb",
+      "bytes": 59872,
+      "sha": "ab0b04e2da880d339c2c7be5e8798b4c2ad37178",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_10.glb",
+      "bytes": 82744,
+      "sha": "64e14d0ac4202f4d1fd5f98e58d7c9564ccf5001",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_9.glb",
+      "bytes": 59296,
+      "sha": "9c39db05d83526784503316f47d945d3c6603eed",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_5.glb",
+      "bytes": 61000,
+      "sha": "e0094cac026044bcf82d65dfa569d62ea8b1577c",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_2.glb",
+      "bytes": 78740,
+      "sha": "bbaaaee4b2ff8e98b7d4786689600e3031b448e8",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_7.glb",
+      "bytes": 39628,
+      "sha": "25a0a3478f6260ceb99ca692dc09feb6c0da59a0",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_2.glb",
+      "bytes": 52644,
+      "sha": "b5d8a81986bf363eae6038bad4de3e3a997971ab",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_8.glb",
+      "bytes": 102400,
+      "sha": "42336e83d4ef50e667c998567718461251b2c4aa",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_6.glb",
+      "bytes": 82884,
+      "sha": "6a43d342e9e23cb47a92147e48ebc471bf3c6e8d",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_5.glb",
+      "bytes": 116220,
+      "sha": "9ca466d6864ffa6b5fa285089962ecfbc1d16475",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_4.glb",
+      "bytes": 71984,
+      "sha": "354c328df6a160bc8a29e64b3ed36f79813da1cf",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_6.glb",
+      "bytes": 101736,
+      "sha": "6c3ce792826b2d7a9469963db7f510801fec4822",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_5.glb",
+      "bytes": 63608,
+      "sha": "1f2568d91fcac5207b74a7b67d4e02e34c721ca5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_1.glb",
+      "bytes": 39196,
+      "sha": "064f8c53dacee52a9908eb86cb868458299e770a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_4.glb",
+      "bytes": 114408,
+      "sha": "7f75fc16eac61d8944c81a8d1eecb06e8075a296",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_3.glb",
+      "bytes": 47312,
+      "sha": "7efb1e0d581a73800674d9d6df72d75283cace13",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_8.glb",
+      "bytes": 171608,
+      "sha": "cd3425198f40358c03cf1f29d41d605deae8348f",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_2.glb",
+      "bytes": 40288,
+      "sha": "8f2671f22685bcd8f54adb21db5216ecb2188cc0",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_9.glb",
+      "bytes": 47980,
+      "sha": "210c26b8e2b01814769250289f8669c6afcb05b4",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_10.glb",
+      "bytes": 82888,
+      "sha": "15c02e75b9cd64ce46e8310599366ee89a6e430a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_3.glb",
+      "bytes": 95124,
+      "sha": "67aaa89b41e04acc19fa56f0fe93ca792710cc2b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_8.glb",
+      "bytes": 46660,
+      "sha": "1d55aeed4aae13ae3dc0256394dab44fd55c20ee",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_3.glb",
+      "bytes": 169496,
+      "sha": "548c94d445f4129bba68916b9a728c7c7d8a67fd",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_7.glb",
+      "bytes": 110112,
+      "sha": "ad15cf83f5571e6876058bfa7f12c50bd63b09ed",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_1.glb",
+      "bytes": 59196,
+      "sha": "0fe999d87b12d559f1211ff33d8c5c0f25f233fb",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_1.glb",
+      "bytes": 63480,
+      "sha": "20a1df4893d8e4f146a1206815c32e2ae824f0a9",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_7.glb",
+      "bytes": 54352,
+      "sha": "32ec195aeb1f01a8d2019e7a13e53c5fd1d0729c",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_1.glb",
+      "bytes": 157684,
+      "sha": "5a58a5a8b698ed7ab05579784312c651f0e9dcc5",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadBirch_1.glb",
+      "bytes": 84640,
+      "sha": "09b8481d40661aa625a0e1cad1766f618e0a0dd4",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_10.glb",
+      "bytes": 52164,
+      "sha": "f4aa6faacd866071947e51d22aad2af8c55ab16b",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Pine_4.glb",
+      "bytes": 40836,
+      "sha": "5c789f0693846d78ab31da05ce5e901d078b2d8a",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_9.glb",
+      "bytes": 87996,
+      "sha": "7fbf3bc93f0dd1248ef82c7777d523381f7ff959",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_3.glb",
+      "bytes": 141432,
+      "sha": "fe89aba6a8922c9d7e077256fba3ef9ceeaa5e53",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_2.glb",
+      "bytes": 50608,
+      "sha": "3e6c69b25acae293d8ca36643e3830d2e3ac27eb",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_6.glb",
+      "bytes": 141784,
+      "sha": "4252a0ad4fd7d539fc274b4ae0eda754f366e7d2",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_4.glb",
+      "bytes": 107304,
+      "sha": "2ab391ccc82f40b3d06d731fb11598063685011d",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/DeadTree_4.glb",
+      "bytes": 69660,
+      "sha": "6bcb8889f83dd67f0309e417093de35125f9271e",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Tree_7.glb",
+      "bytes": 93792,
+      "sha": "318916848efbc3270336fc216a1e31c9bfc2bf3d",
+      "text": false
+    },
+    {
+      "path": "assets/authoring/textured-trees/Birch_10.glb",
+      "bytes": 154368,
+      "sha": "4fc03bf0ea626372f6ecede79ee7293a37eea627",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/smith-1.mp3",
+      "bytes": 4120,
+      "sha": "9b0638178a529edd40e6912fb35d5c3fbd6dd0d4",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/mine-1.mp3",
+      "bytes": 11956,
+      "sha": "8735fd632cd7fe8a4ea53c6a0b3e5bb39d26f43d",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/smith-2.mp3",
+      "bytes": 2239,
+      "sha": "364437c534435912c0b2672f30dfd746d7982de5",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/wood-2.mp3",
+      "bytes": 4433,
+      "sha": "dc018c0681f219a8bbf9bf7579704a347c2cc3e3",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/smith-3.mp3",
+      "bytes": 2239,
+      "sha": "2ff0e729a36d051e1a73a0ab3e3bfbe105b4a929",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/wood-1.mp3",
+      "bytes": 3806,
+      "sha": "dd0f47a1c81bd06256c679af0a7ae89e00816c64",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/mine-3.mp3",
+      "bytes": 10703,
+      "sha": "60c5fd5a3b857615d978967bd1afec420664bce2",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/step-2.mp3",
+      "bytes": 8822,
+      "sha": "1eb99ae9a785cab2d846e1bf3cc7253cdac9c623",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/mine-2.mp3",
+      "bytes": 10389,
+      "sha": "0c9c6bd173bf2eaccc92208c35b9f27dd5a910f3",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/cook-1.mp3",
+      "bytes": 18226,
+      "sha": "aa4bb581d7ca2d3f3f2bd80155c34e1fd0ee88b1",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/floor-2.mp3",
+      "bytes": 3806,
+      "sha": "da5276efa0eceedc36fcb6038c0534925fcfe9a3",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/equip-1.mp3",
+      "bytes": 4120,
+      "sha": "30e975f18a09c0cb50bfbab15e655d3351ae312b",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/wood-3.mp3",
+      "bytes": 4433,
+      "sha": "b70f413060f6ae3ea859bec446c8d1cef657da7a",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/hit-2.mp3",
+      "bytes": 7254,
+      "sha": "16c9a4cc241f165ec0394860f1141f07bf420423",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/sword-1.mp3",
+      "bytes": 7881,
+      "sha": "96adbb9da1844ebee107cf12fde026208ec4692a",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/sword-2.mp3",
+      "bytes": 7568,
+      "sha": "12b3f89fdc57e8d294709e2b89270405e1e008da",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/step-1.mp3",
+      "bytes": 10076,
+      "sha": "b11183dc12c6f0bd627ca7bbec96a09d2e2f626e",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/coins-1.mp3",
+      "bytes": 11016,
+      "sha": "cac867d0b81e8f8bf6b802852da1d0c36727872d",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/floor-1.mp3",
+      "bytes": 4120,
+      "sha": "2343544a61b3053c6e5b19687ee5167c14b8d6e5",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/hit-1.mp3",
+      "bytes": 6000,
+      "sha": "f0f2df946f189627449c79b1375ce571a546c4ff",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/door-1.mp3",
+      "bytes": 11956,
+      "sha": "91713114e939f9a2cffa7acd3765d0762e0398e0",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/cook-2.mp3",
+      "bytes": 11956,
+      "sha": "d8db1a19bbf48ec4513bc0cdec1cbcda21f57112",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/step-3.mp3",
+      "bytes": 9135,
+      "sha": "426f847f8698212e3bc8502235ab52f8a09dcaff",
+      "text": false
+    },
+    {
+      "path": "assets/audio/sfx/fire-1.mp3",
+      "bytes": 6314,
+      "sha": "352e895469cb3b7c16fb1fb1d8b07090d80da8e1",
+      "text": false
+    },
+    {
+      "path": "assets/textures/trees/Birch_Leaves_Green.png",
+      "bytes": 125641,
+      "sha": "17dde503b608bfd23cb59c597c9122982586a86e",
+      "text": false
+    },
+    {
+      "path": "assets/textures/trees/Tree_Bark.jpg",
+      "bytes": 240999,
+      "sha": "dfa38c013ff51f3c870592157c7ecb710a5e678a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/trees/Tree_Leaves.png",
+      "bytes": 129425,
+      "sha": "08353e8896335d412f4cc1450b6bfecb9f831160",
+      "text": false
+    },
+    {
+      "path": "assets/textures/trees/Birch_Bark.png",
+      "bytes": 207364,
+      "sha": "0dcec38c6bc7755b6c192e840beae0261e58aa87",
+      "text": false
+    },
+    {
+      "path": "assets/textures/trees/Pine_Leaves.png",
+      "bytes": 124813,
+      "sha": "2bc3e6634ad2d547441365bda08e79ed68b2e245",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-57.png",
+      "bytes": 2121,
+      "sha": "311fedcb271e260d628f5d7cd27f14e6f09d65a9",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-18.png",
+      "bytes": 306697,
+      "sha": "79b63aca3497dd8e40203e0308821392cfa325f0",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-22.png",
+      "bytes": 217476,
+      "sha": "f93fd39ade3cc0c588b76ee288b8be9390139a5d",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-36.png",
+      "bytes": 462437,
+      "sha": "d8f8bad69b6a51425a57cb1d86087e25a3e7d28e",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-01.png",
+      "bytes": 256364,
+      "sha": "f0933daac28388f9e93ba9e9e612d44b498d14b1",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-42.png",
+      "bytes": 313840,
+      "sha": "5cacc93300715b320694053766d9eff097d2baa7",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-23.png",
+      "bytes": 267327,
+      "sha": "603e73ca5b5ca4b12fa750b7154219a0206a14e7",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-38.png",
+      "bytes": 203330,
+      "sha": "488c272927da3ee51fe58738f2f61e03edd7735a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-40.png",
+      "bytes": 402951,
+      "sha": "92b458a5b93f60014213a4668b2ea15f37b678ca",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-10.png",
+      "bytes": 288740,
+      "sha": "37b0962a097ef6769d01f0afcbdb5670d13772f9",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-09.png",
+      "bytes": 70173,
+      "sha": "1923438a0cd90b0b6cc4ba75aafc08ae2dfe06e8",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-02.png",
+      "bytes": 275913,
+      "sha": "5821b4d2a3a85d0fb4f83c447bbd6f9bcb757813",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-43.png",
+      "bytes": 208508,
+      "sha": "334ba0fd199d616a6b81719afb7d4328c3a92d0f",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-04.png",
+      "bytes": 239800,
+      "sha": "d8994e267902e5171649f9561d016d2c7da5a0f2",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-07.png",
+      "bytes": 79667,
+      "sha": "63de1641c0c04a639b065b8b42d04a1701dfd9cb",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-41.png",
+      "bytes": 398999,
+      "sha": "125de12462bb8302013f043d017da71bb349ba09",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-13.png",
+      "bytes": 369012,
+      "sha": "180bdbc353fa1d7880cf3eec40fdb2ec6dc2ec4a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-32.png",
+      "bytes": 138749,
+      "sha": "c4d1b7a36845ba145969bfc198039c90639281c0",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-37.png",
+      "bytes": 228777,
+      "sha": "06c34b3caa1590b308c072e302b3073d4f588ffe",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-05.png",
+      "bytes": 311453,
+      "sha": "61df6000db99bc03b67119c24a07ac6682d8c63a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-16.png",
+      "bytes": 188456,
+      "sha": "4a0baf83dc082ba0e0aff717317ec8fd4ef4a9ae",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-30.png",
+      "bytes": 143152,
+      "sha": "88cdcb597ccc6305e04614379bc5f8406e5a274b",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-12.png",
+      "bytes": 23587,
+      "sha": "7f1d7f0819c33fc227efa2641c42736e0c34ed19",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-35.png",
+      "bytes": 153833,
+      "sha": "7b51e5ea0d6a5491a297b94647d77d4d6be8bad4",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-03.png",
+      "bytes": 277933,
+      "sha": "6228b766af397883e108ef11550ec819211ce9cc",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-33.png",
+      "bytes": 166469,
+      "sha": "170f07cc21b934464c3aebe00af061fb792d3660",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-31.png",
+      "bytes": 202945,
+      "sha": "44e4044e673693f8ed4d55075cb3b038e7d9c336",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-28.png",
+      "bytes": 9648,
+      "sha": "bf97234e30c7a91a4110279d3c0a625d15fe80a4",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-20.png",
+      "bytes": 197159,
+      "sha": "dac341ee5f9cd96c77ed32250e624f95744db8bb",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-21.png",
+      "bytes": 189057,
+      "sha": "c1b795e60c5c4127100b5f5e68932abb5cf1d6a1",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-25.png",
+      "bytes": 203718,
+      "sha": "9d58eac0faeb0d1f569b83de34602283b1888365",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-39.png",
+      "bytes": 473718,
+      "sha": "759e2661ebf6088661f89c05005179eac43fdb52",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-15.png",
+      "bytes": 35327,
+      "sha": "e0c9770d55ccced568777de1b2f0873548c41905",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-26.png",
+      "bytes": 189068,
+      "sha": "e09bbc0b782d1e78dd2506a00e06ab18bf9ed011",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-45.png",
+      "bytes": 412499,
+      "sha": "a92d8aea82b78740e2260fe9794893c5122d7f6a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-06.png",
+      "bytes": 285643,
+      "sha": "0f71ab02fa3cb199cb572ee92710b6e44a4bffdd",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-29.png",
+      "bytes": 296856,
+      "sha": "44ba40269101542863588f66354626751e5039e5",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-24.png",
+      "bytes": 308492,
+      "sha": "e8716608ad3ffee9dfcc8baccbd8a9565e6d6853",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-44.png",
+      "bytes": 397334,
+      "sha": "64403af6a21442d30f3b64398ae0c1cbc25ed05d",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-14.png",
+      "bytes": 222868,
+      "sha": "7a0d2e2834512f04b60170bd3b310786c1fd1d77",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-08.png",
+      "bytes": 253663,
+      "sha": "3505347c2c7d873804aa898a9556e28abaddca73",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-17.png",
+      "bytes": 267975,
+      "sha": "b176803e772b774b89bcb2f75096141f6c4eff0b",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-19.png",
+      "bytes": 82370,
+      "sha": "038cb6edd63ddbe857ca18dc3f7ffa9d5a92b289",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-27.png",
+      "bytes": 235667,
+      "sha": "b90697060be51587c5e10252a26c2d5bcdec9151",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-34.png",
+      "bytes": 134355,
+      "sha": "d54f8d7979ca0cc9ada71325b9f7713c4a6b38dc",
+      "text": false
+    },
+    {
+      "path": "assets/textures/atlas/tile-11.png",
+      "bytes": 64027,
+      "sha": "3571d85bcd79c71746cb6b78ec752cb349f9d246",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Rocks_Diffuse.png",
+      "bytes": 2517398,
+      "sha": "fff5ca5c5df17ac2b1166ff14ffbd26306558d2d",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "bytes": 3894788,
+      "sha": "5f4779bb5ac4b2ca0e4fde10fbe978618701f50a",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "bytes": 5728199,
+      "sha": "7c2fc355e3e0c505c735bc4b53daef9811988cd1",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "bytes": 4384496,
+      "sha": "4340b4ceb503c159f3971661c32837d62594c437",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "bytes": 811732,
+      "sha": "02bf5f5fdef2c7c0363b259254bb724284c24924",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Mushrooms.png",
+      "bytes": 1208660,
+      "sha": "c5d11a30eba20a5659dfbffe8203c7b7d0dd60c5",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Leaves.png",
+      "bytes": 2586432,
+      "sha": "e2bd85a2af2d72434f1417bd401b73f86e7b4e7c",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "bytes": 70055,
+      "sha": "9d1e0ac888b48fcf8c9b93ddcbf4a55cbbf2b096",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "bytes": 4630805,
+      "sha": "71fe231c19d2c6407d07ec5f81947793b1593149",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "bytes": 4228870,
+      "sha": "dde202f82fa92a23ae0c6a7e647575427925bd9b",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Flowers.png",
+      "bytes": 444609,
+      "sha": "82204190bd75bbaac6965f6d6e666191ae6b1c12",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "bytes": 70353,
+      "sha": "3897e2f090e5ebc305caba3f4ea7a3f8497ed090",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "bytes": 158796,
+      "sha": "2be63afb03ebca66cedd7a10bb1ea1a39c41851d",
+      "text": false
+    },
+    {
+      "path": "assets/textures/nature/Grass.png",
+      "bytes": 33605,
+      "sha": "b401c27a22716d76e28a5c29a08c67ded76f437c",
+      "text": false
+    }
+  ],
+  "extraDependencyPaths": [
+    {
+      "path": "assets/textures/nature/Bark_DeadTree.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dde202f82fa92a23ae0c6a7e647575427925bd9b"
+    },
+    {
+      "path": "assets/textures/nature/Bark_DeadTree_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c2fc355e3e0c505c735bc4b53daef9811988cd1"
+    },
+    {
+      "path": "assets/textures/nature/Bark_NormalTree.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f4779bb5ac4b2ca0e4fde10fbe978618701f50a"
+    },
+    {
+      "path": "assets/textures/nature/Bark_NormalTree_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4340b4ceb503c159f3971661c32837d62594c437"
+    },
+    {
+      "path": "assets/textures/nature/Bark_TwistedTree.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71fe231c19d2c6407d07ec5f81947793b1593149"
+    },
+    {
+      "path": "assets/textures/nature/Bark_TwistedTree_Normal.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c2fc355e3e0c505c735bc4b53daef9811988cd1"
+    },
+    {
+      "path": "assets/textures/nature/Flowers.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82204190bd75bbaac6965f6d6e666191ae6b1c12"
+    },
+    {
+      "path": "assets/textures/nature/Grass.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b401c27a22716d76e28a5c29a08c67ded76f437c"
+    },
+    {
+      "path": "assets/textures/nature/Leaf_Pine_C.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d1e0ac888b48fcf8c9b93ddcbf4a55cbbf2b096"
+    },
+    {
+      "path": "assets/textures/nature/Leaves.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2bd85a2af2d72434f1417bd401b73f86e7b4e7c"
+    },
+    {
+      "path": "assets/textures/nature/Leaves_NormalTree_C.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2be63afb03ebca66cedd7a10bb1ea1a39c41851d"
+    },
+    {
+      "path": "assets/textures/nature/Leaves_TwistedTree_C.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3897e2f090e5ebc305caba3f4ea7a3f8497ed090"
+    },
+    {
+      "path": "assets/textures/nature/Mushrooms.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5d11a30eba20a5659dfbffe8203c7b7d0dd60c5"
+    },
+    {
+      "path": "assets/textures/nature/PathRocks_Diffuse.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02bf5f5fdef2c7c0363b259254bb724284c24924"
+    },
+    {
+      "path": "assets/textures/nature/Rocks_Diffuse.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fff5ca5c5df17ac2b1166ff14ffbd26306558d2d"
+    }
+  ],
+  "nativeRuntime": false
+}

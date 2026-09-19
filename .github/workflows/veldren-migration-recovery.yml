@@ -1,0 +1,35 @@
+name: Veldren migration recovery snapshot
+on:
+  push:
+    branches: [migration/vervesis-native-assets-2026-09-19]
+    paths: [.github/workflows/veldren-migration-recovery.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Create and verify Veldren source recovery bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "mxpsrs/emberfall-game"
+          test "$GITHUB_REF_NAME" = "migration/vervesis-native-assets-2026-09-19"
+          git merge-base --is-ancestor 439dfaaea6e144ab9f2e8ab30304f9c34c1915b2 HEAD
+          git bundle create veldren-recovery.bundle HEAD
+          git bundle verify veldren-recovery.bundle
+          sha256sum veldren-recovery.bundle > veldren-recovery.bundle.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: veldren-source-recovery
+          path: |
+            veldren-recovery.bundle
+            veldren-recovery.bundle.sha256
+          retention-days: 7
+          if-no-files-found: error
