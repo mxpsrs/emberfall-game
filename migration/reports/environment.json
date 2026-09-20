@@ -2,7 +2,7 @@
   "os": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
   "architecture": "x86_64",
   "python": "3.12.14",
-  "node": "v24.14.0",
+  "node": "v24.20.0",
   "hardware": "Container; no controlled GPU/Windows test machine available",
   "nativeStartupMs": null,
   "nativeAssetLoadingMs": null,

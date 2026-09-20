@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-20T04:56:43Z",
+  "purpose": "Private Veldren authoring recovery; production continues to use adapted local assets.",
+  "packs": [
+    {
+      "id": "bestiary",
+      "publisher": "Quaternius",
+      "page": "https://quaternius.itch.io/bestiary-dungeon-monsters-kit",
+      "licenseBoundary": "Standard edition; QAL 1.0; project use only, never a standalone asset redistribution",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "18998851",
+          "name": "Bestiary - Dungeon Monsters Kit[Standard].zip",
+          "displaySize": "45 MB",
+          "path": ".qa/migration/model-sources/downloads/bestiary/Bestiary - Dungeon Monsters Kit[Standard].zip",
+          "bytes": 47299856,
+          "sha256": "94dbeed196b6ead9776c2ed0cfa02de818730886a25a507fb9d6c379bbbc4645",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 22,
+            "expandedBytes": 48790292,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "fantasy-outfits",
+      "publisher": "Quaternius",
+      "page": "https://quaternius.itch.io/modular-character-outfits-fantasy",
+      "licenseBoundary": "Standard edition; CC0 1.0",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "16289385",
+          "name": "Modular Character Outfits - Fantasy[Standard].zip",
+          "displaySize": "280 MB",
+          "path": ".qa/migration/model-sources/downloads/fantasy-outfits/Modular Character Outfits - Fantasy[Standard].zip",
+          "bytes": 294347394,
+          "sha256": "c3468b18871cc8c8f05ab14df7712baf22cb9f389cbd870babf130e595187f70",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 121,
+            "expandedBytes": 305995429,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "fantasy-props",
+      "publisher": "Quaternius",
+      "page": "https://quaternius.itch.io/fantasy-props-megakit",
+      "licenseBoundary": "Standard edition; CC0 1.0",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "13887750",
+          "name": "Fantasy Props MegaKit[Standard].zip",
+          "displaySize": "143 MB",
+          "path": ".qa/migration/model-sources/downloads/fantasy-props/Fantasy Props MegaKit[Standard].zip",
+          "bytes": 150213360,
+          "sha256": "8b6f7e806d222e585478f0e1bdc6b271bbc7bc6f84dd6af8ca703a7c64f0cb1e",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 517,
+            "expandedBytes": 162871281,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "human-archer",
+      "publisher": "Kevin Iglesias",
+      "page": "https://kevdev.itch.io/human-archer-animations-free",
+      "licenseBoundary": "Free package; existing provenance records Standard Asset Store EULA; keep private",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "15054408",
+          "name": "Human Archer Animations FREE Godot/Unreal",
+          "displaySize": "16 MB",
+          "path": ".qa/migration/model-sources/downloads/human-archer/Human Archer Animations FREE Godot-Unreal.zip",
+          "bytes": 17054887,
+          "sha256": "87565026f3a3b0aa8aeaadbcc155533ee58d927f5c443a6b2a11f396a461c904",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 145,
+            "expandedBytes": 72962382,
+            "verified": true
+          }
+        },
+        {
+          "uploadId": "18766194",
+          "name": "Human Archer Animations FREE Unity",
+          "displaySize": "17 MB",
+          "path": ".qa/migration/model-sources/downloads/human-archer/Human Archer Animations FREE Unity.unitypackage",
+          "bytes": 18138904,
+          "sha256": "ac167a56be99a2b51972528bb8c192927dcd573e494af4109e969f3b0d21ff9a",
+          "contentType": "application/octet-stream",
+          "validation": {
+            "kind": "unitypackage",
+            "members": 636,
+            "expandedBytes": 79461174,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "medieval-village",
+      "publisher": "Quaternius",
+      "page": "https://quaternius.itch.io/medieval-village-megakit",
+      "licenseBoundary": "Standard edition; CC0 1.0",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "12563480",
+          "name": "Medieval Village MegaKit[Standard].zip",
+          "displaySize": "153 MB",
+          "path": ".qa/migration/model-sources/downloads/medieval-village/Medieval Village MegaKit[Standard].zip",
+          "bytes": 161003471,
+          "sha256": "e60dea67c10f30dccccfbff92a7933f5ea5cfe99be0e2a0fa5118cceabeec5c4",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 936,
+            "expandedBytes": 174347235,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "modular-warrior",
+      "publisher": "CH0SAN",
+      "page": "https://ch0san.itch.io/modular-warrior",
+      "licenseBoundary": "Author-page permission record is incomplete; keep private and do not redistribute",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "18082983",
+          "name": "Modular Hero.unitypackage",
+          "displaySize": "20 MB",
+          "path": ".qa/migration/model-sources/downloads/modular-warrior/Modular Hero.unitypackage",
+          "bytes": 21791381,
+          "sha256": "487090dddfd14f98018935477de73047c7c5afa2516d98ea600cbf4d0de9a588",
+          "contentType": "application/octet-stream",
+          "validation": {
+            "kind": "unitypackage",
+            "members": 137,
+            "expandedBytes": 60373960,
+            "verified": true
+          }
+        },
+        {
+          "uploadId": "18954991",
+          "name": "Modular_Warrior.fbx",
+          "displaySize": "26 MB",
+          "path": ".qa/migration/model-sources/downloads/modular-warrior/Modular_Warrior.fbx",
+          "bytes": 27841420,
+          "sha256": "77baf2685b258ad3caee589e62b0d31792202e886624dafa145c04978761b846",
+          "contentType": "application/octet-stream",
+          "validation": {
+            "kind": "fbx",
+            "members": 1,
+            "expandedBytes": 27841420,
+            "verified": true
+          }
+        },
+        {
+          "uploadId": "19040737",
+          "name": "ModularWarior1.glb",
+          "displaySize": "28 MB",
+          "path": ".qa/migration/model-sources/downloads/modular-warrior/ModularWarior1.glb",
+          "bytes": 30212296,
+          "sha256": "4de1a15b2637e614ea70ebe6fcb2d3d738360bd6beb338fbae2c289920735ff1",
+          "contentType": "application/octet-stream",
+          "validation": {
+            "kind": "glb",
+            "members": 1,
+            "expandedBytes": 30212296,
+            "verified": true
+          }
+        },
+        {
+          "uploadId": "19040738",
+          "name": "ModularWarior1_GLTF.rar",
+          "displaySize": "3.4 MB",
+          "path": ".qa/migration/model-sources/downloads/modular-warrior/ModularWarior1_GLTF.rar",
+          "bytes": 3634582,
+          "sha256": "e6c5d88d84d61e3155f903a0f5b9d39361dc620af9434f904983a34a6f526d70",
+          "contentType": "application/x-compressed",
+          "validation": {
+            "kind": "rar",
+            "members": 5,
+            "expandedBytes": 30335426,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "treant",
+      "publisher": "Tennessippi Studios",
+      "page": "https://tennessippistudios.itch.io/treant-pack",
+      "licenseBoundary": "Existing Veldren provenance records CC0 1.0; retain archive evidence",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "4907296",
+          "name": "Treant Package.7z",
+          "displaySize": "44 MB",
+          "path": ".qa/migration/model-sources/downloads/treant/Treant Package.7z",
+          "bytes": 46456071,
+          "sha256": "1fcddcbd1fbbc8ec84f6001b2192d22794a927c9be2a929457a537e908862cd8",
+          "contentType": "application/octet-stream",
+          "validation": {
+            "kind": "7z",
+            "members": 18,
+            "expandedBytes": 55391651,
+            "verified": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "universal-animation-2",
+      "publisher": "Quaternius",
+      "page": "https://quaternius.itch.io/universal-animation-library-2",
+      "licenseBoundary": "Standard edition; CC0 1.0",
+      "unexpectedUploads": [],
+      "files": [
+        {
+          "uploadId": "17958478",
+          "name": "Universal Animation Library 2[Standard].zip",
+          "displaySize": "17 MB",
+          "path": ".qa/migration/model-sources/downloads/universal-animation-2/Universal Animation Library 2[Standard].zip",
+          "bytes": 18735003,
+          "sha256": "4008ea208a604773a2b2177d965f0f5d3195498b5bf838c3f5785d68e95f2a68",
+          "contentType": "application/x-zip-compressed",
+          "validation": {
+            "kind": "zip",
+            "members": 13,
+            "expandedBytes": 72807306,
+            "verified": true
+          }
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "notAutomated": [
+    {
+      "id": "cgtrader-originals",
+      "reason": "The Ork/minotaur, Icebronze and Demon originals require an authenticated licensee download. The acquisition script does not bypass login or redistribute those source packages."
+    }
+  ],
+  "elapsedSeconds": 10.406
+}
