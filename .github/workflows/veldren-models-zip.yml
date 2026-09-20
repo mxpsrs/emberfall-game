@@ -1,0 +1,62 @@
+name: Package Veldren models only
+on:
+  push:
+    branches: [migration/model-source-completion-2026-09-19]
+    paths: [.github/workflows/veldren-models-zip.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    if: github.repository == 'mxpsrs/emberfall-game' && github.ref == 'refs/heads/migration/model-source-completion-2026-09-19'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 74a654852b36c6cd23d6ee6923b9f291651644db
+          persist-credentials: false
+      - name: Package models and verify local dependencies
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, shutil, struct
+          from pathlib import Path
+          from urllib.parse import unquote, urlsplit
+          base=Path('.qa/models-zip/Veldren-Models')
+          for name in ['models','authoring','source','textures','licenses']:
+              shutil.copytree(Path('assets')/name, base/'assets'/name)
+          files=sorted(p for p in base.rglob('*') if p.is_file())
+          manifest=[]; models=0; dependencies=0
+          for p in files:
+              raw=p.read_bytes()
+              manifest.append({'path':p.relative_to(base).as_posix(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
+              if p.suffix.lower() not in ['.glb','.gltf']:
+                  continue
+              models+=1
+              if p.suffix.lower()=='.glb':
+                  assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw), str(p)
+                  length,kind=struct.unpack_from('<II',raw,12)
+                  assert kind==0x4e4f534a, str(p)
+                  g=json.loads(raw[20:20+length])
+              else:
+                  g=json.loads(raw)
+              for resource in g.get('buffers',[])+g.get('images',[]):
+                  uri=resource.get('uri')
+                  if not uri or uri.startswith('data:'):
+                      continue
+                  target=(p.parent/unquote(uri)).resolve()
+                  assert not urlsplit(uri).scheme and target.is_relative_to(base.resolve()) and target.is_file(), (str(p),uri)
+                  dependencies+=1
+          summary={'sourceCommit':'74a654852b36c6cd23d6ee6923b9f291651644db','files':len(files),'bytes':sum(x['bytes'] for x in manifest),'gltfGlbModels':models,'localDependencies':dependencies}
+          (base/'MANIFEST.json').write_text(json.dumps({'summary':summary,'files':manifest},indent=2)+'\n')
+          (base/'README.txt').write_text('Veldren models and required asset dependencies\nSource commit: 74a654852b36c6cd23d6ee6923b9f291651644db\n\nassets/models: adapted game models and static world model regions.\nassets/authoring: validated authoring models.\nassets/source: recovered publisher originals, rigs, animation and textures.\nassets/textures: shared texture dependencies.\nassets/licenses: publisher license and provenance records.\n\nKeep folder paths intact so model textures and buffers resolve.\nOriginal publisher files retain documented defects; repaired authoring copies are separate.\nRestricted CGTrader originals and missing Demon textures are not supplied.\nThis archive contains assets, not the game source or a runnable engine.\n')
+          print(json.dumps(summary))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Veldren-Models-74a6548
+          path: .qa/models-zip/
+          compression-level: 6
+          retention-days: 30
+          if-no-files-found: error
