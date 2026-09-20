@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   acquire-verify-and-commit:
+    if: github.repository == 'mxpsrs/emberfall-game' && github.ref == 'refs/heads/migration/model-source-completion-2026-09-19'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -113,7 +114,22 @@ jobs:
           git add assets/source migration scripts/migration .github/workflows/veldren-model-source-completion.yml
           if git diff --cached --quiet; then
             echo "Verified source tree already committed"
-          else
-            git commit -m "Recover verified Veldren model source packs"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            exit 0
           fi
+          git commit -m "Recover verified Veldren model source packs"
+          # A separate metadata commit can advance the branch during acquisition.
+          # Preserve it with a normal rebase; conflicts stop without a force push.
+          for attempt in 1 2 3; do
+            git fetch origin "${GITHUB_REF_NAME}"
+            git rebase FETCH_HEAD
+            recovery_commit=$(git rev-parse HEAD)
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              git fetch origin "${GITHUB_REF_NAME}"
+              git merge-base --is-ancestor "$recovery_commit" FETCH_HEAD
+              echo "Recovered source commit verified on GitHub: $recovery_commit"
+              exit 0
+            fi
+            echo "Push attempt $attempt did not complete; refreshing the branch"
+          done
+          echo "::error::Recovered model sources were not saved to GitHub"
+          exit 1
