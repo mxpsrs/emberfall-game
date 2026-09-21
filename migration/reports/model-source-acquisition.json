@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-20T04:56:43Z",
+  "generatedAt": "2026-09-21T21:03:54Z",
   "purpose": "Private Veldren authoring recovery; production continues to use adapted local assets.",
   "packs": [
     {
@@ -263,5 +263,5 @@
       "reason": "The Ork/minotaur, Icebronze and Demon originals require an authenticated licensee download. The acquisition script does not bypass login or redistribute those source packages."
     }
   ],
-  "elapsedSeconds": 10.406
+  "elapsedSeconds": 10.343
 }
