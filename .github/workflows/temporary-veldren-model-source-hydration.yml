@@ -1,6 +1,9 @@
 name: Temporary Veldren model source hydration
 
 on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize]
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
@@ -14,7 +17,7 @@ concurrency:
 
 jobs:
   hydrate-model-branch:
-    if: github.repository == 'mxpsrs/emberfall-game'
+    if: github.repository == 'mxpsrs/emberfall-game' && (github.event_name != 'pull_request' || github.head_ref == 'migration/model-source-completion-2026-09-19')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
