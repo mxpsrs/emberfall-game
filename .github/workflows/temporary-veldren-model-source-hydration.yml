@@ -1,0 +1,114 @@
+name: Temporary Veldren model source hydration
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-veldren-model-source-hydration
+  cancel-in-progress: false
+
+jobs:
+  hydrate-model-branch:
+    if: github.repository == 'mxpsrs/emberfall-game'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: migration/model-source-completion-2026-09-19
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/migration/requirements.txt
+
+      - name: Install validators
+        run: |
+          npm ci
+          python -m pip install -r scripts/migration/requirements.txt
+
+      - name: Acquire and recover publisher model files
+        run: |
+          python scripts/migration/acquire-referenced-models.py
+          python scripts/migration/recover-source-archives.py .qa/migration/model-sources/downloads
+
+      - name: Verify recorded source identities
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          def sha(path):
+              digest = hashlib.sha256()
+              with path.open("rb") as source:
+                  for block in iter(lambda: source.read(1024 * 1024), b""):
+                      digest.update(block)
+              return digest.hexdigest()
+
+          checks = [
+              (
+                  Path("assets/source/modular-warrior/ModularWarior1.glb"),
+                  "4de1a15b2637e614ea70ebe6fcb2d3d738360bd6beb338fbae2c289920735ff1",
+              ),
+              (
+                  next(Path("assets/source/treant").rglob("Tree02_FBX.fbx")),
+                  "f7f5b4b015ee4df4088b438df80abdc923f1b9a5e430a12d5f069bc87e952293",
+              ),
+              (
+                  Path(".qa/migration/model-sources/downloads/human-archer/Human Archer Animations FREE Godot-Unreal.zip"),
+                  "87565026f3a3b0aa8aeaadbcc155533ee58d927f5c443a6b2a11f396a461c904",
+              ),
+          ]
+          provenance = json.loads(Path("assets/licenses/realms-fantasy-outfits-provenance.json").read_text())
+          for row in provenance["parts"]:
+              matches = list(Path("assets/source/fantasy-outfits").rglob(row["file"]))
+              if len(matches) != 1:
+                  raise SystemExit(f"{row['file']}: expected one source, got {len(matches)}")
+              checks.append((matches[0], row["sha256"]))
+          for path, expected in checks:
+              actual = sha(path)
+              if actual != expected:
+                  raise SystemExit(f"{path}: expected {expected}, got {actual}")
+          existing = Path("assets/licenses/realms-BESTIARY-LICENSE.txt").read_text().splitlines()
+          restored = Path("assets/source/bestiary/Bestiary - Dungeon Monsters Kit[Standard]/License_Standard.txt").read_text().splitlines()
+          if existing != restored:
+              raise SystemExit("Bestiary license evidence differs after line-ending normalization")
+          print("21 provenance hashes and normalized Bestiary license evidence pass")
+          PY
+
+      - name: Validate source and production model sets
+        run: |
+          set +e
+          node scripts/migration/validate-gltf.mjs --report migration/reports/original-validation.json assets/source
+          original_status=$?
+          set -e
+          test "$original_status" -eq 1
+          python scripts/migration/check-source-validation.py
+          node scripts/migration/validate-gltf.mjs assets/models assets/authoring
+          python scripts/migration/build-inventory.py
+          python scripts/migration/validate-portable.py
+          node scripts/migration/check-world.cjs
+
+      - name: Commit hydrated model sources
+        run: |
+          git config user.name "Veldren migration bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/source migration scripts/migration .github/workflows/veldren-model-source-completion.yml
+          if git diff --cached --quiet; then
+            echo "Verified source tree already committed"
+          else
+            git commit -m "Recover verified Veldren model source packs"
+            git push origin "HEAD:refs/heads/migration/model-source-completion-2026-09-19"
+          fi
