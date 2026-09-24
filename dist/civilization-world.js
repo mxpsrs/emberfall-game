@@ -166,6 +166,9 @@ function civilWalkableArchitectureAt(x,z){
  for(const structure of civilWalkableStructures){const {ramp,decks,rise}=structure,base=structure.base||0;
   if(structure.rampLine){const line=structure.rampLine,dx=line.bx-line.ax,dz=line.bz-line.az,length=Math.hypot(dx,dz),ux=dx/length,uz=dz/length,rx=x-line.ax,rz=z-line.az,t=(rx*ux+rz*uz)/length,cross=Math.abs(rx*uz-rz*ux);if(t>=0&&t<=1&&cross<=line.width/2)return {height:base+rise*t,kind:'ramp',structure};}
   if(ramp&&x>=ramp.x&&x<ramp.x+ramp.w&&z>=ramp.y&&z<ramp.y+ramp.h){const t=Math.max(0,Math.min(1,(ramp.y+ramp.h-z)/(ramp.h-1)));return {height:base+rise*t,kind:'ramp',structure};}
+  // Editor stairs share the original deck's structure identity. The player
+  // can therefore climb onto that deck without switching to a separate height.
+  for(const line of structure.editorRamps||[]){const dx=line.bx-line.ax,dz=line.bz-line.az,length=Math.hypot(dx,dz);if(length<.01)continue;const ux=dx/length,uz=dz/length,rx=x-line.ax,rz=z-line.az,t=(rx*ux+rz*uz)/length,cross=Math.abs(rx*uz-rz*ux);if(t>=0&&t<=1&&cross<=line.width/2)return {height:base+rise*t,kind:'ramp',structure};}
   if(decks.some(d=>x>=d.x&&x<d.x+d.w&&z>=d.y&&z<d.y+d.h))return {height:base+rise,kind:'rampart',structure};
  }
  return null;

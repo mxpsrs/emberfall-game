@@ -32,22 +32,73 @@
   for(const m of a.modules.filter(m=>m.role==='stairs')){const ramp=(a.layout||[]).filter(e=>e.path.at(-1)==='ramp').sort((x,y)=>Math.hypot(x.position[0]-m.local[3],x.position[2]-m.local[11])-Math.hypot(y.position[0]-m.local[3],y.position[2]-m.local[11]))[0];m.stairs={fromFloor:m.floor,toFloor:m.floor+1,origin:[m.local[3],m.local[7],m.local[11]],rampPath:ramp?.path||null};}
   b.assembly=a;b.editorTransform={rotation:0,scale:1};invalidate(b);return a;
  }
- function attach(b,assembly,scene){A.validate(assembly);ensure(b,scene);const runtime=cache.get(b);
+ function attach(b,assembly,scene){A.validate(assembly);ensure(b,scene);const runtime=cache.get(b),before=runtime.navBounds||worldBounds(b);
   // Validate all assets before replacing a usable assembly.
   for(const m of assembly.modules)if(!m.model.startsWith('captured:')&&!m.model.startsWith('linked:')&&!model(m.model))throw Error('Missing local module '+m.model);
-  b.assembly=A.serialize(assembly);for(const o of scene.objects||[])runtime.linked.set(String(o.id),o);sync(b);invalidate(b);return b.assembly;
+  b.assembly=A.serialize(assembly);for(const o of scene.objects||[])runtime.linked.set(String(o.id),o);sync(b);invalidate(b);invalidateAttachedNavigation(b,scene,before);return b.assembly;
  }
  function sync(b){const a=b.assembly,runtime=cache.get(b);if(!a||!runtime)return;b.x=a.parent[3];b.y=a.parent[11];
   for(const entry of a.layout||[]){let node=b;for(const key of entry.path)node=node?.[key];if(!node)continue;const p=A.point(a.parent,entry.position);node.x=p[0];node.y=p[2];if(entry.door){const d=A.point(a.parent,entry.door);node.door=[d[0],d[2]];}}
   for(const m of a.modules){if(m.stairs?.rampPath){let ramp=b;for(const key of m.stairs.rampPath)ramp=ramp?.[key];const base=(a.layout||[]).find(e=>JSON.stringify(e.path)===JSON.stringify(m.stairs.rampPath));if(ramp&&base){const v=base.position.map((v,i)=>v+[m.local[3],m.local[7],m.local[11]][i]-m.stairs.origin[i]),q=A.point(a.parent,v);ramp.x=q[0];ramp.y=q[2];}}}
+  // The original continuous upper deck owns the movement surface. Additional
+  // authored stairs must use that same structure for route and height queries.
+  for(const structure of stairStructures(b))structure.editorRamps=[];
+  for(const m of a.modules){if(m.role!=='stairs'||!m.stairs||m.stairs.rampPath)continue;const connection=stairConnection(b,m);if(connection)connection.structure.editorRamps.push(connection.line);}
   for(const m of a.modules){if(!m.objectId)continue;const o=runtime.linked.get(m.objectId);if(!o)continue;const p=A.point(a.parent,m.opening?m.opening.service:[m.local[3],m.local[7],m.local[11]]);for(const [key,value]of [['x',p[0]],['y',p[2]],['homeX',p[0]],['homeY',p[2]],['drawX',p[0]],['drawY',p[2]]])if(key==='x'||key==='y'||Number.isFinite(o[key]))o[key]=value;
    o.heading=Math.atan2(a.parent[2],a.parent[0])+Math.atan2(m.local[2],m.local[0]);if(o.placement)o.placement={...o.placement,yaw:o.heading};
    if(m.role==='entrance'){o.building=b;o._assemblyDoor=m;const n=A.point({...a.parent,3:0,7:0,11:0},m.opening.normal);o._assemblyNormal=[n[0],n[2]];b.doorFacing=Math.abs(n[0])>Math.abs(n[2])?(n[0]>0?'east':'west'):(n[2]>0?'south':'north');}
   }
  }
+ function stairStructures(b){const options=[...(b.civilUpperLevels||[]),b.civilUpper,b.civilRampart];return [...new Set(options.filter(s=>s&&typeof s==='object'&&typeof civilWalkableStructures!=='undefined'&&civilWalkableStructures.includes(s)))];}
+ function stairConnection(b,m){
+  if(!b.assembly||m.role!=='stairs'||!m.stairs||m.stairs.rampPath||m.floor!==0||m.stairs.fromFloor!==0||m.stairs.toFloor!==1)return null;
+  const mesh=model(m.model),bounds=mesh?.bounds;if(!bounds)return null;
+  const [lo,hi]=bounds,centerX=(lo[0]+hi[0])/2,world=A.multiply(b.assembly.parent,m.local);
+  // Authored interior stairs rise towards their negative local Z end.
+  const low=A.point(world,[centerX,lo[1],hi[2]]),high=A.point(world,[centerX,hi[1],lo[2]]);
+  const left=A.point(world,[lo[0],0,0]),right=A.point(world,[hi[0],0,0]);
+  const span=Math.hypot(high[0]-low[0],high[2]-low[2]),width=Math.hypot(right[0]-left[0],right[2]-left[2]);
+  if(span<2.5||!Number.isFinite(width)||width<.8||width>4)return null;
+  const localLow=A.point(A.inverse(b.assembly.parent),low);
+  if(localLow[0]<1||localLow[0]>b.w-1||localLow[2]<1||localLow[2]>b.h-1)return null;
+  for(const structure of stairStructures(b)){
+   const base=structure.base||0,top=base+structure.rise;
+   if(Math.abs(low[1]-base)>.35||Math.abs(high[1]-top)>.45||!structure.decks?.some(d=>high[0]>=d.x+.2&&high[0]<d.x+d.w-.2&&high[2]>=d.y+.2&&high[2]<d.y+d.h-.2))continue;
+   if(structure.decks.some(d=>low[0]>=d.x&&low[0]<d.x+d.w&&low[2]>=d.y&&low[2]<d.y+d.h))continue;
+   return {structure,line:{id:m.id,ax:low[0],az:low[2],bx:high[0],bz:high[2],width}};
+  }
+  return null;
+ }
  function invalidate(b){const r=cache.get(b);if(r)r.render=null;try{staticMeshes3.delete(b);staticMeshQueues3.building.delete(b)}catch{} }
  function worldBounds(b){const pts=[[0,0,0],[b.w,0,0],[b.w,0,b.h],[0,0,b.h]].map(p=>A.point(b.assembly.parent,p));const x=Math.min(...pts.map(p=>p[0])),y=Math.min(...pts.map(p=>p[2]));return {x,y,w:Math.max(...pts.map(p=>p[0]))-x,h:Math.max(...pts.map(p=>p[2]))-y};}
- function commit(b){sync(b);invalidate(b);try{worldObjectRevision++;miniTerrain=null;const nav=realmNavigation.get(currentScene);if(nav){const r=cache.get(b),areas=[r.navBounds||r.original,worldBounds(b)];for(const area of areas)for(let y=Math.max(0,Math.floor(area.y)-2);y<Math.min(nav.h,Math.ceil(area.y+area.h)+2);y++)for(let x=Math.max(0,Math.floor(area.x)-2);x<Math.min(nav.w,Math.ceil(area.x+area.w)+2);x++)nav.cells[y*nav.w+x]=blocked(x,y)?1:0;r.navBounds=worldBounds(b);}}catch{} }
+ function navAffectedCells(nav,areas){const cells=new Set();for(const area of areas)for(let y=Math.max(0,Math.floor(area.y)-2);y<Math.min(nav.h,Math.ceil(area.y+area.h)+2);y++)for(let x=Math.max(0,Math.floor(area.x)-2);x<Math.min(nav.w,Math.ceil(area.x+area.w)+2);x++)cells.add(y*nav.w+x);return cells;}
+ function localStaticBlocks(scene,nav){const cells=new Set();for(const o of scene.objects||[]){if(fighter(o)||o.collected||o.walkThrough||o.type==='villager'||o.type==='spirit')continue;
+   if(!o.propKind)cells.add(o.y*nav.w+o.x);
+   else if(typeof propCollisionTiles==='function')for(const [x,y]of propCollisionTiles(o))cells.add(y*nav.w+x);
+   if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3)cells.add((o.y+dy)*nav.w+o.x+dx);
+  }return cells;
+ }
+ function invalidateAttachedNavigation(b,scene,before){
+  const id=Object.keys(worldScenes).find(k=>worldScenes[k]===scene),nav=realmNavigation.get(id);if(!nav)return;
+  const r=cache.get(b),next=worldBounds(b),staticBlocks=localStaticBlocks(scene,nav);
+  for(const cell of navAffectedCells(nav,[before,next])){const x=cell%nav.w,y=Math.floor(cell/nav.w);
+   // Keep object and authored wall collisions, and lazily recalculate terrain
+   // and stair height after this scene becomes active on a later route.
+   nav.cells[cell]=staticBlocks.has(cell)||(scene.buildings||[]).some(other=>inBuilding(other,x,y))?1:2;
+  }
+  r.navBounds=next;
+ }
+ function commit(b){sync(b);invalidate(b);try{
+   worldObjectRevision++;miniTerrain=null;const nav=realmNavigation.get(currentScene);if(!nav)return;
+   const r=cache.get(b),next=worldBounds(b),touched=navAffectedCells(nav,[r.navBounds||r.original,next]),staticBlocks=localStaticBlocks(worldScenes[currentScene],nav);
+   // A cached zero can outlive a removed stair. Re-evaluate affected cells
+   // from the underlying terrain and the current local collision objects.
+   for(const id of touched){const x=id%nav.w,y=Math.floor(id/nav.w);nav.cells[id]=2;const terrain=realmCellBlocked(nav,id);
+    const ramp=typeof civilWalkableArchitectureAt==='function'&&civilWalkableArchitectureAt(x+.5,y+.5)?.kind==='ramp';
+    nav.cells[id]=Number(!!(terrain||!ramp&&(staticBlocks.has(id)||buildings.some(other=>inBuilding(other,x,y)))));
+   }
+   r.navBounds=next;
+  }catch{} }
  function rendered(b){const r=cache.get(b),a=b.assembly;const instances=[],faces=[];
   for(const m of a.modules){if(['interior','entrance'].includes(m.role))continue;if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;const filter=window.VeldrenBuildings.floorFilter;if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(m.model==='captured:faces'){for(const f of r.faces)faces.push({...f,points:f.points.map(p=>A.point(m.local,p))});continue;}
@@ -76,5 +127,5 @@
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};
  }
- window.VeldrenBuildings={ensure,attach,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,floorFilter:null};
+ window.VeldrenBuildings={ensure,attach,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
 })();
