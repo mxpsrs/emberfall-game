@@ -1,0 +1,1039 @@
+{
+  "scope": "Instantiated production world and geometry; not a human timed navigation study",
+  "settlements": [
+    {
+      "name": "Crownreach",
+      "homes": 20,
+      "profiles": {
+        "human:13:12:0:south": 4,
+        "human:13:12:1:south": 2,
+        "human:15:12:2:south": 1,
+        "human:13:12:3:south": 4,
+        "human:13:12:4:south": 3,
+        "human:13:12:2:south": 2,
+        "human:15:12:4:south": 1,
+        "human:12:13:1:east": 1,
+        "human:15:12:1:south": 1,
+        "human:12:13:2:east": 1
+      },
+      "maxIdenticalShare": 0.2,
+      "entrances": [
+        [
+          318.5,
+          114.5
+        ],
+        [
+          438.5,
+          114.5
+        ],
+        [
+          378.5,
+          174.5
+        ]
+      ],
+      "roadSegments": 27
+    },
+    {
+      "name": "Greyhaven",
+      "homes": 20,
+      "profiles": {
+        "human:13:12:0:south": 4,
+        "human:13:12:1:south": 2,
+        "human:15:12:2:south": 1,
+        "human:13:12:3:south": 4,
+        "human:13:12:4:south": 3,
+        "human:13:12:2:south": 2,
+        "human:15:12:4:south": 1,
+        "human:12:13:1:east": 1,
+        "human:15:12:1:south": 1,
+        "human:12:13:2:east": 1
+      },
+      "maxIdenticalShare": 0.2,
+      "entrances": [
+        [
+          324.5,
+          336.5
+        ],
+        [
+          444.5,
+          336.5
+        ],
+        [
+          384.5,
+          396.5
+        ]
+      ],
+      "roadSegments": 27
+    },
+    {
+      "name": "Briarhaven",
+      "homes": 8,
+      "profiles": {
+        "human:9:8:3:north": 1,
+        "human:9:7:4:south": 1,
+        "human:8:9:0:east": 1,
+        "human:11:10:0:south": 1,
+        "human:11:10:1:south": 1,
+        "human:11:10:2:south": 1,
+        "human:11:10:3:south": 1,
+        "human:11:10:4:south": 1
+      },
+      "maxIdenticalShare": 0.125,
+      "entrances": [
+        [
+          64,
+          15
+        ],
+        [
+          105,
+          69
+        ],
+        [
+          64,
+          118
+        ]
+      ],
+      "roadSegments": 27
+    },
+    {
+      "name": "Willowcross",
+      "homes": 10,
+      "profiles": {
+        "human:13:12:2:north": 1,
+        "human:13:12:3:north": 1,
+        "human:12:13:4:west": 1,
+        "human:11:10:0:south": 2,
+        "human:11:10:1:south": 2,
+        "human:11:10:2:south": 1,
+        "human:11:10:3:south": 1,
+        "human:11:10:4:south": 1
+      },
+      "maxIdenticalShare": 0.2,
+      "entrances": [
+        [
+          124.5,
+          78.5
+        ],
+        [
+          200.5,
+          78.5
+        ],
+        [
+          162.5,
+          116.5
+        ]
+      ],
+      "roadSegments": 2
+    },
+    {
+      "name": "Stoneford",
+      "homes": 9,
+      "profiles": {
+        "human:13:12:2:north": 1,
+        "human:13:12:3:north": 1,
+        "human:12:13:4:west": 1,
+        "human:11:10:0:south": 2,
+        "human:11:10:1:south": 1,
+        "human:11:10:2:south": 1,
+        "human:11:10:3:south": 1,
+        "human:11:10:4:south": 1
+      },
+      "maxIdenticalShare": 0.2222222222222222,
+      "entrances": [
+        [
+          181.5,
+          186.5
+        ],
+        [
+          269.5,
+          186.5
+        ],
+        [
+          225.5,
+          230.5
+        ]
+      ],
+      "roadSegments": 2
+    },
+    {
+      "name": "Ironhollow",
+      "homes": 19,
+      "profiles": {
+        "dwarf:13:12:1:south": 2,
+        "dwarf:15:12:2:south": 1,
+        "dwarf:13:12:3:south": 4,
+        "dwarf:13:12:4:south": 3,
+        "dwarf:13:12:0:south": 3,
+        "dwarf:13:12:2:south": 2,
+        "dwarf:15:12:4:south": 1,
+        "dwarf:12:13:1:east": 1,
+        "dwarf:15:12:1:south": 1,
+        "dwarf:12:13:2:east": 1
+      },
+      "maxIdenticalShare": 0.21052631578947367,
+      "entrances": [
+        [
+          702.5,
+          117.5
+        ],
+        [
+          822.5,
+          117.5
+        ],
+        [
+          762.5,
+          177.5
+        ]
+      ],
+      "roadSegments": 27
+    },
+    {
+      "name": "Deepforge",
+      "homes": 19,
+      "profiles": {
+        "dwarf:13:12:1:south": 2,
+        "dwarf:15:12:2:south": 1,
+        "dwarf:13:12:3:south": 4,
+        "dwarf:13:12:4:south": 3,
+        "dwarf:13:12:0:south": 3,
+        "dwarf:13:12:2:south": 2,
+        "dwarf:15:12:4:south": 1,
+        "dwarf:12:13:1:east": 1,
+        "dwarf:15:12:1:south": 1,
+        "dwarf:12:13:2:east": 1
+      },
+      "maxIdenticalShare": 0.21052631578947367,
+      "entrances": [
+        [
+          810.5,
+          336.5
+        ],
+        [
+          930.5,
+          336.5
+        ],
+        [
+          870.5,
+          396.5
+        ]
+      ],
+      "roadSegments": 27
+    },
+    {
+      "name": "Copperdelve",
+      "homes": 6,
+      "profiles": {
+        "dwarf:13:12:1:south": 2,
+        "dwarf:15:12:2:south": 1,
+        "dwarf:13:12:3:south": 1,
+        "dwarf:12:13:4:east": 1,
+        "dwarf:13:12:0:south": 1
+      },
+      "maxIdenticalShare": 0.3333333333333333,
+      "entrances": [
+        [
+          568.5,
+          252.5
+        ],
+        [
+          656.5,
+          252.5
+        ],
+        [
+          612.5,
+          296.5
+        ]
+      ],
+      "roadSegments": 14
+    },
+    {
+      "name": "Stonehearth",
+      "homes": 6,
+      "profiles": {
+        "dwarf:13:12:1:south": 2,
+        "dwarf:15:12:2:south": 1,
+        "dwarf:13:12:3:south": 1,
+        "dwarf:12:13:4:east": 1,
+        "dwarf:13:12:0:south": 1
+      },
+      "maxIdenticalShare": 0.3333333333333333,
+      "entrances": [
+        [
+          988.5,
+          186.5
+        ],
+        [
+          1076.5,
+          186.5
+        ],
+        [
+          1032.5,
+          230.5
+        ]
+      ],
+      "roadSegments": 14
+    },
+    {
+      "name": "Aelindor",
+      "homes": 20,
+      "profiles": {
+        "elf:13:12:0:south": 4,
+        "elf:13:12:1:south": 3,
+        "elf:15:12:2:south": 1,
+        "elf:13:12:3:south": 4,
+        "elf:13:12:4:south": 3,
+        "elf:13:12:2:south": 3,
+        "elf:15:12:4:south": 1,
+        "elf:15:12:1:south": 1
+      },
+      "maxIdenticalShare": 0.2,
+      "entrances": [
+        [
+          333.5,
+          597.5
+        ],
+        [
+          453.5,
+          597.5
+        ],
+        [
+          393.5,
+          657.5
+        ]
+      ],
+      "roadSegments": 28
+    },
+    {
+      "name": "Moonwillow",
+      "homes": 20,
+      "profiles": {
+        "elf:13:12:0:south": 4,
+        "elf:13:12:1:south": 3,
+        "elf:15:12:2:south": 1,
+        "elf:13:12:3:south": 4,
+        "elf:13:12:4:south": 3,
+        "elf:13:12:2:south": 3,
+        "elf:15:12:4:south": 1,
+        "elf:15:12:1:south": 1
+      },
+      "maxIdenticalShare": 0.2,
+      "entrances": [
+        [
+          735.5,
+          603.5
+        ],
+        [
+          855.5,
+          603.5
+        ],
+        [
+          795.5,
+          663.5
+        ]
+      ],
+      "roadSegments": 28
+    },
+    {
+      "name": "Fernwatch",
+      "homes": 1,
+      "profiles": {
+        "elf:13:12:0:south": 1
+      },
+      "maxIdenticalShare": 1,
+      "entrances": [
+        [
+          178.5,
+          537.5
+        ],
+        [
+          254.5,
+          537.5
+        ],
+        [
+          216.5,
+          575.5
+        ]
+      ],
+      "roadSegments": 8
+    },
+    {
+      "name": "Silverbrook",
+      "homes": 1,
+      "profiles": {
+        "elf:13:12:0:south": 1
+      },
+      "maxIdenticalShare": 1,
+      "entrances": [
+        [
+          559.5,
+          597.5
+        ],
+        [
+          635.5,
+          597.5
+        ],
+        [
+          597.5,
+          635.5
+        ]
+      ],
+      "roadSegments": 8
+    }
+  ],
+  "scale": [
+    {
+      "name": "Crownreach Townhouse 6",
+      "kind": "building",
+      "min": [
+        422.49,
+        2.5145159848149436,
+        77.51
+      ],
+      "max": [
+        436.51,
+        7.896574655294854,
+        90.47758610463437
+      ],
+      "size": [
+        14.019999999999982,
+        5.3820586704799105,
+        12.967586104634364
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Mara’s General Store",
+      "kind": "building",
+      "min": [
+        63.51288347906379,
+        0.7434631348878611,
+        51.58314251899719
+      ],
+      "max": [
+        73.37517172296387,
+        5.8427999999999995,
+        61.41685748100281
+      ],
+      "size": [
+        9.862288243900082,
+        5.0993368651121385,
+        9.833714962005615
+      ],
+      "footprint": [
+        8,
+        9
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Wayfarer’s Rest",
+      "kind": "building",
+      "min": [
+        34.49,
+        0.7433420817057291,
+        39.510000000000005
+      ],
+      "max": [
+        46.51,
+        8.419533333333334,
+        51.48711652093621
+      ],
+      "size": [
+        12.019999999999996,
+        7.676191251627604,
+        11.977116520936207
+      ],
+      "footprint": [
+        11,
+        10
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Crownreach Archive",
+      "kind": "building",
+      "min": [
+        386.49,
+        2.5145159848149436,
+        77.51
+      ],
+      "max": [
+        400.51,
+        10.35728894100914,
+        90.47758610463437
+      ],
+      "size": [
+        14.019999999999982,
+        7.842772956194196,
+        12.967586104634364
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Briarhaven Smithy",
+      "kind": "building",
+      "min": [
+        77.8585330494349,
+        0.7433420819434104,
+        36.49000000000001
+      ],
+      "max": [
+        89.49,
+        5.990366666666667,
+        48.50999999999999
+      ],
+      "size": [
+        11.631466950565098,
+        5.247024584723256,
+        12.019999999999982
+      ],
+      "footprint": [
+        10,
+        11
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Fenn Wardkeeper home",
+      "kind": "building",
+      "min": [
+        710.5831425189972,
+        3.180435341129122,
+        98.61291805335453
+      ],
+      "max": [
+        724.4168574810028,
+        7.483894011609032,
+        111.43247497389595
+      ],
+      "size": [
+        13.833714962005615,
+        4.303458670479911,
+        12.819556920541416
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Ironhollow Market Hall",
+      "kind": "building",
+      "min": [
+        728.5831425189972,
+        3.1804353411291215,
+        80.61291805335453
+      ],
+      "max": [
+        742.4168574810028,
+        7.483894011609032,
+        94.48711652093621
+      ],
+      "size": [
+        13.833714962005615,
+        4.303458670479911,
+        13.874198467581678
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Ironhollow The Lantern Rest",
+      "kind": "building",
+      "min": [
+        710.49,
+        3.1803704912756063,
+        80.51
+      ],
+      "max": [
+        726.51,
+        10.310929725894747,
+        94.48711652093621
+      ],
+      "size": [
+        16.019999999999982,
+        7.13055923461914,
+        13.977116520936207
+      ],
+      "footprint": [
+        15,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Ironhollow Archive",
+      "kind": "building",
+      "min": [
+        770.49,
+        3.180435341129123,
+        80.51
+      ],
+      "max": [
+        784.51,
+        10.10960829732332,
+        93.47758610463437
+      ],
+      "size": [
+        14.019999999999982,
+        6.929172956194197,
+        12.967586104634364
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Ironhollow Forge",
+      "kind": "building",
+      "min": [
+        746.6129180640031,
+        3.1804346235669527,
+        80.58314251899719
+      ],
+      "max": [
+        760.1414669505651,
+        7.379322570094882,
+        94.41685748100281
+      ],
+      "size": [
+        13.528548886562021,
+        4.198887946527929,
+        13.833714962005615
+      ],
+      "footprint": [
+        12,
+        13
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Aelindor Townhouse 6",
+      "kind": "building",
+      "min": [
+        374.4342656619088,
+        5.591725863737619,
+        581.51
+      ],
+      "max": [
+        388.5657343380912,
+        11.43735315511162,
+        594.4775861046343
+      ],
+      "size": [
+        14.131468676182408,
+        5.845627291374001,
+        12.967586104634279
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Aelindor Market Hall",
+      "kind": "building",
+      "min": [
+        356.4342656619088,
+        5.591725863737618,
+        563.6129180533545
+      ],
+      "max": [
+        370.5657343380912,
+        11.272353155111619,
+        577.4871165209362
+      ],
+      "size": [
+        14.131468676182408,
+        5.680627291374001,
+        13.874198467581664
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Aelindor The Lantern Rest",
+      "kind": "building",
+      "min": [
+        338.4342656619088,
+        5.591725863737618,
+        563.51
+      ],
+      "max": [
+        354.5657343380912,
+        14.445388869397334,
+        577.4871165209362
+      ],
+      "size": [
+        16.131468676182408,
+        8.853663005659715,
+        13.977116520936193
+      ],
+      "footprint": [
+        15,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Aelindor Archive",
+      "kind": "building",
+      "min": [
+        338.4342656619088,
+        5.591725863737618,
+        581.51
+      ],
+      "max": [
+        352.5657343380912,
+        13.898067440825905,
+        594.4775861046343
+      ],
+      "size": [
+        14.131468676182408,
+        8.306341577088286,
+        12.967586104634279
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Aelindor Forge",
+      "kind": "building",
+      "min": [
+        374.4342656619088,
+        5.591725863737619,
+        563.49
+      ],
+      "max": [
+        388.5657343380912,
+        11.437350309109446,
+        577.1414669505651
+      ],
+      "size": [
+        14.131468676182408,
+        5.845624445371827,
+        13.651466950565123
+      ],
+      "footprint": [
+        13,
+        12
+      ],
+      "doorWidthTiles": 1
+    },
+    {
+      "name": "Sunspire Castle",
+      "kind": "castle",
+      "min": [
+        353.94998408429285,
+        2.4787084297616087,
+        35.7
+      ],
+      "max": [
+        403.0500159157071,
+        14.27870842976161,
+        75.75
+      ],
+      "size": [
+        49.10003183141424,
+        11.8,
+        40.05
+      ]
+    },
+    {
+      "name": "Ironcrown Citadel",
+      "kind": "castle",
+      "min": [
+        737.993756384242,
+        3.053548335511824,
+        38.699999999999996
+      ],
+      "max": [
+        787.006243615758,
+        14.853548335511825,
+        78.75
+      ],
+      "size": [
+        49.012487231515934,
+        11.8,
+        40.050000000000004
+      ]
+    },
+    {
+      "name": "The Bough Palace",
+      "kind": "castle",
+      "min": [
+        368.94115393648485,
+        4.626742982630322,
+        518.7
+      ],
+      "max": [
+        418.05884606351515,
+        16.426742982630323,
+        558.75
+      ],
+      "size": [
+        49.117692127030296,
+        11.8,
+        40.049999999999955
+      ]
+    },
+    {
+      "name": "Village well",
+      "kind": "well",
+      "min": [
+        372.475,
+        2.5212603695805686,
+        116.9
+      ],
+      "max": [
+        374.525,
+        4.771260369580569,
+        118.1
+      ],
+      "size": [
+        2.0499999999999545,
+        2.25,
+        1.1999999999999886
+      ]
+    },
+    {
+      "name": "Bench",
+      "kind": "bench",
+      "min": [
+        62.259525772450594,
+        0.7500000002410544,
+        60.25021317134047
+      ],
+      "max": [
+        62.74047391547492,
+        1.2299999865660851,
+        62.74978682865953
+      ],
+      "size": [
+        0.4809481430243281,
+        0.4799999863250307,
+        2.4995736573190612
+      ]
+    },
+    {
+      "name": "Dining table",
+      "kind": "table",
+      "min": [
+        328.1343144127775,
+        2.5212603696542937,
+        75.97421817046714
+      ],
+      "max": [
+        330.8656855872225,
+        3.591260363285894,
+        77.02578896840167
+      ],
+      "size": [
+        2.73137117444503,
+        1.0699999936316003,
+        1.0515707979345308
+      ]
+    },
+    {
+      "name": "Southern crossing sign",
+      "kind": "sign",
+      "min": [
+        117.23500000000001,
+        0.3872639508978629,
+        110.24797002318176
+      ],
+      "max": [
+        117.76500000000001,
+        1.0872639508978628,
+        110.7520299768182
+      ],
+      "size": [
+        0.5300000000000011,
+        0.6999999999999998,
+        0.5040599536364425
+      ]
+    },
+    {
+      "name": "Merchant wagon",
+      "kind": "cart",
+      "min": [
+        343.1879471065143,
+        2.5212603696089233,
+        94.61053025132605
+      ],
+      "max": [
+        343.8120528934857,
+        4.071260423072568,
+        96.38946425802354
+      ],
+      "size": [
+        0.6241057869714268,
+        1.5500000534636444,
+        1.778934006697483
+      ]
+    },
+    {
+      "name": "Barrel",
+      "kind": "barrel",
+      "min": [
+        148.18128508730794,
+        5.704219013989608,
+        74.18128510091542
+      ],
+      "max": [
+        148.8187149126921,
+        6.524219013989607,
+        74.8187148990846
+      ],
+      "size": [
+        0.6374298253841459,
+        0.8199999999999994,
+        0.6374297981691797
+      ]
+    }
+  ],
+  "props": {
+    "count": 3954,
+    "grounded": 3954,
+    "exceptions": [],
+    "groundedShare": 1
+  },
+  "rooms": {
+    "count": 680,
+    "purposeful": 654,
+    "exceptions": [
+      {
+        "id": "civil_briarhaven_0",
+        "usage": "house"
+      },
+      {
+        "id": "civil_briarhaven_1",
+        "usage": "house"
+      },
+      {
+        "id": "civil_briarhaven_2",
+        "usage": "house"
+      },
+      {
+        "id": "civil_briarhaven_3",
+        "usage": "house"
+      },
+      {
+        "id": "civil_briarhaven_4",
+        "usage": "house"
+      },
+      {
+        "id": "civil_briarhaven_5",
+        "usage": "library"
+      },
+      {
+        "id": "civil_willowcross_0",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_1",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_2",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_3",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_4",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_5",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_6",
+        "usage": "house"
+      },
+      {
+        "id": "civil_willowcross_7",
+        "usage": "library"
+      },
+      {
+        "id": "civil_stoneford_0",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_1",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_2",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_3",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_4",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_5",
+        "usage": "house"
+      },
+      {
+        "id": "civil_stoneford_6",
+        "usage": "library"
+      },
+      {
+        "id": "civil_ironhollow_101",
+        "usage": "office"
+      },
+      {
+        "id": "civil_copperdelve_102",
+        "usage": "office"
+      },
+      {
+        "id": "civil_crownreach_103",
+        "usage": "office"
+      },
+      {
+        "id": "civil_deepforge_104",
+        "usage": "office"
+      },
+      {
+        "id": "civil_stoneford_105",
+        "usage": "office"
+      }
+    ],
+    "purposefulShare": 0.961764705882353
+  },
+  "roads": {
+    "samples": 28979,
+    "readable": 28979,
+    "gaps": [],
+    "readableShare": 1
+  }
+}

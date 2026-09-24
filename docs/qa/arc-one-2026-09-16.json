@@ -1,0 +1,97 @@
+{
+  "date": "2026-09-16T06:02:07.873849+00:00",
+  "scope": "Arc One story, independent journal, equipment and shared combat regressions",
+  "passed": 21,
+  "failed": 0,
+  "tests": [
+    {
+      "test": "tests/main-story.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/mountain-quest.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-journal-selection.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/arc-rewards.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/arc-boss-loot.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-cohesion.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-navigation.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/item-models.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/equipment-fit.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-fight-phases.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/story-server.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-shared-credit.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/quest-observer-animation.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/encounters.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/dungeon-server.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/shared-world.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/social-maintenance.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/server-npc-simulation.mjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/equipment-interface.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/equipped-ammunition.cjs",
+      "result": "passed"
+    },
+    {
+      "test": "tests/classic-ui.cjs",
+      "result": "passed"
+    }
+  ],
+  "visual_review": "Offline production-mesh icons and front/side/back wearables for both body types; not browser QA.",
+  "limitations": [
+    "Local route and server integration tests do not certify hosted 39-player capacity.",
+    "Voices use dialogue/chat captions and existing sound cues, not recorded voice acting."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "updated": "2026-09-22",
+  "policy": "Keep Quaternius as Veldren's dominant stylized language; color-match and performance-test every supplemental asset before placement.",
+  "sources": [
+    {
+      "name": "Quaternius",
+      "status": "integrated_and_expanded",
+      "license": "CC0 1.0 for the currently selected standard packs; QAL 1.0 for the recorded Bestiary selection",
+      "uses": ["medieval architecture", "characters", "outfits", "creatures", "trees", "grass", "flowers", "ferns", "props", "animation libraries"]
+    },
+    {
+      "name": "Adobe Mixamo",
+      "status": "awaiting_account_sign_in_and_motion_selection",
+      "license": "Royalty-free use in games under Adobe's Mixamo terms",
+      "uses": ["missing humanoid locomotion", "combat transitions", "emotes and reactions"]
+    },
+    {
+      "name": "Poly Haven",
+      "status": "integrated",
+      "license": "CC0 1.0",
+      "uses": ["Forest Ground 01 luminance detail blended into Veldren grass"]
+    },
+    {
+      "name": "Kenney",
+      "status": "integrated",
+      "license": "CC0 1.0",
+      "uses": ["grass clusters", "leafy plants", "mushrooms", "flowers", "logs", "bushes", "rocks"]
+    }
+  ]
+}

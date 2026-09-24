@@ -1,0 +1,110 @@
+{
+  "joints": 234,
+  "scale": 0.16626837050204699,
+  "height": 4.2,
+  "source": {
+    "title": "Prowler Dragon Variant Rig",
+    "artist": "DM-913",
+    "url": "https://sketchfab.com/3d-models/prowler-dragon-variant-rig-7ee71aaf323d426bbbdf28d73d55bbd9",
+    "license": "CC BY 4.0",
+    "modifications": "Original topology and source colors; Blender curved bones baked, bind compensation for preserve-volume skinning, native walk cycle and new Veldren combat motions. Full Blender PBR is not reproduced.",
+    "sha256": "31fbc6a9711e6e1f0e2678be1fd174f6b1ffc39f8d701bfd95a2d60c2b1a1b45",
+    "file": "DragoTST.blend",
+    "nativeActions": [
+      "Action.001",
+      "Action.002",
+      "PoseLib",
+      "Walk Loop",
+      "Walk Loop.001"
+    ],
+    "animationFiles": [],
+    "sourceNodes": 236,
+    "materials": [
+      {
+        "material": "Main Material .001",
+        "file": "diffuse-runtime.png",
+        "sha256": "dbc28df0fd624e67bc43cfdc8cda2ed9f54ba638206f533c1af5ddec77e9434f"
+      },
+      {
+        "material": "Eye.001",
+        "file": "Diffuse16.png",
+        "sha256": "6b41473ffdc7cf68df9cae69121c8afd3bc1b77b7872c2497740e529461ce6f9"
+      }
+    ],
+    "meshes": [
+      {
+        "name": "Dragon Mesh",
+        "triangles": 19436,
+        "activeSkinJoints": 234
+      }
+    ],
+    "authoredActions": [
+      "Veldren/idle",
+      "Veldren/attack",
+      "Veldren/cast",
+      "Veldren/hit",
+      "Veldren/death"
+    ]
+  },
+  "splitSkinPalette": true,
+  "gaitDistance": 6.3,
+  "sockets": {
+    "mouth": {
+      "joint": 74,
+      "point": [
+        0.0,
+        20.186764,
+        20.0
+      ]
+    }
+  },
+  "vertices": 12390,
+  "triangles": 19436,
+  "deforms": 234,
+  "clips": {
+    "idle": {
+      "source": "Veldren/idle",
+      "duration": 3.2,
+      "frames": 78,
+      "note": "Veldren-authored motion on the original Blender rig"
+    },
+    "walk": {
+      "source": "Native/Walk Loop",
+      "duration": 4.875,
+      "frames": 118,
+      "note": "Complete original Walk Loop, frames 1\u2013118, retaining its three steps and matching loop endpoints"
+    },
+    "run": {
+      "source": "Native/Walk Loop (faster)",
+      "duration": 3.3,
+      "frames": 81,
+      "note": "Complete original Walk Loop, frames 1\u2013118, retaining its three steps and matching loop endpoints; retimed for running"
+    },
+    "attack": {
+      "source": "Veldren/attack",
+      "duration": 1.55,
+      "frames": 39,
+      "note": "Veldren-authored motion on the original Blender rig",
+      "release": 0.53
+    },
+    "cast": {
+      "source": "Veldren/cast",
+      "duration": 2.3,
+      "frames": 57,
+      "note": "Veldren-authored motion on the original Blender rig",
+      "release": 0.52
+    },
+    "hit": {
+      "source": "Veldren/hit",
+      "duration": 0.55,
+      "frames": 15,
+      "note": "Veldren-authored motion on the original Blender rig"
+    },
+    "death": {
+      "source": "Veldren/death",
+      "duration": 2.8,
+      "frames": 69,
+      "note": "Veldren-authored motion on the original Blender rig"
+    }
+  }
+}

@@ -1,0 +1,643 @@
+{
+  "date": "2026-09-15",
+  "scope": "Full available automated suite with final targeted rechecks and production build validation; initial results retained for rechecked scripts.",
+  "passed": 104,
+  "total": 104,
+  "results": [
+    {
+      "test": "activity-reconnect.cjs",
+      "passed": true,
+      "seconds": 0.07,
+      "output": "PASS: failed streams back off, successful delivery resets delay, and stale errors cannot spawn overlapping connections.\n"
+    },
+    {
+      "test": "account-flow.cjs",
+      "passed": true,
+      "seconds": 0.08,
+      "output": "PASS: account errors, empty-account creation, failed-save recovery, confirmed creation, character reload, and legacy skill migration.\n"
+    },
+    {
+      "test": "action-animations.cjs",
+      "passed": true,
+      "seconds": 0.8,
+      "output": "PASS: burial commit/cancel, body identity, bow-only cosmetic quiver, bounded arrow meshes, shared item models and release-to-impact timing.\n"
+    },
+    {
+      "test": "appearance.cjs",
+      "passed": true,
+      "seconds": 0.81,
+      "output": "PASS: visible clothing changes, preview cache, rigged clothing/hair, and identical player/peer appearance.\n"
+    },
+    {
+      "test": "approved-creatures.cjs",
+      "passed": true,
+      "seconds": 1.59,
+      "output": "PASS: approved creatures preserve original geometry and materials; Veyr retains its hand-bound orb and single native action cycles; all reviewed poses remain finite.\n"
+    },
+    {
+      "test": "action-timing.cjs",
+      "passed": true,
+      "seconds": 5.55,
+      "output": "PASS: immediate ranged/magic opening attacks, range and sight limits, approach/stop distance, persistent cooldown, slower monsters, immediate gathering poses and ordinary civilian clothing.\n"
+    },
+    {
+      "test": "audio.cjs",
+      "passed": true,
+      "seconds": 0.63,
+      "output": "PASS: 29 sound cues, finite envelopes, released nodes, mute/background behavior, gathering impact timing, login/creator/tutorial/boss/area transitions, and five reusable music streams.\nPASS: recorded foley decoding, request deduplication and sample playback.\n"
+    },
+    {
+      "test": "android-rendering.cjs",
+      "passed": true,
+      "seconds": 6.15,
+      "output": "PASS: Android CPU skinning selection, both bodies and both outfits retain feet through idle/walk/run/cast poses, terrain root agreement, sky and horizon clipping removed.\n"
+    },
+    {
+      "test": "branding.cjs",
+      "passed": true,
+      "seconds": 0.06,
+      "output": "PASS: Veldren display branding, package consistency, and legacy save/Android identity compatibility.\n"
+    },
+    {
+      "test": "authored-motion.cjs",
+      "passed": true,
+      "seconds": 1.4,
+      "output": "PASS: both rigs, authored clips, joint lengths during blends, curled fingers, stable sword sockets, and floor contact.\n"
+    },
+    {
+      "test": "apprenticeship.cjs",
+      "passed": true,
+      "seconds": 8.08,
+      "output": "PASS: summoned-hero opening, paged NPC conversations and all 38 isolated-island lessons through real routes, item targeting, workbench recipes, combat, banking and spirits; one-way mainland departure, completed-save recovery, walking and running.\n"
+    },
+    {
+      "test": "briarhaven-map.cjs",
+      "passed": true,
+      "seconds": 6.62,
+      "output": "PASS: all six mainland entrances and services, 15 reachable roaming goblins, island preservation, rotated minimap round-trips, fire cancellation and delayed cooking.\n"
+    },
+    {
+      "test": "building-layout.cjs",
+      "passed": true,
+      "seconds": 6.72,
+      "output": "PASS: four door orientations, collision and both approaches for every walk-in building, moved school/tutors and repeat setup.\n"
+    },
+    {
+      "test": "camera-input.cjs",
+      "passed": true,
+      "seconds": 0.06,
+      "output": "PASS: tap versus swipe, one-finger orbit/tilt, pinch zoom, hold/cancel, held arrow keys, input focus, modal guards and unconsumed WASD.\n"
+    },
+    {
+      "test": "character-creation.cjs",
+      "passed": true,
+      "seconds": 1.81,
+      "output": "PASS: appearance controls, draft isolation, old saves, separate obtainable hood, visible face, crown fitting, outfit colors and animated/remote geometry.\n"
+    },
+    {
+      "test": "character-reset.mjs",
+      "passed": true,
+      "seconds": 0.06,
+      "output": "PASS: only the requested character resets, other progress remains untouched, stale saves are rejected and the reset is recorded once.\n"
+    },
+    {
+      "test": "classic-ui.cjs",
+      "passed": true,
+      "output": "PASS: persistent browser fullscreen on desktop/mobile with an independent settings control; ten wired tabs with Tool belt excluded, preserved controls across panel switches, chat alongside friends, early notices, chat-only toast messages, and live map vitals.\n",
+      "initial_run": {
+        "passed": false,
+        "seconds": 0.74,
+        "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: '10 / 10' == 10\n    at evalmachine.<anonymous>:9:232\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at eval (eval at <anonymous> (/workspace/scratch/7a3af43900f7/veldren/tests/classic-ui.cjs:3:1), <anonymous>:33:4)\n    at Object.<anonymous> (/workspace/scratch/7a3af43900f7/veldren/tests/classic-ui.cjs:3:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: '10 / 10',\n  expected: 10,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      }
+    },
+    {
+      "test": "coin-pouch.cjs",
+      "passed": true,
+      "seconds": 0.7,
+      "output": "PASS: loot, manual pouch deposit, withdrawals, full inventory, protected overflow, trade lock, shop conservation, invalid amounts and saved balances.\n"
+    },
+    {
+      "test": "combat-experience.cjs",
+      "passed": true,
+      "seconds": 0.75,
+      "output": "PASS: every combat/training style, damage scaling per hit, visible XP, misses, overkill, dead targets, spirit single/area damage, repeat prevention and spell base XP.\n"
+    },
+    {
+      "test": "combat-scaling.cjs",
+      "passed": true,
+      "seconds": 5.58,
+      "output": "PASS: 158 world combatants, human baselines, all attack styles, levels/gear/armor, boss progression, Worship burst limits, misses and fixed enemy tiers.\n"
+    },
+    {
+      "test": "combat-skills.cjs",
+      "passed": true,
+      "seconds": 0.07,
+      "output": "PASS: seven independent skills, legacy migration, all-skill combat level, training modes, accuracy/damage/defense effects, bone burial, miss/overkill XP and captured projectile training.\n"
+    },
+    {
+      "test": "cooking-lesson.cjs",
+      "passed": true,
+      "seconds": 6.73,
+      "output": "PASS: Nell\u2019s nearby tree, fire and shrimp lesson; ingredient-preserving walk-to-cook/cancel, indoor kitchen/range and distinct modelled baking ingredients.\n"
+    },
+    {
+      "test": "building-entry.cjs",
+      "passed": true,
+      "seconds": 28.78,
+      "output": "PASS: roof and wall hit regions at four camera angles, Enter routes to the correct door, distant mesh detail reduction.\n"
+    },
+    {
+      "test": "briarhaven-art.cjs",
+      "passed": true,
+      "seconds": 33.17,
+      "output": "PASS: authored meshes, six clips, equipment visibility, vertex colors, Briarhaven doors, GPU shadow/color passes, finite geometry, static buffer reuse, three interiors, all item previews and context-loss canvas fallback.\n"
+    },
+    {
+      "test": "creature-renderer.cjs",
+      "passed": true,
+      "seconds": 8.41,
+      "output": "Creature CPU preparation, 12 simultaneous attacks: median 18.94 ms, p95 28.54 ms. GPU execution is not included.\nPASS: stable creature and avatar geometry, fitted armor, finite bone palettes, animated shadows, bounded caches, and low-capability fallback.\n"
+    },
+    {
+      "test": "creature-animation.cjs",
+      "passed": true,
+      "seconds": 9.43,
+      "output": "PASS: distinct imported creatures, weighted animation, complete attacks, death/loot/respawn, movement heading and bounded pose cache.\n"
+    },
+    {
+      "test": "dungeon-server.mjs",
+      "passed": true,
+      "seconds": 0.14,
+      "output": "PASS: two authenticated accounts enter expanded dungeon bounds, share approach guards and retain each dungeon position and belongings through saves.\n"
+    },
+    {
+      "test": "desktop-rendering.cjs",
+      "passed": true,
+      "seconds": 9.28,
+      "output": "PASS: desktop and 4K rendering budgets, mesh reuse, direct presentation, terrain picking, hidden interiors, persistent doors, and model lighting.\n"
+    },
+    {
+      "test": "dungeon-journeys.cjs",
+      "passed": true,
+      "seconds": 7.51,
+      "output": "PASS: physical routes, six guards per boss approach, connected rescue mine and separated quest locations. [{\"scene\":\"lair_colossus\",\"steps\":152,\"guards\":6},{\"scene\":\"lair_veyr\",\"steps\":150,\"guards\":6},{\"scene\":\"lair_varkesh\",\"steps\":157,\"guards\":6},{\"scene\":\"lair_xalith\",\"steps\":154,\"guards\":6}]\n"
+    },
+    {
+      "test": "engine-world.cjs",
+      "passed": true,
+      "seconds": 5.9,
+      "output": "PASS: mainland/tutorial/mine spatial equivalence, stable pick order, live actor positions, add/remove/relocation invalidation, static-prop movement cost and lazy exact terrain collision.\n"
+    },
+    {
+      "test": "equipment-interface.cjs",
+      "passed": true,
+      "seconds": 0.09,
+      "output": "PASS: compact Equipment with Stats/Tool belt/Spirits controls, explicit stats expansion, paired bag in both views, live weapon/bonus/preview refresh, unequip, window switching, close/reopen races and bank compatibility.\n"
+    },
+    {
+      "test": "equipped-ammunition.cjs",
+      "passed": true,
+      "seconds": 0.6,
+      "output": "PASS: 2.5K equipped stack, bag arrows untouched, stack merging/swapping, bow compatibility, full-bag protection, exhaustion, save restoration and ammunition slot.\n"
+    },
+    {
+      "test": "follow-network.cjs",
+      "passed": true,
+      "seconds": 1.83,
+      "output": "PASS: 30fps two-client follow, turns, revisited tiles, stops, 70\u2013320ms latency, missing/out-of-order packets and bounded remote visual motion.\nPASS: 60fps two-client follow, turns, revisited tiles, stops, 70\u2013320ms latency, missing/out-of-order packets and bounded remote visual motion.\n"
+    },
+    {
+      "test": "game.cjs",
+      "passed": true,
+      "seconds": 0.38,
+      "output": "PASS: new routes, tutorial, inventory capacity, worn gear, ground drops, pickup, quests and spirit recovery.\n"
+    },
+    {
+      "test": "armour-shells.cjs",
+      "passed": true,
+      "seconds": 55.6,
+      "output": "PASS: five fitted armour tiers, both bodies, stable skin weights, player/NPC shared fitting, index budget, idle/walk/run/melee poses.\n"
+    },
+    {
+      "test": "global-reset.mjs",
+      "passed": true,
+      "seconds": 0.98,
+      "output": "PASS: reversible beta snapshots, exact restoration, preserved newer progress, maintenance gate, administrator authorization, atomic rollback, preserved credentials, fresh tutorial creation, safe retry, and concurrent stale-save rejection.\nglobal_reset_failed\nglobal_reset_failed\n"
+    },
+    {
+      "test": "icon-system.cjs",
+      "passed": true,
+      "seconds": 0.85,
+      "output": "PASS: distinct skill/settings/tool symbols; every slot, service and spirit resolves; 16 spell variants; 72 icons agree in SVG/canvas at 16, 25 and 32 pixels with a bounded cache.\n"
+    },
+    {
+      "test": "icon-tooltips.cjs",
+      "passed": true,
+      "seconds": 0.08,
+      "output": "PASS: timed hover, live labels, keyboard focus, viewport bounds, modal layer, stale panel cleanup, touch tap/hold/drag, native callout handling, item/world menu preservation and plain-text labels.\n"
+    },
+    {
+      "test": "item-input.cjs",
+      "passed": true,
+      "seconds": 0.07,
+      "output": "PASS: tap primary action, hold-only menu, suppressed release click, scroll cancellation, food/material actions, minimap coordinates in world and interior.\n"
+    },
+    {
+      "test": "encounters.cjs",
+      "passed": true,
+      "seconds": 14.54,
+      "output": "Starter rat / 1,000 real simulated fights: median 14.70s; p95 36.30s; mean HP lost 0.41; deaths 0. Zero hits are preserved.\nPASS: reachable ordinary monsters and Ork Warrens; stationary Colossus with exactly two phases, three styles, faster red phase, accessible loot, reset and respawn; original quest flags and zero-inclusive combat preserved.\n"
+    },
+    {
+      "test": "item-use.cjs",
+      "passed": true,
+      "seconds": 5.5,
+      "output": "PASS: highlighted material selection, non-consuming station menus, explicit one-item cooking, dough/arrow combinations, invalid-target and walk cancellation, hold release suppression, and modeless direct banking.\n"
+    },
+    {
+      "test": "gathering-appearance.cjs",
+      "passed": true,
+      "seconds": 27.61,
+      "output": "PASS: chopping, mining and fishing retain both body types, both outfits, hair, colours and armour through CPU/GPU rendering and cancellation.\n"
+    },
+    {
+      "test": "local-chat.mjs",
+      "passed": true,
+      "seconds": 0.14,
+      "output": "PASS: send-time local audience, exact circular 25-tile range, scenes, stale presence, no walk-in or reconnect history, private isolation/privacy, immediate sender echo, ordered burst pagination and stable cursor.\n"
+    },
+    {
+      "test": "local-storage.mjs",
+      "passed": true,
+      "seconds": 1.02,
+      "output": "PASS: automatic JSON character files, real two-player chat/trade, transaction rollback, persistent login and saves across restart, and JSON recovery.\n"
+    },
+    {
+      "test": "login.mjs",
+      "passed": true,
+      "seconds": 0.99,
+      "output": "PASS: initial account choices, separate forms and endpoints, five-character passwords, duplicate/wrong-password handling, password hashing and persistent sessions.\n"
+    },
+    {
+      "test": "loot-interaction.cjs",
+      "passed": true,
+      "seconds": 0.08,
+      "output": "PASS: no loot dialog, direct one-item pickup, coin/ammo stacks, full-bag retention, walk-before-pickup and cancellation.\n"
+    },
+    {
+      "test": "item-models.cjs",
+      "passed": true,
+      "seconds": 30.94,
+      "output": "PASS: 194 item types render in inventory and on the ground; distinct resources, food states, combined armor, valid GPU geometry, and mixed loot piles.\n"
+    },
+    {
+      "test": "maintenance-outage.mjs",
+      "passed": true,
+      "seconds": 0.47,
+      "output": "PASS: bounded read recovery, persistent outage fails closed, maintenance lock preserved, diagnostics retained without client disclosure or write replay.\n"
+    },
+    {
+      "test": "map-services.cjs",
+      "passed": true,
+      "seconds": 5.64,
+      "output": "PASS: real shop stock, all nine tutors, bank deduplication, indoor entrance/exit routes, scaled marker taps, square boundaries and every shared icon.\n"
+    },
+    {
+      "test": "equipment-fit.cjs",
+      "passed": true,
+      "seconds": 48.97,
+      "output": "PASS: nine equipment slots; legacy gear preserved; complete chest pieces; chest, hip and belt volume for both body types and five armor shapes through idle, walking, running and attacks.\n"
+    },
+    {
+      "test": "kingdoms.cjs",
+      "passed": true,
+      "seconds": 35.66,
+      "output": "{\"pass\":true,\"kingdoms\":3,\"cities\":6,\"villages\":7,\"settlementBuildings\":189,\"castles\":3,\"interiors\":181,\"validatedModelFaces\":5313650}\n"
+    },
+    {
+      "test": "movement-loop.cjs",
+      "passed": true,
+      "seconds": 0.12,
+      "output": "PASS: repeated movement completes without stopping the frame loop; walk-to-loot, consecutive pickups and movement afterward.\n"
+    },
+    {
+      "test": "multiplayer.mjs",
+      "passed": true,
+      "seconds": 1.71,
+      "output": "PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.\nPASS: complete ordered movement trails survive the server; invalid, distant, fractional and discontinuous trails are excluded.\n"
+    },
+    {
+      "test": "nameplates.cjs",
+      "passed": true,
+      "seconds": 26.71,
+      "output": "PASS: selected and nearby tutor names, repeated selection changes, and enemy combat nameplates draw once.\n"
+    },
+    {
+      "test": "npc-appearance.cjs",
+      "passed": true,
+      "seconds": 5.46,
+      "output": "PASS: 477 NPCs share world/portrait identity, creator outfits, stable variation, black hooded Ranger guide and duty equipment.\n"
+    },
+    {
+      "test": "online-only.cjs",
+      "passed": true,
+      "seconds": 5.45,
+      "output": "PASS: disconnected play pauses simulation, blocks item and keyboard input, and stops new saves.\n"
+    },
+    {
+      "test": "play-display.cjs",
+      "passed": true,
+      "seconds": 0.07,
+      "output": "PASS: mobile rotation responds during startup without initHud.\nPASS: desktop portrait, explicit fullscreen/exit, mobile activation, landscape request, unsupported and denied fallbacks.\n"
+    },
+    {
+      "test": "player-options.cjs",
+      "passed": true,
+      "seconds": 0.55,
+      "output": "PASS: visible players are selectable by world picking and offer Trade with their authenticated username.\n"
+    },
+    {
+      "test": "main-story.cjs",
+      "passed": true,
+      "seconds": 59.49,
+      "output": "Stage 1 reached\nStage 2 reached\nStage 3 reached\nStage 3 reached\nStage 4 reached\nStage 5 reached\nStage 6 reached\nStage 6 reached\nStage 7 reached\nStage 7 reached\nStage 8 reached\nStage 9 reached\nStage 10 reached\nStage 10 reached\nStage 11 reached\nStage 12 reached\nStage 12 reached\nStage 13 reached\nStage 14 reached\nStage 15 reached\nStage 16 reached\nStage 17 reached\nStage 18 reached\nStage 19 reached\nStage 20 reached\nStage 20 reached\nStage 21 reached\nStage 21 reached\nStage 22 reached\nStage 22 reached\nStage 23 reached\nStage 24 reached\nStage 25 reached\nPASS: three ordered quests, real routes and combat, wrong answers, skill gates, interrupted work, both miners escorted, death/retry, durable rewards, journal, relic names and mountain unlock.\nPASS: fresh-runtime recovery and existing mountain progress remain available.\n"
+    },
+    {
+      "test": "modular-equipment.cjs",
+      "passed": true,
+      "seconds": 51.16,
+      "output": "PASS: independent armor, requirements, acquisition, protected worn items, tool belt persistence, both rigs through movement/combat, real geometry and civilian body.\n"
+    },
+    {
+      "test": "quest-cohesion.cjs",
+      "passed": true,
+      "output": "PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.\n",
+      "initial_run": {
+        "passed": true,
+        "seconds": 6.08,
+        "output": "PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.\n"
+      }
+    },
+    {
+      "test": "mountain-quest.cjs",
+      "passed": true,
+      "output": "PASS: both story chapters through real routes, castle doors, clue collection, inscription, puzzles, interrupted crafting, actual guardian and assisted Veyr battles, death/retry, durable rewards, and red repeat-hunt crossing without assistance.\nPASS: fresh-runtime reload restores Underworks progress, assisted-fight companion and completed-hunt access.\n",
+      "initial_run": {
+        "passed": true,
+        "seconds": 46.69,
+        "output": "PASS: both story chapters through real routes, castle doors, clue collection, inscription, puzzles, interrupted crafting, actual guardian and assisted Veyr battles, death/retry, durable rewards, and red repeat-hunt crossing without assistance.\nPASS: fresh-runtime reload restores Underworks progress, assisted-fight companion and completed-hunt access.\n"
+      }
+    },
+    {
+      "test": "ranged-overhaul.cjs",
+      "passed": true,
+      "seconds": 1.87,
+      "output": "PASS: both rigs through four motions/headings; palm/string/arrow alignment; launch/impact timing; hits, misses, breakage and recovery; ammo conservation; fences/trees; all six bow tiers. Level-one rat median 21.6s, 95th percentile 36.0s across 2,000 fights.\n"
+    },
+    {
+      "test": "recording-regressions.cjs",
+      "passed": true,
+      "seconds": 6.23,
+      "output": "PASS: every building exit, dry tree placement, diagonal bridge travel, camera picking, timed melee, cancelled strikes, safe rescue with retained progress, and local minimap taps.\n"
+    },
+    {
+      "test": "render-meshes.cjs",
+      "passed": true,
+      "seconds": 3.88,
+      "output": "PASS: both bodies through idle/run/ranged/magic/burial, exact indexed material corners, bone weights, shared pose indices, grounded instance transforms, both shadow passes, no-extension fallback and severe-stall adaptation.\n"
+    },
+    {
+      "test": "render.cjs",
+      "passed": true,
+      "seconds": 0.38,
+      "output": ""
+    },
+    {
+      "test": "quest-shared-credit.mjs",
+      "passed": true,
+      "seconds": 14.19,
+      "output": "PASS: two authenticated clients, animated spirit kill, real server receipt, correct quest credit, no observer credit, Nessa untouched, private loot, receipt replay and durable quest stage.\n"
+    },
+    {
+      "test": "rowan-crossing.mjs",
+      "passed": true,
+      "seconds": 6.06,
+      "output": "PASS: real final-lesson client \u2192 server permit \u2192 cast \u2192 mainland \u2192 atomic save, retained belongings and one-time rewards.\n"
+    },
+    {
+      "test": "saves.mjs",
+      "passed": true,
+      "seconds": 4.62,
+      "output": "PASS: required login, registration, unique usernames, password verification/hashing, cross-device save and appearance, logout, CSRF checks, session hashes, and rate limits.\n"
+    },
+    {
+      "test": "scene-handoff.mjs",
+      "passed": true,
+      "seconds": 0.07,
+      "output": "PASS: saved scene precedes presence across island versions, old in-flight saves and presence, with real failure handling retained.\n"
+    },
+    {
+      "test": "server-npc-simulation.mjs",
+      "passed": true,
+      "seconds": 0.06,
+      "output": "PASS: four server-controlled bosses, attack deadlines, phase transitions, assisted first Veyr fight, exactly-once hits, disconnect recovery, and rat pen collision.\n"
+    },
+    {
+      "test": "server-status.mjs",
+      "passed": true,
+      "seconds": 0.36,
+      "output": "PASS: real cross-scene presence count, stale expiry, indexed lookup, public maintenance status, unavailable counts, HTTP methods, release page and polling recovery.\nmaintenance_database_read_retry {\n  name: 'TypeError',\n  message: \"Cannot read properties of undefined (reading 'prepare')\",\n  cause: ''\n}\nmaintenance_database_read_failed {\n  name: 'TypeError',\n  message: \"Cannot read properties of undefined (reading 'prepare')\",\n  cause: ''\n}\n"
+    },
+    {
+      "test": "rebuilt-world.cjs",
+      "passed": true,
+      "seconds": 31.5,
+      "output": "PASS: GPU shadow/color passes, finite geometry, static buffer reuse, three interiors, all item previews and context-loss canvas fallback.\n"
+    },
+    {
+      "test": "shared-client.cjs",
+      "passed": true,
+      "seconds": 5.95,
+      "output": "PASS: 1476 stable entity identities, remote death without credit, server respawn, receipt replay protection, real pickup application, shared fire lifecycle, remote gathering/combat/red teleport animation state.\n"
+    },
+    {
+      "test": "shared-database-load.mjs",
+      "passed": true,
+      "seconds": 1.34,
+      "output": "PASS: indexed bounded expiration, cross-isolate lease exclusion, 100,000-event fixture and ten simulated minutes at 156 public effects/second without history growth; unacknowledged receipts retained.\n"
+    },
+    {
+      "test": "renderer-gl.cjs",
+      "passed": true,
+      "seconds": 28.45,
+      "output": "PASS: GPU shadow/color passes, finite geometry, static buffer reuse, three interiors, all item previews and context-loss canvas fallback.\n"
+    },
+    {
+      "test": "render-benchmark.cjs",
+      "passed": true,
+      "seconds": 38.29,
+      "output": "{\"msForThreeFrames\":37578}\n"
+    },
+    {
+      "test": "shared-world.mjs",
+      "passed": true,
+      "seconds": 6.11,
+      "output": "PASS: shared rat death/respawn, 30-second privacy for enemy and manual drops, forbidden early pickups, simultaneous collection, idempotent retries, stale hits, concurrent fires, shared doors/resources, teleport departure and arrival records.\nPASS: real browser melee through server receipts and drops; journal gives exact remaining tutorial action without blocking panels; ordinary-enemy HUD removed and boss HUD retained.\n"
+    },
+    {
+      "test": "shared-performance.cjs",
+      "passed": true,
+      "seconds": 6.96,
+      "output": "{\"syncCPU_p50_ms\":0.5160490000007485,\"syncCPU_p95_ms\":0.7052459999995335,\"snapshotBytes\":9686}\n{\"avatars\":76,\"poseCPU_p50_ms\":0.2334019999998418,\"poseCPU_p95_ms\":0.3984019999998054,\"materialCache\":76,\"materialBytes\":68009684,\"rigCache\":120}\n"
+    },
+    {
+      "test": "skill-progression.cjs",
+      "passed": true,
+      "seconds": 5.69,
+      "output": "PASS: XP thresholds, migration, gear and tools, combat training, gathering/respawn, recipe costs, cooking/food, fletching, permanent tutor workplaces, and tutorial-only guidance.\n"
+    },
+    {
+      "test": "social-maintenance.mjs",
+      "passed": true,
+      "seconds": 0.13,
+      "output": "PASS: local/private isolation, one-way friends and privacy/ignore controls, equipped-item protection, offer revisions, two-stage atomic trade rollback and transfer, replay prevention, stale-save rejection, maintenance countdown and session-only disconnect.\n"
+    },
+    {
+      "test": "sky-combat-guardians.cjs",
+      "passed": true,
+      "seconds": 5.83,
+      "output": "PASS: exact lair entrance, guardian combat initiation, walking retreats and gradual healing, ranged fence attacks, original discovery spirits, no follower actors and caster-timed special impacts, tutorial migration.\n"
+    },
+    {
+      "test": "social-ui.cjs",
+      "passed": true,
+      "seconds": 0.62,
+      "output": "PASS: safe chat, public-only overheads, wrapped speech, trade grids and quantities, separate final review, no-reload completion, timestamp interpolation and bounded route prediction.\n"
+    },
+    {
+      "test": "startup-recovery.cjs",
+      "passed": true,
+      "seconds": 0.55,
+      "output": "PASS: failed scripts, runtime errors, timeout, retry, late completion, monotonic progress, and protected character saves.\n"
+    },
+    {
+      "test": "story-server.mjs",
+      "passed": true,
+      "seconds": 0.09,
+      "output": "PASS: both story enemies enforce the exact quest stage on the server; relic and Eldrite catalog names match.\nPASS: Rowan permits the real final lesson for v2\u2013v7, blocks earlier lessons and invalid crossings.\n"
+    },
+    {
+      "test": "texture-skinning.cjs",
+      "passed": true,
+      "seconds": 0.76,
+      "output": "PASS: correct device probe, corrupted-output/capability/compiler fallbacks, desktop path, palette rows and upload reuse, shared-index eviction, current-frame protection and full-HD pixel budget.\nPASS: native GLES executes all 80 bone addresses and four weighted transforms; maximum pixel error 0\n"
+    },
+    {
+      "test": "trading.cjs",
+      "passed": true,
+      "seconds": 0.13,
+      "output": "PASS: actual bag and stock click handlers; single, bulk and custom amounts; full inventory; stack limits; worn gear; duplicate purchases; coin conservation; normal item actions restored.\n"
+    },
+    {
+      "test": "shared-two-clients.mjs",
+      "passed": true,
+      "seconds": 13.96,
+      "output": "PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.\nPASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red/green teleport departure/arrival poses, correct colors and expiry from authenticated action packets.\nPASS: moved doors open on first click, allow real entry, and close from inside for both clients.\nPASS: trading after a completed attack and escape; active combat remains protected.\nPASS: server keeps fighting while attacker simulation is stalled; browser NPC pose injection is ignored.\nPASS: urgent combat reaches an open observer stream independently of stalled world polling; delayed animation plays once; unauthenticated/cross-origin writes rejected.\n"
+    },
+    {
+      "test": "terrain-travel.cjs",
+      "passed": true,
+      "seconds": 5.05,
+      "output": "PASS: run across bridge, matching deck picking, continuous banks, level room floors, coastline and terrain road coverage.\n"
+    },
+    {
+      "test": "tutorial-guidance.cjs",
+      "passed": true,
+      "seconds": 0.61,
+      "output": "PASS: automatic and queued supplies, no rune menu, idempotent kits, sequential UI targets, recipe guard and highlight cleanup.\n"
+    },
+    {
+      "test": "tutorial-order.cjs",
+      "passed": true,
+      "seconds": 0.64,
+      "output": "PASS: requested tutor order, updated handoffs, all v4/v5 save positions migrated without losing completed lessons or possessions, reload stability and completed-step skipping.\n"
+    },
+    {
+      "test": "tutorial-coast.cjs",
+      "passed": true,
+      "seconds": 5.61,
+      "output": "PASS: ocean border, continuous island, curved headlands, dry foundations, fishing cove, expanded-coast save recovery, and isolated mainland bridges.\n"
+    },
+    {
+      "test": "tutorial-world-fit.cjs",
+      "passed": true,
+      "seconds": 6.11,
+      "output": "PASS: graded smith/ore yard, eight stable ore silhouettes and veins, fitted staff geometry on both rigs through idle, casting, walking and running.\n"
+    },
+    {
+      "test": "varkesh.cjs",
+      "passed": true,
+      "seconds": 5.83,
+      "output": "PASS: original dragon, native loop, authored combat, curved skin batches, corpse, locked breath aim, safe dodges, bite, connected roost, ground loot and respawn timer.\n"
+    },
+    {
+      "test": "training-pen.cjs",
+      "passed": true,
+      "seconds": 11.98,
+      "output": "PASS: 15 larger rats, complete fence collision, gate entry/exit and automatic closure, interruption safety, constrained roaming/combat, tutorial kills, loot and respawn.\n"
+    },
+    {
+      "test": "shared-39-clients.mjs",
+      "passed": true,
+      "seconds": 42.41,
+      "output": "{\n  \"result\": \"PASS\",\n  \"environment\": \"local in-memory SQLite; NOT a live D1 capacity certification\",\n  \"clients\": 39,\n  \"rounds\": 120,\n  \"targetWorldHz\": 4,\n  \"durationMs\": 30000,\n  \"requests\": 6474,\n  \"queries\": 61528,\n  \"queriesPerSecond\": 2051,\n  \"sqlExecutionMs\": 3228,\n  \"maxRoundMs\": 125,\n  \"lateRounds\": 0,\n  \"peerChecks\": 4641,\n  \"combatReceipts\": 390,\n  \"successfulHits\": 14,\n  \"chatChecks\": 39,\n  \"streamFrames\": 4797,\n  \"savedCharacters\": 39\n}\n"
+    },
+    {
+      "test": "world-options.cjs",
+      "passed": true,
+      "seconds": 0.06,
+      "output": "PASS: hold, right-click, release suppression, drag cancellation and pinch cancellation.\n"
+    },
+    {
+      "test": "world-style.cjs",
+      "passed": true,
+      "seconds": 5.24,
+      "output": "PASS: organic surface normals, imported mesh bounds/materials, elven woodland and all three castle entrances and exits.\n"
+    },
+    {
+      "test": "world-timers.cjs",
+      "passed": true,
+      "seconds": 0.08,
+      "output": "PASS: real-time respawns, loot cleanup and saved expiry; player fires become collectible ashes after 150 seconds; permanent hearths stay.\n"
+    },
+    {
+      "test": "xalith.cjs",
+      "passed": true,
+      "seconds": 1.36,
+      "output": "PASS: Xalith preserves 13,156 triangles, curved wing segments and original materials; seven authored motions move, loops close, death collapses, and split GPU palettes agree with CPU deformation.\n"
+    },
+    {
+      "test": "walk-in-controls.cjs",
+      "passed": true,
+      "seconds": 8.69,
+      "output": "PASS: manual doors, five-tile roof removal, unobstructed floor clicks, entry/exit and tutor routes for bank, school and kitchen; all four orientations and cancellation.\n"
+    },
+    {
+      "test": "view3d.cjs",
+      "passed": true,
+      "seconds": 11.73,
+      "output": "PASS: 45 camera angle/zoom combinations, screen-to-world inversion, 3D draw, interior scenes, all weapon meshes and articulated equipment.\n"
+    },
+    {
+      "test": "world-art.cjs",
+      "passed": true,
+      "seconds": 67.71,
+      "output": "PASS: all 188 settlement buildings, three authored peoples, 13 towns at maximum zoom-out, regional castles, cross-kingdom bridges, six interiors, bounded model cache, source geometry, GPU reuse and context-loss fallback.\n"
+    },
+    {
+      "test": "built-assets.mjs",
+      "passed": true,
+      "output": "PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.\nPASS: readable home page, all 78 startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. 45.10 MiB before hosting compression.\n"
+    }
+  ]
+}

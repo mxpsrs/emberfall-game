@@ -1,0 +1,84 @@
+{
+  "joints": 36,
+  "scale": 0.6730625851476144,
+  "height": 3.2,
+  "source": {
+    "author": "Tennessippi Studios",
+    "license": "CC0 1.0",
+    "url": "https://tennessippistudios.itch.io/treant-pack",
+    "sha256": "f7f5b4b015ee4df4088b438df80abdc923f1b9a5e430a12d5f069bc87e952293",
+    "file": "Tree02_FBX.fbx",
+    "nativeActions": [
+      "Tree02|Attack2",
+      "Tree02|Attack3",
+      "Tree02|Attack_1",
+      "Tree02|Death1",
+      "Tree02|Death2",
+      "Tree02|Death3",
+      "Tree02|Idle",
+      "Tree02|River Dance",
+      "Tree02|Run",
+      "Tree02|Taunt"
+    ]
+  },
+  "vertices": 4201,
+  "triangles": 7340,
+  "deforms": 33,
+  "clips": {
+    "idle": {
+      "source": "Tree02|Idle",
+      "duration": 1.66666667,
+      "frames": 41
+    },
+    "walk": {
+      "source": "Tree02|Run",
+      "duration": 2.2,
+      "frames": 41
+    },
+    "run": {
+      "source": "Tree02|Run",
+      "duration": 1.66666667,
+      "frames": 41
+    },
+    "attack": {
+      "source": "Tree02|Attack_1",
+      "duration": 1.66666667,
+      "frames": 41
+    },
+    "attack2": {
+      "source": "Tree02|Attack2",
+      "duration": 1.04166667,
+      "frames": 26
+    },
+    "attack3": {
+      "source": "Tree02|Attack3",
+      "duration": 1.25,
+      "frames": 31
+    },
+    "death": {
+      "source": "Tree02|Death1",
+      "duration": 1.25,
+      "frames": 31
+    },
+    "death2": {
+      "source": "Tree02|Death2",
+      "duration": 1.16666667,
+      "frames": 29
+    },
+    "death3": {
+      "source": "Tree02|Death3",
+      "duration": 1.16666667,
+      "frames": 29
+    },
+    "taunt": {
+      "source": "Tree02|Taunt",
+      "duration": 2.08333333,
+      "frames": 51
+    },
+    "dance": {
+      "source": "Tree02|River Dance",
+      "duration": 1.66666667,
+      "frames": 41
+    }
+  }
+}

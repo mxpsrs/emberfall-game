@@ -1,0 +1,27 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.3.0)
+
+newmtl woodBark
+Kd 0.886274517 0.513725519 0.34117648
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl woodInner
+Kd 0.960784316 0.843137264 0.733333349
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl woodDark
+Kd 0.768627465 0.427450985 0.294117659
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl $Material_3
+Kd 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+

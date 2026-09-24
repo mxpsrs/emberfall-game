@@ -1,0 +1,768 @@
+{
+  "sourceActions": [
+    {
+      "name": "Action.001",
+      "range": [
+        1.0,
+        105.0
+      ],
+      "curves": 1128
+    },
+    {
+      "name": "Action.002",
+      "range": [
+        1.0,
+        105.0
+      ],
+      "curves": 1128
+    },
+    {
+      "name": "PoseLib",
+      "range": [
+        1.0,
+        1.0
+      ],
+      "curves": 2487
+    },
+    {
+      "name": "Walk Loop",
+      "range": [
+        1.0,
+        118.0
+      ],
+      "curves": 568
+    },
+    {
+      "name": "Walk Loop.001",
+      "range": [
+        1.0,
+        117.0
+      ],
+      "curves": 858
+    }
+  ],
+  "authoredActions": [
+    "idle",
+    "attack",
+    "cast",
+    "hit",
+    "death"
+  ],
+  "nativeRuntimeActions": {
+    "walk": {
+      "source": "Walk Loop",
+      "frames": [
+        1,
+        118
+      ]
+    },
+    "run": {
+      "source": "Walk Loop",
+      "frames": [
+        1,
+        118
+      ],
+      "duration": 3.3
+    }
+  },
+  "sourceBones": 125,
+  "weightedBones": 94,
+  "bakedSegmentJoints": 236,
+  "sourceVertices": 9664,
+  "triangles": 19436,
+  "maxDiscardedWeight": 0.2980734753223333,
+  "skinErrorSourceUnits": {
+    "idle": 0.10803513569211526,
+    "walk": 1.4092016095940505,
+    "run": 1.3825596815445822,
+    "attack": 0.3019538329736188,
+    "cast": 0.4644839204421452,
+    "hit": 0.10615598571056438,
+    "death": 2.6966239218253665
+  },
+  "skinErrorPercentilesSourceUnits": {
+    "idle": {
+      "mean": 0.00045668277875380523,
+      "p95": 0.0011175840553676727,
+      "p99": 0.011671051195833332
+    },
+    "walk": {
+      "mean": 0.010579128508184175,
+      "p95": 0.05648327453486877,
+      "p99": 0.23693417512594536
+    },
+    "run": {
+      "mean": 0.010492377292332223,
+      "p95": 0.056197522454256035,
+      "p99": 0.2364278971706474
+    },
+    "attack": {
+      "mean": 0.0011325678236859518,
+      "p95": 0.004933846276744123,
+      "p99": 0.025311709236445646
+    },
+    "cast": {
+      "mean": 0.0012731681881733973,
+      "p95": 0.0040164200697263225,
+      "p99": 0.029107827460177968
+    },
+    "hit": {
+      "mean": 0.0005325986569380076,
+      "p95": 0.002148805279961783,
+      "p99": 0.013285075688485592
+    },
+    "death": {
+      "mean": 0.01883976626140977,
+      "p95": 0.08081589690172611,
+      "p99": 0.45529311553848645
+    }
+  },
+  "bindCompensation": "Grounded preserve-volume stance baked into bind vertices and split normals; animated error measured against original Blender evaluation",
+  "maxBindCompensationSourceUnits": 3.178165459954245,
+  "axis": "Blender (x,y,z) -> game (x,z,-y)",
+  "sourceHierarchy": [
+    {
+      "name": "Root Bone",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "Pelvis",
+      "parent": "Root Bone",
+      "segments": 1
+    },
+    {
+      "name": "TailBase",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "Tail1",
+      "parent": "TailBase",
+      "segments": 6
+    },
+    {
+      "name": "Tail2",
+      "parent": "Tail1",
+      "segments": 6
+    },
+    {
+      "name": "Tail3",
+      "parent": "Tail2",
+      "segments": 6
+    },
+    {
+      "name": "Tail4",
+      "parent": "Tail3",
+      "segments": 6
+    },
+    {
+      "name": "Tail5",
+      "parent": "Tail4",
+      "segments": 6
+    },
+    {
+      "name": "Tail6",
+      "parent": "Tail5",
+      "segments": 6
+    },
+    {
+      "name": "Tail7",
+      "parent": "Tail6",
+      "segments": 1
+    },
+    {
+      "name": "ThighBase.L",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Thigh.L",
+      "parent": "ThighBase.L",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Shin.L",
+      "parent": "Chain2 Thigh.L",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Foot.L",
+      "parent": "Chain2 Shin.L",
+      "segments": 1
+    },
+    {
+      "name": "FootRollControl.L",
+      "parent": "Chain2 Foot.L",
+      "segments": 1
+    },
+    {
+      "name": "FootRollTarget.L",
+      "parent": "FootRollControl.L",
+      "segments": 1
+    },
+    {
+      "name": "Thigh.L",
+      "parent": "Chain2 Thigh.L",
+      "segments": 1
+    },
+    {
+      "name": "Shin.L",
+      "parent": "Thigh.L",
+      "segments": 1
+    },
+    {
+      "name": "Foot.L",
+      "parent": "Shin.L",
+      "segments": 1
+    },
+    {
+      "name": "ToeBase.L",
+      "parent": "Foot.L",
+      "segments": 1
+    },
+    {
+      "name": "MIddleToe1.L",
+      "parent": "ToeBase.L",
+      "segments": 1
+    },
+    {
+      "name": "MiddleToe2.L",
+      "parent": "MIddleToe1.L",
+      "segments": 1
+    },
+    {
+      "name": "OuterToeBase.L",
+      "parent": "ToeBase.L",
+      "segments": 1
+    },
+    {
+      "name": "OuterToe1.L",
+      "parent": "OuterToeBase.L",
+      "segments": 1
+    },
+    {
+      "name": "OuterToe2.L",
+      "parent": "OuterToe1.L",
+      "segments": 1
+    },
+    {
+      "name": "InnerToeBase.L",
+      "parent": "ToeBase.L",
+      "segments": 1
+    },
+    {
+      "name": "InnerToe1.L",
+      "parent": "InnerToeBase.L",
+      "segments": 1
+    },
+    {
+      "name": "InnerToe2.L",
+      "parent": "InnerToe1.L",
+      "segments": 1
+    },
+    {
+      "name": "Chain1Thigh.L",
+      "parent": "ThighBase.L",
+      "segments": 1
+    },
+    {
+      "name": "Chain1Shin.L",
+      "parent": "Chain1Thigh.L",
+      "segments": 1
+    },
+    {
+      "name": "Spine",
+      "parent": "Pelvis",
+      "segments": 6
+    },
+    {
+      "name": "Torso",
+      "parent": "Spine",
+      "segments": 1
+    },
+    {
+      "name": "Neck",
+      "parent": "Torso",
+      "segments": 8
+    },
+    {
+      "name": "Head",
+      "parent": "Neck",
+      "segments": 1
+    },
+    {
+      "name": "Jaw1",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Jaw2",
+      "parent": "Jaw1",
+      "segments": 1
+    },
+    {
+      "name": "Tongue1",
+      "parent": "Jaw2",
+      "segments": 4
+    },
+    {
+      "name": "Tongue2",
+      "parent": "Tongue1",
+      "segments": 4
+    },
+    {
+      "name": "Tongue3",
+      "parent": "Tongue2",
+      "segments": 1
+    },
+    {
+      "name": "Eye.L",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Eye.R",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Vision",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Jaw IK",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Jaw IK Target",
+      "parent": "Jaw IK",
+      "segments": 1
+    },
+    {
+      "name": "Brow.L",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Brow.R",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "HeadIK",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Shoulder.L",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Wing1.L",
+      "parent": "Shoulder.L",
+      "segments": 1
+    },
+    {
+      "name": "Wing2.L",
+      "parent": "Wing1.L",
+      "segments": 1
+    },
+    {
+      "name": "Hand.L",
+      "parent": "Wing2.L",
+      "segments": 1
+    },
+    {
+      "name": "MIddleFinger1.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "MiddleFinger2.L",
+      "parent": "MIddleFinger1.L",
+      "segments": 6
+    },
+    {
+      "name": "MiddleFinger3.L",
+      "parent": "MiddleFinger2.L",
+      "segments": 6
+    },
+    {
+      "name": "SubPinky1.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "SubPinky2.L",
+      "parent": "SubPinky1.L",
+      "segments": 6
+    },
+    {
+      "name": "SubPinky3.L",
+      "parent": "SubPinky2.L",
+      "segments": 6
+    },
+    {
+      "name": "Pinky1.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "Pinky2.L",
+      "parent": "Pinky1.L",
+      "segments": 6
+    },
+    {
+      "name": "Pinky3.L",
+      "parent": "Pinky2.L",
+      "segments": 6
+    },
+    {
+      "name": "Tuhmb Base.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "Thumb1.L",
+      "parent": "Tuhmb Base.L",
+      "segments": 1
+    },
+    {
+      "name": "Thumb2.L",
+      "parent": "Thumb1.L",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex1.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex2.L",
+      "parent": "SubIndex1.L",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex3.L",
+      "parent": "SubIndex2.L",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger1.L",
+      "parent": "Hand.L",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger2.L",
+      "parent": "IndexFinger1.L",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger3.L",
+      "parent": "IndexFinger2.L",
+      "segments": 1
+    },
+    {
+      "name": "Elbow1.L",
+      "parent": "Wing1.L",
+      "segments": 1
+    },
+    {
+      "name": "elbow2.L",
+      "parent": "Elbow1.L",
+      "segments": 6
+    },
+    {
+      "name": "Shoulder.R",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Wing1.R",
+      "parent": "Shoulder.R",
+      "segments": 1
+    },
+    {
+      "name": "Wing2.R",
+      "parent": "Wing1.R",
+      "segments": 1
+    },
+    {
+      "name": "Hand.R",
+      "parent": "Wing2.R",
+      "segments": 1
+    },
+    {
+      "name": "MIddleFinger1.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "MiddleFinger2.R",
+      "parent": "MIddleFinger1.R",
+      "segments": 6
+    },
+    {
+      "name": "MiddleFinger3.R",
+      "parent": "MiddleFinger2.R",
+      "segments": 6
+    },
+    {
+      "name": "SubPinky1.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "SubPinky2.R",
+      "parent": "SubPinky1.R",
+      "segments": 6
+    },
+    {
+      "name": "SubPinky3.R",
+      "parent": "SubPinky2.R",
+      "segments": 6
+    },
+    {
+      "name": "Pinky1.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "Pinky2.R",
+      "parent": "Pinky1.R",
+      "segments": 6
+    },
+    {
+      "name": "Pinky3.R",
+      "parent": "Pinky2.R",
+      "segments": 6
+    },
+    {
+      "name": "Tuhmb Base.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "Thumb1.R",
+      "parent": "Tuhmb Base.R",
+      "segments": 1
+    },
+    {
+      "name": "Thumb2.R",
+      "parent": "Thumb1.R",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex1.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex2.R",
+      "parent": "SubIndex1.R",
+      "segments": 1
+    },
+    {
+      "name": "SubIndex3.R",
+      "parent": "SubIndex2.R",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger1.R",
+      "parent": "Hand.R",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger2.R",
+      "parent": "IndexFinger1.R",
+      "segments": 1
+    },
+    {
+      "name": "IndexFinger3.R",
+      "parent": "IndexFinger2.R",
+      "segments": 1
+    },
+    {
+      "name": "Elbow1.R",
+      "parent": "Wing1.R",
+      "segments": 1
+    },
+    {
+      "name": "elbow2.R",
+      "parent": "Elbow1.R",
+      "segments": 6
+    },
+    {
+      "name": "Wing Fly IK.L",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Wing Fly IK.R",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "ThighBase.R",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Thigh.R",
+      "parent": "ThighBase.R",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Shin.R",
+      "parent": "Chain2 Thigh.R",
+      "segments": 1
+    },
+    {
+      "name": "Chain2 Foot.R",
+      "parent": "Chain2 Shin.R",
+      "segments": 1
+    },
+    {
+      "name": "FootRollControl.R",
+      "parent": "Chain2 Foot.R",
+      "segments": 1
+    },
+    {
+      "name": "FootRollTarget.R",
+      "parent": "FootRollControl.R",
+      "segments": 1
+    },
+    {
+      "name": "Thigh.R",
+      "parent": "Chain2 Thigh.R",
+      "segments": 1
+    },
+    {
+      "name": "Shin.R",
+      "parent": "Thigh.R",
+      "segments": 1
+    },
+    {
+      "name": "Foot.R",
+      "parent": "Shin.R",
+      "segments": 1
+    },
+    {
+      "name": "ToeBase.R",
+      "parent": "Foot.R",
+      "segments": 1
+    },
+    {
+      "name": "MIddleToe1.R",
+      "parent": "ToeBase.R",
+      "segments": 1
+    },
+    {
+      "name": "MiddleToe2.R",
+      "parent": "MIddleToe1.R",
+      "segments": 1
+    },
+    {
+      "name": "OuterToeBase.R",
+      "parent": "ToeBase.R",
+      "segments": 1
+    },
+    {
+      "name": "OuterToe1.R",
+      "parent": "OuterToeBase.R",
+      "segments": 1
+    },
+    {
+      "name": "OuterToe2.R",
+      "parent": "OuterToe1.R",
+      "segments": 1
+    },
+    {
+      "name": "InnerToeBase.R",
+      "parent": "ToeBase.R",
+      "segments": 1
+    },
+    {
+      "name": "InnerToe1.R",
+      "parent": "InnerToeBase.R",
+      "segments": 1
+    },
+    {
+      "name": "InnerToe2.R",
+      "parent": "InnerToe1.R",
+      "segments": 1
+    },
+    {
+      "name": "Chain1Thigh.R",
+      "parent": "ThighBase.R",
+      "segments": 1
+    },
+    {
+      "name": "Chain1Shin.R",
+      "parent": "Chain1Thigh.R",
+      "segments": 1
+    },
+    {
+      "name": "Wing IK.L",
+      "parent": "Root Bone",
+      "segments": 1
+    },
+    {
+      "name": "Wing Pole.L",
+      "parent": "Wing IK.L",
+      "segments": 1
+    },
+    {
+      "name": "Wing IK.R",
+      "parent": "Root Bone",
+      "segments": 1
+    },
+    {
+      "name": "Wing Pole.R",
+      "parent": "Wing IK.R",
+      "segments": 1
+    },
+    {
+      "name": "Leg IK.L",
+      "parent": "Root Bone",
+      "segments": 1
+    },
+    {
+      "name": "Leg POLE.L",
+      "parent": "Leg IK.L",
+      "segments": 1
+    },
+    {
+      "name": "Leg IK.R",
+      "parent": "Root Bone",
+      "segments": 1
+    },
+    {
+      "name": "Leg POLE.R",
+      "parent": "Leg IK.R",
+      "segments": 1
+    }
+  ],
+  "runtimeScale": 0.16626837050204699,
+  "skinErrorGameUnits": {
+    "idle": 0.01796282596849554,
+    "walk": 0.23430565533606457,
+    "run": 0.22987594537224668,
+    "attack": 0.050205371775370856,
+    "cast": 0.07722898457631791,
+    "hit": 0.017650382763134125,
+    "death": 0.44836326533874304
+  },
+  "sourceArchiveSha256": "f4cf40c3b55cdffcd8d01a019d3f7c2bbc54ae1837ff806333b3114bdc63fa14",
+  "sourceTextureHashes": {
+    "Diffuse17.png": "44808ffdc8640de71a65f4aaacda806bc349003afdea842452c2b072229ce0c2",
+    "Diffuse16.png": "6b41473ffdc7cf68df9cae69121c8afd3bc1b77b7872c2497740e529461ce6f9",
+    "Roughness3.png": "5ffd7decec984cba892a5f1f0c0824bb5827810f087a82e795b0e49440365016",
+    "Alpha2.png": "735226079ad1e2da6cadd508a5283d01b82f50b1f2bc5a48b75c985c251a21eb",
+    "Normal_Bake_3.png": "44e5bcc9dcb88857f848469ad54cf05d522e5d39e1e37e44938861c18f37791a"
+  }
+}

@@ -1,0 +1,8 @@
+Forest Ground 01 diffuse texture, 1K JPG
+Author: Rob Tuytel
+Source: https://polyhaven.com/a/forrest_ground_01
+License: CC0 1.0 Universal
+
+Veldren uses the source texture only to add subtle luminance variation to its
+authored grass color. The original downloaded source is retained beside this
+record for deterministic rebuilds.

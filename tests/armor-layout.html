@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Armor fitting preview</title>
+<style>body{margin:16px;background:#17221f;color:#eee;font:16px system-ui}button{padding:9px 12px;margin:0 6px 10px 0}iframe{display:block;border:1px solid #ab9d77;width:1112px;height:512px}p{font-size:13px;color:#bbb}</style>
+<button id="wide">1112 × 512</button><button id="compact">844 × 390</button><button id="portrait">390 × 844</button>
+<button id="bronze">Bronze</button><button id="iron">Iron</button><button id="gold">Gold</button><button id="mithril">Mithril</button><button id="dragonslayer">Dragonslayer</button><button id="frame">Switch body frame</button>
+<iframe title="Veldren equipment preview" src="/__build__/?armorQA=bronze"></iframe>
+<p>Local fixture · isolated save · world animation paused for UI review in the software-only browser.</p>
+<script>
+const frame=document.querySelector('iframe');let sex='male',set='bronze';
+for(const [id,w,h]of [['wide',1112,512],['compact',844,390],['portrait',390,844]])document.getElementById(id).onclick=()=>{frame.style.width=w+'px';frame.style.height=h+'px'};
+function load(){frame.src='/__build__/?armorQA='+set+'&frame='+sex;}
+for(const id of ['bronze','iron','gold','mithril','dragonslayer'])document.getElementById(id).onclick=()=>{set=id;load();};
+document.getElementById('frame').onclick=()=>{sex=sex==='male'?'female':'male';load();};
+</script></html>

@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-16T10:40:14.311Z",
+  "seconds": 64,
+  "passed": 7,
+  "failed": 0,
+  "total": 7,
+  "results": [
+    {
+      "test": "tests/civilization-server.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.1,
+      "output": "PASS: two authenticated accounts share castle, inn and watchtower floors, preserve saves, and share quarry harvesting/depletion/respawns with idempotent rewards.\n"
+    },
+    {
+      "test": "tests/civilization-world.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 26,
+      "output": "{\"settlements\":13,\"castles\":3,\"floors\":96,\"quarries\":5,\"quests\":\"reachable\",\"goblins\":15}\n"
+    },
+    {
+      "test": "tests/local-storage.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.7,
+      "output": "PASS: automatic JSON files, two-player chat/trade, rollback, persistent login/saves, JSON recovery, and full local file deletion requiring fresh registration.\n"
+    },
+    {
+      "test": "tests/map-services.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 4.6,
+      "output": "PASS: real shop stock, all nine tutors, bank deduplication, indoor entrance/exit routes, scaled marker taps, square boundaries and every shared icon.\n"
+    },
+    {
+      "test": "tests/quarry-maps.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 36.6,
+      "output": "PASS: five named quarries, proper Mining icons, all surface ore access and skill requirements, atlas/list/filter/minimap visibility, scaled touch selection and safe travel with tutorial gating.\n"
+    },
+    {
+      "test": "tests/world-atlas.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 33.5,
+      "output": "PASS: production canvas labels every kingdom and settlement, whole-world opening from tutorial, scene preservation, fit-world button, zoom buttons, pinch, wheel and settlement selection.\n"
+    },
+    {
+      "test": "tests/built-assets.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.9,
+      "output": "PASS: all 92 startup resources, JavaScript/JSON parsing, fresh cache URLs, conditional requests, licensed music and sound delivery."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+CREATE INDEX `idx_shared_effect_cleanup` ON `shared_events` (`kind`,`acked`,`created_at`);

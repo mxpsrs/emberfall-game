@@ -1,0 +1,1112 @@
+{
+  "pack": "KayKit Medieval Hexagon Pack 1.0",
+  "commit": "84fa4e91af6a88989be7c99e0891cede11f2ca38",
+  "license": "CC0; bundled town-LICENSE.txt",
+  "models": [
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_archeryrange_blue.gltf",
+      "sha": "10a446ddbf2ef737d0d2a1873cd21236b40c10fd",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_barracks_blue.gltf",
+      "sha": "aee98cc91e1315ed2dc983c5b7838a3b3b9f4d8f",
+      "size": 3078
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_blacksmith_blue.gltf",
+      "sha": "e428d9e8ab287b41537b8985f6521580c678db4b",
+      "size": 3103
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_castle_blue.gltf",
+      "sha": "4bef1d6389808a1d9c9b0987dfb77292f65a4145",
+      "size": 3072
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_church_blue.gltf",
+      "sha": "df0c0308da6d739ecadefa731385d66b0e5cc916",
+      "size": 3089
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_home_A_blue.gltf",
+      "sha": "885c5741a74ac355cdf136d7d6753d0ac0eb0568",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_home_B_blue.gltf",
+      "sha": "c566f9b0f3d8ca6c2356be1d45dfc9d937b0ca37",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_lumbermill_blue.gltf",
+      "sha": "af4545b1ccdc46aabc46bfc563dba0798b1441eb",
+      "size": 7358
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_market_blue.gltf",
+      "sha": "cc62f9f07150afdf1176c032dfc69a362cc548ed",
+      "size": 3091
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_mine_blue.gltf",
+      "sha": "cd08245bd343e733b6afdd18ab5b78524882304c",
+      "size": 3084
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_tavern_blue.gltf",
+      "sha": "f28fb0881fe8fcd2bec6d785edf38cd5a623f4a9",
+      "size": 3093
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_tower_A_blue.gltf",
+      "sha": "db031eb0466f5e551837516b381cf32c1b46baab",
+      "size": 5047
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_tower_B_blue.gltf",
+      "sha": "747a746dcc1d6947cee99bf0033c8fb47d19973b",
+      "size": 5048
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_tower_base_blue.gltf",
+      "sha": "cda13a6c1b9494779344eddaec046d2c4faebe63",
+      "size": 3065
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_tower_catapult_blue.gltf",
+      "sha": "4818c234a9f5ed77ecf85a4e83f77dc5850b44ff",
+      "size": 7298
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_watermill_blue.gltf",
+      "sha": "b11bfe895e5e97719ffd090634e0146153b0b606",
+      "size": 5235
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_well_blue.gltf",
+      "sha": "f946bc0981abd4dfc7a303491f2ff9303362c2f3",
+      "size": 3083
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/blue/building_windmill_blue.gltf",
+      "sha": "e06dbffe42909541c9b918b8116f7eafea944135",
+      "size": 7328
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_archeryrange_green.gltf",
+      "sha": "c9b998512c31b141d9b6edb16375bb2cbc852287",
+      "size": 3093
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_barracks_green.gltf",
+      "sha": "d459a66eecf1bc9693831478cc4bcc015497bf59",
+      "size": 3081
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_blacksmith_green.gltf",
+      "sha": "0d4ad62b03c449040fb5a14410e02a1fa012ccd6",
+      "size": 3106
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_castle_green.gltf",
+      "sha": "71e5aa1774b98d7ecdfe33fcb754e927a7efda0d",
+      "size": 3075
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_church_green.gltf",
+      "sha": "3ccf2511173d234f002bf36a56bd6833dea3a64f",
+      "size": 3092
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_home_A_green.gltf",
+      "sha": "9c96c7d032b8fd77772c58c59e90170241202b0f",
+      "size": 3093
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_home_B_green.gltf",
+      "sha": "c4318c4afe49be61a53c33fc42409f2ce70351f8",
+      "size": 3093
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_lumbermill_green.gltf",
+      "sha": "235a3535dbc8ea56d3948ab299a223232e5d0865",
+      "size": 7365
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_market_green.gltf",
+      "sha": "c3b09e4ab2c5fef3806746cc468c62c1bd4fd057",
+      "size": 3094
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_mine_green.gltf",
+      "sha": "78abe98dcb2b364cbe742c44ccb0e795bb6d6ea6",
+      "size": 3087
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_tavern_green.gltf",
+      "sha": "68f6d055a7c0171e933e0fbc8e5622d6c4b7f85e",
+      "size": 3096
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_tower_A_green.gltf",
+      "sha": "a1796b156445596445143c4afc07a7f99feccede",
+      "size": 5052
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_tower_B_green.gltf",
+      "sha": "eb74fa28d54b70a935e898f02b6b0c0a3997fc20",
+      "size": 5053
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_tower_base_green.gltf",
+      "sha": "f2b66656f91edbcb9eeeb04839203ee8ff4cee0d",
+      "size": 3068
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_tower_catapult_green.gltf",
+      "sha": "efceafdab5a88ebacac7033fb31e35fe9ef42e73",
+      "size": 7305
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_watermill_green.gltf",
+      "sha": "fe5b1a02871a0cd3aae7b7c6cc5c7452897678b1",
+      "size": 5240
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_well_green.gltf",
+      "sha": "7ba57e910857099027a14692fa421593b0b30c7b",
+      "size": 3086
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/green/building_windmill_green.gltf",
+      "sha": "5bc968a7d9f4f1d2db803caf2d9067c877ea255e",
+      "size": 7335
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_bridge_A.gltf",
+      "sha": "df1ed184db0f1f8aade09280fd52017ff6fa3d6b",
+      "size": 3039
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_bridge_B.gltf",
+      "sha": "ebcef98b62b557ac8936cf793d42c4f0d8bf88b2",
+      "size": 3039
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_destroyed.gltf",
+      "sha": "3b054c0ef4e6e9582182285ecae02844e6d827a9",
+      "size": 3079
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_dirt.gltf",
+      "sha": "23155a3f44b2ed48265e81918bd5596a6c4cd9cd",
+      "size": 3056
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_grain.gltf",
+      "sha": "999c9d427a8006eddef06e176a7193e94dad984a",
+      "size": 3041
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_scaffolding.gltf",
+      "sha": "c8c0cccbf61ee6c09eea915019d83db4fbc70570",
+      "size": 3092
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_stage_A.gltf",
+      "sha": "21d094aa0867b8007540e722623d22cc3cae17f1",
+      "size": 3077
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_stage_B.gltf",
+      "sha": "a0f5ae3e0e201bb3a4f4ef02991f6e67c59c59e2",
+      "size": 3076
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/building_stage_C.gltf",
+      "sha": "34fcbf1d2adf7c0d622cd76e3c3cea6920003a87",
+      "size": 3077
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/fence_stone_straight.gltf",
+      "sha": "17f95cceef1bd3509b6f69e1201fea13ca515343",
+      "size": 3079
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/fence_stone_straight_gate.gltf",
+      "sha": "09cb3f44ce309150185e63e77408f7adf1a8582d",
+      "size": 5224
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/fence_wood_straight.gltf",
+      "sha": "a9090265d508aca1215a8e3bcad4b40fb081b2e1",
+      "size": 3061
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/fence_wood_straight_gate.gltf",
+      "sha": "9c17b2f766c5058e53db66d8e2a3517f3867282f",
+      "size": 5220
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/projectile_catapult.gltf",
+      "sha": "477e4929b37b24a016ef3405355cec44d7045dba",
+      "size": 3081
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_corner_A_gate.gltf",
+      "sha": "050bf25274f34d26d9ed2521c6e13a899f2d5aeb",
+      "size": 7304
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_corner_A_inside.gltf",
+      "sha": "a29739486b59f3512b1500fa825f64cadc63f08b",
+      "size": 3061
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_corner_A_outside.gltf",
+      "sha": "233d45e8f69e8a4f306ddfd0036520b3cf95eca4",
+      "size": 3063
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_corner_B_inside.gltf",
+      "sha": "93f114beb33c0d659a564cf939d4050afc63ed8b",
+      "size": 3062
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_corner_B_outside.gltf",
+      "sha": "3734a8daf8c22483441a20f40df3f1d74bb6baca",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_straight.gltf",
+      "sha": "a8607789eb10a3b560acae88c0e9a3d1b79cd182",
+      "size": 3009
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/neutral/wall_straight_gate.gltf",
+      "sha": "09e685590e51613ce2b96d0f7d3a87770fa6bb98",
+      "size": 7198
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_archeryrange_red.gltf",
+      "sha": "157ba0faa0a5dcbe9681cc59ce9c164722ed0cbb",
+      "size": 3087
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_barracks_red.gltf",
+      "sha": "ed9dabed353a4097f7c6a74e18b9c4db8b01bc1d",
+      "size": 3075
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_blacksmith_red.gltf",
+      "sha": "230d04dc40acfdfded49b92dcfe141a5ec17aea0",
+      "size": 3100
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_castle_red.gltf",
+      "sha": "796eeb010c01ce97376749b77233417505646d5d",
+      "size": 3069
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_church_red.gltf",
+      "sha": "be40daba080b7e5a5f97e4bb304dd11b66a94735",
+      "size": 3086
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_home_A_red.gltf",
+      "sha": "853afb548b9d9271d8d96408fc15e99042411585",
+      "size": 3087
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_home_B_red.gltf",
+      "sha": "836528131ecba18d36b1f59c3f5965471e89173b",
+      "size": 3087
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_lumbermill_red.gltf",
+      "sha": "b7b832d1e466bad153c8d8ee827a1790c76fc5e4",
+      "size": 7351
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_market_red.gltf",
+      "sha": "7c9a573ecfb49ddaff4a292fb9f010949591f891",
+      "size": 3088
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_mine_red.gltf",
+      "sha": "7cafe6f43ef1e590016a17ec98c4c431e74fbe26",
+      "size": 3081
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tavern_red.gltf",
+      "sha": "b9bcd775e83b058dcf01a765239c8e30a541dfd4",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_A_red.gltf",
+      "sha": "fb69ca77b600c5c6c62ff6e4a42b7bca8ffe8914",
+      "size": 5042
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_B_red.gltf",
+      "sha": "bfb56edb9e509216d72716be985c3fb03797333a",
+      "size": 5043
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_base_red.gltf",
+      "sha": "93102659d9b9b36c41e2bf635216faa89bd230e5",
+      "size": 3062
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_tower_catapult_red.gltf",
+      "sha": "e2e50d456da3171f6423e704ec75265e8ae42cbd",
+      "size": 7291
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_watermill_red.gltf",
+      "sha": "1cf8fcf11b26e12c94b552c34d39c845f69554ee",
+      "size": 5230
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_well_red.gltf",
+      "sha": "8cc2ec48f04688c4cd5292c21b0939a52f5a06c3",
+      "size": 3080
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/red/building_windmill_red.gltf",
+      "sha": "51e478234194509d21ef066a2a52245410b354da",
+      "size": 7321
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_archeryrange_yellow.gltf",
+      "sha": "49af696f21746f75478040c14eb3c9123dd215ad",
+      "size": 3096
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_barracks_yellow.gltf",
+      "sha": "f3b97fd391588ce1b741f0b1c346f1773586a70a",
+      "size": 3084
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_blacksmith_yellow.gltf",
+      "sha": "1f3b36bf210bd94141f7c19225da32c475dc61fb",
+      "size": 3109
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_castle_yellow.gltf",
+      "sha": "30bfc07a191587e29f16ac32f4b79e543c3bc04a",
+      "size": 3078
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_church_yellow.gltf",
+      "sha": "2bbd0ff0817072d145ebb12c340e213ba292acf8",
+      "size": 3095
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_home_A_yellow.gltf",
+      "sha": "dce9dea32ecd5ac65923a9ebe2e8bf1158667a35",
+      "size": 3096
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_home_B_yellow.gltf",
+      "sha": "153ab8c821beab4894b34218b5037bf723ddc070",
+      "size": 3096
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_lumbermill_yellow.gltf",
+      "sha": "b3e5eb5f0772c2a958c5bea1f80c5fc7b607e932",
+      "size": 7372
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_market_yellow.gltf",
+      "sha": "40dda0b05c62552acbf6677fedf2f4005b4a8464",
+      "size": 3097
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_mine_yellow.gltf",
+      "sha": "6c00732f699a1b346e6edb75b77d36c56f245922",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_tavern_yellow.gltf",
+      "sha": "0d84f53bdb4723458540ed0446ef8224335c75af",
+      "size": 3099
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_tower_A_yellow.gltf",
+      "sha": "7cfe8ea44bc8cc819aec3563b0762787fbf4f777",
+      "size": 5057
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_tower_B_yellow.gltf",
+      "sha": "59c7a4cdd3587973323df24dbfb782a70a24a07e",
+      "size": 5058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_tower_base_yellow.gltf",
+      "sha": "56bc733ae3908b174a29f0f42c144a198f34ae83",
+      "size": 3071
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_tower_catapult_yellow.gltf",
+      "sha": "b442bbaef6d07b44526a36201f67aa177c2f331b",
+      "size": 7312
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_watermill_yellow.gltf",
+      "sha": "c92cb2677a55f6ebe859e77bdd9d0af85662dc2a",
+      "size": 5245
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_well_yellow.gltf",
+      "sha": "81422a8177ef2b99cf9e66f6f3c1a586236dc211",
+      "size": 3089
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/buildings/yellow/building_windmill_yellow.gltf",
+      "sha": "b74f1b9948e8ac57741a95d5007429a60f80e830",
+      "size": 7342
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/cloud_big.gltf",
+      "sha": "3954a6ce65d0432724166c50ab4a36b55d7637d1",
+      "size": 3043
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/cloud_small.gltf",
+      "sha": "ac0c9201bc2f50a439e524d5b55c7abf18beb751",
+      "size": 3049
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hill_single_A.gltf",
+      "sha": "7309269cfe6b26810ce87210ae88b603931b3351",
+      "size": 3032
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hill_single_B.gltf",
+      "sha": "be6219f07eb9c26c61d977372785cbabf6dd4799",
+      "size": 3032
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hill_single_C.gltf",
+      "sha": "7a7aaeaafa61a9368e79fd1dd8d1d21e9e8245d0",
+      "size": 3031
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_A.gltf",
+      "sha": "1b5a0b19e93fddba35d869224b8614e6b7734600",
+      "size": 3022
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_A_trees.gltf",
+      "sha": "e35da7aaa34333ffcdefcd3b01967de8663c13c2",
+      "size": 3043
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_B.gltf",
+      "sha": "42e0db7b31d8878a88ee1a0c2733e7ff18f2c7b7",
+      "size": 3039
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_B_trees.gltf",
+      "sha": "df51dda972e179b0e481555e0666c0983dd826bd",
+      "size": 3058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_C.gltf",
+      "sha": "10673edf927b09eef398af1715e53a1bacc5b6a5",
+      "size": 3041
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/hills_C_trees.gltf",
+      "sha": "eded6966a53b9c65c4ba6df3dc3c445059afaf98",
+      "size": 3065
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_A.gltf",
+      "sha": "f8ce69f06b252df9953f7658091be9fee6814328",
+      "size": 3045
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_A_grass.gltf",
+      "sha": "4abe5d4dc704031c074f547a001353f5022ee74a",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_A_grass_trees.gltf",
+      "sha": "ecc9e36da6e5fb34e19f99e775cdb7ee6f78e249",
+      "size": 3085
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_B.gltf",
+      "sha": "3c9a82e1d039bd3f0ab6044f9981b64bc71fae46",
+      "size": 3046
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_B_grass.gltf",
+      "sha": "845c758f8818175ca31ba52366af468b0da65147",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_B_grass_trees.gltf",
+      "sha": "746d049f5044568f7bd77ea803d5d7ab98a89b03",
+      "size": 3089
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_C.gltf",
+      "sha": "2c4102bac9b31c498535ee77eb70c299bc23f1ce",
+      "size": 3046
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_C_grass.gltf",
+      "sha": "8dc30a9df474ebb2b0d4fdd5d8721f3fb5f948cc",
+      "size": 3068
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/mountain_C_grass_trees.gltf",
+      "sha": "d54e92c878b5f78bc8f41676812eec6916838e9e",
+      "size": 3091
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_A.gltf",
+      "sha": "5f073d602b53ec59fd623f5c2962fc0e2627c37f",
+      "size": 3031
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_B.gltf",
+      "sha": "3b00fedb74416251e359a24dc1d066df352615a6",
+      "size": 3052
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_C.gltf",
+      "sha": "6d9895fdce1ab8ca25a4c379e66bf7b6530c304c",
+      "size": 3052
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_D.gltf",
+      "sha": "abdc154f698d8a9b92a94ab55b4652a04c8e1208",
+      "size": 3052
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/rock_single_E.gltf",
+      "sha": "a8d6bdd8ffb58e22513696101269db3dd830ff7b",
+      "size": 3057
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_A.gltf",
+      "sha": "0c230093dab0c16d5dd65974917fd95bd119eb04",
+      "size": 3053
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_A_cut.gltf",
+      "sha": "73df2cb53508ecf03426b80d45605754527ced55",
+      "size": 3060
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_B.gltf",
+      "sha": "174c5b4181ccf0e0c7d6cbf143bd5f0c6d9b4cd4",
+      "size": 3056
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/tree_single_B_cut.gltf",
+      "sha": "f3bace7d87d616264011a40ff42a53936d3666d4",
+      "size": 3063
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_A_cut.gltf",
+      "sha": "fac78937fb93a69eb281ef742df732ec071f58fc",
+      "size": 3054
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_A_large.gltf",
+      "sha": "e3717a0312d4a87cc71b74bc3668a8ec76fc87ca",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_A_medium.gltf",
+      "sha": "600b235aef16712e335e3dce695dd44cc8248f50",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_A_small.gltf",
+      "sha": "b01b8e6353be40381cd072908cf6aad2d6220965",
+      "size": 3058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_B_cut.gltf",
+      "sha": "e3962665c0d3894bcac3525f6e7e2ecc8a9b78ec",
+      "size": 3052
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_B_large.gltf",
+      "sha": "b719290d1ea99889197721b86df91fc6b792b0ac",
+      "size": 3067
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_B_medium.gltf",
+      "sha": "d8e824b0e9aed6eaf777bea93123763c1a4bcc03",
+      "size": 3066
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/trees_B_small.gltf",
+      "sha": "6ef51731c4348f0d53bdf4da8eccc8f616324c54",
+      "size": 3059
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterlily_A.gltf",
+      "sha": "18499492965a2730d9052620f1310b59a70fcdce",
+      "size": 3027
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterlily_B.gltf",
+      "sha": "19b4f45c858d18449b6d58484804f1ee81062bff",
+      "size": 3028
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterplant_A.gltf",
+      "sha": "d5b7441b7a2013cf3443b1f860840ba9f6913f82",
+      "size": 3049
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterplant_B.gltf",
+      "sha": "5a256cbc60409afa5e99cba0a0f8400111d4b31c",
+      "size": 3056
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/nature/waterplant_C.gltf",
+      "sha": "70a294bba1402d9f92a5d5ee82a36c4f2226a4b8",
+      "size": 3058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/barrel.gltf",
+      "sha": "f79490d9488d6188cc7140088e26c350e8cb8ad8",
+      "size": 3042
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/bucket_arrows.gltf",
+      "sha": "50425f30e7548723941559b3346ad9b9672952c9",
+      "size": 3062
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/bucket_empty.gltf",
+      "sha": "7e656240f23ad4d795c49fb265d6f29d97e2a853",
+      "size": 3058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/bucket_water.gltf",
+      "sha": "7cdfcaf5800202d40a40535f5cc1aff463b902f7",
+      "size": 3058
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_A_big.gltf",
+      "sha": "281aa7d9962f1fa30757039fe09ddbd10d7949d5",
+      "size": 3055
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_A_small.gltf",
+      "sha": "fd7b8fe5c723fdf9fabf3ea1dd680a54d439e5ce",
+      "size": 3059
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_B_big.gltf",
+      "sha": "5ad78316aa8daecae728ee3a3c43b6327488f2fd",
+      "size": 3055
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_B_small.gltf",
+      "sha": "2da1b4aa42262b100f120360f3b094cfdc7e4f3e",
+      "size": 3059
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_long_A.gltf",
+      "sha": "d629964632cfcd13badec3b0e8afd79fc2ac9683",
+      "size": 3041
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_long_B.gltf",
+      "sha": "01409a7377eecf6d20b711a948102658638f7c9d",
+      "size": 3041
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_long_C.gltf",
+      "sha": "e61b952c23e3781d71591a61cd23acf14e2982e8",
+      "size": 3038
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_long_empty.gltf",
+      "sha": "86eb364b81eee7afda9a4cac8548ac9cb6441e59",
+      "size": 3042
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/crate_open.gltf",
+      "sha": "1a6569aa07c12d077f43e75e21124807c64d39e1",
+      "size": 3054
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/flag_blue.gltf",
+      "sha": "12c3b09199f1c88b1be65a96e1749f43276394ea",
+      "size": 3023
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/flag_green.gltf",
+      "sha": "a18cc7c7d4144e2cf14cd4feb01fea49fbfbccf1",
+      "size": 3026
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/flag_red.gltf",
+      "sha": "c22dd22d70da9ac97cd0893d59f7f0c38052a93a",
+      "size": 3020
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/flag_yellow.gltf",
+      "sha": "6a492dd6c1bbf336157b5c4dd66e7500eda03b39",
+      "size": 3029
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/ladder.gltf",
+      "sha": "9e82493a2c37449e7ac3f5c57c4efcbbc08d0031",
+      "size": 3040
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/pallet.gltf",
+      "sha": "0b75093092d17d3187bdb11618e5f84e139e26b7",
+      "size": 3019
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/resource_lumber.gltf",
+      "sha": "e92d5dd4012745fedc8d54de4fb22284ac408d69",
+      "size": 3060
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/resource_stone.gltf",
+      "sha": "95d9b504c4dc3cbd0a66dc6e61a9ccc3e0dc6c52",
+      "size": 3061
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/sack.gltf",
+      "sha": "34cfaa315f34d6759ee714d3c76cd9855ee1701e",
+      "size": 3031
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/target.gltf",
+      "sha": "67a0cf5fbd549ce9a528571c73e4c2437dc28b43",
+      "size": 3016
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/tent.gltf",
+      "sha": "cf47e095e55f76d8f7d40ef13b3eb284d74c86c2",
+      "size": 3008
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/weaponrack.gltf",
+      "sha": "53978c5b63f87bbc80643e9bd03a3c25cbfe63f2",
+      "size": 3027
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/decoration/props/wheelbarrow.gltf",
+      "sha": "497a01a2f101e6d351e4a4bf471ecad91d020682",
+      "size": 3059
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/base/hex_grass.gltf",
+      "sha": "b2a4608f8935afbbc3261dd71af015900d8ec925",
+      "size": 2966
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/base/hex_grass_bottom.gltf",
+      "sha": "baba30afa6cf0a72637a0eff462963693132afe0",
+      "size": 3005
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/base/hex_grass_sloped_high.gltf",
+      "sha": "08f88dc13291f32fb60cbdea94695fce9e482cd1",
+      "size": 3002
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/base/hex_grass_sloped_low.gltf",
+      "sha": "0f6ce1c91a490b6ea4c3a8c8eb3d7972cbcd2b92",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/base/hex_water.gltf",
+      "sha": "8895c9fb448d344d1e77640a6fb4dda6b8617e8c",
+      "size": 2983
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/hex_coast_A.gltf",
+      "sha": "c5e36c4cb843476e1c889fe24d16b6d4adf66436",
+      "size": 3012
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/hex_coast_B.gltf",
+      "sha": "5b7eede8f6fb6157e8e658a25bc743269ffd9dab",
+      "size": 2979
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/hex_coast_C.gltf",
+      "sha": "9e99ecefef98df1dcd1c61a12e102d486b041ecf",
+      "size": 3013
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/hex_coast_D.gltf",
+      "sha": "3bd77da2fd77e30c1c5217a887f4cf30c25ff523",
+      "size": 3012
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/hex_coast_E.gltf",
+      "sha": "a579d4465c577c1f18ae013caf82d93fd5832d47",
+      "size": 3010
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/waterless/hex_coast_A_waterless.gltf",
+      "sha": "ec23b951f4e23987b34379bf97e840d18101605d",
+      "size": 3042
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/waterless/hex_coast_B_waterless.gltf",
+      "sha": "90d82b3f78f206b4f320a27c58a8a4c8b8916357",
+      "size": 3009
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/waterless/hex_coast_C_waterless.gltf",
+      "sha": "a73efdf68c2a9239cacded029a49496e08f1d55e",
+      "size": 3043
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/waterless/hex_coast_D_waterless.gltf",
+      "sha": "acdd9bab788c35bb47da7db1e9e774a73e46447e",
+      "size": 3046
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/coast/waterless/hex_coast_E_waterless.gltf",
+      "sha": "85fd79843f0fbd2e5988b8619b34261b14fb9973",
+      "size": 3040
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_A.gltf",
+      "sha": "befc84d61ce2e09865b4cf34f7ea3e31c925ad79",
+      "size": 2999
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_A_curvy.gltf",
+      "sha": "a544fa4f000d33072714257fa33818d5379cb8dd",
+      "size": 3019
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_B.gltf",
+      "sha": "bf78f04f05638112a0541852cc4243b969c62439",
+      "size": 3035
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_C.gltf",
+      "sha": "314fcf0e9f5dc15a72a28a15630736d5c55c3671",
+      "size": 3000
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_D.gltf",
+      "sha": "3cd6fc76a960a6acf56fc16dbf055035b07921db",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_E.gltf",
+      "sha": "2f302192229000d576c095efe50b61e037ada9b5",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_F.gltf",
+      "sha": "139c5f3a25374c35a35f03a6a8c218cb68a0adfe",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_G.gltf",
+      "sha": "3adf9217d29c816cfe24072d1833a39d2ac45f2d",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_H.gltf",
+      "sha": "abc7339b8ed613aab0c26ecb3b61317e5a0bae72",
+      "size": 3003
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_I.gltf",
+      "sha": "00ab50eadc3201619cd29f3fd2943637a2a9ec57",
+      "size": 3036
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_J.gltf",
+      "sha": "e60bf5eb8909b49f61ea0378b2aae7685d471413",
+      "size": 3001
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_K.gltf",
+      "sha": "8bbb1fd57601bae97fc033a9db5fa2aa119b2f02",
+      "size": 3002
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_L.gltf",
+      "sha": "27da3ca02fedf83956c88aef35e5d452b453b130",
+      "size": 3003
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_crossing_A.gltf",
+      "sha": "23353abf1cd8b6110a215d3f242edd2d9ea518f1",
+      "size": 3060
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/hex_river_crossing_B.gltf",
+      "sha": "ea83825747f60084fe42b0c12897fea8b9b959fd",
+      "size": 3060
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_A_curvy_waterless.gltf",
+      "sha": "2c8b2913e6eff5eef13c68c989fdaa3f34f031ef",
+      "size": 3048
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_A_waterless.gltf",
+      "sha": "5e65ca0f5f001554a7250f55d54a9310ffe8af74",
+      "size": 3028
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_B_waterless.gltf",
+      "sha": "3f93d13d06fc6f22088445333b9d986494ab36ba",
+      "size": 3064
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_C_waterless.gltf",
+      "sha": "bf5393bfcc92bdd2fba4e5feb2057c88f01a0953",
+      "size": 3029
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_D_waterless.gltf",
+      "sha": "f04b02f962177ac3d3faa1fbe40053ddcb74ba6b",
+      "size": 3029
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_E_waterless.gltf",
+      "sha": "4f22771c01e562487ce426e8f8b4c0c4bc9a5b48",
+      "size": 3030
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_F_waterless.gltf",
+      "sha": "be094623e5db53ef5e2df2e52eeee78be437ee5d",
+      "size": 3030
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_G_waterless.gltf",
+      "sha": "84d40c626043fddd4092a96b5062b6523620afe4",
+      "size": 3029
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_H_waterless.gltf",
+      "sha": "d9f1ee66b7ebf421bd26de790910cb736945e0cd",
+      "size": 3031
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_I_waterless.gltf",
+      "sha": "af64664e5174c50151f3a8c956c87151576c7a6d",
+      "size": 3064
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_J_waterless.gltf",
+      "sha": "176d41085ae6be9c038745b91e4e279e3661d109",
+      "size": 3029
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_K_waterless.gltf",
+      "sha": "cf8c4c11fcceafcba6500a3bdce4e211305c0f21",
+      "size": 3031
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_L_waterless.gltf",
+      "sha": "f3ac7c32f4c59e9a1966a1d5f4da45c9ce81765d",
+      "size": 3032
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_crossing_A_waterless.gltf",
+      "sha": "926e2a218aabad29fce6d3fd185db9cd95bc063d",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/rivers/waterless/hex_river_crossing_B_waterless.gltf",
+      "sha": "fff730dc6193538ecf68058d7f99acbd7c3f8747",
+      "size": 3090
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_A.gltf",
+      "sha": "1de60d28b32742161229764d00d969dc6284d2d3",
+      "size": 2995
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_A_sloped_high.gltf",
+      "sha": "b4bcda39f29a7c375bce49069e713626b6fd8b21",
+      "size": 3012
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_A_sloped_low.gltf",
+      "sha": "0a0cbf853838ec15ee841380a10bf912a3179806",
+      "size": 3028
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_B.gltf",
+      "sha": "bd8e8310406699564bd5a6778b4108a2fe02774b",
+      "size": 2997
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_C.gltf",
+      "sha": "3b49c729fc805ae8d82a184ff5e587fc7d19f611",
+      "size": 2997
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_D.gltf",
+      "sha": "f9a5ce9c64b722e3f7dd73c2a866aa20cfe86223",
+      "size": 2997
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_E.gltf",
+      "sha": "2798fc6db12c60b25934c511a9706e42a03127e2",
+      "size": 2996
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_F.gltf",
+      "sha": "fe0a396d80c3bf1e4b15b7aecc763dfde2af3fa6",
+      "size": 2996
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_G.gltf",
+      "sha": "93d9f470fc1e16cec273b2e9223938bcdc8273ec",
+      "size": 2997
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_H.gltf",
+      "sha": "45f6565e7ab2c88ef9d7ad7dd458e5bdedfac2ed",
+      "size": 2999
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_I.gltf",
+      "sha": "92c44abba374c9c1ab2aef86515d78ff1453323c",
+      "size": 2998
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_J.gltf",
+      "sha": "c8d492d107569b3c88f43bdcc7ac6a91d5bd3070",
+      "size": 2997
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_K.gltf",
+      "sha": "cff6ed366f3627c5c1c4338e778fd2aeacf95705",
+      "size": 3000
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_L.gltf",
+      "sha": "0edc56285f37a545171d983efa1f868f3c1d7fc5",
+      "size": 2999
+    },
+    {
+      "path": "addons/kaykit_medieval_hexagon_pack/Assets/gltf/tiles/roads/hex_road_M.gltf",
+      "sha": "d0860b498f3101a4ccbbd930dd38b6b0c6dda976",
+      "size": 2996
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "result": "PASS",
+  "environment": "local in-memory SQLite; NOT a live D1 capacity certification",
+  "clients": 39,
+  "rounds": 120,
+  "targetWorldHz": 4,
+  "durationMs": 30000,
+  "requests": 6474,
+  "queries": 85001,
+  "queriesPerSecond": 2833,
+  "sqlExecutionMs": 2803,
+  "maxRoundMs": 108,
+  "lateRounds": 0,
+  "peerChecks": 4641,
+  "combatReceipts": 390,
+  "successfulHits": 58,
+  "chatChecks": 39,
+  "streamFrames": 4797,
+  "savedCharacters": 39,
+  "runtimeCommit": "f9e8421fcde8d922f559436e2f9f04d36dc4ee6d",
+  "command": "node tests/shared-39-clients.mjs",
+  "limitations": [
+    "30-second local in-memory SQLite workload; no D1 network or provider queue emulation",
+    "39 handler clients, not 39 browser renderers or physical devices",
+    "Concurrent combat attempts against one shared rat, not 39 separate boss encounters",
+    "Production capacity and long-duration availability remain unverified"
+  ]
+}

@@ -1,0 +1,694 @@
+{
+  "averageFPS": 0.5135805954676156,
+  "frames": 95,
+  "maxFrameMs": 2482.9000000000087,
+  "meanFrameMs": 1947.1140631578949,
+  "onePercentLowFPS": 0.40275484312698717,
+  "p99FrameMs": 2482.9000000000087,
+  "samples": [
+    {
+      "cpuMs": 2272.0999999996275,
+      "frameMs": 2332.8359999999957,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2462.0999999996275,
+      "frameMs": 2282.699999999997,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2243.2999999998137,
+      "frameMs": 2482.9000000000087,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2061.5999999996275,
+      "frameMs": 2249.399999999994,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2234,
+      "frameMs": 2066.300000000003,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2127.5,
+      "frameMs": 2249.5,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2010.8999999994412,
+      "frameMs": 2132.800000000003,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2179.399999999441,
+      "frameMs": 2016.199999999997,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2374,
+      "frameMs": 2182.899999999994,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2260.4000000003725,
+      "frameMs": 2382.800000000003,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2270.7000000001863,
+      "frameMs": 2266.2000000000116,
+      "phase": "standing",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2190.699999999255,
+      "frameMs": 2282.7999999999884,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2248.7999999998137,
+      "frameMs": 2216.2000000000116,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2147.5,
+      "frameMs": 2249.5,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2091.600000000559,
+      "frameMs": 2166.1999999999825,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2199.0999999996275,
+      "frameMs": 2099.5,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2101.2999999998137,
+      "frameMs": 2216.2000000000116,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2076.399999999441,
+      "frameMs": 2099.5,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2114.399999999441,
+      "frameMs": 2099.5,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2067.399999999441,
+      "frameMs": 2116.2999999999884,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2103.2999999998137,
+      "frameMs": 2082.899999999994,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2354.2000000001863,
+      "frameMs": 2116.100000000006,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2121.0999999996275,
+      "frameMs": 2366.2000000000116,
+      "phase": "walking",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2107.7000000001863,
+      "frameMs": 2132.899999999994,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2097.2000000001863,
+      "frameMs": 2116.100000000006,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2177.9000000003725,
+      "frameMs": 2099.600000000006,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2224.7999999998137,
+      "frameMs": 2199.5,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2182.5,
+      "frameMs": 2232.7999999999884,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2090.300000000745,
+      "frameMs": 2182.899999999994,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2149.2000000001863,
+      "frameMs": 2099.5,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2023.5,
+      "frameMs": 2166.2000000000116,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2149.2999999998137,
+      "frameMs": 2032.8999999999942,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2112.199999999255,
+      "frameMs": 2166.2000000000116,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2272.2999999998137,
+      "frameMs": 2116.2999999999884,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2177.300000000745,
+      "frameMs": 2282.7999999999884,
+      "phase": "running",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2293.5,
+      "frameMs": 2182.8000000000175,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2049.4000000003725,
+      "frameMs": 2299.5,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2182.5999999996275,
+      "frameMs": 2066.1999999999825,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2204.5,
+      "frameMs": 2216.2000000000116,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2371.699999999255,
+      "frameMs": 2216.2000000000116,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2244.199999999255,
+      "frameMs": 2382.6999999999825,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2262,
+      "frameMs": 2266.2000000000116,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2304.399999999441,
+      "frameMs": 2282.899999999994,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2374.2999999998137,
+      "frameMs": 2316.100000000006,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2389.5,
+      "frameMs": 2382.899999999994,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2300.2999999998137,
+      "frameMs": 2399.399999999994,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2326.0999999996275,
+      "frameMs": 2316.2000000000116,
+      "phase": "orbit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2151.2999999998137,
+      "frameMs": 2349.399999999994,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2262.7999999998137,
+      "frameMs": 2166.2000000000116,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2318.7000000001863,
+      "frameMs": 2266.1999999999825,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2225.100000000559,
+      "frameMs": 2349.5,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2176.9000000003725,
+      "frameMs": 2232.8000000000175,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2273.7999999998137,
+      "frameMs": 2199.5999999999767,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2133,
+      "frameMs": 2299.4000000000233,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2160.5,
+      "frameMs": 2149.5,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2382.800000000745,
+      "frameMs": 2166.2999999999884,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2144.2000000001863,
+      "frameMs": 2416,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2086.5999999996275,
+      "frameMs": 2149.600000000006,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2332.399999999441,
+      "frameMs": 2099.600000000006,
+      "phase": "reverse",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2083.2000000001863,
+      "frameMs": 2349.5,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1947.4000000003725,
+      "frameMs": 2099.5,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2050.800000000745,
+      "frameMs": 1966.1999999999825,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1858,
+      "frameMs": 2066.2000000000116,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1843.3999999994412,
+      "frameMs": 1866.1999999999825,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 2036.9000000003725,
+      "frameMs": 1849.7000000000116,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1969.7999999998137,
+      "frameMs": 2049.5,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1843.5,
+      "frameMs": 1982.8999999999942,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1950.5,
+      "frameMs": 1849.6000000000058,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1805.2999999998137,
+      "frameMs": 1966.2999999999884,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1827.5999999996275,
+      "frameMs": 1816.2000000000116,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1932.7000000001863,
+      "frameMs": 1849.5999999999767,
+      "phase": "enter-exit",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1809.0999999996275,
+      "frameMs": 1932.9000000000233,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 899.3000000007451,
+      "frameMs": 1832.9000000000233,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 28.368360398912913
+    },
+    {
+      "cpuMs": 569.8999999994412,
+      "frameMs": 899.7999999999884,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 41.57268169023548
+    },
+    {
+      "cpuMs": 342.59999999962747,
+      "frameMs": 583.2000000000116,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 52.54322829206717
+    },
+    {
+      "cpuMs": 280.59999999962747,
+      "frameMs": 350,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 60.391231763080434
+    },
+    {
+      "cpuMs": 269.80000000074506,
+      "frameMs": 299.8999999999651,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 64.48089353592756
+    },
+    {
+      "cpuMs": 273.5,
+      "frameMs": 266.6000000000349,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 64.48089353592758
+    },
+    {
+      "cpuMs": 347.5,
+      "frameMs": 283.29999999998836,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 60.39123176308044
+    },
+    {
+      "cpuMs": 336.29999999981374,
+      "frameMs": 349.8999999999651,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 52.54322829206717
+    },
+    {
+      "cpuMs": 525.2000000001863,
+      "frameMs": 349.9000000000233,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 41.57268169023547
+    },
+    {
+      "cpuMs": 876,
+      "frameMs": 533.2000000000116,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 28.368360398912934
+    },
+    {
+      "cpuMs": 1944.7999999998137,
+      "frameMs": 883.2000000000116,
+      "phase": "zoom-range",
+      "scale": 1,
+      "zoom": 14.000000000000007
+    },
+    {
+      "cpuMs": 1893.6000000005588,
+      "frameMs": 1949.5999999999767,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1906.0999999996275,
+      "frameMs": 1899.5999999999767,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1898.6000000005588,
+      "frameMs": 1932.9000000000233,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1734.3999999994412,
+      "frameMs": 1916.2000000000116,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1758.0999999996275,
+      "frameMs": 1749.5999999999767,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1904,
+      "frameMs": 1782.9000000000233,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1723.8999999994412,
+      "frameMs": 1916.2999999999884,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1740.2999999998137,
+      "frameMs": 1732.9000000000233,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1753.5,
+      "frameMs": 1766.399999999965,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1807.5,
+      "frameMs": 1766.2000000000116,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1682.2999999998137,
+      "frameMs": 1833,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    },
+    {
+      "cpuMs": 1835.9000000003725,
+      "frameMs": 1699.5,
+      "phase": "maximum-zoom",
+      "scale": 1,
+      "zoom": 14
+    }
+  ],
+  "scaleRange": [
+    1,
+    1
+  ],
+  "scene": {
+    "buffer": null,
+    "buildings": 229,
+    "gpu": "unavailable",
+    "heap": 340299280,
+    "objects": 7687,
+    "peers": 6,
+    "pixelRatio": 1,
+    "scale": 1,
+    "viewport": {
+      "h": 1080,
+      "w": 1920
+    }
+  },
+  "spikesOver33ms": 95
+}

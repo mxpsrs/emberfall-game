@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Trading layout preview</title>
+<style>body{margin:16px;background:#17221f;color:#eee;font:16px system-ui}button{padding:9px 14px;margin:0 8px 12px 0}iframe{display:block;border:1px solid #ab9d77;width:1112px;height:512px}p{font-size:13px;color:#bbb}</style>
+<button id="wide">1112 × 512</button><button id="compact">844 × 390</button><button id="portrait">390 × 844</button><button id="bank">Bank</button><button id="shop">Shop</button>
+<iframe title="Veldren trading preview" src="/__build__/?tradeQA=bank"></iframe>
+<p>Local fixture · isolated save · pointer type follows the preview browser.</p>
+<script>
+const frame=document.querySelector('iframe');
+for(const [id,w,h] of [['wide',1112,512],['compact',844,390],['portrait',390,844]])document.getElementById(id).onclick=()=>{frame.style.width=w+'px';frame.style.height=h+'px'};
+for(const kind of ['bank','shop'])document.getElementById(kind).onclick=()=>frame.src='/__build__/?tradeQA='+kind;
+</script></html>

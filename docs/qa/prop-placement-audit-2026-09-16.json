@@ -1,0 +1,1150 @@
+{
+  "counts": {
+    "rooms": 654,
+    "bookcases": 720,
+    "ranges": 5,
+    "lamps": 497,
+    "chairs": 370,
+    "stalls": 30,
+    "services": 42
+  },
+  "errors": [],
+  "removed": [
+    {
+      "name": "Hollow Gate",
+      "scene": "overworld",
+      "reason": "Obsolete architectural dressing overlaps an inhabited building"
+    },
+    {
+      "id": 1602903,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1602904,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1602910,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1602703,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1602700,
+      "name": "Display table",
+      "scene": "overworld",
+      "reason": "No compatible, clear table anchor in shop"
+    },
+    {
+      "id": 230,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 233,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1605503,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1605504,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1605510,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1605603,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1605601,
+      "name": "Display table",
+      "scene": "overworld",
+      "reason": "No compatible, clear table anchor in shop"
+    },
+    {
+      "id": 249,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1615503,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1615504,
+      "name": "Bed",
+      "scene": "overworld",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1615510,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1615603,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 215,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1627310,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1627403,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1256,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1259,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 7400219,
+      "name": "Guard duty table",
+      "scene": "overworld",
+      "reason": "No compatible, clear table anchor in guard"
+    },
+    {
+      "id": 1629910,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1630003,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1422,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1425,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1632410,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1632503,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1573,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1576,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 7400324,
+      "name": "Guard duty table",
+      "scene": "overworld",
+      "reason": "No compatible, clear table anchor in guard"
+    },
+    {
+      "id": 1635010,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1635103,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1746,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1749,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1637510,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1637603,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1904,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1907,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1638710,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1638803,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1984,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1987,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1639910,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1640003,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 2064,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2067,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 7400429,
+      "name": "Guard duty table",
+      "scene": "overworld",
+      "reason": "No compatible, clear table anchor in guard"
+    },
+    {
+      "id": 1642510,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1642603,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 2230,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2233,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1645010,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1645103,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 2381,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2384,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 1645610,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1645703,
+      "name": "Bookcase",
+      "scene": "overworld",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 2418,
+      "name": "Oak stock",
+      "scene": "overworld",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2421,
+      "name": "Forge fire",
+      "scene": "overworld",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 3700041,
+      "name": "Relic supplies",
+      "scene": "overworld",
+      "reason": "No compatible, clear storage anchor in magic"
+    },
+    {
+      "id": 3200051,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "No compatible well anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3200055,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "No compatible well anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7400616,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "Duplicate civic focal object"
+    },
+    {
+      "id": 7400624,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "Duplicate civic focal object"
+    },
+    {
+      "id": 7400682,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "Duplicate civic focal object"
+    },
+    {
+      "id": 7400696,
+      "name": "Village well",
+      "scene": "overworld",
+      "reason": "Duplicate civic focal object"
+    },
+    {
+      "id": 7400636,
+      "name": "Market stall",
+      "scene": "overworld",
+      "reason": "No compatible stall anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7400661,
+      "name": "Market stall",
+      "scene": "overworld",
+      "reason": "No compatible stall anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 57,
+      "name": "Town fire",
+      "scene": "overworld",
+      "reason": "No compatible fire anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 154,
+      "name": "Southern crossing sign",
+      "scene": "overworld",
+      "reason": "No compatible sign anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 157,
+      "name": "Stoneford hearth",
+      "scene": "overworld",
+      "reason": "No compatible hearth anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 1230,
+      "name": "Roadside camp",
+      "scene": "overworld",
+      "reason": "No compatible fire anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3200020,
+      "name": "Dining table",
+      "scene": "overworld",
+      "reason": "No compatible table anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3200062,
+      "name": "Merchant wagon",
+      "scene": "overworld",
+      "reason": "No compatible cart anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3200067,
+      "name": "Merchant wagon",
+      "scene": "overworld",
+      "reason": "No compatible cart anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3700018,
+      "name": "Barrel",
+      "scene": "overworld",
+      "reason": "No compatible barrel anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 6200011,
+      "name": "Bench",
+      "scene": "overworld",
+      "reason": "No compatible bench anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 6200012,
+      "name": "Bench",
+      "scene": "overworld",
+      "reason": "No compatible bench anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 6200014,
+      "name": "Flower planter",
+      "scene": "overworld",
+      "reason": "No compatible planter anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 6200035,
+      "name": "Supplies sack",
+      "scene": "overworld",
+      "reason": "No compatible storage anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401540,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401541,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401542,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401543,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401544,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401545,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401546,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401547,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401548,
+      "name": "Scavenged goblin barrier",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401550,
+      "name": "Goblin watch platform",
+      "scene": "overworld",
+      "reason": "No compatible watchpost anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401551,
+      "name": "Scavenged pen fence",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401552,
+      "name": "Scavenged pen fence",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401553,
+      "name": "Scavenged pen fence",
+      "scene": "overworld",
+      "reason": "No compatible barrier anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401554,
+      "name": "Goblin food store",
+      "scene": "overworld",
+      "reason": "No compatible bedroll anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300001,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300003,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300004,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300005,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300033,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300034,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300085,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300086,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300096,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300137,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300139,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300161,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300166,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300168,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300174,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300200,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300201,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300203,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300206,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300207,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300247,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300281,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300310,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300315,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300321,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300332,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300334,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300336,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300338,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300341,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300346,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300354,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300367,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300390,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300404,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300429,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300470,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300487,
+      "name": "Street lantern",
+      "scene": "overworld",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 6200068,
+      "name": "Tree",
+      "scene": "overworld",
+      "reason": "Natural clutter obstructs a bridge or doorway"
+    },
+    {
+      "id": 215,
+      "name": "Oak stock",
+      "scene": "stoneShop",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 230,
+      "name": "Oak stock",
+      "scene": "shop",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 249,
+      "name": "Oak stock",
+      "scene": "willowShop",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1256,
+      "name": "Oak stock",
+      "scene": "realm_crownreach_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1422,
+      "name": "Oak stock",
+      "scene": "realm_greyhaven_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1573,
+      "name": "Oak stock",
+      "scene": "realm_ironhollow_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1746,
+      "name": "Oak stock",
+      "scene": "realm_deepforge_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1904,
+      "name": "Oak stock",
+      "scene": "realm_copperdelve_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 1984,
+      "name": "Oak stock",
+      "scene": "realm_stonehearth_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2064,
+      "name": "Oak stock",
+      "scene": "realm_aelindor_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2230,
+      "name": "Oak stock",
+      "scene": "realm_moonwillow_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2381,
+      "name": "Oak stock",
+      "scene": "realm_fernwatch_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2418,
+      "name": "Oak stock",
+      "scene": "realm_silverbrook_1",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 2443,
+      "name": "Bed",
+      "scene": "realm_briarhaven_3",
+      "reason": "No compatible, clear bed anchor in magic"
+    },
+    {
+      "id": 2446,
+      "name": "Household hearth",
+      "scene": "realm_briarhaven_3",
+      "reason": "No compatible, clear hearth anchor in magic"
+    },
+    {
+      "id": 2449,
+      "name": "Bed",
+      "scene": "realm_briarhaven_4",
+      "reason": "No compatible, clear bed anchor in bank"
+    },
+    {
+      "id": 2452,
+      "name": "Household hearth",
+      "scene": "realm_briarhaven_4",
+      "reason": "No compatible, clear hearth anchor in bank"
+    },
+    {
+      "id": 2451,
+      "name": "Bookcase",
+      "scene": "realm_briarhaven_4",
+      "reason": "No compatible, clear bookcase anchor in bank"
+    },
+    {
+      "id": 1602903,
+      "name": "Bed",
+      "scene": "tutorial",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1602904,
+      "name": "Bed",
+      "scene": "tutorial",
+      "reason": "No compatible, clear bed anchor in tavern"
+    },
+    {
+      "id": 1602910,
+      "name": "Bookcase",
+      "scene": "tutorial",
+      "reason": "No compatible, clear bookcase anchor in tavern"
+    },
+    {
+      "id": 1602703,
+      "name": "Bookcase",
+      "scene": "tutorial",
+      "reason": "No compatible, clear bookcase anchor in shop"
+    },
+    {
+      "id": 1602700,
+      "name": "Display table",
+      "scene": "tutorial",
+      "reason": "No compatible, clear table anchor in shop"
+    },
+    {
+      "id": 230,
+      "name": "Oak stock",
+      "scene": "tutorial",
+      "reason": "No compatible, clear logs anchor in shop"
+    },
+    {
+      "id": 233,
+      "name": "Forge fire",
+      "scene": "tutorial",
+      "reason": "No compatible, clear fire anchor in workshop"
+    },
+    {
+      "id": 3700040,
+      "name": "Study table",
+      "scene": "tutorial",
+      "reason": "No compatible, clear table anchor in magic"
+    },
+    {
+      "id": 3700041,
+      "name": "Relic supplies",
+      "scene": "tutorial",
+      "reason": "No compatible, clear storage anchor in magic"
+    },
+    {
+      "id": 3700030,
+      "name": "Cooking table",
+      "scene": "tutorial",
+      "reason": "No compatible, clear table anchor in kitchen"
+    },
+    {
+      "id": 3700018,
+      "name": "Barrel",
+      "scene": "tutorial",
+      "reason": "No compatible barrel anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3700024,
+      "name": "Weapon rack",
+      "scene": "tutorial",
+      "reason": "No compatible rack anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 3700027,
+      "name": "Stone altar",
+      "scene": "tutorial",
+      "reason": "No compatible altar anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100003,
+      "name": "Bench",
+      "scene": "tutorial",
+      "reason": "No compatible bench anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100004,
+      "name": "Bench",
+      "scene": "tutorial",
+      "reason": "No compatible bench anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100005,
+      "name": "Flower planter",
+      "scene": "tutorial",
+      "reason": "No compatible planter anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100006,
+      "name": "Flower planter",
+      "scene": "tutorial",
+      "reason": "No compatible planter anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100007,
+      "name": "Flower planter",
+      "scene": "tutorial",
+      "reason": "No compatible planter anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100014,
+      "name": "Timber trail sign",
+      "scene": "tutorial",
+      "reason": "No compatible sign anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100018,
+      "name": "Flower planter",
+      "scene": "tutorial",
+      "reason": "No compatible planter anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100019,
+      "name": "Bench",
+      "scene": "tutorial",
+      "reason": "No compatible bench anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100010,
+      "name": "Square lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100012,
+      "name": "Square lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 5100013,
+      "name": "Square lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300528,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300529,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300530,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300532,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300534,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300535,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300536,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300537,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300538,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 8300539,
+      "name": "Street lantern",
+      "scene": "tutorial",
+      "reason": "No compatible lamp anchor outside entrances, roads and bridges"
+    },
+    {
+      "id": 7401536,
+      "name": "Coastal signal brazier",
+      "scene": "coastal_beacon_roof",
+      "reason": "No compatible, clear fire anchor in guard"
+    }
+  ],
+  "placed": 3956,
+  "rooms": 680,
+  "setupMilliseconds": 7732
+}

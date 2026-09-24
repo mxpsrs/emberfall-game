@@ -1,0 +1,99 @@
+{
+  "joints": 157,
+  "scale": 0.5327383578707247,
+  "height": 4.1,
+  "source": {
+    "title": "Insectoid Monster Rig",
+    "artist": "DM-913",
+    "url": "https://sketchfab.com/3d-models/insectoid-monster-rig-01323e4b2563430f9da85cd255b6e176",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "motionNote": "The supplied PoseLib is a landing/settling take and PoseLib.001 is static. Gameplay clips are authored by Veldren on this exact rig; all curved B-bone segments are baked.",
+    "sha256": "30e664009204c1ee29d9dc54c8289578d93d9b05599cf66d94619ca7501c8b1e",
+    "file": "Bugoid2.blend",
+    "nativeActions": [
+      "PoseLib",
+      "PoseLib.001"
+    ],
+    "animationFiles": [],
+    "sourceNodes": 181,
+    "materials": [
+      {
+        "material": "MAIN MATERIALIS",
+        "file": "MAIN.png",
+        "sha256": "eed73f60db789651ec3577c4b8ffe687f81d1a5b289f3e713d5c856578ff3bc5"
+      },
+      {
+        "material": "WINGS",
+        "file": "WINGBaseCLR-OpacityMAsk.png",
+        "sha256": "bdd18330375990d17dbb319f4da9e82b79f77e0c92401ce1dada0316b58c082f"
+      }
+    ],
+    "meshes": [
+      {
+        "name": "BOOG",
+        "triangles": 13156,
+        "activeSkinJoints": 157
+      }
+    ],
+    "authoredActions": [
+      "Veldren/idle",
+      "Veldren/walk",
+      "Veldren/run",
+      "Veldren/attack",
+      "Veldren/attack2",
+      "Veldren/hit",
+      "Veldren/death"
+    ]
+  },
+  "splitSkinPalette": true,
+  "vertices": 9094,
+  "triangles": 13156,
+  "deforms": 157,
+  "clips": {
+    "idle": {
+      "source": "Veldren/idle",
+      "duration": 2.8,
+      "frames": 35,
+      "note": "Veldren-authored on the original rig"
+    },
+    "walk": {
+      "source": "Veldren/walk",
+      "duration": 1.1,
+      "frames": 28,
+      "note": "Veldren-authored on the original rig"
+    },
+    "run": {
+      "source": "Veldren/run",
+      "duration": 0.78,
+      "frames": 20,
+      "note": "Veldren-authored on the original rig"
+    },
+    "attack": {
+      "source": "Veldren/attack",
+      "duration": 1.45,
+      "frames": 36,
+      "note": "Veldren-authored on the original rig",
+      "release": 0.53
+    },
+    "attack2": {
+      "source": "Veldren/attack2",
+      "duration": 1.45,
+      "frames": 36,
+      "note": "Veldren-authored on the original rig",
+      "release": 0.53
+    },
+    "hit": {
+      "source": "Veldren/hit",
+      "duration": 0.5,
+      "frames": 13,
+      "note": "Veldren-authored on the original rig"
+    },
+    "death": {
+      "source": "Veldren/death",
+      "duration": 2.3,
+      "frames": 57,
+      "note": "Veldren-authored on the original rig"
+    }
+  }
+}

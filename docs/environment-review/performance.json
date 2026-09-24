@@ -1,0 +1,4279 @@
+{
+  "scope": "Instrumented Node/mock-WebGL CPU submissions, not GPU or physical-device FPS. Cold and warm/orbit samples retained. Shared host load can affect timings.",
+  "before": [
+    {
+      "label": "Briarhaven",
+      "position": [
+        55,
+        61
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 9624.806021999997,
+      "medianMs": 28.03043400000024,
+      "p95Ms": 107.57225299999845,
+      "draws": 147,
+      "vertices": 1858728,
+      "samples": [
+        {
+          "ms": 9624.806021999997,
+          "static": 107,
+          "dynamic": 2,
+          "bytes": 20267926,
+          "vertices": 1527654,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 177.47427199999947,
+          "static": 13,
+          "dynamic": 2,
+          "bytes": 1932720,
+          "vertices": 1612218,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 130.99417399999948,
+          "static": 8,
+          "dynamic": 2,
+          "bytes": 1625766,
+          "vertices": 1776198,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 200.43396400000347,
+          "static": 10,
+          "dynamic": 2,
+          "bytes": 1865598,
+          "vertices": 1858728,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 120.03226300000097,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 657168,
+          "vertices": 1682406,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 89.97602899999765,
+          "static": 6,
+          "dynamic": 2,
+          "bytes": 718608,
+          "vertices": 1529226,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 107.57225299999845,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 1503558,
+          "vertices": 1708608,
+          "draws": 148,
+          "images": 0
+        },
+        {
+          "ms": 31.806281000004674,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411600,
+          "vertices": 1559508,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 30.12305500000366,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411072,
+          "vertices": 1367508,
+          "draws": 126,
+          "images": 0
+        },
+        {
+          "ms": 26.830611999997927,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411408,
+          "vertices": 1357086,
+          "draws": 132,
+          "images": 0
+        },
+        {
+          "ms": 33.03027400000428,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 429072,
+          "vertices": 1672908,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 28.665864999995392,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412416,
+          "vertices": 1698180,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 30.222673999996914,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412368,
+          "vertices": 1583424,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 27.052528000000166,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412608,
+          "vertices": 1615410,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 26.77123300000676,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412848,
+          "vertices": 1758042,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 85.47049600000173,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 2404416,
+          "vertices": 1946166,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 26.078967999994347,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412224,
+          "vertices": 1682136,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 26.539663000003202,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411936,
+          "vertices": 1532634,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 27.05387999999948,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411984,
+          "vertices": 1588056,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 27.806366000004346,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411888,
+          "vertices": 1561812,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 32.37958100000105,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 422544,
+          "vertices": 1354032,
+          "draws": 126,
+          "images": 0
+        },
+        {
+          "ms": 25.667546999997285,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411408,
+          "vertices": 1491852,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 23.879636999998183,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411504,
+          "vertices": 1643016,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 24.74416299999575,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412176,
+          "vertices": 1669680,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 25.21401199999673,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412176,
+          "vertices": 1527654,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 28.03043400000024,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412416,
+          "vertices": 1612218,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 26.59946299999865,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 413040,
+          "vertices": 1776198,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 29.88685699999769,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412224,
+          "vertices": 1858728,
+          "draws": 147,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Ironcrown castle",
+      "position": [
+        762,
+        67
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 4874.761114000001,
+      "medianMs": 132.28799699999945,
+      "p95Ms": 260.7388009999995,
+      "draws": 198,
+      "vertices": 2658300,
+      "samples": [
+        {
+          "ms": 4874.761114000001,
+          "static": 128,
+          "dynamic": 2,
+          "bytes": 29687766,
+          "vertices": 2653278,
+          "draws": 197,
+          "images": 0
+        },
+        {
+          "ms": 309.2453270000042,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 2411376,
+          "vertices": 2611608,
+          "draws": 192,
+          "images": 0
+        },
+        {
+          "ms": 313.21881199999916,
+          "static": 12,
+          "dynamic": 2,
+          "bytes": 6302280,
+          "vertices": 2675232,
+          "draws": 196,
+          "images": 0
+        },
+        {
+          "ms": 384.58532600000035,
+          "static": 10,
+          "dynamic": 2,
+          "bytes": 4189296,
+          "vertices": 2658300,
+          "draws": 198,
+          "images": 0
+        },
+        {
+          "ms": 204.34297099999822,
+          "static": 9,
+          "dynamic": 2,
+          "bytes": 3494268,
+          "vertices": 2741622,
+          "draws": 201,
+          "images": 0
+        },
+        {
+          "ms": 150.7616710000002,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 2158320,
+          "vertices": 2866050,
+          "draws": 211,
+          "images": 0
+        },
+        {
+          "ms": 256.9464200000002,
+          "static": 12,
+          "dynamic": 2,
+          "bytes": 4896762,
+          "vertices": 3246186,
+          "draws": 218,
+          "images": 0
+        },
+        {
+          "ms": 88.7036769999977,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2050608,
+          "vertices": 2796498,
+          "draws": 202,
+          "images": 0
+        },
+        {
+          "ms": 465.0964279999971,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 3904608,
+          "vertices": 2772942,
+          "draws": 215,
+          "images": 0
+        },
+        {
+          "ms": 137.67521200000192,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2049360,
+          "vertices": 2696100,
+          "draws": 205,
+          "images": 0
+        },
+        {
+          "ms": 192.40402899999754,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 2123376,
+          "vertices": 2636580,
+          "draws": 210,
+          "images": 0
+        },
+        {
+          "ms": 188.09960999999748,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 2124192,
+          "vertices": 3054546,
+          "draws": 214,
+          "images": 0
+        },
+        {
+          "ms": 162.43177200000355,
+          "static": 6,
+          "dynamic": 2,
+          "bytes": 2351712,
+          "vertices": 3009894,
+          "draws": 216,
+          "images": 0
+        },
+        {
+          "ms": 97.55968000000576,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051472,
+          "vertices": 2687844,
+          "draws": 204,
+          "images": 0
+        },
+        {
+          "ms": 260.7388009999995,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 3758496,
+          "vertices": 2678304,
+          "draws": 198,
+          "images": 0
+        },
+        {
+          "ms": 136.2308050000065,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051184,
+          "vertices": 2710182,
+          "draws": 207,
+          "images": 0
+        },
+        {
+          "ms": 131.85953100000188,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051616,
+          "vertices": 2773398,
+          "draws": 201,
+          "images": 0
+        },
+        {
+          "ms": 122.40991099999519,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 2113344,
+          "vertices": 3087546,
+          "draws": 221,
+          "images": 0
+        },
+        {
+          "ms": 98.24270000000251,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 2095344,
+          "vertices": 3263964,
+          "draws": 222,
+          "images": 0
+        },
+        {
+          "ms": 96.2407880000028,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 2067840,
+          "vertices": 2819580,
+          "draws": 209,
+          "images": 0
+        },
+        {
+          "ms": 138.92595000000438,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051040,
+          "vertices": 2822826,
+          "draws": 208,
+          "images": 0
+        },
+        {
+          "ms": 132.28799699999945,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2049456,
+          "vertices": 2696844,
+          "draws": 205,
+          "images": 0
+        },
+        {
+          "ms": 130.37596000000485,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2049936,
+          "vertices": 2650614,
+          "draws": 209,
+          "images": 0
+        },
+        {
+          "ms": 130.66283300000214,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2050176,
+          "vertices": 3032772,
+          "draws": 207,
+          "images": 0
+        },
+        {
+          "ms": 101.09026599999925,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051520,
+          "vertices": 2653278,
+          "draws": 197,
+          "images": 0
+        },
+        {
+          "ms": 94.590956,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051664,
+          "vertices": 2611608,
+          "draws": 192,
+          "images": 0
+        },
+        {
+          "ms": 107.69861800000217,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2051232,
+          "vertices": 2675232,
+          "draws": 196,
+          "images": 0
+        },
+        {
+          "ms": 95.96572200000082,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2050896,
+          "vertices": 2658300,
+          "draws": 198,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Dense forest",
+      "position": [
+        494,
+        624
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 1829.259822,
+      "medianMs": 75.75778899999568,
+      "p95Ms": 192.58529299999645,
+      "draws": 53,
+      "vertices": 907380,
+      "samples": [
+        {
+          "ms": 1829.259822,
+          "static": 37,
+          "dynamic": 2,
+          "bytes": 5385888,
+          "vertices": 967554,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 177.53197300000465,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 3780240,
+          "vertices": 956406,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 239.4342519999991,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 1316256,
+          "vertices": 808404,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 122.58045000000129,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 1113792,
+          "vertices": 907380,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 216.63525700000173,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 1170720,
+          "vertices": 1026720,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 192.58529299999645,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 1169760,
+          "vertices": 983346,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 112.6818129999956,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 1113744,
+          "vertices": 1161996,
+          "draws": 59,
+          "images": 0
+        },
+        {
+          "ms": 102.72179299999698,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1098000,
+          "vertices": 1108614,
+          "draws": 55,
+          "images": 0
+        },
+        {
+          "ms": 75.75778899999568,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1095792,
+          "vertices": 887946,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 38.57380499999999,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 1023312,
+          "vertices": 950640,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 75.75689799999964,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1097376,
+          "vertices": 1072380,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 78.21537099999841,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1097328,
+          "vertices": 1072302,
+          "draws": 58,
+          "images": 0
+        },
+        {
+          "ms": 82.50468700000056,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1096560,
+          "vertices": 1146168,
+          "draws": 60,
+          "images": 0
+        },
+        {
+          "ms": 93.9704600000041,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1133184,
+          "vertices": 1062276,
+          "draws": 58,
+          "images": 0
+        },
+        {
+          "ms": 83.15691099999822,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1125264,
+          "vertices": 929646,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 61.73530600000231,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 1022928,
+          "vertices": 925602,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 133.34614399999555,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 1096992,
+          "vertices": 1041594,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 65.61732800000027,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 1023312,
+          "vertices": 1042080,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 63.19837499999994,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 1023024,
+          "vertices": 1069416,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 37.40210500000103,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 686976,
+          "vertices": 945720,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 57.11997800000245,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 683664,
+          "vertices": 772266,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 123.27673999999388,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 685488,
+          "vertices": 855582,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 60.6954459999979,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 686016,
+          "vertices": 888726,
+          "draws": 52,
+          "images": 0
+        },
+        {
+          "ms": 88.63136800000211,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 686256,
+          "vertices": 997362,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 60.69948700000532,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 685248,
+          "vertices": 1078716,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 41.18519699999888,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 685104,
+          "vertices": 956406,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 49.157123999997566,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 684816,
+          "vertices": 808404,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 37.43696700000146,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 686544,
+          "vertices": 907380,
+          "draws": 53,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Crownreach",
+      "position": [
+        376,
+        112
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 4143.661795,
+      "medianMs": 143.617929,
+      "p95Ms": 305.3414279999997,
+      "draws": 167,
+      "vertices": 2836248,
+      "samples": [
+        {
+          "ms": 4143.661795,
+          "static": 84,
+          "dynamic": 2,
+          "bytes": 41443320,
+          "vertices": 2679600,
+          "draws": 171,
+          "images": 0
+        },
+        {
+          "ms": 582.3017780000009,
+          "static": 8,
+          "dynamic": 2,
+          "bytes": 7564608,
+          "vertices": 2701794,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 498.06714900000225,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 9293616,
+          "vertices": 2850552,
+          "draws": 162,
+          "images": 0
+        },
+        {
+          "ms": 312.73258099999657,
+          "static": 8,
+          "dynamic": 2,
+          "bytes": 2944548,
+          "vertices": 2836248,
+          "draws": 167,
+          "images": 0
+        },
+        {
+          "ms": 326.2562190000026,
+          "static": 6,
+          "dynamic": 2,
+          "bytes": 3295842,
+          "vertices": 2692470,
+          "draws": 161,
+          "images": 0
+        },
+        {
+          "ms": 240.41452199999912,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 4317696,
+          "vertices": 2732742,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 121.77453300000343,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 2691630,
+          "vertices": 2886852,
+          "draws": 169,
+          "images": 0
+        },
+        {
+          "ms": 143.617929,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2065824,
+          "vertices": 2681214,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 171.50847900000372,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2065968,
+          "vertices": 2929134,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 180.96231299999636,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2066400,
+          "vertices": 2846394,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 305.3414279999997,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 4818192,
+          "vertices": 2955942,
+          "draws": 176,
+          "images": 0
+        },
+        {
+          "ms": 156.0927210000009,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2065872,
+          "vertices": 2492262,
+          "draws": 170,
+          "images": 0
+        },
+        {
+          "ms": 126.7879780000003,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2065872,
+          "vertices": 2787768,
+          "draws": 175,
+          "images": 0
+        },
+        {
+          "ms": 250.71845100000064,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 2140128,
+          "vertices": 2710986,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 167.27900199999567,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2066208,
+          "vertices": 2890404,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 139.0836879999988,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2066016,
+          "vertices": 2683170,
+          "draws": 163,
+          "images": 0
+        },
+        {
+          "ms": 101.1194239999968,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2066160,
+          "vertices": 2772396,
+          "draws": 158,
+          "images": 0
+        },
+        {
+          "ms": 104.69086799999786,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 2066256,
+          "vertices": 2733090,
+          "draws": 159,
+          "images": 0
+        },
+        {
+          "ms": 102.96766100000241,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729296,
+          "vertices": 2715630,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 101.22146899999643,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729536,
+          "vertices": 2582028,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 104.8262010000035,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1730112,
+          "vertices": 2959482,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 159.13842000000295,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1730160,
+          "vertices": 2872134,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 130.90413300000364,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729728,
+          "vertices": 2854602,
+          "draws": 173,
+          "images": 0
+        },
+        {
+          "ms": 136.05579699999362,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729728,
+          "vertices": 2540076,
+          "draws": 170,
+          "images": 0
+        },
+        {
+          "ms": 104.478406000002,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729248,
+          "vertices": 2679600,
+          "draws": 171,
+          "images": 0
+        },
+        {
+          "ms": 260.41570800000045,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729728,
+          "vertices": 2701794,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 133.38026200000604,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729008,
+          "vertices": 2850552,
+          "draws": 162,
+          "images": 0
+        },
+        {
+          "ms": 167.71101400000043,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 1729968,
+          "vertices": 2836248,
+          "draws": 167,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Freight Mine",
+      "position": [
+        13,
+        15
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 204.97857099999965,
+      "medianMs": 17.923552999993262,
+      "p95Ms": 31.183815999997023,
+      "draws": 132,
+      "vertices": 779682,
+      "samples": [
+        {
+          "ms": 204.97857099999965,
+          "static": 78,
+          "dynamic": 2,
+          "bytes": 3395328,
+          "vertices": 808986,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 30.996874000004027,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 271584,
+          "vertices": 803742,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 25.337888999994902,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 198000,
+          "vertices": 713526,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 25.488125999996555,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 212880,
+          "vertices": 779682,
+          "draws": 132,
+          "images": 0
+        },
+        {
+          "ms": 29.87431800000195,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 266928,
+          "vertices": 777846,
+          "draws": 135,
+          "images": 0
+        },
+        {
+          "ms": 34.52487100000144,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 296736,
+          "vertices": 793272,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 31.183815999997023,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 290976,
+          "vertices": 793632,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 28.027579999994487,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280512,
+          "vertices": 787116,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 24.810421999995015,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 265056,
+          "vertices": 738570,
+          "draws": 128,
+          "images": 0
+        },
+        {
+          "ms": 18.392170999999507,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280464,
+          "vertices": 811740,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 19.92008799999894,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 873300,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 17.850663999997778,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 873516,
+          "draws": 145,
+          "images": 0
+        },
+        {
+          "ms": 17.92731900000217,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 817968,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 17.10980500000005,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 276048,
+          "vertices": 816954,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 13.616620000000694,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 211776,
+          "vertices": 733254,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 16.74985100000049,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 266736,
+          "vertices": 794418,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 19.29742800000531,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 793344,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 18.632975000000442,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281904,
+          "vertices": 850164,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 18.088963000001968,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 847416,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 16.500444999997853,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 791988,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 14.583690999999817,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 266208,
+          "vertices": 790014,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 17.71639100000175,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 267024,
+          "vertices": 809178,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 17.64473200000066,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 819948,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 17.923552999993262,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 820164,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 16.54881800000294,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 267024,
+          "vertices": 808986,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 15.87362800000119,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 253152,
+          "vertices": 803742,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 12.709399999999732,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 198000,
+          "vertices": 713526,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 16.81849499999953,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 212880,
+          "vertices": 779682,
+          "draws": 132,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "World wide",
+      "position": [
+        55,
+        61
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 7085.142005999995,
+      "medianMs": 37.39498399999866,
+      "p95Ms": 135.59855699999025,
+      "draws": 237,
+      "vertices": 3252708,
+      "samples": [
+        {
+          "ms": 7085.142005999995,
+          "static": 116,
+          "dynamic": 2,
+          "bytes": 20599314,
+          "vertices": 3109422,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 303.7941750000027,
+          "static": 12,
+          "dynamic": 2,
+          "bytes": 2695056,
+          "vertices": 3336432,
+          "draws": 242,
+          "images": 0
+        },
+        {
+          "ms": 286.1125860000029,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 3498048,
+          "vertices": 3441846,
+          "draws": 241,
+          "images": 0
+        },
+        {
+          "ms": 142.3290399999969,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 360672,
+          "vertices": 3252708,
+          "draws": 237,
+          "images": 0
+        },
+        {
+          "ms": 246.48395000000892,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 498240,
+          "vertices": 3127584,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 119.36870099999942,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 776136,
+          "vertices": 3307500,
+          "draws": 237,
+          "images": 0
+        },
+        {
+          "ms": 81.21593200000643,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 246816,
+          "vertices": 3321606,
+          "draws": 239,
+          "images": 0
+        },
+        {
+          "ms": 36.07428100000834,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81072,
+          "vertices": 3173418,
+          "draws": 234,
+          "images": 0
+        },
+        {
+          "ms": 57.44182000000728,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81696,
+          "vertices": 3504756,
+          "draws": 232,
+          "images": 0
+        },
+        {
+          "ms": 135.59855699999025,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 496752,
+          "vertices": 3633366,
+          "draws": 240,
+          "images": 0
+        },
+        {
+          "ms": 94.45282900000166,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 201168,
+          "vertices": 3309438,
+          "draws": 242,
+          "images": 0
+        },
+        {
+          "ms": 36.7518529999943,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80880,
+          "vertices": 3285540,
+          "draws": 232,
+          "images": 0
+        },
+        {
+          "ms": 44.66478200000711,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 283740,
+          "vertices": 3113856,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 32.58791600000404,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81120,
+          "vertices": 3271830,
+          "draws": 239,
+          "images": 0
+        },
+        {
+          "ms": 36.82638600000064,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 100992,
+          "vertices": 3487296,
+          "draws": 240,
+          "images": 0
+        },
+        {
+          "ms": 37.39498399999866,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81600,
+          "vertices": 3306342,
+          "draws": 241,
+          "images": 0
+        },
+        {
+          "ms": 35.544190000000526,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80928,
+          "vertices": 3153762,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 35.82013699998788,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80640,
+          "vertices": 3298686,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 36.38542099999904,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80976,
+          "vertices": 3350754,
+          "draws": 240,
+          "images": 0
+        },
+        {
+          "ms": 38.06409499999427,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81840,
+          "vertices": 3218214,
+          "draws": 234,
+          "images": 0
+        },
+        {
+          "ms": 76.45482300000731,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 162480,
+          "vertices": 3530328,
+          "draws": 232,
+          "images": 0
+        },
+        {
+          "ms": 38.639242999997805,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 82128,
+          "vertices": 3619212,
+          "draws": 239,
+          "images": 0
+        },
+        {
+          "ms": 35.938756000003195,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 82032,
+          "vertices": 3319176,
+          "draws": 241,
+          "images": 0
+        },
+        {
+          "ms": 35.623389000000316,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81744,
+          "vertices": 3355416,
+          "draws": 241,
+          "images": 0
+        },
+        {
+          "ms": 38.599394000004395,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80688,
+          "vertices": 3210900,
+          "draws": 238,
+          "images": 0
+        },
+        {
+          "ms": 35.696449000010034,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80928,
+          "vertices": 3437910,
+          "draws": 244,
+          "images": 0
+        },
+        {
+          "ms": 35.32989700000326,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 100080,
+          "vertices": 3441846,
+          "draws": 241,
+          "images": 0
+        },
+        {
+          "ms": 33.70378099998925,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81456,
+          "vertices": 3252708,
+          "draws": 237,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Mobile landscape",
+      "position": [
+        74,
+        88
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 527.0387420000043,
+      "medianMs": 18.594226000001072,
+      "p95Ms": 86.07825900000171,
+      "draws": 112,
+      "vertices": 1569996,
+      "samples": [
+        {
+          "ms": 527.0387420000043,
+          "static": 29,
+          "dynamic": 1,
+          "bytes": 2535402,
+          "vertices": 1651206,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 64.59841000000597,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 318672,
+          "vertices": 1592190,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 20.217337000009138,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 430752,
+          "vertices": 1548888,
+          "draws": 118,
+          "images": 0
+        },
+        {
+          "ms": 65.21602300000086,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 318960,
+          "vertices": 1569996,
+          "draws": 112,
+          "images": 0
+        },
+        {
+          "ms": 92.51530299999285,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23856,
+          "vertices": 1534608,
+          "draws": 114,
+          "images": 0
+        },
+        {
+          "ms": 86.07825900000171,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 78480,
+          "vertices": 1553100,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 48.78528399999777,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 151920,
+          "vertices": 1348920,
+          "draws": 117,
+          "images": 0
+        },
+        {
+          "ms": 19.956288000001223,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 5136,
+          "vertices": 1412112,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 24.43837600000552,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 5040,
+          "vertices": 1464594,
+          "draws": 114,
+          "images": 0
+        },
+        {
+          "ms": 40.1930890000076,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 447984,
+          "vertices": 1563444,
+          "draws": 124,
+          "images": 0
+        },
+        {
+          "ms": 18.594226000001072,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 24144,
+          "vertices": 1618740,
+          "draws": 124,
+          "images": 0
+        },
+        {
+          "ms": 24.105067999989842,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 240192,
+          "vertices": 1609146,
+          "draws": 128,
+          "images": 0
+        },
+        {
+          "ms": 28.127089999994496,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 341568,
+          "vertices": 1658790,
+          "draws": 120,
+          "images": 0
+        },
+        {
+          "ms": 17.955140999998548,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 360096,
+          "vertices": 1337790,
+          "draws": 111,
+          "images": 0
+        },
+        {
+          "ms": 27.795479999986128,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 97632,
+          "vertices": 1289004,
+          "draws": 107,
+          "images": 0
+        },
+        {
+          "ms": 24.242966000005254,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 374208,
+          "vertices": 1425540,
+          "draws": 107,
+          "images": 0
+        },
+        {
+          "ms": 16.967519999991055,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4752,
+          "vertices": 1481850,
+          "draws": 105,
+          "images": 0
+        },
+        {
+          "ms": 15.603860999995959,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4896,
+          "vertices": 1441962,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 16.798334000006435,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4416,
+          "vertices": 1301388,
+          "draws": 118,
+          "images": 0
+        },
+        {
+          "ms": 16.52117599999474,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4992,
+          "vertices": 1417464,
+          "draws": 117,
+          "images": 0
+        },
+        {
+          "ms": 15.11032599999453,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4800,
+          "vertices": 1403754,
+          "draws": 114,
+          "images": 0
+        },
+        {
+          "ms": 15.109064000003855,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4848,
+          "vertices": 1490298,
+          "draws": 115,
+          "images": 0
+        },
+        {
+          "ms": 17.904264000011608,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 24192,
+          "vertices": 1559826,
+          "draws": 124,
+          "images": 0
+        },
+        {
+          "ms": 19.05248899999424,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 24720,
+          "vertices": 1587336,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 15.49165099998936,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4848,
+          "vertices": 1651206,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 17.991947000002256,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23760,
+          "vertices": 1592190,
+          "draws": 119,
+          "images": 0
+        },
+        {
+          "ms": 15.73963699999149,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23952,
+          "vertices": 1548888,
+          "draws": 118,
+          "images": 0
+        },
+        {
+          "ms": 15.14483800000744,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 24048,
+          "vertices": 1569996,
+          "draws": 112,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Pinewatch Mine",
+      "position": [
+        13,
+        19
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 220.13574399999925,
+      "medianMs": 6.656059999997524,
+      "p95Ms": 10.998386999999639,
+      "draws": 273,
+      "vertices": 414948,
+      "samples": [
+        {
+          "ms": 220.13574399999925,
+          "static": 150,
+          "dynamic": 2,
+          "bytes": 3323188,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 10.224387999998726,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 7.855671999997867,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 7.398561000001791,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.779636999999639,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 9.227872999999818,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 9.447745000001305,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.999119000000064,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.677012000000104,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 8.561346999998932,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.804094000002806,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 8.552533999998559,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 7.797844000000623,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.321874999997817,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.196036000001186,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.656059999997524,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 5.863163000001805,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 5.704722999998921,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 5.799396999998862,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 5.931264999999257,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.28577199999927,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.334134999997332,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.048031999998784,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 5.833987999998499,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.522138000000268,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 6.132188999999926,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 10.998386999999639,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        },
+        {
+          "ms": 17.688578000001144,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 436368,
+          "vertices": 414948,
+          "draws": 273,
+          "images": 0
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "label": "Briarhaven",
+      "position": [
+        55,
+        61
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 9968.140456999998,
+      "medianMs": 30.20225599999685,
+      "p95Ms": 91.68149999999878,
+      "draws": 147,
+      "vertices": 1884156,
+      "samples": [
+        {
+          "ms": 9968.140456999998,
+          "static": 108,
+          "dynamic": 2,
+          "bytes": 20834986,
+          "vertices": 1553082,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 205.44928900000377,
+          "static": 13,
+          "dynamic": 2,
+          "bytes": 1932720,
+          "vertices": 1637646,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 120.04163300000073,
+          "static": 8,
+          "dynamic": 2,
+          "bytes": 1625766,
+          "vertices": 1801626,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 138.35606299999927,
+          "static": 10,
+          "dynamic": 2,
+          "bytes": 1865598,
+          "vertices": 1884156,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 80.02096200000233,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 657168,
+          "vertices": 1707834,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 92.84747900000366,
+          "static": 6,
+          "dynamic": 2,
+          "bytes": 718608,
+          "vertices": 1554654,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 91.68149999999878,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 1503558,
+          "vertices": 1734036,
+          "draws": 148,
+          "images": 0
+        },
+        {
+          "ms": 27.872276999994938,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411600,
+          "vertices": 1584936,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 26.669981999999436,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411072,
+          "vertices": 1392936,
+          "draws": 126,
+          "images": 0
+        },
+        {
+          "ms": 25.09525399999984,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411408,
+          "vertices": 1382514,
+          "draws": 132,
+          "images": 0
+        },
+        {
+          "ms": 32.39248199999565,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 429072,
+          "vertices": 1698336,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 27.68785900000512,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412416,
+          "vertices": 1723608,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 26.22368799999822,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412368,
+          "vertices": 1608852,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 26.107471000002988,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412608,
+          "vertices": 1640838,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 25.64985099999467,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412848,
+          "vertices": 1783470,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 76.13689699999668,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 2600256,
+          "vertices": 1979754,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 24.690121999999974,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412224,
+          "vertices": 1707564,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 24.961122000000614,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411936,
+          "vertices": 1558062,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 29.233874000005017,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411984,
+          "vertices": 1613484,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 28.993409999995492,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411888,
+          "vertices": 1587240,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 30.20225599999685,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 422544,
+          "vertices": 1379460,
+          "draws": 126,
+          "images": 0
+        },
+        {
+          "ms": 26.94540799999959,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411408,
+          "vertices": 1517280,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 35.54550300000119,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 411504,
+          "vertices": 1668444,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 44.00082100000145,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412176,
+          "vertices": 1695108,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 42.91225700000359,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412176,
+          "vertices": 1553082,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 44.41984400000365,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412416,
+          "vertices": 1637646,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 42.581889000000956,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 413040,
+          "vertices": 1801626,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 41.24521100000129,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 412224,
+          "vertices": 1884156,
+          "draws": 147,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Ironcrown castle",
+      "position": [
+        762,
+        67
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 4913.2526819999985,
+      "medianMs": 20.350298999997904,
+      "p95Ms": 123.9780380000011,
+      "draws": 142,
+      "vertices": 2288412,
+      "samples": [
+        {
+          "ms": 4913.2526819999985,
+          "static": 97,
+          "dynamic": 1,
+          "bytes": 32577648,
+          "vertices": 2276982,
+          "draws": 149,
+          "images": 0
+        },
+        {
+          "ms": 183.98616000000038,
+          "static": 7,
+          "dynamic": 1,
+          "bytes": 706560,
+          "vertices": 2235312,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 253.02478799999517,
+          "static": 12,
+          "dynamic": 1,
+          "bytes": 4751448,
+          "vertices": 2305344,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 217.0835670000015,
+          "static": 8,
+          "dynamic": 1,
+          "bytes": 777408,
+          "vertices": 2288412,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 128.56886899999517,
+          "static": 11,
+          "dynamic": 1,
+          "bytes": 1877952,
+          "vertices": 2365326,
+          "draws": 149,
+          "images": 0
+        },
+        {
+          "ms": 22.96294399999897,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 369552,
+          "vertices": 2490618,
+          "draws": 167,
+          "images": 0
+        },
+        {
+          "ms": 123.9780380000011,
+          "static": 12,
+          "dynamic": 1,
+          "bytes": 3191802,
+          "vertices": 2869890,
+          "draws": 174,
+          "images": 0
+        },
+        {
+          "ms": 20.07937999999558,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 345840,
+          "vertices": 2426610,
+          "draws": 150,
+          "images": 0
+        },
+        {
+          "ms": 114.69201600000088,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 492576,
+          "vertices": 2403054,
+          "draws": 163,
+          "images": 0
+        },
+        {
+          "ms": 21.454275999996753,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344592,
+          "vertices": 2319804,
+          "draws": 153,
+          "images": 0
+        },
+        {
+          "ms": 103.64322199999879,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 418608,
+          "vertices": 2261148,
+          "draws": 158,
+          "images": 0
+        },
+        {
+          "ms": 56.39740999999776,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 419424,
+          "vertices": 2679114,
+          "draws": 162,
+          "images": 0
+        },
+        {
+          "ms": 26.74491499999567,
+          "static": 5,
+          "dynamic": 1,
+          "bytes": 572976,
+          "vertices": 2468670,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 17.340635000000475,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346320,
+          "vertices": 2292096,
+          "draws": 153,
+          "images": 0
+        },
+        {
+          "ms": 17.934321000000637,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346128,
+          "vertices": 2280648,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 17.77285700000357,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346032,
+          "vertices": 2236710,
+          "draws": 148,
+          "images": 0
+        },
+        {
+          "ms": 16.129466000005777,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346176,
+          "vertices": 2235156,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 19.56970000000001,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 390336,
+          "vertices": 2380374,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 56.56264000000374,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 464112,
+          "vertices": 2771784,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 20.350298999997904,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 362448,
+          "vertices": 2412996,
+          "draws": 155,
+          "images": 0
+        },
+        {
+          "ms": 19.108123000005435,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346272,
+          "vertices": 2452938,
+          "draws": 156,
+          "images": 0
+        },
+        {
+          "ms": 20.778480000000854,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 343920,
+          "vertices": 2282028,
+          "draws": 153,
+          "images": 0
+        },
+        {
+          "ms": 19.100993000000017,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 345168,
+          "vertices": 2270892,
+          "draws": 153,
+          "images": 0
+        },
+        {
+          "ms": 19.29827099999966,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 345360,
+          "vertices": 2537322,
+          "draws": 151,
+          "images": 0
+        },
+        {
+          "ms": 19.503190000003087,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346704,
+          "vertices": 2276982,
+          "draws": 149,
+          "images": 0
+        },
+        {
+          "ms": 18.7902430000031,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346848,
+          "vertices": 2235312,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 21.545724000003247,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346608,
+          "vertices": 2305344,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 19.800058000000718,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 346272,
+          "vertices": 2288412,
+          "draws": 142,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Dense forest",
+      "position": [
+        494,
+        624
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 1651.1527429999987,
+      "medianMs": 14.871064999999362,
+      "p95Ms": 86.40121599999839,
+      "draws": 53,
+      "vertices": 886356,
+      "samples": [
+        {
+          "ms": 1651.1527429999987,
+          "static": 37,
+          "dynamic": 1,
+          "bytes": 4712928,
+          "vertices": 941706,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 107.59632100000454,
+          "static": 4,
+          "dynamic": 1,
+          "bytes": 3107328,
+          "vertices": 935382,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 173.28215599999385,
+          "static": 5,
+          "dynamic": 1,
+          "bytes": 643344,
+          "vertices": 787380,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 48.3741050000026,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 440880,
+          "vertices": 886356,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 98.71558099999675,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 497808,
+          "vertices": 1005696,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 86.40121599999839,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 496848,
+          "vertices": 962322,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 51.13724799999909,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 440832,
+          "vertices": 1140972,
+          "draws": 59,
+          "images": 0
+        },
+        {
+          "ms": 59.17880999999761,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 425088,
+          "vertices": 1087590,
+          "draws": 55,
+          "images": 0
+        },
+        {
+          "ms": 49.2812150000027,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 422880,
+          "vertices": 866922,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 12.797954000001482,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 350400,
+          "vertices": 929616,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 48.42015400000673,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 424464,
+          "vertices": 1051356,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 50.73824500000046,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 424416,
+          "vertices": 1051278,
+          "draws": 58,
+          "images": 0
+        },
+        {
+          "ms": 52.010817000002135,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 423648,
+          "vertices": 1125144,
+          "draws": 60,
+          "images": 0
+        },
+        {
+          "ms": 49.86325399999623,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 460272,
+          "vertices": 1041252,
+          "draws": 58,
+          "images": 0
+        },
+        {
+          "ms": 47.72961199999554,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 452352,
+          "vertices": 908622,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 12.636160000001837,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 350016,
+          "vertices": 904578,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 48.07519400000456,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 424080,
+          "vertices": 1020570,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 14.871064999999362,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 350400,
+          "vertices": 1021056,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 14.789362000003166,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 350112,
+          "vertices": 1048392,
+          "draws": 57,
+          "images": 0
+        },
+        {
+          "ms": 11.303296999998565,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 14064,
+          "vertices": 924696,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 10.876883999997517,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 10752,
+          "vertices": 751242,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 10.854149999999208,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 12576,
+          "vertices": 834558,
+          "draws": 53,
+          "images": 0
+        },
+        {
+          "ms": 11.192309999998542,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 13104,
+          "vertices": 867702,
+          "draws": 52,
+          "images": 0
+        },
+        {
+          "ms": 12.69399799999519,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 13344,
+          "vertices": 976338,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 14.442267999998876,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 12336,
+          "vertices": 1057692,
+          "draws": 56,
+          "images": 0
+        },
+        {
+          "ms": 12.423169000001508,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 12192,
+          "vertices": 935382,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 12.129906000001938,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 11904,
+          "vertices": 787380,
+          "draws": 54,
+          "images": 0
+        },
+        {
+          "ms": 10.714938999997685,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 13632,
+          "vertices": 886356,
+          "draws": 53,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Crownreach",
+      "position": [
+        376,
+        112
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 2699.369845000001,
+      "medianMs": 35.17515400000411,
+      "p95Ms": 160.81745599999704,
+      "draws": 167,
+      "vertices": 3064440,
+      "samples": [
+        {
+          "ms": 2699.369845000001,
+          "static": 83,
+          "dynamic": 1,
+          "bytes": 46278312,
+          "vertices": 2907792,
+          "draws": 171,
+          "images": 0
+        },
+        {
+          "ms": 295.16760400000203,
+          "static": 7,
+          "dynamic": 1,
+          "bytes": 5506752,
+          "vertices": 2929986,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 327.07702700000664,
+          "static": 6,
+          "dynamic": 1,
+          "bytes": 7235760,
+          "vertices": 3078744,
+          "draws": 162,
+          "images": 0
+        },
+        {
+          "ms": 148.79050400000415,
+          "static": 7,
+          "dynamic": 1,
+          "bytes": 886692,
+          "vertices": 3064440,
+          "draws": 167,
+          "images": 0
+        },
+        {
+          "ms": 160.81745599999704,
+          "static": 5,
+          "dynamic": 1,
+          "bytes": 1237986,
+          "vertices": 2920662,
+          "draws": 161,
+          "images": 0
+        },
+        {
+          "ms": 189.1398810000028,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 2259840,
+          "vertices": 2960934,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 60.18572000000131,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 633774,
+          "vertices": 3108756,
+          "draws": 169,
+          "images": 0
+        },
+        {
+          "ms": 47.3942440000028,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344496,
+          "vertices": 2903118,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 51.305861999993795,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344640,
+          "vertices": 3151038,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 35.508818000002066,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 345072,
+          "vertices": 3074586,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 88.17093799999566,
+          "static": 3,
+          "dynamic": 1,
+          "bytes": 3096864,
+          "vertices": 3184134,
+          "draws": 176,
+          "images": 0
+        },
+        {
+          "ms": 30.79581199999666,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344544,
+          "vertices": 2720454,
+          "draws": 170,
+          "images": 0
+        },
+        {
+          "ms": 34.31754899999942,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344544,
+          "vertices": 3015960,
+          "draws": 175,
+          "images": 0
+        },
+        {
+          "ms": 95.03870900000038,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 418800,
+          "vertices": 2939178,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 43.63007199999993,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344880,
+          "vertices": 3118596,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 34.56977999999799,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344688,
+          "vertices": 2911362,
+          "draws": 163,
+          "images": 0
+        },
+        {
+          "ms": 33.71354699999938,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344832,
+          "vertices": 3000588,
+          "draws": 158,
+          "images": 0
+        },
+        {
+          "ms": 35.165179999996326,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 344928,
+          "vertices": 2961282,
+          "draws": 159,
+          "images": 0
+        },
+        {
+          "ms": 34.706488000003446,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 7968,
+          "vertices": 2943822,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 31.006078999998863,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8208,
+          "vertices": 2803932,
+          "draws": 164,
+          "images": 0
+        },
+        {
+          "ms": 36.94461700000102,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8784,
+          "vertices": 3181386,
+          "draws": 166,
+          "images": 0
+        },
+        {
+          "ms": 35.00124200000573,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8832,
+          "vertices": 3100326,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 34.25430399999459,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8400,
+          "vertices": 3082794,
+          "draws": 173,
+          "images": 0
+        },
+        {
+          "ms": 28.26579099999799,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8400,
+          "vertices": 2768268,
+          "draws": 170,
+          "images": 0
+        },
+        {
+          "ms": 33.79224700000486,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 7920,
+          "vertices": 2907792,
+          "draws": 171,
+          "images": 0
+        },
+        {
+          "ms": 33.85871600000246,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8400,
+          "vertices": 2929986,
+          "draws": 165,
+          "images": 0
+        },
+        {
+          "ms": 42.96819200000027,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 7680,
+          "vertices": 3078744,
+          "draws": 162,
+          "images": 0
+        },
+        {
+          "ms": 35.17515400000411,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 8640,
+          "vertices": 3064440,
+          "draws": 167,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Freight Mine",
+      "position": [
+        13,
+        15
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 137.63393799999903,
+      "medianMs": 17.13512400000036,
+      "p95Ms": 19.303047000001243,
+      "draws": 132,
+      "vertices": 779682,
+      "samples": [
+        {
+          "ms": 137.63393799999903,
+          "static": 84,
+          "dynamic": 2,
+          "bytes": 3662040,
+          "vertices": 808986,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 19.587205999996513,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 271584,
+          "vertices": 803742,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 12.827879999997094,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 198000,
+          "vertices": 713526,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 14.29860099999496,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 212880,
+          "vertices": 779682,
+          "draws": 132,
+          "images": 0
+        },
+        {
+          "ms": 17.13512400000036,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 266928,
+          "vertices": 777846,
+          "draws": 135,
+          "images": 0
+        },
+        {
+          "ms": 17.97543299999961,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 296736,
+          "vertices": 793272,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 17.765666000006604,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 290976,
+          "vertices": 793632,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 16.88050999999541,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280512,
+          "vertices": 787116,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 13.586454999996931,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 265056,
+          "vertices": 738570,
+          "draws": 128,
+          "images": 0
+        },
+        {
+          "ms": 15.449828999997408,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280464,
+          "vertices": 811740,
+          "draws": 140,
+          "images": 0
+        },
+        {
+          "ms": 17.126310999999987,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 873300,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 18.062625000005937,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 873516,
+          "draws": 145,
+          "images": 0
+        },
+        {
+          "ms": 18.959838999995554,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 817968,
+          "draws": 144,
+          "images": 0
+        },
+        {
+          "ms": 16.335596999997506,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 276048,
+          "vertices": 816954,
+          "draws": 139,
+          "images": 0
+        },
+        {
+          "ms": 17.207032999998773,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 211776,
+          "vertices": 733254,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 16.416858999997203,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 266736,
+          "vertices": 794418,
+          "draws": 134,
+          "images": 0
+        },
+        {
+          "ms": 17.62102700000105,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 793344,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 18.026198999999906,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281904,
+          "vertices": 850164,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 20.247884000003978,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 281856,
+          "vertices": 847416,
+          "draws": 141,
+          "images": 0
+        },
+        {
+          "ms": 16.339132000000973,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 791988,
+          "draws": 137,
+          "images": 0
+        },
+        {
+          "ms": 14.91993999999977,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 266208,
+          "vertices": 790014,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 15.470269999997981,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 267024,
+          "vertices": 809178,
+          "draws": 142,
+          "images": 0
+        },
+        {
+          "ms": 17.204759000000195,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 819948,
+          "draws": 146,
+          "images": 0
+        },
+        {
+          "ms": 19.303047000001243,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 280608,
+          "vertices": 820164,
+          "draws": 147,
+          "images": 0
+        },
+        {
+          "ms": 17.963675999999396,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 267024,
+          "vertices": 808986,
+          "draws": 143,
+          "images": 0
+        },
+        {
+          "ms": 15.674016999997548,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 253152,
+          "vertices": 803742,
+          "draws": 136,
+          "images": 0
+        },
+        {
+          "ms": 11.866778999996313,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 198000,
+          "vertices": 713526,
+          "draws": 122,
+          "images": 0
+        },
+        {
+          "ms": 14.405243000001065,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 212880,
+          "vertices": 779682,
+          "draws": 132,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "World wide",
+      "position": [
+        55,
+        61
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 6898.065919999994,
+      "medianMs": 38.84167999999772,
+      "p95Ms": 116.79191400000127,
+      "draws": 231,
+      "vertices": 3290328,
+      "samples": [
+        {
+          "ms": 6898.065919999994,
+          "static": 106,
+          "dynamic": 2,
+          "bytes": 17713956,
+          "vertices": 3148254,
+          "draws": 230,
+          "images": 0
+        },
+        {
+          "ms": 316.2819430000018,
+          "static": 12,
+          "dynamic": 2,
+          "bytes": 2695248,
+          "vertices": 3374052,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 310.90844500000094,
+          "static": 7,
+          "dynamic": 2,
+          "bytes": 3498240,
+          "vertices": 3479466,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 152.04951699999947,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 360864,
+          "vertices": 3290328,
+          "draws": 231,
+          "images": 0
+        },
+        {
+          "ms": 257.3336929999932,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 498432,
+          "vertices": 3165204,
+          "draws": 229,
+          "images": 0
+        },
+        {
+          "ms": 116.79191400000127,
+          "static": 5,
+          "dynamic": 2,
+          "bytes": 776328,
+          "vertices": 3345120,
+          "draws": 231,
+          "images": 0
+        },
+        {
+          "ms": 81.84643599999254,
+          "static": 3,
+          "dynamic": 2,
+          "bytes": 247008,
+          "vertices": 3359226,
+          "draws": 233,
+          "images": 0
+        },
+        {
+          "ms": 37.029203999991296,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81264,
+          "vertices": 3211038,
+          "draws": 228,
+          "images": 0
+        },
+        {
+          "ms": 38.82141899999988,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81888,
+          "vertices": 3542376,
+          "draws": 226,
+          "images": 0
+        },
+        {
+          "ms": 76.46863600000506,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 496944,
+          "vertices": 3670986,
+          "draws": 234,
+          "images": 0
+        },
+        {
+          "ms": 80.76222000000416,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 201360,
+          "vertices": 3347058,
+          "draws": 236,
+          "images": 0
+        },
+        {
+          "ms": 37.74861000000965,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81072,
+          "vertices": 3323160,
+          "draws": 226,
+          "images": 0
+        },
+        {
+          "ms": 45.5907109999971,
+          "static": 2,
+          "dynamic": 2,
+          "bytes": 283932,
+          "vertices": 3151476,
+          "draws": 230,
+          "images": 0
+        },
+        {
+          "ms": 36.933688999997685,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81312,
+          "vertices": 3309450,
+          "draws": 233,
+          "images": 0
+        },
+        {
+          "ms": 41.42701299999317,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 101184,
+          "vertices": 3524916,
+          "draws": 234,
+          "images": 0
+        },
+        {
+          "ms": 37.245349999997416,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81792,
+          "vertices": 3343962,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 37.1493749999936,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81120,
+          "vertices": 3191382,
+          "draws": 230,
+          "images": 0
+        },
+        {
+          "ms": 42.87094399999478,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80832,
+          "vertices": 3336306,
+          "draws": 230,
+          "images": 0
+        },
+        {
+          "ms": 40.29677299999457,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81168,
+          "vertices": 3388374,
+          "draws": 234,
+          "images": 0
+        },
+        {
+          "ms": 37.70303000000422,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 82032,
+          "vertices": 3255834,
+          "draws": 228,
+          "images": 0
+        },
+        {
+          "ms": 72.70836799999233,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 162672,
+          "vertices": 3567948,
+          "draws": 226,
+          "images": 0
+        },
+        {
+          "ms": 44.70171799999662,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 82320,
+          "vertices": 3656832,
+          "draws": 233,
+          "images": 0
+        },
+        {
+          "ms": 35.93843599999673,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 82224,
+          "vertices": 3356796,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 34.81781399999454,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81936,
+          "vertices": 3393036,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 36.47869200000423,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 80880,
+          "vertices": 3249732,
+          "draws": 232,
+          "images": 0
+        },
+        {
+          "ms": 38.3691370000015,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81120,
+          "vertices": 3475530,
+          "draws": 238,
+          "images": 0
+        },
+        {
+          "ms": 36.40756400000828,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 100272,
+          "vertices": 3479466,
+          "draws": 235,
+          "images": 0
+        },
+        {
+          "ms": 38.84167999999772,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 81648,
+          "vertices": 3290328,
+          "draws": 231,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Mobile landscape",
+      "position": [
+        74,
+        88
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 548.7958860000072,
+      "medianMs": 19.109995000006165,
+      "p95Ms": 32.278349999993225,
+      "draws": 87,
+      "vertices": 1452402,
+      "samples": [
+        {
+          "ms": 548.7958860000072,
+          "static": 15,
+          "dynamic": 1,
+          "bytes": 1110480,
+          "vertices": 1541928,
+          "draws": 95,
+          "images": 0
+        },
+        {
+          "ms": 71.62711499999568,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 318384,
+          "vertices": 1482912,
+          "draws": 95,
+          "images": 0
+        },
+        {
+          "ms": 17.860258999993675,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23664,
+          "vertices": 1435794,
+          "draws": 94,
+          "images": 0
+        },
+        {
+          "ms": 70.20093199999246,
+          "static": 4,
+          "dynamic": 2,
+          "bytes": 318672,
+          "vertices": 1456902,
+          "draws": 88,
+          "images": 0
+        },
+        {
+          "ms": 23.475708000012673,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23568,
+          "vertices": 1421514,
+          "draws": 90,
+          "images": 0
+        },
+        {
+          "ms": 31.33801000000676,
+          "static": 1,
+          "dynamic": 1,
+          "bytes": 78192,
+          "vertices": 1440006,
+          "draws": 98,
+          "images": 0
+        },
+        {
+          "ms": 44.669309999997495,
+          "static": 2,
+          "dynamic": 1,
+          "bytes": 151632,
+          "vertices": 1245858,
+          "draws": 93,
+          "images": 0
+        },
+        {
+          "ms": 19.109995000006165,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4848,
+          "vertices": 1299018,
+          "draws": 95,
+          "images": 0
+        },
+        {
+          "ms": 17.76430400001118,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4752,
+          "vertices": 1351500,
+          "draws": 90,
+          "images": 0
+        },
+        {
+          "ms": 32.278349999993225,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 97344,
+          "vertices": 1452702,
+          "draws": 100,
+          "images": 0
+        },
+        {
+          "ms": 20.663440999996965,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23856,
+          "vertices": 1507998,
+          "draws": 100,
+          "images": 0
+        },
+        {
+          "ms": 23.87146500000381,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 239904,
+          "vertices": 1508436,
+          "draws": 104,
+          "images": 0
+        },
+        {
+          "ms": 16.360473999986425,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4464,
+          "vertices": 1319184,
+          "draws": 88,
+          "images": 0
+        },
+        {
+          "ms": 20.31874100001005,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 22896,
+          "vertices": 1128126,
+          "draws": 85,
+          "images": 0
+        },
+        {
+          "ms": 22.79616199999873,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 22896,
+          "vertices": 1129272,
+          "draws": 74,
+          "images": 0
+        },
+        {
+          "ms": 16.153641999990214,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 3744,
+          "vertices": 1106808,
+          "draws": 73,
+          "images": 0
+        },
+        {
+          "ms": 16.27710799999477,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 3696,
+          "vertices": 1122546,
+          "draws": 77,
+          "images": 0
+        },
+        {
+          "ms": 15.71310700000322,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 2928,
+          "vertices": 965850,
+          "draws": 81,
+          "images": 0
+        },
+        {
+          "ms": 15.383199000003515,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 3504,
+          "vertices": 945888,
+          "draws": 79,
+          "images": 0
+        },
+        {
+          "ms": 15.947400000004563,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 3840,
+          "vertices": 959934,
+          "draws": 82,
+          "images": 0
+        },
+        {
+          "ms": 16.192190000001574,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4368,
+          "vertices": 1152828,
+          "draws": 86,
+          "images": 0
+        },
+        {
+          "ms": 19.31642699999793,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4368,
+          "vertices": 1323888,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 16.799725999997463,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23040,
+          "vertices": 1247106,
+          "draws": 93,
+          "images": 0
+        },
+        {
+          "ms": 18.15078799999901,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23616,
+          "vertices": 1388094,
+          "draws": 92,
+          "images": 0
+        },
+        {
+          "ms": 16.330237999995006,
+          "static": 0,
+          "dynamic": 1,
+          "bytes": 4368,
+          "vertices": 1445394,
+          "draws": 90,
+          "images": 0
+        },
+        {
+          "ms": 19.574357000004966,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23472,
+          "vertices": 1342446,
+          "draws": 90,
+          "images": 0
+        },
+        {
+          "ms": 18.222315000006347,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23664,
+          "vertices": 1361652,
+          "draws": 85,
+          "images": 0
+        },
+        {
+          "ms": 19.82991299999412,
+          "static": 0,
+          "dynamic": 2,
+          "bytes": 23712,
+          "vertices": 1452402,
+          "draws": 87,
+          "images": 0
+        }
+      ]
+    },
+    {
+      "label": "Pinewatch Mine",
+      "position": [
+        13,
+        19
+      ],
+      "scope": "mock WebGL CPU and submissions",
+      "firstMs": 222.4880639999974,
+      "medianMs": 6.29322300000058,
+      "p95Ms": 9.718975000003411,
+      "draws": 89,
+      "vertices": 626532,
+      "samples": [
+        {
+          "ms": 222.4880639999974,
+          "static": 59,
+          "dynamic": 2,
+          "bytes": 3166996,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 8.707459000001109,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.775901000000886,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.889834000001429,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.371020000002318,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 8.372423000000708,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.182575999999244,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.577332000000752,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.174542999997357,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 8.005979000001389,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.876313000000664,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.705395000000863,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 7.306812999999238,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.943033999999898,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.693727000001672,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.887449999998353,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.694249000000127,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.023274999999558,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.193632999998954,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.262946999999258,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.352633000002243,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.0266499999997905,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.748571000000084,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 6.29322300000058,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.82738899999822,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 5.629621000000043,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 9.718975000003411,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        },
+        {
+          "ms": 14.416259000001446,
+          "static": 1,
+          "dynamic": 2,
+          "bytes": 446400,
+          "vertices": 626532,
+          "draws": 89,
+          "images": 0
+        }
+      ]
+    }
+  ]
+}

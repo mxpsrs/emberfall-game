@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-16T07:32:38.342Z",
+  "seconds": 20,
+  "passed": 4,
+  "failed": 0,
+  "total": 4,
+  "results": [
+    {
+      "test": "tests/multiplayer.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.7,
+      "output": "PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.\nPASS: complete ordered movement trails survive the server; invalid, distant, fractional and discontinuous trails are excluded.\n"
+    },
+    {
+      "test": "tests/player-options.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.5,
+      "output": "PASS: visible players are selectable by world picking and offer Trade with their authenticated username.\n"
+    },
+    {
+      "test": "tests/quest-celebration.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 20.1,
+      "output": "PASS: all village reward increases, mainland/frontier tables, mountain XP/currency/unlocks, real completion cards, one-time grants, queued conversations, sound, dismissal and safe bank overflow.\n"
+    },
+    {
+      "test": "tests/skill-progression.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 10.9,
+      "output": "PASS: XP thresholds, migration, gear and tools, combat training, gathering/respawn, recipe costs, cooking/food, fletching, permanent tutor workplaces, and tutorial-only guidance.\n"
+    }
+  ]
+}

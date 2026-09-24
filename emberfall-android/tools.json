@@ -1,0 +1,22 @@
+{
+  "android.jar": {
+    "url": "https://android.googlesource.com/platform/prebuilts/sdk/+/refs/heads/main/35/public/android.jar?format=TEXT",
+    "base64": true,
+    "sha256": "ee568219aa3754977207a8fd849fdbf3a299658dd26dd0907d39ca830587f8aa"
+  },
+  "aapt2": {
+    "url": "https://android.googlesource.com/platform/prebuilts/sdk/+/refs/heads/main/tools/linux/bin/aapt2?format=TEXT",
+    "base64": true,
+    "sha256": "0f4474300b737e9bf68fcb3cbb3338c958e51899e3be93c6f429b3aae0ca48df"
+  },
+  "r8.jar": {
+    "url": "https://android.googlesource.com/platform/prebuilts/r8/+/refs/heads/main/r8.jar?format=TEXT",
+    "base64": true,
+    "sha256": "43d80449b448c7ec428fdadd10b967c0452545de9f7f9965361816dcf5022d30"
+  },
+  "apksig.jar": {
+    "url": "https://dl.google.com/dl/android/maven2/com/android/tools/build/apksig/8.7.3/apksig-8.7.3.jar",
+    "base64": false,
+    "sha256": "c070ed1394629d74641aa0906f60b2ffa1ee77e6366a1f93437f59717b1aeb89"
+  }
+}

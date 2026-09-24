@@ -1,0 +1,21 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.3.0)
+
+newmtl _defaultMat
+Kd 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl colorRed
+Kd 0.87843138 0.290196091 0.313725501
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl $Material_2
+Kd 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+

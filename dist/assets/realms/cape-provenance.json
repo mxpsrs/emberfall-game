@@ -1,0 +1,86 @@
+{
+  "assets": [
+    {
+      "title": "Cape",
+      "author": "Karnage",
+      "author_url": "https://sketchfab.com/Ring1",
+      "source": "https://sketchfab.com/3d-models/cape-61e185ae00b640258071c581ab40f749",
+      "license": "CC-BY-4.0",
+      "files": [
+        {
+          "file": "license.txt",
+          "sha256": "668cc0c99ebef42db8e1127e017ceb48618beab9ed3d49d2d7f760d0c5f48bd1"
+        },
+        {
+          "file": "scene.bin",
+          "sha256": "ba6439eb5975c502d821e0fe138083a198240c1ecc7ed06ac5f6f7a107fae3f4"
+        },
+        {
+          "file": "scene.gltf",
+          "sha256": "4dcd17a7a313bb7db17905f7919dafdcc0ac5a752d192918121d1ed1f0cd0de2"
+        }
+      ]
+    },
+    {
+      "title": "Red Leather Cape - static and blowing",
+      "author": "KodaWowo",
+      "author_url": "https://sketchfab.com/KodaWowo",
+      "source": "https://sketchfab.com/3d-models/red-leather-cape-static-and-blowing-616ee4f1d77742bfab6a90044c1116a3",
+      "license": "CC-BY-4.0",
+      "files": [
+        {
+          "file": "license.txt",
+          "sha256": "20527ac2b69ae3d5186a52a7a7680e9e46fd5acf45383fc58a4ba4e2c9854694"
+        },
+        {
+          "file": "scene.bin",
+          "sha256": "57cf7880984131a40fc40a016d37190e88c1dc71fa89bbf7b08ac941b963b917"
+        },
+        {
+          "file": "scene.gltf",
+          "sha256": "07dd4860865cf5e2ff1e3c4119ad50badfd26d8b0110060bb184d37d04fd0db6"
+        },
+        {
+          "file": "textures/Scene_-_Root_baseColor.png",
+          "sha256": "d247ed49d154f555d32d48bf4929314822be71e7ef91518b5806c37beeec9a5d"
+        },
+        {
+          "file": "textures/Scene_-_Root_emissive.png",
+          "sha256": "f16f670d085089a92282911073dd23b09bdd9475b7d4e7ec63a07d594ea3594f"
+        },
+        {
+          "file": "textures/Scene_-_Root_metallicRoughness.png",
+          "sha256": "9dd40e369d04b81c623a3c14eeca08e537eaa5af345e71389cc434e7dba7fafc"
+        },
+        {
+          "file": "textures/Scene_-_Root_normal.png",
+          "sha256": "097dbf3b84cd107a758e2d3a0dd1394d0e6b2e0251aa1d3a4d8b9ffc62e8fa45"
+        }
+      ]
+    }
+  ],
+  "adaptation": "Fitted to both Veldren bodies while preserving each authored neck opening and the full front-to-back drape. Collars remain rigid on the upper torso and the lower cloth uses smooth torso weighting. The Adventure Cloak uses a woven cloth atlas texture beneath its five dyes. The red cape uses KodaWowo's base-color texture at runtime with UV-aware deterministic clustering. The artist-supplied static and wind-blown red meshes remain distinct movement states.",
+  "textures": {
+    "adventure_cloth": {
+      "file": "art/cape-adventure-cloth.png",
+      "sha256": "a9505db606c6b9cf0f927f8edfe77145e3e9b34f03dddc58a664cc5c869c79af",
+      "atlas_slot": 46,
+      "authoring": "OpenAI image generation, normalized to neutral grayscale for Veldren dyes"
+    },
+    "red_leather": {
+      "file": "textures/Scene_-_Root_baseColor.png",
+      "sha256": "d247ed49d154f555d32d48bf4929314822be71e7ef91518b5806c37beeec9a5d",
+      "atlas_slot": 47,
+      "author": "KodaWowo",
+      "license": "CC-BY-4.0"
+    }
+  },
+  "web_meshes": {
+    "adventure_vertices": 1620,
+    "adventure_triangles": 2619,
+    "red_static_vertices": 9927,
+    "red_static_triangles": 15675,
+    "red_wind_vertices": 9695,
+    "red_wind_triangles": 15514
+  }
+}

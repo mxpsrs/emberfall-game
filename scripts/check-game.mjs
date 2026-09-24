@@ -1,0 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawn} from 'node:child_process';
+const selected=process.argv.slice(2),tests=(selected.length?selected:fs.readdirSync('tests').filter(n=>/\.(cjs|mjs)$/.test(n)).sort()).map(n=>n.startsWith('tests/')?n:'tests/'+n);
+fs.mkdirSync('.qa',{recursive:true});fs.mkdirSync('docs/qa',{recursive:true});
+const results=[],start=Date.now();let next=0;
+async function run(file){const began=Date.now();let stdout='',stderr='',timedOut=false;const child=spawn(process.execPath,[file],{stdio:['ignore','pipe','pipe']});child.stdout.on('data',b=>stdout+=b);child.stderr.on('data',b=>stderr+=b);const timer=setTimeout(()=>{timedOut=true;child.kill('SIGTERM');},240000);const code=await new Promise(resolve=>child.on('close',resolve));clearTimeout(timer);const log='.qa/'+path.basename(file)+'.log';fs.writeFileSync(log,stdout+stderr);const result={test:file,passed:code===0&&!timedOut,exitCode:code,timedOut,seconds:Math.round((Date.now()-began)/100)/10,output:(stdout+stderr).slice(-2200)};results.push(result);console.log((result.passed?'PASS ':'FAIL ')+file+' ('+result.seconds+'s)'+(result.passed?'':'\n'+result.output));}
+await Promise.all(Array.from({length:2},async()=>{while(next<tests.length)await run(tests[next++]);}));
+results.sort((a,b)=>a.test.localeCompare(b.test));const report={date:new Date().toISOString(),seconds:Math.round((Date.now()-start)/1000),passed:results.filter(r=>r.passed).length,failed:results.filter(r=>!r.passed).length,total:results.length,results};fs.writeFileSync(selected.length?'.qa/recheck-results.json':'docs/qa/regression-2026-09-14.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({passed:report.passed,failed:report.failed,total:report.total,seconds:report.seconds}));process.exitCode=report.failed?1:0;

@@ -1,0 +1,17 @@
+node_modules/
+dist/server/
+dist/.openai/
+
+.asset-cache/
+
+__pycache__/
+.env.reset.local
+.reset-requests/
+
+.env.maintenance.local
+
+player-saves/
+server-data/
+.qa/
+.sites-runtime/
+native/build/

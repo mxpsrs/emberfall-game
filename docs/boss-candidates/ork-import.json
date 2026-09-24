@@ -1,0 +1,89 @@
+{
+  "joints": 58,
+  "scale": 24.737129479445112,
+  "height": 2.65,
+  "source": {
+    "title": "Animated Minotaur",
+    "author": "vsify",
+    "url": "https://www.cgtrader.com/free-3d-models/character/fantasy-character/minotaur-cda47223-1a94-4f7d-bc2b-82344547726d",
+    "license": "CGTrader Royalty Free (no AI) \u2014 incorporated game asset",
+    "sha256": "de862aac16598e6d1aa8f725f7918094cc83bbcd387ac6b343f7adb486785d98",
+    "file": "Minotaur@Idle.FBX",
+    "nativeActions": [
+      "Take 001",
+      "Walk",
+      "Run",
+      "Attack",
+      "Death1",
+      "Get_Hit"
+    ],
+    "animationFiles": [
+      {
+        "file": "Minotaur@Walk.FBX",
+        "action": "Walk",
+        "take": "Take 001",
+        "sha256": "790ba47b92c8f34d6d0e738095c6bc2db90cf2c8b5d0f6f7bf4c45c35bed7bd1"
+      },
+      {
+        "file": "Minotaur@Run.FBX",
+        "action": "Run",
+        "take": "Take 001",
+        "sha256": "1465dad759b19b5eff484cd2c0b71f64b7d7e7da9544efa94ce5005876e2367d"
+      },
+      {
+        "file": "Minotaur@Attack.FBX",
+        "action": "Attack",
+        "take": "Take 001",
+        "sha256": "68906fff861b342dc74ca3b027e199611ef8ff15758ec667453487c76d9b181f"
+      },
+      {
+        "file": "Minotaur@Death1.FBX",
+        "action": "Death1",
+        "take": "Take 001",
+        "sha256": "6f038114d164c3079f28c7f93b91599716b0ec11ca2007ff2b700d8a168d8904"
+      },
+      {
+        "file": "Minotaur@Get_Hit.FBX",
+        "action": "Get_Hit",
+        "take": "Take 001",
+        "sha256": "045aba1adbe7bb990a4fb1794b92ed55e88497c4a5698f1d3841e36c0f3fed76"
+      }
+    ],
+    "sourceNodes": 65
+  },
+  "vertices": 3015,
+  "triangles": 4655,
+  "deforms": 68,
+  "clips": {
+    "idle": {
+      "source": "Take 001",
+      "duration": 8.63333333,
+      "frames": 209
+    },
+    "walk": {
+      "source": "Walk",
+      "duration": 1.13333333,
+      "frames": 29
+    },
+    "run": {
+      "source": "Run",
+      "duration": 0.8,
+      "frames": 21
+    },
+    "attack": {
+      "source": "Attack",
+      "duration": 1.16666667,
+      "frames": 29
+    },
+    "death": {
+      "source": "Death1",
+      "duration": 1.33333333,
+      "frames": 33
+    },
+    "hit": {
+      "source": "Get_Hit",
+      "duration": 1.16666667,
+      "frames": 29
+    }
+  }
+}

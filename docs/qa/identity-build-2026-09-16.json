@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-16T07:38:32.227Z",
+  "seconds": 1,
+  "passed": 1,
+  "failed": 0,
+  "total": 1,
+  "results": [
+    {
+      "test": "tests/built-assets.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.9,
+      "output": "PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.\nPASS: readable home page, all 90 startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. 45.25 MiB before hosting compression.\n"
+    }
+  ]
+}

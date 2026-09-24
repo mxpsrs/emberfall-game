@@ -1,0 +1,5 @@
+Google Filament 1.77.0
+Release: https://github.com/google/filament/releases/tag/v1.77.0
+Web release archive SHA-256: cd5d07b1397bbff9b0490a3679453ee48a9eb79728c6d7dba56cfe7a78d649c2
+filament.js SHA-256: cabd5933390705060715c2ad7adb9975aa21315b3a910139d7401e0359ceb509
+filament.wasm SHA-256: c8938bdd991389df764deab9235b7d6e7748290d4b89fcc63f6dfa7c7f6ba4d7

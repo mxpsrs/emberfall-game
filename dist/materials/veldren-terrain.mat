@@ -1,0 +1,116 @@
+// Veldren terrain surface for Google Filament 1.77.
+// This material is intentionally separate from the lit world material. It has
+// one texture sampler, so mobile WebGL cannot alias terrain and character
+// textures, and unlit shading prevents moving light bands across terrain
+// triangles while the camera follows the player.
+material {
+    name : VeldrenTerrain,
+    requires : [ color, uv0 ],
+    shadingModel : unlit,
+    blending : opaque,
+    culling : none,
+    doubleSided : true,
+    parameters : [
+        { type : sampler2d, name : groundSurfaces },
+        { type : float, name : night }
+    ]
+}
+
+fragment {
+    float terrainHash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    vec3 terrainSrgbToLinear(vec3 color) {
+        vec3 lower = color / 12.92;
+        vec3 upper = pow((color + 0.055) / 1.055, vec3(2.4));
+        return mix(lower, upper, step(vec3(0.04045), color));
+    }
+
+    float terrainRawNoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+            mix(terrainHash(i), terrainHash(i + vec2(1.0, 0.0)), f.x),
+            mix(terrainHash(i + vec2(0.0, 1.0)), terrainHash(i + vec2(1.0, 1.0)), f.x),
+            f.y);
+    }
+
+    float terrainNoise(vec2 p) {
+        float footprint = max(length(dFdx(p)), length(dFdy(p)));
+        return mix(terrainRawNoise(p), 0.5, smoothstep(0.35, 1.5, footprint));
+    }
+
+    vec3 terrainTexture(vec2 uv, vec2 tile) {
+        vec2 coord = (tile + fract(uv)) * 0.5;
+        // Use the real screen footprint. The earlier four-mip bias reduced a
+        // 512px surface to roughly 16px even when its world repeat still
+        // covered hundreds of screen pixels, which made maximum zoom muddy.
+        // Stable mesh-authored UVs remove the original camera-phase shimmer,
+        // so ordinary trilinear filtering can retain the visible detail.
+        vec2 dx = dFdx(uv) * 0.5;
+        vec2 dy = dFdy(uv) * 0.5;
+        float rho = max(length(dx), length(dy)) * 1024.0;
+        float limit = min(1.0, 128.0 / max(rho, 1.0));
+        dx *= limit;
+        dy *= limit;
+        float lod = clamp(log2(max(rho * limit, 1.0)), 0.0, 7.0);
+        float inset = min(64.0, max(1.0, exp2(ceil(lod)) * 0.5)) / 1024.0;
+        coord = clamp(coord, tile * 0.5 + inset,
+                (tile + 1.0) * 0.5 - inset);
+        return textureGrad(materialParams_groundSurfaces, coord, dx, dy).rgb;
+    }
+
+    void material(inout MaterialInputs material) {
+        vec4 masks = getColor();
+        float id = masks.a;
+        // UV0 is authored once from the terrain vertex's absolute X/Z. Do not
+        // reconstruct texture coordinates from getWorldPosition(): Filament's
+        // camera-relative fragment position can change sampling phase as the
+        // camera moves even when the terrain mesh is stationary on screen.
+        vec2 p = getUV0();
+        float patches = terrainNoise(p * 0.045);
+
+        vec3 grass = terrainTexture(p * 0.105, vec2(0.0, 0.0));
+        vec3 dirt = terrainTexture(p * 0.115, vec2(1.0, 0.0));
+        vec3 stone = terrainTexture(p * 0.115, vec2(0.0, 1.0));
+        vec3 color;
+
+        if (id > 0.5 && id < 1.5) {
+            float forest = smoothstep(449.0, 490.0, p.y) * smoothstep(135.0, 175.0, p.x);
+            float mountain = smoothstep(548.0, 610.0, p.x) * (1.0 - smoothstep(417.0, 465.0, p.y));
+            color = grass * mix(vec3(0.86, 0.92, 0.80), vec3(1.02, 1.04, 0.91), patches);
+            color = mix(color, grass * vec3(0.72, 0.86, 0.76), forest);
+            color = mix(color, grass * vec3(0.88, 0.86, 0.72), mountain);
+
+            // COLOR.b stores normalized dry distance from the shoreline.
+            float bank = 1.0 - smoothstep(0.10, 0.95, clamp(masks.b, 0.0, 1.0));
+            color = mix(color, dirt * 0.82, bank * 0.82);
+
+            // COLOR.r is ordinary road coverage and COLOR.g is paved coverage.
+            // Quarry cells already receive the explicit stone material ID.
+            float roadMask = smoothstep(0.05, 0.90, clamp(masks.r, 0.0, 1.0));
+            float pavingMask = smoothstep(0.05, 0.90, clamp(masks.g, 0.0, 1.0));
+            color = mix(color, dirt, roadMask);
+            color = mix(color, stone * vec3(0.94, 0.95, 0.92), pavingMask);
+        } else if (id > 1.5 && id < 3.5) {
+            color = stone * mix(vec3(0.78, 0.80, 0.76), vec3(0.94), patches);
+        } else if (id > 3.5 && id < 4.5) {
+            color = terrainTexture(p * 0.075, vec2(1.0, 1.0)) * vec3(0.72, 0.88, 0.91);
+        } else if (id > 4.5 && id < 5.5) {
+            // Road centers receive an explicit dirt surface ID in the mesh.
+            // This does not depend on interpolated vertex-color masks, so a
+            // road cannot silently turn back into grass in Filament.
+            color = dirt * mix(vec3(0.90, 0.86, 0.76), vec3(1.02, 0.98, 0.88), patches);
+        } else {
+            color = terrainSrgbToLinear(masks.rgb);
+        }
+
+        // Stable day/night exposure replaces per-triangle direct lighting.
+        // Terrain shape stays readable through the broad authored color zones.
+        color *= mix(0.92, 0.62, materialParams.night);
+        prepareMaterial(material);
+        material.baseColor = vec4(color, 1.0);
+    }
+}

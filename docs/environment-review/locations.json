@@ -1,0 +1,837 @@
+[
+  {
+    "name": "Crownreach",
+    "scene": "overworld",
+    "x": 378,
+    "y": 114,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Greyhaven",
+    "scene": "overworld",
+    "x": 384,
+    "y": 336,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Briarhaven",
+    "scene": "overworld",
+    "x": 55,
+    "y": 61,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Willowcross",
+    "scene": "overworld",
+    "x": 162,
+    "y": 78,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Stoneford",
+    "scene": "overworld",
+    "x": 225,
+    "y": 186,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Ironhollow",
+    "scene": "overworld",
+    "x": 762,
+    "y": 117,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Deepforge",
+    "scene": "overworld",
+    "x": 870,
+    "y": 336,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Copperdelve",
+    "scene": "overworld",
+    "x": 612,
+    "y": 252,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Stonehearth",
+    "scene": "overworld",
+    "x": 1032,
+    "y": 186,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Aelindor",
+    "scene": "overworld",
+    "x": 393,
+    "y": 597,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Moonwillow",
+    "scene": "overworld",
+    "x": 795,
+    "y": 603,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Fernwatch",
+    "scene": "overworld",
+    "x": 216,
+    "y": 537,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Silverbrook",
+    "scene": "overworld",
+    "x": 597,
+    "y": 597,
+    "kind": "settlement",
+    "zoom": 18
+  },
+  {
+    "name": "Ironhollow Crown Quarry",
+    "scene": "overworld",
+    "x": 858,
+    "y": 129,
+    "kind": "quarry",
+    "zoom": 18
+  },
+  {
+    "name": "Copperdelve Cut",
+    "scene": "overworld",
+    "x": 671,
+    "y": 257,
+    "kind": "quarry",
+    "zoom": 18
+  },
+  {
+    "name": "Crown Masonry Quarry",
+    "scene": "overworld",
+    "x": 465,
+    "y": 165,
+    "kind": "quarry",
+    "zoom": 18
+  },
+  {
+    "name": "Deepforge Regional Quarry",
+    "scene": "overworld",
+    "x": 959,
+    "y": 344,
+    "kind": "quarry",
+    "zoom": 18
+  },
+  {
+    "name": "Old Stoneford Cut",
+    "scene": "overworld",
+    "x": 275,
+    "y": 278,
+    "kind": "quarry",
+    "zoom": 18
+  },
+  {
+    "name": "Pinewatch Mine",
+    "scene": "overworld",
+    "x": 165,
+    "y": 24,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Sunken Crypt",
+    "scene": "overworld",
+    "x": 174,
+    "y": 135,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ironhollow Deep Mines",
+    "scene": "overworld",
+    "x": 813,
+    "y": 93,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Deepforge Deep Mines",
+    "scene": "overworld",
+    "x": 921,
+    "y": 312,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Copperdelve Deep Mines",
+    "scene": "overworld",
+    "x": 609,
+    "y": 240,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Stonehearth Deep Mines",
+    "scene": "overworld",
+    "x": 1029,
+    "y": 174,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Abandoned Crystal Mine",
+    "scene": "overworld",
+    "x": 945,
+    "y": 387,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "The Shattered Sanctum",
+    "scene": "overworld",
+    "x": 774,
+    "y": 137,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ashwatch Mountain Caves",
+    "scene": "overworld",
+    "x": 303,
+    "y": 63,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Moonwillow Root Caverns",
+    "scene": "overworld",
+    "x": 720,
+    "y": 516,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ork Warrens",
+    "scene": "overworld",
+    "x": 657,
+    "y": 198,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "The Sealed Underworks",
+    "scene": "overworld",
+    "x": 756,
+    "y": 136,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ironhollow Freight Mine",
+    "scene": "overworld",
+    "x": 842,
+    "y": 187,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Hollow Shrine",
+    "scene": "overworld",
+    "x": 677,
+    "y": 363,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Archivist Maerin",
+    "scene": "overworld",
+    "x": 764,
+    "y": 122,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Huntsman Rook",
+    "scene": "overworld",
+    "x": 48,
+    "y": 92,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Master Alaric",
+    "scene": "overworld",
+    "x": 744,
+    "y": 46,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ironcrown library \u00b7 Sealing records",
+    "scene": "overworld",
+    "x": 749,
+    "y": 49,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Wardkeeper family duty ledger",
+    "scene": "overworld",
+    "x": 717,
+    "y": 102,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Tools outside an empty Wardkeeper home",
+    "scene": "overworld",
+    "x": 734,
+    "y": 105,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Copied summons at the shuttered home",
+    "scene": "overworld",
+    "x": 795,
+    "y": 102,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Collapsed ward workings",
+    "scene": "overworld",
+    "x": 779,
+    "y": 144,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Ward workbench",
+    "scene": "overworld",
+    "x": 780,
+    "y": 123,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Three-sigil royal seal",
+    "scene": "overworld",
+    "x": 758,
+    "y": 137,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Captain Rellan",
+    "scene": "overworld",
+    "x": 63,
+    "y": 69,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Wagon driver Tovin",
+    "scene": "overworld",
+    "x": 78,
+    "y": 73,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Attacked royal courier cart",
+    "scene": "overworld",
+    "x": 157,
+    "y": 143,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Cut harness and discarded raider knife",
+    "scene": "overworld",
+    "x": 160,
+    "y": 144,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Eastbound heavy bootprints",
+    "scene": "overworld",
+    "x": 165,
+    "y": 142,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Fallen royal courier",
+    "scene": "overworld",
+    "x": 155,
+    "y": 140,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Split-trail road marker",
+    "scene": "overworld",
+    "x": 172,
+    "y": 139,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Raider lookout",
+    "scene": "overworld",
+    "x": 212,
+    "y": 142,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Lookout\u2019s dispatch satchel",
+    "scene": "overworld",
+    "x": 227,
+    "y": 143,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Forewoman Hesta",
+    "scene": "overworld",
+    "x": 835,
+    "y": 194,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Scholar Ilyra",
+    "scene": "overworld",
+    "x": 626,
+    "y": 301,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Oathstone of the Bell",
+    "scene": "overworld",
+    "x": 577,
+    "y": 297,
+    "kind": "quest/entrance",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 54",
+    "scene": "overworld",
+    "x": 112,
+    "y": 52,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 55",
+    "scene": "overworld",
+    "x": 112,
+    "y": 106,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 56",
+    "scene": "overworld",
+    "x": 545,
+    "y": 336,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 57",
+    "scene": "overworld",
+    "x": 393,
+    "y": 455,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 58",
+    "scene": "overworld",
+    "x": 795,
+    "y": 455,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 59",
+    "scene": "overworld",
+    "x": 216,
+    "y": 455,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Bridge 60",
+    "scene": "overworld",
+    "x": 597,
+    "y": 455,
+    "kind": "bridge",
+    "zoom": 18
+  },
+  {
+    "name": "Pinewatch Mine",
+    "scene": "mine",
+    "x": 13,
+    "y": 19,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "Sunken Crypt",
+    "scene": "dungeon",
+    "x": 14,
+    "y": 22,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "Firstlight Isle",
+    "scene": "tutorial",
+    "x": 42,
+    "y": 51,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "The Crystal Crucible",
+    "scene": "lair_colossus",
+    "x": 23,
+    "y": 134,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "The Shattered Sanctum",
+    "scene": "lair_veyr",
+    "x": 22,
+    "y": 134,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "Blightwing Roost",
+    "scene": "lair_varkesh",
+    "x": 29,
+    "y": 144,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "The Brood Hollow",
+    "scene": "lair_xalith",
+    "x": 27,
+    "y": 140,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "Fairy Lands \u00b7 The Remembering Lake",
+    "scene": "fairy_between",
+    "x": 20,
+    "y": 49,
+    "kind": "scene",
+    "zoom": 18
+  },
+  {
+    "name": "Sunspire front",
+    "x": 378,
+    "y": 81,
+    "zoom": 11,
+    "yaw": 0,
+    "kind": "castle"
+  },
+  {
+    "name": "Sunspire rear",
+    "x": 378,
+    "y": 30,
+    "zoom": 11,
+    "yaw": 3.141592653589793,
+    "kind": "castle"
+  },
+  {
+    "name": "Sunspire left",
+    "x": 348,
+    "y": 55,
+    "zoom": 11,
+    "yaw": -1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Sunspire right",
+    "x": 409,
+    "y": 55,
+    "zoom": 11,
+    "yaw": 1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Sunspire elevated",
+    "x": 378,
+    "y": 55,
+    "zoom": 11,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "Sunspire courtyard",
+    "x": 378,
+    "y": 64,
+    "zoom": 18,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown front",
+    "x": 762,
+    "y": 84,
+    "zoom": 11,
+    "yaw": 0,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown rear",
+    "x": 762,
+    "y": 33,
+    "zoom": 11,
+    "yaw": 3.141592653589793,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown left",
+    "x": 732,
+    "y": 58,
+    "zoom": 11,
+    "yaw": -1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown right",
+    "x": 793,
+    "y": 58,
+    "zoom": 11,
+    "yaw": 1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown elevated",
+    "x": 762,
+    "y": 58,
+    "zoom": 11,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "Ironcrown courtyard",
+    "x": 762,
+    "y": 67,
+    "zoom": 18,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace front",
+    "x": 393,
+    "y": 564,
+    "zoom": 11,
+    "yaw": 0,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace rear",
+    "x": 393,
+    "y": 513,
+    "zoom": 11,
+    "yaw": 3.141592653589793,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace left",
+    "x": 363,
+    "y": 538,
+    "zoom": 11,
+    "yaw": -1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace right",
+    "x": 424,
+    "y": 538,
+    "zoom": 11,
+    "yaw": 1.5707963267948966,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace elevated",
+    "x": 393,
+    "y": 538,
+    "zoom": 11,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "Bough Palace courtyard",
+    "x": 393,
+    "y": 547,
+    "zoom": 18,
+    "yaw": -0.55,
+    "kind": "castle"
+  },
+  {
+    "name": "School exterior",
+    "x": 74,
+    "y": 88,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "School interior",
+    "x": 74,
+    "y": 81,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Bank exterior",
+    "x": 55,
+    "y": 48,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Bank interior",
+    "x": 55,
+    "y": 42,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Kitchen interior",
+    "x": 43,
+    "y": 78,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Inn interior",
+    "x": 39,
+    "y": 45,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Shop interior",
+    "x": 69,
+    "y": 56,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Residence interior",
+    "x": 39,
+    "y": 22,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Smithy interior",
+    "x": 83,
+    "y": 42,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Workshop interior",
+    "x": 70,
+    "y": 103,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Ironcrown library",
+    "x": 746,
+    "y": 46,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Ironcrown hall",
+    "x": 762,
+    "y": 50,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Goblin village",
+    "x": 96,
+    "y": 101,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Human woodland",
+    "x": 185,
+    "y": 348,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Elven forest",
+    "x": 620,
+    "y": 555,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Dwarven foothills",
+    "x": 920,
+    "y": 215,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Main road",
+    "x": 132,
+    "y": 76,
+    "zoom": 22,
+    "kind": "detail"
+  },
+  {
+    "name": "Firstlight square",
+    "scene": "tutorial",
+    "x": 43,
+    "y": 55,
+    "zoom": 20
+  },
+  {
+    "name": "Firstlight kitchen",
+    "scene": "tutorial",
+    "x": 78,
+    "y": 69,
+    "zoom": 28
+  },
+  {
+    "name": "Briarhaven wide",
+    "x": 55,
+    "y": 61,
+    "zoom": 14
+  }
+]

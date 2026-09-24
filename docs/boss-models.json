@@ -1,0 +1,63 @@
+{
+  "status": "Rejected procedural draft; do not publish as the accepted boss roster",
+  "superseded_by": "boss-candidates/roster.json",
+  "note": "Historical geometry measurements for the rejected draft, retained to identify the existing unpublished asset. The owner requested finished third-party models with existing rigs and animations, and retired every draft name except Runeforged Colossus. These IDs are not approvals or replacement selections.",
+  "source": "Existing Quaternius assets documented in dist/assets/realms/CREDITS.txt and BESTIARY-LICENSE.txt",
+  "models": {
+    "boss_king": {
+      "base_rig": "skeleton",
+      "vertices": 12721,
+      "triangles": 15570,
+      "height_tiles": 3.1
+    },
+    "boss_warden": {
+      "base_rig": "skeleton",
+      "vertices": 11531,
+      "triangles": 14918,
+      "height_tiles": 2.65
+    },
+    "boss_sentinel": {
+      "base_rig": "skeleton",
+      "vertices": 11293,
+      "triangles": 14814,
+      "height_tiles": 3.0
+    },
+    "boss_mossfang": {
+      "base_rig": "wolf",
+      "vertices": 6542,
+      "triangles": 3218,
+      "height_tiles": 1.85
+    },
+    "boss_colossus": {
+      "base_rig": "king",
+      "vertices": 5042,
+      "triangles": 2444,
+      "height_tiles": 3.8
+    },
+    "boss_nightbloom": {
+      "base_rig": "king",
+      "vertices": 5336,
+      "triangles": 2540,
+      "height_tiles": 3.65
+    },
+    "boss_scrapchief": {
+      "base_rig": "goblin",
+      "vertices": 6417,
+      "triangles": 8508,
+      "height_tiles": 2.25
+    },
+    "boss_briaroracle": {
+      "base_rig": "skeleton",
+      "vertices": 10695,
+      "triangles": 14572,
+      "height_tiles": 2.75
+    },
+    "boss_cindermaw": {
+      "base_rig": "slime",
+      "vertices": 7320,
+      "triangles": 3460,
+      "height_tiles": 2.1
+    }
+  },
+  "asset_sha256": "ffdd38a9881e7534a0ead51b33b7aadb474ef1c6169e75eea70d3087d07e69c5"
+}

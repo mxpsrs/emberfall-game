@@ -1,0 +1,37 @@
+{
+  "before": {
+    "road": 5.153967046435039,
+    "grass": 1.3997244963548603,
+    "roof": 2.644298647095084
+  },
+  "current": {
+    "road": 1.1081833599831934,
+    "grass": 0.7228255985347373,
+    "roof": 2.3619023277444717
+  },
+  "method": "Mean absolute RGB residual, 0\u2013255, after bilinear reprojection of the identical frozen scene moved by x=z=0.01. No temporal history. Native GLES llvmpipe, not browser/device certification. Fixed patch bounds and subpixel alignment have measurement limits.",
+  "patches": {
+    "road": [
+      900,
+      300,
+      980,
+      500
+    ],
+    "grass": [
+      30,
+      300,
+      190,
+      450
+    ],
+    "roof": [
+      420,
+      350,
+      500,
+      420
+    ]
+  },
+  "screenShift": [
+    -0.3248937761713618,
+    -0.05854281974387467
+  ]
+}

@@ -1,0 +1,10 @@
+#modal.world-map-window[open]{width:min(1100px,calc(100vw - 20px));max-height:calc(100dvh - 20px);box-sizing:border-box}
+.world-map-window .map-heading p,.world-map-window #mapSelection p{font-size:14px}
+.world-map-window .map-content{grid-template-columns:minmax(0,1fr) 210px}
+.world-map-window .local-map-frame{width:min(100%,calc((100dvh - 220px)*1.5));margin-inline:auto}
+.world-map-window #localMap{width:100%;height:auto;max-height:none;object-fit:fill}
+.world-map-window .map-places{max-height:calc(100dvh - 220px)}
+.world-map-window .map-places button{font-size:14px}.world-map-window .map-places small{font-size:12px}
+.world-map-window .map-scale{font-size:12px}.world-map-window .map-north{left:auto;right:8px;transform:none}
+.world-map-window .map-toolbar p{font-size:14px}
+@media(max-width:580px){.world-map-window .map-content{grid-template-columns:1fr}.world-map-window .local-map-frame{width:100%}.world-map-window .map-places{max-height:140px}}

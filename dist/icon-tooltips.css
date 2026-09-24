@@ -1,0 +1,17 @@
+#gameTooltip{position:fixed;z-index:10020;pointer-events:none;max-width:min(300px,calc(100vw - 20px));box-sizing:border-box;padding:6px 8px;border:1px solid #a79a76;background:#11100ef5;color:#fff4cd;box-shadow:0 2px 4px #0009;font:13px/1.35 Arial,sans-serif;white-space:pre-line;overflow-wrap:anywhere;text-align:left;text-shadow:1px 1px #000;border-radius:0}
+#gameTooltip[hidden]{display:none!important}
+.game-icon{shape-rendering:geometricPrecision}
+button[data-help-hold=true]{-webkit-touch-callout:none;user-select:none}
+.classic-ui .game-icon{image-rendering:auto}
+.classic-ui .paper-equipment .gearslot .game-icon{opacity:.58}
+.classic-spell.spell-locked{opacity:.5}
+.classic-spirit-grid .game-icon,.classic-spell .game-icon{filter:drop-shadow(1px 1px #17160f)}
+#spiritChoices button{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px}
+#spiritChoices .game-icon{width:24px;height:24px}
+#spiritChoices small{flex-basis:100%}
+#chatForm button .game-icon{width:18px;height:18px}
+#chatTabs button .game-icon{width:14px;height:14px}
+.icon-guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px}
+.icon-guide>div{display:flex;align-items:center;gap:8px;padding:6px;background:#353126}
+.icon-guide .game-icon{width:26px;height:26px}
+.icon-guide span{font-size:13px}

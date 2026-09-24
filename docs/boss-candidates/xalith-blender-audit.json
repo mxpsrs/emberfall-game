@@ -1,0 +1,508 @@
+{
+  "sourceActions": [
+    {
+      "name": "PoseLib",
+      "range": [
+        1.0,
+        35.0
+      ],
+      "curves": 873
+    },
+    {
+      "name": "PoseLib.001",
+      "range": [
+        1.0,
+        1.0
+      ],
+      "curves": 831
+    }
+  ],
+  "authoredActions": [
+    "idle",
+    "walk",
+    "run",
+    "attack",
+    "attack2",
+    "hit",
+    "death"
+  ],
+  "sourceBones": 84,
+  "weightedBones": 69,
+  "bakedSegmentJoints": 181,
+  "sourceVertices": 6603,
+  "triangles": 13156,
+  "maxDiscardedWeight": 0.1825031306409045,
+  "skinErrorSourceUnits": {
+    "idle": 0.13511008034353356,
+    "walk": 0.1906073135847812,
+    "run": 0.2200399307535936,
+    "attack": 0.13831903558262498,
+    "attack2": 0.14182289448013297,
+    "hit": 0.15051396417367208,
+    "death": 0.18497833565690477
+  },
+  "axis": "Blender (x,y,z) -> game (x,z,-y)",
+  "sourceHierarchy": [
+    {
+      "name": "Pelvis",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "Spine",
+      "parent": "Pelvis",
+      "segments": 8
+    },
+    {
+      "name": "Torso",
+      "parent": "Spine",
+      "segments": 1
+    },
+    {
+      "name": "Neck",
+      "parent": "Torso",
+      "segments": 8
+    },
+    {
+      "name": "Head",
+      "parent": "Neck",
+      "segments": 1
+    },
+    {
+      "name": "Jaw.l",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Pincer1.l",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Pincer2.l",
+      "parent": "Pincer1.l",
+      "segments": 1
+    },
+    {
+      "name": "Pincer3.l",
+      "parent": "Pincer2.l",
+      "segments": 1
+    },
+    {
+      "name": "Jaw.r",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Pincer1.r",
+      "parent": "Head",
+      "segments": 1
+    },
+    {
+      "name": "Pincer2.r",
+      "parent": "Pincer1.r",
+      "segments": 1
+    },
+    {
+      "name": "Pincer3.r",
+      "parent": "Pincer2.r",
+      "segments": 1
+    },
+    {
+      "name": "Shoulder.l",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Bicep.l",
+      "parent": "Shoulder.l",
+      "segments": 1
+    },
+    {
+      "name": "Forearm.l",
+      "parent": "Bicep.l",
+      "segments": 1
+    },
+    {
+      "name": "Claw.l",
+      "parent": "Forearm.l",
+      "segments": 1
+    },
+    {
+      "name": "minishoulder.l",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "minibicep.l",
+      "parent": "minishoulder.l",
+      "segments": 1
+    },
+    {
+      "name": "miniforearm.l",
+      "parent": "minibicep.l",
+      "segments": 1
+    },
+    {
+      "name": "minipincer.l",
+      "parent": "miniforearm.l",
+      "segments": 1
+    },
+    {
+      "name": "miniclaw2.l",
+      "parent": "minipincer.l",
+      "segments": 1
+    },
+    {
+      "name": "miniclaw1.l",
+      "parent": "minipincer.l",
+      "segments": 1
+    },
+    {
+      "name": "Shoulder.r",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "Bicep.r",
+      "parent": "Shoulder.r",
+      "segments": 1
+    },
+    {
+      "name": "Forearm.r",
+      "parent": "Bicep.r",
+      "segments": 1
+    },
+    {
+      "name": "Claw.r",
+      "parent": "Forearm.r",
+      "segments": 1
+    },
+    {
+      "name": "minishoulder.r",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "minibicep.r",
+      "parent": "minishoulder.r",
+      "segments": 1
+    },
+    {
+      "name": "miniforearm.r",
+      "parent": "minibicep.r",
+      "segments": 1
+    },
+    {
+      "name": "minipincer.r",
+      "parent": "miniforearm.r",
+      "segments": 1
+    },
+    {
+      "name": "miniclaw2.r",
+      "parent": "minipincer.r",
+      "segments": 1
+    },
+    {
+      "name": "miniclaw1.r",
+      "parent": "minipincer.r",
+      "segments": 1
+    },
+    {
+      "name": "wingbase1.l",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "wing1.l",
+      "parent": "wingbase1.l",
+      "segments": 20
+    },
+    {
+      "name": "wingtip1.l",
+      "parent": "wing1.l",
+      "segments": 1
+    },
+    {
+      "name": "wingbase2.l",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "wing2.l",
+      "parent": "wingbase2.l",
+      "segments": 20
+    },
+    {
+      "name": "wingtip2.l",
+      "parent": "wing2.l",
+      "segments": 1
+    },
+    {
+      "name": "wingbase1.r",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "wing1.r",
+      "parent": "wingbase1.r",
+      "segments": 20
+    },
+    {
+      "name": "wingtip1.r",
+      "parent": "wing1.r",
+      "segments": 1
+    },
+    {
+      "name": "wingbase2.r",
+      "parent": "Torso",
+      "segments": 1
+    },
+    {
+      "name": "wing2.r",
+      "parent": "wingbase2.r",
+      "segments": 20
+    },
+    {
+      "name": "wingtip2.r",
+      "parent": "wing2.r",
+      "segments": 1
+    },
+    {
+      "name": "AbdomenBase",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "abdomen",
+      "parent": "AbdomenBase",
+      "segments": 16
+    },
+    {
+      "name": "stinger",
+      "parent": "abdomen",
+      "segments": 1
+    },
+    {
+      "name": "Legbase.l",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "Thigh.l",
+      "parent": "Legbase.l",
+      "segments": 1
+    },
+    {
+      "name": "Shin.l",
+      "parent": "Thigh.l",
+      "segments": 1
+    },
+    {
+      "name": "Foot.l",
+      "parent": "Shin.l",
+      "segments": 1
+    },
+    {
+      "name": "toebase.l",
+      "parent": "Foot.l",
+      "segments": 1
+    },
+    {
+      "name": "toebaseL.l",
+      "parent": "toebase.l",
+      "segments": 1
+    },
+    {
+      "name": "toe1l.l",
+      "parent": "toebaseL.l",
+      "segments": 1
+    },
+    {
+      "name": "toe2l.l",
+      "parent": "toe1l.l",
+      "segments": 1
+    },
+    {
+      "name": "toebaseR.l",
+      "parent": "toebase.l",
+      "segments": 1
+    },
+    {
+      "name": "toe1r.l",
+      "parent": "toebaseR.l",
+      "segments": 1
+    },
+    {
+      "name": "toe2r.l",
+      "parent": "toe1r.l",
+      "segments": 1
+    },
+    {
+      "name": "Shin.l.001",
+      "parent": "Foot.l",
+      "segments": 1
+    },
+    {
+      "name": "Legbase.r",
+      "parent": "Pelvis",
+      "segments": 1
+    },
+    {
+      "name": "Thigh.r",
+      "parent": "Legbase.r",
+      "segments": 1
+    },
+    {
+      "name": "Shin.r",
+      "parent": "Thigh.r",
+      "segments": 1
+    },
+    {
+      "name": "Foot.r",
+      "parent": "Shin.r",
+      "segments": 1
+    },
+    {
+      "name": "toebase.r",
+      "parent": "Foot.r",
+      "segments": 1
+    },
+    {
+      "name": "toebaseL.r",
+      "parent": "toebase.r",
+      "segments": 1
+    },
+    {
+      "name": "toe1l.r",
+      "parent": "toebaseL.r",
+      "segments": 1
+    },
+    {
+      "name": "toe2l.r",
+      "parent": "toe1l.r",
+      "segments": 1
+    },
+    {
+      "name": "toebaseR.r",
+      "parent": "toebase.r",
+      "segments": 1
+    },
+    {
+      "name": "toe1r.r",
+      "parent": "toebaseR.r",
+      "segments": 1
+    },
+    {
+      "name": "toe2r.r",
+      "parent": "toe1r.r",
+      "segments": 1
+    },
+    {
+      "name": "legPOLE.r",
+      "parent": "Foot.r",
+      "segments": 1
+    },
+    {
+      "name": "armIK.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "armPOLE.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "armIK.r",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "armPOLE.r",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "smol armIK.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "smol armPOLE.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "smol armIK.r",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "smol armPOLE.r",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "LegPOLE.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "LegIK.l",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "LegPOLE.r",
+      "parent": null,
+      "segments": 1
+    },
+    {
+      "name": "LegIK.r",
+      "parent": null,
+      "segments": 1
+    }
+  ],
+  "sourceArchive": {
+    "name": "insectoid-monster-rig.zip",
+    "sha256": "993e85f686fe3013a3e52870d30d7d90bd064fb4c7d196c323200e902c38a8f3"
+  },
+  "sourceFileSha256": "30e664009204c1ee29d9dc54c8289578d93d9b05599cf66d94619ca7501c8b1e",
+  "textureFiles": [
+    {
+      "name": "Bugoid_NORMAL.png",
+      "sha256": "18a3e5b2cd6a689f4d9a4fab1b66c158dfb2c9c7d67c05fef90e7fd93b14e153"
+    },
+    {
+      "name": "MAIN.png",
+      "sha256": "eed73f60db789651ec3577c4b8ffe687f81d1a5b289f3e713d5c856578ff3bc5"
+    },
+    {
+      "name": "Opacity_MAsk.png",
+      "sha256": "9cf6f5d6759855b9554202acbb3e475146848d306d09169930131a6ee9a8fba6"
+    },
+    {
+      "name": "RUFFNESS@channels=G.png",
+      "sha256": "ed3b0a35c437cfda18a4cb912da1318d691708e90371f69fbd86d7c352b7233f"
+    },
+    {
+      "name": "WINGBaseCLR-OpacityMAsk.png",
+      "sha256": "bdd18330375990d17dbb319f4da9e82b79f77e0c92401ce1dada0316b58c082f"
+    },
+    {
+      "name": "wingbumpo.png",
+      "sha256": "e4fd434192979595ea39ef6fca5aae5e93a9ced3f365a38ec2af63584a0574fc"
+    }
+  ],
+  "skinConversion": "Blender preserve-volume (dual quaternion) converted to the runtime four-weight linear skinning; original B-bone segments retained. Error compares evaluated source vertices with runtime matrices before byte weight quantization.",
+  "skinErrorGameUnits": {
+    "idle": 0.071978,
+    "walk": 0.101544,
+    "run": 0.117224,
+    "attack": 0.073688,
+    "attack2": 0.075554,
+    "hit": 0.080185,
+    "death": 0.098545
+  }
+}
