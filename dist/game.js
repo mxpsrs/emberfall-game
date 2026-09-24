@@ -230,11 +230,8 @@ function renderLooks(){
   $('looks').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('chosen',i===selectedLook);b.setAttribute('aria-pressed',String(i===selectedLook));const c=b.querySelector('canvas'),g=c.getContext('2d');g.clearRect(0,0,120,120);drawEquippedCharacter(g,60,117,i,false,10,1.7);});
   const c=$('characterPreview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);shadow(g,192,260,55);drawEquippedCharacter(g,192,260,selectedLook,false,10,3.8);$('lookName').textContent=looks[selectedLook].name;
 }
-let portraitAppearance=null;
-function drawPortrait(){const key=JSON.stringify([s.character,s.equipment]);if(portraitAppearance===key)return;const g=$('portraitCanvas').getContext('2d');g.clearRect(0,0,96,96);drawEquippedCharacter(g,48,103,s.character?.look||0,false,10,1.7);portraitAppearance=key;}
 async function finishCharacter(name,look){
   const cleaned=s.character?.name??name.trim().replace(/[\u0000-\u001f<>]/g,'').slice(0,18);if(!cleaned)return false;
-  if(!s.character){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}
   const draft=typeof creatorDraft==='undefined'?null:creatorDraft;
   s.character={...(draft||{}),name:cleaned,look:Math.max(0,Math.min(3,look)),race:'human',frame:draft?.frame||s.character?.frame||'male',hair:draft?.hair??s.character?.hair??0,creationVersion:3};
   $('begin').disabled=true;$('begin').textContent='Saving character…';$('characterSaveError').textContent='';

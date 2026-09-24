@@ -34,13 +34,13 @@ function buryBones(){
  if((s.bag.bones||0)<1||playerAction)return false;stop();playerAction={kind:'bury',started:time,duration:1.8,commitAt:.95,committed:false};renderAction();return true;
 }
 function updatePlayerAction(){
- const action=playerAction;if(!action)return;if(action.kind!=='bury'){updateSkillingAction(action);return;}const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
+ const action=playerAction;if(!action)return;if(action.kind!=='bury'){updateSkillingAction(action);return;}const age=time-action.started;
  const events=window.realmNative?.stateMachines?.actionEvents(age,action.commitAt,action.duration,action.committed)??((!action.committed&&age>=action.commitAt?1:0)|(age>=action.duration?2:0));
  if(events&1){
   action.committed=true;if((s.bag.bones||0)<1){playerAction=null;return;}
   s.bag.bones--;gain('Worship',18,true);showExperienceDrop({Worship:18});tutorialEvent('bury');toast('Bones buried · +18 Worship XP');renderUI();save();
  }
- if(events&2){playerAction=null;$('activity').style.width='0';renderAction();}
+ if(events&2){playerAction=null;renderAction();}
 }
 function combatMotion(style){
  const clip=style==='melee'?(s.equipment.weapon?'melee':'unarmed'):style==='worship'?'magic':style;
