@@ -85,10 +85,9 @@ const art={};
 const looks=[{name:'Blue wanderer',description:'Short brown hair, blue tunic'},{name:'Crimson wanderer',description:'Auburn ponytail, crimson tunic'},{name:'Emerald wanderer',description:'Short black hair, emerald tunic'},{name:'Violet wanderer',description:'Silver hair, violet tunic'}];
 function save() {
   if(!assetsReady||window.realmStartup?.failed)return;
-  queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));$('saveStatus').textContent='Progress saved on this device';}
-  catch{$('saveStatus').textContent='Saving unavailable in this browser';}
+  queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch{}
 }
-function toast(text){if(typeof gameMessage==='function')gameMessage(text);else if(typeof addChatLine==='function')addChatLine(text,'game');else $('toast').textContent=text;}
+function toast(text){if(typeof gameMessage==='function')gameMessage(text);else if(typeof addChatLine==='function')addChatLine(text,'game');else console.info(text);}
 function gain(skill,n,quiet=false){if(skill==='Combat'){awardCombatDamage(Math.max(0,Math.floor(n/3)),'melee','balanced');if(!quiet)renderUI();return;}const before=lv(skill),healthBefore=maxhp();s.xp[skill]=(s.xp[skill]||0)+Math.max(0,n);if(lv(skill)>before){toast(skill+' level '+lv(skill)+'!');if(skill==='Hitpoints')s.hp=Math.min(maxhp(),s.hp+maxhp()-healthBefore);}if(!quiet)renderUI();}
 function floating(text,x,y,color='#ffe2a1'){floaters.push({text,x,y,life:1.4,color});}
 function showExperienceDrop(rewards){
@@ -97,7 +96,7 @@ function showExperienceDrop(rewards){
  floaters.push({text:'',experience:{...rewards},started:time,x:px,y:py,life:1.4,color:'#ecd590'});
 }
 function drawExperienceDrop(f,x,y){const entries=Object.entries(f.experience);entries.forEach(([skill,xp],i)=>label('+'+(Math.round(xp*10)/10)+' '+skill+' XP',x,y-(entries.length-1-i)*15,f.color,12));}
-function stop(){if(typeof tradeWalkingTo!=='undefined')tradeWalkingTo=null;if(typeof followedPlayerId!=='undefined')followedPlayerId=null;if(typeof playerAction!=='undefined')playerAction=null;if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;$('activity').style.width='0';renderAction();}
+function stop(){if(typeof tradeWalkingTo!=='undefined')tradeWalkingTo=null;if(typeof followedPlayerId!=='undefined')followedPlayerId=null;if(typeof playerAction!=='undefined')playerAction=null;if(typeof pendingCooking!=='undefined')pendingCooking=null;if(typeof playerMotion!=='undefined')playerMotion.moving=false;target=null;path=[];elapsed=0;renderAction();}
 function route(tx,ty,adjacent=false,reach=1.45,startX=s.x,startY=s.y,actor=null){
   const start=[startX,startY],open=[{x:startX,y:startY,g:0,f:0}],cost=new Map([[start.join(','),0]]),prev=new Map();let end=null;
   while(open.length){
@@ -140,12 +139,7 @@ function arrive(){
   }
   renderAction();
 }
-function renderAction(){
-  if(playerAction){$('targetTitle').textContent=playerAction.kind==='firemaking'?'Lighting a fire':playerAction.kind==='cook'?'Cooking '+ITEMS[playerAction.id].name.toLowerCase()+' · '+(s.bag[playerAction.id]||0)+' left':'Burying bones';$('targetSub').textContent='Click or tap the ground to cancel.';return;}
-  const a=target;
-  $('targetTitle').textContent=a?(path.length?'Walking to '+a.name:a.name):path.length?'Following the path':'Explore the borderlands';
-  $('targetSub').textContent=a?(fighter(a)?combatStyle()+' · '+Math.max(0,a.hp)+' / '+a.maxhp+' HP · Eat to heal':(resourceDefinition(a)?'Level '+resourceDefinition(a).level+' · '+resourceDefinition(a).xp+' XP per success':null)||'Click or tap the ground to cancel'):path.length?'Click or tap another spot to change course.':'Tap a resource, building, person, or monster.';
-}
+function renderAction(){/* Retired action-strip UI removed. Gameplay state is rendered by the current HUD/chat systems. */}
 function dialog(title,html,buttons=[]){
   if(window.realmTrade||window.equipmentStatsOpen||window.equipmentOpen||window.realmWorkbench)close();
   stop();$('modalBody').innerHTML='';const h=document.createElement('h2');h.textContent=title;$('modalBody').appendChild(h);
@@ -198,9 +192,7 @@ function tickAction(){
 }
 
 function renderUI(){
-  $('hp').textContent=s.hp+' / '+maxhp();$('hpbar').style.width=(s.hp/maxhp()*100)+'%';$('hpbar').parentElement?.classList.toggle('critical',s.hp/maxhp()<=.25);
-  $('rank').textContent=(s.character?.name||'Adventurer')+' · Combat '+lv('Combat');$('gold').textContent=s.gold;$('food').textContent=Object.entries(s.bag).reduce((n,[id,q])=>n+(ITEMS[id]?.heal?q:0),0);
-  renderPanel();renderCombatBar();renderRun();if(assetsReady)drawPortrait();
+  renderPanel();renderRun();
   if(window.realmTrade)renderTradeContents();
   if(window.equipmentStatsOpen||window.equipmentOpen)renderCombatStats();if(typeof updateClassicVitals==='function')updateClassicVitals();
   if(window.realmWorkbench)renderWorkbench();
@@ -364,25 +356,23 @@ function frame(now){
     if(!window.playerTrade&&!$('creator').open){observeTutorialCamera();if(typeof updatePlayerFollow==='function')updatePlayerFollow();if(typeof updateTradeApproach==='function')updateTradeApproach();const moving=advanceMovement(dt);
     if(!moving&&!path.length&&target){
       if(fighter(target)&&!inAttackRange(target)){const p=route(target.x,target.y,true,attackRange(target));if(p===null)stop();else path=p;}
-      else if(fighter(target)){const duration=actionDuration(target);$('activity').style.width=Math.max(0,Math.min(100,(1-(playerAttackReadyAt-time)/duration)*100))+'%';if(time+.0001>=playerAttackReadyAt)tickAction();}
-      else{const previous=elapsed;elapsed+=dt;const duration=actionDuration(target);if(typeof soundGatheringSwing==='function')soundGatheringSwing(target,previous,elapsed,duration);$('activity').style.width=Math.min(100,elapsed/duration*100)+'%';if(elapsed>=duration){elapsed=0;tickAction();}}
+      else if(fighter(target)){const duration=actionDuration(target);if(time+.0001>=playerAttackReadyAt)tickAction();}
+      else{const previous=elapsed;elapsed+=dt;const duration=actionDuration(target);if(typeof soundGatheringSwing==='function')soundGatheringSwing(target,previous,elapsed,duration);if(elapsed>=duration){elapsed=0;tickAction();}}
     }
     updatePlayerAction();updateTrainingGate();updateCombat(dt);}
     livingWorld(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
     if(time>=expiryScanAt){expiryScanAt=time+.25;for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}}
     advanceWorldActors(dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
-    if(time>toastUntil)$('toast').style.opacity=0;
+    
     saveClock+=dt;if(saveClock>10&&!window.playerTrade&&!$('creator').open){saveClock=0;save();}
   }
   if(window.playerTrade||$('creator').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
   if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));
-$('combatButtons').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseStyle(b.dataset.style));
-$('eat').onclick=eat;$('stop').onclick=stop;$('closeModal').onclick=close;$('journal').onclick=showHelp;$('portrait').onclick=()=>openCreator(true);$('mapBtn').onclick=worldMap;$('guide').onclick=guide;
+$('closeModal').onclick=close;$('journal').onclick=showHelp;$('mapBtn').onclick=worldMap;
 $('runButton').onclick=toggleRun;
-$('skipTutorial').onclick=()=>dialog('Leave the apprenticeship early?','<p>Skipping teleports you to the mainland. You cannot return to Firstlight Isle.</p>',[['Skip tutorial',()=>{s.tutorial=tutorialSteps.length-1;close();tutorialEvent('talk-finish');$('eat').classList.remove('tutorialfocus');}],['Keep learning',close]]);
 $('characterForm').onsubmit=async e=>{e.preventDefault();if(!await finishCharacter($('characterName').value,selectedLook)){$('characterName').setCustomValidity('Enter a character name.');$('characterName').reportValidity();}};
 $('characterName').oninput=()=> $('characterName').setCustomValidity('');
 $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListener('cancel',e=>{if(!editingCharacter)e.preventDefault();});
