@@ -121,6 +121,10 @@
  function errorDetail(raw,index,reason){return {index,id:typeof raw?.id==='string'?raw.id.slice(0,180):null,scene:typeof raw?.scene==='string'?raw.scene.slice(0,120):null,reason};}
  function applyDocument(doc=state){
   Object.assign(status,{revision:doc.revision||0,total:Array.isArray(doc.changes)?doc.changes.length:0,source:doc.source||state.source});
+  try{
+   const terrain=window.VeldrenTerrainEdits?.applyDocument(doc.terrain);
+   if(terrain?.error){status.rejected++;status.errors.push({reason:'Invalid terrain edits: '+terrain.error});}
+  }catch(error){status.rejected++;status.errors.push({reason:'Invalid terrain edits: '+(error?.message||'Error')});}
   for(const [index,raw]of (Array.isArray(doc.changes)?doc.changes:[]).entries()){
    let c,scene,seen,key;
    try{

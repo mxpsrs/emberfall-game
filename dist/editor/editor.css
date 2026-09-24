@@ -148,3 +148,10 @@ label{display:grid;gap:5px;font-size:11px;color:#94a5ad}
 }
 
 #buildingPanel {padding:12px;overflow:auto;min-height:0} #buildingPanel label{display:block;margin:8px 0;font-size:14px} #buildingPanel select,#buildingPanel input[type=number]{width:100%;min-width:0} #partHierarchy{max-height:260px;overflow:auto} #buildingPanel .part-row{display:block;text-align:left;width:100%;padding:8px;font-size:14px} #buildingPanel .part-row.active{border-color:#80c7ff;background:#18364c} #buildingPanel fieldset{margin:12px 0;min-width:0} .toolbar{flex-wrap:wrap} #buildingPanel[hidden]{display:none}
+#terrainPanel{padding:12px;overflow:auto;gap:12px}
+#terrainPanel[hidden]{display:none}
+#terrainPanel strong{font-size:14px}
+#terrainPanel label{display:grid;gap:7px;color:#c1d0d7}
+#terrainPanel input[type=range]{padding:0;accent-color:#71c8af}
+#terrainPanel output{font-size:11px;color:#96b4be}
+#terrainPanel .object-actions{margin-top:0}

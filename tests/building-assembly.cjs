@@ -1,6 +1,6 @@
 const {ctx,vm,fs}=require('../scripts/game-fixture.cjs');
 const run=s=>vm.runInContext(s,ctx);ctx.document.readyState='complete';ctx.fetch=async()=>({ok:true,json:async()=>({edits:{version:1,revision:1,changes:[]}})});
-for(const f of ['building-assembly','building-runtime','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
+for(const f of ['building-assembly','building-runtime','terrain-editor-runtime','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
 ctx.setInterval=()=>0;ctx.clearInterval=()=>{};
 const oldGet=ctx.document.getElementById;
 const retired=new Set(['waveButton','worldClock','onlineStatus','targetTitle','targetSub','activity','eat','runButton']);

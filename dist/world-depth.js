@@ -10,7 +10,7 @@ function gradeLand(x,z,height){return height;}
 function shoreHeight(x,z){return Math.max(0,Math.min(gradeLand(x,z,landBase(x,z)),shoreDistance(x,z)*.33));}
 function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);let level=Infinity;for(let z=Math.floor(b.y-.7);z<=Math.ceil(b.y+b.h+.7);z++)for(let x=Math.floor(b.x-.7);x<=Math.ceil(b.x+b.w+.7);x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
- if(!inWorld())return 0;const key=x+z*2048;if(landHeights.has(key))return landHeights.get(key);
+ if(!inWorld())return 0;const key=x+z*8192;if(landHeights.has(key))return landHeights.get(key);
  const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}
  let h=shoreHeight(x,z),weight=0,total=0,strength=0,onFoundation=false;
  const excavation=currentScene==='overworld'&&typeof quarryAt==='function'&&quarryAt(x,z,8);
@@ -25,6 +25,9 @@ function landNode(x,z){
  // Final prop supports are smaller than a building foundation and must win at
  // their exact footprint, including props placed against a building frontage.
  if(typeof propWorkFootingHeight==='function')h=propWorkFootingHeight(x,z,h);
+ // The sparse editor delta belongs to the shared geometry/picking/navigation
+ // heightfield. Preserve level authored foundations and submerged riverbeds.
+ if(!onFoundation)h+=window.VeldrenTerrainEdits?.heightDelta(x,z)||0;
  landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
 }
 function landNormal(x,z){const a=landHeight(x-.2,z)-landHeight(x+.2,z),b=landHeight(x,z-.2)-landHeight(x,z+.2),length=Math.hypot(a,.4,b);return [a/length,.4/length,b/length];}
@@ -59,7 +62,16 @@ function groundedPainter(r,x,z){
  return out;
 }
 // Fallback rendering uses the same raised terrain instead of a flat bitmap.
-drawTerrainLayer3=function(){const r=canvasPainterRealm(ctx,project3),[mw,mh]=sceneSize(),corners=[[0,0],[screen.w,0],[0,screen.h],[screen.w,screen.h]].map(p=>boundedViewPoint3(...p));const minx=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.x)))-10),maxx=Math.min(inWorld()?mw+128:mw,Math.ceil(Math.max(...corners.map(p=>p.x)))+10),minz=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.z)))-10),maxz=Math.min(inWorld()?mh+128:mh,Math.ceil(Math.max(...corners.map(p=>p.z)))+10);for(let z=minz;z<maxz;z++)for(let x=minx;x<maxx;x++){if(typeof civilStairWellAt==='function'&&civilStairWellAt(x+.5,z+.5))continue;const t=terrainType(x,z),road=typeof roadInfluence==='function'?roadInfluence(x+.5,z+.5):[0,0,0],color=t===3?'#427e89':road[2]>.5?'#97978a':road[0]>.4?(road[1]>.4?'#b3ab92':'#aa956e'):['#628047','#aa956e','#989e8a','#427e89'][t];r.face([[x,0,z],[x,0,z+1],[x+1,0,z+1],[x+1,0,z]],color);}r.flush();};
+drawTerrainLayer3=function(){
+ const r=canvasPainterRealm(ctx,project3),[mw,mh]=sceneSize(),corners=[[0,0],[screen.w,0],[0,screen.h],[screen.w,screen.h]].map(p=>boundedViewPoint3(...p));
+ const minx=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.x)))-10),maxx=Math.min(inWorld()?mw+128:mw,Math.ceil(Math.max(...corners.map(p=>p.x)))+10),minz=Math.max(inWorld()?-128:0,Math.floor(Math.min(...corners.map(p=>p.z)))-10),maxz=Math.min(inWorld()?mh+128:mh,Math.ceil(Math.max(...corners.map(p=>p.z)))+10);
+ for(let z=minz;z<maxz;z++)for(let x=minx;x<maxx;x++){
+  if(typeof civilStairWellAt==='function'&&civilStairWellAt(x+.5,z+.5))continue;
+  const t=terrainType(x,z),road=typeof roadInfluence==='function'?roadInfluence(x+.5,z+.5):[0,0,0],painted=window.VeldrenTerrainEdits?.paint(x,z),color=t===3?'#427e89':painted?{grass:'#628047',dirt:'#aa956e',stone:'#989e8a',paving:'#b3ab92'}[painted]:road[2]>.5?'#97978a':road[0]>.4?(road[1]>.4?'#b3ab92':'#aa956e'):['#628047','#aa956e','#989e8a','#427e89'][t];
+  r.face([[x,0,z],[x,0,z+1],[x+1,0,z+1],[x+1,0,z]],color);
+ }
+ r.flush();
+};
 // Goblins have their own anatomy and motion, independent of the human avatar mesh.
 function goblinRealm3(r,x,z,heading,walk,attack,size=1,hurt=0){
  if(!r.indexed)return buildGoblinRealm3(r,x,z,heading,walk,attack,size,hurt);

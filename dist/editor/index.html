@@ -16,6 +16,7 @@
     <button id="scaleTool" type="button">Scale</button>
     <button id="placeTool" type="button">Place</button>
     <button id="buildingEditTool" type="button">Building Edit</button>
+    <button id="terrainTool" type="button">Terrain</button>
     <button id="cameraTool" type="button">Camera</button>
     <span class="divider"></span>
     <button id="playerView" type="button">Player View</button>
@@ -75,6 +76,23 @@
       <label>Parts <select id="partCategory"></select></label><select id="partAsset" aria-label="Local building asset"></select>
       <button id="placePart" type="button">Place Part</button><button id="replacePart" type="button">Replace Selected Model</button>
       <p id="buildingHint" class="hint">Select a part in the hierarchy or viewport. Green preview permits placement; red requires a compatible wall.</p>
+    </section>
+    <section id="terrainPanel" class="browser-panel" hidden aria-label="Terrain tools">
+      <strong>Terrain brush</strong>
+      <p class="hint">Drag on the ground to sculpt or paint. Save World makes the preview persistent for players.</p>
+      <label>Action <select id="terrainMode">
+        <option value="raise">Raise</option><option value="lower">Lower</option>
+        <option value="flatten">Flatten</option><option value="smooth">Smooth</option>
+        <option value="paint">Paint surface</option><option value="erase">Restore original</option>
+      </select></label>
+      <label>Brush radius <input id="terrainRadius" type="range" min="1" max="12" step="1" value="3"><output id="terrainRadiusValue">3 tiles</output></label>
+      <label>Strength <input id="terrainStrength" type="range" min="0.05" max="1" step="0.05" value="0.25"><output id="terrainStrengthValue">0.25</output></label>
+      <label>Surface <select id="terrainMaterial">
+        <option value="grass">Grass</option><option value="dirt">Dirt</option>
+        <option value="stone">Stone</option><option value="paving">Paving</option>
+      </select></label>
+      <div class="object-actions"><button id="terrainUndo" type="button" disabled>Undo brush</button><button id="terrainRedo" type="button" disabled>Redo brush</button></div>
+      <p id="terrainStatus" class="asset-hint" role="status">Choose an action, then drag in the viewport.</p>
     </section>
     <section id="worldBrowser" class="browser-panel">
       <input id="entitySearch" type="search" placeholder="Search entities, NPCs, doors…">
@@ -145,7 +163,7 @@
     <section class="info-card">
       <strong>Free camera</strong>
       <p><b>WASD</b> moves smoothly · <b>Shift + WASD</b> moves faster · <b>Arrow keys</b> rotate/tilt · left-drag in Camera mode orbits · mouse wheel zooms · Q/E zoom.</p>
-      <p>Mouse panning is disabled. Arrow keys only change camera direction. Free camera uses editor limits, not player limits. <b>Player View</b> temporarily switches back to the real player camera.</p><p><b>Game UI is hidden by default.</b> Use <b>UI Edit</b> only when you specifically want the playable HUD visible.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement remains active so you can stamp multiple copies; Cancel placement or switch tools to stop.</p>
+      <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7. <b>Player View</b> switches to the player camera.</p><p><b>Game UI is hidden by default.</b> Use <b>UI Edit</b> when you want the playable HUD visible.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World publishes changes to players.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
     </section>
   </aside>
 </main>

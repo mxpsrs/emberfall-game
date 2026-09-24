@@ -1,4 +1,27 @@
 import '../dist/building-assembly.js';
+const TERRAIN_MATERIALS=new Set(['grass','dirt','stone','paving']);
+export function sanitizeTerrain(input){
+ if(!input||typeof input!=='object'||Array.isArray(input)||input.version!==1||!input.scenes||typeof input.scenes!=='object'||Array.isArray(input.scenes))throw Error('Invalid terrain layer');
+ const scenes={};let total=0;
+ for(const [scene,data] of Object.entries(input.scenes)){
+  if(scene!=='overworld'||!data||typeof data!=='object'||Array.isArray(data)||!Array.isArray(data.heightNodes)||!Array.isArray(data.paintCells))throw Error('Invalid terrain scene');
+  if(data.heightNodes.length>25000||data.paintCells.length>25000||(total+=data.heightNodes.length+data.paintCells.length)>50000)throw Error('Too many terrain edits');
+  const seenNodes=new Set(),seenCells=new Set();
+  const position=(item,seen,kind)=>{
+   if(!item||typeof item!=='object'||!Number.isInteger(item.x)||!Number.isInteger(item.z)||item.x< -128||item.z< -128||item.x>2048||item.z>2048)throw Error('Invalid terrain '+kind+' coordinate');
+   const key=item.x+':'+item.z;if(seen.has(key))throw Error('Duplicate terrain '+kind+' coordinate');seen.add(key);return {x:item.x,z:item.z};
+  };
+  const heightNodes=data.heightNodes.map(item=>{
+   const p=position(item,seenNodes,'height');if(typeof item.delta!=='number'||!Number.isFinite(item.delta)||Math.abs(item.delta)>16)throw Error('Invalid terrain height offset');
+   return {...p,delta:Math.round(item.delta*1000)/1000};
+  }).sort((a,b)=>a.z-b.z||a.x-b.x);
+  const paintCells=data.paintCells.map(item=>{
+   const p=position(item,seenCells,'paint');if(!TERRAIN_MATERIALS.has(item.material))throw Error('Invalid terrain paint material');return {...p,material:item.material};
+  }).sort((a,b)=>a.z-b.z||a.x-b.x);
+  scenes[scene]={heightNodes,paintCells};
+ }
+ return {version:1,scenes};
+}
 function normalize(raw){
  const rotation=Number.isFinite(Number(raw.rotation))?Number(raw.rotation):(Number(raw.yaw)||0)*180/Math.PI;
  return {
@@ -40,7 +63,8 @@ export function sanitize(input,current){
   if(raw.assembly){globalThis.VeldrenAssembly.validate(raw.assembly);out.assembly=globalThis.VeldrenAssembly.serialize(raw.assembly);}
   return out;
  });
- return {version:1,revision:Number(current.revision||0)+1,updatedAt:new Date().toISOString(),changes};
+ return {version:1,revision:Number(current.revision||0)+1,updatedAt:new Date().toISOString(),changes,
+  ...(input.terrain!==undefined?{terrain:sanitizeTerrain(input.terrain)}:current.terrain!==undefined?{terrain:current.terrain}:{})};
 }
 export function confirmation(c){
  return {scene:c.scene,kind:c.kind,id:c.id,name:c.name,action:c.deleted?'deleted':c.created?'created':'transformed'};

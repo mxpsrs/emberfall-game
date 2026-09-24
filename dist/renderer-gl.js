@@ -335,7 +335,11 @@ function realmGroundCover(data,x,z){
  for(let i=0;i<count;i++){const xx=x+.17+((seed*11+i*.27)% .65),zz=z+.12+((seed*17+i*.31)% .72),h=river?.38+i*.045:.10+i*.035,w=river?.024:.035;realmFaceData(data,[[xx-w,0,zz],[xx+w,0,zz],[xx+.08,h,zz+.025]],river?'#7d914e':'#809956',null,9);if(river)realmFaceData(data,[[xx-.025,h*.6,zz],[xx+.025,h*.6,zz],[xx+.045,h+.1,zz],[xx+.01,h+.1,zz]],'#8c7345',null,9);}
  if(seed<.065){for(let i=0;i<3;i++){const xx=x+.25+i*.2,zz=z+.5;realmFaceData(data,[[xx-.05,.16,zz],[xx,.23,zz-.04],[xx+.05,.16,zz],[xx,.12,zz+.04]],(x+z)%2?'#d7be70':'#adb4d0',[[0,1,0],[0,1,0],[0,1,0],[0,1,0]],9);}}
 }
-function realmTerrainMaterial(road){return road[2]>.18?3:road[1]>.18?2:road[0]>.18?5:1;}
+function realmTerrainMaterial(road,x,z){
+ const painted=window.VeldrenTerrainEdits?.paint(x,z);
+ if(painted)return {grass:1,dirt:5,stone:2,paving:3}[painted];
+ return road[2]>.18?3:road[1]>.18?2:road[0]>.18?5:1;
+}
 function realmTerrainEntries(gpu){
  let chunks=gpu.terrain.get(currentScene);const [mw,mh]=sceneSize();if(!chunks){chunks=new Map();gpu.terrain.set(currentScene,chunks);}
  const wide=inWorld()&&view3d.zoom<24,cell=wide?16:8,detail=inWorld()&&!wide?2:1;
@@ -350,7 +354,7 @@ function realmTerrainEntries(gpu){
    if(typeof CREATURE_LAIRS!=='undefined'&&CREATURE_LAIRS[currentScene]&&worldWall(xx,zz))continue;
    if(typeof civilStairWellAt==='function'&&civilStairWellAt(xx+.5,zz+.5))continue;
    const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=inWorld()&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
-   if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2])),road=roadInfluence(a+k*.5,b+k*.5);flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),realmTerrainMaterial(road),vertices.map(v=>v.color),vertices.map(v=>v.uv));}else realmFaceData(data,points,'#808080',null,type+1,points.map(()=>[0,0,1]),points.map(p=>[p[0],p[2]]));}}
+   if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2])),road=roadInfluence(a+k*.5,b+k*.5),painted=window.VeldrenTerrainEdits?.paint(xx,zz);flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),realmTerrainMaterial(road,xx,zz),vertices.map(v=>painted?[0,0,1]:v.color),vertices.map(v=>v.uv));}else realmFaceData(data,points,'#808080',null,type+1,points.map(()=>[0,0,1]),points.map(p=>[p[0],p[2]]));}}
    if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,points.map(p=>[p[0],p[2]]));}
   }
   Object.assign(c,gpu.upload(new Float32Array(data)));

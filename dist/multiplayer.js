@@ -15,6 +15,14 @@ async function syncOnlineWorld(){
 function scheduleOnlineSync(delay){clearTimeout(onlineSyncTimer);onlineSyncTimer=setTimeout(()=>{onlineSyncTimer=null;syncOnlineWorld();},delay);}
 async function syncOnlineWorldOnce(){
  if(cloudDisconnected||cloudConflict)return;
+ // The editor is a camera over an authenticated world snapshot, not another
+ // player session. Polling /api/players here would overwrite the live tab's
+ // presence because both tabs share the same account identity.
+ if(typeof editorViewportReady==='function'&&editorViewportReady()){
+  onlinePeers.clear();onlineScene=null;
+  if(typeof sharedActivityStream!=='undefined'&&sharedActivityStream){sharedActivityStream.close();sharedActivityStream=null;}
+  scheduleOnlineSync(5000);return;
+ }
  if(!assetsReady||!s.character||!cloudReady||$('creator').open||document.hidden){scheduleOnlineSync(1200);return;}
  // Presence must follow the saved journey, for every island layout version.
  // Otherwise the server correctly rejects a mainland arrival as unfinished.
@@ -27,6 +35,7 @@ async function syncOnlineWorldOnce(){
  // An island request can still be in flight when Rowan finishes the crossing.
  if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
  if(await handleConnectionResponse(response))return;if(!response.ok)throw new Error('offline');if(cloudDisconnected||cloudConflict)return;const data=await response.json();if(cloudDisconnected||cloudConflict)return;
+ if(typeof editorViewportReady==='function'&&editorViewportReady()){onlinePeers.clear();onlineScene=null;scheduleOnlineSync(5000);return;}
  if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
  if(typeof applySharedWorld==='function')applySharedWorld(data);

@@ -3,12 +3,15 @@
  if(window.VeldrenEditorBridge)return;
  const STORAGE_KEY='veldren-world-edits-backup-v2';
  const FREE_ZOOM_MIN=2,FREE_ZOOM_MAX=1600;
+ const CAMERA_KEYS=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','shift']);
  const cameraKeys=new Set();
  const free={x:null,y:null,vx:0,vy:0,yawTarget:0,tiltTarget:.4,zoomTarget:100};
- let ready=false,tool='select',selected=null,selectedScene=null,playerView=false,placementAsset=null,gameUiVisible=false;
+ let ready=false,initializing=null,tool='select',selected=null,selectedScene=null,playerView=false,placementAsset=null,gameUiVisible=false;
  let pointer=null,drag=null,lastTick=performance.now(),snap={position:.25,rotation:15};
  let quarantined=[];
  let project={version:1,revision:0,updatedAt:null,changes:[]},changes=new Map(),projectMeta={revision:0,count:0,path:'editor-data/world-edits.json',bytes:0,sha256:''};
+ const T=window.VeldrenTerrainEdits;
+ let terrainBrush={mode:'raise',radius:3,strength:.25,material:'grass'},terrainHover=null,terrainDrag=null;
  let editorSequence=0,editorRendering=false;
  let playerCamera={min:58,max:132,yaw:-2.05,tilt:.27,zoom:118};
  let lastAppliedScene=null;
@@ -109,7 +112,21 @@
   selected=ref;selectedScene=ref?String(currentScene):null;post('selection',{selection:entityInfo(selected)});return entityInfo(selected);
  }
 
- function invalidate(e,kind='object'){
+ function updatePreviewIndex(e,oldX,oldY){
+  // The world index buckets static props by 16 tiles. Move only this entry
+  // during a drag; rebuilding every bucket on every pointer event is costly.
+  try{
+   const index=worldObjectIndex;
+   if(!index||index.scene!==currentScene||index.revision!==worldObjectRevision||index.length!==objects.length||index.actors.includes(e))return;
+   const oldKey=Math.floor(oldX/16)+':'+Math.floor(oldY/16),nextKey=Math.floor(e.x/16)+':'+Math.floor(e.y/16);
+   if(oldKey===nextKey)return;
+   const old=index.buckets.get(oldKey),at=old?.indexOf(e)??-1;if(at<0)return;
+   old.splice(at,1);if(!old.length)index.buckets.delete(oldKey);
+   if(!index.buckets.has(nextKey))index.buckets.set(nextKey,[]);
+   index.buckets.get(nextKey).push(e);
+  }catch{}
+ }
+ function invalidate(e,kind='object',preview=false){
   if(kind==='building'&&e.assembly)return;
   // Buildings are intentionally NOT evicted from the static geometry cache
   // while the editor drags them. Their existing cached mesh is translated by
@@ -119,6 +136,7 @@
    try{staticMeshes3?.delete?.(e)}catch{}
    try{staticMeshQueues3?.prop?.delete?.(e)}catch{}
   }
+  if(preview)return;
   try{worldObjectRevision++}catch{}
   try{realmNavigation?.clear?.()}catch{}
   try{resetLandSurface?.()}catch{}
@@ -175,7 +193,7 @@
    if(b.southPlan.service&&b.southPlan.service!==b.service)moveLinkedObject(b.southPlan.service,Number(b.southPlan.service.x||0)+dx,Number(b.southPlan.service.y||0)+dy);
   }
  }
- function setEntityTransform(ref,input,record=true){
+ function setEntityTransform(ref,input,record=true,preview=false){
   if(!ref)return null;const e=ref.entity,base=ensureBase(ref),oldX=Number(e.x)||0,oldY=Number(e.y)||0;
   let x=Number.isFinite(Number(input.x))?Number(input.x):oldX,y=Number.isFinite(Number(input.y))?Number(input.y):oldY;
   x=snapValue(x,snap.position);y=snapValue(y,snap.position);
@@ -192,7 +210,8 @@
    else if(!protectedObject(e))e.placement={anchor:'editor',reason:'Veldren editor placement',offset:[0,0],yaw:rotation*Math.PI/180};
    e.heading=rotation*Math.PI/180;if(e._creatureMotion)e._creatureMotion.heading=e.heading;
   }
-  invalidate(e,ref.kind);
+  if(preview&&ref.kind==='object')updatePreviewIndex(e,oldX,oldY);
+  invalidate(e,ref.kind,preview);
   if(record)recordChange(ref,base);
   return entityInfo(ref);
  }
@@ -214,9 +233,9 @@
   if(Array.isArray(disk?.changes)){const valid=[];quarantined=[];for(const raw of disk.changes){try{window.VeldrenWorldEdits.validate(raw);valid.push(raw)}catch{quarantined.push(raw)}}disk.changes=valid;if(quarantined.length)log(quarantined.length+' incompatible edits preserved without applying.','warn');}
   if(!disk||disk.version!==1||!Array.isArray(disk.changes))throw new Error('Invalid project world edit file');
   const backup=(()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')}catch{return null}})();
-  if(!disk.changes.length&&backup?.version===1&&Array.isArray(backup.changes)&&backup.changes.length){
+  if(!disk.changes.length&&!disk.terrain&&backup?.version===1&&Array.isArray(backup.changes)&&(backup.changes.length||backup.terrain)){
    project={...backup,revision:payload.revision||0,changes:backup.changes.map(normalizeChange)};
-   log(`Recovered ${backup.changes.length} browser-backup edits. Save World will migrate them to the project file.`,'warn');
+   log(`Recovered browser-backup world edits. Save World will migrate them to the project file.`,'warn');
   }else project={...disk,revision:payload.revision||disk.revision||0,changes:disk.changes.map(normalizeChange)};
   changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:payload.revision||0,count:disk.changes.length,path:payload.path,bytes:payload.bytes,sha256:payload.sha256};
@@ -256,7 +275,7 @@
    assembly:c.assembly||null,name:c.name||null,type:c.type||null,subtype:c.subtype||null,baseX:Number(c.baseX)||0,baseY:Number(c.baseY)||0});
  }
  async function saveProject(){
-  const outgoing={version:1,expectedRevision:projectMeta.revision,changes:[...changes.values()].map(normalizeChange).concat(quarantined)};
+  const outgoing={version:1,expectedRevision:projectMeta.revision,changes:[...changes.values()].map(normalizeChange).concat(quarantined),terrain:T.serialize()};
   const response=await fetch('/api/editor/edits',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(outgoing)});
   const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||`Save HTTP ${response.status}`);
   const verifyResponse=await fetch(`/api/editor/edits?verify=${encodeURIComponent(result.revision)}&t=${Date.now()}`,{cache:'no-store'});
@@ -265,9 +284,10 @@
   const sent=new Map(outgoing.changes.filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(c)])),read=new Map((verify.edits?.changes||[]).filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(normalizeChange(c))]));
   if(sent.size!==read.size)throw new Error(`Save round-trip count mismatch (${sent.size} vs ${read.size})`);
   for(const [key,value]of sent)if(read.get(key)!==value)throw new Error(`Save round-trip mismatch for ${key}`);
+  if(JSON.stringify(outgoing.terrain)!==JSON.stringify(verify.edits?.terrain))throw new Error('Terrain save round-trip mismatch');
   project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
-  localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes}));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes,terrain:verify.edits.terrain}));
   return {...result,roundTripVerified:true};
  }
 
@@ -355,7 +375,7 @@
   const wrapped=function(...args){
    if(!ready||playerView)return before(...args);
    const rx=px,ry=py,sx=s.x,sy=s.y,rt=target,name=s.character?.name;editorRendering=true;px=free.x;py=free.y;s.x=free.x;s.y=free.y;target=null;if(s.character)s.character.name='';
-   try{const result=before(...args);drawBuildingOverlay();return result;}finally{if(s.character)s.character.name=name;target=rt;s.x=sx;s.y=sy;px=rx;py=ry;editorRendering=false}
+   try{const result=before(...args);drawBuildingOverlay();drawTerrainOverlay();return result;}finally{if(s.character)s.character.name=name;target=rt;s.x=sx;s.y=sy;px=rx;py=ry;editorRendering=false}
   };
   wrapped.__editorCamera=true;draw3d=wrapped;draw=wrapped;
   if(typeof humanoid3==='function'&&!humanoid3.__editorHidePlayer){const h=humanoid3;humanoid3=function(r,x,z,look,gear,...rest){if(editorRendering&&gear===s.equipment&&Math.hypot(x-free.x-.5,z-free.y-.5)<.05)return 0;return h(r,x,z,look,gear,...rest)};humanoid3.__editorHidePlayer=true}
@@ -363,6 +383,7 @@
  }
 
  function editorInputSurface(){return document.getElementById('world')||document.querySelector('.realm-surface')}
+ function isViewportTarget(target,surface){return target===surface||target?.classList?.contains?.('realm-surface')===true}
  function eventPoint(event){
   const surface=editorInputSurface();if(!surface)return null;const rect=surface.getBoundingClientRect();
   if(!(rect.width>0&&rect.height>0))return null;
@@ -399,7 +420,7 @@
  }
 
  const A=globalThis.VeldrenAssembly,B=window.VeldrenBuildings;
- let buildingContext=null,partId=null,partPlacement=null,partPreview=null,partDrag=null,buildingFloor=0;
+ let buildingContext=null,partId=null,partPlacement=null,partPlacementAsset=null,partPreview=null,partDrag=null,buildingFloor=0;
  let buildingSnap={grid:.25,rotation:15,vertical:3,mode:'edge'},floorIsolated=false,floorsBelow=true;
  const buildingHistory=new A.History();
  function assembly(){return buildingContext?.entity.assembly;}
@@ -413,7 +434,7 @@
   if(!selected||selected.kind!=='building')throw Error('Select a building first');
   buildingContext=selected;B.ensure(selected.entity,worldScenes[currentScene]);partId=null;partPlacement=null;buildingFloor=0;tool='select';return buildingState();
  }
- function exitBuilding(){partPlacement=null;partPreview=null;partDrag=null;B.floorFilter=null;buildingContext=null;partId=null;post('building',{state:null});return true;}
+ function exitBuilding(){partPlacement=null;partPlacementAsset=null;partPreview=null;partDrag=null;B.floorFilter=null;buildingContext=null;partId=null;post('building',{state:null});return true;}
  function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
  function setPart(input,history=true){
   const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)throw Error('Select a part');const before=A.serialize(a);
@@ -441,7 +462,7 @@
  function setFloor(floor,isolate=floorIsolated,below=floorsBelow){buildingFloor=floor==='roof'?'roof':Number(floor);floorIsolated=!!isolate;floorsBelow=!!below;B.floorFilter={building:buildingContext?.entity,floor:buildingFloor,isolate:floorIsolated,below:floorsBelow};return buildingState();}
  function visiblePart(m){return !floorIsolated||(buildingFloor==='roof'?m.role==='roof':m.floor===buildingFloor||floorsBelow&&m.floor<buildingFloor);}
  function pickPart(p){let best=null,depth=-Infinity;for(const m of assembly().modules){if(m.role==='detail'||!visiblePart(m))continue;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],pts=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])pts.push(editorProject(...A.point(matrix,[x,y,z])));const minX=Math.min(...pts.map(q=>q.x)),maxX=Math.max(...pts.map(q=>q.x)),minY=Math.min(...pts.map(q=>q.y)),maxY=Math.max(...pts.map(q=>q.y)),d=Math.max(...pts.map(q=>q.depth));if(p.sx>=minX&&p.sx<=maxX&&p.sy>=minY&&p.sy<=maxY&&d>depth){best=m;depth=d;}}return best;}
- function previewPart(p){if(!partPlacement)return;const asset=B.catalog().find(a=>a.id===partPlacement);if(!asset)return;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]),floor=buildingFloor==='roof'?1:buildingFloor,local=A.transform(q[0],floor*buildingSnap.vertical,q[2]);
+ function previewPart(p){if(!partPlacement)return;const asset=partPlacementAsset;if(!asset)return;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]),floor=buildingFloor==='roof'?1:buildingFloor,local=A.transform(q[0],floor*buildingSnap.vertical,q[2]);
   const candidate={id:'preview',model:asset.id,role:A.role(asset.key),floor,local,bounds:A.clone(asset.bounds)};partPreview=A.snap(assembly(),candidate,{...buildingSnap,mode:candidate.role==='door'?'door-to-wall':candidate.role==='window'?'window-to-wall':buildingSnap.mode});
   if(candidate.role==='stairs'){partPreview.module.stairs={fromFloor:floor,toFloor:floor+1,origin:[partPreview.module.local[3],partPreview.module.local[7],partPreview.module.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,partPreview.module)){partPreview.valid=false;partPreview.reason='The stairs must reach an existing upper floor landing';}}
   if(['door','window'].includes(candidate.role)){const host=assembly().modules.find(m=>m.id===partPreview.host);const opening=host?.model.replace(/_(Straight|Window_Wide_Flat|Door_Round)$/,candidate.role==='door'?'_Door_Round':'_Window_Wide_Flat');if(!opening||!B.model(opening)){partPreview.valid=false;partPreview.reason='No compatible opening in this wall';}}
@@ -454,20 +475,51 @@
  }
  function buildingPointerDown(e,p){if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;if(partPlacement){previewPart(p);try{placePart()}catch(error){log(error.message,'warn')}return true;}
   const m=pickPart(p);partId=m?.id||null;post('building',{state:buildingState()});if(!m)return true;
-  const w=editorUnproject(p.sx,p.sy);partDrag={id:e.pointerId,before:A.serialize(assembly()),start:A.point(A.inverse(assembly().parent),[w.x,0,w.z]),local:[...m.local],clientX:e.clientX,clientY:e.clientY};return true;}
+  const w=editorUnproject(p.sx,p.sy);partDrag={id:e.pointerId,before:A.serialize(assembly()),start:A.point(A.inverse(assembly().parent),[w.x,0,w.z]),local:[...m.local],clientX:e.clientX,clientY:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return true;}
  function buildingPointerMove(e,p){if(!buildingContext)return false;if(partPlacement){previewPart(p);return true;}if(!partDrag||partDrag.id!==e.pointerId)return false;const m=assembly().modules.find(p=>p.id===partId);if(!m)return true;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]);
   try{if(tool==='rotate')setPart({rotation:snapValue(Math.atan2(partDrag.local[2],partDrag.local[0])*180/Math.PI+(e.clientX-partDrag.clientX)*.5,buildingSnap.rotation)},false);else if(tool==='scale')setPart({scale:Math.max(.1,Math.hypot(partDrag.local[0],partDrag.local[8])*Math.exp((partDrag.clientY-e.clientY)*.008))},false);else{
    const candidate={...m,role:m.role==='entrance'?'door':m.role,local:[...partDrag.local]};candidate.local[3]+=q[0]-partDrag.start[0];candidate.local[11]+=q[2]-partDrag.start[2];const result=A.snap(assembly(),candidate,buildingSnap);partPreview=result;if(m.role!=='entrance')setPart({x:result.module.local[3],height:result.module.local[7],z:result.module.local[11]},false);
-  }}catch(error){log(error.message,'warn')}B.sync(buildingContext.entity);return true;}
- function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);}catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);log(error.message,'warn')}partDrag=null;partPreview=null;return true;}
+  }}catch(error){log(error.message,'warn')}return true;}
+ function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);}catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);log(error.message,'warn')}partDrag=null;partPreview=null;try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}return true;}
  function drawBuildingOverlay(){if(!buildingContext)return;const m=partPreview?.module||assembly().modules.find(m=>m.id===partId);if(!m)return;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],points=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])points.push(editorProject(...A.point(matrix,[x,y,z])));ctx.save();ctx.strokeStyle=partPreview?(partPreview.valid?'#64e5bb':'#ff6c80'):'#80c7ff';ctx.fillStyle=partPreview?(partPreview.valid?'#64e5bb33':'#ff6c8033'):'#80c7ff22';ctx.lineWidth=2;for(const face of [[0,1,3,2],[4,5,7,6],[0,4,6,2],[1,5,7,3]]){ctx.beginPath();face.forEach((i,j)=>ctx[j?'lineTo':'moveTo'](points[i].x,points[i].y));ctx.closePath();ctx.fill();ctx.stroke();}ctx.restore();}
+ function drawTerrainOverlay(){
+  if(tool!=='terrain'||!terrainHover||currentScene!=='overworld'||typeof ring3!=='function')return;
+  ctx.save();ring3(ctx,terrainHover.x,terrainHover.z,terrainDrag?'#f8de89':'#72e2b8',terrainBrush.radius);ctx.restore();
+ }
+ function terrainPoint(p){const w=editorUnproject(p.sx,p.sy);return Number.isFinite(w.x)&&Number.isFinite(w.z)?{x:w.x,z:w.z}:null;}
+ function terrainStamp(w){
+  const previous=terrainDrag?.last;
+  const spacing=Math.max(.5,terrainBrush.radius*.5),distance=previous?Math.hypot(w.x-previous.x,w.z-previous.z):0;
+  const steps=previous?Math.max(1,Math.min(16,Math.ceil(distance/spacing))):1;
+  for(let i=1;i<=steps;i++){
+   const at=previous?{x:previous.x+(w.x-previous.x)*i/steps,z:previous.z+(w.z-previous.z)*i/steps}:w;
+   const result=T.stroke({...terrainBrush,...at,scene:'overworld',target:terrainDrag.target});
+   if(result.changed)terrainDrag.any=true;
+  }
+  terrainDrag.last=w;
+ }
+ function finishTerrain(){
+  if(!terrainDrag)return;
+  const changed=terrainDrag.any;
+  T.endStroke();terrainDrag=null;
+  post('terrain',{state:T.state(),changed});
+ }
 
  function onPointerDown(e){
-  const p=eventPoint(e);if(!ready||!p||e.target!==p.surface)return;
+  const p=eventPoint(e);if(!ready||!p||!isViewportTarget(e.target,p.surface))return;
   e.preventDefault();e.stopImmediatePropagation();
-  // Editor camera panning is keyboard-only. Middle/right mouse do nothing.
-  if(e.button===1||e.button===2)return;
+  if(e.button===1||e.button===2){pointer={id:e.pointerId,kind:'pan',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
   if(e.button===0&&tool==='camera'){pointer={id:e.pointerId,kind:'orbit',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
+  if(e.button===0&&tool==='terrain'){
+   if(currentScene!=='overworld'){log('Terrain editing is available in the overworld.','warn');return;}
+   const w=terrainPoint(p);if(!w)return;
+   try{
+    T.beginStroke();terrainHover=w;
+    terrainDrag={id:e.pointerId,last:null,any:false,target:terrainBrush.mode==='flatten'?landHeight(w.x,w.z):undefined};
+    terrainStamp(w);try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
+   }catch(error){finishTerrain();log('Terrain brush failed: '+error.message,'error')}
+   return;
+  }
   if(buildingPointerDown(e,p))return;
   if(e.button!==0)return;
   if(tool==='place'){
@@ -490,37 +542,65 @@
   if(drag)try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
  }
  function onPointerMove(e){
-  const bp=eventPoint(e);if(bp&&buildingPointerMove(e,bp)){e.preventDefault();e.stopImmediatePropagation();return;}
+  const bp=eventPoint(e);
   if(pointer&&e.pointerId===pointer.id){
    const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;
-   free.yawTarget+=dx*.008;free.tiltTarget=Math.max(.08,Math.min(1.35,free.tiltTarget+dy*.004));
+   if(pointer.kind==='pan'&&!playerView){
+    const rect=bp?.rect;if(rect){
+     const before=editorUnproject((e.clientX-dx-rect.left)/rect.width*screen.w,(e.clientY-dy-rect.top)/rect.height*screen.h);
+     const after=editorUnproject(bp.sx,bp.sy);
+     if(Number.isFinite(before.x)&&Number.isFinite(after.x)&&Number.isFinite(before.z)&&Number.isFinite(after.z)){
+      free.x+=before.x-after.x;free.y+=before.z-after.z;
+     }
+    }
+   }else if(pointer.kind==='orbit'){
+    free.yawTarget+=dx*.008;free.tiltTarget=Math.max(.08,Math.min(1.35,free.tiltTarget+dy*.004));
+   }
    e.preventDefault();e.stopImmediatePropagation();return;
   }
+  if(tool==='terrain'&&bp&&isViewportTarget(e.target,bp.surface)){
+   const w=terrainPoint(bp);if(w)terrainHover=w;
+  }
+  if(terrainDrag&&e.pointerId===terrainDrag.id){
+   if(bp){try{const w=terrainPoint(bp);if(w)terrainStamp(w)}catch(error){log('Terrain brush failed: '+error.message,'error');finishTerrain();}}
+   e.preventDefault();e.stopImmediatePropagation();return;
+  }
+  if(bp&&buildingPointerMove(e,bp)){e.preventDefault();e.stopImmediatePropagation();return;}
   if(!drag||e.pointerId!==drag.id||!selected)return;
-  if(drag.kind==='move'){const p=eventPoint(e);if(!p)return;const w=editorUnproject(p.sx,p.sy);setEntityTransform(selected,{x:drag.x+(w.x-drag.start.x),y:drag.y+(w.z-drag.start.z)},true)}
-  if(drag.kind==='rotate')setEntityTransform(selected,{rotation:drag.rotation+(e.clientX-drag.clientX)*.55},true);
-  if(drag.kind==='scale')setEntityTransform(selected,{scale:drag.scale*Math.exp((drag.clientY-e.clientY)*.008)},true);
-  post('change',{selection:entityInfo(selected)});e.preventDefault();e.stopImmediatePropagation();
+  if(drag.kind==='move'){const p=eventPoint(e);if(!p)return;const w=editorUnproject(p.sx,p.sy);setEntityTransform(selected,{x:drag.x+(w.x-drag.start.x),y:drag.y+(w.z-drag.start.z)},false,true)}
+  if(drag.kind==='rotate')setEntityTransform(selected,{rotation:drag.rotation+(e.clientX-drag.clientX)*.55},false,true);
+  if(drag.kind==='scale')setEntityTransform(selected,{scale:drag.scale*Math.exp((drag.clientY-e.clientY)*.008)},false,true);
+  e.preventDefault();e.stopImmediatePropagation();
  }
  function onPointerUp(e){
+  if(terrainDrag&&e.pointerId===terrainDrag.id){finishTerrain();try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return;}
   if(buildingPointerUp(e)){e.preventDefault();e.stopImmediatePropagation();return;}
   const surface=editorInputSurface();
   if(pointer&&e.pointerId===pointer.id){pointer=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return}
-  if(drag&&e.pointerId===drag.id){if(selected?.entity.assembly)B.commit(selected.entity);const info=entityInfo(selected);log(`${drag.kind.toUpperCase()} · ${info.name} · ${info.x.toFixed(2)}, ${info.y.toFixed(2)} · ${info.rotation.toFixed(1)}° · ${info.scale.toFixed(2)}.`,'info');drag=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation()}
+  if(drag&&e.pointerId===drag.id){
+   if(selected?.entity.assembly)B.commit(selected.entity);
+   else invalidate(selected.entity,selected.kind);
+   recordChange(selected);const info=entityInfo(selected);
+   post('change',{selection:info});log(`${drag.kind.toUpperCase()} · ${info.name} · ${info.x.toFixed(2)}, ${info.y.toFixed(2)} · ${info.rotation.toFixed(1)}° · ${info.scale.toFixed(2)}.`,'info');
+   drag=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();
+  }
  }
  function onWheel(e){
-  const p=eventPoint(e);if(!ready||!p)return;
+  const p=eventPoint(e);if(!ready||!p||!isViewportTarget(e.target,p.surface))return;
   if(playerView){return}
   free.zoomTarget=Math.max(FREE_ZOOM_MIN,Math.min(FREE_ZOOM_MAX,free.zoomTarget*Math.exp(-e.deltaY*.0015)));e.preventDefault();e.stopImmediatePropagation();
  }
- function onKeyDown(e){
-  if(!ready||e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
-  const k=e.key.toLowerCase();
-  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','shift'].includes(k)){
-   cameraKeys.add(k);e.preventDefault();e.stopImmediatePropagation();
-  }
+ function setCameraKey(key,pressed){
+  const k=String(key||'').toLowerCase();if(!CAMERA_KEYS.has(k))return false;
+  if(pressed&&ready&&!playerView)cameraKeys.add(k);else cameraKeys.delete(k);
+  return ready&&!playerView;
  }
- function onKeyUp(e){const k=e.key.toLowerCase();if(cameraKeys.delete(k)){e.preventDefault();e.stopImmediatePropagation()}}
+ function clearCameraKeys(){cameraKeys.clear();free.vx=0;free.vy=0;}
+ function onKeyDown(e){
+  if(e.ctrlKey||e.metaKey||e.altKey||e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
+  if(setCameraKey(e.key,true)){e.preventDefault();e.stopImmediatePropagation();}
+ }
+ function onKeyUp(e){if(setCameraKey(e.key,false)){e.preventDefault();e.stopImmediatePropagation()}}
  function cameraTick(now){
   const dt=Math.min(.05,Math.max(0,(now-lastTick)/1000));lastTick=now;
   if(ready&&!playerView){
@@ -579,6 +659,7 @@
  }
  function cameraInfo(){return {x:playerView?px:free.x,y:playerView?py:free.y,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom,playerView}}
  function togglePlayerView(){
+  clearCameraKeys();
   playerView=!playerView;
   if(playerView){playerCamera={...playerCamera,yaw:view3d.yaw,tilt:view3d.tilt,zoom:Math.max(playerCamera.min,Math.min(playerCamera.max,view3d.zoom))};Object.assign(view3d,{min:playerCamera.min,max:playerCamera.max,zoom:playerCamera.zoom})}
   else{view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;view3d.yaw=free.yawTarget;view3d.tilt=free.tiltTarget;view3d.zoom=free.zoomTarget}
@@ -661,16 +742,22 @@
   return gameUiVisible;
  }
 
- async function becomeReady(){
+ function becomeReady(){
   if(ready)return;
+  if(initializing)return initializing;
   if(typeof assetsReady==='undefined'||!assetsReady)return;
   if(typeof worldScenes==='undefined'||!worldScenes?.overworld||typeof objects==='undefined'||typeof buildings==='undefined'||typeof draw3d!=='function'||typeof unproject3!=='function')return;
+  initializing=(async()=>{
   await loadProject();installTransformRendering();
   free.x=Number(px);free.y=Number(py);playerCamera={min:view3d.min,max:view3d.max,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom};free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
   applyAll();installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);try{stop()}catch{}
   ready=true;
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
+  document.addEventListener('contextmenu',e=>{if(ready&&isViewportTarget(e.target,editorInputSurface())){e.preventDefault();e.stopImmediatePropagation()}},true);
+  window.addEventListener('blur',clearCameraKeys);document.addEventListener('visibilitychange',()=>{if(document.hidden)clearCameraKeys()});
   requestAnimationFrame(cameraTick);log(`Editor ready · project revision ${projectMeta.revision} · free camera detached at ${free.x.toFixed(1)}, ${free.y.toFixed(1)}.`,'ok');post('ready',{camera:cameraInfo()});
+  })().finally(()=>{initializing=null});
+  return initializing;
  }
  const timer=setInterval(()=>{Promise.resolve(becomeReady()).then(()=>{if(ready)clearInterval(timer)}).catch(error=>log('Editor startup failed: '+error.message,'error'))},100);
 
@@ -679,11 +766,25 @@
   enterBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,
   buildingAssets:()=>B.catalog(),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
-  beginPartPlacement(id){if(!B.model(id))throw Error('Missing local asset');partPlacement=id;partPreview=null;tool='place';return buildingState();},
+  beginPartPlacement(id){if(!B.model(id))throw Error('Missing local asset');partPlacementAsset=B.catalog().find(asset=>asset.id===id);if(!partPlacementAsset)throw Error('Missing local asset');partPlacement=id;partPreview=null;tool='place';return buildingState();},
   moveEntrance(host){const m=assembly()?.modules.find(m=>m.role==='entrance');if(!m)throw Error('No linked entrance');partId=m.id;return setPart({host});},currentSceneName:()=>worldScenes?.[currentScene]?.title||String(currentScene),
   getSelection:()=>entityInfo(selected),selectionProjection,cameraState:cameraInfo,listEntities:allEntities,
+  setCameraKey,clearCameraKeys,
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
-  setTool(next){tool=['select','move','rotate','scale','place','camera'].includes(next)?next:'select';drag=null;pointer=null;if(tool!=='place')placementAsset=null;return tool},
+  setTool(next){
+   if(next==='terrain'&&currentScene!=='overworld')throw Error('Terrain is available in the overworld');
+   finishTerrain();terrainHover=null;if(next==='terrain'&&buildingContext)exitBuilding();
+   tool=['select','move','rotate','scale','place','camera','terrain'].includes(next)?next:'select';drag=null;pointer=null;
+   if(tool!=='place'){placementAsset=null;partPlacement=null;partPlacementAsset=null;partPreview=null;}
+   return tool;
+  },
+  terrainState:()=>T.state(),
+  setTerrainBrush(input){
+   const mode=['raise','lower','flatten','smooth','paint','erase'].includes(input?.mode)?input.mode:terrainBrush.mode;
+   terrainBrush={mode,radius:Math.max(1,Math.min(12,Number(input?.radius)||terrainBrush.radius)),strength:Math.max(.05,Math.min(1,Number(input?.strength)||terrainBrush.strength)),material:['grass','dirt','stone','paving'].includes(input?.material)?input.material:terrainBrush.material};
+   return {...terrainBrush};
+  },
+  terrainUndo(redo=false){finishTerrain();const result=redo?T.redo():T.undo();post('terrain',{state:T.state(),changed:result.changed});return T.state();},
   setSnap(config){snap={position:Math.max(0,Number(config?.position)||0),rotation:Math.max(0,Number(config?.rotation)||0)};return {...snap}},
   setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);if(selected.entity.assembly)B.commit(selected.entity);post('change',{selection:info});return info},
   focusSelection,duplicateSelection,deleteSelection,revertSelection,togglePlayerView,
@@ -695,6 +796,6 @@
   placementState(){return placementAsset?{...placementAsset}:null},
   savedState:async()=>({...projectMeta}),
   save:saveProject,
-  exportEdits:()=>({version:1,revision:projectMeta.revision,updatedAt:new Date().toISOString(),changes:[...changes.values()]})
+  exportEdits:()=>({version:1,revision:projectMeta.revision,updatedAt:new Date().toISOString(),changes:[...changes.values()],terrain:T.serialize()})
  };
 })();

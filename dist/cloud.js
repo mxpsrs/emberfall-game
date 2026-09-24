@@ -50,7 +50,7 @@ async function initializeCloud(){
  if(s.character)s.character.race='human';cloudRevision=record.revision;cloudReady=true;cloudStatus('Account save ready');
 }
 function backupCloudState(pending){try{localStorage.setItem('emberfall-cloud-backup-v1',JSON.stringify({account:cloudAccount,revision:cloudRevision,resetVersion:cloudResetVersion,pending,state:s}));}catch{}}
-function queueCloudSave(){if(!cloudReady||cloudConflict||cloudDisconnected||!s.character)return;cloudSaveGeneration++;cloudDirty=true;backupCloudState(true);cloudStatus('Saving…');clearTimeout(cloudTimer);cloudTimer=setTimeout(flushCloudSave,700);}
+function queueCloudSave(){if(typeof editorViewportReady==='function'&&editorViewportReady())return;if(!cloudReady||cloudConflict||cloudDisconnected||!s.character)return;cloudSaveGeneration++;cloudDirty=true;backupCloudState(true);cloudStatus('Saving…');clearTimeout(cloudTimer);cloudTimer=setTimeout(flushCloudSave,700);}
 async function flushCloudSave(){
  if(!cloudReady||cloudBusy||!cloudDirty&&!cloudPendingSave||cloudConflict||cloudDisconnected&&!cloudRecovering)return false;clearTimeout(cloudTimer);cloudBusy=true;cloudDirty=false;
  try{
