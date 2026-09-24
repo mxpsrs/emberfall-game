@@ -134,6 +134,13 @@
       "when": 1790239521158,
       "tag": "0018_nappy_violations",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1790247650523,
+      "tag": "0019_owner_credential_rotation",
+      "breakpoints": true
     }
   ]
 }

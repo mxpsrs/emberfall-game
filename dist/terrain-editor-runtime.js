@@ -101,12 +101,12 @@
   // Compute the whole smooth stroke before mutation, so it is independent of
   // iteration order and stays stable around the pathfinding slope threshold.
   for(let j=Math.floor(z-radius-1);j<=Math.ceil(z+radius+1);j++)for(let i=Math.floor(x-radius-1);i<=Math.ceil(x+radius+1);i++){
-   const d2=(i-x)**2+(j-z)**2;if(d2>radiusSquared||!eligible(i,j))continue;
-   const falloff=1-Math.sqrt(d2)/radius;
    if(mode==='paint'||mode==='erase'){
-    const dCell=(i+.5-x)**2+(j+.5-z)**2;if(dCell<=radiusSquared)paintUpdates.push([i,j,mode==='erase'?null:input.material]);
+    const dCell=(i+.5-x)**2+(j+.5-z)**2;if(dCell<=radiusSquared&&eligible(i+.5,j+.5))paintUpdates.push([i,j,mode==='erase'?null:input.material]);
    }
    if(mode==='paint')continue;
+   const d2=(i-x)**2+(j-z)**2;if(d2>radiusSquared||!eligible(i,j))continue;
+   const falloff=1-Math.sqrt(d2)/radius;
    const delta=heightDelta(i,j),at=landHeightAt(i,j);let next=delta;
    if(mode==='erase')next=null;
    if(mode==='raise'||mode==='lower')next=delta+(mode==='raise'?1:-1)*strength*falloff;

@@ -97,6 +97,19 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  dispatch(childDocument,'pointermove',{...pointer('pointermove',320,200),target:filamentOverlay});
  dispatch(childDocument,'pointerup',{...pointer('pointerup',320,200),target:filamentOverlay});
  assert(bridge.cameraState().x<beforeOverlay,'renderer surface receives editor navigation');
+ bridge.setTool('camera');
+ const touch=(id,x,y)=>({...pointer('touch',x,y,0),pointerId:id,pointerType:'touch'});
+ const beforeTouch=bridge.cameraState();
+ dispatch(childDocument,'pointerdown',touch(11,300,200));
+ dispatch(childDocument,'pointerdown',touch(12,400,200));
+ dispatch(childDocument,'pointermove',touch(11,320,200));
+ dispatch(childDocument,'pointermove',touch(12,420,200));
+ assert(bridge.cameraState().x<beforeTouch.x,'two-finger touch drag pans the editor');
+ dispatch(childDocument,'pointermove',touch(12,500,200));tick(950);
+ assert(bridge.cameraState().zoom>beforeTouch.zoom,'two-finger pinch zooms the editor');
+ dispatch(childDocument,'pointerup',touch(11,320,200));
+ dispatch(childDocument,'pointerup',touch(12,500,200));
+ bridge.setTool('select');
  dispatch(childDocument,'keydown',key('s',world));tick(1000);const ownKey=bridge.cameraState().y;assert(ownKey>still,'iframe key input still works');dispatch(childDocument,'keyup',key('s',world));
  // The selection remains visible as it crosses spatial buckets, and expensive
  // terrain/navigation and outer hierarchy updates occur once when drag ends.
@@ -118,5 +131,14 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  assert.equal(landResets,1,'terrain invalidated at release');
  assert.equal(messages.filter(m=>m.type==='veldren-editor-change').length,1,'outer hierarchy updates once');
  assert(bridge.exportEdits().changes.some(c=>c.id==='test-prop'&&c.x===object.x),'final transform persisted in editor layer');
+ const originalX=object.x,originalY=object.y,atX=(object.x+.5-bridge.cameraState().x)*10,atY=(object.y+.5-bridge.cameraState().y)*10;
+ dispatch(childDocument,'pointerdown',touch(21,atX,atY));
+ dispatch(childDocument,'pointermove',touch(21,atX+20,atY));
+ assert(object.x>originalX,'one-finger object drag previews movement');
+ dispatch(childDocument,'pointerdown',touch(22,atX+100,atY));
+ assert.equal(object.x,originalX,'second touch rolls back an uncommitted object drag');
+ assert.equal(object.y,originalY,'second touch preserves the original object position');
+ dispatch(childDocument,'pointerup',touch(21,atX+20,atY));
+ dispatch(childDocument,'pointerup',touch(22,atX+100,atY));
  console.log('PASS: editor camera navigation survives toolbar focus; pan, keyboard release, text fields and drag batching work.');
 })().catch(error=>{console.error(error);process.exitCode=1});

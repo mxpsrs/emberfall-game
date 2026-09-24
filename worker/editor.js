@@ -10,7 +10,7 @@ const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers
 async function owner(request,env){return (await authenticatedPlayer(request,env))?.id===OWNER;}
 export async function editorAccess(request,env){
  if(request.method!=='GET')return reply({error:'Method not allowed'},405);
- try{return await owner(request,env)?reply({ok:true}):reply({error:'Sign in with the mxpsrs owner account to open the editor.'},403);}
+ try{return await owner(request,env)?reply({ok:true}):reply({error:'Sign in with the owner account to open the editor.'},403);}
  catch{return reply({error:'Editor authorization unavailable. Please retry.'},503);}
 }
 async function metadata(data){

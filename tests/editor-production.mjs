@@ -9,7 +9,7 @@ db.exec('CREATE TABLE game_accounts(id TEXT PRIMARY KEY,username TEXT); CREATE T
 db.exec(readFileSync(new URL('../drizzle/0018_nappy_violations.sql',import.meta.url),'utf8'));
 db.prepare('INSERT INTO character_saves VALUES (?,?)').run('untouched','existing character');
 const owner='2db1d2ba-75e2-4c27-bcdf-94e742f95c86',token='a'.repeat(64),visitor='b'.repeat(64);
-for(const [id,name,t] of [[owner,'mxpsrs',token],['visitor','Visitor',visitor]]){
+for(const [id,name,t] of [[owner,'owner',token],['visitor','Visitor',visitor]]){
  db.prepare('INSERT INTO game_accounts VALUES (?,?)').run(id,name);
  db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').update(t).digest('hex'),id,Date.now()+60000);
 }
@@ -39,7 +39,7 @@ assert.equal((await api('DELETE',null,token)).status,405);
 assert.equal(db.prepare('SELECT state FROM character_saves').get().state,'existing character');
 assert.equal(db.prepare('SELECT count(*) n FROM game_accounts').get().n,2);
 for(const path of ['/editor','/editor/','/editor/index.html']){
- let response=await worker.fetch(req(path),env);assert.equal(response.status,200);assert.match(await response.text(),/id="editorLogin"/);assert.match(response.headers.get('Cache-Control'),/no-store/);
+ let response=await worker.fetch(req(path),env);assert.equal(response.status,200);const login=await response.text();assert.match(login,/id="editorLogin"/);assert.match(login,/name="username"[^>]*value="owner"/);assert.match(response.headers.get('Cache-Control'),/no-store/);
  response=await worker.fetch(req(path,'GET',null,token),env);assert.equal(response.status,200);assert.match(await response.text(),/id="gameFrame"/);
 }
 assert.equal((await worker.fetch(req('/editor/editor-runtime.js'),env)).status,403);

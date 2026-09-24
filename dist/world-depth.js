@@ -35,7 +35,19 @@ function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.f
 function terrainCellSlope(x,z){const heights=[landHeight(x,z),landHeight(x+1,z),landHeight(x,z+1),landHeight(x+1,z+1)];return Math.max(...heights)-Math.min(...heights);}
 function terrainCellBlocked(x,z){if(!inWorld()||bridgeAt(x+.5,z+.5))return false;const q=typeof quarryAt==='function'&&quarryAt(x+.5,z+.5);if(q)return false;return terrainCellSlope(x,z)>1.2;}
 const flatProject3=project3;
-project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return flatProject3(x,y+(v===view3d?landHeight(x,z)-walkSurfaceHeight(cx,cz):0),z,v,cx,cz,w,h);};
+// Projection can visit hundreds of points in one frame. Their shared camera
+// origin has one walkable height, even when a bridge or upper deck is below it.
+const cameraGround3={frame:-1,scene:null,x:NaN,z:NaN,worldRevision:-1,terrainRevision:-1,height:0};
+function projectionCameraHeight3(cx,cz){
+ if(cx!==px+.5||cz!==py+.5)return walkSurfaceHeight(cx,cz);
+ const terrainRevision=window.VeldrenTerrainEdits?.revision??0;
+ if(cameraGround3.frame!==meshFrame3||cameraGround3.scene!==currentScene||cameraGround3.x!==cx||cameraGround3.z!==cz||cameraGround3.worldRevision!==worldObjectRevision||cameraGround3.terrainRevision!==terrainRevision){
+  const height=walkSurfaceHeight(cx,cz);
+  cameraGround3.frame=meshFrame3;cameraGround3.scene=currentScene;cameraGround3.x=cx;cameraGround3.z=cz;cameraGround3.worldRevision=worldObjectRevision;cameraGround3.terrainRevision=terrainRevision;cameraGround3.height=height;
+ }
+ return cameraGround3.height;
+}
+project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return flatProject3(x,y+(v===view3d?landHeight(x,z)-projectionCameraHeight3(cx,cz):0),z,v,cx,cz,w,h);};
 // Intersect the camera ray with the visible surface, from front to back.
 // Fixed-point iteration diverged on banks and snapped taps across bridge edges.
 unproject3=function(sx,sy){

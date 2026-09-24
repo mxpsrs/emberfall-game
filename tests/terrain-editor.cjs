@@ -43,5 +43,9 @@ evalInGame(`
  assert(!terrainCellBlocked(126,126));terrain.beginStroke();terrain.stroke({mode:'raise',x:126,z:126,radius:.5,strength:2});terrain.endStroke();
  assert(terrainCellBlocked(126,126),'steep sculpted cells become impassable for game pathfinding');
  terrain.undo();assert(!terrainCellBlocked(126,126),'undo restores a walkable slope');
+ terrain.beginStroke();terrain.stroke({mode:'paint',x:120.9,z:120.9,radius:1,strength:.25,material:'stone'});terrain.endStroke();
+ assert.equal(terrain.paint(120,120),'stone','painting near the far corner covers the cell under the cursor');
+ terrain.beginStroke();terrain.stroke({mode:'erase',x:120.9,z:120.9,radius:1,strength:.25});terrain.endStroke();
+ assert.equal(terrain.paint(120,120),null,'restore clears the painted cell under the cursor');
  console.log('PASS: live height and pathfinding slope, material override, selective GPU/nav invalidation, undo/redo/flatten/smooth/reset, safe reload.');
 `);

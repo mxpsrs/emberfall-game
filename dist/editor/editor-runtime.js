@@ -12,6 +12,7 @@
  let project={version:1,revision:0,updatedAt:null,changes:[]},changes=new Map(),projectMeta={revision:0,count:0,path:'editor-data/world-edits.json',bytes:0,sha256:''};
  const T=window.VeldrenTerrainEdits;
  let terrainBrush={mode:'raise',radius:3,strength:.25,material:'grass'},terrainHover=null,terrainDrag=null;
+ const touchPoints=new Map();let touchGesture=null;
  let editorSequence=0,editorRendering=false;
  let playerCamera={min:58,max:132,yaw:-2.05,tilt:.27,zoom:118};
  let lastAppliedScene=null;
@@ -487,9 +488,13 @@
   ctx.save();ring3(ctx,terrainHover.x,terrainHover.z,terrainDrag?'#f8de89':'#72e2b8',terrainBrush.radius);ctx.restore();
  }
  function terrainPoint(p){const w=editorUnproject(p.sx,p.sy);return Number.isFinite(w.x)&&Number.isFinite(w.z)?{x:w.x,z:w.z}:null;}
- function terrainStamp(w){
+ function terrainStamp(w,final=false){
   const previous=terrainDrag?.last;
   const spacing=Math.max(.5,terrainBrush.radius*.5),distance=previous?Math.hypot(w.x-previous.x,w.z-previous.z):0;
+  // Pointer events can repeat the same world point many times. Raise/lower
+  // would otherwise apply another full brush and rebuild GPU chunks on each.
+  const minTravel=Math.max(.15,Math.min(.75,terrainBrush.radius*.12));
+  if(previous&&(distance<.001||!final&&distance<minTravel))return;
   const steps=previous?Math.max(1,Math.min(16,Math.ceil(distance/spacing))):1;
   for(let i=1;i<=steps;i++){
    const at=previous?{x:previous.x+(w.x-previous.x)*i/steps,z:previous.z+(w.z-previous.z)*i/steps}:w;
@@ -505,18 +510,55 @@
   post('terrain',{state:T.state(),changed});
  }
 
+ function touchGeometry(){
+  const surface=editorInputSurface(),rect=surface?.getBoundingClientRect();if(!rect?.width||!rect?.height||touchPoints.size<2)return null;
+  const [a,b]=[...touchPoints.values()],x=(a.x+b.x)/2,y=(a.y+b.y)/2;
+  return {sx:(x-rect.left)/rect.width*screen.w,sy:(y-rect.top)/rect.height*screen.h,span:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))};
+ }
+ function interruptForTouchGesture(){
+  finishTerrain();
+  if(partDrag&&buildingContext){B.attach(buildingContext.entity,partDrag.before,worldScenes[currentScene]);partDrag=null;partPreview=null;post('building',{state:buildingState()});}
+  if(drag&&selected){const original=drag.kind==='move'?{x:drag.x,y:drag.y}:drag.kind==='rotate'?{rotation:drag.rotation}:{scale:drag.scale};setEntityTransform(selected,original,false,true);}
+  drag=null;pointer=null;
+ }
+ function clearTouchInput(){
+  if(touchPoints.size)interruptForTouchGesture();
+  touchPoints.clear();touchGesture=null;
+ }
+ function moveTouchGesture(){
+  const next=touchGeometry();if(!next||!touchGesture)return;
+  if(!playerView){
+   const from=editorUnproject(touchGesture.sx,touchGesture.sy),to=editorUnproject(next.sx,next.sy);
+   if(Number.isFinite(from.x)&&Number.isFinite(from.z)&&Number.isFinite(to.x)&&Number.isFinite(to.z)){
+    free.x+=from.x-to.x;free.y+=from.z-to.z;
+   }
+   free.zoomTarget=Math.max(FREE_ZOOM_MIN,Math.min(FREE_ZOOM_MAX,free.zoomTarget*next.span/touchGesture.span));
+  }else view3d.zoom=Math.max(view3d.min,Math.min(view3d.max,view3d.zoom*next.span/touchGesture.span));
+  touchGesture=next;
+ }
+
  function onPointerDown(e){
   const p=eventPoint(e);if(!ready||!p||!isViewportTarget(e.target,p.surface))return;
   e.preventDefault();e.stopImmediatePropagation();
+  if(e.pointerType==='touch'){
+   touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(touchPoints.size>=2){
+    if(!touchGesture){interruptForTouchGesture();touchGesture=touchGeometry();}
+    try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;
+   }
+   if(touchGesture)return;
+  }
   if(e.button===1||e.button===2){pointer={id:e.pointerId,kind:'pan',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
   if(e.button===0&&tool==='camera'){pointer={id:e.pointerId,kind:'orbit',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
   if(e.button===0&&tool==='terrain'){
    if(currentScene!=='overworld'){log('Terrain editing is available in the overworld.','warn');return;}
    const w=terrainPoint(p);if(!w)return;
    try{
-    T.beginStroke();terrainHover=w;
-    terrainDrag={id:e.pointerId,last:null,any:false,target:terrainBrush.mode==='flatten'?landHeight(w.x,w.z):undefined};
-    terrainStamp(w);try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
+   T.beginStroke();terrainHover=w;
+    terrainDrag={id:e.pointerId,last:null,any:false,target:terrainBrush.mode==='flatten'?landHeight(w.x,w.z):undefined,
+     touchStart:e.pointerType==='touch'?{x:e.clientX,y:e.clientY,world:w}:null};
+    if(!terrainDrag.touchStart)terrainStamp(w);
+    try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
    }catch(error){finishTerrain();log('Terrain brush failed: '+error.message,'error')}
    return;
   }
@@ -542,6 +584,10 @@
   if(drag)try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
  }
  function onPointerMove(e){
+  if(e.pointerType==='touch'&&touchPoints.has(e.pointerId)){
+   touchPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(touchGesture){if(touchPoints.size>=2)moveTouchGesture();e.preventDefault();e.stopImmediatePropagation();return;}
+  }
   const bp=eventPoint(e);
   if(pointer&&e.pointerId===pointer.id){
    const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;
@@ -562,7 +608,13 @@
    const w=terrainPoint(bp);if(w)terrainHover=w;
   }
   if(terrainDrag&&e.pointerId===terrainDrag.id){
-   if(bp){try{const w=terrainPoint(bp);if(w)terrainStamp(w)}catch(error){log('Terrain brush failed: '+error.message,'error');finishTerrain();}}
+   if(bp){try{const w=terrainPoint(bp);if(w){
+    if(terrainDrag.touchStart){
+     if(Math.hypot(e.clientX-terrainDrag.touchStart.x,e.clientY-terrainDrag.touchStart.y)<8){e.preventDefault();e.stopImmediatePropagation();return;}
+     terrainStamp(terrainDrag.touchStart.world);terrainDrag.touchStart=null;
+    }
+    terrainStamp(w);
+   }}catch(error){log('Terrain brush failed: '+error.message,'error');finishTerrain();}}
    e.preventDefault();e.stopImmediatePropagation();return;
   }
   if(bp&&buildingPointerMove(e,bp)){e.preventDefault();e.stopImmediatePropagation();return;}
@@ -573,7 +625,17 @@
   e.preventDefault();e.stopImmediatePropagation();
  }
  function onPointerUp(e){
-  if(terrainDrag&&e.pointerId===terrainDrag.id){finishTerrain();try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return;}
+  if(e.pointerType==='touch'&&touchPoints.delete(e.pointerId)&&touchGesture){
+   if(touchPoints.size>=2)touchGesture=touchGeometry();
+   else if(!touchPoints.size)touchGesture=null;
+   try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}
+   e.preventDefault();e.stopImmediatePropagation();return;
+  }
+  if(terrainDrag&&e.pointerId===terrainDrag.id){
+   if(terrainDrag.touchStart&&e.type!=='pointercancel'){try{terrainStamp(terrainDrag.touchStart.world)}catch(error){log('Terrain brush failed: '+error.message,'error');}}
+   else if(e.type!=='pointercancel'){try{const p=eventPoint(e),w=p&&terrainPoint(p);if(w)terrainStamp(w,true)}catch(error){log('Terrain brush failed: '+error.message,'error');}}
+   finishTerrain();try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return;
+  }
   if(buildingPointerUp(e)){e.preventDefault();e.stopImmediatePropagation();return;}
   const surface=editorInputSurface();
   if(pointer&&e.pointerId===pointer.id){pointer=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return}
@@ -754,7 +816,7 @@
   ready=true;
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
   document.addEventListener('contextmenu',e=>{if(ready&&isViewportTarget(e.target,editorInputSurface())){e.preventDefault();e.stopImmediatePropagation()}},true);
-  window.addEventListener('blur',clearCameraKeys);document.addEventListener('visibilitychange',()=>{if(document.hidden)clearCameraKeys()});
+  window.addEventListener('blur',()=>{clearCameraKeys();clearTouchInput()});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearCameraKeys();clearTouchInput();}});
   requestAnimationFrame(cameraTick);log(`Editor ready · project revision ${projectMeta.revision} · free camera detached at ${free.x.toFixed(1)}, ${free.y.toFixed(1)}.`,'ok');post('ready',{camera:cameraInfo()});
   })().finally(()=>{initializing=null});
   return initializing;
@@ -773,7 +835,7 @@
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
   setTool(next){
    if(next==='terrain'&&currentScene!=='overworld')throw Error('Terrain is available in the overworld');
-   finishTerrain();terrainHover=null;if(next==='terrain'&&buildingContext)exitBuilding();
+   clearTouchInput();finishTerrain();terrainHover=null;if(next==='terrain'&&buildingContext)exitBuilding();
    tool=['select','move','rotate','scale','place','camera','terrain'].includes(next)?next:'select';drag=null;pointer=null;
    if(tool!=='place'){placementAsset=null;partPlacement=null;partPlacementAsset=null;partPreview=null;}
    return tool;
