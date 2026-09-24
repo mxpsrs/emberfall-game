@@ -115,11 +115,11 @@ const questPlayerActionBefore=updatePlayerAction;
 updatePlayerAction=function(){
  const a=playerAction;if(a?.kind!=='investigate')return questPlayerActionBefore();
  if(currentScene!==a.scene||a.o&&!mountainNear(a.o)||a.stage!==mainStoryState().stage||a.mountain!==mountainState().stage){stop();return;}
- const age=time-a.started;$('activity').style.width=Math.min(100,age/a.duration*100)+'%';
+ const age=time-a.started;
  if(age>=a.duration){playerAction=null;renderAction();a.finish();}
 };
 const questActionBefore=renderAction;
-renderAction=function(){questActionBefore();if(playerAction?.kind==='investigate'){$('targetTitle').textContent='Investigating '+(playerAction.o?.name||'the memory fragment');$('targetSub').textContent='Looking for evidence… Move to cancel.';}};
+renderAction=function(){questActionBefore();if(playerAction?.kind==='investigate'){}};
 function questVisualAction(){
  if(playerAction)return playerAction;
  const job=mainStoryWork||mountainWork;if(!job||job.skill==='Mining')return null;

@@ -107,7 +107,7 @@ drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
   // Cull the door itself, not a distant building corner. Castle gates use the
   // same visible, animated leaf and click transform as ordinary entrances.
   if(q.x< -150||q.x>screen.w+150||q.y< -200||q.y>screen.h+150)continue;
-  briarEmit(r,rebuiltModels.Door_1_Round,m);
+  briarEmit(r,(b.service?._assemblyDoor&&window.VeldrenBuildings?.model(b.service._assemblyDoor.model))||rebuiltModels.Door_1_Round,m);
  }
 };
 let doorReturnUntil=0;

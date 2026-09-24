@@ -128,7 +128,7 @@ function lightLog(id=Object.keys(s.bag).find(id=>s.bag[id]>0&&ITEMS[id]?.logType
  renderUI();renderAction();save();return true;
 }
 function updateSkillingAction(action){
- const age=time-action.started;$('activity').style.width=Math.min(100,age/action.duration*100)+'%';
+ const age=time-action.started;
  const events=window.realmNative?.stateMachines?.actionEvents(age,action.commitAt,action.duration,action.committed)??((!action.committed&&age>=action.commitAt?1:0)|(age>=action.duration?2:0));
  if(action.scene!==currentScene||Math.hypot(px-action.x,py-action.y)>.08){stop();return;}
  if(events&1){
@@ -145,7 +145,7 @@ function updateSkillingAction(action){
    worldScenes[currentScene].objects.push(o);if(worldScenes[currentScene].objects!==objects)objects.push(o);gain('Firemaking',d.fire);discoverSkillSpirit('Firemaking');tutorialEvent('fire');if(typeof playGameSound==='function')playGameSound('fire');renderUI();save();toast('Fire lit · +'+d.fire+' Firemaking XP');
   }
  }
- if(events&2&&playerAction===action){if(action.kind==='cook'&&s.bag[action.id]>0){playerAction={...action,started:time,committed:false};renderAction();return;}playerAction=null;$('activity').style.width='0';if(action.kind==='firemaking'&&action.committed){const exit=fireExit(action.x,action.y);if(exit){path=[exit];target=null;}}renderAction();}
+ if(events&2&&playerAction===action){if(action.kind==='cook'&&s.bag[action.id]>0){playerAction={...action,started:time,committed:false};renderAction();return;}playerAction=null;if(action.kind==='firemaking'&&action.committed){const exit=fireExit(action.x,action.y);if(exit){path=[exit];target=null;}}renderAction();}
 }
 
 function startCookingBatch(id,fire){

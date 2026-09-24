@@ -57,8 +57,8 @@ select=function(o){if(selectedUseItem)return requestItemOnObject(o);return selec
 const actionBeforeItemUse=renderAction;
 renderAction=function(){
  actionBeforeItemUse();const id=selectedUseItem||pendingItemUse?.id;if(!id)return;
- $('targetTitle').textContent='Use '+ITEMS[id].name;
- $('targetSub').textContent=pendingItemUse?'Walking to '+pendingItemUse.object.name:'Choose an item or a target in the world. Tap Cancel to clear.';
+
+
 };
 const inventoryBeforeItemUse=renderInventory;
 renderInventory=function(){

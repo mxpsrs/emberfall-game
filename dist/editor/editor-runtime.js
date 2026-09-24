@@ -7,6 +7,7 @@
  const free={x:null,y:null,vx:0,vy:0,yawTarget:0,tiltTarget:.4,zoomTarget:100};
  let ready=false,tool='select',selected=null,selectedScene=null,playerView=false,placementAsset=null,gameUiVisible=false;
  let pointer=null,drag=null,lastTick=performance.now(),snap={position:.25,rotation:15};
+ let quarantined=[];
  let project={version:1,revision:0,updatedAt:null,changes:[]},changes=new Map(),projectMeta={revision:0,count:0,path:'editor-data/world-edits.json',bytes:0,sha256:''};
  let editorSequence=0,editorRendering=false;
  let playerCamera={min:58,max:132,yaw:-2.05,tilt:.27,zoom:118};
@@ -84,12 +85,12 @@
   return base;
  }
  function entityRotation(ref){
-  const e=ref.entity;if(ref.kind==='building')return Number(e.editorTransform?.rotation)||0;
+  const e=ref.entity;if(e.assembly)return Math.atan2(e.assembly.parent[2],e.assembly.parent[0])*180/Math.PI;if(ref.kind==='building')return Number(e.editorTransform?.rotation)||0;
   if(Number.isFinite(e.editorTransform?.rotation))return Number(e.editorTransform.rotation);
   if(Number.isFinite(e.placement?.yaw))return Number(e.placement.yaw)*180/Math.PI;
   if(Number.isFinite(e.heading))return Number(e.heading)*180/Math.PI;return 0;
  }
- function entityScale(ref){return Math.max(.1,Math.min(10,Number(ref.entity.editorTransform?.scale)||1))}
+ function entityScale(ref){if(ref.entity.assembly)return Math.hypot(ref.entity.assembly.parent[0],ref.entity.assembly.parent[8]);return Math.max(.1,Math.min(10,Number(ref.entity.editorTransform?.scale)||1))}
  function entityInfo(ref){
   if(!ref)return null;const e=ref.entity,base=ensureBase(ref);
   return {scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:e.name||e.propKind||e.type||'Entity',
@@ -99,6 +100,7 @@
  }
  function allEntities(){
   if(!ready)return [];
+  if(buildingContext)return [entityInfo(buildingContext)];
   const out=[];for(const o of objects)out.push(entityInfo(refForObject(o)));
   const list=buildings;for(let i=0;i<list.length;i++)out.push(entityInfo({kind:'building',entity:list[i],id:buildingId(list[i],i)}));
   return out;
@@ -108,6 +110,7 @@
  }
 
  function invalidate(e,kind='object'){
+  if(kind==='building'&&e.assembly)return;
   // Buildings are intentionally NOT evicted from the static geometry cache
   // while the editor drags them. Their existing cached mesh is translated by
   // a Filament model matrix instead. Rebuilding world-space roof geometry at
@@ -178,7 +181,9 @@
   x=snapValue(x,snap.position);y=snapValue(y,snap.position);
   let rotation=Number.isFinite(Number(input.rotation))?Number(input.rotation):entityRotation(ref);rotation=snapValue(rotation,snap.rotation);
   const scale=Math.max(.1,Math.min(10,Number.isFinite(Number(input.scale))?Number(input.scale):entityScale(ref)));
-  if(ref.kind==='building'){
+  if(ref.kind==='building'&&e.assembly){
+   const angle=rotation*Math.PI/180;e.assembly.parent=A.transform(x,0,y,angle,scale);B.sync(e);
+  }else if(ref.kind==='building'){
    const dx=x-oldX,dy=y-oldY;e.x=x;e.y=y;e.editorTransform={...(e.editorTransform||{}),rotation,scale};
    translateBuildingLinks(e,dx,dy);
   }else{
@@ -196,6 +201,7 @@
   const change={...before,scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,
    baseX:Number(before.baseX??base.x),baseY:Number(before.baseY??base.y),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
   if(before.created){change.created=true;change.data=before.data}
+  if(ref.entity.assembly)change.assembly=B.serialize(ref.entity.assembly);
   changes.set(key,change);project.changes=[...changes.values()];
  }
 
@@ -205,6 +211,7 @@
  async function loadProject(){
   const response=await fetch('/api/editor/edits',{cache:'no-store'});if(!response.ok)throw new Error('Project edit file read failed: HTTP '+response.status);
   const payload=await response.json(),disk=payload.edits;
+  if(Array.isArray(disk?.changes)){const valid=[];quarantined=[];for(const raw of disk.changes){try{window.VeldrenWorldEdits.validate(raw);valid.push(raw)}catch{quarantined.push(raw)}}disk.changes=valid;if(quarantined.length)log(quarantined.length+' incompatible edits preserved without applying.','warn');}
   if(!disk||disk.version!==1||!Array.isArray(disk.changes))throw new Error('Invalid project world edit file');
   const backup=(()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')}catch{return null}})();
   if(!disk.changes.length&&backup?.version===1&&Array.isArray(backup.changes)&&backup.changes.length){
@@ -239,29 +246,26 @@
   ensureBase(ref);setEntityTransform(ref,{x:change.x,y:change.y,rotation:change.rotation,scale:change.scale},false);return {matched:true,action:'transformed'};
  }
  function applyAll(){
-  let matched=0,unmatched=0;
-  for(const change of project.changes){const r=applyChange(change);r.matched?matched++:unmatched++}
-  if(worldScenes?.[currentScene]){objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings)}
-  try{worldObjectRevision++}catch{}
-  log(`Applied editor layer · ${matched} matched · ${unmatched} unmatched.` ,unmatched?'warn':'ok');
+  const result=window.VeldrenWorldEdits.applyDocument({...project,source:'editor-api'});
+  log(`Editor layer · ${result.applied} applied · ${result.unmatched} unmatched · ${result.rejected} rejected.`,result.rejected?'warn':'ok');
  }
 
  function canonical(c){
   return JSON.stringify({scene:c.scene,kind:c.kind,id:String(c.id),deleted:!!c.deleted,created:!!c.created,
    x:c.deleted?null:Number(c.x),y:c.deleted?null:Number(c.y),rotation:c.deleted?null:Number(c.rotation||0),scale:c.deleted?null:Number(c.scale||1),
-   name:c.name||null,type:c.type||null,subtype:c.subtype||null,baseX:Number(c.baseX)||0,baseY:Number(c.baseY)||0});
+   assembly:c.assembly||null,name:c.name||null,type:c.type||null,subtype:c.subtype||null,baseX:Number(c.baseX)||0,baseY:Number(c.baseY)||0});
  }
  async function saveProject(){
-  const outgoing={version:1,expectedRevision:projectMeta.revision,changes:[...changes.values()].map(normalizeChange)};
+  const outgoing={version:1,expectedRevision:projectMeta.revision,changes:[...changes.values()].map(normalizeChange).concat(quarantined)};
   const response=await fetch('/api/editor/edits',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(outgoing)});
   const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||`Save HTTP ${response.status}`);
   const verifyResponse=await fetch(`/api/editor/edits?verify=${encodeURIComponent(result.revision)}&t=${Date.now()}`,{cache:'no-store'});
   const verify=await verifyResponse.json().catch(()=>({}));if(!verifyResponse.ok)throw new Error(verify.error||'Save verification reread failed');
   if(result.revision!==verify.revision||result.sha256!==verify.sha256||result.count!==verify.count)throw new Error('Save round-trip metadata mismatch');
-  const sent=new Map(outgoing.changes.map(c=>[ckey(c.scene,c.kind,c.id),canonical(c)])),read=new Map((verify.edits?.changes||[]).map(c=>[ckey(c.scene,c.kind,c.id),canonical(normalizeChange(c))]));
+  const sent=new Map(outgoing.changes.filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(c)])),read=new Map((verify.edits?.changes||[]).filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(normalizeChange(c))]));
   if(sent.size!==read.size)throw new Error(`Save round-trip count mismatch (${sent.size} vs ${read.size})`);
   for(const [key,value]of sent)if(read.get(key)!==value)throw new Error(`Save round-trip mismatch for ${key}`);
-  project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).map(normalizeChange)};changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
+  project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
   localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes}));
   return {...result,roundTripVerified:true};
@@ -304,7 +308,7 @@
    const beforeCached=cachedMesh3;
    cachedMesh3=function(key,kind,build){
     const cached=beforeCached(key,kind,build);
-    if(kind==='building'&&key){
+    if(kind==='building'&&key&&!key.assembly){
      // Each cached variant remembers where its world-space vertices were first
      // generated. From then on, moving/rotating/scaling the building changes
      // only this model matrix; the roof mesh itself is not regenerated.
@@ -351,7 +355,7 @@
   const wrapped=function(...args){
    if(!ready||playerView)return before(...args);
    const rx=px,ry=py,sx=s.x,sy=s.y,rt=target,name=s.character?.name;editorRendering=true;px=free.x;py=free.y;s.x=free.x;s.y=free.y;target=null;if(s.character)s.character.name='';
-   try{return before(...args)}finally{if(s.character)s.character.name=name;target=rt;s.x=sx;s.y=sy;px=rx;py=ry;editorRendering=false}
+   try{const result=before(...args);drawBuildingOverlay();return result;}finally{if(s.character)s.character.name=name;target=rt;s.x=sx;s.y=sy;px=rx;py=ry;editorRendering=false}
   };
   wrapped.__editorCamera=true;draw3d=wrapped;draw=wrapped;
   if(typeof humanoid3==='function'&&!humanoid3.__editorHidePlayer){const h=humanoid3;humanoid3=function(r,x,z,look,gear,...rest){if(editorRendering&&gear===s.equipment&&Math.hypot(x-free.x-.5,z-free.y-.5)<.05)return 0;return h(r,x,z,look,gear,...rest)};humanoid3.__editorHidePlayer=true}
@@ -394,12 +398,73 @@
   post('change',{selection:info,placed:true,asset});return info;
  }
 
+ const A=globalThis.VeldrenAssembly,B=window.VeldrenBuildings;
+ let buildingContext=null,partId=null,partPlacement=null,partPreview=null,partDrag=null,buildingFloor=0;
+ let buildingSnap={grid:.25,rotation:15,vertical:3,mode:'edge'},floorIsolated=false,floorsBelow=true;
+ const buildingHistory=new A.History();
+ function assembly(){return buildingContext?.entity.assembly;}
+ function buildingState(){return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(assembly()).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},isolate:floorIsolated,below:floorsBelow,undo:buildingHistory.undoStack.length,redo:buildingHistory.redoStack.length,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
+ function recordBuilding(before){
+  const b=buildingContext.entity;B.commit(b);recordChange(buildingContext);
+  const key=ckey(currentScene,'building',buildingContext.id);changes.get(key).assembly=A.serialize(b.assembly);
+  if(before)buildingHistory.push(before,b.assembly);post('building',{state:buildingState()});post('change',{selection:entityInfo(buildingContext)});
+ }
+ function enterBuilding(){
+  if(!selected||selected.kind!=='building')throw Error('Select a building first');
+  buildingContext=selected;B.ensure(selected.entity,worldScenes[currentScene]);partId=null;partPlacement=null;buildingFloor=0;tool='select';return buildingState();
+ }
+ function exitBuilding(){partPlacement=null;partPreview=null;partDrag=null;B.floorFilter=null;buildingContext=null;partId=null;post('building',{state:null});return true;}
+ function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
+ function setPart(input,history=true){
+  const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)throw Error('Select a part');const before=A.serialize(a);
+  if(m.role==='entrance'&&input.host){B.opening(buildingContext.entity,m,input.host);}
+  else{
+   const local=[...m.local];for(const [key,i]of [['x',3],['height',7],['z',11]])if(input[key]!=null){if(!Number.isFinite(Number(input[key])))throw Error('Invalid coordinate');local[i]=Number(input[key]);}
+   if(input.rotation!=null||input.scale!=null){const angle=(input.rotation==null?Math.atan2(local[2],local[0])*180/Math.PI:Number(input.rotation))*Math.PI/180,oldAngle=Math.atan2(local[2],local[0]),scale=input.scale==null?1:Number(input.scale)/Math.hypot(local[0],local[8]);const basis=A.multiply(A.transform(0,0,0,angle-oldAngle,scale),[...local.slice(0,3),0,...local.slice(4,7),0,...local.slice(8,11),0]);for(const i of [0,1,2,4,5,6,8,9,10])local[i]=basis[i];}
+   if(input.floor!=null&&Number(input.floor)!==m.floor){m.floor=Math.max(0,Math.min(32,Math.floor(Number(input.floor))));local[7]=m.floor*buildingSnap.vertical;}
+   if(input.model){const mesh=B.model(input.model);if(!mesh)throw Error('Local model unavailable');m.model=input.model;m.bounds=A.clone(mesh.bounds);}
+   if(m.role==='entrance'&&(input.x!=null||input.z!=null)){const result=A.snap(a,{...m,role:'door',local},buildingSnap);if(!result.valid)throw Error(result.reason);B.opening(buildingContext.entity,m,result.host);}
+   else{m.local=local;if(m.role==='window'&&input.host)B.opening(buildingContext.entity,m,input.host);}
+  }
+  // A wall opening is a component of its host, so moving the wall carries
+  // its door/service coordinates using the same local delta.
+  const old=before.modules.find(p=>p.id===m.id);
+  if(old&&['wall','window'].includes(m.role)){const delta=A.multiply(m.local,A.inverse(old.local));for(const linked of a.modules.filter(p=>p.host===m.id)){linked.local=A.multiply(delta,linked.local);if(linked.opening){linked.opening.service=A.point(delta,linked.opening.service);const basis=[...delta];basis[3]=basis[7]=basis[11]=0;linked.opening.normal=A.point(basis,linked.opening.normal);}}}
+  B.sync(buildingContext.entity);if(history)recordBuilding(before);return buildingState();
+ }
+ function deletePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.role==='entrance'||m.objectId)throw Error('Gameplay-linked parts must be moved, not deleted');const before=A.serialize(a);a.modules=a.modules.filter(p=>p.id!==partId&&p.host!==partId);partId=null;recordBuilding(before);return buildingState();}
+ function duplicatePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.role==='entrance'||m.objectId)throw Error('Gameplay-linked components cannot be duplicated');const before=A.serialize(a),copy=A.clone(m);copy.id='part-editor-'+Date.now()+'-'+(++editorSequence);copy.local[3]+=buildingSnap.grid||.25;delete copy.host;a.modules.push(copy);partId=copy.id;recordBuilding(before);return buildingState();}
+ function buildingUndo(redo=false){const a=assembly();if(!a)return;const next=redo?buildingHistory.redo(a):buildingHistory.undo(a);if(next){B.attach(buildingContext.entity,next,worldScenes[currentScene]);recordBuilding();}return buildingState();}
+ function setFloor(floor,isolate=floorIsolated,below=floorsBelow){buildingFloor=floor==='roof'?'roof':Number(floor);floorIsolated=!!isolate;floorsBelow=!!below;B.floorFilter={building:buildingContext?.entity,floor:buildingFloor,isolate:floorIsolated,below:floorsBelow};return buildingState();}
+ function visiblePart(m){return !floorIsolated||(buildingFloor==='roof'?m.role==='roof':m.floor===buildingFloor||floorsBelow&&m.floor<buildingFloor);}
+ function pickPart(p){let best=null,depth=-Infinity;for(const m of assembly().modules){if(m.role==='detail'||!visiblePart(m))continue;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],pts=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])pts.push(editorProject(...A.point(matrix,[x,y,z])));const minX=Math.min(...pts.map(q=>q.x)),maxX=Math.max(...pts.map(q=>q.x)),minY=Math.min(...pts.map(q=>q.y)),maxY=Math.max(...pts.map(q=>q.y)),d=Math.max(...pts.map(q=>q.depth));if(p.sx>=minX&&p.sx<=maxX&&p.sy>=minY&&p.sy<=maxY&&d>depth){best=m;depth=d;}}return best;}
+ function previewPart(p){if(!partPlacement)return;const asset=B.catalog().find(a=>a.id===partPlacement);if(!asset)return;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]),floor=buildingFloor==='roof'?1:buildingFloor,local=A.transform(q[0],floor*buildingSnap.vertical,q[2]);
+  const candidate={id:'preview',model:asset.id,role:A.role(asset.key),floor,local,bounds:A.clone(asset.bounds)};partPreview=A.snap(assembly(),candidate,{...buildingSnap,mode:candidate.role==='door'?'door-to-wall':candidate.role==='window'?'window-to-wall':buildingSnap.mode});
+  if(['door','window'].includes(candidate.role)){const host=assembly().modules.find(m=>m.id===partPreview.host);const opening=host?.model.replace(/_(Straight|Window_Wide_Flat|Door_Round)$/,candidate.role==='door'?'_Door_Round':'_Window_Wide_Flat');if(!opening||!B.model(opening)){partPreview.valid=false;partPreview.reason='No compatible opening in this wall';}}
+ }
+ function placePart(){if(!partPreview?.valid)throw Error(partPreview?.reason||'Move the pointer to preview placement');const a=assembly(),before=A.serialize(a),m=A.clone(partPreview.module);m.id='part-editor-'+Date.now()+'-'+(++editorSequence);
+  if(m.role==='door'){const existing=a.modules.find(p=>p.role==='entrance');if(!existing)throw Error('This building has no linked entrance');existing.model=m.model;B.opening(buildingContext.entity,existing,partPreview.host);partId=existing.id;}
+  else if(m.role==='window'){const host=a.modules.find(p=>p.id===partPreview.host);B.opening(buildingContext.entity,m,host.id);host.model=m.model;host.role='window';partId=host.id;}
+  else{if(m.role==='stairs')m.stairs={fromFloor:m.floor,toFloor:m.floor+1,origin:[m.local[3],m.local[7],m.local[11]],rampPath:null};a.modules.push(m);partId=m.id;}
+  recordBuilding(before);return buildingState();
+ }
+ function buildingPointerDown(e,p){if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;if(partPlacement){previewPart(p);try{placePart()}catch(error){log(error.message,'warn')}return true;}
+  const m=pickPart(p);partId=m?.id||null;post('building',{state:buildingState()});if(!m)return true;
+  const w=editorUnproject(p.sx,p.sy);partDrag={id:e.pointerId,before:A.serialize(assembly()),start:A.point(A.inverse(assembly().parent),[w.x,0,w.z]),local:[...m.local],clientX:e.clientX,clientY:e.clientY};return true;}
+ function buildingPointerMove(e,p){if(!buildingContext)return false;if(partPlacement){previewPart(p);return true;}if(!partDrag||partDrag.id!==e.pointerId)return false;const m=assembly().modules.find(p=>p.id===partId);if(!m)return true;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]);
+  try{if(tool==='rotate')setPart({rotation:snapValue(Math.atan2(partDrag.local[2],partDrag.local[0])*180/Math.PI+(e.clientX-partDrag.clientX)*.5,buildingSnap.rotation)},false);else if(tool==='scale')setPart({scale:Math.max(.1,Math.hypot(partDrag.local[0],partDrag.local[8])*Math.exp((partDrag.clientY-e.clientY)*.008))},false);else{
+   const candidate={...m,role:m.role==='entrance'?'door':m.role,local:[...partDrag.local]};candidate.local[3]+=q[0]-partDrag.start[0];candidate.local[11]+=q[2]-partDrag.start[2];const result=A.snap(assembly(),candidate,buildingSnap);partPreview=result;if(m.role!=='entrance')setPart({x:result.module.local[3],height:result.module.local[7],z:result.module.local[11]},false);
+  }}catch(error){log(error.message,'warn')}B.sync(buildingContext.entity);return true;}
+ function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);}catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);log(error.message,'warn')}partDrag=null;partPreview=null;return true;}
+ function drawBuildingOverlay(){if(!buildingContext)return;const m=partPreview?.module||assembly().modules.find(m=>m.id===partId);if(!m)return;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],points=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])points.push(editorProject(...A.point(matrix,[x,y,z])));ctx.save();ctx.strokeStyle=partPreview?(partPreview.valid?'#64e5bb':'#ff6c80'):'#80c7ff';ctx.fillStyle=partPreview?(partPreview.valid?'#64e5bb33':'#ff6c8033'):'#80c7ff22';ctx.lineWidth=2;for(const face of [[0,1,3,2],[4,5,7,6],[0,4,6,2],[1,5,7,3]]){ctx.beginPath();face.forEach((i,j)=>ctx[j?'lineTo':'moveTo'](points[i].x,points[i].y));ctx.closePath();ctx.fill();ctx.stroke();}ctx.restore();}
+
  function onPointerDown(e){
   const p=eventPoint(e);if(!ready||!p||e.target!==p.surface)return;
   e.preventDefault();e.stopImmediatePropagation();
   // Editor camera panning is keyboard-only. Middle/right mouse do nothing.
   if(e.button===1||e.button===2)return;
   if(e.button===0&&tool==='camera'){pointer={id:e.pointerId,kind:'orbit',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
+  if(buildingPointerDown(e,p))return;
   if(e.button!==0)return;
   if(tool==='place'){
    if(!placementAsset){log('Choose an asset from the Assets browser first.','warn');return;}
@@ -421,6 +486,7 @@
   if(drag)try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
  }
  function onPointerMove(e){
+  const bp=eventPoint(e);if(bp&&buildingPointerMove(e,bp)){e.preventDefault();e.stopImmediatePropagation();return;}
   if(pointer&&e.pointerId===pointer.id){
    const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;
    free.yawTarget+=dx*.008;free.tiltTarget=Math.max(.08,Math.min(1.35,free.tiltTarget+dy*.004));
@@ -433,9 +499,10 @@
   post('change',{selection:entityInfo(selected)});e.preventDefault();e.stopImmediatePropagation();
  }
  function onPointerUp(e){
+  if(buildingPointerUp(e)){e.preventDefault();e.stopImmediatePropagation();return;}
   const surface=editorInputSurface();
   if(pointer&&e.pointerId===pointer.id){pointer=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return}
-  if(drag&&e.pointerId===drag.id){const info=entityInfo(selected);log(`${drag.kind.toUpperCase()} · ${info.name} · ${info.x.toFixed(2)}, ${info.y.toFixed(2)} · ${info.rotation.toFixed(1)}° · ${info.scale.toFixed(2)}.`,'info');drag=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation()}
+  if(drag&&e.pointerId===drag.id){if(selected?.entity.assembly)B.commit(selected.entity);const info=entityInfo(selected);log(`${drag.kind.toUpperCase()} · ${info.name} · ${info.x.toFixed(2)}, ${info.y.toFixed(2)} · ${info.rotation.toFixed(1)}° · ${info.scale.toFixed(2)}.`,'info');drag=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation()}
  }
  function onWheel(e){
   const p=eventPoint(e);if(!ready||!p)return;
@@ -490,13 +557,13 @@
   if(!selected)return;const e=selected.entity;free.x=selected.kind==='building'?e.x+e.w/2:e.x+.5;free.y=selected.kind==='building'?e.y+e.h/2:e.y+.5;free.zoomTarget=Math.max(free.zoomTarget,120);if(playerView)togglePlayerView();return cameraInfo();
  }
  function duplicateSelection(){
-  if(!selected)return null;const e=selected.entity,id=`editor-${Date.now()}-${++editorSequence}`,copy=deepClone(e);copy.id=id;copy.x=Number(e.x)+1;copy.y=Number(e.y);delete copy._editorBase;delete copy._creatureMotion;copy._editorCreated=true;
+  if(!selected)return null;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');const e=selected.entity,id=`editor-${Date.now()}-${++editorSequence}`,copy=deepClone(e);copy.id=id;copy.x=Number(e.x)+1;copy.y=Number(e.y);delete copy._editorBase;delete copy._creatureMotion;copy._editorCreated=true;
   if(selected.kind==='building'){copy.service=null;sceneBuildings(currentScene).push(copy);selected=refForBuilding(copy)}else{sceneObjects(currentScene).push(copy);selected=refForObject(copy)}
   const info=entityInfo(selected),change={scene:String(currentScene),kind:selected.kind,id:String(selected.id),name:info.name,type:info.type,subtype:info.subtype,baseX:info.x,baseY:info.y,created:true,data:deepClone(copy),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
   changes.set(ckey(currentScene,selected.kind,selected.id),change);project.changes=[...changes.values()];if(selected.kind==='object')objects.push(copy);else buildings.push(copy);post('change',{selection:info});return info;
  }
  function deleteSelection(){
-  if(!selected)return false;const info=entityInfo(selected),key=ckey(currentScene,selected.kind,selected.id),existing=changes.get(key),list=selected.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),index=list.indexOf(selected.entity);
+  if(!selected)return false;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');const info=entityInfo(selected),key=ckey(currentScene,selected.kind,selected.id),existing=changes.get(key),list=selected.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),index=list.indexOf(selected.entity);
   if(index>=0)list.splice(index,1);if(existing?.created)changes.delete(key);else changes.set(key,{...(existing||{}),scene:String(currentScene),kind:selected.kind,id:String(selected.id),name:info.name,type:info.type,subtype:info.subtype,baseX:info.baseX,baseY:info.baseY,deleted:true});
   if(selected.kind==='object'){const i=objects.indexOf(selected.entity);if(i>=0)objects.splice(i,1)}else{const i=buildings.indexOf(selected.entity);if(i>=0)buildings.splice(i,1)}
   selected=null;project.changes=[...changes.values()];post('change',{selection:null});return true;
@@ -592,6 +659,7 @@
 
  async function becomeReady(){
   if(ready)return;
+  if(typeof assetsReady==='undefined'||!assetsReady)return;
   if(typeof worldScenes==='undefined'||!worldScenes?.overworld||typeof objects==='undefined'||typeof buildings==='undefined'||typeof draw3d!=='function'||typeof unproject3!=='function')return;
   await loadProject();installTransformRendering();
   free.x=Number(px);free.y=Number(py);playerCamera={min:view3d.min,max:view3d.max,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom};free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
@@ -603,12 +671,17 @@
  const timer=setInterval(()=>{Promise.resolve(becomeReady()).then(()=>{if(ready)clearInterval(timer)}).catch(error=>log('Editor startup failed: '+error.message,'error'))},100);
 
  window.VeldrenEditorBridge={
-  isReady:()=>ready,currentSceneName:()=>worldScenes?.[currentScene]?.title||String(currentScene),
+  isReady:()=>ready,initialize:becomeReady,
+  enterBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,
+  buildingAssets:()=>B.catalog(),
+  setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
+  beginPartPlacement(id){if(!B.model(id))throw Error('Missing local asset');partPlacement=id;partPreview=null;tool='place';return buildingState();},
+  moveEntrance(host){const m=assembly()?.modules.find(m=>m.role==='entrance');if(!m)throw Error('No linked entrance');partId=m.id;return setPart({host});},currentSceneName:()=>worldScenes?.[currentScene]?.title||String(currentScene),
   getSelection:()=>entityInfo(selected),selectionProjection,cameraState:cameraInfo,listEntities:allEntities,
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
   setTool(next){tool=['select','move','rotate','scale','place','camera'].includes(next)?next:'select';drag=null;pointer=null;if(tool!=='place')placementAsset=null;return tool},
   setSnap(config){snap={position:Math.max(0,Number(config?.position)||0),rotation:Math.max(0,Number(config?.rotation)||0)};return {...snap}},
-  setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);post('change',{selection:info});return info},
+  setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);if(selected.entity.assembly)B.commit(selected.entity);post('change',{selection:info});return info},
   focusSelection,duplicateSelection,deleteSelection,revertSelection,togglePlayerView,
   listAssets:assetCatalog,
   gameUiVisible:()=>gameUiVisible,

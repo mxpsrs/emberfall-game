@@ -15,6 +15,7 @@
     <button id="rotateTool" type="button">Rotate</button>
     <button id="scaleTool" type="button">Scale</button>
     <button id="placeTool" type="button">Place</button>
+    <button id="buildingEditTool" type="button">Building Edit</button>
     <button id="cameraTool" type="button">Camera</button>
     <span class="divider"></span>
     <button id="playerView" type="button">Player View</button>
@@ -55,6 +56,26 @@
       <button id="assetBrowserTab" type="button" role="tab" aria-selected="false">Assets</button>
     </div>
 
+    <section id="buildingPanel" hidden>
+      <strong id="buildingName">Building</strong>
+      <button id="exitBuilding" type="button">Exit Building Edit</button>
+      <label>Floor <select id="buildingFloor"><option value="0">Ground</option><option value="1">Floor 2</option><option value="2">Floor 3</option><option value="roof">Roof</option></select></label>
+      <label><input id="isolateFloor" type="checkbox"> Isolate floor</label>
+      <label><input id="showBelow" type="checkbox" checked> Show floors below</label>
+      <label>Snap <select id="buildingSnap"><option value="grid">Grid</option><option value="edge" selected>Edge / wall-to-wall</option><option value="endpoint">Endpoint</option><option value="corner">Corner</option><option value="door-to-wall">Door-to-wall</option><option value="window-to-wall">Window-to-wall</option><option value="floor">Floor level</option><option value="roof-edge">Roof edge</option><option value="stair-to-floor">Stair-to-floor</option></select></label>
+      <label>Floor height <input id="floorIncrement" type="number" value="3" min="0.25" step="0.25"></label>
+      <div class="object-actions"><button id="buildingUndo">Undo</button><button id="buildingRedo">Redo</button><button id="duplicatePart">Duplicate Part</button><button id="deletePart">Delete Part</button></div>
+      <div id="partHierarchy" class="entity-list" aria-label="Building parts"></div>
+      <fieldset id="partTransform" disabled><legend>Local part transform</legend>
+        <label>X <input id="partX" type="number" step="0.25"></label><label>Height <input id="partHeight" type="number" step="0.25"></label><label>Z <input id="partZ" type="number" step="0.25"></label><label>Rotation <input id="partRotation" type="number" step="15"></label>
+        <label>Floor <input id="partFloor" type="number" min="0" max="32" step="1"></label>
+        <button id="applyPart" type="button">Apply Part</button>
+        <label>Entrance wall <select id="entranceWall"></select></label><button id="moveEntrance" type="button">Move Entrance Here</button>
+      </fieldset>
+      <label>Parts <select id="partCategory"></select></label><select id="partAsset" aria-label="Local building asset"></select>
+      <button id="placePart" type="button">Place Part</button><button id="replacePart" type="button">Replace Selected Model</button>
+      <p id="buildingHint" class="hint">Select a part in the hierarchy or viewport. Green preview permits placement; red requires a compatible wall.</p>
+    </section>
     <section id="worldBrowser" class="browser-panel">
       <input id="entitySearch" type="search" placeholder="Search entities, NPCs, doors…">
       <div class="filter-row">

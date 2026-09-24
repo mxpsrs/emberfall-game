@@ -164,7 +164,6 @@ function drawWorldMood(){
  const dark=!inWorld()?(currentScene==='dungeon'?.35:currentScene==='mine'?.22:.08):night*.29;
  ctx.fillStyle='rgba(7,15,40,'+dark+')';ctx.fillRect(0,0,screen.w,screen.h);
  for(const o of objects)if(o.type==='camp'){const x=(o.x+.5)*TILE-camera.x,y=(o.y+.5)*TILE-camera.y,g=ctx.createRadialGradient(x,y,0,x,y,110);g.addColorStop(0,'rgba(255,186,83,.17)');g.addColorStop(1,'rgba(255,186,83,0)');ctx.fillStyle=g;ctx.fillRect(x-110,y-110,220,220);}
- $('worldClock').textContent=(hours<5||hours>=20?'Night':hours<8?'Dawn':hours>=17?'Dusk':'Day')+' '+String(Math.floor(hours)).padStart(2,'0')+':'+String(Math.floor(hours%1*60)).padStart(2,'0');
 }
 function drawSceneWalls(){
  if(inWorld())return;const minX=Math.floor(camera.x/TILE),minY=Math.floor(camera.y/TILE);

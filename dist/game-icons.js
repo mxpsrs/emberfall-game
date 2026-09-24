@@ -33,6 +33,5 @@ function initGameIcons(){
  const tabs={bag:['bag','Bag'],skills:['skills','Skills'],gear:['gear','Equipment'],quests:['quests','Quests'],spells:['spells','Spells'],hunts:['hunting','Hunting journal']};
  document.querySelectorAll('[data-tab]').forEach(b=>{const [icon,label]=tabs[b.dataset.tab]||[CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[1]||'help',CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[2]||b.dataset.tab];setHudButton(b,label,icon);b.setAttribute('aria-controls','gameDock');});
  document.querySelectorAll('[data-style]').forEach(b=>setHudButton(b,b.dataset.style[0].toUpperCase()+b.dataset.style.slice(1)+' combat',b.dataset.style));
- for(const [id,icon,label]of [['eat','eat','Eat food'],['runButton','run','Toggle running']]){const b=$(id),mark=document.createElement('span');mark.innerHTML=gameIcon(icon);mark.className='hud-symbol';b.prepend(mark);b.classList.add('hud-icon');b.title=label;if(id==='eat'){for(const n of [...b.childNodes])if(n.nodeType===3)n.remove();b.setAttribute('aria-label',label);}}
  syncTabs();syncAmbientIcon();if(typeof syncPlayDisplay==='function')syncPlayDisplay();
 }

@@ -53,11 +53,11 @@
   if(c.kind==='building'){
    const list=scene.buildings||[];
    for(let i=0;i<list.length;i++)if(buildingId(list[i],i)===String(c.id))return list[i];
-   return list.find(b=>(!c.name||b.name===c.name)&&fallbackDistance(b,c)<2.5)||null;
+   return c.name&&Number.isFinite(c.baseX)&&Number.isFinite(c.baseY)?list.find(b=>(!c.name||b.name===c.name)&&fallbackDistance(b,c)<2.5)||null:null;
   }
   const list=scene.objects||[];
   return list.find(o=>String(o.id)===String(c.id))||
-    list.find(o=>(!c.name||o.name===c.name)&&(!c.type||o.type===c.type)&&fallbackDistance(o,c)<2.5)||null;
+    (c.name&&Number.isFinite(c.baseX)&&Number.isFinite(c.baseY)?list.find(o=>(!c.name||o.name===c.name)&&(!c.type||o.type===c.type)&&fallbackDistance(o,c)<2.5)||null:null);
  }
  function moveObject(o,x,y){
   o.x=x;o.y=y;
@@ -109,36 +109,41 @@
   }
  }
 
- function applyScene(sceneId){
-  const scene=worldScenes?.[sceneId];
-  if(!scene)return {matched:0,unmatched:0};
-  let matched=0,unmatched=0;
-
-  for(const raw of state.changes.filter(c=>c.scene===sceneId)){
-   const c=normalize(raw);
-   let entity=resolve(scene,c);
-
-   if(c.deleted){
-    if(!entity){unmatched++;continue}
-    const list=c.kind==='building'?scene.buildings:scene.objects,index=list.indexOf(entity);
-    if(index>=0)list.splice(index,1);
-    matched++;continue;
-   }
-
-   if(c.created&&!entity&&c.data){
-    entity=JSON.parse(JSON.stringify(c.data));
-    entity.id=c.id;
-    (c.kind==='building'?scene.buildings:scene.objects).push(entity);
-   }
-
-   if(!entity){unmatched++;continue}
-   c.kind==='building'?applyBuilding(scene,entity,c):applyObject(entity,c);
-   matched++;
-  }
-
-  return {matched,unmatched};
+ const completed=new WeakMap();
+ const status=window.VELDREN_WORLD_EDITS_STATUS={revision:0,total:0,applied:0,matched:0,unmatched:0,rejected:0,errors:[],source:null};
+ function validate(c){
+  if(!c||typeof c!=='object'||Array.isArray(c)||!['building','object'].includes(c.kind)||typeof c.scene!=='string'||!c.scene||c.id==null)throw Error('Invalid edit identity');
+  if(!c.deleted&&(!Number.isFinite(c.x)||!Number.isFinite(c.y)||c.rotation!=null&&!Number.isFinite(c.rotation)||c.scale!=null&&(!Number.isFinite(c.scale)||c.scale<=0)))throw Error('Invalid transform');
+  if(c.created&&(!c.data||typeof c.data!=='object'||Array.isArray(c.data)))throw Error('Missing creation data');
+  if(c.assembly)window.VeldrenBuildings.validate(c.assembly);
+  return normalize(c);
  }
-
+ function errorDetail(raw,index,reason){return {index,id:typeof raw?.id==='string'?raw.id.slice(0,180):null,scene:typeof raw?.scene==='string'?raw.scene.slice(0,120):null,reason};}
+ function applyDocument(doc=state){
+  Object.assign(status,{revision:doc.revision||0,total:Array.isArray(doc.changes)?doc.changes.length:0,source:doc.source||state.source});
+  for(const [index,raw]of (Array.isArray(doc.changes)?doc.changes:[]).entries()){
+   let c,scene,seen,key;
+   try{
+    c=validate(raw);scene=typeof worldScenes!=='undefined'?worldScenes[c.scene]:null;
+    if(!scene){status.unmatched++;status.errors.push(errorDetail(raw,index,'Scene not found'));continue;}
+    seen=completed.get(scene);if(!seen){seen=new Set();completed.set(scene,seen)}
+    key=JSON.stringify(c);if(seen.has(key))continue;
+    let entity=resolve(scene,c);
+    if(c.deleted){
+     if(!entity){status.unmatched++;status.errors.push(errorDetail(raw,index,'Entity not found'));seen.add(key);continue;}
+     const list=c.kind==='building'?scene.buildings:scene.objects;list.splice(list.indexOf(entity),1);
+    }else{
+     if(c.created&&!entity){entity=JSON.parse(JSON.stringify(c.data));entity.id=c.id;if(c.kind==='building')entity._editorId=c.id;(c.kind==='building'?scene.buildings:scene.objects).push(entity);}
+     if(!entity){status.unmatched++;status.errors.push(errorDetail(raw,index,'Entity not found'));seen.add(key);continue;}
+     if(c.assembly){window.VeldrenBuildings.attach(entity,c.assembly,scene);}
+     else c.kind==='building'?applyBuilding(scene,entity,c):applyObject(entity,c);
+    }
+    seen.add(key);status.applied++;status.matched=status.applied;
+   }catch(error){status.rejected++;status.errors.push(errorDetail(raw,index,'Invalid or incompatible edit: '+(error?.name||'Error')));if(seen&&key)seen.add(key);}
+  }
+  try{syncCurrentScene()}catch{status.errors.push({reason:'Active scene sync failed'});}
+  return status;
+ }
  function syncCurrentScene(){
   if(!worldScenes?.[currentScene])return;
   objects.splice(0,objects.length,...worldScenes[currentScene].objects);
@@ -186,6 +191,7 @@
   if(typeof building3==='function'&&!building3.__worldEditTransform){
    const before=building3;
    building3=function(r,b){
+    if(b.assembly)return before(r,b);
     const scale=Number(b?.editorTransform?.scale)||1,rotation=Number(b?.editorTransform?.rotation)||0;
     if(Math.abs(scale-1)<.0001&&Math.abs(rotation)<.0001)return before(r,b);
     const cx=b.x+b.w/2,cz=b.y+b.h/2;
@@ -203,60 +209,11 @@
   await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
  }
 
- // This is the critical fix. character-creation.js calls startRebuiltRealm(),
- // which calls boot(). We replace boot before that happens. The replacement
- // waits until every later world-extension script has loaded, then wraps the
- // FINAL setupExpandedWorld / setupTutorialVillage implementations.
+ // Await all extension scripts, but never wrap scene construction/activation.
+ window.VeldrenWorldEdits={validate,applyDocument,state,async applyFinishedWorld(){
+  await ready;installRenderTransforms();window.VeldrenBuildings?.install();
+  try{return applyDocument()}catch{status.errors.push({reason:'Editor layer unavailable'});return status;}
+ }};
  const originalBoot=boot;
- boot=async function(...args){
-  await Promise.all([ready,domReady()]);
-  installRenderTransforms();
-
-  const finalSetupWorld=setupExpandedWorld;
-  const finalSetupTutorial=typeof setupTutorialVillage==='function'?setupTutorialVillage:null;
-  const finalActivateScene=activateScene;
-  let totals={matched:0,unmatched:0};
-
-  setupExpandedWorld=function(...setupArgs){
-   const result=finalSetupWorld.apply(this,setupArgs);
-   for(const id of Object.keys(worldScenes||{})){
-    if(id==='tutorial')continue;
-    const applied=applyScene(id);totals.matched+=applied.matched;totals.unmatched+=applied.unmatched;
-   }
-   syncCurrentScene();
-   return result;
-  };
-
-  if(finalSetupTutorial){
-   setupTutorialVillage=function(...tutorialArgs){
-    const result=finalSetupTutorial.apply(this,tutorialArgs);
-    const applied=applyScene('tutorial');totals.matched+=applied.matched;totals.unmatched+=applied.unmatched;
-    syncCurrentScene();
-    return result;
-   };
-  }
-
-  activateScene=function(id,...sceneArgs){
-   const result=finalActivateScene.call(this,id,...sceneArgs);
-   // Reapply this scene because some activation/setup paths clone or replace
-   // scene arrays after initial construction.
-   const applied=applyScene(id);totals.matched+=applied.matched;totals.unmatched+=applied.unmatched;
-   syncCurrentScene();
-   return result;
-  };
-
-  try{
-   const result=await originalBoot.apply(this,args);
-   window.VELDREN_WORLD_EDITS_STATUS={
-    revision:state.revision,count:state.changes.length,matched:totals.matched,unmatched:totals.unmatched,
-    source:state.source,updatedAt:state.updatedAt,error:state.error?String(state.error.message||state.error):null
-   };
-   console.info('Veldren saved editor layer applied',window.VELDREN_WORLD_EDITS_STATUS);
-   return result;
-  }finally{
-   setupExpandedWorld=finalSetupWorld;
-   if(finalSetupTutorial)setupTutorialVillage=finalSetupTutorial;
-   activateScene=finalActivateScene;
-  }
- };
+ boot=async function(...args){await Promise.all([ready,domReady()]);return originalBoot.apply(this,args)};
 })();

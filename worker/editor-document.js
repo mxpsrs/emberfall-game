@@ -1,3 +1,4 @@
+import '../dist/building-assembly.js';
 function normalize(raw){
  const rotation=Number.isFinite(Number(raw.rotation))?Number(raw.rotation):(Number(raw.yaw)||0)*180/Math.PI;
  return {
@@ -22,6 +23,7 @@ export function sanitize(input,current){
   error.status=409;throw error;
  }
  const changes=input.changes.map((raw,index)=>{
+  if((current.changes||[]).some(old=>JSON.stringify(old)===JSON.stringify(raw)))return raw;
   if(!raw||typeof raw!=='object')throw Error('Invalid edit '+index);
   const c=normalize(raw);
   if(!c.scene||!c.id)throw Error('Edit missing scene/id at '+index);
@@ -35,6 +37,7 @@ export function sanitize(input,current){
    if(!c.data||typeof c.data!=='object'||Array.isArray(c.data))throw Error('Created edit missing entity data at '+index);
    out.data=c.data;
   }
+  if(raw.assembly){globalThis.VeldrenAssembly.validate(raw.assembly);out.assembly=globalThis.VeldrenAssembly.serialize(raw.assembly);}
   return out;
  });
  return {version:1,revision:Number(current.revision||0)+1,updatedAt:new Date().toISOString(),changes};

@@ -397,7 +397,10 @@ async function boot(){
     if(window.realmStartup?.failed)return;
     realmLoadStatus('Preparing Briarhaven…',90);
     await new Promise(resolve=>requestAnimationFrame(resolve));
-    realmSetStartupStage('world-setup');setupExpandedWorld();normalizeSpiritRemoval(s);setupTutorialVillage();setupLoot();initHud();resize();renderUI();renderAction();
+    realmSetStartupStage('world-generation');setupExpandedWorld();normalizeSpiritRemoval(s);
+    realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
+    realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
+    realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
     assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();
     realmLoadComplete();save();requestAnimationFrame(frame);

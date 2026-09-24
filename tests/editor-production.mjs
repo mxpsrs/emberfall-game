@@ -19,7 +19,8 @@ const api=(method,body,t,origin)=>handleEditorEdits(req('/api/editor/edits',meth
 assert.equal((await editorAccess(req('/api/editor/access','GET',null,visitor),env)).status,403);
 assert.equal((await editorAccess(req('/api/editor/access','GET',null,token),env)).status,200);
 const initial=await (await api('GET')).json();assert(initial.count>0,'seeded source world retained');
-const body={version:1,expectedRevision:initial.revision,changes:[...initial.edits.changes,{scene:'overworld',kind:'object',id:'test-placement',x:10,y:11,rotation:20,scale:1}]};
+const assembly={version:1,buildingId:'house-test',parent:[1,0,0,10,0,1,0,0,0,0,1,11],modules:[{id:'wall',model:'rebuilt:Wall_UnevenBrick_Straight',role:'wall',floor:0,local:[1,0,0,0,0,1,0,0,0,0,1,0],bounds:[[0,0,0],[2,3,.2]]}],layout:[]};
+const body={version:1,expectedRevision:initial.revision,changes:[...initial.edits.changes,{scene:'overworld',kind:'object',id:'test-placement',x:10,y:11,rotation:20,scale:1},{scene:'overworld',kind:'building',id:'house-test',x:10,y:11,rotation:0,scale:1,assembly}]};
 assert.equal((await api('PUT',body)).status,403);
 assert.equal((await api('PUT',body,visitor)).status,403);
 assert.equal((await api('PUT',body,token,'https://elsewhere.test')).status,403);
@@ -27,7 +28,7 @@ assert.equal((await api('PUT',{...body,expectedRevision:undefined},token)).statu
 const attempts=await Promise.all([api('PUT',body,token),api('PUT',body,token)]);
 assert.deepEqual(attempts.map(x=>x.status).sort(),[200,409]);
 const saved=await attempts.find(x=>x.status===200).json();
-const verified=await (await api('GET')).json();assert.equal(saved.sha256,verified.sha256);assert.equal(saved.revision,initial.revision+1);
+const verified=await (await api('GET')).json();assert.deepEqual(verified.edits.changes.find(c=>c.id==='house-test').assembly,assembly,'building hierarchy survives production save/reload');assert.equal(saved.sha256,verified.sha256);assert.equal(saved.revision,initial.revision+1);
 assert.equal(JSON.parse(db.prepare('SELECT previous_document FROM editor_world').get().previous_document).revision,initial.revision);
 assert.equal((await api('PUT',{...body,expectedRevision:verified.revision,changes:[{id:'bad'}]},token)).status,400);
 assert.equal((await api('DELETE',null,token)).status,405);

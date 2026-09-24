@@ -208,7 +208,7 @@ gatheringActivity=function(){if(mountainWork&&mountainWork.skill==='Mining')retu
 function mountainTickWork(dt){
  const job=mountainWork;if(!job)return;
  if(currentScene!==job.scene||!mountainNear(job.o)||activeEncounter||mountainState().stage!==job.stage){mountainWork=null;return;}
- const before=job.age;job.age+=dt;$('activity').style.width=Math.min(100,job.age/3.2*100)+'%';
+ const before=job.age;job.age+=dt;
  if(Math.floor(before/.8)!==Math.floor(job.age/.8))playGameSound(job.skill==='Magic'?'magic':job.skill==='Mining'?'mine':'smith',job.o.x,job.o.y);
  if(job.age<3.2)return;mountainWork=null;
  if(lv(job.skill)<job.level||Object.entries(job.requirements).some(([id,n])=>(s.bag[id]||0)<n))return;
@@ -216,7 +216,7 @@ function mountainTickWork(dt){
  job.finish();renderAction();renderUI();save();
 }
 const mountainActionBefore=renderAction;
-renderAction=function(){mountainActionBefore();if(mountainWork){$('targetTitle').textContent=mountainWork.label;$('targetSub').textContent='Working… Move to cancel.';}};
+renderAction=function(){mountainActionBefore();if(mountainWork){}};
 function mountainSeal(o,index=0){
  if(mountainState().stage!==5||!mountainNear(o))return;if(lv('Magic')<8){toast('Requires Magic 8.');return;}
  const order=['Stone','Iron','Breath'];

@@ -179,7 +179,7 @@ function realmNav(){
  // Terrain collision is resolved when a route first visits a tile. Loading a
  // village should not evaluate water and walls across the entire continent.
  cells.fill(2);
- for(const b of buildings)for(let y=Math.floor(b.y);y<b.y+b.h;y++)for(let x=Math.floor(b.x);x<b.x+b.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;
+ for(const b of buildings){const bounds=b.assembly&&window.VeldrenBuildings?window.VeldrenBuildings.worldBounds(b):{x:b.x,y:b.y,w:b.w,h:b.h};for(let y=Math.floor(bounds.y);y<bounds.y+bounds.h;y++)for(let x=Math.floor(bounds.x);x<bounds.x+bounds.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;}
  for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){if(!o.propKind)cells[o.y*w+o.x]=1;if(o.propKind&&typeof propCollisionTiles==='function')for(const [x,y]of propCollisionTiles(o))if(x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }

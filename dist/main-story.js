@@ -151,7 +151,7 @@ function mainStoryWorkStart(o,stage,skill,level,label,change={}){
 }
 const mainStoryStopBefore=stop;stop=function(){mainStoryWork=null;return mainStoryStopBefore();};
 const mainStoryGatherBefore=gatheringActivity;gatheringActivity=function(){if(mainStoryWork?.skill==='Mining')return {object:mainStoryWork.o,tool:'pickaxe',phase:(mainStoryWork.age%.8)/.8};return mainStoryGatherBefore();};
-const mainStoryActionBefore=renderAction;renderAction=function(){mainStoryActionBefore();if(mainStoryWork){$('targetTitle').textContent=mainStoryWork.label;$('targetSub').textContent='Working… Move to cancel.';}};
+const mainStoryActionBefore=renderAction;renderAction=function(){mainStoryActionBefore();if(mainStoryWork){}};
 function mainStoryMechanism(o){
  const q=mainStoryState();if(![12,13].includes(q.stage))return;
  dialog('Freight lift safety controls','<p>The safety plate reads: <b>Air before entry. Pin the brake. Seat the weight. Open the ramp.</b></p><p>'+(!q.brake?'The forged locking pin fits the brake socket.':'The brake is locked. The counterweight can now lift the refuge ramp.')+'</p>',[
@@ -243,7 +243,7 @@ function mainStoryTickEscort(){
 const mainStoryAIBefore=updateEncounterAI;updateEncounterAI=function(dt){
  mainStoryAIBefore(dt);mainStoryTickEscort();const job=mainStoryWork;if(!job)return;
  if(mainStoryState().stage!==job.stage||!mountainNear(job.o)||activeEncounter){mainStoryWork=null;renderAction();return;}
- const before=job.age;job.age+=dt;$('activity').style.width=Math.min(100,job.age/3.2*100)+'%';if(Math.floor(before/.8)!==Math.floor(job.age/.8))playGameSound(job.skill==='Magic'?'magic':job.skill==='Mining'?'mine':'smith',job.o.x,job.o.y);
+ const before=job.age;job.age+=dt;if(Math.floor(before/.8)!==Math.floor(job.age/.8))playGameSound(job.skill==='Magic'?'magic':job.skill==='Mining'?'mine':'smith',job.o.x,job.o.y);
  if(job.age>=3.2){mainStoryWork=null;if(lv(job.skill)>=job.level)mainStoryAdvance(job.stage,job.o,job.change);renderAction();}
 };
 const mainStoryMapBefore=mapObjectService;mapObjectService=function(o){if(o.mainStoryKey&&!fighter(o))return {kind:'quest',tags:['quest'],detail:'Main story · '+(o.characterSprite?'Quest character':'Evidence / objective')};return mainStoryMapBefore(o);};

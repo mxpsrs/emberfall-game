@@ -32,8 +32,8 @@ async function syncOnlineWorldOnce(){
  if(typeof applySharedWorld==='function')applySharedWorld(data);
  if(typeof ensureSharedActivityStream==='function')ensureSharedActivityStream();
  const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);acceptPeerSnapshot(peer,received,data.serverTime,received-started);}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
- $('onlineStatus').textContent=currentScene==='tutorial'?'Firstlight Isle · '+(onlinePeers.size+1)+' online':(onlinePeers.size+1)+' online here';
- }catch{if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}$('onlineStatus').textContent='Reconnecting…';transientConnectionFailure();return;}
+ window.VELDREN_ONLINE_COUNT=onlinePeers.size+1;
+ }catch{if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}window.VELDREN_ONLINE_COUNT=null;transientConnectionFailure();return;}
  scheduleOnlineSync(Math.max(100,500-(performance.now()-started)));
 }
 function acceptPeerSnapshot(peer,received,serverTime,roundTrip=0){
@@ -70,7 +70,6 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
  hitboxes.push({x:feet.x-width/2,y:Math.min(feet.y,head.y)-6,w:width,h:Math.abs(feet.y-head.y)+12,depth:feet.depth,o:{type:'player',id:peer.id,name:peer.name,username:peer.username,x:peer.x,y:peer.y}});
  labels.push([peer.name,peer.drawX+.5,2.15,peer.drawY+.5,'#bce2ee']);if(typeof socialOverheads!=='undefined'){const chat=socialOverheads.get(peer.username?.toLowerCase());if(chat&&Date.now()<chat.until)pushOverheadChat(labels,chat.text,peer.drawX,peer.drawY);}if(peer.emote)labels.push([peer.emote,peer.drawX+.5,2.6,peer.drawY+.5,'#f6e6b5']);
 }}
-$('waveButton').onclick=()=>{onlineEmote='Hello!';onlineEmoteUntil=Date.now()+5000;toast('You wave to nearby players.');};
 setTimeout(syncOnlineWorld,1000);
 
 let followedPlayerId=null,followRouteAt=0,followSequence=null,followEpoch=null,followRetryAt=0;

@@ -17,6 +17,32 @@
  const assetSearch=$('assetSearch'),assetCategory=$('assetCategory'),assetList=$('assetList'),assetHint=$('assetHint'),cancelPlacement=$('cancelPlacement');
  let bridge=null,selection=null,dirty=false,tool='select',poll=null,entities=[],assets=[],activeAsset=null,playerViewOn=false,gameUiVisible=false,lastCameraText='';
 
+ let building=null,partAssets=[];
+ function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty();}catch(error){log(error.message,'error');}}
+ function renderBuilding(state){
+  building=state;$('buildingPanel').hidden=!state;worldBrowser.hidden=!!state;assetBrowser.hidden=true;
+  $('buildingEditTool').classList.toggle('active',!!state);if(!state){renderHierarchy();return;}
+  $('buildingName').textContent=state.name;$('buildingUndo').disabled=!state.undo;$('buildingRedo').disabled=!state.redo;
+  const hierarchy=$('partHierarchy');hierarchy.replaceChildren();
+  for(const part of state.parts){const row=document.createElement('button');row.className='part-row'+(state.selected===part.id?' active':'');row.textContent=(part.role==='roof'?'Roof':'Floor '+(part.floor+1))+' · '+(part.name||part.model.split(':').at(-1));row.onclick=()=>renderBuilding(bridge.selectPart(part.id));hierarchy.appendChild(row);}
+  const p=state.parts.find(p=>p.id===state.selected);$('partTransform').disabled=!p;
+  if(p){$('partX').value=p.local[3];$('partHeight').value=p.local[7];$('partZ').value=p.local[11];$('partRotation').value=Math.atan2(p.local[2],p.local[0])*180/Math.PI;$('partFloor').value=p.floor;}
+  const walls=$('entranceWall'),value=walls.value;walls.replaceChildren();for(const p of state.parts.filter(p=>p.role==='wall'))walls.appendChild(new Option(p.id+' · '+p.model.split(':').at(-1),p.id));if([...walls.options].some(o=>o.value===value))walls.value=value;
+ }
+ function listPartAssets(){const category=$('partCategory').value;$('partAsset').replaceChildren();for(const a of partAssets.filter(a=>!category||a.category===category))$('partAsset').appendChild(new Option(a.name,a.id));}
+ $('buildingEditTool').onclick=()=>{try{renderBuilding(bridge.enterBuilding());partAssets=bridge.buildingAssets();$('partCategory').replaceChildren(new Option('All parts',''));for(const c of [...new Set(partAssets.map(a=>a.category))].sort())$('partCategory').appendChild(new Option(c,c));listPartAssets();}catch(error){log(error.message,'warn');}};
+ $('exitBuilding').onclick=()=>{bridge.exitBuilding();renderBuilding(null);};
+ $('partCategory').onchange=listPartAssets;
+ $('buildingUndo').onclick=()=>buildingAction(()=>bridge.buildingUndo());$('buildingRedo').onclick=()=>buildingAction(()=>bridge.buildingUndo(true));
+ $('duplicatePart').onclick=()=>buildingAction(()=>bridge.duplicatePart());$('deletePart').onclick=()=>buildingAction(()=>bridge.deletePart());
+ $('applyPart').onclick=()=>buildingAction(()=>bridge.setPart({x:Number($('partX').value),height:Number($('partHeight').value),z:Number($('partZ').value),rotation:Number($('partRotation').value),floor:Number($('partFloor').value)}));
+ $('moveEntrance').onclick=()=>buildingAction(()=>bridge.moveEntrance($('entranceWall').value));
+ $('placePart').onclick=()=>{try{renderBuilding(bridge.beginPartPlacement($('partAsset').value));$('buildingHint').textContent='Move over the viewport to preview; click to place. Red means invalid.';}catch(error){log(error.message,'error')}};
+ $('replacePart').onclick=()=>buildingAction(()=>bridge.setPart({model:$('partAsset').value}));
+ $('buildingFloor').onchange=$('isolateFloor').onchange=$('showBelow').onchange=()=>renderBuilding(bridge.setFloor($('buildingFloor').value,$('isolateFloor').checked,$('showBelow').checked));
+ $('buildingSnap').onchange=$('floorIncrement').onchange=()=>bridge?.setBuildingSnap({mode:$('buildingSnap').value,vertical:Math.max(.25,Number($('floorIncrement').value)||3)});
+ window.addEventListener('message',e=>{if(e.source===frame.contentWindow&&e.origin===location.origin&&e.data?.type==='veldren-editor-building')renderBuilding(e.data.state);});
+ document.addEventListener('keydown',e=>{if(building&&(e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();buildingAction(()=>bridge.buildingUndo(e.shiftKey));}});
  function log(message,level='info'){
   const row=document.createElement('div');row.className='terminal-line '+level;
   const time=document.createElement('span');time.className='terminal-time';time.textContent=new Date().toLocaleTimeString([], {hour12:false});
@@ -97,7 +123,7 @@
 
  function updateSnap(){
   const config={position:Number(positionSnap.value)||0,rotation:Number(rotationSnap.value)||0};
-  bridge?.setSnap(config);log(`Snap · position ${config.position||'off'} · rotation ${config.rotation?config.rotation+'°':'off'}.`,'info');
+  bridge?.setSnap(config);bridge?.setBuildingSnap({grid:config.position,rotation:config.rotation});log(`Snap · position ${config.position||'off'} · rotation ${config.rotation?config.rotation+'°':'off'}.`,'info');
  }
  positionSnap.onchange=rotationSnap.onchange=updateSnap;
 
