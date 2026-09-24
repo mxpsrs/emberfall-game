@@ -371,7 +371,7 @@
  function editorProject(x,y,z){return withFreeAnchor(()=>project3(x,y,z))}
  function editorUnproject(x,y){return withFreeAnchor(()=>unproject3(x,y))}
  function installCameraRendering(){
-  if(draw3d.__editorCamera)return;
+  if(typeof draw3d!=='function'||draw3d.__editorCamera)return;
   const before=draw3d;
   const wrapped=function(...args){
    if(!ready||playerView)return before(...args);
@@ -665,6 +665,10 @@
  function onKeyUp(e){if(setCameraKey(e.key,false)){e.preventDefault();e.stopImmediatePropagation()}}
  function cameraTick(now){
   const dt=Math.min(.05,Math.max(0,(now-lastTick)/1000));lastTick=now;
+  // Renderer/bootstrap code can replace draw3d after editor startup. Restore
+  // the editor wrapper immediately so free-camera movement never falls back
+  // to the gameplay camera anchored on the player.
+  if(ready&&typeof draw3d==='function'&&!draw3d.__editorCamera)installCameraRendering();
   if(ready&&!playerView){
    const forward=Number(cameraKeys.has('w'))-Number(cameraKeys.has('s'));
    const right=Number(cameraKeys.has('d'))-Number(cameraKeys.has('a'));

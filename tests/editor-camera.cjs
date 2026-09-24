@@ -1,5 +1,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const editorRuntimeSource=fs.readFileSync(require('node:path').join(__dirname,'../dist/editor/editor-runtime.js'),'utf8');
+assert.match(editorRuntimeSource,/if\(ready&&typeof draw3d==='function'&&!draw3d\.__editorCamera\)installCameraRendering\(\)/,'free-camera wrapper is restored if renderer code replaces draw3d after editor startup');
 const vm=require('node:vm');
 const path=require('node:path');
 const dist=path.join(__dirname,'../dist/editor');
