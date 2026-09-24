@@ -16,6 +16,7 @@ const arrays=context.realmFilamentArrays(new Float32Array([
 ]));
 assert.deepEqual(Array.from(arrays.positions),[1,2,3,-1,-2,-3]);
 assert.deepEqual(Array.from(arrays.normals),[0,1,0,1,0,0]);
+assert.match(source,/SurfaceOrientation\$Builder\(\)\.vertexCount\(arrays\.count\)/,'terrain and world normals are converted into Filament tangent frames for lit shading');
 assert.deepEqual(Array.from(arrays.colors),Array.from(new Float32Array([.2,.4,.6,23,1,0,.5,4])));
 assert.deepEqual(Array.from(arrays.uvs),[.25,.75,0,1]);
 const identityColors=context.realmFilamentArrays(new Float32Array([0,0,0,0,1,0,1.67,1.48,1.23,19.25,0,0]));
@@ -52,7 +53,7 @@ assert.match(source,/levels\(levels\.length\)/,'browser-decoded mobile textures 
 assert.match(source,/texture\.setImage\(engine,level,buffer\)/,'every generated mip level is uploaded');
 assert.match(source,/PixelBuffer\(levels\[level\]\.pixels,Filament\.PixelDataFormat\.RGBA,Filament\.PixelDataType\.UBYTE\)/,'browser-decoded RGBA mip levels use the explicit Filament upload API');
 assert.match(source,/stage\+'-allocate'/);assert.match(source,/stage\+'-buffer-'\+level/);assert.match(source,/stage\+'-upload-'\+level/);
-assert.match(source,/terrainMaterial=engine\.createMaterial/,'terrain uses a material independent from characters and props');
+assert.match(source,/terrainMaterial=engine\.createMaterial/,'legacy terrain material remains loadable during the transition');
 assert.match(source,/shadowOptions\(realmFilamentShadowOptions\(\)\)/,'the sun selects mobile or desktop shadow resources before first draw');
 assert.ok(source.indexOf('surface.width=initialWidth;surface.height=initialHeight')<source.indexOf('Filament.Engine.create(surface'),'the iOS backing store exists before Filament binds its WebGL swap chain');
 assert.match(source,/view\.setViewport\(\[0,0,initialWidth,initialHeight\]\)/,'the first Filament frame uses the pre-sized backing viewport');
@@ -61,12 +62,12 @@ assert.doesNotMatch(source,/setTemporalAntiAliasingOptions/,'temporal history ca
 assert.match(source,/center=realmFilamentCameraCenter\(px\+\.5,landCamera,py\+\.5,yaw,pitch,zoom,dpr\)/,'the live camera uses the backing-pixel-locked center');
 assert.match(source,/anchor=typeof cameraAnchor3==='number'\?cameraAnchor3:\.82/,'standalone Filament startup retains the third-person frame anchor');
 assert.match(source,/\-2\*\(1-anchor\)\*half,2\*anchor\*half/,'the perspective frustum keeps the player low in frame and shows the world ahead');
-assert.match(source,/setTextureParameter\('groundSurfaces',groundSurfaces,groundSampler\)/,'the terrain material binds one ground atlas');
+assert.match(source,/instance\.setTextureParameter\('atlas',atlas,sampler\)/,'lit terrain shares the stable world material atlas binding');
 assert.match(source,/groundSampler\.setAnisotropy\(quality\.anisotropy\)/,'quality profile controls oblique terrain filtering');
-assert.match(source,/terrainMaterialInstances\)instance\.setFloatParameter\('night',lighting\.night\*\.72\)/,'night terrain stays readable behind modeled foliage');
+assert.match(source,/setFloatParameter\('terrainSurface',style\.terrain\?1:0\)/,'terrain selects the world material terrain branch');
 assert.match(source,/ColorGrading\$ToneMapping\.ACES/,'the browser uses filmic tone mapping');assert.match(source,/IndirectLight\.Builder\(\)\.irradianceSh/,'lit assets receive bounded ambient light');assert.match(source,/glbBytes:32\*1024\*1024/,'mobile GLB residency has an explicit budget');
-assert.match(source,/receiveShadows\(!resource\.terrain\)/,'terrain does not sample moving cascaded shadows');
-assert.match(source,/if\(style\.terrain\)\{instance=terrainMaterial\.createInstance/,'terrain renderables always select the dedicated material');
+assert.match(source,/receiveShadows\(!resource\.terrain\)/,'terrain avoids camera-relative cascaded shadow bands while retaining normal-based sun lighting');
+assert.doesNotMatch(source,/if\(style\.terrain\)\{instance=terrainMaterial\.createInstance/,'terrain no longer bypasses lighting through the unlit material');assert.match(source,/worldMaterialInstances\.add\(instance\)/,'terrain participates in normal world lighting updates');
 const filamentBootstrap=fs.readFileSync(path.join(root,'dist/filament-bootstrap.js'),'utf8');
 assert.match(filamentBootstrap,/initialization timed out'\)\);}},120000\)/,'slow mobile Filament startup receives the full two-minute window');
 assert.match(filamentBootstrap,/veldren-terrain\.filamat/,'startup fetches the dedicated terrain material');
@@ -94,7 +95,7 @@ assert.match(materialSource,/color = mix\(color, cutRock, quarryMask\)/,'quarry 
 assert.match(materialSource,/mix\(ambient, terrainAmbient, materialParams\.terrainSurface\)/,'terrain remains readable at night without changing other materials');
 
 const terrainSource=fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.mat'),'utf8');
-assert.match(terrainSource,/shadingModel : unlit/,'terrain lighting cannot produce moving normal bands');
+assert.match(terrainSource,/shadingModel : unlit/,'legacy compatibility material is still available but is not selected for active terrain');
 assert.equal((terrainSource.match(/type : sampler2d/g)||[]).length,1,'terrain material has exactly one sampler');
 assert.match(terrainSource,/textureGrad\(materialParams_groundSurfaces/,'ground textures use an explicit stable mip footprint');
 assert.match(terrainSource,/vec2 p = getUV0\(\)/,'terrain samples stable mesh-authored world coordinates');

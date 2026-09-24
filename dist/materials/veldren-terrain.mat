@@ -1,8 +1,8 @@
-// Veldren terrain surface for Google Filament 1.77.
-// This material is intentionally separate from the lit world material. It has
-// one texture sampler, so mobile WebGL cannot alias terrain and character
-// textures, and unlit shading prevents moving light bands across terrain
-// triangles while the camera follows the player.
+// Legacy Veldren terrain surface for Google Filament 1.77.
+// The active browser terrain now uses the lit VeldrenWorld material so sculpted
+// heightfield normals receive stable directional shading. This source is kept
+// as a compatibility fallback until the dedicated ground-texture material is
+// rebuilt as a lit material without the former camera-dependent artifacts.
 material {
     name : VeldrenTerrain,
     requires : [ color, uv0 ],

@@ -106,8 +106,16 @@ function createRealmFilamentGPU(){
  const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null;
  const styleInstance=style=>{
   let instance=materialInstances.get(style.key);if(instance)return instance;
-  if(style.terrain){instance=terrainMaterial.createInstance();instance.setTextureParameter('groundSurfaces',groundSurfaces,groundSampler);terrainMaterialInstances.add(instance);}
-  else{instance=material.createInstance();instance.setTextureParameter('atlas',atlas,sampler);instance.setFloatParameter('bossColor',style.boss);instance.setFloatParameter('dissolve',style.dissolve);instance.setFloatParameter('terrainSurface',0);worldMaterialInstances.add(instance);}
+  // Terrain already carries continuously rebuilt heightfield normals. Route it
+  // through the same stable lit Filament material as the rest of the world so
+  // small sculpt changes receive real directional shading instead of being
+  // hidden by the legacy unlit terrain workaround.
+  instance=material.createInstance();
+  instance.setTextureParameter('atlas',atlas,sampler);
+  instance.setFloatParameter('bossColor',style.terrain?0:style.boss);
+  instance.setFloatParameter('dissolve',style.terrain?0:style.dissolve);
+  instance.setFloatParameter('terrainSurface',style.terrain?1:0);
+  worldMaterialInstances.add(instance);
   materialInstances.set(style.key,instance);return instance;
  };
  const fakeBindings=new Map(),fakeGl={ARRAY_BUFFER:34962,ELEMENT_ARRAY_BUFFER:34963,STATIC_DRAW:35044,
@@ -162,6 +170,9 @@ function createRealmFilamentGPU(){
  function poolFor(resource,style){let pool=resource.pools.get(style.key);if(pool)return pool;pool={entities:[],used:0,material:styleInstance(style)};resource.pools.set(style.key,pool);return pool;}
  function createRenderable(resource,pool){
   const entity=Filament.EntityManager.get().create(),builder=Filament.RenderableManager.Builder(1).boundingBox(resource.bounds).material(0,pool.material).castShadows(!resource.terrain).receiveShadows(!resource.terrain);
+  // Terrain still skips cascaded shadow-map sampling (which is independent of
+  // direct surface lighting) while its vertex normals now respond to the sun.
+  // This keeps editor sculpt shading stable as the camera moves.
   if(resource.ib)builder.geometry(0,Filament.RenderableManager$PrimitiveType.TRIANGLES,resource.vb,resource.ib);else builder.geometryNoIndices(0,Filament.RenderableManager$PrimitiveType.TRIANGLES,resource.vb);
   builder.build(engine,entity);pool.entities.push(entity);return entity;
  }
