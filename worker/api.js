@@ -92,3 +92,5 @@ export async function handlePlayers(request,env){
  return reply({serverTime:Date.now(),selfId:id,world,players:peers});
  }catch(error){console.error('player_presence_failed',error.message);return reply({error:'Online world temporarily unavailable'},503);}
 }
+
+export {handleEditorEdits,editorAccess} from './editor.js';

@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {handleEditorEdits,editorAccess} from '../worker/editor.js';
+import worker from '../dist/server/index.js';
+const db=new DatabaseSync(':memory:');
+db.exec('CREATE TABLE game_accounts(id TEXT PRIMARY KEY,username TEXT); CREATE TABLE game_sessions(token_hash TEXT PRIMARY KEY,account_id TEXT,expires_at INTEGER); CREATE TABLE character_saves(user_id TEXT PRIMARY KEY,state TEXT);');
+db.exec(readFileSync(new URL('../drizzle/0018_nappy_violations.sql',import.meta.url),'utf8'));
+db.prepare('INSERT INTO character_saves VALUES (?,?)').run('untouched','existing character');
+const owner='2db1d2ba-75e2-4c27-bcdf-94e742f95c86',token='a'.repeat(64),visitor='b'.repeat(64);
+for(const [id,name,t] of [[owner,'mxpsrs',token],['visitor','Visitor',visitor]]){
+ db.prepare('INSERT INTO game_accounts VALUES (?,?)').run(id,name);
+ db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').update(t).digest('hex'),id,Date.now()+60000);
+}
+const env={DB:{prepare(sql){return {bind(...args){return {async first(){return db.prepare(sql).get(...args)||null;},async run(){return {meta:{changes:db.prepare(sql).run(...args).changes}};}};}};}}};
+const req=(path,method='GET',body,t,origin='https://veldren.test')=>new Request('https://veldren.test'+path,{method,headers:{origin,...(t?{cookie:'ember_session='+t}:{}),'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+const api=(method,body,t,origin)=>handleEditorEdits(req('/api/editor/edits',method,body,t,origin),env);
+assert.equal((await editorAccess(req('/api/editor/access','GET',null,visitor),env)).status,403);
+assert.equal((await editorAccess(req('/api/editor/access','GET',null,token),env)).status,200);
+const initial=await (await api('GET')).json();assert(initial.count>0,'seeded source world retained');
+const body={version:1,expectedRevision:initial.revision,changes:[...initial.edits.changes,{scene:'overworld',kind:'object',id:'test-placement',x:10,y:11,rotation:20,scale:1}]};
+assert.equal((await api('PUT',body)).status,403);
+assert.equal((await api('PUT',body,visitor)).status,403);
+assert.equal((await api('PUT',body,token,'https://elsewhere.test')).status,403);
+assert.equal((await api('PUT',{...body,expectedRevision:undefined},token)).status,400);
+const attempts=await Promise.all([api('PUT',body,token),api('PUT',body,token)]);
+assert.deepEqual(attempts.map(x=>x.status).sort(),[200,409]);
+const saved=await attempts.find(x=>x.status===200).json();
+const verified=await (await api('GET')).json();assert.equal(saved.sha256,verified.sha256);assert.equal(saved.revision,initial.revision+1);
+assert.equal(JSON.parse(db.prepare('SELECT previous_document FROM editor_world').get().previous_document).revision,initial.revision);
+assert.equal((await api('PUT',{...body,expectedRevision:verified.revision,changes:[{id:'bad'}]},token)).status,400);
+assert.equal((await api('DELETE',null,token)).status,405);
+assert.equal(db.prepare('SELECT state FROM character_saves').get().state,'existing character');
+assert.equal(db.prepare('SELECT count(*) n FROM game_accounts').get().n,2);
+for(const path of ['/editor','/editor/','/editor/index.html']){
+ let response=await worker.fetch(req(path),env);assert.equal(response.status,200);assert.match(await response.text(),/id="editorLogin"/);assert.match(response.headers.get('Cache-Control'),/no-store/);
+ response=await worker.fetch(req(path,'GET',null,token),env);assert.equal(response.status,200);assert.match(await response.text(),/id="gameFrame"/);
+}
+assert.equal((await worker.fetch(req('/editor/editor-runtime.js'),env)).status,403);
+assert.equal((await worker.fetch(req('/editor/editor-runtime.js','GET',null,token),env)).status,200);
+const play=await worker.fetch(req('/play'),env);assert.equal(play.status,200);const html=await play.text();assert.match(html,/world-edits-runtime.js\?v=/);
+for(const match of html.matchAll(/<script[^>]+src="([^"]+)"/g)){
+ const path='/'+match[1].replace(/^\//,'');assert.equal((await worker.fetch(req(path),env)).status,200,path);
+}
+assert.equal((await worker.fetch(req('/api/editor/edits'),env)).status,200);
+console.log('PASS: production play/editor routes, script loading, owner access, seeded edits, save/readback, concurrent-save conflict, backup, validation and account/save preservation.');
+db.close();
