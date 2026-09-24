@@ -135,16 +135,9 @@ function observeTutorialCamera(){
  if(Math.abs(view3d.yaw-tutorialCameraStart.yaw)>.16||Math.abs(view3d.tilt-tutorialCameraStart.tilt)>.12)tutorialEvent('camera');
 }
 function renderTutorial(){
- const step=tutorialStep();$('tutorial').hidden=!s.character||!step||!inWorld();$('eat').classList.toggle('tutorialfocus',step?.event==='eat');
- if(!step)return;
- if(tutorialShownIndex!==s.tutorial&&typeof tutorialGuidanceAction!=='function'&&typeof gameMessage==='function')gameMessage(step.title+': '+step.desc,{action:()=>guide()});
- if(tutorialShownIndex!==s.tutorial&&s.tutorial<2){$('tutorial').classList.remove('collapsed');$('tutCollapse').textContent='Minimize';}tutorialShownIndex=s.tutorial;
- $('tutCount').textContent='APPRENTICESHIP · '+(s.tutorial+1)+' / '+tutorialSteps.length;
- $('tutTitle').textContent=step.title;$('tutDesc').textContent=step.desc;
- $('tutCollapse').textContent=$('tutorial').classList.contains('collapsed')?step.title+' · Expand':'Minimize';
- const far=!inWorld()||Math.hypot(s.x-43,s.y-52)>90,goal=tutorialGoal();
- $('guide').hidden=!far&&!step.point()&&!['bag','skills','loot','bury','fire','mix-dough','spirit','equip-dagger','combat-stats','training-gear','ranged-gear'].includes(step.event);
- $('guide').textContent=far?'Return to the tutors':step.event==='combat-stats'?'View combat stats':goal?.tutorialDoor?'Open '+goal.name+' door':goal?'Go to '+goal.name:['bag','skills','bury','fire','mix-dough','equip-dagger','training-gear','ranged-gear'].includes(step.event)?'Open '+(step.event==='skills'?'Skills':'Bag'):step.event==='spirit'?'Open Spirits':'Find my loot';
+ const step=tutorialStep();
+ if(step&&tutorialShownIndex!==s.tutorial&&typeof tutorialGuidanceAction!=='function'&&typeof gameMessage==='function')gameMessage(step.title+': '+step.desc,{action:()=>guide()});
+ tutorialShownIndex=s.tutorial;
 }
 function openTutorialPanel(which){openGamePanel(which);}
 function guide(){
