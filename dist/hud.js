@@ -4,7 +4,7 @@ const JOURNAL_TAB_LABELS={combat:'Combat',skills:'Skills',quests:'Journal',bag:'
 function setHudButton(button,label,icon){const b=typeof button==='string'?$(button):button;if(!b)return;b.title=label;b.setAttribute('aria-label',label);if(typeof gameIcon==='function'){b.innerHTML=gameIcon(icon);b.classList.add('hud-icon');b.dataset.icon=icon;b.dataset.helpHold='true';}else b.textContent=label;if(b.dataset.tab&&JOURNAL_TAB_LABELS[b.dataset.tab]){const text=document.createElement('span');text.className='journal-tab-label';text.textContent=JOURNAL_TAB_LABELS[b.dataset.tab];b.appendChild(text);}}
 function syncPanelButton(){const open=!$('gameDock').hidden;setHudButton('togglePanels',window.realmTrade?'Close '+window.realmTrade.kind:open?'Close panel':'Open bag',open?'close':'bag');$('togglePanels').setAttribute('aria-expanded',String(open));}
 function openGamePanel(which,toggle=false){if(window.realmTrade)return;if(which==='gear'&&typeof openEquipment==='function')return openEquipment(toggle);if((window.equipmentStatsOpen||window.equipmentOpen||window.realmWorkbench)&&(which!=='bag'||toggle))close();const open=!(toggle&&!$('gameDock').hidden&&tab===which);$('gameDock').hidden=!open;document.body.classList.toggle('panels-open',open);tab=which;panelPage=0;syncPanelButton();syncTabs();if(open){tutorialEvent(which);renderPanel();}}
-function syncAmbientIcon(){const on=typeof ambientEnabled!=='undefined'&&ambientEnabled;setHudButton('ambientButton',on?'Mute sound':'Enable sound',on?'sound':'mute');$('ambientButton').setAttribute('aria-pressed',String(on));}
+function syncAmbientIcon(){const on=typeof ambientEnabled!=='undefined'&&ambientEnabled,b=$('ambientButton');if(!b)return;setHudButton(b,on?'Mute sound':'Enable sound',on?'sound':'mute');b.setAttribute('aria-pressed',String(on));}
 function pageItems(items,size){const pages=Math.max(1,Math.ceil(items.length/size));panelPage=Math.min(panelPage,pages-1);return items.slice(panelPage*size,(panelPage+1)*size);}
 function pageControls(total,size){const pages=Math.max(1,Math.ceil(total/size));$('pageLabel').textContent=(panelPage+1)+' / '+pages;$('prevPage').disabled=panelPage===0;$('nextPage').disabled=panelPage>=pages-1;$('panelPager').hidden=pages<=1;}
 function updateOrientation(){const portrait=window.matchMedia('(pointer: coarse)').matches&&window.matchMedia('(orientation: portrait)').matches;$('rotateScreen').hidden=!portrait;document.body.classList.toggle('portrait-mode',portrait);if(typeof resize==='function')resize();}
@@ -18,8 +18,6 @@ function initHud(){
  $('togglePanels').onclick=()=>{if(window.realmTrade){close();return;}openGamePanel(tab,true);};
  $('prevPage').onclick=()=>{panelPage=Math.max(0,panelPage-1);renderPanel();};$('nextPage').onclick=()=>{panelPage++;renderPanel();};
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{panelPage=0;renderPanel();}));
- if(window.matchMedia('(pointer: coarse)').matches){$('tutorial').classList.add('collapsed');$('tutCollapse').textContent='Expand';}
- $('tutCollapse').onclick=()=>{$('tutorial').classList.toggle('collapsed');renderTutorial();};
  updateOrientation();
 }
 
