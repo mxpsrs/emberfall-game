@@ -17,8 +17,28 @@
  window.filamentReady=new Promise((resolve,reject)=>{
   if(typeof Filament==='undefined'){reject(new Error('Filament runtime did not load'));return;}
   let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Filament renderer initialization timed out'));}},120000);
-  try{realmLoadStatus('Starting the Filament renderer…',32,'filament-init');Filament.init(mobile?[material,terrainMaterial]:[material,terrainMaterial,atlas],async()=>{if(settled)return;try{const decodedAtlas=await browserPixels(atlas),decodedGround=await browserPixels(groundSurfaces);if(settled)return;settled=true;clearTimeout(timer);window.VELDREN_FILAMENT_ASSETS={material,terrainMaterial,atlas,groundSurfaces,groundSurfacesType,atlasPixels:decodedAtlas,groundSurfacesPixels:decodedGround};resolve(Filament);}catch(error){if(settled)return;settled=true;clearTimeout(timer);reject(error);}});}
-  catch(error){settled=true;clearTimeout(timer);reject(error);}
+  try{
+   realmLoadStatus('Starting the Filament renderer…',32,'filament-init');
+   Filament.init([material,terrainMaterial],async()=>{
+    if(settled)return;
+    try{
+     // Browser decoding is used on both mobile and desktop. This avoids the
+     // desktop first-draw failure in Filament's direct PNG texture path.
+     const decodedAtlas=await browserPixels(atlas);
+     const decodedGround=await browserPixels(groundSurfaces);
+     if(settled)return;
+     settled=true;clearTimeout(timer);
+     window.VELDREN_FILAMENT_ASSETS={
+      material,terrainMaterial,atlas,groundSurfaces,groundSurfacesType,
+      atlasPixels:decodedAtlas,groundSurfacesPixels:decodedGround
+     };
+     resolve(Filament);
+    }catch(error){
+     if(settled)return;
+     settled=true;clearTimeout(timer);reject(error);
+    }
+   });
+  }catch(error){settled=true;clearTimeout(timer);reject(error);}
  });
  window.filamentReady.catch(error=>realmLoadFailure('The Filament renderer could not start. Please retry; your character is safe.',error,'filament-init'));
 })();

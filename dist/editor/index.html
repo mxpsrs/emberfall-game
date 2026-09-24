@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veldren World Editor</title>
+<link rel="stylesheet" href="/editor/editor.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><strong>VELDREN</strong><span>WORLD EDITOR</span></div>
+  <div class="toolbar" aria-label="Editor tools">
+    <button id="selectTool" class="active" type="button">Select</button>
+    <button id="moveTool" type="button">Move</button>
+    <button id="rotateTool" type="button">Rotate</button>
+    <button id="scaleTool" type="button">Scale</button>
+    <button id="placeTool" type="button">Place</button>
+    <button id="cameraTool" type="button">Camera</button>
+    <span class="divider"></span>
+    <button id="playerView" type="button">Player View</button>
+    <button id="gameUiToggle" type="button" aria-pressed="false">UI Edit</button>
+    <span class="divider"></span>
+    <label class="toolbar-field">Grid
+      <select id="positionSnap">
+        <option value="0">Off</option>
+        <option value="0.25" selected>0.25</option>
+        <option value="0.5">0.5</option>
+        <option value="1">1</option>
+      </select>
+    </label>
+    <label class="toolbar-field">Angle
+      <select id="rotationSnap">
+        <option value="0">Off</option>
+        <option value="5">5°</option>
+        <option value="15" selected>15°</option>
+        <option value="45">45°</option>
+        <option value="90">90°</option>
+      </select>
+    </label>
+    <span class="toolbar-spacer"></span>
+    <span id="saveState">No unsaved changes</span>
+    <button id="saveWorld" class="primary" type="button">Save World</button>
+  </div>
+</header>
+
+<main class="workspace">
+  <aside class="hierarchy">
+    <div class="pane-title">
+      <div><span class="eyebrow">SCENE</span><strong id="sceneName">World</strong></div>
+      <span id="entityCount">0</span>
+    </div>
+
+    <div class="browser-tabs" role="tablist" aria-label="Editor browser">
+      <button id="worldBrowserTab" class="active" type="button" role="tab" aria-selected="true">World</button>
+      <button id="assetBrowserTab" type="button" role="tab" aria-selected="false">Assets</button>
+    </div>
+
+    <section id="worldBrowser" class="browser-panel">
+      <input id="entitySearch" type="search" placeholder="Search entities, NPCs, doors…">
+      <div class="filter-row">
+        <label><input id="showObjects" type="checkbox" checked> Entities</label>
+        <label><input id="showBuildings" type="checkbox" checked> Buildings</label>
+      </div>
+      <div id="entityList" class="entity-list" role="listbox" aria-label="World entities"></div>
+    </section>
+
+    <section id="assetBrowser" class="browser-panel" hidden>
+      <input id="assetSearch" type="search" placeholder="Search Veldren models…">
+      <select id="assetCategory" aria-label="Asset category"><option value="">All categories</option></select>
+      <div id="assetHint" class="asset-hint">Choose an asset, then click in the world to place it.</div>
+      <div id="assetList" class="entity-list asset-list" role="listbox" aria-label="Veldren assets"></div>
+      <button id="cancelPlacement" type="button" disabled>Cancel placement</button>
+    </section>
+  </aside>
+
+  <section class="stage" id="stage">
+    <iframe id="gameFrame" title="Veldren editor viewport" src="/play?editor=1"></iframe>
+    <div id="selectionMarker" class="selection-marker" hidden aria-hidden="true"><span></span></div>
+    <div class="mode-badge" id="modeBadge">SELECT</div>
+    <div class="camera-badge" id="cameraBadge">FREE CAMERA</div>
+    <div class="status-strip">
+      <span id="connectionStatus">Opening Veldren renderer…</span>
+      <span id="cameraState">Camera —</span>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <div class="pane-title">
+      <div>
+        <span class="eyebrow">INSPECTOR</span>
+        <h1 id="objectName">Nothing selected</h1>
+      </div>
+      <span id="objectType" class="type-pill">—</span>
+    </div>
+
+    <p class="hint" id="selectionHint">
+      Select any world entity or building, or open <b>Assets</b> to place new Veldren models into the world.
+    </p>
+
+    <fieldset id="transformFields" disabled>
+      <legend>Transform</legend>
+      <label><span>Scene</span><input id="sceneField" type="text" readonly></label>
+      <label><span>ID</span><input id="idField" type="text" readonly></label>
+      <div class="two">
+        <label><span>X</span><input id="xField" type="number" step="0.25"></label>
+        <label><span>Z</span><input id="yField" type="number" step="0.25"></label>
+      </div>
+      <label><span>Rotation</span><div class="value-row"><input id="rotationField" type="number" step="15"><em>degrees</em></div></label>
+      <label><span>Scale</span><div class="value-row"><input id="scaleField" type="number" min="0.1" max="10" step="0.05"><em>×</em></div></label>
+    </fieldset>
+
+    <div class="object-actions">
+      <button id="focusObject" type="button" disabled>Focus</button>
+      <button id="duplicateObject" type="button" disabled>Duplicate</button>
+      <button id="revertObject" type="button" disabled>Revert</button>
+      <button id="deleteObject" class="danger" type="button" disabled>Delete</button>
+    </div>
+
+    <section id="protectedNote" class="info-card warning" hidden>
+      <strong>Gameplay-linked entity</strong>
+      <p>This item is linked to gameplay, quests, services, collision, or shared-world state. Moving it is allowed. Deleting or duplicating it requires confirmation and may need a later server-catalog rebuild.</p>
+    </section>
+
+    <section class="info-card">
+      <strong>Free camera</strong>
+      <p><b>WASD</b> moves smoothly · <b>Shift + WASD</b> moves faster · <b>Arrow keys</b> rotate/tilt · left-drag in Camera mode orbits · mouse wheel zooms · Q/E zoom.</p>
+      <p>Mouse panning is disabled. Arrow keys only change camera direction. Free camera uses editor limits, not player limits. <b>Player View</b> temporarily switches back to the real player camera.</p><p><b>Game UI is hidden by default.</b> Use <b>UI Edit</b> only when you specifically want the playable HUD visible.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement remains active so you can stamp multiple copies; Cancel placement or switch tools to stop.</p>
+    </section>
+  </aside>
+</main>
+
+<section class="editor-terminal" aria-label="Editor terminal">
+  <div class="terminal-head">
+    <strong>TERMINAL</strong>
+    <span id="terminalState">Starting editor…</span>
+    <button id="clearTerminal" type="button">Clear</button>
+  </div>
+  <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"></div>
+</section>
+
+<script src="/editor/editor.js"></script>
+</body>
+</html>
