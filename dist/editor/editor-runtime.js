@@ -824,7 +824,7 @@
  const timer=setInterval(()=>{Promise.resolve(becomeReady()).then(()=>{if(ready)clearInterval(timer)}).catch(error=>log('Editor startup failed: '+error.message,'error'))},100);
 
  window.VeldrenEditorBridge={
-  isReady:()=>ready,initialize:becomeReady,
+  isReady:()=>ready,initialize:becomeReady,currentTool:()=>tool,
   enterBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,
   buildingAssets:()=>B.catalog(),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},

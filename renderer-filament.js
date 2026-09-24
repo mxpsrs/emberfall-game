@@ -191,8 +191,15 @@ function createRealmFilamentGPU(){
  const pointLights=[];
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
-  manager.setIntensity(sunInstance,5500+day*52000);manager.setColor(sunInstance,[.72+.28*day,.76+.18*day,.92-.10*day]);sunInstance.delete();
-  indirectLight.setIntensity(6500+day*12500);camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
+  const sculpt=window.VeldrenEditorBridge?.currentTool?.()==='terrain';
+  // A world editor needs much stronger shape legibility than gameplay. In
+  // sculpt mode keep the same real normals/materials, but reduce flat ambient
+  // fill and strengthen the fixed oblique key light so shallow height changes
+  // read immediately without changing the shipped game's lighting.
+  manager.setIntensity(sunInstance,sculpt?92000:5500+day*52000);
+  manager.setColor(sunInstance,sculpt?[1,.96,.86]:[.72+.28*day,.76+.18*day,.92-.10*day]);sunInstance.delete();
+  indirectLight.setIntensity(sculpt?1800:6500+day*12500);
+  camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
   const limit=quality.lightLimit,lights=lighting.lights.slice(0,limit);
   for(let i=0;i<limit;i++){
    let record=pointLights[i];const source=lights[i];
@@ -202,7 +209,7 @@ function createRealmFilamentGPU(){
    else if(record.active){scene.remove(record.entity);record.active=false;}
   }
  }
- function updateMaterials(lighting,lair){const mood=lair?.ambient||[1,1,1];for(const instance of worldMaterialInstances){instance.setFloatParameter('time',time);instance.setFloatParameter('night',lighting.night);instance.setFloatParameter('interior',Math.max(lighting.cave,lighting.house));instance.setFloat3Parameter('mood',mood);}for(const instance of terrainMaterialInstances)instance.setFloatParameter('night',lighting.night*.72);}
+ function updateMaterials(lighting,lair){const sculpt=window.VeldrenEditorBridge?.currentTool?.()==='terrain',mood=sculpt?[.24,.24,.24]:(lair?.ambient||[1,1,1]);for(const instance of worldMaterialInstances){instance.setFloatParameter('time',time);instance.setFloatParameter('night',lighting.night);instance.setFloatParameter('interior',Math.max(lighting.cave,lighting.house));instance.setFloat3Parameter('mood',mood);}for(const instance of terrainMaterialInstances)instance.setFloatParameter('night',lighting.night*.72);}
  const glbSources=new Map();let glbSourceBytes=0,glbClock=0;
  async function glbSource(path){
   let source=glbSources.get(path);if(source){source.used=++glbClock;return source.bytes;}

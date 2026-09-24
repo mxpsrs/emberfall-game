@@ -65,7 +65,7 @@ assert.match(source,/\-2\*\(1-anchor\)\*half,2\*anchor\*half/,'the perspective f
 assert.match(source,/instance\.setTextureParameter\('atlas',atlas,sampler\)/,'lit terrain shares the stable world material atlas binding');
 assert.match(source,/groundSampler\.setAnisotropy\(quality\.anisotropy\)/,'quality profile controls oblique terrain filtering');
 assert.match(source,/setFloatParameter\('terrainSurface',style\.terrain\?1:0\)/,'terrain selects the world material terrain branch');
-assert.match(source,/ColorGrading\$ToneMapping\.ACES/,'the browser uses filmic tone mapping');assert.match(source,/IndirectLight\.Builder\(\)\.irradianceSh/,'lit assets receive bounded ambient light');assert.match(source,/glbBytes:32\*1024\*1024/,'mobile GLB residency has an explicit budget');
+assert.match(source,/ColorGrading\$ToneMapping\.ACES/,'the browser uses filmic tone mapping');assert.match(source,/IndirectLight\.Builder\(\)\.irradianceSh/,'lit assets receive bounded ambient light');assert.match(source,/currentTool\?\.\(\)===['"]terrain['"]/,'terrain editing selects the sculpt-lighting profile');assert.match(source,/sculpt\?92000/,'sculpt lighting uses a strong fixed key light');assert.match(source,/sculpt\?1800/,'sculpt lighting reduces flat indirect fill');assert.match(source,/sculpt\?\[\.24,\.24,\.24\]/,'sculpt lighting suppresses emissive wash without changing gameplay materials');assert.match(source,/glbBytes:32\*1024\*1024/,'mobile GLB residency has an explicit budget');
 assert.match(source,/receiveShadows\(!resource\.terrain\)/,'terrain avoids camera-relative cascaded shadow bands while retaining normal-based sun lighting');
 assert.doesNotMatch(source,/if\(style\.terrain\)\{instance=terrainMaterial\.createInstance/,'terrain no longer bypasses lighting through the unlit material');assert.match(source,/worldMaterialInstances\.add\(instance\)/,'terrain participates in normal world lighting updates');
 const filamentBootstrap=fs.readFileSync(path.join(root,'dist/filament-bootstrap.js'),'utf8');
@@ -119,6 +119,9 @@ assert.match(terrainPacking,/vertices\.map\(v=>v\.uv\)/,'terrain UV0 reaches the
 assert.match(terrainPacking,/points\.map\(p=>\[p\[0\],p\[2\]\]\)/,'water and non-overworld terrain also receive stable coordinates');
 assert.match(terrainPacking,/budget=\(mobile\?24:48\)\*1024\*1024/,'mobile mesh residency stays below the desktop GPU budget');
 assert.match(terrainPacking,/terrainBudget=mobile\?160:384/,'mobile terrain cache is bounded independently from desktop');
+
+const editorRuntime=fs.readFileSync(path.join(root,'dist/editor/editor-runtime.js'),'utf8');
+assert.match(editorRuntime,/currentTool:\(\)=>tool/,'renderer can identify terrain-tool mode without coupling to editor internals');
 
 const boot=fs.readFileSync(path.join(root,'dist/game.js'),'utf8');
 assert.match(boot,/await Promise\.all\(\[realmStartupTask\('auth',\(\)=>ensureGameLogin\(\)\),realmStartupTask\('native-init',\(\)=>window\.realmNativeReady[^\]]+realmStartupTask\('filament-init',\(\)=>window\.filamentReady/);
