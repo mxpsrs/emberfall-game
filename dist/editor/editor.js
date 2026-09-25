@@ -27,10 +27,11 @@
   building=state;$('buildingPanel').hidden=!state;worldBrowser.hidden=!!state||tool==='terrain';assetBrowser.hidden=true;terrainPanel.hidden=!!state||tool!=='terrain';
   $('buildingEditTool').classList.toggle('active',!!state);if(!state){renderHierarchy();return;}
   $('buildingName').textContent=state.name;$('buildingUndo').disabled=!state.undo;$('buildingRedo').disabled=!state.redo;
+  $('buildingX').value=Number(state.transform?.x||0);$('buildingZ').value=Number(state.transform?.z||0);$('buildingRotation').value=Number(state.transform?.rotation||0);$('buildingGrid').value=state.snap.grid;
   const hierarchy=$('partHierarchy');hierarchy.replaceChildren();
   for(const part of state.parts){const row=document.createElement('button');row.className='part-row'+(state.selected===part.id?' active':'');row.textContent=part.role[0].toUpperCase()+part.role.slice(1)+' · Floor '+(part.floor+1)+' · '+(part.name||part.model.split(':').at(-1));row.onclick=()=>renderBuilding(bridge.selectPart(part.id));hierarchy.appendChild(row);}
   const p=state.parts.find(p=>p.id===state.selected);$('partTransform').disabled=!p;$('placePart').disabled=!selectedPartAssetId;$('replacePart').disabled=!p||!selectedPartAssetId;
-  if(p){$('partX').value=p.local[3];$('partHeight').value=p.local[7];$('partZ').value=p.local[11];$('partRotation').value=Math.atan2(p.local[2],p.local[0])*180/Math.PI;$('partFloor').value=p.floor;}
+  if(p){$('partX').value=p.local[3];$('partHeight').value=p.local[7];$('partZ').value=p.local[11];$('partRotation').value=Math.atan2(p.local[2],p.local[0])*180/Math.PI;$('partScale').value=Math.hypot(p.local[0],p.local[8]);$('partFloor').value=p.floor;}
   const walls=$('entranceWall'),value=walls.value;walls.replaceChildren();for(const p of state.parts.filter(p=>p.role==='wall'))walls.appendChild(new Option(p.id+' · '+p.model.split(':').at(-1),p.id));if([...walls.options].some(o=>o.value===value))walls.value=value;
  }
  function listPartAssets(){const category=$('partCategory').value,q=$('partSearch').value.trim().toLowerCase(),filtered=partAssets.filter(a=>(!category||a.category===category)&&(!q||[a.name,a.key,a.category,a.source].some(v=>String(v||'').toLowerCase().includes(q)))),list=$('partAssetList');list.replaceChildren();$('partAsset').replaceChildren();for(const a of filtered)$('partAsset').appendChild(new Option(a.name,a.id));if(!filtered.length){const note=document.createElement('div');note.className='hint';note.textContent='No matching modular models.';list.appendChild(note);return;}const size=48;let shown=Math.min(size,filtered.length);const add=(start,end)=>{for(let i=start;i<end;i++){const a=filtered[i],row=document.createElement('button');row.type='button';row.className='asset-row '+(selectedPartAssetId===a.id?'selected':'');row.setAttribute('role','option');row.setAttribute('aria-selected',String(selectedPartAssetId===a.id));const thumb=canvasFactory(144,96);thumb.className='asset-thumb';thumb.dataset.assetId=a.id;const details=document.createElement('span');details.className='asset-card-details';const title=document.createElement('strong');title.textContent=a.name;const meta=document.createElement('small');meta.textContent=a.category;const dims=document.createElement('small');dims.textContent=a.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Dimensions unavailable';details.append(title,meta,dims);row.append(thumb,details);row.onclick=()=>{selectedPartAssetId=a.id;$('partAsset').value=a.id;inspectPartAsset(a);listPartAssets();};list.appendChild(row);if(thumbnailCache.has(a.id))thumb.getContext('2d')?.drawImage(thumbnailCache.get(a.id),0,0,thumb.width,thumb.height);else thumbnailObserver.observe(thumb);}};add(0,shown);if(shown<filtered.length){const more=document.createElement('button');more.type='button';more.className='asset-load-more';const update=()=>{more.textContent='Show '+Math.min(size,filtered.length-shown)+' more of '+filtered.length+' models';};more.onclick=()=>{const start=shown;shown=Math.min(shown+size,filtered.length);add(start,shown);if(shown>=filtered.length)more.remove();else update();};update();list.appendChild(more);}}
@@ -42,13 +43,14 @@
  $('partCategory').onchange=listPartAssets;$('partSearch').oninput=listPartAssets;
  $('buildingUndo').onclick=()=>buildingAction(()=>bridge.buildingUndo());$('buildingRedo').onclick=()=>buildingAction(()=>bridge.buildingUndo(true));
  $('duplicatePart').onclick=()=>buildingAction(()=>bridge.duplicatePart());$('deletePart').onclick=()=>buildingAction(()=>bridge.deletePart());
- $('applyPart').onclick=()=>buildingAction(()=>bridge.setPart({x:Number($('partX').value),height:Number($('partHeight').value),z:Number($('partZ').value),rotation:Number($('partRotation').value),floor:Number($('partFloor').value)}));
+ $('applyBuildingTransform').onclick=()=>buildingAction(()=>bridge.setBuildingTransform({x:Number($('buildingX').value),z:Number($('buildingZ').value),rotation:Number($('buildingRotation').value)}));
+ $('applyPart').onclick=()=>buildingAction(()=>bridge.setPart({x:Number($('partX').value),height:Number($('partHeight').value),z:Number($('partZ').value),rotation:Number($('partRotation').value),scale:Number($('partScale').value),floor:Number($('partFloor').value)}));
  $('moveEntrance').onclick=()=>buildingAction(()=>bridge.moveEntrance($('entranceWall').value));
  $('placePart').onclick=()=>{try{const state=bridge.beginPartPlacement($('partAsset').value);setTool('place');renderBuilding(state);$('cancelPartPlacement').disabled=false;$('buildingHint').textContent='Move in the viewport. Green means a valid snap; R rotates; click to place; Escape cancels.';}catch(error){log(error.message,'error')}};
  $('cancelPartPlacement').onclick=()=>{renderBuilding(bridge.cancelPartPlacement());setTool('select');$('cancelPartPlacement').disabled=true;};
  $('replacePart').onclick=()=>buildingAction(()=>bridge.setPart({model:$('partAsset').value}));
  $('buildingFloor').onchange=$('isolateFloor').onchange=$('showBelow').onchange=()=>renderBuilding(bridge.setFloor($('buildingFloor').value,$('isolateFloor').checked,$('showBelow').checked));
- $('buildingSnap').onchange=$('floorIncrement').onchange=()=>bridge?.setBuildingSnap({mode:$('buildingSnap').value,vertical:Math.max(.25,Number($('floorIncrement').value)||3)});
+ $('buildingSnap').onchange=$('floorIncrement').onchange=$('buildingGrid').onchange=()=>bridge?.setBuildingSnap({mode:$('buildingSnap').value,grid:Math.max(.05,Number($('buildingGrid').value)||.25),vertical:Math.max(.25,Number($('floorIncrement').value)||3)});
  window.addEventListener('message',e=>{if(e.source===frame.contentWindow&&e.origin===location.origin&&e.data?.type==='veldren-editor-building')renderBuilding(e.data.state);});
  document.addEventListener('keydown',e=>{if(building&&(e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();buildingAction(()=>bridge.buildingUndo(e.shiftKey));}});
  function terrainState(state=bridge?.terrainState?.()){
@@ -349,5 +351,4 @@
 
  log('Veldren editor v5 starting.','info');setTimeout(injectBridge,300);
 })();
-
 

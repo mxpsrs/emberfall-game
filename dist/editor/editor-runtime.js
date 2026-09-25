@@ -51,7 +51,7 @@
    const mesh=briarModels[key],bounds=mesh?.bounds||[[0,0,0],[0,0,0]],size=bounds[1].map((v,i)=>Number(v)-Number(bounds[0][i]));
    out.push({id:'mesh:'+key,source:'briar',key,name:humanize(key),category:meshCategory(key),size});
   }
-  if(typeof VeldrenBuildings!=='undefined')for(const asset of VeldrenBuildings.catalog()){
+  if(typeof VeldrenBuildings!=='undefined'&&typeof VeldrenBuildings.catalog==='function')for(const asset of VeldrenBuildings.catalog()){
    if(asset.source==='briar'&&out.some(item=>item.id==='mesh:'+asset.key))continue;
    out.push({...asset,buildingPart:true});
   }
@@ -444,7 +444,7 @@
  let buildingSnap={grid:.25,rotation:15,vertical:3,mode:'edge'},floorIsolated=false,floorsBelow=true;
  const buildingHistory=new A.History();
  function assembly(){return buildingContext?.entity.assembly;}
- function buildingState(){return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(assembly()).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},isolate:floorIsolated,below:floorsBelow,undo:buildingHistory.undoStack.length,redo:buildingHistory.redoStack.length,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
+ function buildingState(){const a=assembly(),parent=a?.parent;return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(a).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},transform:parent?{x:parent[3],z:parent[11],rotation:Math.atan2(parent[2],parent[0])*180/Math.PI}:null,isolate:floorIsolated,below:floorsBelow,undo:buildingHistory.undoStack.length,redo:buildingHistory.redoStack.length,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
  function recordBuilding(before){
   const b=buildingContext.entity;B.commit(b);const key=ckey(currentScene,'building',buildingContext.id),previous=changes.get(key);
   if(buildingContext.created||previous?.created){const data=deepClone(b);delete data.assembly;data.id=buildingContext.id;changes.set(key,{...(previous||{}),scene:String(currentScene),kind:'building',id:buildingContext.id,name:b.name,type:'building',subtype:'modular',baseX:Number(data.x)||0,baseY:Number(data.y)||0,created:true,data});}
@@ -478,7 +478,7 @@
    const local=[...m.local];for(const [key,i]of [['x',3],['height',7],['z',11]])if(input[key]!=null){if(!Number.isFinite(Number(input[key])))throw Error('Invalid coordinate');local[i]=Number(input[key]);}
    if(input.rotation!=null||input.scale!=null){const angle=(input.rotation==null?Math.atan2(local[2],local[0])*180/Math.PI:Number(input.rotation))*Math.PI/180,oldAngle=Math.atan2(local[2],local[0]),scale=input.scale==null?1:Number(input.scale)/Math.hypot(local[0],local[8]);const basis=A.multiply(A.transform(0,0,0,angle-oldAngle,scale),[...local.slice(0,3),0,...local.slice(4,7),0,...local.slice(8,11),0]);for(const i of [0,1,2,4,5,6,8,9,10])local[i]=basis[i];}
    if(input.floor!=null&&Number(input.floor)!==m.floor){m.floor=Math.max(0,Math.min(32,Math.floor(Number(input.floor))));local[7]=m.floor*buildingSnap.vertical;if(m.stairs&&!m.stairs.rampPath){m.stairs.fromFloor=m.floor;m.stairs.toFloor=m.floor+1;}}
-   if(input.model){const mesh=B.model(input.model);if(!mesh)throw Error('Local model unavailable');m.model=input.model;m.bounds=A.clone(mesh.bounds);}
+   if(input.model){const asset=B.catalog().find(item=>item.id===input.model),mesh=B.model(input.model);if(!mesh||!asset)throw Error('Local model unavailable');const expected=m.role==='entrance'?'door':m.role,nextRole=A.role(asset.key);if(nextRole!==expected)throw Error('Choose a replacement model with the same part function');if(m.objectId)throw Error('Gameplay-linked parts cannot change models');m.model=input.model;m.bounds=A.clone(mesh.bounds);}
    if(m.role==='entrance'&&(input.x!=null||input.z!=null)){const result=A.snap(a,{...m,role:'door',local},buildingSnap);if(!result.valid)throw Error(result.reason);B.opening(buildingContext.entity,m,result.host);}
    else{m.local=local;if(m.role==='window'&&input.host)B.opening(buildingContext.entity,m,input.host);}
   }
@@ -493,6 +493,7 @@
  function deletePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.objectId)throw Error('Gameplay-linked parts must be moved, not deleted');const before=A.serialize(a);if(m.role==='entrance'&&m.host){const host=a.modules.find(p=>p.id===m.host);if(host?.originalModel){host.model=host.originalModel;host.role='wall';delete host.originalModel;}}a.modules=a.modules.filter(p=>p.id!==partId&&p.host!==partId);partId=null;recordBuilding(before);return buildingState();}
  function duplicatePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.role==='entrance'||m.objectId)throw Error('Gameplay-linked components cannot be duplicated');const before=A.serialize(a),copy=A.clone(m);copy.id='part-editor-'+Date.now()+'-'+(++editorSequence);copy.local[3]+=buildingSnap.grid||.25;delete copy.host;if(copy.role==='stairs'){copy.stairs={fromFloor:copy.floor,toFloor:copy.floor+1,origin:[copy.local[3],copy.local[7],copy.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,copy))throw Error('The stairs must reach an existing upper floor landing');}a.modules.push(copy);partId=copy.id;recordBuilding(before);return buildingState();}
  function buildingUndo(redo=false){const a=assembly();if(!a)return;const next=redo?buildingHistory.redo(a):buildingHistory.undo(a);if(next){B.attach(buildingContext.entity,next,worldScenes[currentScene]);recordBuilding();}return buildingState();}
+ function setBuildingTransform(input,history=true){const a=assembly();if(!a)throw Error('Start Building Edit first');const before=A.serialize(a),parent=[...a.parent],angle=Math.atan2(parent[2],parent[0]),scale=Math.hypot(parent[0],parent[8])||1,x=input.x==null?parent[3]:Number(input.x),z=input.z==null?parent[11]:Number(input.z),rotation=input.rotation==null?angle*180/Math.PI:Number(input.rotation);if(![x,z,rotation].every(Number.isFinite))throw Error('Enter valid building position and rotation');a.parent=A.transform(x,0,z,snapValue(rotation,buildingSnap.rotation)*Math.PI/180,scale);B.sync(buildingContext.entity);recordBuilding(history?before:null);return buildingState();}
  function setFloor(floor,isolate=floorIsolated,below=floorsBelow){buildingFloor=floor==='roof'?'roof':Number(floor);floorIsolated=!!isolate;floorsBelow=!!below;B.floorFilter={building:buildingContext?.entity,floor:buildingFloor,isolate:floorIsolated,below:floorsBelow};return buildingState();}
  function visiblePart(m){return !floorIsolated||(buildingFloor==='roof'?m.role==='roof':m.floor===buildingFloor||floorsBelow&&m.floor<buildingFloor);}
  function pickPart(p){let best=null,depth=-Infinity;for(const m of assembly().modules){if(m.role==='detail'||!visiblePart(m))continue;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],pts=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])pts.push(editorProject(...A.point(matrix,[x,y,z])));const minX=Math.min(...pts.map(q=>q.x)),maxX=Math.max(...pts.map(q=>q.x)),minY=Math.min(...pts.map(q=>q.y)),maxY=Math.max(...pts.map(q=>q.y)),d=Math.max(...pts.map(q=>q.depth));if(p.sx>=minX&&p.sx<=maxX&&p.sy>=minY&&p.sy<=maxY&&d>depth){best=m;depth=d;}}return best;}
@@ -867,7 +868,7 @@
 
  window.VeldrenEditorBridge={
   isReady:()=>ready,initialize:becomeReady,
-  enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,
+  enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,setBuildingTransform,
   buildingAssets:()=>B.catalog(),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
   beginPartPlacement(id){if(!buildingContext)throw Error('Start Building Edit first');if(!B.model(id))throw Error('Missing local asset');partPlacementAsset=B.catalog().find(asset=>asset.id===id);if(!partPlacementAsset)throw Error('Missing local asset');partPlacement=id;partPlacementRotation=0;partPlacementPoint=null;partPreview=null;tool='place';return buildingState();},
@@ -906,5 +907,3 @@
   exportEdits:()=>({version:1,revision:projectMeta.revision,updatedAt:new Date().toISOString(),changes:[...changes.values()],terrain:T.serialize()})
  };
 })();
-
-
