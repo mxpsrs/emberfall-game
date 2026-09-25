@@ -155,3 +155,20 @@ label{display:grid;gap:5px;font-size:11px;color:#94a5ad}
 #terrainPanel input[type=range]{padding:0;accent-color:#71c8af}
 #terrainPanel output{font-size:11px;color:#96b4be}
 #terrainPanel .object-actions{margin-top:0}
+
+
+.asset-row{grid-template-columns:88px minmax(0,1fr);min-height:78px;padding:6px;gap:9px}
+.asset-thumb{display:block;width:88px;height:64px;object-fit:contain;background:#111a1f;border:1px solid #26383f;border-radius:5px}
+.asset-card-details{display:grid;min-width:0;align-content:center;gap:3px;text-align:left}
+.asset-card-details strong{font-size:11px;line-height:1.25;color:#e2ecef;white-space:normal;overflow-wrap:anywhere}
+.asset-card-details small{font-size:9px;line-height:1.25;color:#8ca0a8;white-space:normal;overflow-wrap:anywhere}
+.asset-card-details .asset-reference{color:#60767f}
+.asset-row.selected{background:#284654;box-shadow:inset 3px 0 #80c7ff}
+.model-preview{display:flex;flex-direction:column;gap:8px;margin:14px 0;padding:10px;background:#0c1418;border:1px solid #30414a;border-radius:8px}
+.model-preview[hidden]{display:none}
+.model-preview canvas{width:100%;height:auto;aspect-ratio:16/9;background:#111a1f;border:1px solid #26383f;border-radius:6px;touch-action:none;cursor:grab}
+.model-preview canvas:active{cursor:grabbing}
+.model-preview h2{font-size:16px;line-height:1.25;margin:2px 0;color:#e3eaed}
+.model-preview .hint{margin:0;padding:6px 8px}
+.model-preview dl{display:grid;grid-template-columns:90px minmax(0,1fr);gap:5px;margin:0;font-size:10px}
+.model-preview dt{color:#82959d}.model-preview dd{margin:0;color:#c4d1d6;overflow-wrap:anywhere}

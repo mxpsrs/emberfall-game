@@ -14,11 +14,12 @@ function element(tagName='DIV'){
  const node={tagName,children,listeners,style:{},dataset:{},value:'',checked:true,hidden:false,disabled:false,
   classList:{add(){},remove(){},toggle(){},contains(){return false}},
   addEventListener(name,handler){(listeners[name]??=[]).push(handler)},
-  append(...items){children.push(...items)},appendChild(item){children.push(item)},
+  append(...items){children.push(...items);for(const item of items)item.isConnected=true},appendChild(item){children.push(item);item.isConnected=true},
   replaceChildren(...items){children.splice(0,children.length,...items)},
   setAttribute(){},removeAttribute(){},focus(){},setPointerCapture(){},releasePointerCapture(){},
   closest(selector){return /input|textarea|select|contenteditable/.test(selector)&&['INPUT','TEXTAREA','SELECT'].includes(tagName)?this:null},
   getBoundingClientRect(){return {left:0,top:0,width:800,height:390}},
+  getContext(){return this._context??=(Object.assign({calls:[],clearRect(){this.calls.push('clear')},fillRect(){this.calls.push('fillRect')},beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){this.calls.push('fill')},stroke(){},drawImage(){this.calls.push('image')},save(){},restore(){},clip(){},setTransform(){}},{}))},
   get options(){return children},
   get firstChild(){return children[0]},
   click(){this.onclick?.()},
@@ -40,10 +41,11 @@ const child={console,window:childWindow,document:childDocument,location:{origin:
  fetch:async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})}),
  VeldrenAssembly:{History:class{}},VeldrenBuildings:{},VeldrenWorldEdits:{applyDocument(){return {applied:0,unmatched:0,rejected:0}}},
  assetsReady:true,worldScenes:{overworld:{objects:worldObjects,buildings:[]}},objects:worldObjects,buildings:[],currentScene:'overworld',
+ REALM_ATLAS_IMAGE:{complete:true,width:4096,height:4096},briarModels:{previewHouse:{p:new Float32Array([0,0,0,1,0,0,0,2,0]),n:new Float32Array([0,0,1,0,0,1,0,0,1]),c:new Float32Array([.7,.2,.1,.7,.2,.1,.7,.2,.1]),uv:new Float32Array([0,0,1,0,0,1]),t:new Uint8Array([20,20,20]),i:new Uint16Array([0,1,2]),bounds:[[0,0,0],[1,2,0]]}},
  worldObjectRevision:0,worldObjectIndex:{revision:0,scene:'overworld',length:1,actors:[],buckets:new Map([['2:3',[object]]]),order:new Map([[object,0]]),byId:new Map([['test-prop',object]])},
  realmNavigation:{clear(){navResets++}},resetLandSurface(){landResets++},miniTerrain:null,cameraZoom3(){return 100},
  px:40,py:50,s:{x:40,y:50,character:null},screen:{w:800,h:390},view3d:{yaw:0,tilt:.4,zoom:110,min:58,max:132},
- draw3d(){},draw(){},unproject3(sx,sy){return {x:child.px+sx/10,z:child.py+sy/10}},
+ prop3(){},briarTransform(){return []},briarEmit(r,mesh){r.face(mesh.p,'#fff')},draw3d(){},draw(){},unproject3(sx,sy){return {x:child.px+sx/10,z:child.py+sy/10}},
  stop(){},resize(){},target:null};
 childWindow.VeldrenBuildings=child.VeldrenBuildings;
 childWindow.VeldrenWorldEdits=child.VeldrenWorldEdits;
@@ -57,7 +59,7 @@ const parentNodes=new Map(),parentDocument={activeElement:null,listeners:{},
  createElement:element,addEventListener(name,handler){(this.listeners[name]??=[]).push(handler)}};
 const parentWindow={listeners:{},addEventListener(name,handler){(this.listeners[name]??=[]).push(handler)}};
 const parent={console,document:parentDocument,window:parentWindow,location:{origin:'https://example.test'},
- setTimeout(){},setInterval(){return 1},clearInterval(){},Date,Option:function Option(name,value){return Object.assign(element('OPTION'),{textContent:name,value})},confirm:()=>true};
+ setTimeout(fn){if(fn)fn()},requestIdleCallback(fn){fn({timeRemaining:()=>50})},setInterval(){return 1},clearInterval(){},Date,Option:function Option(name,value){return Object.assign(element('OPTION'),{textContent:name,value})},confirm:()=>true};
 parentDocument.getElementById('gameFrame').contentWindow=childWindow;
 vm.createContext(parent);
 vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{filename:'editor.js'});
@@ -142,5 +144,17 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  assert.equal(object.y,originalY,'second touch preserves the original object position');
  dispatch(childDocument,'pointerup',touch(21,atX+20,atY));
  dispatch(childDocument,'pointerup',touch(22,atX+100,atY));
- console.log('PASS: editor camera navigation survives toolbar focus; pan, keyboard release, text fields and drag batching work.');
+ const asset=bridge.listAssets().find(item=>item.id==='mesh:previewHouse');assert(asset,'local model appears in the asset catalog');
+ const geometry=bridge.assetGeometry(asset.id);const cards=parentDocument.getElementById('assetList').children;assert.equal(cards.length,1,'asset browser renders one card for the indexed model');assert(cards[0].children.some(node=>String(node.tagName).toUpperCase()==='CANVAS'),'asset card uses a model thumbnail canvas');assert(cards[0].children[0].getContext().calls.includes('image'),'thumbnail cache paints the lazy card canvas');
+ cards[0].onclick();assert.equal(parentDocument.getElementById('modelPreview').hidden,false,'selecting a card opens the large model preview');assert(parentDocument.getElementById('modelPreviewCanvas').getContext().calls.includes('image'),'large preview draws its existing texture atlas');assert(parentDocument.getElementById('modelPreviewCanvas').getContext().calls.includes('fill'),'large preview draws shaded mesh triangles');
+ assert.equal(geometry.p.length,9,'browser receives existing mesh vertex data without reloading a model');
+ const objectCount=worldObjects.length;bridge.beginPlacement(asset.id);const preview=worldObjects.find(o=>o._editorPreview);assert(preview,'placement starts one temporary rendered model');let previewFaces=0;child.prop3({software:false,face(){previewFaces++}},preview,preview.x,preview.y);assert(previewFaces>0,'temporary preview renders the actual mesh through the world renderer');
+ assert.equal(bridge.listEntities().length,objectCount,'temporary preview stays out of the world hierarchy');
+ const rotation=bridge.rotatePlacement(90);assert.equal(rotation,90,'placement preview can rotate');
+ const placementPointer=pointer('pointerdown',400,190,0);dispatch(childDocument,'pointermove',{...placementPointer,type:'pointermove'});dispatch(childDocument,'pointerdown',placementPointer);
+ const placed=worldObjects.find(o=>o._editorCreated);assert(placed,'viewport click commits the selected model');assert.equal(placed.editorTransform.rotation,90,'placement rotation is stored on the placed model');
+ assert(bridge.exportEdits().changes.some(c=>c.id===placed.id&&c.rotation===90),'placement transform is recorded in editor persistence');
+ bridge.cancelPlacement();assert(!worldObjects.includes(preview),'cancel removes the temporary preview');assert(worldObjects.includes(placed),'cancel preserves committed model');
+ console.log('PASS: editor camera/navigation, lazy model data bridge, temporary placement preview, rotation, commit and cancel.');
 })().catch(error=>{console.error(error);process.exitCode=1});
+

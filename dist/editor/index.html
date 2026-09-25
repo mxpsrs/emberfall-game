@@ -106,7 +106,8 @@
     <section id="assetBrowser" class="browser-panel" hidden>
       <input id="assetSearch" type="search" placeholder="Search Veldren models…">
       <select id="assetCategory" aria-label="Asset category"><option value="">All categories</option></select>
-      <div id="assetHint" class="asset-hint">Choose an asset, then click in the world to place it.</div>
+      <div id="assetHint" class="asset-hint">Select a model to inspect it before placement.</div>
+      <button id="beginAssetPlacement" type="button" disabled>Place selected model</button>
       <div id="assetList" class="entity-list asset-list" role="listbox" aria-label="Veldren assets"></div>
       <button id="cancelPlacement" type="button" disabled>Cancel placement</button>
     </section>
@@ -132,8 +133,16 @@
       <span id="objectType" class="type-pill">—</span>
     </div>
 
+    <section id="modelPreview" class="model-preview" hidden aria-label="Model preview">
+      <canvas id="modelPreviewCanvas" width="640" height="360" aria-label="Drag to orbit; use the wheel to zoom"></canvas>
+      <h2 id="modelPreviewName">Model</h2>
+      <p id="modelPreviewCategory" class="hint"></p>
+      <dl><dt>Asset reference</dt><dd id="modelPreviewPath"></dd><dt>Bounds</dt><dd id="modelPreviewBounds"></dd></dl>
+      <p class="asset-hint">Drag to orbit · scroll to zoom</p>
+      <button id="previewPlaceButton" class="primary" type="button">Choose for placement</button>
+    </section>
     <p class="hint" id="selectionHint">
-      Select any world entity or building, or open <b>Assets</b> to place new Veldren models into the world.
+      Select any world entity or building, or open <b>Assets</b> to inspect Veldren models before placement.
     </p>
 
     <fieldset id="transformFields" disabled>
@@ -180,3 +189,4 @@
 <script src="/editor/editor.js"></script>
 </body>
 </html>
+
