@@ -102,7 +102,7 @@
  function drawMeshPreview(canvas,asset,yaw=.68,tilt=.52,zoom=1,thumbnail=false){
   const ctx=canvas.getContext('2d');if(!ctx)return false;const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#111a1f';ctx.fillRect(0,0,w,h);
   const mesh=bridge?.assetGeometry?.(asset.id);if(!mesh?.p?.length||!mesh?.i?.length){ctx.fillStyle='#a6b7bf';ctx.font='13px system-ui';ctx.textAlign='center';ctx.fillText('No mesh preview available',w/2,h/2);return false;}
-  let atlas=atlas;if(thumbnail&&atlas?.complete&&atlas.width>0){if(thumbnailAtlasSource!==atlas){thumbnailAtlasSource=atlas;thumbnailAtlas=canvasFactory(512,512);thumbnailAtlas.getContext('2d')?.drawImage(atlas,0,0,512,512);}atlas=thumbnailAtlas;}
+  let atlas=mesh.atlas;if(thumbnail&&atlas?.complete&&atlas.width>0){if(thumbnailAtlasSource!==atlas){thumbnailAtlasSource=atlas;thumbnailAtlas=canvasFactory(512,512);thumbnailAtlas.getContext('2d')?.drawImage(atlas,0,0,512,512);}atlas=thumbnailAtlas;}
   const p=mesh.p,n=mesh.n,c=mesh.c,indices=mesh.i,bounds=mesh.bounds||[[0,0,0],[1,1,1]],cx=(bounds[0][0]+bounds[1][0])/2,cy=(bounds[0][1]+bounds[1][1])/2,cz=(bounds[0][2]+bounds[1][2])/2;
   const cosY=Math.cos(yaw),sinY=Math.sin(yaw),cosT=Math.cos(tilt),sinT=Math.sin(tilt),vertices=new Array(p.length/3),light=[.35,.82,.45],ll=Math.hypot(...light);
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
