@@ -17,8 +17,9 @@
  const worldBrowserTab=$('worldBrowserTab'),assetBrowserTab=$('assetBrowserTab'),worldBrowser=$('worldBrowser'),assetBrowser=$('assetBrowser');
  const assetSearch=$('assetSearch'),assetCategory=$('assetCategory'),assetList=$('assetList'),assetHint=$('assetHint'),cancelPlacement=$('cancelPlacement');
  const beginAssetPlacement=$('beginAssetPlacement'),modelPreview=$('modelPreview'),modelPreviewCanvas=$('modelPreviewCanvas'),previewPlaceButton=$('previewPlaceButton'),modelPreviewName=$('modelPreviewName'),modelPreviewCategory=$('modelPreviewCategory'),modelPreviewPath=$('modelPreviewPath'),modelPreviewBounds=$('modelPreviewBounds');
- let bridge=null,selection=null,dirty=false,tool='select',poll=null,entities=[],assets=[],activeAsset=null,inspectedAsset=null,playerViewOn=false,gameUiVisible=false,lastCameraText='';
- const thumbnailCache=new Map(),thumbnailObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){thumbnailObserver.unobserve(entry.target);queueThumbnail(entry.target)}},{rootMargin:'180px'}):{observe:queueThumbnail,unobserve(){}};let thumbnailQueue=[],thumbnailWorkPending=false,previewOrbit={yaw:.68,tilt:.52,zoom:1},watchedAtlas=null;
+ let bridge=null,selection=null,dirty=false,tool='select',poll=null,entities=[],assets=[],assetById=new Map(),activeAsset=null,inspectedAsset=null,playerViewOn=false,gameUiVisible=false,lastCameraText='';
+ const thumbnailCache=new Map();let thumbnailAtlasSource=null,thumbnailAtlas=null;
+ const thumbnailObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){thumbnailObserver.unobserve(entry.target);queueThumbnail(entry.target)}},{rootMargin:'180px'}):{observe:queueThumbnail,unobserve(){}};let thumbnailQueue=[],thumbnailWorkPending=false,previewOrbit={yaw:.68,tilt:.52,zoom:1},watchedAtlas=null;
 
  let building=null,partAssets=[];
  function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty();}catch(error){log(error.message,'error');}}
@@ -87,6 +88,7 @@
 
  function showBrowser(which){
   const assetsOn=which==='assets';
+  if(!assetsOn){thumbnailQueue.length=0;thumbnailWorkPending=false;}
   terrainPanel.hidden=true;
   worldBrowser.hidden=assetsOn;assetBrowser.hidden=!assetsOn;
   worldBrowserTab.classList.toggle('active',!assetsOn);assetBrowserTab.classList.toggle('active',assetsOn);
@@ -97,37 +99,44 @@
  assetBrowserTab.onclick=()=>{if(tool==='terrain')setTool('select');showBrowser('assets')};
 
  const canvasFactory=(width,height)=>{const c=document.createElement('canvas');c.width=width;c.height=height;return c};
- function drawMeshPreview(canvas,asset,yaw=.68,tilt=.52,zoom=1){
+ function drawMeshPreview(canvas,asset,yaw=.68,tilt=.52,zoom=1,thumbnail=false){
   const ctx=canvas.getContext('2d');if(!ctx)return false;const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#111a1f';ctx.fillRect(0,0,w,h);
   const mesh=bridge?.assetGeometry?.(asset.id);if(!mesh?.p?.length||!mesh?.i?.length){ctx.fillStyle='#a6b7bf';ctx.font='13px system-ui';ctx.textAlign='center';ctx.fillText('No mesh preview available',w/2,h/2);return false;}
+  let atlas=atlas;if(thumbnail&&atlas?.complete&&atlas.width>0){if(thumbnailAtlasSource!==atlas){thumbnailAtlasSource=atlas;thumbnailAtlas=canvasFactory(512,512);thumbnailAtlas.getContext('2d')?.drawImage(atlas,0,0,512,512);}atlas=thumbnailAtlas;}
   const p=mesh.p,n=mesh.n,c=mesh.c,indices=mesh.i,bounds=mesh.bounds||[[0,0,0],[1,1,1]],cx=(bounds[0][0]+bounds[1][0])/2,cy=(bounds[0][1]+bounds[1][1])/2,cz=(bounds[0][2]+bounds[1][2])/2;
   const cosY=Math.cos(yaw),sinY=Math.sin(yaw),cosT=Math.cos(tilt),sinT=Math.sin(tilt),vertices=new Array(p.length/3),light=[.35,.82,.45],ll=Math.hypot(...light);
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
   for(let i=0;i<p.length;i+=3){const x=p[i]-cx,y=p[i+1]-cy,z=p[i+2]-cz,rx=cosY*x-sinY*z,rz=sinY*x+cosY*z,sy=y*cosT-rz*sinT,depth=y*sinT+rz*cosT;vertices[i/3]=[rx,sy,depth];minX=Math.min(minX,rx);maxX=Math.max(maxX,rx);minY=Math.min(minY,sy);maxY=Math.max(maxY,sy);}
   const spanX=Math.max(.01,maxX-minX),spanY=Math.max(.01,maxY-minY),scale=Math.min((w-24)/spanX,(h-24)/spanY)*zoom,ox=(w-(minX+maxX)*scale)/2,oy=(h+(minY+maxY)*scale)/2,faces=[];
-  for(let j=0;j<indices.length;j+=3){const ia=indices[j],ib=indices[j+1],ic=indices[j+2],a=vertices[ia],b=vertices[ib],d=vertices[ic];if(!a||!b||!d)continue;
+  const faceCount=Math.ceil(indices.length/3),faceStep=thumbnail?Math.max(1,Math.ceil(faceCount/128)):1;
+  for(let j=0,face=0;j<indices.length;j+=3,face++){if(face%faceStep)continue;const ia=indices[j],ib=indices[j+1],ic=indices[j+2],a=vertices[ia],b=vertices[ib],d=vertices[ic];if(!a||!b||!d)continue;
    const depth=(a[2]+b[2]+d[2])/3,nx=(Number(n?.[ia*3])||0)+ (Number(n?.[ib*3])||0)+(Number(n?.[ic*3])||0),ny=(Number(n?.[ia*3+1])||0)+(Number(n?.[ib*3+1])||0)+(Number(n?.[ic*3+1])||0),nz=(Number(n?.[ia*3+2])||0)+(Number(n?.[ib*3+2])||0)+(Number(n?.[ic*3+2])||0),rnX=cosY*nx-sinY*nz,rnZ=sinY*nx+cosY*nz,rnY=ny*cosT-rnZ*sinT,dot=(rnX*light[0]+rnY*light[1]+rnZ*light[2])/(Math.hypot(rnX,rnY,rnZ)*ll||1),shade=.36+.64*Math.max(0,dot);
-   const colors=mesh.f||c,values=[ia,ib,ic].map(k=>[0,1,2].map(ch=>{const v=Number(colors?.[k*3+ch]);return Number.isFinite(v)?v:.5})),rgb=[0,1,2].map(ch=>Math.round(255*Math.max(0,Math.min(1,values.reduce((sum,v)=>sum+v[ch],0)/3*shade)))),slots=[ia,ib,ic].map(k=>Number(mesh.t?.[k])|| (mesh.uv?20:12)),mixed=slots.some(v=>v!==slots[0]),tile=mixed?0:Math.floor(slots[0]-20),uv=mesh.uv&&tile>=0&&mesh.atlas?.complete!==false&&mesh.atlas?.width>0?[ia,ib,ic].map(k=>{const u=Number(mesh.uv[k*2])||0,v=Number(mesh.uv[k*2+1])||0,cx=tile%8,cy=Math.floor(tile/8),unit=mesh.atlas.width/4096;return [(cx*512+2+u*508)*unit,((7-cy)*512+510-v*508)*unit]}):null;faces.push({depth,a,b,d,color:`rgb(${rgb.join(',')})`,uv,atlas:mesh.atlas,shade});
+   const colors=mesh.f||c,values=[ia,ib,ic].map(k=>[0,1,2].map(ch=>{const v=Number(colors?.[k*3+ch]);return Number.isFinite(v)?v:.5})),rgb=[0,1,2].map(ch=>Math.round(255*Math.max(0,Math.min(1,values.reduce((sum,v)=>sum+v[ch],0)/3*shade)))),slots=[ia,ib,ic].map(k=>Number(mesh.t?.[k])|| (mesh.uv?20:12)),mixed=slots.some(v=>v!==slots[0]),tile=mixed?0:Math.floor(slots[0]-20),uv=mesh.uv&&tile>=0&&atlas?.complete!==false&&atlas?.width>0?[ia,ib,ic].map(k=>{const u=Number(mesh.uv[k*2])||0,v=Number(mesh.uv[k*2+1])||0,cx=tile%8,cy=Math.floor(tile/8),unit=atlas.width/4096;return [(cx*512+2+u*508)*unit,((7-cy)*512+510-v*508)*unit]}):null;faces.push({depth,a,b,d,color:`rgb(${rgb.join(',')})`,uv,atlas:atlas,shade});
   }
   faces.sort((a,b)=>a.depth-b.depth);ctx.lineJoin='round';ctx.lineWidth=Math.max(.4,w/500);
   for(const f of faces){ctx.beginPath();ctx.moveTo(ox+f.a[0]*scale,oy-f.a[1]*scale);ctx.lineTo(ox+f.b[0]*scale,oy-f.b[1]*scale);ctx.lineTo(ox+f.d[0]*scale,oy-f.d[1]*scale);ctx.closePath();if(f.uv&&f.atlas){const src=f.uv,pts=[f.a,f.b,f.d].map(v=>[ox+v[0]*scale,oy-v[1]*scale]),[x1,y1]=src[0],[x2,y2]=src[1],[x3,y3]=src[2],det=x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2);if(Math.abs(det)>.001){const solve=(q1,q2,q3)=>[(q1*(y2-y3)+q2*(y3-y1)+q3*(y1-y2))/det,(q1*(x3-x2)+q2*(x1-x3)+q3*(x2-x1))/det,(q1*(x2*y3-x3*y2)+q2*(x3*y1-x1*y3)+q3*(x1*y2-x2*y1))/det],[ta,tb,te]=solve(pts[0][0],pts[1][0],pts[2][0]),[tc,td,tf]=solve(pts[0][1],pts[1][1],pts[2][1]);ctx.save();ctx.clip();ctx.setTransform(ta,tc,tb,td,te,tf);ctx.drawImage(f.atlas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.globalCompositeOperation='multiply';ctx.fillStyle=`rgba(0,0,0,${Math.max(0,1-f.shade)})`;ctx.fill();ctx.restore();}else{ctx.fillStyle=f.color;ctx.fill();}}else{ctx.fillStyle=f.color;ctx.fill();}ctx.strokeStyle='rgba(4,9,11,.24)';ctx.stroke();}
   return true;
  }
- function queueThumbnail(canvas){if(thumbnailCache.has(canvas.dataset.assetId)){canvas.getContext('2d')?.drawImage(thumbnailCache.get(canvas.dataset.assetId),0,0,canvas.width,canvas.height);return;}thumbnailQueue.push(canvas);if(thumbnailWorkPending)return;thumbnailWorkPending=true;
-  const run=deadline=>{let count=0;while(thumbnailQueue.length&&count<3&&(deadline?.timeRemaining?.()>3||count===0)){const target=thumbnailQueue.shift(),asset=assets.find(a=>a.id===target.dataset.assetId);if(!asset||!target.isConnected)continue;let cached=thumbnailCache.get(asset.id);if(!cached){cached=canvasFactory(144,96);drawMeshPreview(cached,asset);thumbnailCache.set(asset.id,cached);if(thumbnailCache.size>180)thumbnailCache.delete(thumbnailCache.keys().next().value);}target.getContext('2d')?.drawImage(cached,0,0,target.width,target.height);count++;}if(thumbnailQueue.length){(window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});}else thumbnailWorkPending=false;};
+ function queueThumbnail(canvas){if(thumbnailCache.has(canvas.dataset.assetId)){canvas.getContext('2d')?.drawImage(thumbnailCache.get(canvas.dataset.assetId),0,0,canvas.width,canvas.height);return;}if(!thumbnailQueue.includes(canvas))thumbnailQueue.push(canvas);if(thumbnailWorkPending)return;thumbnailWorkPending=true;
+  const run=deadline=>{if(assetBrowser.hidden){thumbnailWorkPending=false;return;}let count=0;while(thumbnailQueue.length&&count<1&&(deadline?.timeRemaining?.()>5||count===0)){const target=thumbnailQueue.shift(),asset=assetById.get(target.dataset.assetId);if(!asset||!target.isConnected)continue;let cached=thumbnailCache.get(asset.id);if(!cached){cached=canvasFactory(144,96);drawMeshPreview(cached,asset,.68,.52,1,true);thumbnailCache.set(asset.id,cached);if(thumbnailCache.size>180)thumbnailCache.delete(thumbnailCache.keys().next().value);}target.getContext('2d')?.drawImage(cached,0,0,target.width,target.height);count++;}if(thumbnailQueue.length){(window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});}else thumbnailWorkPending=false;};
   (window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});
  }
- function inspectAsset(asset){inspectedAsset=asset;previewOrbit={yaw:.68,tilt:.52,zoom:1};modelPreview.hidden=!asset;if(!asset)return;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=`${asset.source}:${asset.key}`;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';beginAssetPlacement.disabled=false;drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);renderAssets();}
+ function inspectAsset(asset,row){inspectedAsset=asset;for(const card of assetList.children)if(String(card.className||'').includes(' selected'))card.className=card.className.replace(' selected','');if(row)row.className+=' selected';previewOrbit={yaw:.68,tilt:.52,zoom:1};modelPreview.hidden=!asset;if(!asset)return;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=`${asset.source}:${asset.key}`;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';beginAssetPlacement.disabled=false;drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);}
  function armAssetPlacement(){if(!inspectedAsset||!bridge)return;activeAsset=bridge.beginPlacement(inspectedAsset.id);setTool('place');showBrowser('assets');cancelPlacement.disabled=false;assetHint.textContent=`PLACING: ${inspectedAsset.name} · move over the viewport to preview · click to place · R rotates · Esc cancels`;renderAssets();log(`Placement armed · ${inspectedAsset.name} · ${inspectedAsset.source}:${inspectedAsset.key}.`,'ok');}
  beginAssetPlacement.onclick=previewPlaceButton.onclick=armAssetPlacement;
+ const ASSET_PAGE_SIZE=60;
+ function appendAssetCards(filtered,start,end){
+  for(let i=start;i<end;i++){const asset=filtered[i],row=document.createElement('button');row.type='button';row.className='asset-row '+(asset.source==='creature'?'creature':asset.source==='preset'?'preset':'mesh')+(inspectedAsset?.id===asset.id?' selected':'');
+   const thumb=canvasFactory(144,96);thumb.className='asset-thumb';thumb.dataset.assetId=asset.id;const details=document.createElement('span');details.className='asset-card-details';const title=document.createElement('strong');title.textContent=asset.name;const meta=document.createElement('small');meta.textContent=asset.category;const ref=document.createElement('small');ref.className='asset-reference';ref.textContent=`${asset.source}:${asset.key}`;details.append(title,meta,ref);row.append(thumb,details);
+   row.onclick=()=>inspectAsset(asset,row);assetList.appendChild(row);if(thumbnailCache.has(asset.id))thumb.getContext('2d')?.drawImage(thumbnailCache.get(asset.id),0,0,thumb.width,thumb.height);else thumbnailObserver.observe(thumb);
+  }
+ }
  function renderAssets(){
   const q=assetSearch.value.trim().toLowerCase(),category=assetCategory.value;
   const filtered=assets.filter(a=>(!category||a.category===category)&&(!q||[a.name,a.key,a.category,a.source].some(v=>String(v||'').toLowerCase().includes(q))));assetList.replaceChildren();
-  for(const asset of filtered){const row=document.createElement('button');row.type='button';row.className='asset-row '+(asset.source==='creature'?'creature':asset.source==='preset'?'preset':'mesh')+(inspectedAsset?.id===asset.id?' selected':'');
-   const thumb=canvasFactory(144,96);thumb.className='asset-thumb';thumb.dataset.assetId=asset.id;const details=document.createElement('span');details.className='asset-card-details';const title=document.createElement('strong');title.textContent=asset.name;const meta=document.createElement('small');meta.textContent=asset.category;const ref=document.createElement('small');ref.className='asset-reference';ref.textContent=`${asset.source}:${asset.key}`;details.append(title,meta,ref);row.append(thumb,details);
-   row.onclick=()=>inspectAsset(asset);assetList.appendChild(row);if(thumbnailCache.has(asset.id))thumb.getContext('2d')?.drawImage(thumbnailCache.get(asset.id),0,0,thumb.width,thumb.height);else thumbnailObserver.observe(thumb);
-  }
-  if(!filtered.length){const note=document.createElement('div');note.className='hint';note.textContent='No matching assets.';assetList.appendChild(note);}
+  if(!filtered.length){const note=document.createElement('div');note.className='hint';note.textContent='No matching assets.';assetList.appendChild(note);return;}
+  let shown=Math.min(ASSET_PAGE_SIZE,filtered.length);appendAssetCards(filtered,0,shown);
+  if(shown<filtered.length){const more=document.createElement('button');more.type='button';more.className='asset-load-more';const updateMore=()=>{more.textContent=`Show ${Math.min(ASSET_PAGE_SIZE,filtered.length-shown)} more of ${filtered.length} models`;};more.onclick=()=>{const start=shown;shown=Math.min(shown+ASSET_PAGE_SIZE,filtered.length);appendAssetCards(filtered,start,shown);if(shown>=filtered.length)more.remove();else updateMore();};updateMore();assetList.appendChild(more);}
  }
  modelPreviewCanvas.addEventListener('pointerdown',e=>{modelPreviewCanvas.setPointerCapture(e.pointerId);modelPreviewCanvas._orbitPoint=[e.clientX,e.clientY];});
  modelPreviewCanvas.addEventListener('pointermove',e=>{if(!modelPreviewCanvas._orbitPoint||!inspectedAsset)return;const [x,y]=modelPreviewCanvas._orbitPoint;previewOrbit.yaw+=(e.clientX-x)*.012;previewOrbit.tilt=Math.max(-1.1,Math.min(1.1,previewOrbit.tilt+(e.clientY-y)*.008));modelPreviewCanvas._orbitPoint=[e.clientX,e.clientY];drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);});
@@ -141,7 +150,7 @@
 
  async function refreshAssets(){
   if(!bridge)return;
-  assets=bridge.listAssets();
+  assets=bridge.listAssets();assetById=new Map(assets.map(asset=>[asset.id,asset]));
   const sample=assets.find(a=>a.source==='briar'||a.source==='creature'),atlas=sample&&bridge.assetGeometry?.(sample.id)?.atlas;if(atlas&&!atlas.complete&&atlas!==watchedAtlas){watchedAtlas=atlas;atlas.addEventListener?.('load',()=>{thumbnailCache.clear();renderAssets();if(inspectedAsset)drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);},{once:true});}
   const categories=[...new Set(assets.map(a=>a.category))].sort();
   const previous=assetCategory.value;assetCategory.replaceChildren(new Option('All categories',''));
