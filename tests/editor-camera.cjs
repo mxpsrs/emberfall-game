@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const path=require('node:path');
 const dist=path.join(__dirname,'../dist/editor');
 const object={id:'test-prop',name:'Test prop',type:'prop',x:47,y:50,homeX:47,homeY:50,drawX:47,drawY:50};
-const worldObjects=[object],messages=[];
+const worldObjects=[object],messages=[],createdNodes=[];
 let navResets=0,landResets=0;
 
 function element(tagName='DIV'){
@@ -19,13 +19,13 @@ function element(tagName='DIV'){
   setAttribute(){},removeAttribute(){},focus(){},setPointerCapture(){},releasePointerCapture(){},
   closest(selector){return /input|textarea|select|contenteditable/.test(selector)&&['INPUT','TEXTAREA','SELECT'].includes(tagName)?this:null},
   getBoundingClientRect(){return {left:0,top:0,width:800,height:390}},
-  getContext(){return this._context??=(Object.assign({calls:[],clearRect(){this.calls.push('clear')},fillRect(){this.calls.push('fillRect')},beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){this.calls.push('fill')},stroke(){},drawImage(){this.calls.push('image')},save(){},restore(){},clip(){},setTransform(){}},{}))},
+  getContext(){return this._context??=(Object.assign({calls:[],drawImageArgs:[],clearRect(){this.calls.push('clear')},fillRect(){this.calls.push('fillRect')},beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){this.calls.push('fill')},stroke(){this.calls.push('stroke')},drawImage(...args){this.calls.push('image');this.drawImageArgs.push(args)},save(){},restore(){},clip(){},setTransform(){}},{}))},
   get options(){return children},
   get firstChild(){return children[0]},
   click(){this.onclick?.()},
   set innerHTML(html){children.length=0;if(html.includes('<span'))children.push(element('SPAN'),element('SPAN'),element('SMALL'))}
  };
- return node;
+ createdNodes.push(node);return node;
 }
 function dispatch(target,name,event){for(const handler of target.listeners[name]||[])handler(event)}
 function key(key,target=element('BUTTON')){return {key,target,prevented:false,preventDefault(){this.prevented=true},stopImmediatePropagation(){}}}
@@ -41,7 +41,7 @@ const child={console,window:childWindow,document:childDocument,location:{origin:
  fetch:async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})}),
  VeldrenAssembly:{History:class{}},VeldrenBuildings:{},VeldrenWorldEdits:{applyDocument(){return {applied:0,unmatched:0,rejected:0}}},
  assetsReady:true,worldScenes:{overworld:{objects:worldObjects,buildings:[]}},objects:worldObjects,buildings:[],currentScene:'overworld',
- REALM_ATLAS_IMAGE:{complete:true,width:4096,height:4096},briarModels:{previewHouse:{p:new Float32Array([0,0,0,1,0,0,0,2,0]),n:new Float32Array([0,0,1,0,0,1,0,0,1]),c:new Float32Array([.7,.2,.1,.7,.2,.1,.7,.2,.1]),uv:new Float32Array([0,0,1,0,0,1]),t:new Uint8Array([20,20,20]),i:new Uint16Array([0,1,2]),bounds:[[0,0,0],[1,2,0]]}},
+ REALM_ATLAS_IMAGE:{complete:true,width:4096,height:4096},briarModels:{previewHouse:{p:new Float32Array([0,0,0,1,0,0,0,2,0]),n:new Float32Array([0,0,1,0,0,1,0,0,1]),c:new Float32Array([.7,.2,.1,.7,.2,.1,.7,.2,.1]),uv:new Float32Array([0,0,1,0,0,1]),t:new Uint8Array([20,20,20]),i:Uint16Array.from({length:3000},(_,i)=>i%3),bounds:[[0,0,0],[1,2,0]]}},
  worldObjectRevision:0,worldObjectIndex:{revision:0,scene:'overworld',length:1,actors:[],buckets:new Map([['2:3',[object]]]),order:new Map([[object,0]]),byId:new Map([['test-prop',object]])},
  realmNavigation:{clear(){navResets++}},resetLandSurface(){landResets++},miniTerrain:null,cameraZoom3(){return 100},
  px:40,py:50,s:{x:40,y:50,character:null},screen:{w:800,h:390},view3d:{yaw:0,tilt:.4,zoom:110,min:58,max:132},
@@ -145,7 +145,7 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  dispatch(childDocument,'pointerup',touch(21,atX+20,atY));
  dispatch(childDocument,'pointerup',touch(22,atX+100,atY));
  const asset=bridge.listAssets().find(item=>item.id==='mesh:previewHouse');assert(asset,'local model appears in the asset catalog');
- const geometry=bridge.assetGeometry(asset.id);const cards=parentDocument.getElementById('assetList').children;assert.equal(cards.length,1,'asset browser renders one card for the indexed model');assert(cards[0].children.some(node=>String(node.tagName).toUpperCase()==='CANVAS'),'asset card uses a model thumbnail canvas');assert(cards[0].children[0].getContext().calls.includes('image'),'thumbnail cache paints the lazy card canvas');
+ const geometry=bridge.assetGeometry(asset.id);const cards=parentDocument.getElementById('assetList').children;assert.equal(cards.length,1,'asset browser renders one card for the indexed model');assert(cards[0].children.some(node=>String(node.tagName).toUpperCase()==='CANVAS'),'asset card uses a model thumbnail canvas');assert(cards[0].children[0].getContext().calls.includes('image'),'thumbnail cache paints the lazy card canvas');const thumbRender=createdNodes.find(node=>String(node.tagName).toUpperCase()==='CANVAS'&&node.getContext().calls.filter(call=>call==='stroke').length>0)?.getContext(),thumbnailFaces=thumbRender?.calls.filter(call=>call==='stroke').length||0;assert(thumbnailFaces>0&&thumbnailFaces<=128,'large asset thumbnails rasterize at most 128 faces');assert(createdNodes.some(node=>node.width===512&&node.height===512&&node.getContext().drawImageArgs.some(args=>args[0]===child.REALM_ATLAS_IMAGE&&args[3]===512&&args[4]===512)),'thumbnail materials use a 512px working atlas instead of sampling the full-resolution atlas');
  cards[0].onclick();assert.equal(parentDocument.getElementById('modelPreview').hidden,false,'selecting a card opens the large model preview');assert(parentDocument.getElementById('modelPreviewCanvas').getContext().calls.includes('image'),'large preview draws its existing texture atlas');assert(parentDocument.getElementById('modelPreviewCanvas').getContext().calls.includes('fill'),'large preview draws shaded mesh triangles');
  assert.equal(geometry.p.length,9,'browser receives existing mesh vertex data without reloading a model');
  const objectCount=worldObjects.length;bridge.beginPlacement(asset.id);const preview=worldObjects.find(o=>o._editorPreview);assert(preview,'placement starts one temporary rendered model');let previewFaces=0;child.prop3({software:false,face(){previewFaces++}},preview,preview.x,preview.y);assert(previewFaces>0,'temporary preview renders the actual mesh through the world renderer');
