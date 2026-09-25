@@ -147,7 +147,7 @@ label{display:grid;gap:5px;font-size:11px;color:#94a5ad}
  color:#fff0c5
 }
 
-#buildingPanel {padding:12px;overflow:auto;min-height:0} #buildingPanel label{display:block;margin:8px 0;font-size:14px} #buildingPanel select,#buildingPanel input[type=number]{width:100%;min-width:0} #partHierarchy{max-height:260px;overflow:auto} #buildingPanel .part-row{display:block;text-align:left;width:100%;padding:8px;font-size:14px} #buildingPanel .part-row.active{border-color:#80c7ff;background:#18364c} #buildingPanel fieldset{margin:12px 0;min-width:0} .toolbar{flex-wrap:wrap} #buildingPanel[hidden]{display:none}
+#buildingPanel {padding:12px;overflow:auto;min-height:0} #buildingPanel label{display:block;margin:8px 0;font-size:14px} #buildingPanel select,#buildingPanel input[type=number]{width:100%;min-width:0} #partHierarchy{max-height:260px;overflow:auto} #buildingPanel .part-row{display:block;text-align:left;width:100%;padding:8px;font-size:14px} #buildingPanel .part-row.active{border-color:#80c7ff;background:#18364c} #buildingPanel fieldset{margin:12px 0;min-width:0} #partAssetList{max-height:34vh;min-height:170px;flex:none} #partAssetList .asset-row{grid-template-columns:74px minmax(0,1fr);min-height:74px} #partAssetList .asset-thumb{width:74px;height:58px} #partAssetList .asset-card-details strong{font-size:10px} #partAssetList .asset-card-details small{font-size:9px} .toolbar{flex-wrap:wrap} #buildingPanel[hidden]{display:none}
 #terrainPanel{padding:12px;overflow:auto;gap:12px}
 #terrainPanel[hidden]{display:none}
 #terrainPanel strong{font-size:14px}
@@ -174,3 +174,4 @@ label{display:grid;gap:5px;font-size:11px;color:#94a5ad}
 .model-preview .hint{margin:0;padding:6px 8px}
 .model-preview dl{display:grid;grid-template-columns:90px minmax(0,1fr);gap:5px;margin:0;font-size:10px}
 .model-preview dt{color:#82959d}.model-preview dd{margin:0;color:#c4d1d6;overflow-wrap:anywhere}
+

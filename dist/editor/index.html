@@ -15,7 +15,8 @@
     <button id="rotateTool" type="button">Rotate</button>
     <button id="scaleTool" type="button">Scale</button>
     <button id="placeTool" type="button">Place</button>
-    <button id="buildingEditTool" type="button">Building Edit</button>
+    <button id="buildingEditTool" type="button" title="Edit the selected building or start a blank modular assembly at the editor camera focus">Building Edit</button>
+    <button id="newBuildingTool" type="button" title="Start a blank modular assembly at the editor camera focus">New Building</button>
     <button id="terrainTool" type="button">Terrain</button>
     <button id="cameraTool" type="button">Camera</button>
     <span class="divider"></span>
@@ -73,9 +74,11 @@
         <button id="applyPart" type="button">Apply Part</button>
         <label>Entrance wall <select id="entranceWall"></select></label><button id="moveEntrance" type="button">Move Entrance Here</button>
       </fieldset>
-      <label>Parts <select id="partCategory"></select></label><select id="partAsset" aria-label="Local building asset"></select>
-      <button id="placePart" type="button">Place Part</button><button id="replacePart" type="button">Replace Selected Model</button>
-      <p id="buildingHint" class="hint">Select a part in the hierarchy or viewport. Green preview permits placement; red requires a compatible wall.</p>
+      <label>Find a model <input id="partSearch" type="search" placeholder="Search all modular parts…"></label>
+      <label>Category <select id="partCategory"></select></label><select id="partAsset" aria-label="Selected local building model" hidden></select>
+      <div id="partAssetList" class="entity-list asset-list" role="listbox" aria-label="Visual modular model library"></div>
+      <button id="placePart" type="button">Place Selected Part</button><button id="cancelPartPlacement" type="button" disabled>Cancel Part Placement</button><button id="replacePart" type="button">Replace Selected Model</button>
+      <p id="buildingHint" class="hint">Choose a thumbnail to inspect the real model. Move to preview a snap; press R to rotate, click to place, or Escape to cancel.</p>
     </section>
     <section id="terrainPanel" class="browser-panel" hidden aria-label="Terrain tools">
       <strong>Terrain brush</strong>
@@ -189,4 +192,5 @@
 <script src="/editor/editor.js"></script>
 </body>
 </html>
+
 

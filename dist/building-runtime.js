@@ -32,7 +32,8 @@
   for(const m of a.modules.filter(m=>m.role==='stairs')){const ramp=(a.layout||[]).filter(e=>e.path.at(-1)==='ramp').sort((x,y)=>Math.hypot(x.position[0]-m.local[3],x.position[2]-m.local[11])-Math.hypot(y.position[0]-m.local[3],y.position[2]-m.local[11]))[0];m.stairs={fromFloor:m.floor,toFloor:m.floor+1,origin:[m.local[3],m.local[7],m.local[11]],rampPath:ramp?.path||null};}
   b.assembly=a;b.editorTransform={rotation:0,scale:1};invalidate(b);return a;
  }
- function attach(b,assembly,scene){A.validate(assembly);ensure(b,scene);const runtime=cache.get(b),before=runtime.navBounds||worldBounds(b);
+ function create(b,assembly,scene){A.validate(assembly);const origin=A.transform(Number(b.x)||0,0,Number(b.y)||0);cache.set(b,{full:[],faces:[],height:0,origin,original:{x:b.x,y:b.y,w:b.w,h:b.h},linked:new Map(),render:null});b.assembly=A.serialize(assembly);b.editorTransform={rotation:0,scale:1};sync(b);invalidate(b);return b.assembly;}
+ function attach(b,assembly,scene){A.validate(assembly);if(!cache.has(b)){if(b.editorCreated){const origin=A.transform(Number(b.x)||0,0,Number(b.y)||0);cache.set(b,{full:[],faces:[],height:0,origin,original:{x:b.x,y:b.y,w:b.w,h:b.h},linked:new Map(),render:null});b.assembly??={version:1,buildingId:b._editorId||b.id||b.name||'editor-building',parent:origin,modules:[],layout:[]};}else ensure(b,scene);}const runtime=cache.get(b),before=runtime.navBounds||worldBounds(b);
   // Validate all assets before replacing a usable assembly.
   for(const m of assembly.modules)if(!m.model.startsWith('captured:')&&!m.model.startsWith('linked:')&&!model(m.model))throw Error('Missing local module '+m.model);
   b.assembly=A.serialize(assembly);for(const o of scene.objects||[])runtime.linked.set(String(o.id),o);sync(b);invalidate(b);invalidateAttachedNavigation(b,scene,before);return b.assembly;
@@ -70,7 +71,8 @@
   return null;
  }
  function invalidate(b){const r=cache.get(b);if(r)r.render=null;try{staticMeshes3.delete(b);staticMeshQueues3.building.delete(b)}catch{} }
- function worldBounds(b){const pts=[[0,0,0],[b.w,0,0],[b.w,0,b.h],[0,0,b.h]].map(p=>A.point(b.assembly.parent,p));const x=Math.min(...pts.map(p=>p[0])),y=Math.min(...pts.map(p=>p[2]));return {x,y,w:Math.max(...pts.map(p=>p[0]))-x,h:Math.max(...pts.map(p=>p[2]))-y};}
+ function localBounds(b){const modules=b.assembly?.modules||[];let minX=0,minZ=0,maxX=Number(b.w)||1,maxZ=Number(b.h)||1,found=false;for(const m of modules){if(!m.bounds)continue;const [lo,hi]=A.bounds(m);if(!found){minX=lo[0];minZ=lo[2];maxX=hi[0];maxZ=hi[2];found=true;}else{minX=Math.min(minX,lo[0]);minZ=Math.min(minZ,lo[2]);maxX=Math.max(maxX,hi[0]);maxZ=Math.max(maxZ,hi[2]);}}return {minX,minZ,maxX,maxZ};}
+ function worldBounds(b){if(!b.assembly)return {x:Number(b.x)||0,y:Number(b.y)||0,w:Number(b.w)||1,h:Number(b.h)||1};const points=b.editorCreated?(()=>{const box=localBounds(b);return [[box.minX,0,box.minZ],[box.maxX,0,box.minZ],[box.maxX,0,box.maxZ],[box.minX,0,box.maxZ]].map(p=>A.point(b.assembly.parent,p));})():[[0,0,0],[b.w,0,0],[b.w,0,b.h],[0,0,b.h]].map(p=>A.point(b.assembly.parent,p));const x=Math.min(...points.map(p=>p[0])),y=Math.min(...points.map(p=>p[2]));return {x,y,w:Math.max(...points.map(p=>p[0]))-x,h:Math.max(...points.map(p=>p[2]))-y};}
  function navAffectedCells(nav,areas){const cells=new Set();for(const area of areas)for(let y=Math.max(0,Math.floor(area.y)-2);y<Math.min(nav.h,Math.ceil(area.y+area.h)+2);y++)for(let x=Math.max(0,Math.floor(area.x)-2);x<Math.min(nav.w,Math.ceil(area.x+area.w)+2);x++)cells.add(y*nav.w+x);return cells;}
  function localStaticBlocks(scene,nav){const cells=new Set();for(const o of scene.objects||[]){if(fighter(o)||o.collected||o.walkThrough||o.type==='villager'||o.type==='spirit')continue;
    if(!o.propKind)cells.add(o.y*nav.w+o.x);
@@ -100,7 +102,7 @@
    r.navBounds=next;
   }catch{} }
  function rendered(b){const r=cache.get(b),a=b.assembly;const instances=[],faces=[];
-  for(const m of a.modules){if(['interior','entrance'].includes(m.role))continue;if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;const filter=window.VeldrenBuildings.floorFilter;if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
+  for(const m of a.modules){if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;const filter=window.VeldrenBuildings.floorFilter;if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(m.model==='captured:faces'){for(const f of r.faces)faces.push({...f,points:f.points.map(p=>A.point(m.local,p))});continue;}
    const source=r.full[m.baseline];const mesh=source&&identify(source.mesh)===m.model?source.mesh:model(m.model)||source?.mesh;if(mesh)instances.push({mesh,matrix:m.local,ghost:!!(filter?.building===b&&filter.isolate&&filter.below&&m.floor<filter.floor)});
   }
@@ -123,9 +125,10 @@
   const oldIn=inBuilding;inBuilding=function(b,x,y){if(!b.assembly)return oldIn(b,x,y);const a=b.assembly,p=A.point(A.inverse(a.parent),[x+.5,0,y+.5]);
    const entrance=a.modules.find(m=>m.role==='entrance');if(entrance?.opening){const center=entrance.opening.service,n=entrance.opening.normal,dx=p[0]-(center[0]-n[0]+.5),dz=p[2]-(center[2]-n[2]+.5);if(Math.hypot(dx,dz)<.72)return b.service?.openedAt===undefined;}
    return a.modules.some(m=>m.floor===0&&['wall','window'].includes(m.role)&&contains(m,p));};
-  const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b.assembly)return oldWithin(b,x,y);const p=A.point(A.inverse(b.assembly.parent),[x,0,y]);return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;};
+  const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b.assembly)return oldWithin(b,x,y);const p=A.point(A.inverse(b.assembly.parent),[x,0,y]);if(!b.editorCreated)return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;const box=localBounds(b);return p[0]>=box.minX&&p[0]<box.maxX&&p[2]>=box.minZ&&p[2]<box.maxZ;};
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};
  }
- window.VeldrenBuildings={ensure,attach,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
+ window.VeldrenBuildings={ensure,create,attach,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
 })();
+
