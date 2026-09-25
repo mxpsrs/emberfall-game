@@ -164,6 +164,8 @@ label{display:grid;gap:5px;font-size:11px;color:#94a5ad}
 .asset-card-details small{font-size:9px;line-height:1.25;color:#8ca0a8;white-space:normal;overflow-wrap:anywhere}
 .asset-card-details .asset-reference{color:#60767f}
 .asset-row.selected{background:#284654;box-shadow:inset 3px 0 #80c7ff}
+.asset-load-more{display:block;width:100%;margin:8px 0;padding:10px;border:1px solid #435b65;border-radius:6px;background:#18262c;color:#d3e0e4;cursor:pointer}
+.asset-load-more:hover{background:#22353c}
 .model-preview{display:flex;flex-direction:column;gap:8px;margin:14px 0;padding:10px;background:#0c1418;border:1px solid #30414a;border-radius:8px}
 .model-preview[hidden]{display:none}
 .model-preview canvas{width:100%;height:auto;aspect-ratio:16/9;background:#111a1f;border:1px solid #26383f;border-radius:6px;touch-action:none;cursor:grab}
