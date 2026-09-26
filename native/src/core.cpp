@@ -351,6 +351,46 @@ class World {
     for (const auto& id : scene->second.entities_with(component)) ids.emplace_back(id);
     return veldren::write_json(ids);
   }
+  std::string WorldLights(const char* scene_name, double night) const {
+    veldren::Json::Array lights;
+    if (!scene_name || !std::isfinite(night)) return "[]";
+    const auto found = world_scenes_.find(scene_name);
+    if (found == world_scenes_.end()) return "[]";
+    const auto& scene = found->second;
+    night = std::clamp(night, 0.0, 1.0);
+    for (const auto& id : scene.component_entities(veldren::component_type::Light)) {
+      const auto node = scene.inspect(id);
+      if (!node.active_in_hierarchy) continue;
+      const veldren::Json fields(node.components.at("Light"));
+      const auto number = [&](const char* key, double fallback) { const auto* f = fields.find(key); return f ? f->number_or(fallback) : fallback; };
+      const auto flag = [&](const char* key, bool fallback) { const auto* f = fields.find(key); return f ? f->bool_or(fallback) : fallback; };
+      if (!flag("enabled", true)) continue;
+      if (const auto* type = fields.find("type"); type && type->string_or() != "point") continue;
+      const double intensity = number("intensity", 1.25) * (flag("nightOnly", false) ? night : 1.0);
+      const double radius = number("radius", 1);
+      if (!std::isfinite(intensity) || !std::isfinite(radius) || intensity <= 0 || radius <= 0) continue;
+      veldren::Vec3 offset;
+      if (const auto* value = fields.find("offset")) {
+        if (!std::holds_alternative<veldren::Json::Array>(value->value) || value->array().size() != 3) continue;
+        offset = {value->array()[0].number_or(), value->array()[1].number_or(), value->array()[2].number_or()};
+      }
+      auto color = veldren::Json::Array{1.0, .74, .45};
+      if (const auto* value = fields.find("color")) {
+        if (!std::holds_alternative<veldren::Json::Array>(value->value) || value->array().size() != 3) continue;
+        color = value->array();
+      }
+      if (std::any_of(color.begin(), color.end(), [](const auto& c) { return !std::isfinite(c.number_or(-1)) || c.number_or(-1) < 0; })) continue;
+      const auto position = veldren::transform_point(node.world, offset);
+      const auto& m = node.world.v;
+      const double scale = std::max({std::hypot(m[0], m[1], m[2]), std::hypot(m[4], m[5], m[6]), std::hypot(m[8], m[9], m[10])});
+      veldren::Json::Object light{{"id", id}, {"x", position.x}, {"y", position.y}, {"z", position.z},
+        {"radius", radius * scale}, {"color", std::move(color)}, {"intensity", intensity},
+        {"terrainRelative", flag("terrainRelative", true)}};
+      for (const auto* key : {"scope", "sourceKind"}) if (const auto* value = fields.find(key)) light[key] = *value;
+      lights.emplace_back(std::move(light));
+    }
+    return veldren::write_json(lights);
+  }
   std::string WorldDocumentJson() const {
     veldren::WorldDocument document;
     document.revision = world_document_metadata_.revision;
@@ -810,6 +850,13 @@ std::uint32_t veldren_world_scene_component_ids(const void* world, const char* s
   catch (...) { return 0; }
 }
 
+std::uint32_t veldren_world_scene_lights_read(const void* world, const char* scene,
+                                             double night, char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldLights(scene, night), out, capacity); }
+  catch (...) { return 0; }
+}
+
 std::uint32_t veldren_world_document_serialize(const void* world, char* out,
                                                std::uint32_t capacity) {
   if (!world) return 0;
@@ -1059,4 +1106,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 14; }
+std::uint32_t veldren_core_abi_version() { return 15; }

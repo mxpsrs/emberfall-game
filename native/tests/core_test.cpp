@@ -169,7 +169,7 @@ int main() {
   assert(veldren_requirements_met(missing, required, 3) == 0);
   assert(veldren_world_timer_events(1000, 999, 0, NAN, 0) == 1);
   assert(veldren_world_timer_events(1000, NAN, 9, 999, 5) == 2);
-  assert(veldren_core_abi_version() == 14);
+  assert(veldren_core_abi_version() == 15);
   const auto initial_scene_revision = veldren_world_scene_revision(world);
   const char* region = R"({"id":"overworld:region:oakwood","name":"Oakwood","parent":null,"active":true,"transform":{"position":[0,0,0],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"Region":{"source":"procedural"}},"metadata":{"generationKey":"oakwood"}})";
   const char* barrel = R"({"id":"overworld:prop:barrel:9e2041","name":"Barrel","parent":"overworld:region:oakwood","active":true,"transform":{"position":[1,0,2],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"MeshRenderer":{"asset":"briar:barrel","visible":true},"Collider":{"shape":"box"}},"metadata":{"kind":"prop"}})";
@@ -218,6 +218,26 @@ int main() {
   assert(veldren_world_scene_serialize(world, final_scene_json.data(), final_scene_json.size()) == final_scene_bytes);
   const auto final_scene = veldren::Scene::deserialize(final_scene_json.data());
   assert(final_scene.inspect("runtime:actor:901").components.contains("PlayerRepresentation"));
+  const char* lamp = R"({"id":"lamp","name":"Lamp","parent":"overworld:region:oakwood","transform":{"position":[2,1,3],"scale":[2,2,2]},"components":{"Light":{"offset":[0,1,0],"radius":4,"color":[1,0.5,0.25],"intensity":2,"nightOnly":true}}})";
+  assert(veldren_world_scene_entity_upsert(world, "overworld", lamp) == 1);
+  const auto read_lights = [&](double night) {
+    const auto size = veldren_world_scene_lights_read(world, "overworld", night, nullptr, 0);
+    std::vector<char> text(size + 1);
+    assert(veldren_world_scene_lights_read(world, "overworld", night, text.data(), text.size()) == size);
+    return veldren::parse_json(text.data()).array();
+  };
+  assert(read_lights(0).empty());
+  const auto lights = read_lights(.5);
+  assert(lights.size() == 1);
+  assert(lights[0].find("y")->number_or() == 3);
+  assert(lights[0].find("radius")->number_or() == 8);
+  assert(lights[0].find("intensity")->number_or() == 1);
+  assert(veldren_world_scene_entity_set_transform(world, "overworld", "overworld:region:oakwood", R"({"position":[10,0,20],"rotation":[0,0.7071067811865476,0,0.7071067811865476],"scale":[1,1,1]})") == 1);
+  const auto moved_lights = read_lights(1);
+  assert(std::abs(moved_lights[0].find("x")->number_or() - 13) < 1e-9);
+  assert(std::abs(moved_lights[0].find("z")->number_or() - 18) < 1e-9);
+  assert(veldren_world_scene_entity_remove(world, "overworld", "lamp") == 1);
+  assert(read_lights(1).empty());
   veldren_world_destroy(world);
   std::cout << "PASS: native C++ actor simulation and visibility for 256 actors\n";
 }

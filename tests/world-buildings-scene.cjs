@@ -6,9 +6,9 @@ async function main(){
  const wasm=fs.readFileSync(path.join(__dirname,'../dist/native/veldren-core.wasm'));
  Object.assign(ctx,{WebAssembly,DataView,TextEncoder,TextDecoder,fetch:async()=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:p=>'/'+p});
  load('native-runtime');await ctx.window.realmNativeReady;ctx.realmNative=ctx.window.realmNative;ctx.realmNativeReady=ctx.window.realmNativeReady;
- for(const file of ['building-assembly','building-runtime','world-scene-format','world-ownership-runtime','world-building-scene','world-scenery-scene','world-road-scene'])load(file);
+ for(const file of ['building-assembly','building-runtime','world-scene-format','world-ownership-runtime','world-building-scene','world-scenery-scene','world-road-scene','world-light-scene'])load(file);
  ctx.VeldrenBuildings=ctx.window.VeldrenBuildings;
- run('setupExpandedWorld();setupTutorialVillage();setupLoot();VeldrenSceneOwnership.captureGenerationIdentity();VeldrenBuildingScene.capture(worldScenes);');
+ run('setupExpandedWorld();setupTutorialVillage();setupLoot();VeldrenSceneOwnership.captureGenerationIdentity();VeldrenBuildingScene.capture(worldScenes);VeldrenLightScene.capture();');
  run('VeldrenWorldEdits={state:{world:VeldrenSceneFormat.fromLegacy({version:1,revision:0,changes:[]})}};VeldrenSceneFormat.attachRuntimeWorld(VeldrenWorldEdits.state.world,worldScenes);');
  await ctx.VeldrenSceneOwnership.migrateStaticProps();
  const registry=run('worldScenes'),raw=registry.overworld.buildings.find(b=>b.civilUpper&&b.service),count=Object.values(registry).reduce((n,w)=>n+w.buildings.length,0);
@@ -21,6 +21,7 @@ async function main(){
  const compare=(a,b,path='geometry')=>{if(typeof a==='number'){assert(Math.abs(a-b)<1e-7,path+': '+a+' != '+b);return;}assert.deepEqual(Object.keys(a||{}),Object.keys(b||{}),path+' shape');for(const key of Object.keys(a||{}))compare(a[key],b[key],path+'.'+key);};compare(JSON.parse(shape(b)),JSON.parse(beforeGeometry));
  const decorationCount=Object.values(registry).reduce((n,w)=>n+(w.decor?.length||0),0),sceneryResult=await ctx.VeldrenSceneryScene.migrate();assert.equal(sceneryResult.decorations,decorationCount);
  const roadResult=await ctx.VeldrenRoadScene.migrate();assert(roadResult.roads>100,'full procedural road network');assert(registry.tutorial.roads.length>0,'Firstlight streets materialized before ownership transfer');
+ const lightResult=await ctx.VeldrenLightScene.migrate();assert(lightResult.torches>300,'permanent cave fixtures migrated');
  const doc=native.serialize(),all=doc.scenes.flatMap(s=>s.entities);assert.equal(all.filter(e=>e.components.GeneratedBuilding).length,count);assert(all.some(e=>e.components.DoorState));
  for(const scene of doc.scenes){const ids=new Set(scene.entities.map(e=>e.id));assert.equal(ids.size,scene.entities.length);for(const e of scene.entities)if(e.parent)assert(ids.has(e.parent),'valid parent '+e.id);}
  const oldDoor={x:b.service.x,y:b.service.y},attached=registry.overworld.objects.find(o=>o.type==='prop'&&native.entity('overworld',o._sceneEntityId)?.parent===origin.id),oldProp=attached&&{x:attached.x,y:attached.y};
@@ -38,6 +39,6 @@ async function main(){
  assert.equal(JSON.stringify(native.serialize()),JSON.stringify(saved),'complete generated building hierarchy/components/transforms round-trip');
  const restored=registry.overworld.buildings.find(b=>b._sceneEntityId===origin.id);assert(restored);assert.equal(restored.service.id,origin.doorId);
  const restoredDoor=restored.service._sceneEntityId;assert(native.remove('overworld',origin.id));assert(!registry.overworld.buildings.some(b=>b._sceneEntityId===origin.id));assert(!registry.overworld.objects.some(o=>o._sceneEntityId===restoredDoor));
- console.log('PASS: '+count+' buildings, '+result.parts+' parts, '+result.doors+' doors plus '+decorationCount+' lair decorations and '+roadResult.roads+' road segments: Scene ownership, geometry parity, hierarchy propagation, door catalog/state, surfaces and save/unload/load.');
+ console.log('PASS: '+count+' buildings, '+result.parts+' parts, '+result.doors+' doors plus '+decorationCount+' lair decorations and '+roadResult.roads+' road segments and '+lightResult.lights+' lights: Scene ownership, geometry parity, hierarchy propagation, door catalog/state, surfaces and save/unload/load.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

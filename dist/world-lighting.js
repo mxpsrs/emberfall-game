@@ -23,6 +23,7 @@ const lightsSetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){lightsSetupBefore();if(worldLightingReady)return;worldLightingReady=true;for(const id of Object.keys(worldScenes))if(cavePassageKind(id))setupCaveTorches(id);setupSettlementLanterns();};
 function worldNightFactor(){const hours=worldHour();return hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0;}
 function worldLightSources(scene=currentScene){
+ if(globalThis.VeldrenLightScene?.enabled)return globalThis.VeldrenLightScene.sources(scene,worldNightFactor());
  const w=worldScenes[scene],sources=[],night=worldNightFactor(),inside=(x,z)=>w?.buildings.some(b=>b.walkIn&&x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h),add=(x,y,z,radius,color=[1,.74,.45],intensity=1.25)=>sources.push({x,y:y+landHeight(x,z),z,radius,color,intensity});
  for(const o of w?.wallTorches||[])add(o.x,1.75,o.z,18);
  const nearby=scene===currentScene?worldObjectsInBounds(px-70,px+70,py-70,py+70):w?.objects||[];

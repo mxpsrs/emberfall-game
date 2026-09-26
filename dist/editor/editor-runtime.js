@@ -90,7 +90,7 @@
    const list=sceneBuildings(scene);for(let i=0;i<list.length;i++)if(buildingId(list[i],i)===String(id))return {kind:'building',entity:list[i],id:String(id)};
    return null;
   }
-  const o=sceneObjects(scene).find(o=>String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
+  const o=sceneObjects(scene).find(o=>String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
  }
  function ensureBase(ref){
   const e=ref.entity;if(e._editorBase)return e._editorBase;
@@ -116,7 +116,7 @@
  function allEntities(){
   if(!ready)return [];
   if(buildingContext)return [entityInfo(buildingContext)];
-  const out=[];for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[])])if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
+  const out=[];for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[])])if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
   const list=buildings;for(let i=0;i<list.length;i++)out.push(entityInfo({kind:'building',entity:list[i],id:buildingId(list[i],i)}));
   return out;
  }
@@ -367,6 +367,7 @@
   if(typeof prop3==='function'&&!prop3.__editorTransform){
    const before=prop3;
    prop3=function(r,o,x,z){
+    if(o?._generatedWallTorch)return window.VeldrenLightScene.renderTorch(r,o);
     if(o?._generatedDecoration)return window.VeldrenSceneryScene.render(r,o,typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null);
     if(o?._generatedSceneEntity)return before(r,o,x,z);
     const direct=renderEditorAsset(r,o,x,z);if(direct!==null)return direct;
@@ -447,7 +448,7 @@
    for(let i=hitboxes.length-1;i>=0;i--){const h=hitboxes[i],hit=h.polygon?pointInPolygon(p.sx,p.sy,h.polygon):Number.isFinite(h.x)&&p.sx>=h.x&&p.sx<=h.x+h.w&&p.sy>=h.y&&p.sy<=h.y+h.h;if(!hit)continue;if(h.building)return refForBuilding(h.building);if(h.o&&sceneObjects(currentScene).includes(h.o))return refForObject(h.o)}
   }catch{}
   const w=editorUnproject(p.sx,p.sy);let best=null,score=Infinity;
-  for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[])]){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
+  for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[])]){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
   for(let i=0;i<buildings.length;i++){const b=buildings[i],cx=b.x+b.w/2,cy=b.y+b.h/2,d=Math.hypot(cx-w.x,cy-w.z)-Math.hypot(b.w,b.h)/2;if(d<score){best={kind:'building',entity:b,id:buildingId(b,i)};score=d}}
   return score<Math.max(1.5,50/Math.max(10,cameraZoom3()))?best:null;
  }

@@ -299,10 +299,28 @@ Road checkpoint verification:
 - `node tests/editor-context.cjs`, `node tests/editor-frame.cjs` and
   `node tests/world-scene-runtime.cjs`: pass.
 
-Phase 1 is still incomplete. Remaining work includes placed light components,
+Phase 1 is still incomplete. Remaining work includes
 scene metadata, standalone structures, spawn definitions versus live actors,
 gatherable lifecycle/catalog identity and the remaining controlled collections.
 The final graphical `/play` and `/editor/` verification gate remains open.
 
 - Current road checkpoint: `npm run build` passes with 203 bundled game assets.
   This built locally only; nothing was published or deployed.
+
+Light checkpoint verification (ABI 15):
+
+- Permanent wall torches, fires, ranges/furnaces, lanterns and luminous scenery
+  now persist as Scene entities/components. C++ resolves point lights from the
+  component index, world transform, ancestor activation and day/night intensity.
+- Fixture meshes and emitters follow the same native transform. Permanent
+  fixture catalog IDs and existing gameplay references are preserved; runtime
+  player fires retain their transient expiry and are excluded from serialization.
+- `make -C native test wasm wasm-test`, `node tests/native-runtime.mjs`,
+  `node tests/world-lights-scene.cjs` and `node tests/editor-camera.cjs`: pass.
+- `node tests/world-buildings-scene.cjs`: pass with 1,282 permanent lights, in
+  addition to the building/scenery/road totals above, including save/unload/load.
+- Focused tests cover mesh/emitter alignment, parent scale/rotation, day/night,
+  native color edits, catalog identity, duplicate/delete and saved-catalog boot.
+
+This is a Phase 1 checkpoint; graphical verification and remaining ownership
+categories are still open. No publication, deployment or merge was performed.
