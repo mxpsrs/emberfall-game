@@ -66,7 +66,7 @@
  const snapValue=(value,step)=>step?Math.round(value/step)*step:value;
 
  function protectedObject(o){
-  return !!(o?._generatedQuarry||o?._generatedSpawn||o?._generatedGatherable||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
+  return !!(o?._generatedQuarry||o?._generatedService||o?._generatedSpawn||o?._generatedGatherable||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
  }
  function buildingId(b,index){
   if(b._generatedBuildingEntity)return b._sceneEntityId;

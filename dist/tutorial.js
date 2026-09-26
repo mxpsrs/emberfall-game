@@ -343,14 +343,15 @@ function trainingRatCanMove(o,x,y){
  // A clear border also keeps the enlarged bodies and tails off the fence.
  return insideTrainingPen(x,y,1)&&!objects.some(a=>a!==o&&a.penId===o.penId&&a.dead<=time&&(a.x===x&&a.y===y||Math.hypot((a.drawX??a.x)-x,(a.drawY??a.y)-y)<.8));
 }
-function trainingGateClosedAt(x,y){const g=trainingPenGate;return inWorld()&&g&&g.x===x&&g.y===y&&g.openedAt===undefined&&objects.includes(g);}
+function trainingGateOccupies(x,y){const g=trainingPenGate;return !!g&&(g._generatedService?globalThis.VeldrenServiceScene.contains(g,x,y):g.x===x&&g.y===y);}
+function trainingGateClosedAt(x,y){const g=trainingPenGate;return inWorld()&&g&&trainingGateOccupies(x,y)&&g.openedAt===undefined&&objects.includes(g);}
 function trainingGateFraction(){const g=trainingPenGate;if(!g)return 0;const m=g.motion;if(!m)return g.openedAt===undefined?0:1;const t=Math.max(0,Math.min(1,(time-m.start)/.24));return m.from+(m.to-m.from)*t*t*(3-2*t);}
 function setTrainingGate(open){const g=trainingPenGate;if(!g||(g.openedAt!==undefined)===open)return;const from=trainingGateFraction();if(open)g.openedAt=time;else delete g.openedAt;g.blocksSight=!open;g.motion={from,to:open?1:0,start:time};}
 function prepareTrainingGateStep(next){
- const g=trainingPenGate;if(!inWorld()||!g||next[0]!==g.x||next[1]!==g.y||!objects.includes(g))return true;
+ const g=trainingPenGate;if(!inWorld()||!g||!trainingGateOccupies(next[0],next[1])||!objects.includes(g))return true;
  setTrainingGate(true);return trainingGateFraction()>.95;
 }
-function crossingTrainingGate(){const g=trainingPenGate;return inWorld()&&g&&g.openedAt!==undefined&&(s.x===g.x&&s.y===g.y||path[0]?.[0]===g.x&&path[0]?.[1]===g.y);}
+function crossingTrainingGate(){const g=trainingPenGate;return inWorld()&&g&&g.openedAt!==undefined&&(trainingGateOccupies(s.x,s.y)||path[0]&&trainingGateOccupies(...path[0]));}
 function updateTrainingGate(){
  const g=trainingPenGate;if(!g)return;
  const nearby=inWorld()&&Math.abs(px-g.x)<.85&&Math.abs(py-g.y)<.85;

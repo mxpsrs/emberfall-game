@@ -109,7 +109,7 @@ below. Remaining categories still prevent complete generated-world ownership.
 
 | Collection / state | Created and populated by | Current owner and consumers | Saved / networked | Scene equivalent and status |
 | --- | --- | --- | --- | --- |
-| `objects` (active scene), `worldScenes[scene].objects` | Procedural generation, then category migrations | Static props, building doors, permanent fire/cooking fixtures and exits are native projections. Actors combine native definitions with unsaved live state. Remaining categories and mixed array membership still need migration | Migrated entities persist in WorldDocument; fixtures, doors and exits retain network catalog IDs | Native Transform and focused components own migrated data. Other service objects, mixed collection membership and full actor render integration remain unfinished |
+| `objects` (active scene), `worldScenes[scene].objects` | Procedural generation, then category migrations | All generated permanent categories have native owners, including services and standalone entrances. Actors combine native definitions with unsaved live state. Mixed array membership still needs its controlled collection gate | Migrated entities persist in WorldDocument; fixtures, doors and exits retain network catalog IDs | Native Transform and focused components own the generated data. Mixed membership and full authored actor rendering remain unfinished |
 | `buildings` (active scene), `worldScenes[scene].buildings` | Settlement, civilization, tutorial and building generation | Native building roots and child entities; frozen compatibility lists feed renderer, collision, doors and editor | Canonical graph serialization, including building parts, modules and door state | 235 building roots, 2,312 parts and 234 doors migrated. Remaining standalone architecture is a separate category |
 | `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | World, tutorial, lair, civilization, relic and quest generators | Registry remains a runtime context container. Metadata, dimensions, navigation references and lair settings project native components | WorldDocument stores SceneInfo, SceneBounds, SceneNavigation, SceneEnvironment, LairLayout and entry/exit entities | Metadata migrated; realm labels share SceneInfo. Existing buildings retain native associations; retired mine shells are not restored |
 | `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair, tutorial, geography and ecology generation | Native decorations, materialized plants and road segments; renderer/spatial caches are derived | Migrated records serialize; saved catalogs and materialized chunks are authoritative | 259 decorations and 4,697 roads migrated. Unmaterialized plants remain deterministic construction input; standalone structures remain open |
@@ -598,3 +598,46 @@ Quarry and worksite terrain checkpoint (ABI 18):
   rendering and graphical play/editor verification keep Phase 1 incomplete.
   Arbitrary pitch/roll is outside the verified horizontal terrain model.
   Nothing was deployed, published or merged into main.
+
+Permanent services ownership checkpoint:
+
+- The remaining 40 permanent services now have canonical ServiceDefinition,
+  CatalogIdentity, Interactable, Collider and rendering components: 23 anvils,
+  one practice anvil, one supply cache, one training gate and 14 standalone
+  entrances. Existing building doors remain owned by their building hierarchy.
+  Portal destinations and workstation/tutorial fields preserve their meanings.
+- Forty child footprint entities preserve the original collision cells and
+  feed the native spatial index. Parent translation, yaw, nonuniform scale and
+  elevation propagate through service rendering, collision and attached support
+  pads. Support transfer is covered by a focused fixture; the generated world
+  currently needs no additional service-pad attachments.
+- Gate opening/animation, hit timestamps and collected state are unsaved session
+  data. Source references forward to the native view, and the training gate is
+  rebound to the exact object in the scene projection. Gate traversal queries
+  use its transformed footprint. Pre-captured identities survive legacy editor
+  overlays. Player reward/character saves are not changed.
+- Services are selectable through the existing object hierarchy and retain
+  gameplay-linked duplication/deletion protection. Component removal, native
+  subtree deletion, inactive ancestors, render visibility, collider changes,
+  transformed rendering and authoritative saved boot are covered by actual-WASM
+  runtime/editor fixtures in `tests/world-services-scene.cjs`.
+- Full generated runtime and editor migration verifies 40 services and 40 colliders, their
+  original catalog/portal identities and render/collision geometry, every prior
+  category total, and exact native save/unload/load. The comparison also asserts
+  that no generated permanent object remains without a native owner. An anvil
+  render comparison accounts for float matrices versus double native affine
+  composition, with an explicit two-float-ULP bound.
+- Training-pen, item-use, direct loot interaction, shared-client, editor context,
+  editor camera, native runtime/editor, quarry, and Scene runtime/binding checks
+  pass. The preceding quarry checkpoint was independently verified on GitHub at
+  `3aa9121610284651903e0522c4b90c52d76d301a`.
+- Phase 1 remains incomplete: controlled mixed membership, full authored actor
+  render transforms and graphical play/editor verification remain open. The
+  legacy runtime-binding test is historical mirror coverage, not evidence of
+  ownership migration. Nothing was published, deployed or merged into main.
+
+Service integration final build: `npm run build` and `node tests/built-assets.mjs`
+pass with 211 game assets, all 118 startup resources, 56.28 MiB before
+compression and a 63,569 KiB Worker module. Full generated-world checks pass in
+both runtime and editor contexts. These are local checks; no graphical browser
+interaction or hosted capacity claim is made.
