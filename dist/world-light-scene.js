@@ -139,5 +139,5 @@
    return before(painter(r,m,[m[3],m[11]]),logical,x,z);
   };}
  }
- root.VeldrenLightScene={capture,migrate,sources,renderTorch,selectables:name=>torchLists.get(name)||[],ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
+ root.VeldrenLightScene={capture,migrate,sources,renderTorch,painter,selectables:name=>torchLists.get(name)||[],ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
 })(globalThis);

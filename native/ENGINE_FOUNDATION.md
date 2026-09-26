@@ -324,3 +324,24 @@ Light checkpoint verification (ABI 15):
 
 This is a Phase 1 checkpoint; graphical verification and remaining ownership
 categories are still open. No publication, deployment or merge was performed.
+
+Scene metadata checkpoint:
+
+- `SceneInfo`, `SceneBounds`, `SceneNavigation`, `SceneEnvironment` and
+  `LairLayout` now own generated descriptions, dimensions, navigation references
+  and lair layout/environment settings. Entries are child entities with native
+  transforms; exit references reuse canonical stairs or point to migrated exit
+  entities. Scene/realm/lair APIs read and write this shared data.
+- Runtime realm titles and kingdom labels no longer depend on a retired exterior
+  building shell. Existing buildings retain canonical cross-scene references.
+  Retired shells are not reintroduced into the render or building catalog.
+- Permanent exits preserve catalog IDs and use native transforms in rendering.
+  Saved metadata markers prevent procedural regeneration from replacing edits
+  or resurrecting deleted exits. Actor spawning and live encounter state remain
+  a separate, unfinished migration category.
+- `node tests/world-metadata-scene.cjs`: pass — native edits, shared views,
+  entry parent rotation/scale, existing stair references, exit render transforms,
+  retired exterior labels, guarded membership, unload/load and fresh saved boot.
+- `node tests/editor-context.cjs`, `node tests/editor-camera.cjs`,
+  `node tests/world-scene-runtime.cjs` and
+  `node tests/world-scene-runtime-binding.cjs`: pass.
