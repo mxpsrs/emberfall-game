@@ -271,7 +271,7 @@ function propDressRoom(w,r){
 }
 function propNearestRoad(x,y){let best=null,d=Infinity;for(const road of organicRoads){const distance=roadSegmentDistance(x+.5,y+.5,road);if(distance<d){best=road;d=distance;}}return best;}
 function propRoadProjection(x,y,road){const dx=road.b[0]-road.a[0],dy=road.b[1]-road.a[1],l=Math.hypot(dx,dy)||1,t=Math.max(0,Math.min(1,((x-road.a[0])*dx+(y-road.a[1])*dy)/(l*l)));return {x:road.a[0]+dx*t,y:road.a[1]+dy*t,dx:dx/l,dy:dy/l};}
-function propBridgeOverlap(box){return currentScene==='overworld'&&bridgesInRealm().some(b=>propBoxesOverlap(box,{left:b.x-(b.eastWest?b.span/2+2:b.width/2),right:b.x+(b.eastWest?b.span/2+2:b.width/2),top:b.z-(b.eastWest?b.width/2:b.span/2+2),bottom:b.z+(b.eastWest?b.width/2:b.span/2+2)}));}
+function propBridgeOverlap(box){return currentScene==='overworld'&&bridgesInRealm().some(b=>propBoxesOverlap(box,b._generatedBridge?globalThis.VeldrenBridgeScene.bounds(b,2):{left:b.x-(b.eastWest?b.span/2+2:b.width/2),right:b.x+(b.eastWest?b.span/2+2:b.width/2),top:b.z-(b.eastWest?b.width/2:b.span/2+2),bottom:b.z+(b.eastWest?b.width/2:b.span/2+2)}));}
 function propTravelOverlap(box,scene=currentScene){
  if(scene!=='overworld')return false;
  if(propBridgeOverlap(box))return true;

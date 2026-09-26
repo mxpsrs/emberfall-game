@@ -471,9 +471,18 @@ class World {
       if (!node.active_in_hierarchy || !node.components.contains("Footprint")) continue;
       const veldren::Json fields(node.components.at("Footprint"));
       const auto number = [&](const char* key, double fallback) { const auto* f = fields.find(key); return f ? f->number_or(fallback) : fallback; };
-      const double width = number("w", 0), depth = number("h", 0);
+      double width = number("w", 0), depth = number("h", 0), left = number("x", 0), top = number("z", 0);
+      // Bridge bounds are derived from the authored deck dimensions, avoiding
+      // a second width/span authority when components are edited directly.
+      if (const auto bridge = node.components.find("Bridge"); bridge != node.components.end()) {
+        const veldren::Json deck(bridge->second);
+        const double span = deck.find("span") ? deck.find("span")->number_or() : 0;
+        const double across = deck.find("width") ? deck.find("width")->number_or() : 0;
+        if (!(span > 0 && across > 1.3)) continue;
+        width = span + .7; depth = across + 1.1; left = -width / 2; top = -depth / 2;
+      }
       if (!(width > 0 && depth > 0 && std::isfinite(width + depth))) continue;
-      FootprintRect rect{id, node.world, number("x", 0), number("z", 0), width, depth};
+      FootprintRect rect{id, node.world, left, top, width, depth};
       if (const auto collider = node.components.find("Collider"); collider != node.components.end()) {
         const veldren::Json value(collider->second);
         if (const auto* shape = value.find("shape"); shape && shape->string_or() == "resource-tiles")

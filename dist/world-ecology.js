@@ -90,7 +90,7 @@ function ecologyTreeProblem(ctx,o,x=o.x,y=o.y){
  for(const seg of ctx.roads.get(key)||[])if(roadSegmentDistance(x+.5,y+.5,seg)<seg.width+1.2+r*.65)return 'road corridor';
  if(roadInfluence(x+.5,y+.5)[0]>.08)return 'square or travelled ground';
  if(ctx.scene==='overworld'){
-  for(const b of physicalBridges||[])if(Math.abs(b.eastWest?x-b.x:y-b.z)<b.span/2+2+r&&Math.abs(b.eastWest?y-b.z:x-b.x)<b.width/2+1+r)return 'bridge approach';
+  for(const b of physicalBridges||[])if(b._generatedBridge?globalThis.VeldrenBridgeScene.approach(b,x,y,r):Math.abs(b.eastWest?x-b.x:y-b.z)<b.span/2+2+r&&Math.abs(b.eastWest?y-b.z:x-b.x)<b.width/2+1+r)return 'bridge approach';
   for(const t of SETTLEMENTS){const plan=settlementPlans.get(t.id);if(Math.hypot(x-t.x,y-t.y)<Math.min(20,plan.radius*.38))return 'civic clearing';}
   if(Math.hypot(x-BRIARHAVEN_PLAZA[0],y-BRIARHAVEN_PLAZA[1])<8)return 'arrival clearing';
  }

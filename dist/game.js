@@ -402,9 +402,9 @@ async function boot(){
     await new Promise(resolve=>requestAnimationFrame(resolve));
     realmSetStartupStage('world-generation');setupExpandedWorld();
     realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
-    window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();
+    window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
-    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();
+    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();await window.VeldrenBridgeScene?.migrate();
     realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
     assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();

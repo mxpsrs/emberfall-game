@@ -114,6 +114,7 @@ below. Remaining categories still prevent complete generated-world ownership.
 | `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | World, tutorial, lair, civilization, relic and quest generators | Registry remains a runtime context container. Metadata, dimensions, navigation references and lair settings project native components | WorldDocument stores SceneInfo, SceneBounds, SceneNavigation, SceneEnvironment, LairLayout and entry/exit entities | Metadata migrated; realm labels share SceneInfo. Existing buildings retain native associations; retired mine shells are not restored |
 | `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair, tutorial, geography and ecology generation | Native decorations, materialized plants and road segments; renderer/spatial caches are derived | Migrated records serialize; saved catalogs and materialized chunks are authoritative | 259 decorations and 4,697 roads migrated. Unmaterialized plants remain deterministic construction input; standalone structures remain open |
 | `wallTorches` and lighting candidate lists | Lighting generation, then native migration | Frozen torch views and Scene-owned fixtures; C++ resolves world-space point lights, activation and day/night intensity | Permanent Light components and fixtures serialize; player fire expiry remains transient | 1,282 permanent lights migrated. Runtime candidates are derived from native component queries |
+| Bridges (`physicalBridges`, village and realm crossings) | Construction generators, then `world-bridge-scene.js` | Seven native Bridge entities; frozen active projections, native footprint candidates, derived deck/mesh/map geometry | Placement and deck parameters persist in WorldDocument; meshes and terrain samples are caches | Original bridge geometry, parent yaw/scale/elevation, collision, editor selection and duplicate/delete verified; quarry terrain ownership remains open |
 | Spatial indexes (`worldObjectIndex`, buckets, ID/order maps, navigation/road caches) | `world.js`, navigation, terrain, ecology, and geography queries | Derived from legacy arrays or generator structures; used by gameplay and rendering | Not serialized or network identity | These may remain derived caches, but their source must become Scene/component indexes. Currently they index legacy state |
 | Spawn definitions (NPCs, monsters and encounter actors) | Construction generators, then `world-spawn-scene.js` | 770 native SpawnPoint entities with typed definition components; separate unsaved live views feed gameplay and the C++ actor bridge | WorldDocument stores permanent definitions. CatalogIdentity retains existing server IDs; health, timers and movement are transient | Native definitions and fresh saved boot verified. Mixed membership and full authored actor rendering remain open |
 | Gatherables embedded in `objects` (trees, ore, fish and crops) | Construction generators, then `world-gatherable-scene.js` | Native Gatherable definitions, transform/collider/appearance components and a separate C++ resource session; compatibility views feed current gameplay | WorldDocument stores definitions and CatalogIdentity. Native depletion/replica receipts are transient; private farming remains in character saves | 4,372 resource definitions migrated with established catalog IDs, native lifecycle, transformed resource collision and renderer adapters. Mixed membership remains open |
@@ -512,3 +513,47 @@ Gatherable integration verification:
 - A fresh build and built-asset audit pass: 208 bundled assets, all 115 startup
   resources, 56.24 MiB of assets and a 63,511 KiB Worker bundle. This is a local
   build only. No hosted capacity or graphical interaction claim is made.
+
+Bridge ownership checkpoint:
+
+- Bridge entities now own placement, span, width, arch and deck lift. Native
+  indexed footprints derive their bounds directly from Bridge components, so
+  dimension edits do not leave a second stale collider size behind. Saved bridge
+  catalogs are authoritative and source ordering does not rename entities.
+- Walkable decks, parapet barriers, terrain-relative height profiles, fitted
+  bridge meshes, map outlines and approach clearances consume canonical data.
+  The active bridge collection is a frozen native projection. Both original
+  village bridges and realm crossings draw from one common frame stage.
+- Editor selection and subtree duplication/deletion include bridges. Parent yaw,
+  nonuniform scale and elevation propagate to deck geometry and collision;
+  native activation and mesh visibility are respected. Terrain/Scene edits clear
+  derived mesh and navigation caches. Deck collision uses horizontal footprints;
+  arbitrary pitch/roll authoring remains outside this verified terrain model.
+- Focused tests exercise actual C++ footprint queries, original mesh parity,
+  dimensions edited through components, transformed heights and barriers,
+  approach clearance, production frame submission, activation, duplicate/delete,
+  deterministic identity and authoritative saved boot. Native, WASM, resource,
+  runtime/editor bridge, terrain travel and editor context/camera tests pass.
+- The preceding gatherable checkpoint was verified on GitHub at
+  `21ae3327eaed0e0a66e71855ab74fb4b52e8a80a` before bridge work began.
+  Quarry terrain configuration, remaining mixed collection membership, authored
+  actor rendering and graphical play/editor verification remain Phase 1 work.
+  No publication, deployment or merge into main was performed.
+
+
+Bridge integration verification:
+
+- Full generated-world checks pass in runtime and editor contexts with all seven
+  bridges, original bridge vertex/normal parity, the previous category totals
+  including 4,372 gatherables, and exact native save/unload/load.
+- The geometry comparison explicitly scopes terrain and active object/building
+  lists to the overworld. The initial comparison incorrectly sampled mainland
+  bridges while the fresh-character fixture was on Firstlight; correcting that
+  fixture context resolved both runtime and editor comparison failures.
+- The production frame test confirms one native submission per bridge. Native
+  component dimension edits update footprint queries; invalid dimensions do not
+  produce geometry. Map detail markings follow the transformed outline.
+- Fresh build and built-asset audit pass: 209 assets, all 116 startup resources,
+  56.25 MiB of assets and a 63,525 KiB Worker bundle. No deployment occurred.
+- Phase 1 remains WIP. This checkpoint does not claim graphical browser testing,
+  hosted capacity, complete terrain ownership or complete native actor rendering.

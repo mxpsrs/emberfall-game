@@ -107,6 +107,7 @@ bridge3=function(r,startY){realmBridge(r,37.5,startY+1.5,3.4,3,true);};
 
 let realmArtCrossings=null;
 function drawRealmCrossings(r){
+ if(globalThis.VeldrenBridgeScene?.enabled)return;
  if(!realmArtCrossings){const crossings=new Map();for(const [ax,ay,bx,by]of realmRoads){
   if(ay===by&&ay<149&&ay>5&&Math.min(ax,bx)<180&&Math.max(ax,bx)>183)crossings.set('east:'+ay,{x:181.5,z:ay,w:4.4,d:3.1});
   if(ax===bx&&ax>45&&ax<365&&Math.min(ay,by)<150&&Math.max(ay,by)>153)crossings.set('south:'+ax,{x:ax,z:151.5,w:3.1,d:4.4});
