@@ -46,6 +46,11 @@ for key,(a,path) in creatures.items():rigged('creature:'+key,a,path)
 for path in sorted((ROOT/'dist/assets/audio').rglob('*.mp3')):
  record('audio:'+path.relative_to(ROOT/'dist/assets/audio').as_posix().removesuffix('.mp3'),'audio',path.stem,str(path.relative_to(ROOT)),path.read_bytes(),codec='mpeg',bytes=path.stat().st_size)
 record('prefab:table','prefab','Dining table','dist/assets/briarhaven/models.js',{'model':'briar:table'},['briar:table'],components={'MeshRenderer':{'asset':'briar:table'}})
+canonical=ROOT/'dist/assets/canonical/registry.json'
+by_id={r['id']:r for r in records}
+if canonical.exists():
+ for definition in json.loads(canonical.read_text())['records']:by_id[definition['id']]=definition
+records=list(by_id.values())
 manifest={'format':'veldren.assets','version':1,'records':sorted(records,key=lambda r:r['id'])}
 output=ROOT/'dist/assets/asset-registry.json';output.write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(records),'native asset records from existing Veldren assets.')

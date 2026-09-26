@@ -64,3 +64,17 @@ texture processing; Scene/Filament synchronization; GPU ownership and sharing;
 resource stress tests; browser/desktop derived variants; reimport; editor asset
 browser and bounded thumbnail generation; final fresh builds, visual checks and
 affected regressions. Phase 2 is not complete at this checkpoint.
+
+## Canonical source importer checkpoint
+
+`asset_import.cpp` implements GLTF/GLB 2.0 decoding in C++. `asset-import` supplies filesystem IO with source-root containment. Canonical output retains nodes, parent/child hierarchy, exact local/world matrices, meshes and primitives, indexed typed streams, UV channels, colors, joints/weights, morph targets, materials, image definitions, skins/inverse binds and animation channels/interpolation. Triangle strips/fans are converted with winding preserved. Missing normals are generated and reported. Accessor strides, normalized components, sparse accessors and matrix packing are decoded explicitly. Bounds and spheres are computed during import, including transformed default-scene model bounds.
+
+Validation rejects malformed containers, unsupported required extensions, out-of-range storage/indices, missing dependencies/UVs, invalid material references, zero normals/geometry, malformed skeleton references and animation shapes/times. PNG chunk CRC/header checks and JPEG structure/dimensions run before output. Full pixel decode remains a texture-stage responsibility. Unsupported point/line primitives are classified as recoverable exclusions; a mesh with no triangle primitives fails. Required Draco, Meshopt and BasisU extensions currently fail explicitly. Tangents are preserved and checked; missing normal-map tangent generation remains pending in the material pipeline.
+
+Real corpus: the complete 176-model Quaternius Medieval Village Standard kit, both full-body humanoids and 16 hair/eyebrow sources, both UAL1 files (43 clips each), and all 11 checked-in Kenney GLBs. The checked-in derived catalog includes all 176 modular pieces, two humanoids, the non-root-motion UAL1 library, and 11 vegetation/prop GLBs (190 models). Full original input provenance and explicit character URI aliases live in `art/external/quaternius`.
+
+The native importer emits the model's registry definitions and dependency graph. Build-time Python orchestrates IO and splits embedded image bytes into content-addressed files; it does not decode geometry or decide PBR semantics. Shared image bytes are written once. Image records currently retain source-model identities; GPU content/variant sharing is a later checkpoint. `build-asset-registry.py` merges canonical definitions over the prior packed catalog while retaining remaining packed compatibility records.
+
+Runtime/editor `VeldrenAssets.loadModel(id)` resolves a canonical model via its registry record, shares an in-flight fetch and immutable decoded document across users, and acquires the native dependency closure. `releaseModel(id)` drops the CPU document and unloads unleased metadata after the final user. This is exercised against real derived modular geometry in both runtime and editor WASM tests. Current world rendering still uses packed geometry adapters; the Scene-to-Filament migration has not yet been accepted.
+
+Recovery checkpoint preceding this work: `501ac03c68a818a952dd7d5b8bd9e39ca58734bb` (asset registry).

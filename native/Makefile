@@ -63,3 +63,11 @@ wasm-test: wasm
 
 clean:
 	rm -rf build ../dist/native/veldren-core.wasm
+
+build/asset-import: src/asset_import.cpp src/scene.cpp tools/import_asset.cpp include/veldren/asset_import.h include/veldren/scene.h
+	mkdir -p build
+	$(CXX) $(CXXFLAGS) src/asset_import.cpp src/scene.cpp tools/import_asset.cpp -o $@
+
+.PHONY: asset-import-test
+asset-import-test: build/asset-import
+	python3 ../tests/asset-import.py

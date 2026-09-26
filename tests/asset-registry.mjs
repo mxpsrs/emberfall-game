@@ -5,7 +5,7 @@ const wasm=fs.readFileSync('dist/native/veldren-core.wasm'),manifest=JSON.parse(
 const packed=JSON.parse(fs.readFileSync('dist/assets/realms/models.js','utf8').replace(/^[^=]*=/,'').replace(/;\s*$/,''));
 for(const mode of ['runtime','editor']){
  const calls=[],events={};const context={VELDREN_CONTEXT:mode,addEventListener:(event,fn)=>events[event]=fn,TextEncoder,TextDecoder,DataView,Uint8Array,Float32Array,Map,Set,atob,realmAssetURL:p=>p,
-  fetch:async path=>({ok:true,status:200,json:async()=>manifest,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),
+  fetch:async path=>({ok:true,status:200,json:async()=>path==='assets/asset-registry.json'?manifest:JSON.parse(fs.readFileSync('dist/'+path,'utf8')),arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),
   WebAssembly:{async instantiate(...args){const r=await WebAssembly.instantiate(...args);return {instance:{exports:Object.fromEntries(Object.entries(r.instance.exports).map(([name,value])=>[name,typeof value==='function'?(...args)=>{calls.push(name);return value(...args)}:value]))}}}}};
  context.window=context;vm.createContext(context);
  for(const name of ['asset-runtime','native-runtime'])vm.runInContext(fs.readFileSync('dist/'+name+'.js','utf8'),context,{filename:name});
@@ -20,15 +20,22 @@ for(const mode of ['runtime','editor']){
  for(let i=0;i<1000;i++)assert.equal(context.VeldrenBuildings.model(wall),realMesh);
  assert.equal(calls.filter(n=>n==='veldren_assets_command').length,before,'render resolution does not scan or cross WASM every frame');
  assert(Object.isFrozen(assets.record(wall).bounds[0]));assert.throws(()=>assets.record('missing:id'));
- assert(assets.dependencies(wall).includes('texture:atlas-filament'));assert(assets.dependents('texture:atlas-filament').includes(wall));
+ const texture=assets.dependencies(wall).find(id=>assets.record(id).type==='texture');assert(texture);assert(assets.dependents(texture).includes(wall));
  for(let i=0;i<100;i++)assets.acquire(wall);
- assert.equal(assets.record('texture:atlas-filament').users,100);assets.state('texture:atlas-filament','loaded');
+ assert.equal(assets.record(texture).users,100);assets.state(texture,'loaded');
  for(let i=0;i<100;i++)assets.release(wall);
- assert.equal(assets.record('texture:atlas-filament').loadState,'pending release');assets.state('texture:atlas-filament','unloaded');
+ assert.equal(assets.record(texture).loadState,'pending release');assets.state(texture,'unloaded');
  assert.equal(assets.diagnostics().dependencyLeases,0);assert.throws(()=>assets.release(wall));
  const entity={id:'test:wall',name:'Real Quaternius wall',parent:null,active:true,transform:{position:[2,0,3],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:wall}},metadata:{}};
  assert(native.scenes.upsert('test',entity));const saved=native.scenes.serialize();assert(native.scenes.load(saved));assert.equal(native.scenes.entity('test',entity.id).components.MeshRenderer.asset,wall);
- assets.invalidate('texture:atlas-filament');assert.equal(assets.record(wall).generation,2);
+ if(assets.record(wall).importSettings.importer==='veldren-gltf-1'){
+  const loaded=await Promise.all(Array.from({length:100},()=>assets.loadModel(wall)));
+  assert(loaded.every(m=>m===loaded[0]));assert.equal(loaded[0].format,'veldren.model');assert(loaded[0].meshes[0].primitives.length>0);
+  assert.equal(assets.record(wall).users,100);assert.equal(assets.record(wall).loadState,'loaded');
+  for(let i=0;i<100;i++)assets.releaseModel(wall);
+  assert.equal(assets.record(wall).loadState,'unloaded');assert.equal(assets.diagnostics().dependencyLeases,0);
+ }
+ assets.invalidate(texture);assert.equal(assets.record(wall).generation,2);
  native.destroy();assert(!assets.ready);assert.equal(calls.filter(n=>n==='veldren_assets_destroy').length,1);
  console.log('PASS: '+mode+' actual-WASM registry, real modular mesh resolution, scene stable IDs, cached reads, dependencies, 100 leases, release and teardown.');
 }
