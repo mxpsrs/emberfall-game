@@ -4,8 +4,14 @@
  const ready=(async()=>{
   const response=await fetch(realmAssetURL('native/veldren-core.wasm'),{credentials:'same-origin'});
   if(!response.ok)throw new Error('Native world core unavailable ('+response.status+')');
-  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{proc_exit(code){throw new Error('Native world core exited ('+code+')');}}};
-  const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports),api=instance.exports;
+  let api;
+  const wasiMemory=()=>api?.memory?new DataView(api.memory.buffer):null;
+  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{
+   proc_exit(code){throw new Error('Native world core exited ('+code+')');},
+   environ_sizes_get(countPointer,sizePointer){const memory=wasiMemory();if(!memory)return 21;memory.setUint32(countPointer,0,true);memory.setUint32(sizePointer,0,true);return 0;},
+   environ_get(){return 0;}
+  }};
+  const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
   if(api.veldren_core_abi_version()!==11)throw new Error('Native world core ABI mismatch');
   const world=api.veldren_world_create(512);let capacity=512,scratch=api.malloc(capacity*32),dataView=null;
