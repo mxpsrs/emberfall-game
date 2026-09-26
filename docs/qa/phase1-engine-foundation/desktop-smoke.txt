@@ -1,0 +1,4 @@
+make: Entering directory '<checkout>/native'
+./build/veldren-desktop --headless --frames=240 --assets=..
+Veldren desktop headless: 2560x1440, shadow=4096, far=900, foliage=2.5x, actors=512, visible=512, hash=7742388422538291019, 37.8636 ms
+make: Leaving directory '<checkout>/native'

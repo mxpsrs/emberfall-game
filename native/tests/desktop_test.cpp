@@ -33,5 +33,5 @@ int main() {
   assert(client.animation_states().size() == 512);
   assert(std::isfinite(client.render_states()[0].heading));
   assert(veldren_core_abi_version() == 19);
-  std::cout << "PASS: native desktop reuses ABI 16, full local assets, ultra shadows, long draw distance, dense foliage and effect budgets.\n";
+  std::cout << "PASS: native desktop reuses ABI " << veldren_core_abi_version() << ", full local assets, ultra shadows, long draw distance, dense foliage and effect budgets.\n";
 }

@@ -92,7 +92,7 @@
    next.push(o);
   }
   for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));
-  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(next):objects.splice(0,objects.length,...next));}
+  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
  }
  async function migrate(){
   capture();const document=native().serialize();let count=0;

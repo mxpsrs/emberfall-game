@@ -8,7 +8,7 @@
  function withScene(name,fn){
   if(typeof currentScene==='undefined')return fn();
   const previous=currentScene,oldObjects=typeof objects!=='undefined'?[...objects]:null,oldBuildings=typeof buildings!=='undefined'?[...buildings]:null;
-  try{currentScene=name;if(oldObjects)objects.splice(0,objects.length,...registry()[name].objects);if(oldBuildings)buildings.splice(0,buildings.length,...registry()[name].buildings);if(typeof resetLandSurface==='function')resetLandSurface();if(typeof realmNavigation!=='undefined')realmNavigation.clear();return fn();}
+  try{currentScene=name;if(oldObjects){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...registry()[name].objects);}if(oldBuildings)buildings.splice(0,buildings.length,...registry()[name].buildings);if(typeof resetLandSurface==='function')resetLandSurface();if(typeof realmNavigation!=='undefined')realmNavigation.clear();return fn();}
   finally{currentScene=previous;if(oldObjects)(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(oldObjects):objects.splice(0,objects.length,...oldObjects));if(oldBuildings)buildings.splice(0,buildings.length,...oldBuildings);if(typeof resetLandSurface==='function')resetLandSurface();if(typeof realmNavigation!=='undefined')realmNavigation.clear();}
  }
  function source(name){return name==='overworld'?(typeof organicRoads!=='undefined'?organicRoads:root.organicRoads||[]):registry()[name]?.roads||[];}
