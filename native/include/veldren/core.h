@@ -169,6 +169,11 @@ VELDREN_EXPORT std::uint32_t veldren_combat_level(
     std::uint32_t magic,
     std::uint32_t ranged);
 VELDREN_EXPORT float veldren_attack_roll_chance(float attack, float defense);
+VELDREN_EXPORT float veldren_player_accuracy(std::uint32_t skill_level, std::uint32_t target_level);
+VELDREN_EXPORT float veldren_enemy_accuracy(std::uint32_t enemy_level, std::uint32_t defense_level);
+VELDREN_EXPORT std::uint32_t veldren_player_max_hit(
+    std::uint32_t magic_style, std::uint32_t skill_level, std::int32_t weapon_power,
+    std::int32_t spell_power, std::int32_t magic_bonus);
 VELDREN_EXPORT std::uint32_t veldren_physical_max_hit(
     std::uint32_t effective_level,
     std::int32_t strength_bonus,

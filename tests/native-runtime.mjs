@@ -8,7 +8,7 @@ const window={addEventListener(type,listener){listeners[type]=listener;}};
 const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,Number,Error,Set,WeakMap};
 vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('dist/native-runtime.js',root),'utf8'),context,{filename:'native-runtime.js'});
 const native=await window.realmNativeReady;
-assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,11);
+assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,12);
 const villager={type:'villager',x:10,y:0,drawX:0,drawY:0},wolf={kind:'wolf',x:110,y:0,drawX:100,drawY:0};
 native.stepActors([villager,wolf],.5,0,0,null,1);
 assert(Math.abs(villager.drawX-.375)<.0001,'C++ applies the villager walk speed');
@@ -24,6 +24,9 @@ assert(Math.abs(crowd[1].drawX-101.3125)<.0001,'native core applies the accumula
 assert.equal(native.rules.skillLevel('Attack',83),2);assert.equal(native.rules.skillThreshold('Attack',2),83);
 assert.equal(native.rules.skillLevel('Worship',140),3);assert.equal(native.rules.combatLevel({Hitpoints:10,Attack:1,Strength:1,Defense:1,Worship:1,Magic:1,Ranged:1}),3);
 assert(Math.abs(native.rules.attackRollChance(100,50)-(1-52/202))<.0001);
+assert(Math.abs(native.rules.playerAccuracy(1,1)-.84)<.0001);
+assert(Math.abs(native.rules.enemyAccuracy(99,1)-.94)<.0001);
+assert.equal(native.rules.playerMaxHit(true,10,2,8,3),25);
 assert.equal(native.rules.physicalMaxHit(20,64,1),4);assert.equal(native.rules.magicMaxHit(10,25),12);
 assert(Math.abs(native.rules.gatheringChance(20,15,2,.1)-.595)<.0001);assert(Math.abs(native.rules.firemakingChance(20,15)-.51)<.0001);
 assert(Math.abs(native.rules.cookingBurnChance(15,1,34)-.1842424)<.0001);assert(Math.abs(native.rules.ironSmeltChance(20)-.55)<.0001);

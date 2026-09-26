@@ -654,6 +654,28 @@ float veldren_attack_roll_chance(float attack, float defense) {
                           : attack / (2.0F * (defense + 1.0F));
 }
 
+float veldren_player_accuracy(std::uint32_t skill_level, std::uint32_t target_level) {
+  const float level = static_cast<float>(std::max(1U, skill_level));
+  const float target = static_cast<float>(std::max(1U, target_level));
+  return std::clamp(0.84F + (level - target) * 0.025F, 0.35F, 0.97F);
+}
+
+float veldren_enemy_accuracy(std::uint32_t enemy_level, std::uint32_t defense_level) {
+  const float enemy = static_cast<float>(std::max(1U, enemy_level));
+  const float defense = static_cast<float>(std::max(1U, defense_level));
+  return std::clamp(0.83F + (enemy - defense) * 0.025F, 0.2F, 0.94F);
+}
+
+std::uint32_t veldren_player_max_hit(std::uint32_t magic_style, std::uint32_t skill_level,
+                                    std::int32_t weapon_power, std::int32_t spell_power,
+                                    std::int32_t magic_bonus) {
+  const std::int64_t base = magic_style != 0
+      ? static_cast<std::int64_t>(spell_power) + magic_bonus
+      : 3;
+  const std::int64_t total = base + std::max(1U, skill_level) + weapon_power + 2;
+  return static_cast<std::uint32_t>(std::clamp<std::int64_t>(total, 0, 1000000));
+}
+
 std::uint32_t veldren_physical_max_hit(std::uint32_t effective_level,
                                        std::int32_t strength_bonus,
                                        std::uint32_t minimum_hit) {
@@ -796,4 +818,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 11; }
+std::uint32_t veldren_core_abi_version() { return 12; }

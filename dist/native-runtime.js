@@ -13,7 +13,7 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==11)throw new Error('Native world core ABI mismatch');
+  if(api.veldren_core_abi_version()!==12)throw new Error('Native world core ABI mismatch');
   const world=api.veldren_world_create(512);let capacity=512,scratch=api.malloc(capacity*32),dataView=null;
   if(!world||!scratch)throw new Error('Native world core could not allocate its actor state');
   const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);
@@ -91,6 +91,9 @@
    skillThreshold:(skill,level)=>api.veldren_skill_threshold(skill==='Worship'?1:0,level),
    combatLevel:levels=>api.veldren_combat_level(levels.Hitpoints,levels.Attack,levels.Strength,levels.Defense,levels.Worship,levels.Magic,levels.Ranged),
    attackRollChance:(attack,defense)=>api.veldren_attack_roll_chance(attack,defense),
+   playerAccuracy:(level,targetLevel)=>api.veldren_player_accuracy(Math.max(1,level|0),Math.max(1,targetLevel|0)),
+   enemyAccuracy:(enemyLevel,defenseLevel)=>api.veldren_enemy_accuracy(Math.max(1,enemyLevel|0),Math.max(1,defenseLevel|0)),
+   playerMaxHit:(magic,level,weaponPower,spellPower=0,magicBonus=0)=>api.veldren_player_max_hit(magic?1:0,Math.max(1,level|0),weaponPower|0,spellPower|0,magicBonus|0),
    physicalMaxHit:(effectiveLevel,strengthBonus,minimumHit)=>api.veldren_physical_max_hit(effectiveLevel,strengthBonus,minimumHit),
    magicMaxHit:(power,bonusPercent)=>api.veldren_magic_max_hit(power,bonusPercent),
    combatRewards:(damage,style,focus)=>{const styles={melee:0,ranged:1,magic:2,worship:3},focuses={accurate:0,aggressive:1,defensive:2,balanced:3,focused:4};if(api.veldren_combat_rewards(damage,styles[style],focuses[focus]??4,scratch)!==1)return {};const memory=view(),names=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'],rewards={};for(let i=0;i<7;i++){const xp=memory.getFloat32(scratch+i*4,true);if(xp)rewards[names[i]]=xp;}return rewards;},
@@ -111,7 +114,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:11,stepActors,animateActors,pathfind,rules,transactions,stateMachines,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:12,stepActors,animateActors,pathfind,rules,transactions,stateMachines,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

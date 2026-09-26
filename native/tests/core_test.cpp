@@ -108,6 +108,14 @@ int main() {
   assert(veldren_skill_threshold(1, 3) == 140);
   assert(veldren_combat_level(10, 1, 1, 1, 1, 1, 1) == 3);
   assert(std::abs(veldren_attack_roll_chance(100, 50) - (1.0F - 52.0F / 202.0F)) < 0.0001F);
+  assert(std::abs(veldren_player_accuracy(1, 1) - 0.84F) < 0.0001F);
+  assert(veldren_player_accuracy(99, 1) == 0.97F);
+  assert(veldren_player_accuracy(1, 99) == 0.35F);
+  assert(std::abs(veldren_enemy_accuracy(10, 8) - 0.88F) < 0.0001F);
+  assert(veldren_enemy_accuracy(99, 1) == 0.94F);
+  assert(veldren_enemy_accuracy(1, 99) == 0.2F);
+  assert(veldren_player_max_hit(0, 10, 2, 50, 20) == 17);
+  assert(veldren_player_max_hit(1, 10, 2, 8, 3) == 25);
   assert(veldren_physical_max_hit(20, 64, 1) == 4);
   assert(veldren_magic_max_hit(10, 25) == 12);
   assert(std::abs(veldren_gathering_chance(20, 15, 2, 0.1F) - 0.595F) < 0.0001F);
@@ -161,7 +169,7 @@ int main() {
   assert(veldren_requirements_met(missing, required, 3) == 0);
   assert(veldren_world_timer_events(1000, 999, 0, NAN, 0) == 1);
   assert(veldren_world_timer_events(1000, NAN, 9, 999, 5) == 2);
-  assert(veldren_core_abi_version() == 11);
+  assert(veldren_core_abi_version() == 12);
   VeldrenActorState player{901, 5, 0, 5, 0, 0, 1.15F,
                            VELDREN_ACTOR_HUMAN | VELDREN_ACTOR_PLAYER};
   assert(veldren_actor_upsert(world, &player) == 1);

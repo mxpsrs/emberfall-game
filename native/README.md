@@ -24,7 +24,7 @@ adapter; do not add new gameplay rules to the legacy client.
 
 ## Render and animation batches
 
-ABI 11 keeps actor interpolation state inside each native actor record and returns one
+ABI 12 keeps actor interpolation state inside each native actor record, resolves combat accuracy and maximum-hit rules in C++, and returns one
 packed render-state batch per simulation step. Each 32-byte row contains the actor ID,
 interpolated position, smoothed heading, gait phase, blend, speed, and motion flags.
 The browser submits animation events as a second packed batch; C++ resolves idle,
@@ -46,7 +46,7 @@ foliage, and stronger effects remain Phase 4's native-desktop scope.
 ## Phase 4 — native desktop client
 
 The native desktop target is a C++ executable, not a web view. It links the same
-`core.cpp` used to produce the browser WebAssembly module and consumes the ABI 11
+`core.cpp` used to produce the browser WebAssembly module and consumes the ABI 12
 render and animation batches directly. Its Ultra profile targets 2560×1440 with a
 4096-pixel directional shadow map with PCF filtering, 16× anisotropic filtering,
 4× MSAA, a 900-unit far plane, 2.5× foliage density, and doubled effect density.

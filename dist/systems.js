@@ -47,9 +47,9 @@ function combatMotion(style){
  const a=typeof rebuiltAvatars!=='undefined'?rebuiltAvatars[s.character?.frame||'male']:null;
  return {clip,duration:a?.clips[clip]?.duration||(style==='ranged'?1.6:style==='magic'?1.3:1.05),releaseAt:a?.clips[clip]?.releaseAt||(style==='ranged'?.94:style==='magic'?.66:.3)};
 }
-function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'Attack':style==='magic'?'Magic':'Ranged');return Math.max(.35,Math.min(.97,.84+(level-(o.level||1))*.025));}
-function enemyAccuracy(o){return Math.max(.2,Math.min(.94,.83+((o.level||1)-lv('Defense'))*.025));}
-function playerMaxHit(style=combatStyle()){return (style==='magic'?currentSpell().power+magicBonus():3)+lv(style==='magic'?'Magic':style==='ranged'?'Ranged':'Strength')+equippedWeapon().power+2;}
+function playerAccuracy(o,style=combatStyle()){const level=lv(style==='melee'?'Attack':style==='magic'?'Magic':'Ranged'),rules=globalThis.window?.realmNative?.rules;return rules?rules.playerAccuracy(level,o.level||1):Math.max(.35,Math.min(.97,.84+(level-(o.level||1))*.025));}
+function enemyAccuracy(o){const rules=globalThis.window?.realmNative?.rules,level=o.level||1,defense=lv('Defense');return rules?rules.enemyAccuracy(level,defense):Math.max(.2,Math.min(.94,.83+(level-defense)*.025));}
+function playerMaxHit(style=combatStyle()){const magic=style==='magic',skill=lv(magic?'Magic':style==='ranged'?'Ranged':'Strength'),weapon=equippedWeapon(),spell=magic?currentSpell().power:0,bonus=magic?magicBonus():0,rules=globalThis.window?.realmNative?.rules;return rules?rules.playerMaxHit(magic,skill,weapon.power,spell,bonus):(magic?spell+bonus:3)+skill+weapon.power+2;}
 const MONSTER_ART={goblin:0,slime:1,wolf:2,ridgewolf:2,skeleton:3,king:4,rat:5,bandit:6,warden:7,sentinel:7};
 const EQUIPMENT_SLOTS=[['head','Head'],['neck','Neck'],['ammo','Ammunition'],['weapon','Weapon'],['body','Body'],['shield','Shield'],['hands','Hands'],['legs','Legs'],['feet','Feet']];
 function normalizeEquipmentSlots(state){
