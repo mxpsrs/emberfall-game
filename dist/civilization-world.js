@@ -440,7 +440,7 @@ prop3=function(r,o,x,z){
 const civilWallArtBefore=drawRealmWall;
 drawRealmWall=function(r,x,y){if(globalThis.VeldrenStructureScene?.enabled&&civilFloors.has(currentScene))return;const floor=civilFloors.get(currentScene);if(!floor)return civilWallArtBefore(r,x,y);const tile=floor.walls.get(x+':'+y);if(tile)civilWallGeometry(r,tile);};
 const civilCrossingsBefore=drawRealmCrossings;
-drawRealmCrossings=function(r){civilCrossingsBefore(r);if(globalThis.VeldrenStructureScene?.enabled){VeldrenStructureScene.draw(r,currentScene);return;}
+drawRealmCrossings=function(r){civilCrossingsBefore(r);if(globalThis.VeldrenStructureScene?.enabled)return;
  if(currentScene==='overworld'){const walls=civilWalls.get('overworld');if(walls)civilDrawWallRuns(r,walls,'human',true);}
  else if(civilFloors.has(currentScene)){for(const room of civilFloors.get(currentScene).rooms)civilPaintFloor(r,room.x+.5,room.y+.5,room.w-1,room.h-1,['library','study','bedroom','guest'].includes(room.usage)?'#a38a68':'#95988b',5);}
 };
