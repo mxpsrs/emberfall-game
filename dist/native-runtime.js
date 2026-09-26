@@ -13,6 +13,7 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
+  if(globalThis.VeldrenAssets)await globalThis.VeldrenAssets.initialize(api);
   if(api.veldren_core_abi_version()!==19)throw new Error('Native world core ABI mismatch');
   const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
   if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
@@ -121,7 +122,7 @@
    if(!active.length)return;if(api.veldren_animation_states_resolve(world,animationScratch,active.length)!==active.length)throw new Error('Native world core lost actor animation state');
    const clips=['idle','walk','run','death','hit','attack','attack2','attack3','cast','cast2','throw'];for(let index=0;index<active.length;index++){const offset=animationScratch+index*48;active[index]._nativeAnimation={clip:clips[memory.getUint32(offset+4,true)]||'idle',baseClip:clips[memory.getUint32(offset+12,true)]||'idle',phase:memory.getFloat32(offset+20,true),blend:memory.getFloat32(offset+24,true),basePhase:memory.getFloat32(offset+44,true)};}
   }
-  function destroy(){if(destroyed)return;destroyed=true;api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
+  function destroy(){if(destroyed)return;destroyed=true;globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
   window.addEventListener('pagehide',destroy,{once:true});
   const rules={
    chance:probability=>api.veldren_random_chance(world,probability)===1,

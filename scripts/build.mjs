@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
+execFileSync('python3',['scripts/build-asset-registry.py'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
 import {build} from 'esbuild';

@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/core.cpp src/desktop.cpp src/scene.cpp)
+add_library(veldren_core STATIC src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp)
 target_include_directories(veldren_core PUBLIC include)
 
 add_executable(veldren-desktop src/desktop_main.cpp src/desktop_renderer.cpp)
@@ -47,3 +47,7 @@ add_test(NAME desktop-scene COMMAND veldren-desktop-scene-test)
 set_tests_properties(desktop-scene PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME desktop-headless COMMAND veldren-desktop --headless --frames=240 --assets=..)
 set_tests_properties(desktop-headless PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(veldren-asset-test tests/assets_test.cpp)
+target_link_libraries(veldren-asset-test PRIVATE veldren_core)
+add_test(NAME asset-registry COMMAND veldren-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/asset-registry.json)

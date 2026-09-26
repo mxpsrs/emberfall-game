@@ -4,7 +4,7 @@
  function registries(){return {rebuilt:typeof rebuiltModels==='undefined'?{}:rebuiltModels,briar:typeof briarModels==='undefined'?{}:briarModels};}
  function catalog(){return Object.entries(registries()).flatMap(([source,models])=>Object.entries(models).filter(([,m])=>m?.bounds).map(([key,m])=>({id:source+':'+key,key,source,name:key.replaceAll('_',' '),category:A.category(key),bounds:A.clone(m.bounds),size:m.bounds[1].map((v,i)=>v-m.bounds[0][i])})));}
  function identify(mesh){for(const [source,models]of Object.entries(registries()))for(const [key,m]of Object.entries(models))if(m===mesh||m.p===mesh.p&&m.i===mesh.i)return source+':'+key;return null;}
- function model(key){const [source,...name]=key.split(':');return registries()[source]?.[name.join(':')];}
+ function model(key){if(globalThis.VeldrenAssets?.ready)return globalThis.VeldrenAssets.mesh(key);const [source,...name]=key.split(':');return registries()[source]?.[name.join(':')];}
  function capture(b){
   const full=[],faces=[],oldCut=b._cutaway,oldTransform=b.editorTransform,scene=currentScene;
   // Capture the actual renderer output, including variant materials. Geometry
