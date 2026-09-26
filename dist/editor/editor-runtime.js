@@ -458,13 +458,13 @@
  }
 
  function removePlacementPreview(){
-  if(!placementPreview)return;const scene=placementPreview._editorScene,list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
+  if(!placementPreview)return;const scene=placementPreview._editorScene;if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.removeSession(placementPreview);else{const list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);}try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
  }
  function ensurePlacementPreview(asset){
   if(placementPreview&&placementPreview._editorAssetId===asset.id&&placementPreview._editorScene===String(currentScene))return placementPreview;
   removePlacementPreview();const x=Number.isFinite(free.x)?free.x:Number(px)||0,y=Number.isFinite(free.y)?free.y:Number(py)||0,template=asset.source==='preset'?(presetTemplates[asset.key]||{name:asset.name}):{name:asset.name};
   placementPreview={id:`editor-preview-${++editorSequence}`,type:'prop',...template,propKind:asset.source==='preset'?asset.key:undefined,x,y,homeX:x,homeY:y,drawX:x,drawY:y,dead:0,hitAt:-100,attackAt:-100,editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},walkThrough:true,placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Temporary asset placement preview'},_editorPreview:true,_editorAssetId:asset.id,_editorScene:String(currentScene)};
-  const list=sceneObjects(currentScene);list.push(placementPreview);if(list!==objects&&!objects.includes(placementPreview))objects.push(placementPreview);worldObjectRevision++;worldObjectIndex=null;return placementPreview;
+  if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.addSession(String(currentScene),placementPreview,'preview');else{const list=sceneObjects(currentScene);list.push(placementPreview);if(list!==objects&&!objects.includes(placementPreview))objects.push(placementPreview);}worldObjectRevision++;worldObjectIndex=null;return placementPreview;
  }
  function movePlacementPreview(x,y){
   if(!placementAsset)return;const o=ensurePlacementPreview(placementAsset),oldX=o.x,oldY=o.y;x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);if(Math.abs(oldX-x)<.001&&Math.abs(oldY-y)<.001)return;
@@ -480,6 +480,7 @@
   const o={id,...base,x,y,homeX:x,homeY:y,drawX:x,drawY:y,dead:0,hitAt:-100,attackAt:-100,
    editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},
    placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Placed from Veldren asset browser'},_editorCreated:true};
+  if(globalThis.VeldrenWorldObjects?.enabled){const view=VeldrenSceneOwnership.createProp(String(currentScene),o);projectWorld=VeldrenSceneOwnership.document();sceneDocumentDirty=true;selected=refForObject(view);selectedScene=String(currentScene);ensureBase(selected);invalidate(view);const info=entityInfo(selected);post('change',{selection:info,placed:true,asset});return info;}
   const list=sceneObjects(currentScene);list.push(o);if(list!==objects&&!objects.includes(o))objects.push(o);
   const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'object',o,list.length-1);if(graphEntity)o._sceneEntityId=graphEntity.id;
   const ref=refForObject(o);ensureBase(ref);const info=entityInfo(ref);

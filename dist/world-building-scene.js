@@ -188,9 +188,9 @@
    nextObjects.push(object);
   }
   for(const door of doors)if(!seen.has(door._sceneEntityId))nextObjects.push(door);
-  world.objects=nextObjects;world.buildings=Object.freeze(result);
+  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(sceneName,nextObjects);else world.objects=nextObjects;world.buildings=Object.freeze(result);
   tables.set(sceneName,{buildings:result,ids:new Set(ids),doorIds:new Set(doorIds)});
-  if(typeof currentScene!=='undefined'&&currentScene===sceneName){if(typeof buildings!=='undefined')buildings.splice(0,buildings.length,...result);if(typeof objects!=='undefined')objects.splice(0,objects.length,...nextObjects);}
+  if(typeof currentScene!=='undefined'&&currentScene===sceneName){if(typeof buildings!=='undefined')buildings.splice(0,buildings.length,...result);if(typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...nextObjects);}}
   if(root.VeldrenStructureScene?.enabled)root.VeldrenStructureScene.refreshSurfaces();
   else if(typeof civilWalkableStructures!=='undefined'){
    const other=civilWalkableStructures.filter(surface=>!surface._buildingOwner&&!oldBuildings.includes(surface.building)&&!before?.buildings.includes(surface.building));

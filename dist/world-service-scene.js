@@ -39,8 +39,8 @@
   for(const o of w.objects||[]){if(o._generatedSceneEntity&&!node(scene,o._sceneEntityId))continue;const id=o._generatedService?o._sceneEntityId:o._generatedServiceId;
    if(id){if(node(scene,id)?.components.ServiceDefinition&&!seen.has(id)){next.push(getView(scene,id));seen.add(id);}continue;}next.push(o);
   }
-  for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));w.objects=next;
-  if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined')objects.splice(0,objects.length,...next);
+  for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;
+  if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
   if(gateRef?.scene===scene&&typeof trainingPenGate!=='undefined')trainingPenGate=node(scene,gateRef.id)?.components.ServiceDefinition?getView(scene,gateRef.id):null;
  }
  function invalidate(){if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation.clear();if(typeof miniTerrain!=='undefined')miniTerrain=null;if(typeof mapServicesCache!=='undefined')mapServicesCache=null;

@@ -203,7 +203,7 @@
    getOwnPropertyDescriptor(object,key){return Object.getOwnPropertyDescriptor(object,key)||(keys.has(key)||Object.hasOwn(current().metadata,key)?{enumerable:true,configurable:true}:undefined);}
   });
  }
- function arrayReplace(array,values){Array.prototype.splice.call(array,0,array.length,...values);}
+ function arrayReplace(array,values){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else Array.prototype.splice.call(array,0,array.length,...values);}
  function projectNativeScene(sceneName,sceneDocument,rawObjects){
   const records=(sceneDocument.entities||[]).filter(entity=>entity.components?.GeneratedProp);
   const aliasByKey=new Map((rawObjects||[]).filter(object=>object._generatedSceneKey).map(object=>[object._generatedSceneKey,object._generatedLegacyId]));
@@ -217,7 +217,7 @@
    next.push(object);
   }
   for(const proxy of proxies)if(!seen.has(proxy.id))next.push(proxy);
-  scene.objects=next;
+  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(sceneName,next);else scene.objects=next;
   const children=new Map(),parents=new Map();
   for(const entity of sceneDocument.entities||[]){parents.set(entity.id,entity.parent);if(entity.parent){if(!children.has(entity.parent))children.set(entity.parent,new Set());children.get(entity.parent).add(entity.id);}}
   scenesByName.set(sceneName,{scene,byId,proxies,children,parents});
@@ -265,7 +265,7 @@
   const record=scenesByName.get(String(sceneName))?.byId.get(String(id));if(!record)return false;
   if(!root.realmNative.scenes.remove(String(sceneName),String(id)))return false;
   const scene=record._generatedSceneName===sceneName?worldRegistry()[sceneName]:null;
-  if(scene){const at=scene.objects.indexOf(record);if(at>=0)Array.prototype.splice.call(scene.objects,at,1);const active=activeObjects();if(activeScene()===sceneName&&Array.isArray(active)){const index=active.indexOf(record);if(index>=0)Array.prototype.splice.call(active,index,1);}}
+  if(scene&&!root.VeldrenWorldObjects?.enabled){const at=scene.objects.indexOf(record);if(at>=0)Array.prototype.splice.call(scene.objects,at,1);const active=activeObjects();if(activeScene()===sceneName&&Array.isArray(active)){const index=active.indexOf(record);if(index>=0)Array.prototype.splice.call(active,index,1);}}
   const table=scenesByName.get(String(sceneName));table.byId.delete(String(id));table.proxies=table.proxies.filter(item=>item!==record);return true;
  }
  function document(){return root.realmNative?.scenes?.serialize?.()||null;}
@@ -277,6 +277,11 @@
   root.VeldrenWorldEdits?.refreshSceneRenderables?.(value);
   return document();
  }
+ function createProp(scene,object){
+  const id=String(object.id);if(root.realmNative.scenes.entity(scene,id))throw Error('Entity already exists: '+id);
+  const entity=descriptor(scene,{...object,_generatedSceneKey:'authored:'+id,_generatedEntityId:id,_generatedLegacyId:id});entity.parent=null;
+  writeEntity(scene,entity);return scenesByName.get(scene)?.byId.get(id);
+ }
  function status(){return {captured:generationCaptured,migrated:generatedCount,scenes:scenesByName.size,savedCatalogAuthoritative:authoritative};}
- root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},captureGenerationIdentity,migrateStaticProps,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
+ root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},captureGenerationIdentity,migrateStaticProps,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
 })(globalThis);

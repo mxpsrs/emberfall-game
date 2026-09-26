@@ -93,13 +93,13 @@ function applySharedWorld(data){
  const visible=new Set(w.objects.map(o=>o.id));
  s.groundLoot=(s.groundLoot||[]).filter(p=>!p._sharedObject||p.scene!==currentScene||visible.has(p._sharedObject));
  const stale=objects.filter(o=>o._sharedObject&&!visible.has(o._sharedObject));
- for(const o of stale){objects.splice(objects.indexOf(o),1);const list=worldScenes[currentScene].objects;if(list!==objects){const i=list.indexOf(o);if(i>=0)list.splice(i,1);}if(target===o)stop();}
+ for(const o of stale){if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.removeSession(o);else{objects.splice(objects.indexOf(o),1);const list=worldScenes[currentScene].objects;if(list!==objects){const i=list.indexOf(o);if(i>=0)list.splice(i,1);}}if(target===o)stop();}
  for(const p of w.objects){
   if(p.kind==='loot'){
    let pile=s.groundLoot.find(o=>o._sharedObject===p.id);if(!pile){pile={type:'loot',name:'Ground loot',dead:0,scene:currentScene,_sharedObject:p.id};s.groundLoot.push(pile);}Object.assign(pile,{items:p.items,x:p.x,y:p.y,expiresAt:p.expiresAt-sharedOffset});
    if(!Object.keys(pile.items).length)s.groundLoot=s.groundLoot.filter(o=>o!==pile);
   }else if(p.kind==='fire'){
-   let o=objects.find(o=>o._sharedObject===p.id);if(!o){o={id:'fire:'+p.id,_sharedObject:p.id,type:'camp',name:'Log fire',cooking:true,sprite:7,dead:0,walkThrough:true};objects.push(o);if(worldScenes[currentScene].objects!==objects)worldScenes[currentScene].objects.push(o);}if(currentScene==='tutorial'){const nell=tutorialTutor('fishing');if(nell&&Math.hypot(p.x-nell.x,p.y-nell.y)<=6)o.tutorialRole='fishing-fire';}Object.assign(o,{x:p.x,y:p.y,homeX:p.x,homeY:p.y,drawX:p.x,drawY:p.y,logType:p.logType,expiresAt:p.expiresAt-sharedOffset});
+   let o=objects.find(o=>o._sharedObject===p.id);if(!o){o={id:'fire:'+p.id,_sharedObject:p.id,type:'camp',name:'Log fire',cooking:true,sprite:7,dead:0,walkThrough:true};if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.addSession(currentScene,o,'fire');else{objects.push(o);if(worldScenes[currentScene].objects!==objects)worldScenes[currentScene].objects.push(o);}}if(currentScene==='tutorial'){const nell=tutorialTutor('fishing');if(nell&&Math.hypot(p.x-nell.x,p.y-nell.y)<=6)o.tutorialRole='fishing-fire';}Object.assign(o,{x:p.x,y:p.y,homeX:p.x,homeY:p.y,drawX:p.x,drawY:p.y,logType:p.logType,expiresAt:p.expiresAt-sharedOffset});
   }
  }
 }

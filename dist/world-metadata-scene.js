@@ -55,8 +55,8 @@
   const w=registry()[name];if(!w)return;
   const ids=native().componentIds(name,'GeneratedExit'),catalog=new Map(ids.map(id=>[String(native().entity(name,id).components.CatalogIdentity.id),id])),seen=new Set(),next=[];
   for(const o of w.objects||[]){if(o._generatedSceneEntity&&!native().entity(name,o._sceneEntityId))continue;if(o.type==='exit'||o._generatedExit){const id=o._generatedExit?o._sceneEntityId:catalog.get(String(o.id));if(id&&native().entity(name,id)){next.push(exitView(name,id));seen.add(id);}continue;}next.push(o);}
-  for(const id of ids)if(!seen.has(id))next.push(exitView(name,id));w.objects=next;aliases.set(name,catalog);
-  if(typeof currentScene!=='undefined'&&currentScene===name&&typeof objects!=='undefined')objects.splice(0,objects.length,...next);
+  for(const id of ids)if(!seen.has(id))next.push(exitView(name,id));if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(name,next);else w.objects=next;aliases.set(name,catalog);
+  if(typeof currentScene!=='undefined'&&currentScene===name&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
   if(!bound.has(name)){
    for(const field of [...infoFields,'exterior','returnAt'])bindField(w,field,name);
    Object.defineProperty(w,'entry',{enumerable:true,configurable:false,get:()=>entryView(name),set:value=>setEntry(name,value)});

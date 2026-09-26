@@ -99,11 +99,11 @@ function setupMountainLibrary(){
 function syncMountainExpert(){
  const found=mountainObject('expert');if(!found||!mountainLibraryHome)return;const q=mountainState(),destination=q.stage>=15&&q.stage<=19?'lair_veyr':'overworld';
  if(found.scene===destination)return;
- const o=found.o;worldScenes[found.scene].objects=worldScenes[found.scene].objects.filter(p=>p!==o);
+ const o=found.o;if(!globalThis.VeldrenWorldObjects?.enabled)worldScenes[found.scene].objects=worldScenes[found.scene].objects.filter(p=>p!==o);
  const point=destination==='overworld'?[mountainLibraryHome.x,mountainLibraryHome.y]:encounterSpawnPoint(destination,22,37,10);
  if(!point)throw new Error('No safe position for Alaric');Object.assign(o,{x:point[0],y:point[1],homeX:point[0],homeY:point[1],drawX:point[0],drawY:point[1]});
  if(destination==='overworld')o.interiorBuilding=mountainLibraryHome.building;else delete o.interiorBuilding;
- worldScenes[destination].objects.push(o);
+ if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.moveActor(o,destination);else worldScenes[destination].objects.push(o);
 }
 function mountainInspectFragment(){
  const q=mountainState();if(q.stage!==12||!q.memory)return;
@@ -144,10 +144,10 @@ function syncMountainWorld(){
  if(!mountainReady)return;const q=mountainState(),found=mountainObject('edda');
  const destination=q.stage>=10?'overworld':'quest_underiron';
  if(found&&found.scene!==destination){
-  worldScenes[found.scene].objects=worldScenes[found.scene].objects.filter(o=>o!==found.o);
+  if(!globalThis.VeldrenWorldObjects?.enabled)worldScenes[found.scene].objects=worldScenes[found.scene].objects.filter(o=>o!==found.o);
   const maerin=mountainObject('maerin').o,at=destination==='overworld'?[maerin.x+3,maerin.y+2]:destination==='lair_veyr'?[22,37]:[12,27];
   const point=encounterSpawnPoint(destination,...at,12);if(!point)throw new Error('No safe position for Edda');
-  Object.assign(found.o,{x:point[0],y:point[1],drawX:point[0],drawY:point[1],homeX:point[0],homeY:point[1]});worldScenes[destination].objects.push(found.o);
+  Object.assign(found.o,{x:point[0],y:point[1],drawX:point[0],drawY:point[1],homeX:point[0],homeY:point[1]});if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.moveActor(found.o,destination);else worldScenes[destination].objects.push(found.o);
  }
  syncMountainExpert();
  const watcher=mountainObject('watcher')?.o;if(watcher&&q.stage>=7){watcher.hp=0;watcher.dead=Infinity;watcher.collected=true;}

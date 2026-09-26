@@ -66,8 +66,8 @@
   for(const o of w.objects||[]){if(o._generatedSceneEntity&&!node(scene,o._sceneEntityId))continue;const id=o._generatedGatherable?o._sceneEntityId:o._generatedGatherableId;
    if(id){if(node(scene,id)?.components.Gatherable&&!seen.has(id)){next.push(getView(scene,id));seen.add(id);}continue;}next.push(o);
   }
-  for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));w.objects=next;
-  if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined')objects.splice(0,objects.length,...next);
+  for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;
+  if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
  }
  const legacyDefinition=typeof resourceDefinition==='function'?resourceDefinition:()=>null;
  async function migrate(){

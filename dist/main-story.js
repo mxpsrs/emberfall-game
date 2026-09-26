@@ -101,7 +101,7 @@ const mainStorySetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){mainStorySetupBefore();setupMainStory();};
 function mainStoryMoveMiner(key,scene,point){
  const found=mainStoryFound(key);if(!found)return;const o=found.o;
- if(found.scene!==scene){found.o&&worldScenes[found.scene].objects.splice(worldScenes[found.scene].objects.indexOf(o),1);worldScenes[scene].objects.push(o);}
+ if(found.scene!==scene){if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.moveActor(o,scene);else{worldScenes[found.scene].objects.splice(worldScenes[found.scene].objects.indexOf(o),1);worldScenes[scene].objects.push(o);}}
  Object.assign(o,{x:point[0],y:point[1],drawX:point[0],drawY:point[1]});
 }
 function syncMainStoryWorld(){

@@ -21,7 +21,7 @@ s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
 s.tutorial = Math.max(0, Math.floor(Number(s.tutorial)||0));
 if (s.character) s.character.look = Math.max(0, Math.min(3, Number(s.character.look) || 0));
-const objects = [], buildings = [];
+const objects = new Proxy([], {get(a,k,r){return globalThis.VeldrenWorldObjects?.activeMethod(a,k)??Reflect.get(a,k,r);},set(a,k,v){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.set(a,k,v);},deleteProperty(a,k){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.deleteProperty(a,k);},defineProperty(a,k,d){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.defineProperty(a,k,d);}}), buildings = [];
 let serial = 0;
 function add(type, x, y, name, sprite, extra={}) {
   const o = {id:serial++, type, x, y, homeX:x, homeY:y, drawX:x, drawY:y, name, sprite, dead:0, hitAt:-100, attackAt:-100, ...extra};
@@ -404,7 +404,7 @@ async function boot(){
     realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
     window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();window.VeldrenQuarryScene?.capture();window.VeldrenServiceScene?.capture();
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
-    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();await window.VeldrenBridgeScene?.migrate();await window.VeldrenQuarryScene?.migrate();await window.VeldrenServiceScene?.migrate();
+    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();await window.VeldrenBridgeScene?.migrate();await window.VeldrenQuarryScene?.migrate();await window.VeldrenServiceScene?.migrate();window.VeldrenWorldObjects?.install();
     realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
     assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();

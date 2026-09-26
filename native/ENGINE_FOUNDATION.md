@@ -641,3 +641,21 @@ pass with 211 game assets, all 118 startup resources, 56.28 MiB before
 compression and a 63,569 KiB Worker module. Full generated-world checks pass in
 both runtime and editor contexts. These are local checks; no graphical browser
 interaction or hosted capacity claim is made.
+
+### Controlled collection membership checkpoint
+
+- Permanent scene object lists are frozen projections. The active array rejects
+  indexed edits, borrowed mutators and unverified replacements; scene selection
+  retains a checked compatibility adapter.
+- Native category publishers update membership after Scene operations. Temporary
+  fires and editor placement previews use an explicit unsaved session registry.
+  Quest escort transfers use session scene placement while retaining native spawn
+  identity and definition ownership. Native deletion and reload clear stale live
+  placement. New editor assets are authored directly as native props.
+- Fixed editor startup to capture and migrate quarries and services, matching
+  `/play`; their scripts previously loaded without executing those migrations.
+- `node tests/world-objects-scene.cjs`: passed in runtime and editor contexts,
+  including mutation rejection, travelling actors, native category refresh,
+  authored create/delete, temporary object removal and exact native reload.
+- Editor context/camera, shared client, legacy scene runtime and runtime binding
+  regression checks passed. Full generated-world and graphical checks continue.

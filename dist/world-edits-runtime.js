@@ -123,14 +123,14 @@
  function synchronizeSceneRenderables(world=state.world,onlyScene=null){
   if(!world||typeof worldScenes==='undefined')return;
   const records=window.VeldrenSceneFormat.renderables(world).filter(record=>onlyScene==null||record.scene===String(onlyScene));
-  const liveIds=new Set(records.map(record=>record.id));
+  const liveIds=new Set(records.map(record=>record.id)),pending=new Map();const listFor=name=>{if(!pending.has(name))pending.set(name,[...worldScenes[name].objects]);return pending.get(name);};
   for(const record of records){
    const scene=worldScenes[record.scene];if(!scene?.objects)continue;
-   let object=scene.objects.find(item=>item._sceneEntityId===record.id);
+   let object=listFor(record.scene).find(item=>item._sceneEntityId===record.id);
    if(object?._generatedSceneEntity)continue;
    if(!object){
     object={id:record.id,_sceneEntityId:record.id,type:'prop',dead:0,hitAt:-100,attackAt:-100,walkThrough:true};
-    scene.objects.push(object);
+    listFor(record.scene).push(object);
    }
    Object.assign(object,{name:record.name,x:record.x,y:record.y,homeX:record.x,homeY:record.y,
     drawX:record.x,drawY:record.y,editorAsset:record.asset,
@@ -138,7 +138,8 @@
   }
   const sceneNames=onlyScene==null?Object.keys(worldScenes):[String(onlyScene)];
   for(const name of sceneNames){const scene=worldScenes[name];if(!scene?.objects)continue;
-   for(let index=scene.objects.length-1;index>=0;index--){const item=scene.objects[index];if(item._sceneEntityId&&!item._generatedSceneEntity&&!liveIds.has(item._sceneEntityId)){scene.objects.splice(index,1);if(typeof currentScene!=='undefined'&&currentScene===name){const active=objects.indexOf(item);if(active>=0)objects.splice(active,1)}}}
+   const list=listFor(name);for(let index=list.length-1;index>=0;index--){const item=list[index];if(item._sceneEntityId&&!item._generatedSceneEntity&&!liveIds.has(item._sceneEntityId)){list.splice(index,1);if(!globalThis.VeldrenWorldObjects?.enabled&&typeof currentScene!=='undefined'&&currentScene===name){const active=objects.indexOf(item);if(active>=0)objects.splice(active,1)}}}
+   if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.project(name,list);else scene.objects=list;
   }
  }
  const status=window.VELDREN_WORLD_EDITS_STATUS={revision:0,total:0,applied:0,matched:0,unmatched:0,rejected:0,errors:[],source:null};
