@@ -406,3 +406,36 @@ Standalone architecture checkpoint (ABI 16):
   stair-hole visual clipping and graphical play/editor verification remain
   limitations; exact native footprint collision is verified separately.
 - No deployment, publication or merge into main was performed.
+
+Permanent spawn definition checkpoint:
+
+- 770 generated NPC/monster definitions now live in native Scene entities.
+  SpawnPoint, ActorDefinition, ActorAppearance, CombatStats, EncounterDefinition,
+  Dialogue, QuestMarker and ActorPlacement separate their permanent concerns.
+  CatalogIdentity retains existing network IDs; source-derived entity IDs are
+  captured before editor overlays and do not depend on unrelated array order.
+- A live view combines those definitions with unsaved session state. Health,
+  movement, combat timers, animation caches and multiplayer receipts do not
+  write to WorldDocument, including nested mutations. C++ actor motion still
+  runs in its separate transient Scene. Existing lexical gameplay references
+  forward to the live view. Disabled definitions stay unavailable to gameplay.
+- Spawn/home transforms follow native building parents. Native transform edits
+  reset only the live pose; component edits do not reset combat. A document
+  reload recreates transient defaults. Saved spawn deletion remains authoritative
+  on a fresh boot. Actors created during play are not permanent definitions.
+- Runtime and editor startup both enable this migration. Editor definition and
+  transform edits write through the native Scene; preview health stays transient.
+  Spawn entities retain the existing gameplay-linked duplicate/delete protection.
+- `node tests/world-spawns-scene.cjs` passes actual WASM actor stepping, state
+  isolation, hierarchy/home transforms, source-order identity, catalog mapping,
+  lexical references, editor authoring, unload/load and fresh saved boot.
+  `node tests/world-buildings-scene.cjs` passes all 770 generated definitions,
+  original catalog IDs/health/positions/home coordinates, previous category
+  totals and exact combined native save/unload/load.
+- The actor renderer and gameplay still consume compatibility views. Full
+  authored actor scale/orientation rendering and graphical interaction remain
+  verification/migration work; this checkpoint does not claim full native
+  browser gameplay or Filament graph ownership. Gatherables, bridges/quarries
+  and remaining mixed membership are also unfinished. Spirits remain retired.
+- Structure checkpoint `aba0ea9a11de2f219b0d61c3c7d0fac4e2674cfe` was verified
+  on GitHub before this category continued. No deployment or merge occurred.

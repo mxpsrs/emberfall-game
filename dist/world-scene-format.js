@@ -228,7 +228,7 @@
    const matrices=worldMatrices(scene),entities=new Map(scene.entities.map(entity=>[entity.id,entity]));
    for(const entity of scene.entities){
     const renderer=entity.components?.MeshRenderer;
-    if(!renderer||renderer.visible===false||entity.components?.LegacyWorldEdit||entity.components?.GeneratedProp||entity.components?.GeneratedBuilding||entity.components?.BuildingPart||entity.components?.GeneratedDecoration)continue;
+    if(!renderer||renderer.visible===false||entity.components?.LegacyWorldEdit||entity.components?.GeneratedProp||entity.components?.GeneratedBuilding||entity.components?.GeneratedSpawn||entity.components?.BuildingPart||entity.components?.GeneratedDecoration)continue;
     let ancestor=entity,enabled=true;
     while(ancestor){if(ancestor.active===false){enabled=false;break;}ancestor=ancestor.parent?entities.get(ancestor.parent):null;}
     if(!enabled||typeof renderer.asset!=='string')continue;

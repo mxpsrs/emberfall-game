@@ -66,7 +66,7 @@
  const snapValue=(value,step)=>step?Math.round(value/step)*step:value;
 
  function protectedObject(o){
-  return !!(o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
+  return !!(o?._generatedSpawn||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
  }
  function buildingId(b,index){
   if(b._generatedBuildingEntity)return b._sceneEntityId;
@@ -90,7 +90,7 @@
    const list=sceneBuildings(scene);for(let i=0;i<list.length;i++)if(buildingId(list[i],i)===String(id))return {kind:'building',entity:list[i],id:String(id)};
    return null;
   }
-  const o=sceneObjects(scene).find(o=>String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenStructureScene?.selectables(scene).find(o=>o._sceneEntityId===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
+  const o=sceneObjects(scene).find(o=>String(o._sceneEntityId||'')===String(id)||String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenStructureScene?.selectables(scene).find(o=>o._sceneEntityId===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
  }
  function ensureBase(ref){
   const e=ref.entity;if(e._editorBase)return e._editorBase;
