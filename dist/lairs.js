@@ -30,6 +30,7 @@ const wallBeforeLairs=worldWall;
 worldWall=function(x,z){const lair=CREATURE_LAIRS[currentScene];if(!lair)return wallBeforeLairs(x,z);return x<1||z<1||x>=lair.size[0]-1||z>=lair.size[1]-1||!lair.rooms.some(room=>lairContains(room,x,z));};
 function lairDecorBlocked(scene,x,z,allowPlinth=false){
  return (worldScenes[scene]?.decor||[]).some(o=>{
+  if(o._generatedDecoration)return globalThis.VeldrenSceneryScene.blocked(o,x,z,allowPlinth);
   const dx=x+.5-o.x,dz=z+.5-o.z,k=o.size||1;
   if(o.kind==='model'){
    const mesh=rebuiltModels[o.model];if(!mesh)return false;
@@ -245,7 +246,7 @@ function drawLairFeature(r,o,lair){
 function drawCreatureLair(r,minx,maxx,minz,maxz){
  const lair=CREATURE_LAIRS[currentScene];if(!lair)return;const world=worldScenes[currentScene];
  for(let z=Math.floor(minz/8)*8;z<=maxz;z+=8)for(let x=Math.floor(minx/8)*8;x<=maxx;x+=8){const key=x+':'+z;let tile=world.floorChunks.get(key);if(!tile){tile={};world.floorChunks.set(key,tile);}emitMesh3(r,cachedMesh3(tile,'prop',q=>{for(let zz=z;zz<z+8;zz++)for(let xx=x;xx<x+8;xx++)if(!worldWall(xx,zz)){const color=shade3(lair.floor,.94+.06*Math.sin(xx*3.7+zz*1.3));q.face([[xx,.025,zz],[xx+1,.025,zz],[xx+1,.025,zz+1],[xx,.025,zz+1]],color,null,['crystal','arcane','ork'].includes(lair.theme)?18:7);}return .03;}));}
- for(const o of world.decor){if(o.x<minx-8||o.x>maxx+8||o.z<minz-8||o.z>maxz+8)continue;if(o.kind==='model')lairModel(r,o.model,o.x,0,o.z,o.height,o.heading,o.tint);else drawLairFeature(r,o,lair);}
+ for(const o of world.decor){if(o.x<minx-8||o.x>maxx+8||o.z<minz-8||o.z>maxz+8)continue;if(o._generatedDecoration)globalThis.VeldrenSceneryScene.render(r,o,lair);else if(o.kind==='model')lairModel(r,o.model,o.x,0,o.z,o.height,o.heading,o.tint);else drawLairFeature(r,o,lair);}
  drawColossusEffects(r);drawVeyrEffects(r);drawVarkeshEffects(r);
 }
 function drawVarkeshEffects(r){

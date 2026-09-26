@@ -18,7 +18,7 @@ const oldCreate=ctx.document.createElement;ctx.document.createElement=()=>{const
 for(const f of ['game-icons','map-icons'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 module.exports={ctx,counters,els,gl};
 if(require.main===module){
-if(ctx.mode.startsWith('current'))for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','civilization-world','cave-passages','fishing-shores','quest-guidance','world-lighting','prop-placement','world-atlas','fieldcraft','relic-shaping','world-ecology-layout','world-ecology'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
+if(ctx.mode.startsWith('current'))for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','civilization-world','cave-passages','fishing-shores','quest-guidance','world-lighting','prop-placement','world-atlas','fieldcraft','relic-shaping','world-ecology-layout','world-ecology'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assetsReady=true;s.character={name:'Benchmark',look:0,frame:'male',hair:0};s.tutorial=tutorialSteps.length;s.worldClock=120;
 const profile={};

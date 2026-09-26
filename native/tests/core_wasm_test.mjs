@@ -14,7 +14,7 @@ const {instance} = await WebAssembly.instantiate(fs.readFileSync(file), imports)
 wasi.initialize(instance);
 const api = instance.exports;
 memory = api.memory;
-assert.equal(api.veldren_core_abi_version(), 12);
+assert.equal(api.veldren_core_abi_version(), 14);
 assert.equal(typeof api.veldren_world_step_budgeted, 'function');
 assert.equal(typeof api.veldren_world_step_live, 'function');
 assert.equal(typeof api.veldren_actors_upsert, 'function');
@@ -27,6 +27,7 @@ for (const name of ['veldren_world_seed','veldren_random_bounded','veldren_rando
 assert(Math.abs(api.veldren_player_accuracy(1,1)-0.84)<0.0001);
 assert(Math.abs(api.veldren_enemy_accuracy(99,1)-0.94)<0.0001);
 assert.equal(api.veldren_player_max_hit(1,10,2,8,3),25);
+for (const name of ['veldren_world_scene_entity_upsert','veldren_world_scene_entity_remove','veldren_world_scene_entity_set_transform','veldren_world_scene_read','veldren_world_scene_component_ids','veldren_world_document_serialize','veldren_world_document_load','veldren_world_scene_revision']) assert.equal(typeof api[name], 'function',name);
 const world = api.veldren_world_create(64);
 assert(world);
 const actor = api.malloc(32);

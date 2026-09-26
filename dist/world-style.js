@@ -297,7 +297,8 @@ function drawWorldUnderstory(r){
   const id=bx+':'+bz;let chunk=worldUnderstory.get(id);
   if(!chunk){chunk={};worldUnderstory.set(id,chunk);if(worldUnderstory.size>240)worldUnderstory.delete(worldUnderstory.keys().next().value);}
   emitMesh3(r,cachedMesh3(chunk,'prop',q=>{
-   for(const plant of worldUnderstoryPlacements(bx,bz))rebuiltPlace(q,plant.name,plant.x,0,plant.z,plant.scale,plant.heading,plant.scale,plant.tint);
+   if(globalThis.VeldrenSceneryScene?.enabled){for(const plant of globalThis.VeldrenSceneryScene.chunk(bx,bz))globalThis.VeldrenSceneryScene.render(q,plant);}
+   else for(const plant of worldUnderstoryPlacements(bx,bz))rebuiltPlace(q,plant.name,plant.x,0,plant.z,plant.scale,plant.heading,plant.scale,plant.tint);
    return 1;
   }));drawn++;
  }

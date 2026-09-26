@@ -289,14 +289,14 @@ function draw(){
     }
     const o=entry.o,x=(o.drawX+.5)*TILE-camera.x,bottom=(o.drawY+.96)*TILE-camera.y;
     if(x< -90||x>w+90||bottom< -20||bottom>h+130)continue;
-    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=o.type==='spirit'?'spirits':MONSTER_ART[o.kind]!==undefined?'monsters':living&&o.type!=='dummy'?'heroes':living?'characters':'environment';
+    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=MONSTER_ART[o.kind]!==undefined?'monsters':living&&o.type!=='dummy'?'heroes':living?'characters':'environment';
     let width=living?48:56,height=living?59:62;
     if(o.type==='crop'){width=37;height=o.harvestedUntil>time?13:37;}if(o.type==='tree'){width=91;height=111;}if(o.type==='ore'){width=58;height=47;}if(o.type==='fish'){width=36;height=28;}if(o.type==='boss'||o.kind==='warden'){width=70;height=90;}if(o.kind==='wolf'||o.kind==='ridgewolf'){width=58;height=49;}if(o.kind==='slime'||o.kind==='rat'){width=45;height=37;}
     if(o.type!=='fish')shadow(ctx,x,bottom,Math.min(25,width*.3));
     if(target===o)groundRing(o.x,o.y,fighter(o)?'#ef957d':'#f5d79a',22);
     const pulse=time-o.hitAt<.25?Math.sin((time-o.hitAt)/.25*Math.PI)*.045:0;
     const walking=Math.hypot(o.drawX-o.x,o.drawY-o.y)>.02;
-    const bob=living&&o.type!=='dummy'?(walking?Math.sin(time*11+o.id)*1.8:Math.sin(time*2+o.id)*.6):o.type==='spirit'?Math.sin(time*2.8+o.id)*3:0;
+    const bob=living&&o.type!=='dummy'?(walking?Math.sin(time*11+o.id)*1.8:Math.sin(time*2+o.id)*.6):0;
     const attacking=time-o.attackAt<.28;const lunge=attacking?Math.sin((time-o.attackAt)/.28*Math.PI)*5*(s.x<o.x?-1:1):0;const rect=sprite(ctx,atlas,atlas==='monsters'?MONSTER_ART[o.kind]:atlas==='heroes'?(o.sprite%4)*4+(walking?Math.floor(time*8+o.id)%4:1):o.sprite,x+lunge,bottom+bob,width*(1+pulse),height*(1-pulse),living&&s.x<o.x?-1:1,pulse*.35+(o.type==='tree'?Math.sin(time*.9+o.id)*.009:walking?Math.sin(time*11+o.id)*.025:0));
     if(rect)hitboxes.push({...rect,o});
     if(o.type==='questgiver')label('!',x,bottom-height-15,'#ffe0a0',20);
@@ -308,7 +308,7 @@ function draw(){
     }
     if(o.type==='camp'){const g=ctx.createRadialGradient(x,bottom-13,2,x,bottom-13,43);g.addColorStop(0,'#f9b34a22');g.addColorStop(1,'#f9b34a00');ctx.fillStyle=g;ctx.fillRect(x-43,bottom-56,86,86);}
   }
-  drawWorldMood();drawProjectiles();drawSpiritEffect();
+  drawWorldMood();drawProjectiles();
   for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);const x=(f.x+.5)*TILE-camera.x,y=(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25;if(f.experience)drawExperienceDrop(f,x,y);else label(f.text,x,y,f.color,15);}ctx.globalAlpha=1;
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the ruins guardian']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
@@ -326,7 +326,7 @@ function advanceMovement(dt){
    if(typeof recordPlayerDeparture==='function')recordPlayerDeparture(s.x,s.y);
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
-  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*spiritBuild(s,lv('Worship')).runCost*(typeof fieldEquipmentEffects==='function'?fieldEquipmentEffects(s).runCost:1);
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*(typeof fieldEquipmentEffects==='function'?fieldEquipmentEffects(s).runCost:1);
   const used=Math.min(remaining,distance/speed,running?s.runEnergy/runCost:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
   travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
@@ -400,9 +400,11 @@ async function boot(){
     if(window.realmStartup?.failed)return;
     realmLoadStatus('Preparing Briarhaven…',90);
     await new Promise(resolve=>requestAnimationFrame(resolve));
-    realmSetStartupStage('world-generation');setupExpandedWorld();normalizeSpiritRemoval(s);
+    realmSetStartupStage('world-generation');setupExpandedWorld();
     realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
+    window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
+    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();
     realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
     assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();

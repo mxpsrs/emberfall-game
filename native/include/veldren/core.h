@@ -151,6 +151,28 @@ VELDREN_EXPORT std::uint32_t veldren_world_count(const void* world);
 // capacity is greater than that length, writes the JSON plus a NUL byte.
 VELDREN_EXPORT std::uint32_t veldren_world_scene_serialize(
     const void* world, char* out, std::uint32_t capacity);
+// Persistent world scenes are stored separately from the transient actor
+// simulation scene. Entity records use the version-2 scene JSON field shape.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_upsert(
+    void* world, const char* scene, const char* entity_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_remove(
+    void* world, const char* scene, const char* entity_id);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_set_transform(
+    void* world, const char* scene, const char* entity_id, const char* transform_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_read(
+    const void* world, const char* scene, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_read(
+    const void* world, const char* scene, const char* entity_id, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_set_world_transform(
+    void* world, const char* scene, const char* entity_id, const char* transform_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_component_ids(
+    const void* world, const char* scene, const char* component, char* out,
+    std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_document_serialize(
+    const void* world, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_document_load(
+    void* world, const char* document_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_revision(const void* world);
 VELDREN_EXPORT std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum);
 VELDREN_EXPORT std::uint32_t veldren_random_chance(void* world, float probability);
 VELDREN_EXPORT std::uint32_t veldren_roll_attack(

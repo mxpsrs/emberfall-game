@@ -23,12 +23,15 @@ for(const threshold of [26,27]){
   assert.equal(receipt.ok,threshold>=27,JSON.stringify(receipt));
   if(threshold<27)assert.equal(receipt.error,'Someone else is fighting that.');
  }
- const cast=event('hit',{style:'worship',cast:'test-cast',spirits:['cinder']},e);
- const b=await sync(B,packet(e,[cast]),{...state,spirits:{cinder:{state:'set'}}});
- assert.equal(b.receipts.find(r=>r.id===cast.id).ok,threshold>=27,'spirit hit follows the same rule');
+ // The preceding level-27 hit consumes the shared attack cooldown. Wait before
+ // checking another ordinary magic hit; spirits are retired and are not tested.
+ now+=4000;
+ const magicHit=event('hit',{style:'magic'},e);
+ const b=await sync(B,packet(e,[magicHit]));
+ assert.equal(b.receipts.find(r=>r.id===magicHit.id).ok,threshold>=27,'magic hit follows the same rule');
  // Owner leaves or disconnects: claim is released by NPC simulation.
  await db.prepare('DELETE FROM player_presence WHERE player_id=?').bind(A).run();
  const take=event('attack',{style:'melee'},e);const free=await sync(B,packet(e,[take]));assert(free.receipts.find(r=>r.id===take.id).ok);
  await db.prepare('DELETE FROM shared_entities WHERE entity_id=?').bind(e.id).run();e.level=old;now+=10000;
 }
-console.log('PASS: level 26 attack/hit/spirit exclusivity, level 27 shared attacks, owner disconnect releases claim.');
+console.log('PASS: level 26 attack/hit/magic exclusivity, level 27 shared attacks, owner disconnect releases claim.');

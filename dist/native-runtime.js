@@ -13,11 +13,35 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==12)throw new Error('Native world core ABI mismatch');
+  if(api.veldren_core_abi_version()!==14)throw new Error('Native world core ABI mismatch');
   const world=api.veldren_world_create(512);let capacity=512,scratch=api.malloc(capacity*32),dataView=null;
   if(!world||!scratch)throw new Error('Native world core could not allocate its actor state');
   const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);
   const handles=new WeakMap(),liveHandles=new Set();let nextHandle=1,destroyed=false,routeCells=0,routeIds=0,routeCapacity=0,animationScratch=0,animationCapacity=0;
+  function withCString(value,fn){const bytes=new TextEncoder().encode(String(value)),pointer=api.malloc(bytes.length+1);if(!pointer)throw new Error('Native scene string allocation failed');const target=new Uint8Array(api.memory.buffer,pointer,bytes.length+1);target.set(bytes);target[bytes.length]=0;try{return fn(pointer)}finally{api.free(pointer)}}
+  function readNativeText(call){const length=call(0,0);if(!length)return null;const pointer=api.malloc(length+1);if(!pointer)throw new Error('Native scene read allocation failed');try{if(call(pointer,length+1)!==length)throw new Error('Native scene read changed while copying');return new TextDecoder().decode(new Uint8Array(api.memory.buffer,pointer,length))}finally{api.free(pointer)}}
+  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
+  function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+  function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  const scenes={
+   batch(callback){batchDepth++;try{return callback();}finally{if(--batchDepth===0){const names=[...batchedScenes];batchedScenes.clear();for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:scene===null?'load':'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}}},
+   subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
+   entity(scene,id){
+    const revision=api.veldren_world_scene_revision(world);if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
+    const key=JSON.stringify([scene,id]);if(entityCache.has(key))return entityCache.get(key);
+    const json=withCString(scene,scenePtr=>withCString(id,idPtr=>readNativeText((out,capacity)=>api.veldren_world_scene_entity_read(world,scenePtr,idPtr,out,capacity))));
+    const result=json?freeze(JSON.parse(json)):null;entityCache.set(key,result);return result;
+   },
+   upsert(scene,entity){return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
+   remove(scene,id){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
+   setTransform(scene,id,transform){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   setWorldTransform(scene,id,transform){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity)));return json?JSON.parse(json):null;},
+   componentIds(scene,component){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_component_ids(world,scenePtr,typePtr,out,capacity))));return json?JSON.parse(json):[];},
+   serialize(){const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity));return json?JSON.parse(json):null;},
+   load(document){return changed(withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1),'load');},
+   revision(){return api.veldren_world_scene_revision(world);}
+  };
   function actorFlags(actor,selected,now){
    let flags=0;
    if(actor.type==='man'||actor.type==='villager')flags|=1;
@@ -114,7 +138,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:12,stepActors,animateActors,pathfind,rules,transactions,stateMachines,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:14,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

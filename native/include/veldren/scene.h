@@ -113,6 +113,8 @@ class Scene {
   void rename(const EntityId& id, std::string name);
   void set_active(const EntityId& id, bool active);
   void set_local(const EntityId& id, Transform local);
+  void set_world(const EntityId& id, Transform world);
+  Json entity_json(const EntityId& id, bool include_derived = false) const;
   Transform local_transform(const EntityId& id) const;
   Mat4 world_transform(const EntityId& id) const;
   Vec3 local_to_world(const EntityId& id, Vec3 point) const;

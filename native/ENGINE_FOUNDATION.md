@@ -34,11 +34,11 @@ camera state; selection clears if its entity is deleted.
 The native desktop demonstration migrates the existing C++ actor simulation's
 player, villagers and wolves into scene entities with MeshRenderer, Animator,
 and representation components. Simulation updates scene transforms, and render
-states are synchronized from those transforms. The browser runtime materializes
-generated world objects and buildings as stable, scene-scoped RuntimeBinding
-entities after world generation. The existing gameplay objects remain the
-compatibility projection for legacy gameplay and rendering systems; editor
-transforms are read and written through the canonical scene entities.
+states are synchronized from those transforms. Generated static props now migrate into the native Scene with focused
+components. Their JavaScript views read immutable native snapshots, and every
+persistent write goes through a native Scene operation. Other categories still
+use temporary editor-only RuntimeBinding mirrors; those mirrors do not migrate
+runtime ownership and cannot be counted as completion.
 
 ## World format and migration
 
@@ -96,6 +96,54 @@ that the editor context skips player authentication, movement, combat, presence
 and character autosave while keeping visual frames active. A normal browser boot
 is still required to verify this boundary in a graphical browser.
 
+## Procedural world ownership audit
+
+The audit below covers the browser runtime and its generated scene data, not
+just the C++ actor demo. It was checked against the active scripts loaded by
+`dist/index.html` and the shared-world worker. The first migrated collection is
+the generated static `type: 'prop'` subset of `objects`: after generation it is
+converted to native Scene entities, and the old prop interface becomes a
+Scene-derived projection. Other object categories, buildings, world metadata,
+and specialized geometry remain on legacy ownership paths. This partial
+migration does not yet make the complete generated world canonical.
+
+| Collection / state | Created and populated by | Current owner and consumers | Saved / networked | Scene equivalent and status |
+| --- | --- | --- | --- | --- |
+| `objects` (active scene), `worldScenes[scene].objects` | `dist/game.js` seeds starter objects and `add`/`spawn`; `dist/world.js` and later generators populate scene objects | Generated static props only: temporary generation records are converted by `world-ownership-runtime.js` into Scene entities. The compatibility array holds proxy views whose transforms/components read Scene state and whose persistent writes go back to Scene. Other objects remain array-owned. Gameplay/render/editor loops still use this object interface, so they need further component-index integration | Static props use deterministic generated entity IDs and WorldDocument persistence. Existing legacy IDs are retained as private aliases for old object lookups. Other object saves/network identity remain mixed | Static props have Transform, MeshRenderer, WorldDecoration, GeneratedProp, Interactable, optional Collider, optional Placement/QuestMarker components. Parent hierarchy is World → SceneGroup → prop. Migrated; derived compatibility view remains. NPCs, resources, and other objects are not migrated |
+| `buildings` (active scene), `worldScenes[scene].buildings` | `dist/game.js`, `world.js`, then settlement, civilization, tutorial, walk-in, prop-placement, and editor/building passes | Plain arrays. Renderer, collision/pathing, interior/door links, map queries, building assembly, and editor read/write these records | Editor edits may persist as v2 entities plus a v1 compatibility record. Generated buildings are not serialized as scene state or replicated as full network state | Partial authored editor entities; generated buildings have no canonical runtime entity/component ownership |
+| `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | `world.js` and later tutorial, lair, civilization, relic, and quest generators | Plain registry remains authoritative for metadata and non-migrated arrays; Scene is authoritative only for converted static props and authored v2 entities | Scene name can be present in character saves; complete generated registry and metadata are not yet saved as a world scene | Browser Native Scene API is connected, but metadata is not yet mapped into focused scene components. Not migrated |
+| `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair and tutorial/world geography/ecology generation | Per-scene arrays/maps or module maps. Renderers, movement/terrain queries, room/cave rendering, and generation passes consume them | Primarily regenerated; no canonical entity/component serialization. Some are derived caches; authored road/structure descriptors may affect world behavior | Derived caches can remain after migration; authored spatial features need explicit components or a documented generated-source model. Not migrated |
+| `wallTorches` and lighting candidate lists | `world-lighting.js` and scene-lighting queries | Torch arrays and per-frame candidate lists feed renderer lighting | Regenerated; persistent light state is not saved as scene components | Per-frame candidates are derived. Placed/generated persistent lights lack canonical `Transform` + `Light` entities |
+| Spatial indexes (`worldObjectIndex`, buckets, ID/order maps, navigation/road caches) | `world.js`, navigation, terrain, ecology, and geography queries | Derived from legacy arrays or generator structures; used by gameplay and rendering | Not serialized or network identity | These may remain derived caches, but their source must become Scene/component indexes. Currently they index legacy state |
+| Spawn definitions embedded in `objects` (NPCs, monsters, encounter actors, spawn points) | `add`/`spawn` and scene/lair/encounter generators | Same object arrays; native actor bridge imports only active actor motion state | Shared actor state uses catalog/entity identifiers; permanent definitions and transient spawned actors are not consistently separated in browser data | No complete `SpawnPoint` + typed definition entity migration. Native actor entities do not replace world spawn definitions |
+| Gatherables embedded in `objects` (trees, ore, fish, crops and other resources) | `add` plus procedural ecology/geography/world passes | Same arrays; gathering, depletion/respawn, proximity queries, renderer, and shared-world catalog consume records | Some depletion/respawn/ownership state is server-managed; identity compatibility still depends on legacy object/catalog IDs in places | No complete `Gatherable`/resource-state component migration. Preserve server catalog identity during migration |
+| Collision and interaction state embedded in objects/buildings or separate geometry records | World geometry, building/civilization/prop placement, doors, quest triggers, and object generation | Gameplay pathing/blocked checks, interaction, editor, renderer picking, and shared-world rules consume it | Only selected gameplay state is saved/networked; generated geometry is rebuilt | No complete entity-owned `Collider`, `Interactable`, `DoorState`, or trigger path. Terrain formulas and derived collision may remain caches sourced from canonical data |
+
+**Identity audit:** `dist/game.js` has a numeric `serial++` for core object IDs;
+additional world/quest generators keep separate serial counters, some content
+uses catalog IDs, and editor building fallback IDs include a list index. The
+spatial index also records insertion order for draw/query ordering. These are
+not a safe universal persistent entity identity contract. Network-visible
+state must preserve established catalog IDs through an explicit stable
+entity/catalog mapping; array order must not become persistent identity.
+
+**Persistence model:** generator configuration, deterministic seed, and source
+content are generation inputs. For migrated static props, the first generation
+is saved into canonical Scene entities; a `WorldGeneration` marker makes the
+saved catalog authoritative on later boots, so deleted props are not restored
+by regeneration. Subsequent editor saves persist resulting Scene state.
+Existing character saves remain separate. This is implemented only for static
+props; other categories still regenerate from legacy sources.
+
+**Compatibility APIs currently present:** generated static `type: 'prop'`
+entries in `worldScenes[*].objects` are controlled one-way Scene projections;
+their persistent writes update canonical components/transforms. The rest of
+`objects`, all `buildings`, and related consumers remain legacy-owned and
+directly mutable. `world-edits-runtime.js` still applies authored changes to
+construction objects before static-prop conversion and still builds v2 render
+proxies. `wallTorches` and spatial/navigation caches remain derived or
+regenerated; some sources are still legacy.
+
 ## Integration debt and verification limits
 
 The browser's gameplay behavior still operates on the legacy object projection;
@@ -115,3 +163,89 @@ also pass. The headless desktop
 smoke reports 2560x1440 output, 4096 shadows, 900-unit draw distance and 512
 visible actors. A graphical browser boot has not been run in this verification
 pass.
+
+## Current migration verification — 26 September 2026
+
+Work is on the actual `codex/veldren-phase1-foundation` branch, based on
+`1e8c09fd98ed709531f688daf3383e6beb415348`. Earlier restored files were
+ported with a three-way merge, preserving the newer C++ combat formulas.
+
+- **Verified / compatibility bridge only: generated static props.** 3,698
+  props across the full 259-scene registry use native entity/component state.
+  Read views observe native transform, component, hierarchy and deletion
+  operations, including parent rotation/scale. Native entity snapshots are
+  immutable and cached by revision. Renderer/navigation caches are invalidated
+  from Scene change notifications. Array membership still needs its final
+  controlled-collection gate; embedded structural metadata is migrated alongside
+  its owning building/structural category.
+- **Migrated; controlled read views, validation continuing: buildings.**
+  `dist/world-building-scene.js` maps building roots, settlement groups, rooms,
+  wall tiles, doors, floor surfaces, ramps, decks and attached prop relationships.
+  Transform ownership is native. The full generated test covers 235 buildings,
+  2,312 child parts and 234 doors. Representative geometry parity, rotation/scale
+  propagation, door catalog IDs, floor surfaces, modular edits and the native
+  save/unload/load round trip pass. Module mesh transforms live on child entities;
+  captured geometry/material variants are asset data, never transform authority.
+  The procedural building renderer receives component-derived geometry inputs
+  and the canonical world matrix. `worldScenes[*].buildings` is now a frozen
+  derived list. Active `buildings` remains a disposable scene-selection cache.
+  Editor/browser interaction and broader generated-building coverage remain
+  verification gates. Startup now enables this migration after static props.
+- **Not migrated:** non-prop object categories, standalone structural geometry,
+  roads, lights, spawn definitions, gatherables, and scene metadata.
+
+Native ABI 14 adds individual entity snapshots and world-space transform edits.
+Parent-relative affine transforms survive upsert, and WorldDocument revision,
+timestamp and extra fields (including terrain) survive save/load. Revisions
+remain monotonic across reset. The saved catalog is authoritative for migrated
+categories; generation markers prevent deleted entities from reappearing.
+
+Commands verified on this checkout before building migration:
+
+- `make -C native test wasm wasm-test`: pass, including fresh Emscripten build.
+- `node tests/native-runtime.mjs`: pass.
+- `node tests/world-static-props-scene.cjs`: pass; native edits, 3,698 props,
+  deterministic identities, hierarchy, and save/unload/load.
+- `node tests/editor-camera.cjs`: pass.
+- `node tests/world-scene-runtime.cjs`: pass.
+- `node tests/world-scene-runtime-binding.cjs`: pass; this only covers legacy
+  editor mirrors and does not prove full generated-world ownership.
+- `node tests/building-assembly.cjs`: pass before new building migration.
+
+Spirits are retired. `dist/spirits.js` is an inert compatibility shim. The
+combat-claims expectation is ordinary shared magic/combat; active spirit
+attacks must not be reintroduced to satisfy an obsolete test.
+
+### Phase 1 completion gates
+
+- [x] Native graph, component index, hierarchy and serialization core.
+- [x] Editor/runtime context separation in automated tests.
+- [ ] All generated categories are Scene-owned with controlled membership.
+- [ ] Building/modular renderer, collision and editor migration verified.
+- [ ] Roads, decorations, lights and metadata migration verified.
+- [ ] Permanent spawn definitions separated from transient live actors.
+- [ ] Gatherable lifecycle and network catalog identities verified.
+- [ ] Full generated-world save/unload/load comparison.
+- [ ] Complete affected regression suite, fresh final build.
+- [ ] Real `/play` and `/editor/` interaction on the new build.
+- [ ] All remaining compatibility APIs are controlled one-way views.
+
+**Phase 1 is NOT COMPLETE. No completion commit or production deployment has
+been made.** Previous verification claims above are historical unless repeated
+in this current-checkout list.
+
+Additional current-checkout verification:
+
+- `node tests/world-buildings-scene.cjs`: pass — 235 buildings, 2,312 parts,
+  234 doors; native ownership, representative render parity, attached prop/door
+  movement, scaled/rotated surfaces, modular edits and save/unload/load.
+- `node tests/world-building-components.cjs`: pass — focused component
+  dimensions, wall transforms, door portal parenting, module duplicate/delete,
+  and canonical persistence.
+- `node tests/combat-claims.mjs`: pass — ordinary level-26 exclusivity,
+  level-27 shared attack/hit/magic, and owner-disconnect release. No spirits.
+- A rejection test exposed disabled C++ exception catching in the browser
+  build. The standalone module now uses `-fwasm-exceptions`; a fresh
+  `make -B -C native wasm wasm-test` and `node tests/native-runtime.mjs` pass.
+  Invalid component/transform/reparent upserts leave the Scene and revision
+  unchanged. This is engine error handling, not a JavaScript fallback engine.

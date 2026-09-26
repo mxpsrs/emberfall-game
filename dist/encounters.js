@@ -84,7 +84,7 @@ playerAccuracy=function(o,style=combatStyle()){
  const skill={melee:'Attack',ranged:'Ranged',magic:'Magic',worship:'Worship'}[style]||'Attack',focus=trainingFocus(style);
  const bonus=style==='magic'?equipmentBonus('magicAccuracy')+(s.equipment.weapon==='veyrOrb'&&o._memoryFrayUntil>time?ITEMS.veyrOrb.memoryFray:0):style==='ranged'?(equippedWeapon().attackBonus||0)+equipmentBonus('rangedAccuracy'):style==='worship'?equipmentBonus('worshipAccuracy'):equipmentBonus('attackBonus');
  const stance=style==='melee'?(focus==='accurate'?3:focus==='balanced'?1:0):focus==='focused'?3:0;
- const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64+(['ranged','magic'].includes(style)&&Math.hypot(o.x-px,o.y-py)>=3?spiritBuild(s,lv('Worship')).aim:0)),defenceStyle=style==='worship'?'magic':style;
+ const attack=(lv(skill)+8+stance)*Math.max(1,bonus+64),defenceStyle=style==='worship'?'magic':style;
  const weak=(o.weak||HUNT_ENCOUNTERS[o.kind]?.weak)===defenceStyle;
  const defense=((o.defenseLevel??o.level??1)+9)*Math.max(1,64+(o.defenseBonuses?.[defenceStyle]||0))*(weak?.8:1);
  return attackRollChance(attack,defense);

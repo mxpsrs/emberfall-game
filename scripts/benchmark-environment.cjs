@@ -2,7 +2,7 @@
 const {ctx,counters}=require('./benchmark-desktop.cjs'),fs=require('node:fs'),vm=require('node:vm');
 const root=process.env.VELDREN_BENCH_ROOT||__dirname+'/../dist/';
 ctx.mode='current-environment';ctx.caseFilter=process.env.VELDREN_BENCH_CASE||'';
-for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','civilization-world','cave-passages','fishing-shores','quest-guidance','world-lighting','prop-placement','world-atlas','fieldcraft','relic-shaping','world-ecology-layout','world-ecology'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','game-audio','mountain-quest','main-story','quest-world','world-geography','world-dressing','civilization-world','cave-passages','fishing-shores','quest-guidance','world-lighting','prop-placement','world-atlas','fieldcraft','relic-shaping','world-ecology-layout','world-ecology'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=renderAction=renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assetsReady=true;
 s.character={name:'Environment benchmark',look:0,frame:'male',hair:0};s.tutorial=tutorialSteps.length;s.tutorialReward=true;worldCycleSeconds=()=>120;

@@ -332,13 +332,24 @@ void Scene::set_metadata(const EntityId& id,Json::Object metadata){require(id).m
 void Scene::add_component(const EntityId& id,std::string type,Json::Object fields){if(type.empty())invalid("Component type cannot be empty");require(id).components[type]=std::move(fields);component_index_[type].insert(id);}
 bool Scene::remove_component(const EntityId& id,std::string_view type){const auto key=std::string(type);if(!require(id).components.erase(key))return false;auto it=component_index_.find(key);it->second.erase(id);if(it->second.empty())component_index_.erase(it);return true;}
 std::optional<Json::Object> Scene::component(const EntityId& id,std::string_view type) const {const auto& c=require(id).components;auto it=c.find(std::string(type));if(it==c.end())return std::nullopt;return it->second;}
+void Scene::set_world(const EntityId& id, Transform world) {
+  const auto& parent = require(id).parent;
+  const auto local = parent.empty() ? compose(world) : multiply(inverse_affine(world_transform(parent)), compose(world));
+  set_local(id, approximate(local));
+}
+Json Scene::entity_json(const EntityId& id, bool include_derived) const {
+  const auto& n=require(id);
+  Json::Object local{{"position",vec(n.local.position)},{"rotation",quat(n.local.rotation)},{"scale",vec(n.local.scale)}};
+  if(n.local.affine)local["affine"]=matrix(*n.local.affine);
+  Json::Object components;for(const auto& [type,fields]:n.components)components[type]=fields;
+  Json::Object result{{"id",n.id},{"name",n.name},{"parent",n.parent.empty()?Json(nullptr):Json(n.parent)},{"active",n.active},{"transform",std::move(local)},{"components",std::move(components)},{"metadata",n.metadata}};
+  if(include_derived){result["worldMatrix"]=matrix(world_transform(id));result["activeInHierarchy"]=inspect(id).active_in_hierarchy;}
+  return result;
+}
 std::string Scene::serialize() const {
   Json::Array entities;
   for(const auto& id:traverse()){
-    const auto& n=require(id);Json::Object local{{"position",vec(n.local.position)},{"rotation",quat(n.local.rotation)},{"scale",vec(n.local.scale)}};
-    if(n.local.affine)local["affine"]=matrix(*n.local.affine);
-    Json::Object components;for(const auto& [type,fields]:n.components)components[type]=fields;
-    entities.emplace_back(Json::Object{{"id",n.id},{"name",n.name},{"parent",n.parent.empty()?Json(nullptr):Json(n.parent)},{"active",n.active},{"transform",std::move(local)},{"components",std::move(components)},{"metadata",n.metadata}});
+    entities.push_back(entity_json(id));
   }
   return write_json(Json::Object{{"format","veldren.scene"},{"version",2},{"scene",name_},{"nextEntityId",std::to_string(next_id_)},{"entities",std::move(entities)}})+"\n";
 }

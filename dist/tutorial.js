@@ -145,7 +145,6 @@ function guide(){
  if(!inWorld()||Math.hypot(s.x-43,s.y-52)>90){dialog('Continue on Firstlight Isle','<p>Your tutors are on Firstlight Isle. Return to Rowan’s square to continue this lesson. Your belongings, levels and bank come with you.</p>',[['Return to the square',()=>{close();activateScene(worldScenes.tutorial?'tutorial':'overworld',42,51);renderTutorial();}],['Stay here',close]]);return;}
  if(step.event==='combat-stats'){openCombatStats();return;}
  if(['bag','skills','bury','fire','mix-dough','equip-dagger','training-gear','ranged-gear'].includes(step.event)&&!(step.event==='fire'&&tutorialGoal())){openTutorialPanel(step.event==='skills'?'skills':'bag');return;}
- if(step.event==='spirit'&&spiritHasBond()){openSpirits();return;}
  let point=tutorialGoal();
  if(point){if(point.dead>time){toast('The practice target will be ready again shortly.');return;}engage(point.tutorialDoor||point);}
  else toast(step.event==='loot'?'Defeat another rat to find fresh drops.':'Follow the lesson above.');
@@ -192,7 +191,6 @@ function setupTutorialVillage(){
 }
 function talkTutor(o){
  const role=o.tutor,expected=tutorialStep()?.event;
- if(role==='worship'&&expected==='spirit'){openFirstSpiritChoice();return;}
  if(role==='magic'&&tutorialStep()){
   const ready=giveTutorialMagicSupplies();
   if(expected==='talk-magic'&&ready){dialog(TUTORS.magic.name,'<p>“'+TUTORS.magic.text+'”</p>',[['Continue',()=>{close();tutorialEvent('talk-magic');}]]);return;}

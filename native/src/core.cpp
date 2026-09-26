@@ -6,7 +6,9 @@
 #include <cstring>
 #include <memory>
 #include <limits>
+#include <map>
 #include <queue>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -217,7 +219,165 @@ class World {
     }
     return true;
   }
-  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); }
+  bool UpsertWorldEntity(const char* scene_name, const char* entity_json) {
+    if (!scene_name || !*scene_name || !entity_json) return false;
+    const auto record = veldren::parse_json(entity_json);
+    const auto id = record.find("id") ? record.find("id")->string_or() : std::string{};
+    const auto name = record.find("name") ? record.find("name")->string_or() : std::string{};
+    const auto* transform_json = record.find("transform");
+    const auto* components_json = record.find("components");
+    const auto* metadata_json = record.find("metadata");
+    if (id.empty() || name.empty() || !transform_json || !components_json) return false;
+    const auto vector = [&](const veldren::Json* value, std::array<double, 3> fallback) {
+      if (!value) return fallback;
+      const auto& fields = value->array();
+      if (fields.size() != 3) throw std::invalid_argument("Invalid Transform vector");
+      for (std::size_t i = 0; i < fields.size(); ++i) fallback[i] = fields[i].number_or();
+      return fallback;
+    };
+    const auto* position_json = transform_json->find("position");
+    const auto* scale_json = transform_json->find("scale");
+    const auto* rotation_json = transform_json->find("rotation");
+    veldren::Transform transform;
+    const auto position = vector(position_json, {0, 0, 0});
+    const auto scale = vector(scale_json, {1, 1, 1});
+    transform.position = {position[0], position[1], position[2]};
+    transform.scale = {scale[0], scale[1], scale[2]};
+    if (const auto* affine = transform_json->find("affine")) {
+      if (affine->array().size() != 16) return false;
+      veldren::Mat4 matrix;
+      for (std::size_t i = 0; i < 16; ++i) matrix.v[i] = affine->array()[i].number_or();
+      transform.affine = matrix;
+    }
+    if (rotation_json) {
+      const auto& fields = rotation_json->array();
+      if (fields.size() != 4) throw std::invalid_argument("Invalid Transform quaternion");
+      transform.rotation = {fields[0].number_or(), fields[1].number_or(),
+                            fields[2].number_or(), fields[3].number_or(1)};
+    }
+    const auto parent = record.find("parent") ? record.find("parent")->string_or() : std::string{};
+    const auto active = record.find("active") ? record.find("active")->bool_or(true) : true;
+    const auto& component_fields = components_json->object();
+    const auto& metadata_fields = metadata_json ? metadata_json->object() : veldren::Json::Object{};
+    // Validate the complete incoming record before changing an existing node.
+    // A rejected component/transform must not partially rename or reparent it.
+    veldren::Scene validation("entity-validation");
+    validation.create(name, {}, id);
+    validation.set_local(id, transform);
+    for (const auto& [type, fields] : component_fields)
+      validation.add_component(id, type, fields.object());
+    auto found_scene = world_scenes_.find(scene_name);
+    if (!parent.empty() && (found_scene == world_scenes_.end() ||
+                            !found_scene->second.contains(parent))) return false;
+    if (found_scene == world_scenes_.end())
+      found_scene = world_scenes_.emplace(scene_name, veldren::Scene(scene_name)).first;
+    auto& target = found_scene->second;
+    if (!parent.empty() && !target.contains(parent)) return false;
+    if (target.contains(id)) {
+      const auto previous = target.inspect(id);
+      if (previous.parent != parent) target.reparent(id, parent, false);
+      target.rename(id, name);
+      target.set_local(id, transform);
+      target.set_active(id, active);
+      target.set_metadata(id, metadata_fields);
+      for (const auto& [type, fields] : previous.components) {
+        (void)fields;
+        if (!component_fields.contains(type)) target.remove_component(id, type);
+      }
+    } else {
+      target.create(name, parent, id);
+      target.set_local(id, transform);
+      target.set_active(id, active);
+      target.set_metadata(id, metadata_fields);
+    }
+    for (const auto& [type, fields] : component_fields) target.add_component(id, type, fields.object());
+    ++world_scene_revision_;
+    return true;
+  }
+  bool RemoveWorldEntity(const char* scene_name, const char* entity_id) {
+    if (!scene_name || !entity_id) return false;
+    const auto scene = world_scenes_.find(scene_name);
+    if (scene == world_scenes_.end() || !scene->second.contains(entity_id)) return false;
+    scene->second.remove(entity_id, veldren::ChildDisposition::Destroy);
+    ++world_scene_revision_;
+    return true;
+  }
+  bool SetWorldEntityTransform(const char* scene_name, const char* entity_id,
+                               const char* transform_json, bool world_space = false) {
+    if (!scene_name || !entity_id || !transform_json) return false;
+    const auto scene = world_scenes_.find(scene_name);
+    if (scene == world_scenes_.end() || !scene->second.contains(entity_id)) return false;
+    const auto input = veldren::parse_json(transform_json);
+    const auto* position_json = input.find("position");
+    const auto* scale_json = input.find("scale");
+    const auto* rotation_json = input.find("rotation");
+    if (!position_json || !scale_json || !rotation_json) return false;
+    const auto& position = position_json->array();
+    const auto& scale = scale_json->array();
+    const auto& rotation = rotation_json->array();
+    if (position.size() != 3 || scale.size() != 3 || rotation.size() != 4) return false;
+    veldren::Transform transform;
+    transform.position = {position[0].number_or(), position[1].number_or(), position[2].number_or()};
+    transform.scale = {scale[0].number_or(), scale[1].number_or(), scale[2].number_or()};
+    transform.rotation = {rotation[0].number_or(), rotation[1].number_or(),
+                          rotation[2].number_or(), rotation[3].number_or(1)};
+    if (const auto* affine = input.find("affine")) {
+      if (affine->array().size() != 16) return false;
+      veldren::Mat4 matrix;
+      for (std::size_t i = 0; i < 16; ++i) matrix.v[i] = affine->array()[i].number_or();
+      transform.affine = matrix;
+    }
+    if (world_space) scene->second.set_world(entity_id, transform);
+    else scene->second.set_local(entity_id, transform);
+    ++world_scene_revision_;
+    return true;
+  }
+  std::string WorldSceneJson(const char* scene_name) const {
+    if (!scene_name) return {};
+    const auto scene = world_scenes_.find(scene_name);
+    return scene == world_scenes_.end() ? std::string{} : scene->second.serialize();
+  }
+  std::string WorldEntityJson(const char* scene_name, const char* entity_id) const {
+    if (!scene_name || !entity_id) return {};
+    const auto scene = world_scenes_.find(scene_name);
+    if (scene == world_scenes_.end() || !scene->second.contains(entity_id)) return {};
+    return veldren::write_json(scene->second.entity_json(entity_id, true));
+  }
+  std::string WorldComponentIds(const char* scene_name, const char* component) const {
+    if (!scene_name || !component) return {};
+    const auto scene = world_scenes_.find(scene_name);
+    if (scene == world_scenes_.end()) return "[]";
+    veldren::Json::Array ids;
+    for (const auto& id : scene->second.entities_with(component)) ids.emplace_back(id);
+    return veldren::write_json(ids);
+  }
+  std::string WorldDocumentJson() const {
+    veldren::WorldDocument document;
+    document.revision = world_document_metadata_.revision;
+    document.updated_at = world_document_metadata_.updated_at;
+    document.extras = world_document_metadata_.extras;
+    for (const auto& [name, scene] : world_scenes_) {
+      (void)name;
+      document.scenes.push_back(scene);
+    }
+    return document.serialize();
+  }
+  bool LoadWorldDocument(const char* json) {
+    if (!json) return false;
+    auto document = veldren::WorldDocument::deserialize(json);
+    std::map<std::string, veldren::Scene> replacement;
+    for (auto& scene : document.scenes) {
+      if (scene.name().empty() || replacement.contains(scene.name())) return false;
+      replacement.emplace(scene.name(), std::move(scene));
+    }
+    world_scenes_ = std::move(replacement);
+    document.scenes.clear();
+    world_document_metadata_ = std::move(document);
+    ++world_scene_revision_;
+    return true;
+  }
+  std::uint32_t WorldSceneRevision() const { return world_scene_revision_; }
+  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); world_scenes_.clear(); world_document_metadata_ = {}; ++world_scene_revision_; }
   std::string scene_json() const { return scene_.serialize(); }
   void Seed(std::uint32_t low, std::uint32_t high) {
     random_state_ = (static_cast<std::uint64_t>(high) << 32U) | low;
@@ -352,11 +512,24 @@ class World {
   std::vector<ActorRecord> actors_;
   std::unordered_map<std::uint32_t, std::size_t> index_;
   veldren::Scene scene_{"runtime"};
+  std::map<std::string, veldren::Scene> world_scenes_;
+  std::uint32_t world_scene_revision_ = 0;
+  veldren::WorldDocument world_document_metadata_;
   std::uint64_t random_state_ = 0x9e3779b97f4a7c15ULL;
 };
 
 World* AsWorld(void* world) { return static_cast<World*>(world); }
 const World* AsWorld(const void* world) { return static_cast<const World*>(world); }
+
+std::uint32_t CopyText(std::string_view value, char* out, std::uint32_t capacity) {
+  if (value.size() >= std::numeric_limits<std::uint32_t>::max()) return 0;
+  const auto length = static_cast<std::uint32_t>(value.size());
+  if (out && capacity > length) {
+    std::memcpy(out, value.data(), length);
+    out[length] = '\0';
+  }
+  return length;
+}
 
 struct PathNode {
   std::uint32_t id;
@@ -584,6 +757,74 @@ std::uint32_t veldren_world_scene_serialize(const void* world, char* out,
     out[required] = '\0';
   }
   return required;
+}
+
+std::uint32_t veldren_world_scene_entity_upsert(void* world, const char* scene,
+                                                const char* entity_json) {
+  if (!world) return 0;
+  try { return AsWorld(world)->UpsertWorldEntity(scene, entity_json) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_entity_remove(void* world, const char* scene,
+                                                const char* entity_id) {
+  if (!world) return 0;
+  try { return AsWorld(world)->RemoveWorldEntity(scene, entity_id) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_entity_set_transform(void* world, const char* scene,
+                                                       const char* entity_id,
+                                                       const char* transform_json) {
+  if (!world) return 0;
+  try { return AsWorld(world)->SetWorldEntityTransform(scene, entity_id, transform_json) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_read(const void* world, const char* scene,
+                                       char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldSceneJson(scene), out, capacity); }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_entity_read(const void* world, const char* scene,
+                                            const char* id, char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldEntityJson(scene, id), out, capacity); }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_entity_set_world_transform(void* world, const char* scene,
+                                                          const char* id, const char* transform) {
+  if (!world) return 0;
+  try { return AsWorld(world)->SetWorldEntityTransform(scene, id, transform, true) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_component_ids(const void* world, const char* scene,
+                                                const char* component, char* out,
+                                                std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldComponentIds(scene, component), out, capacity); }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_document_serialize(const void* world, char* out,
+                                               std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldDocumentJson(), out, capacity); }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_document_load(void* world, const char* document_json) {
+  if (!world) return 0;
+  try { return AsWorld(world)->LoadWorldDocument(document_json) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+
+std::uint32_t veldren_world_scene_revision(const void* world) {
+  return world ? AsWorld(world)->WorldSceneRevision() : 0;
 }
 
 std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum) {
@@ -818,4 +1059,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 12; }
+std::uint32_t veldren_core_abi_version() { return 14; }

@@ -182,9 +182,10 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  assert.equal(authoredMove.id,authoredId);let persistedTransform=childWindow.VeldrenSceneFormat.readWorldTransform(bridge.exportWorld(),'overworld',authoredId);
  assert.equal(persistedTransform.x,48);assert.equal(persistedTransform.y,53);assert(Math.abs(persistedTransform.rotation-45)<1e-8);assert.equal(persistedTransform.scale,1.5);
  assert(!bridge.exportEdits().changes.some(change=>change.id===authoredId),'scene-authored changes stay in the v2 document instead of becoming legacy overlays');
+ const entitiesBeforeDuplicate=bridge.exportWorld().scenes[0].entities.map(entity=>entity.id);
  const duplicated=bridge.duplicateSelection(),duplicatedId=duplicated.id;assert.notEqual(duplicatedId,authoredId);
- assert.equal(bridge.exportWorld().scenes[0].entities.length,2,'duplicate creates a canonical scene entity');
- bridge.deleteSelection();assert.equal(bridge.exportWorld().scenes[0].entities.length,1,'delete removes the canonical entity from the scene');
+ assert.equal(bridge.exportWorld().scenes[0].entities.length,entitiesBeforeDuplicate.length+1,'duplicate adds one canonical entity while retaining existing runtime bindings');
+ bridge.deleteSelection();assert.deepEqual(bridge.exportWorld().scenes[0].entities.map(entity=>entity.id),entitiesBeforeDuplicate,'delete removes exactly the duplicated entity');
  bridge.selectByRef('object',authoredId);const saveResult=await bridge.save();assert.equal(saveResult.roundTripVerified,true,'v2 document passes editor save verification');
  assert.equal(savedDocument.format,'veldren.world');assert.equal(savedDocument.scenes[0].entities[0].id,authoredId);
  persistedTransform=childWindow.VeldrenSceneFormat.readWorldTransform(savedDocument,'overworld',authoredId);assert(Math.abs(persistedTransform.rotation-45)<1e-8);assert.equal(persistedTransform.scale,1.5);

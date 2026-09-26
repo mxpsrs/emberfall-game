@@ -103,7 +103,12 @@
   while(pending.length){const current=pending.shift(),entity=cache.byId.get(current);if(!entity)continue;ordered.push(entity);pending.unshift(...(cache.children.get(current)||[]));}
   const allIds=new Set(world.scenes.flatMap(item=>item.entities.map(entity=>entity.id))),generated=new Set(),remap=new Map();
   for(let i=0;i<ordered.length;i++){const next=String(idFactory(ordered[i],i));if(!next||allIds.has(next)||generated.has(next))throw Error('Duplicate generated scene entity ID');generated.add(next);remap.set(ordered[i].id,next)}
-  const copies=ordered.map(entity=>{const copy=JSON.parse(JSON.stringify(entity));copy.id=remap.get(entity.id);if(entity.parent&&remap.has(entity.parent))copy.parent=remap.get(entity.parent);return copy});
+  const referenceFields={BuildingPart:['building'],BuildingAccess:['entrance'],Entrance:['building'],Room:['entrance'],Blueprint:['entrance'],BuildingLayout:['rooms','upperRooms','walls','upper','upperLevels','rampart','blueprint'],WalkSurface:['ramp','decks','rampLine'],SpatialLinks:null,ModularBuilding:['modules'],DoorOpening:['portal'],ObjectLink:['entity']};
+  const rewrite=value=>typeof value==='string'?(remap.get(value)||value):Array.isArray(value)?value.map(rewrite):plain(value)?Object.fromEntries(Object.entries(value).map(([key,item])=>[key,rewrite(item)])):value;
+  const copies=ordered.map(entity=>{const copy=JSON.parse(JSON.stringify(entity));copy.id=remap.get(entity.id);if(entity.parent&&remap.has(entity.parent))copy.parent=remap.get(entity.parent);
+   for(const [type,fields]of Object.entries(referenceFields)){const component=copy.components?.[type];if(!component)continue;if(fields===null)copy.components[type]=rewrite(component);else for(const key of fields)if(Object.hasOwn(component,key))component[key]=rewrite(component[key]);}
+   for(const type of ['GeneratedProp','GeneratedBuilding','GeneratedDecoration'])if(copy.components?.[type])copy.components[type].generationKey='editor-copy:'+sceneName+':'+copy.id;
+   return copy});
   scene.entities.push(...copies);invalidateScene(scene);
   const root=remap.get(String(id)),base=readWorldTransform(world,sceneName,root);
   setWorldTransform(world,sceneName,root,{x:base.x+1,y:base.y});
@@ -223,7 +228,7 @@
    const matrices=worldMatrices(scene),entities=new Map(scene.entities.map(entity=>[entity.id,entity]));
    for(const entity of scene.entities){
     const renderer=entity.components?.MeshRenderer;
-    if(!renderer||renderer.visible===false||entity.components?.LegacyWorldEdit)continue;
+    if(!renderer||renderer.visible===false||entity.components?.LegacyWorldEdit||entity.components?.GeneratedProp||entity.components?.GeneratedBuilding||entity.components?.BuildingPart||entity.components?.GeneratedDecoration)continue;
     let ancestor=entity,enabled=true;
     while(ancestor){if(ancestor.active===false){enabled=false;break;}ancestor=ancestor.parent?entities.get(ancestor.parent):null;}
     if(!enabled||typeof renderer.asset!=='string')continue;

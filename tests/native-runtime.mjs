@@ -5,10 +5,10 @@ import vm from 'node:vm';
 const root=new URL('../',import.meta.url),wasm=fs.readFileSync(new URL('dist/native/veldren-core.wasm',root));
 const listeners={};
 const window={addEventListener(type,listener){listeners[type]=listener;}};
-const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,Number,Error,Set,WeakMap};
+const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,TextEncoder,TextDecoder,Number,Error,Set,WeakMap};
 vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('dist/native-runtime.js',root),'utf8'),context,{filename:'native-runtime.js'});
 const native=await window.realmNativeReady;
-assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,12);
+assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,14);
 const villager={type:'villager',x:10,y:0,drawX:0,drawY:0},wolf={kind:'wolf',x:110,y:0,drawX:100,drawY:0};
 native.stepActors([villager,wolf],.5,0,0,null,1);
 assert(Math.abs(villager.drawX-.375)<.0001,'C++ applies the villager walk speed');
@@ -42,5 +42,33 @@ const move=native.stateMachines.enemyCombatTick(.02,2,0,false,false,.29,2.3);ass
 const attack=native.stateMachines.enemyCombatTick(.1,1,0,false,true,move.enemyClock,move.retaliationClock);assert.equal(attack.events,2);assert(Math.abs(attack.retaliationClock)<.001);
 assert.equal(native.stateMachines.requirementsMet([[5,5],[4,4],[3,3]]),true);assert.equal(native.stateMachines.requirementsMet([[5,5],[3,4]]),false);
 assert.equal(native.stateMachines.worldTimerEvents(1000,999,0,NaN,0),1);assert.equal(native.stateMachines.worldTimerEvents(1000,NaN,9,999,5),2);
+const region={id:'overworld:region:oakwood',name:'Oakwood',parent:null,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{Region:{source:'procedural'}},metadata:{generationKey:'oakwood'}};
+const barrel={id:'overworld:prop:barrel:9e2041',name:'Barrel',parent:region.id,active:true,transform:{position:[1,0,2],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'briar:barrel',visible:true},Collider:{shape:'box'}},metadata:{kind:'prop'}};
+assert.equal(native.scenes.upsert('overworld',region),true);assert.equal(native.scenes.upsert('overworld',barrel),true);assert.equal(native.scenes.revision(),2);
+assert.deepEqual(Array.from(native.scenes.componentIds('overworld','MeshRenderer')),[barrel.id]);
+assert.equal(native.scenes.setTransform('overworld',barrel.id,{position:[4,0,6],rotation:[0,0,0,1],scale:[1,1,1]}),true);
+const generated=native.scenes.read('overworld'),generatedBarrel=generated.entities.find(entity=>entity.id===barrel.id);
+assert.equal(generatedBarrel.parent,region.id);assert.equal(generatedBarrel.transform.position[0],4);assert(generatedBarrel.components.MeshRenderer&&generatedBarrel.components.Collider);
+const savedWorld=native.scenes.serialize();assert.equal(savedWorld.format,'veldren.world');assert.equal(savedWorld.scenes[0].entities.length,2);
+const snapshot=native.scenes.entity('overworld',barrel.id);assert(Object.isFrozen(snapshot.transform.position),'native entity snapshots cannot become a second writable world');
+assert.equal(native.scenes.entity('overworld',barrel.id),snapshot,'unchanged component reads share a revision cache');
+native.scenes.setTransform('overworld',region.id,{position:[10,2,20],rotation:[0,Math.SQRT1_2,0,Math.SQRT1_2],scale:[2,2,2]});
+const worldBarrel=native.scenes.entity('overworld',barrel.id);
+assert(Math.abs(worldBarrel.worldMatrix[12]-22)<1e-9&&Math.abs(worldBarrel.worldMatrix[14]-12)<1e-9,'parent transform propagates through native snapshots');
+assert(native.scenes.setWorldTransform('overworld',barrel.id,{position:[30,2,40],rotation:[0,0,0,1],scale:[1,1,1]}));
+const relocated=native.scenes.entity('overworld',barrel.id);assert(Math.abs(relocated.worldMatrix[12]-30)<1e-9&&Math.abs(relocated.worldMatrix[14]-40)<1e-9,'world-space edits are converted to parent-relative local transforms');
+const affineRecord=JSON.parse(JSON.stringify(relocated));affineRecord.metadata.note='preserve affine';assert(native.scenes.upsert('overworld',affineRecord));
+assert(Math.abs(native.scenes.entity('overworld',barrel.id).worldMatrix[12]-30)<1e-9,'component upsert preserves affine transform');
+const beforeRejected=native.scenes.serialize(),beforeRevision=native.scenes.revision();
+for(const invalid of [
+ {...affineRecord,name:'must not rename',components:{Collider:[]}},
+ {...affineRecord,name:'must not rename',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[0,1,1]}},
+ {...affineRecord,name:'must not rename',parent:affineRecord.id}
+])assert.equal(native.scenes.upsert('overworld',invalid),false);
+assert.equal(JSON.stringify(native.scenes.serialize()),JSON.stringify(beforeRejected),'rejected upsert is atomic');assert.equal(native.scenes.revision(),beforeRevision);
+assert.equal(native.scenes.remove('overworld',region.id),true);assert.equal(native.scenes.read('overworld').entities.length,0);
+assert.equal(native.scenes.load(savedWorld),true);const reloaded=native.scenes.read('overworld');assert.equal(reloaded.entities.length,2);assert.equal(reloaded.entities.find(entity=>entity.id===barrel.id).transform.position[0],4);
+savedWorld.revision=17;savedWorld.updatedAt='2026-09-26T09:00:00Z';savedWorld.terrain={version:1,patches:[]};assert(native.scenes.load(savedWorld));
+const metadataRoundtrip=native.scenes.serialize();assert.equal(metadataRoundtrip.revision,17);assert.equal(metadataRoundtrip.updatedAt,savedWorld.updatedAt);assert.deepEqual(JSON.parse(JSON.stringify(metadataRoundtrip.terrain)),JSON.parse(JSON.stringify(savedWorld.terrain)));
 listeners.pagehide();assert.throws(()=>native.stepActors([],0.1,0,0,null,3),/stopped/);
 console.log('PASS: browser bridge loads the C++ WASM core and delegates actor simulation');

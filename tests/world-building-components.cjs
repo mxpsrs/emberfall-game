@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const root=path.join(__dirname,'../dist/'),wasm=fs.readFileSync(root+'native/veldren-core.wasm');
+const ctx={console,addEventListener(){},WebAssembly,DataView,TextEncoder,TextDecoder,fetch:async()=>({ok:true,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:p=>p,worldScenes:{test:{objects:[],buildings:[]}},building3:()=>3,inBuilding:()=>false,withinWalkIn:()=>false,doorNormal:()=>[0,1],buildingDoorTransform:()=>[1,0,0,0,0,1,0,0,0,0,1,0]};ctx.window=ctx;vm.createContext(ctx);
+const load=file=>vm.runInContext(fs.readFileSync(root+file+'.js','utf8'),ctx);
+async function main(){
+ load('native-runtime');await ctx.realmNativeReady;for(const file of ['building-assembly','world-ownership-runtime','world-building-scene'])load(file);
+ const A=ctx.VeldrenAssembly,bridge=ctx.VeldrenBuildingScene,native=ctx.realmNative.scenes;
+ ctx.VeldrenBuildings={cache:new WeakMap(),model:()=>({p:[0,0,0,1,1,0,0,1,1],i:[0,1,2],bounds:[[0,0,0],[1,1,1]]}),invalidate(){}};
+ const door={id:27,name:'Door',type:'door',x:12,y:24,sprite:0,destination:'inn',walkThrough:true},b={name:'Inn',x:10,y:20,w:5,h:5,service:door,walkIn:true,civilUpper:{rise:3,ramp:{x:11,y:21,w:2,h:3},decks:[{x:11,y:21,w:3,h:1}]}};door.building=b;
+ ctx.worldScenes.test.buildings.push(b);ctx.worldScenes.test.objects.push(door);
+ await bridge.migrate();const canonical=ctx.worldScenes.test.buildings[0],id=canonical._sceneEntityId;
+ assert.equal(canonical.w,5);assert.equal(canonical.civilUpper.ramp.w,2);assert.equal(canonical.civilUpper.decks[0].h,1);
+ bridge.setAssembly('test',id,{version:1,buildingId:id,parent:A.transform(10,0,20),modules:[{id:'wall',model:'rebuilt:Wall',role:'wall',floor:0,local:A.transform(1,0,0),bounds:[[0,0,0],[1,3,.2]]},{id:'door',objectId:'27',model:'rebuilt:Door',role:'entrance',floor:0,local:A.transform(2,0,3),bounds:[[0,0,0],[1,2,.1]],opening:{service:[2,0,4],normal:[0,0,1],width:1}}]});
+ const assembly=canonical.assembly;assert.equal(assembly.modules.length,2);const wall=assembly.modules.find(m=>m.id==='wall');wall.local[3]=3;assert.equal(canonical.assembly.modules.find(m=>m.id==='wall').local[3],3);
+ const doorPart=assembly.modules.find(m=>m.id==='door'),oldDoorX=canonical.service.x;doorPart.local[3]+=2;assert.equal(canonical.service.x,oldDoorX+2,'moving door mesh also moves canonical interaction portal');
+ assembly.parent=A.transform(30,0,40,Math.PI/2,2);assert.equal(canonical.x,30);assert.equal(canonical.y,40);
+ const newPart=JSON.parse(JSON.stringify(wall));newPart.id='part-editor-copy';assembly.modules.push(newPart);assert.equal(assembly.modules.length,3);
+ assembly.modules=assembly.modules.filter(m=>m.id!==newPart.id);assert.equal(assembly.modules.length,2);
+ const saved=native.serialize();assert(native.load({format:'veldren.world',version:2,scenes:[]}));assert.equal(ctx.worldScenes.test.buildings.length,0);assert.equal(ctx.worldScenes.test.objects.length,0);
+ assert(native.load(saved));assert.equal(JSON.stringify(native.serialize()),JSON.stringify(saved));assert.equal(ctx.worldScenes.test.buildings[0].assembly.modules.length,2);
+ const restored=ctx.worldScenes.test.buildings[0];assert(native.remove('test',restored._sceneEntityId));assert.equal(ctx.worldScenes.test.buildings.length,0);assert.equal(ctx.worldScenes.test.objects.length,0);
+ console.log('PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.');
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});

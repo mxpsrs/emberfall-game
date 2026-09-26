@@ -5,7 +5,10 @@ const get=ctx.document.getElementById,retired=new Set(['waveButton','worldClock'
 ctx.document.getElementById=id=>retired.has(id)?null:get(id);
 ctx.fetch=async url=>({ok:true,json:async()=>String(url).includes('edits')?{edits:{version:1,revision:1,changes:[null,{scene:'overworld',kind:'object',id:'stale-test',x:0,y:0}]}}:{}});
 ctx.requestAnimationFrame=fn=>{if(fn.name==='frame')return;fn(0)};
-for(const f of ['multiplayer','building-assembly','building-runtime','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
+for(const f of ['multiplayer','building-assembly','building-runtime','world-scene-format','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
+// A browser's window is globalThis. The shared fixture keeps a separate window
+// object, so expose the format API there as the real page does.
+ctx.window.VeldrenSceneFormat=ctx.VeldrenSceneFormat;
 run(`
 const startupStages=[];window.realmStartup={failed:false};
 realmLoadStatus=()=>{};realmSetStartupStage=stage=>startupStages.push(stage);
