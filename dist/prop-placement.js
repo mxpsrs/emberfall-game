@@ -55,7 +55,8 @@ const PROP_KINDS=[
  ['storage',o=>/crate|supplies|chest|sack|stock|feed|store/i.test(o.name||'')]
 ];
 const propPlacementRooms=new Map(),propPlacementReport={rooms:0,placed:0,removed:[],protected:0},propPlacementZones=new Map();
-const propWorkPads=[],propPadBuckets=new Map(),propSupportPads=[];
+let propWorkPads=[],propSupportPads=[];
+const propPadBuckets=new Map();
 let propFootingsReady=false;
 function propIndexPad(p){
  for(let y=Math.floor((p.y-p.ry-2)/16);y<=Math.floor((p.y+p.ry+2)/16);y++)for(let x=Math.floor((p.x-p.rx-2)/16);x<=Math.floor((p.x+p.rx+2)/16);x++){
@@ -66,6 +67,7 @@ function propIndexPad(p){
 // A one-node border keeps interpolated terrain flat across the whole prop base.
 function propWorkFootingHeight(x,y,height){
  if(!propFootingsReady||currentScene!=='overworld')return height;
+ if(globalThis.VeldrenQuarryScene?.enabled)return VeldrenQuarryScene.padHeight(x,y,height,true);
  const pads=propPadBuckets.get(Math.floor(x/16)+':'+Math.floor(y/16));if(!pads)return height;
  const quarryRamp=surfaceQuarries.some(q=>Math.abs(x-q.x)<3&&y>=q.y-9&&y<=q.y+q.ry+6);
  let result=height;
@@ -83,16 +85,17 @@ function propWorkFootingHeight(x,y,height){
 const propGradeBefore=gradeLand;
 gradeLand=function(x,y,height){
  const base=propGradeBefore(x,y,height);if(currentScene!=='overworld')return base;
+ if(globalThis.VeldrenQuarryScene?.enabled)return VeldrenQuarryScene.padHeight(x,y,base);
  const pads=propPadBuckets.get(Math.floor(x/16)+':'+Math.floor(y/16));if(!pads)return base;
  // Worksite footings must never lower or raise the existing quarry access ramp.
  if(surfaceQuarries.some(q=>Math.abs(x-q.x)<3&&y>=q.y-9&&y<=q.y+q.ry+6))return base;
  let result=base;for(const p of pads){if(p.supportOnly)continue;const d=Math.max(Math.abs(x-p.x)-p.rx,Math.abs(y-p.y)-p.ry,0);if(d>=2)continue;const t=d/2,blend=1-t*t*(3-2*t);result=result*(1-blend)+p.height*blend;}return result;
 };
 function propPrepareWorkPads(){
- const add=(x,y,rx,ry,reason)=>propWorkPads.push({x,y,rx,ry,height:landHeight(x,y),reason});
+ const add=(x,y,rx,ry,reason,quarry=null)=>propWorkPads.push({x,y,rx,ry,height:landHeight(x,y),reason,quarry});
  // Small work and shelter pads support their props; town footprints/roads stay intact.
  for(const [x,y]of [[85,90],[95,89],[102,89],[85,106],[96,110],[84,98]])add(x+.5,y+.5,2.3,2.3,'Packed-earth shelter footing');
- for(const q of surfaceQuarries){add(q.x+8,q.y+q.ry+7,7,6,'Level quarry loading apron');add(q.x-9,q.y+q.ry+12,5,4,'Quarry timber lifting pad');}
+ for(const q of surfaceQuarries){add(q.x+8,q.y+q.ry+7,7,6,'Level quarry loading apron',q.id);add(q.x-9,q.y+q.ry+12,5,4,'Quarry timber lifting pad',q.id);}
  for(const p of propWorkPads)propIndexPad(p);
  resetLandSurface();
 }

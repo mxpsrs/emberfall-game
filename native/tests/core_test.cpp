@@ -169,7 +169,7 @@ int main() {
   assert(veldren_requirements_met(missing, required, 3) == 0);
   assert(veldren_world_timer_events(1000, 999, 0, NAN, 0) == 1);
   assert(veldren_world_timer_events(1000, NAN, 9, 999, 5) == 2);
-  assert(veldren_core_abi_version() == 17);
+  assert(veldren_core_abi_version() == 18);
   const auto initial_scene_revision = veldren_world_scene_revision(world);
   const char* region = R"({"id":"overworld:region:oakwood","name":"Oakwood","parent":null,"active":true,"transform":{"position":[0,0,0],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"Region":{"source":"procedural"}},"metadata":{"generationKey":"oakwood"}})";
   const char* barrel = R"({"id":"overworld:prop:barrel:9e2041","name":"Barrel","parent":"overworld:region:oakwood","active":true,"transform":{"position":[1,0,2],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"MeshRenderer":{"asset":"briar:barrel","visible":true},"Collider":{"shape":"box"}},"metadata":{"kind":"prop"}})";

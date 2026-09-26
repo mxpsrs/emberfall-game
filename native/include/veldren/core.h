@@ -172,6 +172,16 @@ VELDREN_EXPORT std::uint32_t veldren_world_scene_component_ids(
 VELDREN_EXPORT std::uint32_t veldren_world_scene_footprints_at(
     const void* world, const char* scene, const char* component, double x, double z,
     char* out, std::uint32_t capacity);
+// Native quarry profile and transformed worksite terrain evaluation.
+// An empty ID selects the first active quarry containing the padded point.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_quarry_sample(
+    const void* world, const char* scene, const char* id, double x, double z,
+    double pad, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_quarry_ramp_at(
+    const void* world, const char* scene, double x, double z);
+VELDREN_EXPORT double veldren_world_scene_terrain_pad_height(
+    const void* world, const char* scene, double x, double z, double height,
+    std::uint32_t footing);
 // Resolves active point lights from component data and hierarchical transforms.
 VELDREN_EXPORT std::uint32_t veldren_world_scene_lights_read(
     const void* world, const char* scene, double night, char* out, std::uint32_t capacity);

@@ -34,6 +34,34 @@ struct ActorRecord {
   float last_phase = 0;
 };
 
+
+// These caches contain only derived geometry. Canonical definitions and
+// hierarchy remain in Scene; any world revision discards all cached rows.
+struct TerrainShape {
+  std::string id;
+  veldren::Mat4 world;
+  double rx = 0, rz = 0, height = 0, determinant = 0, order = 0;
+  int levels = 0;
+  bool support = false, solid = true;
+  std::pair<double,double> local(double x, double z) const {
+    const auto& m = world.v; const double dx = x - m[12], dz = z - m[14];
+    return {(dx * m[10] - dz * m[8]) / determinant,
+            (dz * m[0] - dx * m[2]) / determinant};
+  }
+};
+struct TerrainIndex {
+  std::vector<TerrainShape> quarries, pads;
+  std::map<std::pair<int,int>,std::vector<std::size_t>> buckets;
+  std::vector<std::size_t> large;
+};
+bool TerrainCoordinate(double x, double z) {
+  return std::isfinite(x) && std::isfinite(z) && std::abs(x) <= 1e9 && std::abs(z) <= 1e9;
+}
+double TerrainBlend(double t) { t = std::clamp(t, 0.0, 1.0); return 1 - t * t * (3 - 2 * t); }
+bool QuarryRamp(const TerrainShape& q, double x, double z) {
+  const auto [u,v] = q.local(x,z); return std::abs(u) < 3 && v >= -9 && v <= q.rz + 6;
+}
+
 class World {
  public:
   explicit World(std::uint32_t capacity) {
@@ -521,6 +549,105 @@ class World {
     for (auto slot : index.large) test(slot);
     return veldren::write_json(result);
   }
+
+  const TerrainIndex& Terrain(const char* scene_name) const {
+    if (terrain_revision_ != world_scene_revision_) {
+      terrain_indices_.clear(); terrain_revision_ = world_scene_revision_;
+    }
+    auto [where, fresh] = terrain_indices_.try_emplace(scene_name);
+    auto& index = where->second;
+    const auto found = world_scenes_.find(scene_name);
+    if (!fresh || found == world_scenes_.end()) return index;
+    for (const auto* type : {"Quarry", "TerrainPad"}) {
+      auto& rows = std::strcmp(type, "Quarry") == 0 ? index.quarries : index.pads;
+      for (const auto& id : found->second.component_entities(type)) {
+        const auto node = found->second.inspect(id); if (!node.active_in_hierarchy) continue;
+        const veldren::Json fields(node.components.at(type));
+        const auto number = [&](const char* key, double fallback) { const auto* f = fields.find(key); return f ? f->number_or(fallback) : fallback; };
+        TerrainShape shape; shape.id = id; shape.world = node.world;
+        shape.rx = number("rx", 0); shape.rz = number("ry", 0);
+        shape.height = number(type == std::string("Quarry") ? "level" : "height", 0);
+        shape.order = number("order", 0);
+        if (const auto collider = node.components.find("Collider"); collider != node.components.end()) {
+          const veldren::Json value(collider->second);
+          if (const auto* solid = value.find("solid")) shape.solid = solid->bool_or(true);
+        }
+        const double levels = number("levels", 0);
+        if (!(shape.rx > 0 && shape.rz > 0 && std::isfinite(shape.rx + shape.rz + shape.height + shape.order)) ||
+            !std::isfinite(levels) || levels < 0 || levels > 100 || levels != std::floor(levels)) continue;
+        shape.levels = int(levels);
+        shape.support = fields.find("supportOnly") && fields.find("supportOnly")->bool_or();
+        const auto& m = shape.world.v; shape.determinant = m[0] * m[10] - m[8] * m[2];
+        if (!std::isfinite(shape.determinant) || std::abs(shape.determinant) < 1e-12) continue;
+        rows.push_back(std::move(shape));
+      }
+      std::stable_sort(rows.begin(), rows.end(), [](const auto& a, const auto& b) { return a.order < b.order; });
+    }
+    for (std::size_t i = 0; i < index.pads.size(); ++i) {
+      const auto& p = index.pads[i];
+      double min_x = INFINITY, max_x = -INFINITY, min_z = INFINITY, max_z = -INFINITY;
+      for (int c = 0; c < 4; ++c) {
+        const auto point = veldren::transform_point(p.world, {(c & 1 ? 1 : -1) * (p.rx + 2), 0, (c & 2 ? 1 : -1) * (p.rz + 2)});
+        min_x = std::min(min_x, point.x); max_x = std::max(max_x, point.x);
+        min_z = std::min(min_z, point.z); max_z = std::max(max_z, point.z);
+      }
+      if (!TerrainCoordinate(min_x,min_z) || !TerrainCoordinate(max_x,max_z)) continue;
+      const int a = int(std::floor(min_x / 16)), b = int(std::floor(max_x / 16));
+      const int c = int(std::floor(min_z / 16)), d = int(std::floor(max_z / 16));
+      if (double(b-a+1) * double(d-c+1) > 4096) index.large.push_back(i);
+      else for (int x = a; x <= b; ++x) for (int z = c; z <= d; ++z) index.buckets[{x,z}].push_back(i);
+    }
+    return index;
+  }
+  std::string QuarrySample(const char* scene_name, const char* id, double x, double z, double pad) const {
+    if (!scene_name || !id || !TerrainCoordinate(x,z) || !std::isfinite(pad) || pad < 0) return "null";
+    for (const auto& q : Terrain(scene_name).quarries) {
+      const auto [u,v] = q.local(x,z);
+      if (*id ? q.id != id : !(std::abs(u) < q.rx + pad && std::abs(v) < q.rz + pad)) continue;
+      const double edge = (1 - std::pow(std::pow(std::abs(u)/q.rx,4) + std::pow(std::abs(v)/q.rz,4),.25)) * std::min(q.rx,q.rz);
+      double depth = 0; bool cliff = false;
+      if (edge > 0) {
+        if (std::abs(u) < 2.6 && v >= -8) depth = std::clamp((q.rz-v)/q.rz*q.levels*1.25,0.0,q.levels*1.25);
+        else for (int i = 1; i <= q.levels; ++i) depth += std::clamp(edge-(i*5-1),0.0,1.0)*1.25;
+      }
+      if (q.solid && !(std::abs(u) < 3 && v >= -9))
+        for (int i = 1; i <= q.levels; ++i) if (std::abs(edge-(i*5-.5)) < .65) cliff = true;
+      const double blend = TerrainBlend(std::hypot(std::max(std::abs(u)-q.rx,0.0),std::max(std::abs(v)-q.rz,0.0))/14);
+      const double height = veldren::transform_point(q.world,{u,std::max(.15,q.height-depth),v}).y;
+      return veldren::write_json(veldren::Json::Object{{"id",q.id},{"localX",u},{"localZ",v},
+        {"edge",edge},{"depth",depth},{"height",height},{"blend",blend},{"cliff",cliff},{"ramp",QuarryRamp(q,x,z)}});
+    }
+    return "null";
+  }
+  bool QuarryRampAt(const char* scene_name, double x, double z) const {
+    if (!scene_name || !TerrainCoordinate(x,z)) return false;
+    for (const auto& q : Terrain(scene_name).quarries) if (QuarryRamp(q,x,z)) return true;
+    return false;
+  }
+  double TerrainPadHeight(const char* scene_name, double x, double z, double height, bool footing) const {
+    if (!scene_name || !TerrainCoordinate(x,z) || !std::isfinite(height)) return height;
+    const auto& index = Terrain(scene_name);
+    std::vector<std::size_t> slots = index.large;
+    if (auto bucket = index.buckets.find({int(std::floor(x/16)),int(std::floor(z/16))}); bucket != index.buckets.end())
+      slots.insert(slots.end(),bucket->second.begin(),bucket->second.end());
+    if (slots.empty()) return height;
+    std::sort(slots.begin(),slots.end());
+    const bool ramp = QuarryRampAt(scene_name,x,z);
+    const TerrainShape* support = nullptr; double area = -1, support_blend = 0, support_height = 0;
+    for (const auto i : slots) {
+      const auto& p = index.pads[i]; const auto [u,v] = p.local(x,z);
+      const double d = std::max({std::abs(u)-p.rx-(footing?1:0),std::abs(v)-p.rz-(footing?1:0),0.0});
+      if (d >= (footing?1:2)) continue;
+      const double blend = TerrainBlend(d/(footing?1:2));
+      const double target = veldren::transform_point(p.world,{u,p.height,v}).y;
+      if (!p.support && !ramp) height = height*(1-blend)+target*blend;
+      else if (p.support && footing && p.rx*p.rz*std::abs(p.determinant) > area) {
+        support = &p; area = p.rx*p.rz*std::abs(p.determinant); support_blend = blend; support_height = target;
+      }
+    }
+    return support ? height*(1-support_blend)+support_height*support_blend : height;
+  }
+
   std::string WorldLights(const char* scene_name, double night) const {
     veldren::Json::Array lights;
     if (!scene_name || !std::isfinite(night)) return "[]";
@@ -728,6 +855,8 @@ class World {
   struct FootprintIndex { std::vector<FootprintRect> rects; std::map<std::pair<int,int>,std::vector<std::size_t>> buckets; std::vector<std::size_t> large; };
   mutable std::map<std::pair<std::string,std::string>,FootprintIndex> footprint_indices_;
   mutable std::uint32_t footprint_revision_ = std::numeric_limits<std::uint32_t>::max();
+  mutable std::map<std::string,TerrainIndex> terrain_indices_;
+  mutable std::uint32_t terrain_revision_ = std::numeric_limits<std::uint32_t>::max();
   std::map<std::string, veldren::Scene> world_scenes_;
   std::uint32_t world_scene_revision_ = 0;
   veldren::WorldDocument world_document_metadata_;
@@ -1033,6 +1162,23 @@ std::uint32_t veldren_world_scene_footprints_at(const void* world, const char* s
   catch (...) { return 0; }
 }
 
+
+std::uint32_t veldren_world_scene_quarry_sample(const void* world, const char* scene,
+    const char* id, double x, double z, double pad, char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->QuarrySample(scene,id,x,z,pad),out,capacity); }
+  catch (...) { return 0; }
+}
+std::uint32_t veldren_world_scene_quarry_ramp_at(const void* world, const char* scene, double x, double z) {
+  if (!world) return 0;
+  try { return AsWorld(world)->QuarryRampAt(scene,x,z) ? 1 : 0; } catch (...) { return 0; }
+}
+double veldren_world_scene_terrain_pad_height(const void* world, const char* scene,
+    double x, double z, double height, std::uint32_t footing) {
+  if (!world) return height;
+  try { return AsWorld(world)->TerrainPadHeight(scene,x,z,height,footing != 0); } catch (...) { return height; }
+}
+
 std::uint32_t veldren_world_scene_lights_read(const void* world, const char* scene,
                                              double night, char* out, std::uint32_t capacity) {
   if (!world) return 0;
@@ -1313,4 +1459,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 17; }
+std::uint32_t veldren_core_abi_version() { return 18; }

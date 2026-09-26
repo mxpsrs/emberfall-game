@@ -1,6 +1,6 @@
 'use strict';
 // Authored architecture and industry. Object IDs and scene IDs remain stable across saves.
-const CIVILIZATION_VERSION=4, civilFloors=new Map(), civilWalls=new Map(), surfaceQuarries=[],civilStairWells=new Map(),civilLegacyReturns=new Map();let civilWalkableStructures=[],civilGatehouses=[];
+const CIVILIZATION_VERSION=4, civilFloors=new Map(), civilWalls=new Map(), civilStairWells=new Map(),civilLegacyReturns=new Map();let surfaceQuarries=[],civilWalkableStructures=[],civilGatehouses=[];
 const CIVIL_ARCHITECTURE_SCALE=Object.freeze({castleGateWidth:5.5,castleGateHeight:8.25,castleGateTowerFootprint:7,castleGateTowerHeight:9.2,cityGateWidth:9,cityGateHeight:9,cityGateTowerFootprint:11,cityGateTowerDepth:13,cityGateTowerHeight:8.8,cityGateDoorWidth:2.4,cityGateDoorHeight:3.2,cityGateRampartHeight:5.4,cityWallTowerFootprint:10,cityWallTowerHeight:11});
 let civilizationReady=false,civilSerial=7400000;
 function civilMove(o,x,y){Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});}
@@ -192,7 +192,7 @@ function setupSurfaceQuarries(world){
  for(const q of defs){q.level=Math.max(3.2,landBase(q.x,q.y));surfaceQuarries.push(q);settlementPlans.get(q.town).quarries.push(q.id);
   world.objects=world.objects.filter(o=>o.mainStoryKey||o.mountainKey||o.type==='door'||o.interiorBuilding||Math.abs(o.x-q.x)>q.rx+3||Math.abs(o.y-q.y)>q.ry+3);
   const bottom=q.y+q.ry+5,town=SETTLEMENTS.find(t=>t.id===q.town),gate=settlementPlans.get(q.town).entrances[1];
-  const workRoad=[[q.x+.5,bottom],[q.x-q.rx-6,bottom],[q.x-q.rx-6,town.y+.5],gate];for(let i=1;i<workRoad.length;i++)plannedRoad(workRoad[i-1],workRoad[i],1.8,false);plannedRoad([q.x+.5,bottom],[q.x+.5,q.y-8],1.6,false);
+  const roadStart=organicRoads.length,workRoad=[[q.x+.5,bottom],[q.x-q.rx-6,bottom],[q.x-q.rx-6,town.y+.5],gate];for(let i=1;i<workRoad.length;i++)plannedRoad(workRoad[i-1],workRoad[i],1.8,false);plannedRoad([q.x+.5,bottom],[q.x+.5,q.y-8],1.6,false);for(const road of organicRoads.slice(roadStart))road.quarry=q.id;
   for(let i=0;i<q.ores.length;i++){const inset=7+Math.min(q.levels-1,i)*5,x=q.x-q.rx+inset+2,y=q.y+(i%2?7:-7);civilPut(world,'ore',ORE_RESOURCES[q.ores[i]].name,x,y,{resourceId:q.ores[i],quarry:q.id});}
   const abandoned=q.type==='abandoned';
   const shed=addCivilHouse(world,town,100+surfaceQuarries.length,q.x+14,bottom+10,'hall',abandoned?'Abandoned quarry office':'Quarry records and stores');shed.quarry=q.id;
@@ -209,7 +209,7 @@ function quarryDepth(q,x,y){const edge=quarryShapeEdge(q,x,y);if(edge<=0)return 
 }
 function quarryCliff(q,x,y){if(Math.abs(x+.5-q.x)<3&&y+.5>=q.y-9)return false;const edge=quarryShapeEdge(q,x+.5,y+.5);return Array.from({length:q.levels},(_,i)=>(i+1)*5-.5).some(d=>Math.abs(edge-d)<.65);}
 const civilGradeBefore=gradeLand;
-gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;let result=before;const q=quarryAt(x,y,14);if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;}
+gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;let result=before;const q=quarryAt(x,y,14);if(q&&globalThis.VeldrenQuarryScene?.enabled){const sample=VeldrenQuarryScene.sample(x,y,0,q);result=before*(1-sample.blend)+sample.height*sample.blend;}else if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;}
  else for(const plan of settlementPlans.values()){if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;const t=SETTLEMENTS.find(t=>t.id===plan.id),d=Math.hypot(x-t.x,y-t.y),r=plan.radius+8;if(d>r+20)continue;const k=Math.max(0,Math.min(1,(r+20-d)/20));result=before*(1-k)+plan.grade*k;break;}
  return gradeRoadLand(x,y,result);};
 const civilWallBefore=worldWall;
@@ -452,6 +452,6 @@ function civilizationReviewPoint(name){
  const points={briarhaven:town('briarhaven'),ironhollow:town('ironhollow'),'small-village':town('fernwatch'),'large-village':town('copperdelve'),town:town('willowcross'),capital:town('crownreach'),goblins:['overworld',95,99],dwarven:town('deepforge'),elven:town('aelindor'),
  'city-gate-exterior':gatePoint(0,22),'city-gate-interior':gatePoint(-CIVIL_ARCHITECTURE_SCALE.cityGateTowerFootprint,3),'city-gate-upper':gatePoint(-CIVIL_ARCHITECTURE_SCALE.cityGateTowerFootprint,-4),
  'citadel-exterior':['overworld',castle.x+24,castle.y+castle.h+12],'citadel-courtyard':['overworld',castle.x+24,castle.y+28],'citadel-hall':['overworld',castle.x+24,castle.y+12],'citadel-library':['overworld',castle.x+8,castle.y+7],'citadel-upper':['overworld',castle.x+32,castle.y+22],'citadel-lower':[castle.service.destination+'_lower',24,12]};
- for(const [key,id]of [['ironhollow-quarry','ironhollow'],['active-quarry','deepforge'],['abandoned-quarry','stoneford']]){const q=surfaceQuarries.find(q=>q.id===id);points[key]=['overworld',q.x,q.y+8];}
+ for(const [key,id]of [['ironhollow-quarry','ironhollow'],['active-quarry','deepforge'],['abandoned-quarry','stoneford']]){const q=surfaceQuarries.find(q=>q.id===id);if(q){const p=globalThis.VeldrenQuarryScene?.enabled?VeldrenQuarryScene.point(q,0,8):[q.x,0,q.y+8];points[key]=['overworld',p[0],p[2]];}}
  return points[name];
 }

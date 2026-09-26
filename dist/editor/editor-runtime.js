@@ -66,7 +66,7 @@
  const snapValue=(value,step)=>step?Math.round(value/step)*step:value;
 
  function protectedObject(o){
-  return !!(o?._generatedSpawn||o?._generatedGatherable||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
+  return !!(o?._generatedQuarry||o?._generatedSpawn||o?._generatedGatherable||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
  }
  function buildingId(b,index){
   if(b._generatedBuildingEntity)return b._sceneEntityId;
@@ -90,7 +90,7 @@
    const list=sceneBuildings(scene);for(let i=0;i<list.length;i++)if(buildingId(list[i],i)===String(id))return {kind:'building',entity:list[i],id:String(id)};
    return null;
   }
-  const o=sceneObjects(scene).find(o=>String(o._sceneEntityId||'')===String(id)||String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenStructureScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenBridgeScene?.selectables(scene).find(o=>o._sceneEntityId===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
+  const o=sceneObjects(scene).find(o=>String(o._sceneEntityId||'')===String(id)||String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenStructureScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenBridgeScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenQuarryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id)||String(o.id)===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
  }
  function ensureBase(ref){
   const e=ref.entity;if(e._editorBase)return e._editorBase;
@@ -116,7 +116,7 @@
  function allEntities(){
   if(!ready)return [];
   if(buildingContext)return [entityInfo(buildingContext)];
-  const out=[];for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[])])if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
+  const out=[];for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[]),...(window.VeldrenQuarryScene?.selectables(String(currentScene))||[])])if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
   const list=buildings;for(let i=0;i<list.length;i++)out.push(entityInfo({kind:'building',entity:list[i],id:buildingId(list[i],i)}));
   return out;
  }
@@ -212,7 +212,8 @@
   let rotation=Number.isFinite(Number(input.rotation))?Number(input.rotation):entityRotation(ref);rotation=snapValue(rotation,snap.rotation);
   const scale=Math.max(.1,Math.min(10,Number.isFinite(Number(input.scale))?Number(input.scale):entityScale(ref)));
   if(e._generatedSceneEntity){
-   if(!window.realmNative.scenes.setWorldTransform(String(currentScene),e._sceneEntityId,{position:[x,e.height||0,y],rotation:[0,Math.sin(rotation*Math.PI/360),0,Math.cos(rotation*Math.PI/360)],scale:[scale,scale,scale]}))throw Error('The native Scene rejected the editor transform');sceneDocumentDirty=true;
+   const elevation=window.realmNative.scenes.entity(String(currentScene),e._sceneEntityId).worldMatrix[13];
+   if(!window.realmNative.scenes.setWorldTransform(String(currentScene),e._sceneEntityId,{position:[x,elevation,y],rotation:[0,Math.sin(rotation*Math.PI/360),0,Math.cos(rotation*Math.PI/360)],scale:[scale,scale,scale]}))throw Error('The native Scene rejected the editor transform');sceneDocumentDirty=true;
   }else if(e._sceneEntityId){
    if(!projectWorld)throw Error('The canonical scene document is unavailable');
    const result=window.VeldrenSceneFormat.setWorldTransform(projectWorld,String(currentScene),e._sceneEntityId,{x,y,rotation,scale});
@@ -367,6 +368,7 @@
   if(typeof prop3==='function'&&!prop3.__editorTransform){
    const before=prop3;
    prop3=function(r,o,x,z){
+    if(o?._generatedTerrain)return 0;
     if(o?._generatedBridge)return window.VeldrenBridgeScene.render(r,o);
     if(o?._generatedStructure)return window.VeldrenStructureScene.renderEntity(r,o);
     if(o?._generatedWallTorch)return window.VeldrenLightScene.renderTorch(r,o);
@@ -450,7 +452,7 @@
    for(let i=hitboxes.length-1;i>=0;i--){const h=hitboxes[i],hit=h.polygon?pointInPolygon(p.sx,p.sy,h.polygon):Number.isFinite(h.x)&&p.sx>=h.x&&p.sx<=h.x+h.w&&p.sy>=h.y&&p.sy<=h.y+h.h;if(!hit)continue;if(h.building)return refForBuilding(h.building);if(h.o&&sceneObjects(currentScene).includes(h.o))return refForObject(h.o)}
   }catch{}
   const w=editorUnproject(p.sx,p.sy);let best=null,score=Infinity;
-  for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[])]){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
+  for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[]),...(window.VeldrenQuarryScene?.selectables(String(currentScene))||[])]){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
   for(let i=0;i<buildings.length;i++){const b=buildings[i],cx=b.x+b.w/2,cy=b.y+b.h/2,d=Math.hypot(cx-w.x,cy-w.z)-Math.hypot(b.w,b.h)/2;if(d<score){best={kind:'building',entity:b,id:buildingId(b,i)};score=d}}
   return score<Math.max(1.5,50/Math.max(10,cameraZoom3()))?best:null;
  }

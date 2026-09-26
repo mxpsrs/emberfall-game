@@ -8,7 +8,7 @@ const window={addEventListener(type,listener){listeners[type]=listener;}};
 const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,TextEncoder,TextDecoder,Number,Error,Set,WeakMap};
 vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('dist/native-runtime.js',root),'utf8'),context,{filename:'native-runtime.js'});
 const native=await window.realmNativeReady;
-assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,17);
+assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,18);
 const villager={type:'villager',x:10,y:0,drawX:0,drawY:0},wolf={kind:'wolf',x:110,y:0,drawX:100,drawY:0};
 native.stepActors([villager,wolf],.5,0,0,null,1);
 assert(Math.abs(villager.drawX-.375)<.0001,'C++ applies the villager walk speed');

@@ -114,7 +114,8 @@ below. Remaining categories still prevent complete generated-world ownership.
 | `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | World, tutorial, lair, civilization, relic and quest generators | Registry remains a runtime context container. Metadata, dimensions, navigation references and lair settings project native components | WorldDocument stores SceneInfo, SceneBounds, SceneNavigation, SceneEnvironment, LairLayout and entry/exit entities | Metadata migrated; realm labels share SceneInfo. Existing buildings retain native associations; retired mine shells are not restored |
 | `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair, tutorial, geography and ecology generation | Native decorations, materialized plants and road segments; renderer/spatial caches are derived | Migrated records serialize; saved catalogs and materialized chunks are authoritative | 259 decorations and 4,697 roads migrated. Unmaterialized plants remain deterministic construction input; standalone structures remain open |
 | `wallTorches` and lighting candidate lists | Lighting generation, then native migration | Frozen torch views and Scene-owned fixtures; C++ resolves world-space point lights, activation and day/night intensity | Permanent Light components and fixtures serialize; player fire expiry remains transient | 1,282 permanent lights migrated. Runtime candidates are derived from native component queries |
-| Bridges (`physicalBridges`, village and realm crossings) | Construction generators, then `world-bridge-scene.js` | Seven native Bridge entities; frozen active projections, native footprint candidates, derived deck/mesh/map geometry | Placement and deck parameters persist in WorldDocument; meshes and terrain samples are caches | Original bridge geometry, parent yaw/scale/elevation, collision, editor selection and duplicate/delete verified; quarry terrain ownership remains open |
+| Bridges (`physicalBridges`, village and realm crossings) | Construction generators, then `world-bridge-scene.js` | Seven native Bridge entities; frozen active projections, native footprint candidates, derived deck/mesh/map geometry | Placement and deck parameters persist in WorldDocument; meshes and terrain samples are caches | Original bridge geometry, parent yaw/scale/elevation, collision, editor selection and duplicate/delete verified |
+| Quarries and worksite terrain pads | Construction generators, then `world-quarry-scene.js` | Five native Quarry and 30 TerrainPad definitions; C++ profiles, collision and blended supports | Canonical graph and authoritative generation marker; 104 existing worksite attachments preserve catalog IDs | Runtime/editor terrain parity, transformed worksite hierarchy, map outlines and saved boot verified; other base terrain remains outside this category |
 | Spatial indexes (`worldObjectIndex`, buckets, ID/order maps, navigation/road caches) | `world.js`, navigation, terrain, ecology, and geography queries | Derived from legacy arrays or generator structures; used by gameplay and rendering | Not serialized or network identity | These may remain derived caches, but their source must become Scene/component indexes. Currently they index legacy state |
 | Spawn definitions (NPCs, monsters and encounter actors) | Construction generators, then `world-spawn-scene.js` | 770 native SpawnPoint entities with typed definition components; separate unsaved live views feed gameplay and the C++ actor bridge | WorldDocument stores permanent definitions. CatalogIdentity retains existing server IDs; health, timers and movement are transient | Native definitions and fresh saved boot verified. Mixed membership and full authored actor rendering remain open |
 | Gatherables embedded in `objects` (trees, ore, fish and crops) | Construction generators, then `world-gatherable-scene.js` | Native Gatherable definitions, transform/collider/appearance components and a separate C++ resource session; compatibility views feed current gameplay | WorldDocument stores definitions and CatalogIdentity. Native depletion/replica receipts are transient; private farming remains in character saves | 4,372 resource definitions migrated with established catalog IDs, native lifecycle, transformed resource collision and renderer adapters. Mixed membership remains open |
@@ -557,3 +558,43 @@ Bridge integration verification:
   56.25 MiB of assets and a 63,525 KiB Worker bundle. No deployment occurred.
 - Phase 1 remains WIP. This checkpoint does not claim graphical browser testing,
   hosted capacity, complete terrain ownership or complete native actor rendering.
+
+Quarry and worksite terrain checkpoint (ABI 18):
+
+- Five surface quarries and all 30 existing work/support pads are canonical
+  Scene entities. C++ evaluates superellipse edges, terrace depths, access ramps,
+  cliff collision, perimeter blends and ordered pad/support blending. Derived
+  native geometry indexes rebuild after hierarchy/component edits and reloads.
+- 104 existing worksite entities now inherit their quarry transform, including
+  offices, props, gatherables, residents and road segments. Existing child
+  hierarchies and world matrices are preserved during transfer. Support pads
+  follow their owning prop; loading pads follow their quarry. Network catalog
+  IDs remain unchanged. Unmigrated service support relationships remain recorded
+  by objectId for the remaining service migration.
+- Quarry/pad membership is a frozen Scene projection. Terrain grading and
+  collision consume native samples; atlas outlines and developer travel points
+  follow transformed geometry. Native edits invalidate terrain GPU chunks,
+  land-height, navigation and map caches. Saved deletions are authoritative.
+- Editor selection includes quarries and terrain pads. Quarry subtrees retain
+  the editor's gameplay-linked duplication/deletion protection. Native graph
+  deletion and saved-deletion reload are separately tested. Editor movement
+  preserves canonical transform elevation, distinct from a pad's surface height.
+- `node tests/world-quarries-scene.cjs` passes actual-WASM runtime/editor tests
+  for original profile/height/cliff parity, nonuniform scale/yaw/elevation,
+  attached hierarchy/catalog identity, ramps/supports, activation, invalid input,
+  GPU/cache invalidation, production editor selection/movement functions, and
+  exact authoritative saved boot.
+- `node tests/world-buildings-scene.cjs` and its
+  `VELDREN_SCENE_CONTEXT=editor` run pass with all previous category totals plus
+  5 quarries, 30 pads and 104 attachments. Full generated terrain/cliff samples,
+  catalog IDs, and exact native save/unload/load pass in both contexts.
+- Native/WASM, runtime/editor bridges, bridge geometry, editor context/camera,
+  terrain editor/travel, global prop placement and quarry-map tests pass.
+  Fresh build and asset audit pass: 210 assets, all 117 startup resources,
+  56.26 MiB before compression and a 63,552 KiB Worker bundle.
+- The preceding bridge checkpoint was verified remotely at
+  `99686c227a87ed905ef57befb15b22499bf8a1dc`.
+  Remaining service categories, controlled mixed membership, authored actor
+  rendering and graphical play/editor verification keep Phase 1 incomplete.
+  Arbitrary pitch/roll is outside the verified horizontal terrain model.
+  Nothing was deployed, published or merged into main.

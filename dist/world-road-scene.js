@@ -17,7 +17,7 @@
   if(![...a,...b,width].every(Number.isFinite)||width<=0||Math.hypot(b[0]-a[0],b[1]-a[1])<1e-8)throw Error('Invalid generated road in '+name);
   const signature=JSON.stringify([a,b,width,!!road.paved,road.settlement||'',ordinal]),id='generated:'+name+':road:'+root.VeldrenSceneOwnership.stableHash(signature);
   const component={endpoint:[b[0]-a[0],0,b[1]-a[1]],width,paved:!!road.paved};
-  for(const key of ['settlement','role'])if(road[key]!==undefined)component[key]=road[key];
+  for(const key of ['settlement','role','quarry'])if(road[key]!==undefined)component[key]=road[key];
   for(const key of ['na','nb'])if(road[key])component[key]=[road[key][0],0,road[key][1]];
   return {id,name:'Road segment',parent,active:true,transform:{...identity(),position:[a[0],0,a[1]]},components:{GeneratedRoad:{generationKey:signature,version:1},RoadSegment:component,TerrainSurface:{kind:'road'}},metadata:{}};
  }
