@@ -88,25 +88,23 @@ movement loop, combat, multiplayer presence or character autosave. The normal
 renderer definitions are currently shared. The editor-frame checks confirm
 that the editor context skips player authentication, movement, combat, presence
 and character autosave while keeping visual frames active. A normal browser boot
-is still required to verify this boundary in the complete production bundle.
+is still required to verify this boundary in a graphical browser.
 
 ## Integration debt and verification limits
 
 The browser's procedural `worldScenes` arrays and legacy rendering adapters
 are not yet scene-owned in C++ or synchronized as Filament entities from the
 new component graph. Only the native desktop representative actor slice is
-scene-owned. The WebAssembly build and ABI test pass with Emscripten 3.1.6. The
-CMake configure/build and scene-core and desktop-scene tests pass. The
-asset-dependent desktop test and headless smoke test cannot run because this
-verification workspace is missing the checked-in atlas and other large assets.
-The production bundle and normal browser boot also remain unverified because
-this workspace contains only a partial repository snapshot, without the full
-production scripts and browser assets.
+scene-owned. This is a Phase 1 foundation; it does not complete the larger
+browser gameplay conversion.
 
-Verified here: native core/scene/desktop-scene tests, the WebAssembly build and
-ABI test, the CMake build and asset-independent scene tests, `make -C native -B
-desktop`, and the scene-format, runtime-renderer, production-worker persistence,
-local persistence, editor-camera, editor-context and editor-frame tests. The
-current code is not a completed Phase 1 release foundation until the production
-bundle, asset-dependent desktop tests and normal browser runtime have been
-rebuilt and verified from the full repository.
+Full-repository verification: the production bundle builds, the C++ native and
+WebAssembly ABI tests pass, the browser bridge loads the generated WASM core,
+and all four CMake tests pass, including the asset-dependent desktop test and
+headless desktop smoke test. The production asset audit and scene-format,
+runtime-renderer, production-worker persistence, local persistence, editor
+context/frame and editor persistence tests also pass. The headless desktop
+smoke reports 2560x1440 output, 4096 shadows, 900-unit draw distance and 512
+visible actors. A graphical browser boot has not been run in this verification
+pass, and the scene graph is not yet authoritative for the browser's full
+procedural world.
