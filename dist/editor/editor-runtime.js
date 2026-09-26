@@ -93,7 +93,7 @@
  }
  function ensureBase(ref){
   const e=ref.entity;if(e._editorBase)return e._editorBase;
-  const base={x:Number(e.x)||0,y:Number(e.y)||0,name:e.name||e.propKind||e.type||'Entity',type:ref.kind==='building'?'building':e.type||'object',subtype:ref.kind==='building'?e.archetype||e.race||'building':e.propKind||e.kind||e.type||'object'};
+  const base={x:Number(e.x)||0,y:Number(e.y)||0,rotation:entityRotation(ref),scale:entityScale(ref),name:e.name||e.propKind||e.type||'Entity',type:ref.kind==='building'?'building':e.type||'object',subtype:ref.kind==='building'?e.archetype||e.race||'building':e.propKind||e.kind||e.type||'object'};
   const authored=authoredEntity(ref);if(authored)base.sceneTransform=JSON.parse(JSON.stringify(authored.entity.transform));
   try{Object.defineProperty(e,'_editorBase',{value:base,writable:true,configurable:true});}catch{e._editorBase=base}
   return base;
@@ -232,7 +232,22 @@
   return entityInfo(ref);
  }
  function recordChange(ref,base=ensureBase(ref)){
-  if(ref.entity._sceneEntityId){sceneDocumentDirty=true;return;}
+  if(ref.entity._sceneEntityId){
+   const authored=authoredEntity(ref),runtime=authored?.entity.components?.RuntimeBinding;
+   if(!runtime){sceneDocumentDirty=true;return;}
+   const info=entityInfo(ref),key=ckey(String(currentScene),ref.kind,ref.id),before=changes.get(key)||null;
+   const unchanged=Math.abs(info.x-base.x)<1e-8&&Math.abs(info.y-base.y)<1e-8&&Math.abs(info.rotation-base.rotation)<1e-8&&Math.abs(info.scale-base.scale)<1e-8;
+   const assembly=ref.kind==='building'&&ref.entity.assembly?B.serialize(ref.entity.assembly):null;
+   if(unchanged&&!before?.created&&!assembly)changes.delete(key);
+   else{
+    const change={...(before||{}),scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,
+     baseX:Number(before?.baseX??base.x),baseY:Number(before?.baseY??base.y),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
+    if(before?.created||ref.entity._editorCreated){change.created=true;change.data=deepClone(ref.entity)}
+    if(assembly)change.assembly=assembly;
+    changes.set(key,change);
+   }
+   project.changes=[...changes.values()];return;
+  }
   const info=entityInfo(ref),key=ckey(String(currentScene),ref.kind,ref.id),before=changes.get(key)||{};
   const change={...before,scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,
    baseX:Number(before.baseX??base.x),baseY:Number(before.baseY??base.y),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
@@ -296,7 +311,8 @@
  async function saveProject(){
   const legacy={version:1,revision:projectMeta.revision+1,updatedAt:new Date().toISOString(),changes:[...changes.values()].map(normalizeChange),terrain:T.serialize()};
   const preserveIds=quarantined.filter(c=>c&&c.scene&&c.kind&&c.id!=null).map(c=>`${c.scene}:${c.kind}:${c.id}`);
-  const outgoing=window.VeldrenSceneFormat.mergeLegacy(projectWorld||window.VeldrenSceneFormat.fromLegacy({version:1,revision:0,changes:[]}),legacy,{preserveIds});
+  const persistentWorld=projectWorld?window.VeldrenSceneFormat.withoutRuntimeBindings(projectWorld):window.VeldrenSceneFormat.fromLegacy({version:1,revision:0,changes:[]});
+  const outgoing=window.VeldrenSceneFormat.mergeLegacy(persistentWorld,legacy,{preserveIds});
   outgoing.expectedRevision=projectMeta.revision;
   const response=await fetch('/api/editor/edits',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(outgoing)});
   const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||`Save HTTP ${response.status}`);
@@ -308,7 +324,7 @@
   if(sent.size!==read.size)throw new Error(`Save round-trip count mismatch (${sent.size} vs ${read.size})`);
   for(const [key,value]of sent)if(read.get(key)!==value)throw new Error(`Save round-trip mismatch for ${key}`);
   if(JSON.stringify(outgoing.terrain)!==JSON.stringify(verify.edits?.terrain))throw new Error('Terrain save round-trip mismatch');
-  projectWorld=JSON.parse(JSON.stringify(verify.world));sceneDocumentDirty=false;
+  projectWorld=JSON.parse(JSON.stringify(verify.world));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;
   project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
   localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes,terrain:verify.edits.terrain}));
@@ -445,6 +461,7 @@
    editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},
    placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Placed from Veldren asset browser'},_editorCreated:true};
   const list=sceneObjects(currentScene);list.push(o);if(list!==objects&&!objects.includes(o))objects.push(o);
+  const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'object',o,list.length-1);if(graphEntity)o._sceneEntityId=graphEntity.id;
   const ref=refForObject(o);ensureBase(ref);const info=entityInfo(ref);
   const change={scene:String(currentScene),kind:'object',id:String(id),name:info.name,type:info.type,subtype:info.subtype,baseX:x,baseY:y,created:true,data:deepClone(o),x,y,rotation:0,scale:1};
   change.rotation=placementRotation;changes.set(ckey(currentScene,'object',id),change);project.changes=[...changes.values()];selected=ref;selectedScene=String(currentScene);invalidate(o);
@@ -470,6 +487,7 @@
   const b={id,name:'New Modular Building',type:'building',archetype:'modular',race:'human',x,y,w:1,h:1,editorCreated:true,editorTransform:{rotation:0,scale:1}};b._editorId=id;
   const list=sceneBuildings(currentScene);list.push(b);if(list!==buildings&&!buildings.includes(b))buildings.push(b);const ref={kind:'building',entity:b,id,created:true,uncommittedEmpty:true};
   B.create(b,{version:1,buildingId:id,parent:A.transform(x,0,y),modules:[],layout:[]},worldScenes[currentScene]);
+  const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'building',b,list.length-1);if(graphEntity)b._sceneEntityId=graphEntity.id;
   selected=ref;selectedScene=String(currentScene);buildingContext=ref;partId=null;cancelPartPlacement();buildingFloor=0;tool='select';
   log('Empty modular assembly started at '+x.toFixed(2)+', '+y.toFixed(2)+'. It is not saved until a part is placed.','ok');post('selection',{selection:entityInfo(ref)});return buildingState();
  }
@@ -758,7 +776,7 @@
  }
  function duplicateSelection(){
   if(!selected)return null;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');const e=selected.entity;
-  if(e._sceneEntityId){
+  if(e._sceneEntityId&&!authoredEntity(selected)?.entity.components?.RuntimeBinding){
    if(!projectWorld)throw Error('The canonical scene document is unavailable');
    const result=window.VeldrenSceneFormat.duplicateSubtree(projectWorld,String(currentScene),e._sceneEntityId,()=>`editor-scene-${Date.now()}-${++editorSequence}`);
    sceneDocumentDirty=true;window.VeldrenWorldEdits.refreshSceneRenderables(projectWorld,currentScene);
@@ -766,7 +784,7 @@
    invalidate(selected.entity,'object');post('change',{selection:entityInfo(selected)});return entityInfo(selected);
   }
   const id=`editor-${Date.now()}-${++editorSequence}`,copy=deepClone(e);copy.id=id;copy.x=Number(e.x)+1;copy.y=Number(e.y);delete copy._editorBase;delete copy._creatureMotion;copy._editorCreated=true;
-  if(selected.kind==='building'){copy.service=null;sceneBuildings(currentScene).push(copy);selected=refForBuilding(copy)}else{sceneObjects(currentScene).push(copy);selected=refForObject(copy)}
+  if(selected.kind==='building'){copy.service=null;sceneBuildings(currentScene).push(copy);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'building',copy,buildings.length);if(graphEntity)copy._sceneEntityId=graphEntity.id;selected=refForBuilding(copy)}else{sceneObjects(currentScene).push(copy);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'object',copy,objects.length);if(graphEntity)copy._sceneEntityId=graphEntity.id;selected=refForObject(copy)}
   const info=entityInfo(selected),change={scene:String(currentScene),kind:selected.kind,id:String(selected.id),name:info.name,type:info.type,subtype:info.subtype,baseX:info.x,baseY:info.y,created:true,data:deepClone(copy),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
   changes.set(ckey(currentScene,selected.kind,selected.id),change);project.changes=[...changes.values()];if(selected.kind==='object')objects.push(copy);else buildings.push(copy);post('change',{selection:info});return info;
  }
@@ -774,8 +792,15 @@
   if(!selected)return false;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');
   if(selected.entity._sceneEntityId){
    if(!projectWorld)throw Error('The canonical scene document is unavailable');
+   const runtime=authoredEntity(selected)?.entity.components?.RuntimeBinding;
+   if(runtime){
+    const ref=selected,info=entityInfo(ref),base=ensureBase(ref),key=ckey(currentScene,ref.kind,ref.id);
+    changes.set(key,{...(changes.get(key)||{}),scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,baseX:base.x,baseY:base.y,deleted:true});
+    project.changes=[...changes.values()];const list=ref.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),at=list.indexOf(ref.entity);if(at>=0)list.splice(at,1);
+    if(ref.kind==='building'){const active=buildings.indexOf(ref.entity);if(active>=0)buildings.splice(active,1)}else{const active=objects.indexOf(ref.entity);if(active>=0)objects.splice(active,1)}
+   }
    const removed=window.VeldrenSceneFormat.deleteSubtree(projectWorld,String(currentScene),selected.entity._sceneEntityId);if(!removed.length)return false;
-   sceneDocumentDirty=true;window.VeldrenWorldEdits.refreshSceneRenderables(projectWorld,currentScene);selected=null;selectedScene=null;
+   if(!runtime)sceneDocumentDirty=true;window.VeldrenWorldEdits.refreshSceneRenderables(projectWorld,currentScene);selected=null;selectedScene=null;
    post('change',{selection:null});return true;
   }
   const info=entityInfo(selected),key=ckey(currentScene,selected.kind,selected.id),existing=changes.get(key),list=selected.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),index=list.indexOf(selected.entity);
@@ -878,7 +903,7 @@
   await loadProject();installTransformRendering();
   free.x=55;free.y=50;px=free.x;py=free.y;
   free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
-  applyAll();installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
+  applyAll();window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
   ready=true;
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
   document.addEventListener('contextmenu',e=>{if(ready&&isViewportTarget(e.target,editorInputSurface())){e.preventDefault();e.stopImmediatePropagation()}},true);

@@ -34,8 +34,11 @@ camera state; selection clears if its entity is deleted.
 The native desktop demonstration migrates the existing C++ actor simulation's
 player, villagers and wolves into scene entities with MeshRenderer, Animator,
 and representation components. Simulation updates scene transforms, and render
-states are synchronized from those transforms. The full procedural browser
-world remains behind a compatibility adapter.
+states are synchronized from those transforms. The browser runtime materializes
+generated world objects and buildings as stable, scene-scoped RuntimeBinding
+entities after world generation. The existing gameplay objects remain the
+compatibility projection for legacy gameplay and rendering systems; editor
+transforms are read and written through the canonical scene entities.
 
 ## World format and migration
 
@@ -51,14 +54,17 @@ compatible with Emscripten libc++ versions that lack floating-point
 `from_chars` and `to_chars`.
 
 For legacy version 1 editor edits, `LegacyWorldEdit.change` keeps the authored
-record. `MeshRenderer.asset` is extracted when available. Runtime rendering
-converts authored scene transforms to the existing procedural object and
-building shape until those generators move to scene-backed entities. Scene
-entities with supported MeshRenderer assets also create read-only renderer
-proxies from their hierarchy's world transform. The editor can move, rotate,
-scale, duplicate, delete and restore scene-authored entities. Transform edits
-are converted back to parent-relative local transforms; hierarchy and component
-fields are retained on save. Component fields do not yet have an editor panel.
+record. `MeshRenderer.asset` is extracted when available. Runtime binding
+entities give generated objects and buildings stable IDs and route editor
+transforms through the graph while the legacy arrays remain the gameplay
+projection. Unchanged generated entities are transient and are stripped before
+serialization; only authored scene entities and sparse world edits are saved.
+Scene entities with supported MeshRenderer assets also create read-only
+renderer proxies from their hierarchy's world transform. The editor can move,
+rotate, scale, duplicate, delete and restore scene-authored entities. Transform
+edits are converted back to parent-relative local transforms; hierarchy and
+component fields are retained on save. Component fields do not yet have an
+editor panel.
 The editor API stores version 2 and exposes a version 1 compatibility view. A
 legacy save merges changed records into existing entities while retaining parent
 links, other components and metadata. A direct version 2 save can author
@@ -92,10 +98,11 @@ is still required to verify this boundary in a graphical browser.
 
 ## Integration debt and verification limits
 
-The browser's procedural `worldScenes` arrays and legacy rendering adapters
-are not yet scene-owned in C++ or synchronized as Filament entities from the
-new component graph. Only the native desktop representative actor slice is
-scene-owned. This is a Phase 1 foundation; it does not complete the larger
+The browser's gameplay behavior still operates on the legacy object projection;
+those gameplay systems have not all been ported to C++. The native desktop
+representative actor slice and browser editor transforms use scene entities,
+but the full browser render pipeline is not yet driven by the C++ graph as
+Filament entities. This is a Phase 1 foundation, not completion of the larger
 browser gameplay conversion.
 
 Full-repository verification: the production bundle builds, the C++ native and
@@ -103,8 +110,8 @@ WebAssembly ABI tests pass, the browser bridge loads the generated WASM core,
 and all four CMake tests pass, including the asset-dependent desktop test and
 headless desktop smoke test. The production asset audit and scene-format,
 runtime-renderer, production-worker persistence, local persistence, editor
-context/frame and editor persistence tests also pass. The headless desktop
+context/frame, generated-world binding and scene-backed editor transform tests
+also pass. The headless desktop
 smoke reports 2560x1440 output, 4096 shadows, 900-unit draw distance and 512
 visible actors. A graphical browser boot has not been run in this verification
-pass, and the scene graph is not yet authoritative for the browser's full
-procedural world.
+pass.

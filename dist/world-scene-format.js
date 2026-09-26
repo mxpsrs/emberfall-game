@@ -235,5 +235,81 @@
   }
   return output;
  }
- root.VeldrenSceneFormat={fromLegacy,toLegacy,mergeLegacy,validateWorld,renderables,readWorldTransform,setWorldTransform,setLocalTransform,duplicateSubtree,deleteSubtree};
+ function stableHash(value){let hash=2166136261;for(const char of String(value)){hash^=char.charCodeAt(0);hash=Math.imul(hash,16777619)}return (hash>>>0).toString(36)}
+ function runtimeIdentity(scene,kind,item,index,occurrences){
+  let key;
+  if(kind==='object'&&item.id!=null&&String(item.id))key=String(item.id);
+  else if(kind==='building'){
+   const service=item.service?.id!=null?String(item.service.id):'none';
+   key=String(item._editorId||`building:${service}:${String(item.name||'building').replace(/\\|/g,'_')}:${index}`);
+  }else{
+   const signature=[item.name||item.propKind||item.type||'object',item.type||'',item.propKind||'',Number(item.x)||0,Number(item.y)||0].join('|');
+   const occurrence=occurrences.get(signature)||0;occurrences.set(signature,occurrence+1);
+   key=`runtime-${stableHash(signature)}-${occurrence}`;
+  }
+  const id=`${scene}:${kind}:${key}`;
+  return {id,key};
+ }
+ function entityTransformFromRuntime(item){
+  const x=Number(item.x)||0,z=Number(item.y)||0,rotation=Number(item.editorTransform?.rotation??(Number(item.placement?.yaw||item.heading||0)*180/Math.PI))||0;
+  const angle=rotation*Math.PI/360,scale=Math.max(.0001,Number(item.editorTransform?.scale)||1);
+  return {position:[x,Number(item.height)||0,z],rotation:[0,Math.sin(angle),0,Math.cos(angle)],scale:[scale,scale,scale]};
+ }
+ function ensureRuntimeScene(world,name){
+  let scene=world.scenes.find(item=>item.scene===String(name));
+  if(!scene){scene={format:SCENE,version:2,scene:String(name),entities:[]};world.scenes.push(scene)}
+  return scene;
+ }
+ function attachRuntimeEntity(world,sceneName,kind,item,index=0,occurrences=new Map(),entityById=null){
+  if(!world||!item||item._editorPreview)return null;
+  const name=String(sceneName),scene=ensureRuntimeScene(world,name),identityInfo=runtimeIdentity(name,kind,item,index,occurrences);
+  let entity=entityById?.get(identityInfo.id)||scene.entities.find(candidate=>candidate.id===identityInfo.id);
+  if(entity?.components?.LegacyWorldEdit?.change?.deleted)return null;
+  if(entity&&entity.components?.RuntimeBinding&&(entity.components.RuntimeBinding.kind!==kind||entity.components.RuntimeBinding.key!==identityInfo.key))throw Error('Runtime scene binding identity collision');
+  if(!entity){
+   entity={id:identityInfo.id,name:String(item.name||item.propKind||item.type||kind),parent:null,active:true,
+    transform:entityTransformFromRuntime(item),components:{},metadata:{runtimeGenerated:true}};
+   scene.entities.push(entity);entityById?.set(entity.id,entity);
+  }
+  entity.components||={};entity.components.RuntimeBinding={kind,key:identityInfo.key};
+  entity.metadata||={};entity.metadata.runtimeType=String(item.type||item.kind||kind);
+  if(kind==='object'&&item.id==null)item.id=identityInfo.key;
+  item._sceneEntityId=entity.id;
+  return entity;
+ }
+ function attachRuntimeWorld(world,worldScenes){
+  if(!world||!worldScenes||typeof worldScenes!=='object')return {entities:0,scenes:0};
+  if(world.format!==FORMAT||world.version!==2)throw Error('Unsupported runtime world scene document');
+  let count=0,sceneCount=0;
+  for(const [sceneName,source]of Object.entries(worldScenes)){
+   if(!source||!Array.isArray(source.objects)&&!Array.isArray(source.buildings))continue;
+   sceneCount++;const occurrences=new Map(),sceneDocument=ensureRuntimeScene(world,sceneName),entityById=new Map(sceneDocument.entities.map(entity=>[entity.id,entity]));
+   for(const [kind,list]of [['object',source.objects||[]],['building',source.buildings||[]]])for(let i=0;i<list.length;i++){
+    const item=list[i];if(item?._sceneEntityId){const existing=findEntity(world,sceneName,item._sceneEntityId);if(existing){
+     const legacy=existing.entity.components?.LegacyWorldEdit?.change;
+     if(existing.entity.components?.RuntimeBinding){}
+     else if(legacy&&legacy.kind===kind){existing.entity.components.RuntimeBinding={kind,key:String(legacy.id)}}
+     else{count++;continue;}
+     count++;continue;
+    }}
+    if(attachRuntimeEntity(world,sceneName,kind,item,i,occurrences,entityById))count++;
+   }
+  }
+  for(const scene of world.scenes)invalidateScene(scene);
+  validateWorld(world);return {entities:count,scenes:sceneCount};
+ }
+ function withoutRuntimeBindings(world){
+  const output=JSON.parse(JSON.stringify(world));
+  for(const scene of output.scenes){
+   scene.entities=scene.entities.filter(entity=>{
+    if(!entity.components?.RuntimeBinding)return true;
+    delete entity.components.RuntimeBinding;
+    const persistent=Object.keys(entity.components).length>0;
+    if(!persistent)delete entity.components;
+    return persistent;
+   });
+  }
+  return validateWorld(output);
+ }
+ root.VeldrenSceneFormat={fromLegacy,toLegacy,mergeLegacy,validateWorld,renderables,readWorldTransform,setWorldTransform,setLocalTransform,duplicateSubtree,deleteSubtree,attachRuntimeEntity,attachRuntimeWorld,withoutRuntimeBindings};
 })(globalThis);

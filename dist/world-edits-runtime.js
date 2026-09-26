@@ -247,7 +247,12 @@
  },async applyFinishedWorld(){
   await ready;installRenderTransforms();window.VeldrenBuildings?.install();
   synchronizeSceneRenderables();
-  try{return applyDocument()}catch{status.errors.push({reason:'Editor layer unavailable'});return status;}
+  try{
+   const result=applyDocument();
+   window.VeldrenSceneFormat.attachRuntimeWorld(state.world,worldScenes);
+   window.VeldrenRuntimeWorld=state.world;
+   return result;
+  }catch(error){status.errors.push({reason:'Editor layer unavailable: '+(error?.message||'Error')});return status;}
  }};
  const originalBoot=boot;
  boot=async function(...args){await Promise.all([ready,domReady()]);return originalBoot.apply(this,args)};

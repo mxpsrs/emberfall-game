@@ -1,6 +1,6 @@
 const {ctx,vm,fs}=require('../scripts/game-fixture.cjs');
 const run=s=>vm.runInContext(s,ctx);ctx.document.readyState='complete';ctx.fetch=async()=>({ok:true,json:async()=>({edits:{version:1,revision:1,changes:[]}})});
-for(const f of ['building-assembly','building-runtime','terrain-editor-runtime','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
+for(const f of ['world-scene-format','building-assembly','building-runtime','terrain-editor-runtime','world-edits-runtime']){run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));if(f==='world-scene-format')run('window.VeldrenSceneFormat=VeldrenSceneFormat;');}
 ctx.setInterval=()=>0;ctx.clearInterval=()=>{};
 const oldGet=ctx.document.getElementById;
 const retired=new Set(['waveButton','worldClock','onlineStatus','targetTitle','targetSub','activity','eat','runButton']);
@@ -68,10 +68,17 @@ console.log('PASS: actual house modules, local transforms, snap, linked entrance
 
 ctx.parent={postMessage(){}};ctx.location={origin:'http://test.local'};ctx.document.head=ctx.document.body;
 ctx.fetch=async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})});
+ctx.window.VELDREN_CONTEXT='editor';
 run('assetsReady=true;');
 run(fs.readFileSync(__dirname+'/../dist/editor/editor-runtime.js','utf8'));
 (async()=>{
  await run('window.VeldrenEditorBridge.initialize()');
- run(`const bridge=window.VeldrenEditorBridge;assert(bridge.isReady());const entry=bridge.listEntities().find(e=>e.kind==='building');assert(entry);bridge.selectByRef('building',entry.id);const context=bridge.enterBuilding();assert(context.parts.length);const part=context.parts.find(p=>p.role==='wall');assert(part);bridge.selectPart(part.id);bridge.setPart({x:part.local[3]+.25});assert(bridge.buildingState().undo>0);bridge.buildingUndo();bridge.buildingUndo(true);assert(bridge.exportEdits().changes.some(c=>c.assembly));bridge.exitBuilding();assert.equal(bridge.buildingState(),null);`);
- console.log('PASS: editor bridge initializes, enters existing building, selects/moves exact wall, records assembly, undoes/redoes and exits.');
+ run(`const bridge=window.VeldrenEditorBridge;assert(bridge.isReady());
+ const tree=worldScenes.overworld.objects.find(o=>o.type==='tree');assert(tree&&tree._sceneEntityId,'base world object is represented by a canonical scene entity');
+ const original={x:tree.x,y:tree.y},graph=bridge.exportWorld(),entity=graph.scenes.find(scene=>scene.scene==='overworld').entities.find(item=>item.id===tree._sceneEntityId);
+ assert(entity.components.RuntimeBinding);bridge.selectByRef('object',String(tree.id));bridge.setTransform({x:original.x+3,y:original.y+2});
+ assert.equal(tree.x,original.x+3);assert.equal(tree.y,original.y+2);assert(bridge.exportEdits().changes.some(change=>change.id===String(tree.id)),'scene transform writes a sparse persistent edit');
+ bridge.setTransform(original);assert(!bridge.exportEdits().changes.some(change=>change.id===String(tree.id)),'restoring the base transform removes the sparse override');
+ const entry=bridge.listEntities().find(e=>e.kind==='building');assert(entry);bridge.selectByRef('building',entry.id);const context=bridge.enterBuilding();assert(context.parts.length);const part=context.parts.find(p=>p.role==='wall');assert(part);bridge.selectPart(part.id);bridge.setPart({x:part.local[3]+.25});assert(bridge.buildingState().undo>0);bridge.buildingUndo();bridge.buildingUndo(true);assert(bridge.exportEdits().changes.some(c=>c.assembly));bridge.exitBuilding();assert.equal(bridge.buildingState(),null);`);
+ console.log('PASS: editor transforms base world entities through the scene graph, emits only sparse changed edits, and preserves modular building undo/redo.');
 })().catch(e=>{console.error(e);process.exitCode=1});
