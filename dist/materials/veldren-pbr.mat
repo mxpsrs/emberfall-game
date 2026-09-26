@@ -1,0 +1,63 @@
+// Veldren canonical PBR material. Build six immutable variants offline.
+material {
+    name : VeldrenPbr,
+    requires : [ color, uv0, uv1, custom0, custom1, custom2, custom3, custom4, custom5 ],
+    variables : [ uv23, uv45, uv67 ],
+    shadingModel : VELDREN_SHADING,
+    blending : VELDREN_BLENDING,
+    doubleSided : true,
+    specularAntiAliasing : true,
+    parameters : [
+        { type : sampler2d, name : albedo },
+        { type : sampler2d, name : normalMap },
+        { type : sampler2d, name : metalRough },
+        { type : sampler2d, name : occlusion },
+        { type : sampler2d, name : emission },
+        { type : mat3, name : albedoUv },
+        { type : mat3, name : normalUv },
+        { type : mat3, name : metalUv },
+        { type : mat3, name : occlusionUv },
+        { type : mat3, name : emissionUv },
+        { type : float4, name : uvChannels },
+        { type : float, name : emissionChannel },
+        { type : float4, name : baseFactor },
+        { type : float3, name : emissiveFactor },
+        { type : float, name : metallic },
+        { type : float, name : roughness },
+        { type : float, name : normalScale },
+        { type : float, name : occlusionStrength },
+        { type : float, name : transparent }
+    ]
+}
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+        material.uv23 = vec4(getCustom0().xy, getCustom1().xy);
+        material.uv45 = vec4(getCustom2().xy, getCustom3().xy);
+        material.uv67 = vec4(getCustom4().xy, getCustom5().xy);
+    }
+}
+fragment {
+    vec2 veldrenUv(float channel) {
+        if (channel < 0.5) return getUV0();
+        if (channel < 1.5) return getUV1();
+        if (channel < 2.5) return variable_uv23.xy;
+        if (channel < 3.5) return variable_uv23.zw;
+        if (channel < 4.5) return variable_uv45.xy;
+        if (channel < 5.5) return variable_uv45.zw;
+        if (channel < 6.5) return variable_uv67.xy;
+        return variable_uv67.zw;
+    }
+    void material(inout MaterialInputs material) {
+        vec2 uvA = (materialParams.albedoUv * vec3(veldrenUv(materialParams.uvChannels.x), 1.0)).xy;
+        vec2 uvN = (materialParams.normalUv * vec3(veldrenUv(materialParams.uvChannels.y), 1.0)).xy;
+        vec2 uvM = (materialParams.metalUv * vec3(veldrenUv(materialParams.uvChannels.z), 1.0)).xy;
+        vec2 uvO = (materialParams.occlusionUv * vec3(veldrenUv(materialParams.uvChannels.w), 1.0)).xy;
+        vec2 uvE = (materialParams.emissionUv * vec3(veldrenUv(materialParams.emissionChannel), 1.0)).xy;
+        vec3 normalValue = texture(materialParams_normalMap, uvN).xyz * 2.0 - 1.0;
+        material.normal = normalize(vec3(normalValue.xy * materialParams.normalScale, normalValue.z));
+        prepareMaterial(material);
+        vec4 base = texture(materialParams_albedo, uvA) * materialParams.baseFactor * getColor();
+        material.baseColor = vec4(mix(base.rgb, base.rgb * base.a, materialParams.transparent), base.a);
+        VELDREN_LIT_PROPERTIES
+    }
+}
