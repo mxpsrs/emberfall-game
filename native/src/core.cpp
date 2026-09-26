@@ -69,6 +69,17 @@ class World {
     index_.reserve(std::max<std::uint32_t>(capacity, 64));
   }
 
+  bool SetHeading(std::uint32_t id, float heading) {
+    const auto found = index_.find(id);
+    if (found == index_.end() || !std::isfinite(heading)) return false;
+    auto& actor = actors_[found->second];
+    actor.heading = heading;
+    auto transform = scene_.local_transform(actor.entity);
+    transform.rotation = {0, std::sin(heading / 2), 0, std::cos(heading / 2)};
+    scene_.set_local(actor.entity, transform);
+    return true;
+  }
+
   bool Upsert(const VeldrenActorState& actor) {
     if (actor.id == 0 || !Finite(actor)) return false;
     const auto found = index_.find(actor.id);
@@ -949,6 +960,10 @@ std::uint32_t veldren_actors_upsert(void* world, const VeldrenActorState* actors
   return accepted;
 }
 
+std::uint32_t veldren_actor_set_heading(void* world, std::uint32_t id, float heading) {
+  return world && AsWorld(world)->SetHeading(id, heading) ? 1U : 0U;
+}
+
 std::uint32_t veldren_actor_remove(void* world, std::uint32_t id) {
   return world && AsWorld(world)->Remove(id) ? 1U : 0U;
 }
@@ -1459,4 +1474,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 18; }
+std::uint32_t veldren_core_abi_version() { return 19; }

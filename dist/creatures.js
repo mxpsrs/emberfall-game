@@ -78,7 +78,7 @@ function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
  return result;
 }
 function creatureMotion(o,x,z){
- const state=o._creatureMotion??={time,x,z,phase:0,blend:0,speed:0,heading:Number.isFinite(o.attackHeading)?o.attackHeading:o._inCombat?Math.atan2(px+.5-x,py+.5-z):((o.id||0)*2.399)% (Math.PI*2)};
+ const state=o._creatureMotion??={time,x,z,phase:0,blend:0,speed:0,heading:Number.isFinite(o.attackHeading)?o.attackHeading:o._generatedSpawn?o.heading:o._inCombat?Math.atan2(px+.5-x,py+.5-z):((o.id||0)*2.399)% (Math.PI*2)};
  const dt=Math.min(.1,Math.max(0,time-state.time)),dx=x-state.x,dz=z-state.z,distance=Math.hypot(dx,dz);
  if(dt>0){
   const walking=distance>.0003&&distance<2;

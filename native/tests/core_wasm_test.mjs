@@ -14,7 +14,7 @@ const {instance} = await WebAssembly.instantiate(fs.readFileSync(file), imports)
 wasi.initialize(instance);
 const api = instance.exports;
 memory = api.memory;
-assert.equal(api.veldren_core_abi_version(), 18);
+assert.equal(api.veldren_core_abi_version(), 19);
 assert.equal(typeof api.veldren_world_step_budgeted, 'function');
 assert.equal(typeof api.veldren_world_step_live, 'function');
 assert.equal(typeof api.veldren_actors_upsert, 'function');

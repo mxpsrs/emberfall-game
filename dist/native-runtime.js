@@ -13,7 +13,7 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==18)throw new Error('Native world core ABI mismatch');
+  if(api.veldren_core_abi_version()!==19)throw new Error('Native world core ABI mismatch');
   const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
   if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
   if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
@@ -49,7 +49,7 @@
   };
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
   // simulation stepping, gameplay rules, inventory or combat capability.
-  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:18,scenes,destroy});}
+  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:19,scenes,destroy});}
   const resourceCache=new Map();scenes.subscribe(()=>resourceCache.clear());
   const resources=Object.freeze({
    read(scene,id){const key=JSON.stringify([scene,id]);if(resourceCache.has(key))return resourceCache.get(key);const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_resource_state_read(world,s,e,out,capacity))));const state=json?freeze(JSON.parse(json)):null;resourceCache.set(key,state);return state;},
@@ -91,6 +91,7 @@
     const id=actorHandle(actor);current.add(id);writeActor(actor,id,index,selected,now);
    }
    if(api.veldren_actors_upsert(world,scratch,actors.length)!==actors.length)throw new Error('Native world core rejected actor state');
+   for(const actor of actors)if(actor._generatedSpawn&&(!liveHandles.has(actorHandle(actor))||!actor._creatureMotion)){const node=scenes.entity(actor._generatedSceneName,actor._sceneEntityId);if(node)api.veldren_actor_set_heading(world,actorHandle(actor),Math.atan2(node.worldMatrix[8],node.worldMatrix[10]));}
    for(const id of liveHandles)if(!current.has(id))api.veldren_actor_remove(world,id);
    liveHandles.clear();for(const id of current)liveHandles.add(id);
    api.veldren_world_step_live(world,seconds,playerX,playerZ);
@@ -153,7 +154,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:18,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,resources,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:19,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,resources,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

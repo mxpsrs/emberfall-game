@@ -659,3 +659,18 @@ interaction or hosted capacity claim is made.
   authored create/delete, temporary object removal and exact native reload.
 - Editor context/camera, shared client, legacy scene runtime and runtime binding
   regression checks passed. Full generated-world and graphical checks continue.
+
+### Native actor rendering checkpoint (ABI 19)
+
+- Actor render adapters now use native world affine matrices, including parent
+  nonuniform scale/shear, authored elevation and orientation. Moving actors keep
+  their world-facing direction through the inverse native basis. Skinned draws
+  retain their palettes and materials; indexed geometry, software faces, normals,
+  sockets and label height follow the same transformed placement.
+- ABI 19 adds validated live actor heading initialization. Newly entered or
+  edited spawns initialize the C++ simulation from their native facing without
+  writing session movement or animation back to permanent definitions.
+- Native C++ tests and WASM ABI tests, browser native runtime/editor tests,
+  spawn ownership, controlled membership and actor affine rendering tests pass.
+  The full generated runtime ownership/roundtrip test also passed with controlled
+  membership. A fresh production build and graphical acceptance are in progress.

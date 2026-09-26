@@ -100,6 +100,7 @@ VELDREN_EXPORT std::uint32_t veldren_actors_upsert(
     void* world,
     const VeldrenActorState* actors,
     std::uint32_t count);
+VELDREN_EXPORT std::uint32_t veldren_actor_set_heading(void* world, std::uint32_t id, float heading);
 VELDREN_EXPORT std::uint32_t veldren_actor_remove(void* world, std::uint32_t id);
 VELDREN_EXPORT std::uint32_t veldren_actor_read(const void* world, std::uint32_t id, VeldrenActorState* out);
 VELDREN_EXPORT std::uint32_t veldren_actors_read(

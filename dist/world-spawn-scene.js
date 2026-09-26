@@ -16,7 +16,7 @@
  const fields=Object.fromEntries(Object.entries(groups).flatMap(([type,keys])=>keys.map(key=>[key,['components',type,key]])));
  const transient=new Set(['hp','dead','hitAt','attackAt','deathAt','respawnAt','slowUntil','enraged','attackRecovery','attackWindup','attackMove','attackHeading','attackClip','attackVisualStyle','roamAt','roamClock','collected']);
  const positional=new Set(['x','y','height','homeX','homeY','drawX','drawY','heading','roomYaw','editorTransform']);
- const views=new Map(),sources=new Map(),aliases=new Map();let enabled=false;
+ const views=new Map(),sources=new Map(),aliases=new Map();let enabled=false,renderInstalled=false;
  const actor=o=>o&&o.type!=='spirit'&&(['enemy','boss','man','dummy','elder','shop','questgiver','villager','inn','tutor'].includes(o.type)||o.characterSprite||o.penId);
  const editor=()=>root.VELDREN_CONTEXT==='editor'||root.window?.VELDREN_CONTEXT==='editor';
  const copy=value=>root.VeldrenSceneOwnership.copyData(value);
@@ -40,6 +40,7 @@
    id:{get:()=>current()?.components.CatalogIdentity.id??initial.components.CatalogIdentity.id},
    type:{get:()=>current()?.components.ActorDefinition.type??initial.components.ActorDefinition.type},
    _generatedSpawn:{get:()=>true},_spawnDefinitionId:{get:()=>id},
+   heading:{get:()=>{const m=current()?.worldMatrix;return m?Math.atan2(m[8],m[10]):0;},set:(a,value)=>a.setPose({rotation:Number(value)*180/Math.PI})},
    _stationary:{get:()=>current()?.components.SpawnPoint.stationary||false},
    walkThrough:{get:()=>current()?.components.ActorPlacement?.walkThrough,set:(a,value)=>a.pathSet(fields.walkThrough,value)},
    hp:{get:()=>current()?.components.CombatStats?.maxhp},
@@ -106,7 +107,7 @@
     const A=root.VeldrenAssembly,M=root.VeldrenBuildingScene.matrices,angle=o.editorTransform?.rotation!==undefined?o.editorTransform.rotation*Math.PI/180:o.heading??o.roomYaw??0,scale=o.editorTransform?.scale||1;
     const worldMatrix=A.transform(o.x,o.height||0,o.y,angle,scale),home=A.point(A.inverse(worldMatrix),[o.homeX??o.x,o.height||0,o.homeY??o.y]);
     const building=(w.buildings||[]).find(b=>b.service?.destination&&[o.interiorBuilding,o.civilCourtyard].includes(b.service.destination)),parent=building?._sceneEntityId||group,local=building?A.multiply(A.inverse(M.row(node(scene,parent).worldMatrix)),worldMatrix):worldMatrix;
-    const components={GeneratedSpawn:{version:1},CatalogIdentity:{id:o.id,scene},SpawnPoint:{version:1,stationary:!!o._stationary,homeOffset:home}};
+    const components={GeneratedSpawn:{version:1},CatalogIdentity:{id:o.id,scene},SpawnPoint:{version:1,stationary:!!o._stationary,homeOffset:home,renderOrigin:A.point(A.inverse(worldMatrix),[o.x+.5,o.height||0,o.y+.5])}};
     for(const [type,keys]of Object.entries(groups)){const data={};for(const field of keys)if(o[field]!==undefined){const value=copy(o[field]);if(value===undefined)throw Error('Invalid actor definition field: '+field);data[field]=value;}if(Object.keys(data).length)components[type]=data;}
     components.MeshRenderer={asset:'procedural:actor/'+String(o.kind||o.type),visible:true};components.Interactable={action:['enemy','boss','man','dummy'].includes(o.type)?'attack':'talk',label:o.name||o.type};
     const id=o._generatedSpawnId;if(o._sceneEntityId){s.entities=s.entities.filter(e=>e.id!==o._sceneEntityId);for(const e of s.entities)if(e.parent===o._sceneEntityId)e.parent=id;}
@@ -131,7 +132,27 @@
    else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);
    invalidate();
   });
-  enabled=true;invalidate();return {spawns:count};
+  enabled=true;installRendering();invalidate();return {spawns:count};
  }
- root.VeldrenSpawnScene={capture,migrate,getView,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'SpawnPoint').map(id=>node(scene,id))),get enabled(){return enabled;}};
+ function installRendering(){
+  if(renderInstalled||typeof creature3!=='function')return;renderInstalled=true;const before=creature3;
+  creature3=function(r,o,x,z){
+   if(!o._generatedSpawn)return before(r,o,x,z);
+   const n=node(o._generatedSceneName,o._sceneEntityId);if(!n?.activeInHierarchy||!n.components.SpawnPoint||n.components.MeshRenderer?.visible===false)return 0;
+   const A=root.VeldrenAssembly,M=root.VeldrenBuildingScene.matrices,world=M.row(n.worldMatrix),inverse=A.inverse(world);
+   // Runtime motion is in world space; authored scale, tilt and shear remain
+   // native. Convert only the facing direction into that local basis.
+   const motion=typeof creatureMotion==='function'?creatureMotion(o,x,z):o._creatureMotion||{heading:o.heading};
+   const direction=[Math.sin(motion.heading),0,Math.cos(motion.heading)];
+   const heading=Math.atan2(inverse[0]*direction[0]+inverse[2]*direction[2],inverse[8]*direction[0]+inverse[10]*direction[2]);
+   const origin=n.components.SpawnPoint.renderOrigin||A.point(inverse,[world[3]+.5,world[7],world[11]+.5]);
+   const matrix=A.multiply(world,A.transform(...origin));matrix[3]+=x-.5-world[3];matrix[11]+=z-.5-world[11];
+   const painter=root.VeldrenLightScene.painter(r,matrix,[x,z]),localMotion={...motion,heading};
+   const logical=new Proxy(o,{get(target,k){if(k==='_creatureMotion')return localMotion;if(k==='heading'||k==='roomYaw'||k==='attackHeading')return heading;return Reflect.get(target,k);}});
+   const height=before(painter,logical,x,z);
+   if(o._creatureSockets)for(const socket of Object.values(o._creatureSockets)){const p=painter.transformPoint([socket.x,socket.y,socket.z]);socket.x=p[0];socket.y=p[1];socket.z=p[2];}
+   return (height||0)*Math.hypot(matrix[1],matrix[5],matrix[9])+matrix[7];
+  };
+ }
+ root.VeldrenSpawnScene={installRendering,capture,migrate,getView,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'SpawnPoint').map(id=>node(scene,id))),get enabled(){return enabled;}};
 })(globalThis);

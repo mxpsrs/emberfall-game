@@ -131,7 +131,7 @@ function creature3(r,o,x,z){const kind=o.kind,walk=Math.hypot(o.drawX-o.x,o.draw
  if(['wolf','ridgewolf','rat'].includes(kind)){const rat=kind==='rat',k=rat?.58:1,col=rat?'#807369':kind==='ridgewolf'?'#a9b4b6':'#707e83';oval3(r,x,.48*k,z,.44*k,.48*k,.95*k,col);oval3(r,x,.7*k,z+.42*k,.35*k,.37*k,.38*k,col);oval3(r,x,.64*k,z+.64*k,.2*k,.16*k,.3*k,'#44464b');for(const side of [-1,1])cone3(r,x+side*.12*k,.81*k,z+.36*k,.08*k,.19*k,col,5);for(const a of [-1,1])for(const b of [-1,1])limb3(r,x+a*.16*k,.19*k,z+b*.29*k,.105*k,.38*k,.13*k,col);return .95*k;}
  if(kind==='slime'){oval3(r,x,.29,z,.87,.6,.76,'#77a987');oval3(r,x-.13,.39,z+.32,.07,.08,.03,'#293f3b');oval3(r,x+.13,.39,z+.32,.07,.08,.03,'#293f3b');return .75;}
  if(o.type==='spirit')return 0;
- const gear=npcEquipment(o),heading=walk?Math.atan2(o.x-(o.drawX??o.x),o.y-(o.drawY??o.y)):target===o?Math.atan2(px-x,py-z):(o.id||0)*2.399;
+ const gear=npcEquipment(o),heading=o._creatureMotion?.heading??(walk?Math.atan2(o.x-(o.drawX??o.x),o.y-(o.drawY??o.y)):target===o?Math.atan2(px-x,py-z):(o.id||0)*2.399);
  gear._attackAt=o.attackAt;humanoid3(r,x,z,npcLook(o),gear,heading,walk,Math.max(0,Math.sin(Math.min(1,(time-(o.attackAt||-9))/.4)*Math.PI)),kind==='warden'||o.type==='boss'?1.35:1);return o.type==='boss'?2.6:2;
 }
 function prop3(r,o,x,z){

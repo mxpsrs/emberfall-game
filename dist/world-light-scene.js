@@ -125,7 +125,10 @@
   const normal=n=>{const p=[inverse[0]*n[0]+inverse[4]*n[1]+inverse[8]*n[2],inverse[1]*n[0]+inverse[5]*n[1]+inverse[9]*n[2],inverse[2]*n[0]+inverse[6]*n[1]+inverse[10]*n[2]],length=Math.hypot(...p)||1;return p.map(v=>v/length);};
   const point=p=>{const q=A.point(m,[p[0]-origin[0],p[1]+terrain(p[0],p[2])-base,p[2]-origin[1]]);q[1]+=base-terrain(q[0],q[2]);return q;};
   const out={software:r.software,face(points,color,normals,material,colors,uvs){r.face(points.map(point),color,normals?.map(normal),material,colors,uvs);}};
-  if(r.indexed)out.indexed=(mesh,t,style)=>{const local=[...t];local[7]+=terrain(local[3],local[11]);const next=A.multiply(m,A.multiply(A.transform(-origin[0],-base,-origin[1]),local));next[7]+=base-terrain(next[3],next[11]);r.indexed(mesh,next,style);};return out;
+  const matrix=t=>{const local=[...t];local[7]+=terrain(local[3],local[11]);const next=A.multiply(m,A.multiply(A.transform(-origin[0],-base,-origin[1]),local));next[7]+=base-terrain(next[3],next[11]);return next;};
+  if(r.indexed)out.indexed=(mesh,t,style)=>r.indexed(mesh,matrix(t),style);
+  if(r.skinned)out.skinned=(mesh,t,palette,style)=>r.skinned(mesh,matrix(t),palette,style);
+  out.transformPoint=point;return out;
  }
  let torchRenderer;
  function renderTorch(r,o){const node=native().entity(o._generatedSceneName,o._sceneEntityId);if(!node?.activeInHierarchy)return;const m=root.VeldrenBuildingScene.matrices.row(node.worldMatrix);return torchRenderer(painter(r,m,[m[3],m[11]]),{x:m[3],z:m[11],dx:1,dz:0});}
