@@ -26,7 +26,7 @@ gradeLand=function(x,y,height){
  return h*(1-best)+roadHeight*best;
 };
 function ecologyTerrain(scene,w){
- const pads=new Map(),roads=new Map();ecologyPads.set(scene,pads);ecologyRoads.set(scene,roads);
+ const pads=new Map();ecologyPads.set(scene,pads);
  const pad=(left,top,right,bottom,height,reason,fade=7)=>{const p={left,top,right,bottom,height,fade,reason};ecoIndex(pads,p,left-fade,top-fade,right+fade,bottom+fade);ecologyReport.pads++;};
  if(scene==='overworld'){
   // Briarhaven keeps a level civic heart and individual foundations while the
@@ -54,6 +54,10 @@ function ecologyTerrain(scene,w){
   if(worldWaterDistance(o.x+.5,o.y+.5)<5)continue;
   pad(o.x+.5-r,o.y+.5-r,o.x+.5+r,o.y+.5+r,h,o.name+' approach',6);
  }
+ ecologyRoadTerrain(scene,pads);
+}
+function ecologyRoadTerrain(scene,pads){
+ const roads=new Map();ecologyRoads.set(scene,roads);
  const source=scene==='overworld'?organicRoads:(worldScenes.tutorial?.roads||[]),nodes=new Map(),edges=[];
  const node=(x,y)=>{const key=Math.round(x*100)+':'+Math.round(y*100);if(nodes.has(key))return nodes.get(key);let height=ecologyGradeBefore(x,y,landBase(x,y));for(const p of pads.get(ecoKey(x,y))||[])if(ecoRectDistance(x,y,p)===0){height=p.height;break;}const n={x,y,height};nodes.set(key,n);return n;};
  for(const seg of source){const len=Math.hypot(seg.b[0]-seg.a[0],seg.b[1]-seg.a[1]),n=Math.max(1,Math.ceil(len/5));let a=node(...seg.a);for(let i=1;i<=n;i++){const b=node(seg.a[0]+(seg.b[0]-seg.a[0])*i/n,seg.a[1]+(seg.b[1]-seg.a[1])*i/n);edges.push({a,b,width:seg.width||1.5});a=b;}}

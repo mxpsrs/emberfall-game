@@ -404,7 +404,7 @@ async function boot(){
     realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
     window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
-    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();
+    realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();
     realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
     assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();

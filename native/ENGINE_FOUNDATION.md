@@ -200,8 +200,17 @@ ported with a three-way merge, preserving the newer C++ combat formulas.
   follow edited plant positions; duplicate/delete and batched parent edits
   invalidate derived indexes and meshes. Unmaterialized understory remains a
   documented generator input, not a second mutable world authority.
+- **Migrated: road segments.** 4,697 generated segments across the overworld
+  and Firstlight are native RoadSegment/TerrainSurface entities under Road
+  network groups. Stable IDs depend on source descriptors, not list order.
+  Frozen compatibility lists read endpoints and widths from native transforms
+  and components. Terrain shading buckets, ecology road grading, navigation,
+  minimap and atlas caches refresh after relevant native edits and reloads.
+  Firstlight's previously lazy street construction finishes before ownership
+  transfer. Deleted saved roads are not recreated. Settlement planning sketches
+  remain generation inputs; they are not the live road network.
 - **Not migrated:** non-prop object categories, standalone structural geometry,
-  roads, lights, spawn definitions, gatherables, and scene metadata.
+  lights, spawn definitions, gatherables, and scene metadata.
 
 Native ABI 14 adds individual entity snapshots and world-space transform edits.
 Parent-relative affine transforms survive upsert, and WorldDocument revision,
@@ -274,3 +283,26 @@ chunk persistence, moved/duplicated plants, batched cache invalidation and
 save/unload/load. `node tests/world-buildings-scene.cjs` has also verified the
 full generated set of 235 buildings, 2,312 parts, 234 doors and 259 decorations.
 No graphical browser interaction is claimed by these headless tests.
+
+The scenery follow-up was verified on the remote at
+`d2cfa89f48c900f9f6b1d1ab33166558240e90e8`.
+
+Road checkpoint verification:
+
+- `node tests/world-roads-scene.cjs`: native road ownership, terrain shading
+  and height parity, parent rotation/scale, width edits, cache rebuilding,
+  duplicate/delete, persistence and source-order-independent identities.
+- `node tests/world-buildings-scene.cjs`: full generated migration plus native
+  save/unload/load, now including all 4,697 road segments and Firstlight streets.
+- `node tests/terrain-travel.cjs`: bridge travel, terrain picking, banks,
+  floors, coastline and continuous road coverage.
+- `node tests/editor-context.cjs`, `node tests/editor-frame.cjs` and
+  `node tests/world-scene-runtime.cjs`: pass.
+
+Phase 1 is still incomplete. Remaining work includes placed light components,
+scene metadata, standalone structures, spawn definitions versus live actors,
+gatherable lifecycle/catalog identity and the remaining controlled collections.
+The final graphical `/play` and `/editor/` verification gate remains open.
+
+- Current road checkpoint: `npm run build` passes with 203 bundled game assets.
+  This built locally only; nothing was published or deployed.

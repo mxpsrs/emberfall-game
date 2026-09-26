@@ -17,7 +17,7 @@ async function bootEditor(){
   setupExpandedWorld();setupTutorialVillage();setupLoot();
   window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);
   await window.VeldrenWorldEdits.applyFinishedWorld();
-  await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();
+  await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();
   // These viewport coordinates are editor state, never a player spawn or save.
   px=55;py=50;target=null;resize();assetsReady=true;last=performance.now();
   realmLoadComplete();await window.VeldrenEditorBridge?.initialize?.();

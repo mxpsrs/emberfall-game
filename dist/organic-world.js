@@ -67,7 +67,7 @@ function buildPlannedStreets(world){
  for(const [aid,bid]of links){const a=SETTLEMENTS.find(t=>t.id===aid),b=SETTLEMENTS.find(t=>t.id===bid),pa=settlementPlans.get(aid),pb=settlementPlans.get(bid),toward=(p,t)=>p.entrances.reduce((best,q)=>Math.hypot(q[0]-t.x,q[1]-t.y)<Math.hypot(best[0]-t.x,best[1]-t.y)?q:best),aa=toward(pa,b),bb=toward(pb,a);curveRoad(...aa,...bb,1.7);}
  roadBuckets=null;
 }
-const organicRoads=[];
+let organicRoads=[];
 function curveRoad(ax,az,bx,bz,width=1.1,paved=false){
  const points=planVillageLane([ax,az],[bx,bz]);
  for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],normal=j=>{const before=points[Math.max(0,j-1)],after=points[Math.min(points.length-1,j+1)],dx=after[0]-before[0],dz=after[1]-before[1],len=Math.hypot(dx,dz)||1;return [-dz/len,dx/len];};organicRoads.push({a,b,na:normal(i-1),nb:normal(i),width,paved});}
