@@ -13,7 +13,7 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==16)throw new Error('Native world core ABI mismatch');
+  if(api.veldren_core_abi_version()!==17)throw new Error('Native world core ABI mismatch');
   const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
   if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
   if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
@@ -46,7 +46,14 @@
   };
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
   // simulation stepping, gameplay rules, inventory or combat capability.
-  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:16,scenes,destroy});}
+  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:17,scenes,destroy});}
+  const resourceCache=new Map();scenes.subscribe(()=>resourceCache.clear());
+  const resources=Object.freeze({
+   read(scene,id){const key=JSON.stringify([scene,id]);if(resourceCache.has(key))return resourceCache.get(key);const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_resource_state_read(world,s,e,out,capacity))));const state=json?freeze(JSON.parse(json)):null;resourceCache.set(key,state);return state;},
+   patch(scene,id,patch){const ok=withCString(scene,s=>withCString(id,e=>withCString(JSON.stringify(patch),p=>api.veldren_resource_state_patch(world,s,e,p)===1)));if(ok)resourceCache.delete(JSON.stringify([scene,id]));return ok;},
+   tick(now,gameTime){const count=api.veldren_resources_tick(world,now,gameTime);if(count)resourceCache.clear();return count;},
+   phase(scene,id,now,gameTime,flags=0){return withCString(scene,s=>withCString(id,e=>api.veldren_resource_phase(world,s,e,now,gameTime,flags)));}
+  });
   function actorFlags(actor,selected,now){
    let flags=0;
    if(actor.type==='man'||actor.type==='villager')flags|=1;
@@ -143,7 +150,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:16,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:17,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,resources,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

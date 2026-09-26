@@ -6,8 +6,8 @@ const window={VELDREN_CONTEXT:'editor',addEventListener(type,fn){listeners[type]
 const context={window,TextEncoder,TextDecoder,DataView,realmAssetURL:p=>p,fetch:async()=>({ok:true,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),WebAssembly:{async instantiate(...args){const result=await WebAssembly.instantiate(...args);const exports=Object.fromEntries(Object.entries(result.instance.exports).map(([key,value])=>[key,typeof value==='function'?(...args)=>{calls.push(key);return value(...args);}:value]));return {instance:{exports}};}}};
 vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('../dist/native-runtime.js',import.meta.url),'utf8'),context);
 const engine=await window.realmNativeReady;
-assert.equal(engine.context,'editor');assert.equal(engine.abi,16);
-for(const key of ['stepActors','animateActors','pathfind','rules','transactions','stateMachines'])assert.equal(engine[key],undefined,'editor cannot access '+key);
+assert.equal(engine.context,'editor');assert.equal(engine.abi,17);
+for(const key of ['stepActors','animateActors','pathfind','rules','transactions','stateMachines','resources'])assert.equal(engine[key],undefined,'editor cannot access '+key);
 const n=engine.scenes,I={position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]};
 assert(n.upsert('cave',{id:'lamp',name:'Editor lamp',parent:null,active:true,transform:I,components:{Light:{type:'point',offset:[0,2,0],radius:10}},metadata:{}}));
 assert(n.setWorldTransform('cave','lamp',{...I,position:[5,3,7]}));const light=n.lights('cave')[0];assert.equal(light.x,5);assert.equal(light.y,5);assert.equal(light.z,7);

@@ -180,7 +180,7 @@ function withCivilGrounding3(o,draw){const before=civilGroundingObject3;civilGro
 function civilObjectGroundHeight3(x,z){return currentScene==='overworld'&&civilGroundingObject3?.interiorBuilding&&!civilGroundingObject3.civilUpper?civilWalkHeightBefore(x,z):walkSurfaceHeight(x,z);}
 function civilPickSurfaceHeight(x,z){const playerStructure=civilWalkableArchitectureAt(px+.5,py+.5)?.structure,target=civilWalkableArchitectureAt(x,z);return civilWalkHeightBefore(x,z)+(playerStructure&&target?.structure===playerStructure?target.height:0);}
 const civilCellBlockedBefore=realmCellBlocked;
-realmCellBlocked=function(nav,id){const x=id%nav.w,y=Math.floor(id/nav.w),architecture=civilWalkableArchitectureAt(x+.5,y+.5);if(architecture?.kind==='ramp'){const value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)));nav.cells[id]=value;return value;}return civilCellBlockedBefore(nav,id);};
+realmCellBlocked=function(nav,id){const x=id%nav.w,y=Math.floor(id/nav.w),architecture=civilWalkableArchitectureAt(x+.5,y+.5);if(architecture?.kind==='ramp'){const value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)||globalThis.VeldrenGatherableScene?.blocked(currentScene,x,y)));nav.cells[id]=value;return value;}return civilCellBlockedBefore(nav,id);};
 function setupSurfaceQuarries(world){
  const defs=[
  {id:'ironhollow',name:'Ironhollow Crown Quarry',x:858,y:129,rx:27,ry:27,levels:3,type:'industrial',town:'ironhollow',ores:['copper','tin','iron','iron','coal']},

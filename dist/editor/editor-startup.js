@@ -15,9 +15,9 @@ async function bootEditor(){
    ...['items','environment'].map(async name=>{art[name]=await realmLoadImage('assets/'+name+'.png');}),
    fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw Error('Item artwork unavailable');art.bounds=await response.json();})]);
   setupExpandedWorld();setupTutorialVillage();setupLoot();
-  window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();
+  window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();
   await window.VeldrenWorldEdits.applyFinishedWorld();
-  await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();
+  await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();
   // These viewport coordinates are editor state, never a player spawn or save.
   px=55;py=50;target=null;resize();assetsReady=true;last=performance.now();
   realmLoadComplete();await window.VeldrenEditorBridge?.initialize?.();

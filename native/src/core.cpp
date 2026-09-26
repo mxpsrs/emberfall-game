@@ -273,6 +273,7 @@ class World {
       found_scene = world_scenes_.emplace(scene_name, veldren::Scene(scene_name)).first;
     auto& target = found_scene->second;
     if (!parent.empty() && !target.contains(parent)) return false;
+    const bool was_resource = target.contains(id) && target.component(id, "Gatherable").has_value();
     if (target.contains(id)) {
       const auto previous = target.inspect(id);
       if (previous.parent != parent) target.reparent(id, parent, false);
@@ -291,6 +292,7 @@ class World {
       target.set_metadata(id, metadata_fields);
     }
     for (const auto& [type, fields] : component_fields) target.add_component(id, type, fields.object());
+    if (was_resource && !component_fields.contains("Gatherable")) PruneResourceStates();
     ++world_scene_revision_;
     return true;
   }
@@ -299,6 +301,7 @@ class World {
     const auto scene = world_scenes_.find(scene_name);
     if (scene == world_scenes_.end() || !scene->second.contains(entity_id)) return false;
     scene->second.remove(entity_id, veldren::ChildDisposition::Destroy);
+    PruneResourceStates();
     ++world_scene_revision_;
     return true;
   }
@@ -351,6 +354,104 @@ class World {
     for (const auto& id : scene->second.entities_with(component)) ids.emplace_back(id);
     return veldren::write_json(ids);
   }
+  bool IsResource(const std::string& scene, const std::string& id) const {
+    const auto found = world_scenes_.find(scene);
+    return found != world_scenes_.end() && found->second.contains(id) &&
+           found->second.component(id, veldren::component_type::Gatherable).has_value();
+  }
+  static std::string ResourceKey(const std::string& scene, const std::string& id) {
+    return std::to_string(scene.size()) + ":" + scene + id;
+  }
+  veldren::Json::Object ResourceState(const std::string& scene, const std::string& id) const {
+    const auto key = ResourceKey(scene, id);
+    return resource_session_.contains(key) ? *resource_session_.component(key, "ResourceState") :
+      veldren::Json::Object{{"depleted", false}, {"gameDeadline", nullptr},
+        {"respawnAt", nullptr}, {"hitAt", -100}, {"harvestedUntil", 0},
+        {"collected", false}, {"sharedReady", false}, {"sharedDeadUntil", 0},
+        {"treeRegrowAt", 0}, {"treeRegrown", false}};
+  }
+  std::string ResourceJson(const char* scene, const char* id) const {
+    if (!scene || !id || !IsResource(scene, id)) return {};
+    return veldren::write_json(ResourceState(scene, id));
+  }
+  // Lifecycle and replica fields live in a separate native session Scene.
+  // Neither renderer reads nor network receipts mutate the saved definition.
+  bool PatchResource(const char* scene, const char* id, const char* json) {
+    if (!scene || !id || !json || !IsResource(scene, id)) return false;
+    const auto patch = veldren::parse_json(json).object();
+    auto state = ResourceState(scene, id);
+    for (const auto& [field, value] : patch) {
+      const bool nil = std::holds_alternative<std::nullptr_t>(value.value);
+      if (field == "depleted" || field == "collected" || field == "sharedReady" || field == "treeRegrown") {
+        if (!std::holds_alternative<bool>(value.value)) return false;
+      } else if (field == "gameDeadline" || field == "respawnAt" || field == "hitAt" ||
+                 field == "harvestedUntil" || field == "sharedDeadUntil" || field == "treeRegrowAt" ||
+                 field == "sharedRevision" || field == "sharedGeneration" || field == "sharedPhase") {
+        if (!nil && (!std::holds_alternative<double>(value.value) || !std::isfinite(value.number_or()))) return false;
+      } else if (field == "sharedOwner" || field == "sharedTarget") {
+        if (!nil && !std::holds_alternative<std::string>(value.value)) return false;
+      } else if (field == "sharedHazard") {
+        if (!nil && !std::holds_alternative<veldren::Json::Object>(value.value)) return false;
+      } else return false;
+      state[field] = value;
+    }
+    const auto key = ResourceKey(scene, id);
+    if (!resource_session_.contains(key)) {
+      resource_session_.create("Resource session", {}, key);
+      resource_session_.add_component(key, "ResourceOrigin", {{"scene", scene}, {"entity", id}});
+    }
+    resource_session_.add_component(key, "ResourceState", std::move(state));
+    return true;
+  }
+  void PruneResourceStates() {
+    const auto ids = resource_session_.entities_with("ResourceOrigin");
+    for (const auto& id : ids) {
+      const veldren::Json origin(*resource_session_.component(id, "ResourceOrigin"));
+      if (!IsResource(origin.find("scene")->string_or(), origin.find("entity")->string_or()))
+        resource_session_.remove(id, veldren::ChildDisposition::Destroy);
+    }
+  }
+  std::uint32_t TickResources(double now, double game_time) {
+    std::uint32_t changed = 0;
+    if (!std::isfinite(now) || !std::isfinite(game_time)) return 0;
+    for (const auto& id : resource_session_.entities_with("ResourceState")) {
+      const veldren::Json origin(*resource_session_.component(id, "ResourceOrigin"));
+      const auto scene = origin.find("scene")->string_or(), entity = origin.find("entity")->string_or();
+      if (!IsResource(scene, entity)) continue;
+      auto state = *resource_session_.component(id, "ResourceState");
+      if (state["sharedReady"].bool_or() || !state["depleted"].bool_or() ||
+          !std::holds_alternative<double>(state["gameDeadline"].value)) continue;
+      const bool due = std::holds_alternative<double>(state["respawnAt"].value) ?
+        now >= state["respawnAt"].number_or() : game_time >= state["gameDeadline"].number_or();
+      if (!due) continue;
+      state["depleted"] = false; state["gameDeadline"] = nullptr;
+      state["respawnAt"] = nullptr; state["hitAt"] = -100; state["treeRegrown"] = true;
+      resource_session_.add_component(id, "ResourceState", std::move(state));
+      ++changed;
+    }
+    return changed;
+  }
+  // 0 inactive/absent, 1 alive, 2 depleted, 3 regrowing, 4 synchronizing,
+  // 5 regrown, 6 actively gathered. Flags: shared=1, in replica view=2, gathering=4.
+  std::uint32_t ResourcePhase(const char* scene, const char* id, double now,
+                              double game_time, std::uint32_t flags) const {
+    if (!scene || !id || !IsResource(scene, id) || !std::isfinite(now) || !std::isfinite(game_time)) return 0;
+    if (!world_scenes_.at(scene).inspect(id).active_in_hierarchy) return 0;
+    const veldren::Json state(ResourceState(scene, id));
+    if (state.find("collected")->bool_or()) return 0;
+    if ((flags & 1U) != 0) {
+      if ((flags & 2U) == 0) return 4;
+      const auto dead = state.find("sharedDeadUntil")->number_or();
+      const auto regrow = state.find("treeRegrowAt")->number_or();
+      if (dead > 0) return now >= (regrow > 0 ? regrow : dead) ? 3U : 2U;
+    } else if (state.find("depleted")->bool_or()) {
+      const auto* deadline = state.find("gameDeadline");
+      if (!std::holds_alternative<double>(deadline->value)) return 2;
+      if (deadline->number_or() > game_time) return deadline->number_or() - game_time <= 2 ? 3U : 2U;
+    }
+    if ((flags & 4U) != 0) return 6;
+    return state.find("treeRegrown")->bool_or() ? 5U : 1U;
+  }
   // The horizontal footprint index is derived from canonical component data.
   // Rebuild after any Scene revision, including ancestor edits and reloads.
   std::string WorldFootprints(const char* scene_name, const char* component,
@@ -373,6 +474,11 @@ class World {
       const double width = number("w", 0), depth = number("h", 0);
       if (!(width > 0 && depth > 0 && std::isfinite(width + depth))) continue;
       FootprintRect rect{id, node.world, number("x", 0), number("z", 0), width, depth};
+      if (const auto collider = node.components.find("Collider"); collider != node.components.end()) {
+        const veldren::Json value(collider->second);
+        if (const auto* shape = value.find("shape"); shape && shape->string_or() == "resource-tiles")
+          rect.resource_radius = std::max(0.0, value.find("radius") ? value.find("radius")->number_or() : 0);
+      }
       const auto& m = rect.world.v;
       rect.determinant = m[0] * m[10] - m[8] * m[2];
       if (std::abs(rect.determinant) < 1e-12) continue;
@@ -394,7 +500,13 @@ class World {
       const double dx = x - m[12], dz = z - m[14];
       const double u = (dx * m[10] - dz * m[8]) / r.determinant;
       const double v = (dz * m[0] - dx * m[2]) / r.determinant;
-      if (u >= r.x && u < r.x + r.w && v >= r.z && v < r.z + r.h) result.emplace_back(r.id);
+      if (!(u >= r.x && u < r.x + r.w && v >= r.z && v < r.z + r.h)) return;
+      if (r.resource_radius >= 0) {
+        const auto dx = std::floor(u), dz = std::floor(v);
+        if (!(dx == 0 && dz == 0) && !(std::abs(dx) <= 2 && std::abs(dz) <= 2 &&
+            std::hypot(dx, dz) < r.resource_radius + .3)) return;
+      }
+      result.emplace_back(r.id);
     };
     if (auto bucket = index.buckets.find({int(std::floor(x / 16)), int(std::floor(z / 16))}); bucket != index.buckets.end()) for (auto slot : bucket->second) test(slot);
     for (auto slot : index.large) test(slot);
@@ -460,13 +572,14 @@ class World {
       replacement.emplace(scene.name(), std::move(scene));
     }
     world_scenes_ = std::move(replacement);
+    resource_session_ = veldren::Scene("resource-runtime");
     document.scenes.clear();
     world_document_metadata_ = std::move(document);
     ++world_scene_revision_;
     return true;
   }
   std::uint32_t WorldSceneRevision() const { return world_scene_revision_; }
-  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); world_scenes_.clear(); world_document_metadata_ = {}; ++world_scene_revision_; }
+  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); resource_session_ = veldren::Scene("resource-runtime"); world_scenes_.clear(); world_document_metadata_ = {}; ++world_scene_revision_; }
   std::string scene_json() const { return scene_.serialize(); }
   void Seed(std::uint32_t low, std::uint32_t high) {
     random_state_ = (static_cast<std::uint64_t>(high) << 32U) | low;
@@ -601,7 +714,8 @@ class World {
   std::vector<ActorRecord> actors_;
   std::unordered_map<std::uint32_t, std::size_t> index_;
   veldren::Scene scene_{"runtime"};
-  struct FootprintRect { std::string id; veldren::Mat4 world; double x, z, w, h, determinant = 0; };
+  veldren::Scene resource_session_{"resource-runtime"};
+  struct FootprintRect { std::string id; veldren::Mat4 world; double x, z, w, h, determinant = 0, resource_radius = -1; };
   struct FootprintIndex { std::vector<FootprintRect> rects; std::map<std::pair<int,int>,std::vector<std::size_t>> buckets; std::vector<std::size_t> large; };
   mutable std::map<std::pair<std::string,std::string>,FootprintIndex> footprint_indices_;
   mutable std::uint32_t footprint_revision_ = std::numeric_limits<std::uint32_t>::max();
@@ -934,6 +1048,30 @@ std::uint32_t veldren_world_scene_revision(const void* world) {
   return world ? AsWorld(world)->WorldSceneRevision() : 0;
 }
 
+std::uint32_t veldren_resource_state_read(const void* world, const char* scene,
+    const char* id, char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->ResourceJson(scene, id), out, capacity); }
+  catch (...) { return 0; }
+}
+std::uint32_t veldren_resource_state_patch(void* world, const char* scene,
+    const char* id, const char* patch) {
+  if (!world) return 0;
+  try { return AsWorld(world)->PatchResource(scene, id, patch) ? 1U : 0U; }
+  catch (...) { return 0; }
+}
+std::uint32_t veldren_resources_tick(void* world, double now, double game_time) {
+  if (!world) return 0;
+  try { return AsWorld(world)->TickResources(now, game_time); }
+  catch (...) { return 0; }
+}
+std::uint32_t veldren_resource_phase(const void* world, const char* scene,
+    const char* id, double now, double game_time, std::uint32_t flags) {
+  if (!world) return 0;
+  try { return AsWorld(world)->ResourcePhase(scene, id, now, game_time, flags); }
+  catch (...) { return 0; }
+}
+
 std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum) {
   return world ? AsWorld(world)->RandomBounded(exclusive_maximum) : 0;
 }
@@ -1166,4 +1304,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 16; }
+std::uint32_t veldren_core_abi_version() { return 17; }

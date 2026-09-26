@@ -180,6 +180,16 @@ VELDREN_EXPORT std::uint32_t veldren_world_document_serialize(
 VELDREN_EXPORT std::uint32_t veldren_world_document_load(
     void* world, const char* document_json);
 VELDREN_EXPORT std::uint32_t veldren_world_scene_revision(const void* world);
+// Resource session data is native-owned and excluded from WorldDocument.
+VELDREN_EXPORT std::uint32_t veldren_resource_state_read(
+    const void* world, const char* scene, const char* id, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_resource_state_patch(
+    void* world, const char* scene, const char* id, const char* patch_json);
+VELDREN_EXPORT std::uint32_t veldren_resources_tick(
+    void* world, double now, double game_time);
+VELDREN_EXPORT std::uint32_t veldren_resource_phase(
+    const void* world, const char* scene, const char* id,
+    double now, double game_time, std::uint32_t flags);
 VELDREN_EXPORT std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum);
 VELDREN_EXPORT std::uint32_t veldren_random_chance(void* world, float probability);
 VELDREN_EXPORT std::uint32_t veldren_roll_attack(

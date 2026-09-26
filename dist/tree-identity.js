@@ -15,6 +15,12 @@ function drawSpeciesTree(r,o,x,z){
 let sharedTreeView=null;
 function treeLifecycle(o){
  if(o.type!=='tree')return null;
+ if(o._generatedGatherable&&globalThis.VeldrenGatherableScene){
+  const shared=typeof sharedLive==='function'&&sharedLive(),now=shared?sharedNow():Date.now(),covered=!!sharedTreeView&&sharedTreeView.scene===currentScene&&Math.abs(o.x-sharedTreeView.x)<=sharedTreeView.radius&&Math.abs(o.y-sharedTreeView.y)<=sharedTreeView.radius;
+  let chopping=typeof target!=='undefined'&&target===o&&gatheringActivity();
+  if(!chopping&&typeof onlinePeers!=='undefined')for(const peer of onlinePeers.values()){const a=peer.action;if(a?.kind==='gather'&&a.target?.entity===String(o.id)&&typeof sharedNow==='function'&&sharedNow()<a.started+a.duration){chopping=true;break;}}
+  return globalThis.VeldrenGatherableScene.phase(o,now,time,(shared?1:0)|(covered?2:0)|(chopping?4:0));
+ }
  if(typeof sharedLive==='function'&&sharedLive()){
   if(!sharedTreeView||sharedTreeView.scene!==currentScene||Math.abs(o.x-sharedTreeView.x)>sharedTreeView.radius||Math.abs(o.y-sharedTreeView.y)>sharedTreeView.radius)return 'syncing';
   if(o._sharedDeadUntil)return sharedNow()>=(o._treeRegrowAt||o._sharedDeadUntil)?'regrowing':'stump';

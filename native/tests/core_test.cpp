@@ -169,7 +169,7 @@ int main() {
   assert(veldren_requirements_met(missing, required, 3) == 0);
   assert(veldren_world_timer_events(1000, 999, 0, NAN, 0) == 1);
   assert(veldren_world_timer_events(1000, NAN, 9, 999, 5) == 2);
-  assert(veldren_core_abi_version() == 16);
+  assert(veldren_core_abi_version() == 17);
   const auto initial_scene_revision = veldren_world_scene_revision(world);
   const char* region = R"({"id":"overworld:region:oakwood","name":"Oakwood","parent":null,"active":true,"transform":{"position":[0,0,0],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"Region":{"source":"procedural"}},"metadata":{"generationKey":"oakwood"}})";
   const char* barrel = R"({"id":"overworld:prop:barrel:9e2041","name":"Barrel","parent":"overworld:region:oakwood","active":true,"transform":{"position":[1,0,2],"rotation":[0,0,0,1],"scale":[1,1,1]},"components":{"MeshRenderer":{"asset":"briar:barrel","visible":true},"Collider":{"shape":"box"}},"metadata":{"kind":"prop"}})";
@@ -238,6 +238,46 @@ int main() {
   assert(std::abs(moved_lights[0].find("z")->number_or() - 18) < 1e-9);
   assert(veldren_world_scene_entity_remove(world, "overworld", "lamp") == 1);
   assert(read_lights(1).empty());
+  const char* resource = R"({"id":"tree","name":"Oak","parent":"overworld:region:oakwood","components":{"Gatherable":{"type":"tree"}},"transform":{"position":[1,0,2],"scale":[1,1,1]}})";
+  assert(veldren_world_scene_entity_upsert(world, "overworld", resource) == 1);
+  const auto resource_read = [&]() {
+    const auto size = veldren_resource_state_read(world, "overworld", "tree", nullptr, 0);
+    std::vector<char> text(size + 1);
+    assert(veldren_resource_state_read(world, "overworld", "tree", text.data(), text.size()) == size);
+    return veldren::parse_json(text.data());
+  };
+  const auto saved_world = [&]() {
+    const auto size = veldren_world_document_serialize(world, nullptr, 0);
+    std::vector<char> text(size + 1);
+    assert(veldren_world_document_serialize(world, text.data(), text.size()) == size);
+    return std::string(text.data());
+  };
+  const auto resource_document = saved_world(), resource_revision = std::to_string(veldren_world_scene_revision(world));
+  assert(veldren_resource_state_patch(world, "overworld", "tree", R"({"depleted":true,"gameDeadline":20,"respawnAt":5000})") == 1);
+  assert(veldren_resource_phase(world, "overworld", "tree", 4000, 10, 0) == 2);
+  assert(veldren_resource_phase(world, "overworld", "tree", 4000, 19, 0) == 3);
+  assert(veldren_resources_tick(world, 4999, 19) == 0);
+  assert(veldren_resources_tick(world, 5000, 20) == 1);
+  assert(!resource_read().find("depleted")->bool_or());
+  assert(veldren_resource_phase(world, "overworld", "tree", 5000, 20, 0) == 5);
+  assert(veldren_resource_state_patch(world, "overworld", "tree", R"({"sharedReady":true,"depleted":true,"gameDeadline":null,"sharedDeadUntil":9000,"treeRegrowAt":8000})") == 1);
+  const auto before_invalid = resource_read();
+  assert(veldren_resource_state_patch(world, "overworld", "tree", R"({"depleted":false,"unknown":1})") == 0);
+  assert(resource_read() == before_invalid);
+  assert(veldren_resources_tick(world, 10000, 100) == 0);
+  assert(veldren_resource_phase(world, "overworld", "tree", 7000, 50, 1) == 4);
+  assert(veldren_resource_phase(world, "overworld", "tree", 7000, 50, 3) == 2);
+  assert(veldren_resource_phase(world, "overworld", "tree", 8000, 50, 3) == 3);
+  assert(saved_world() == resource_document);
+  assert(std::to_string(veldren_world_scene_revision(world)) == resource_revision);
+  assert(veldren_world_document_load(world, resource_document.c_str()) == 1);
+  assert(!resource_read().find("sharedReady")->bool_or());
+  assert(veldren_resource_state_patch(world, "overworld", "tree", R"({"depleted":true,"gameDeadline":null})") == 1);
+  assert(veldren_world_scene_entity_remove(world, "overworld", "overworld:region:oakwood") == 1);
+  assert(veldren_resource_state_read(world, "overworld", "tree", nullptr, 0) == 0);
+  assert(veldren_world_scene_entity_upsert(world, "overworld", region) == 1);
+  assert(veldren_world_scene_entity_upsert(world, "overworld", resource) == 1);
+  assert(!resource_read().find("depleted")->bool_or());
   veldren_world_destroy(world);
   std::cout << "PASS: native C++ actor simulation and visibility for 256 actors\n";
 }
