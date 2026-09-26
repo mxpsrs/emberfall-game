@@ -20,8 +20,8 @@
     <button id="terrainTool" type="button">Terrain</button>
     <button id="cameraTool" type="button">Camera</button>
     <span class="divider"></span>
-    <button id="playerView" type="button">Player View</button>
-    <button id="gameUiToggle" type="button" aria-pressed="false">UI Edit</button>
+    <button id="playerView" type="button" hidden disabled>Player View</button>
+    <button id="gameUiToggle" type="button" hidden disabled aria-pressed="false">UI Edit</button>
     <span class="divider"></span>
     <label class="toolbar-field">Grid
       <select id="positionSnap">
@@ -122,7 +122,7 @@
   </aside>
 
   <section class="stage" id="stage">
-    <iframe id="gameFrame" title="Veldren editor viewport" src="/play?editor=1"></iframe>
+    <iframe id="gameFrame" title="Veldren editor viewport" src="/editor/viewport.html"></iframe>
     <div id="selectionMarker" class="selection-marker" hidden aria-hidden="true"><span></span></div>
     <div class="mode-badge" id="modeBadge">SELECT</div>
     <div class="camera-badge" id="cameraBadge">FREE CAMERA</div>
@@ -180,7 +180,7 @@
     <section class="info-card">
       <strong>Free camera</strong>
       <p><b>WASD</b> moves smoothly · <b>Shift + WASD</b> moves faster · <b>Arrow keys</b> rotate/tilt · left-drag in Camera mode orbits · mouse wheel zooms · Q/E zoom.</p>
-      <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7. <b>Player View</b> switches to the player camera.</p><p><b>Game UI is hidden by default.</b> Use <b>UI Edit</b> when you want the playable HUD visible.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World publishes changes to players.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
+      <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World records changes for the runtime.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
     </section>
   </aside>
 </main>
@@ -197,4 +197,3 @@
 <script src="/editor/editor.js"></script>
 </body>
 </html>
-

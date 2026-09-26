@@ -55,6 +55,7 @@ enum VeldrenActorFlags : std::uint32_t {
   VELDREN_ACTOR_RAT = 1U << 5,
   VELDREN_ACTOR_FACE_PLAYER = 1U << 6,
   VELDREN_ACTOR_TELEPORT = 1U << 7,
+  VELDREN_ACTOR_PLAYER = 1U << 8,
 };
 
 enum VeldrenRenderFlags : std::uint32_t {
@@ -146,6 +147,10 @@ VELDREN_EXPORT std::int32_t veldren_pathfind(
     std::uint32_t* out_ids,
     std::uint32_t out_capacity);
 VELDREN_EXPORT std::uint32_t veldren_world_count(const void* world);
+// Returns the UTF-8 JSON byte length (excluding NUL). When out is non-null and
+// capacity is greater than that length, writes the JSON plus a NUL byte.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_serialize(
+    const void* world, char* out, std::uint32_t capacity);
 VELDREN_EXPORT std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum);
 VELDREN_EXPORT std::uint32_t veldren_random_chance(void* world, float probability);
 VELDREN_EXPORT std::uint32_t veldren_roll_attack(

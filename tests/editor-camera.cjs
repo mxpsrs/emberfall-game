@@ -7,6 +7,7 @@ const path=require('node:path');
 const dist=path.join(__dirname,'../dist/editor');
 const object={id:'test-prop',name:'Test prop',type:'prop',x:47,y:50,homeX:47,homeY:50,drawX:47,drawY:50};
 const worldObjects=[object],messages=[],createdNodes=[];
+const worldDocument={format:'veldren.world',version:2,revision:1,updatedAt:null,scenes:[{format:'veldren.scene',version:2,scene:'overworld',entities:[{id:'overworld:lamp:main',name:'Scene lantern',parent:null,active:true,transform:{position:[47,0,50],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'briar:previewHouse',visible:true}},metadata:{}}]}]};
 let navResets=0,landResets=0;
 
 function element(tagName='DIV'){
@@ -35,11 +36,22 @@ const childDocument={listeners:{},head:element(),body:element(),hidden:false,
  getElementById(id){if(id==='veldrenEditorUiIsolation')return null;if(!childNodes.has(id))childNodes.set(id,element());return childNodes.get(id)},
  querySelector(){return null},addEventListener(name,handler){(this.listeners[name]??=[]).push(handler)},createElement:element};
 const childWindow={listeners:{},addEventListener(name,handler){(this.listeners[name]??=[]).push(handler)}};
+childWindow.VELDREN_CONTEXT='editor';
+let savedDocument=null,savedMeta=null;
 const child={console,window:childWindow,document:childDocument,location:{origin:'https://example.test'},
  performance:{now:()=>0},requestAnimationFrame(fn){childFrames.push(fn)},setInterval(fn){childTimers.push(fn);return childTimers.length},clearInterval(){},
  localStorage:{getItem(){return null},setItem(){}},parent:{postMessage(message){messages.push(message)}},
- fetch:async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})}),
- VeldrenAssembly:{History:class{}},VeldrenBuildings:{},VeldrenWorldEdits:{applyDocument(){return {applied:0,unmatched:0,rejected:0}}},
+ fetch:async(url='',options={})=>{
+  if(options.method==='PUT'){
+   const input=JSON.parse(options.body);assert.equal(input.format,'veldren.world','editor saves the canonical version 2 scene document');assert.equal(input.expectedRevision,1);
+   savedDocument=JSON.parse(JSON.stringify(input));delete savedDocument.expectedRevision;savedDocument.revision=2;savedDocument.updatedAt='2026-09-25T00:00:00.000Z';
+   const edits=childWindow.VeldrenSceneFormat.toLegacy(savedDocument);savedMeta={revision:2,count:edits.changes.length,path:'world scene',bytes:100,sha256:'edits-sha',runtimeSha256:'edits-sha',worldSha256:'scene-sha',updatedAt:savedDocument.updatedAt,world:savedDocument,edits};
+   return {ok:true,json:async()=>savedMeta};
+  }
+  if(url.includes('verify='))return {ok:true,json:async()=>savedMeta};
+  const edits=childWindow.VeldrenSceneFormat.toLegacy(worldDocument);return {ok:true,json:async()=>({revision:1,world:JSON.parse(JSON.stringify(worldDocument)),edits,count:edits.changes.length,path:'world scene',bytes:100,sha256:'edits-sha'})};
+ },
+ VeldrenAssembly:{History:class{}},VeldrenBuildings:{},VeldrenWorldEdits:null,
  assetsReady:true,worldScenes:{overworld:{objects:worldObjects,buildings:[]}},objects:worldObjects,buildings:[],currentScene:'overworld',
  REALM_ATLAS_IMAGE:{complete:true,width:4096,height:4096},briarModels:{previewHouse:{p:new Float32Array([0,0,0,1,0,0,0,2,0]),n:new Float32Array([0,0,1,0,0,1,0,0,1]),c:new Float32Array([.7,.2,.1,.7,.2,.1,.7,.2,.1]),uv:new Float32Array([0,0,1,0,0,1]),t:new Uint8Array([20,20,20]),i:Uint16Array.from({length:3000},(_,i)=>i%3),bounds:[[0,0,0],[1,2,0]]}},
  worldObjectRevision:0,worldObjectIndex:{revision:0,scene:'overworld',length:1,actors:[],buckets:new Map([['2:3',[object]]]),order:new Map([[object,0]]),byId:new Map([['test-prop',object]])},
@@ -48,9 +60,19 @@ const child={console,window:childWindow,document:childDocument,location:{origin:
  prop3(){},briarTransform(){return []},briarEmit(r,mesh){r.face(mesh.p,'#fff')},draw3d(){},draw(){},unproject3(sx,sy){return {x:child.px+sx/10,z:child.py+sy/10}},
  stop(){},resize(){},target:null};
 childWindow.VeldrenBuildings=child.VeldrenBuildings;
-childWindow.VeldrenWorldEdits=child.VeldrenWorldEdits;
 childWindow.matchMedia=()=>({matches:false});
 vm.createContext(child);
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist/world-scene-format.js'),'utf8'),child,{filename:'world-scene-format.js'});
+childWindow.VeldrenSceneFormat=child.VeldrenSceneFormat;
+function refreshSceneRenderables(world,sceneName){
+ const records=childWindow.VeldrenSceneFormat.renderables(world).filter(item=>sceneName==null||item.scene===String(sceneName));
+ for(const record of records){const scene=child.worldScenes[record.scene];if(!scene)continue;let item=scene.objects.find(candidate=>candidate._sceneEntityId===record.id);if(!item){item={id:record.id,_sceneEntityId:record.id,type:'prop',dead:0,hitAt:-100,attackAt:-100,walkThrough:true};scene.objects.push(item);if(record.scene===child.currentScene&&!child.objects.includes(item))child.objects.push(item)}Object.assign(item,{name:record.name,x:record.x,y:record.y,homeX:record.x,homeY:record.y,drawX:record.x,drawY:record.y,editorAsset:record.asset,editorTransform:{rotation:record.rotation,scale:record.scale}})}
+ const ids=new Set(records.map(item=>item.id));for(const name of (sceneName==null?Object.keys(child.worldScenes):[String(sceneName)])){const scene=child.worldScenes[name];if(!scene)continue;for(let i=scene.objects.length-1;i>=0;i--){const item=scene.objects[i];if(item._sceneEntityId&&!ids.has(item._sceneEntityId)){scene.objects.splice(i,1);const active=child.objects.indexOf(item);if(active>=0)child.objects.splice(active,1)}}}
+ if(sceneName!=null&&sceneName===child.currentScene)child.objects.splice(0,child.objects.length,...child.worldScenes[sceneName].objects);
+ if(child.worldObjectIndex){child.worldObjectIndex.length=child.objects.length;child.worldObjectIndex.revision=child.worldObjectRevision;}
+}
+child.VeldrenWorldEdits={applyDocument(){refreshSceneRenderables(worldDocument,'overworld');return {applied:0,unmatched:0,rejected:0}},refreshSceneRenderables};
+childWindow.VeldrenWorldEdits=child.VeldrenWorldEdits;
 vm.runInContext(fs.readFileSync(path.join(dist,'../terrain-editor-runtime.js'),'utf8'),child,{filename:'terrain-editor-runtime.js'});
 vm.runInContext(fs.readFileSync(path.join(dist,'editor-runtime.js'),'utf8'),child,{filename:'editor-runtime.js'});
 
@@ -155,6 +177,18 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  const placed=worldObjects.find(o=>o._editorCreated);assert(placed,'viewport click commits the selected model');assert.equal(placed.editorTransform.rotation,90,'placement rotation is stored on the placed model');
  assert(bridge.exportEdits().changes.some(c=>c.id===placed.id&&c.rotation===90),'placement transform is recorded in editor persistence');
  bridge.cancelPlacement();assert(!worldObjects.includes(preview),'cancel removes the temporary preview');assert(worldObjects.includes(placed),'cancel preserves committed model');
- console.log('PASS: editor camera/navigation, lazy model data bridge, temporary placement preview, rotation, commit and cancel.');
+ const authoredId='overworld:lamp:main';assert(worldObjects.some(item=>item._sceneEntityId===authoredId),'canonical scene renderables enter the editor object index');
+ bridge.selectByRef('object',authoredId);const authoredMove=bridge.setTransform({x:48,y:53,rotation:45,scale:1.5});
+ assert.equal(authoredMove.id,authoredId);let persistedTransform=childWindow.VeldrenSceneFormat.readWorldTransform(bridge.exportWorld(),'overworld',authoredId);
+ assert.equal(persistedTransform.x,48);assert.equal(persistedTransform.y,53);assert(Math.abs(persistedTransform.rotation-45)<1e-8);assert.equal(persistedTransform.scale,1.5);
+ assert(!bridge.exportEdits().changes.some(change=>change.id===authoredId),'scene-authored changes stay in the v2 document instead of becoming legacy overlays');
+ const duplicated=bridge.duplicateSelection(),duplicatedId=duplicated.id;assert.notEqual(duplicatedId,authoredId);
+ assert.equal(bridge.exportWorld().scenes[0].entities.length,2,'duplicate creates a canonical scene entity');
+ bridge.deleteSelection();assert.equal(bridge.exportWorld().scenes[0].entities.length,1,'delete removes the canonical entity from the scene');
+ bridge.selectByRef('object',authoredId);const saveResult=await bridge.save();assert.equal(saveResult.roundTripVerified,true,'v2 document passes editor save verification');
+ assert.equal(savedDocument.format,'veldren.world');assert.equal(savedDocument.scenes[0].entities[0].id,authoredId);
+ persistedTransform=childWindow.VeldrenSceneFormat.readWorldTransform(savedDocument,'overworld',authoredId);assert(Math.abs(persistedTransform.rotation-45)<1e-8);assert.equal(persistedTransform.scale,1.5);
+ bridge.revertSelection();persistedTransform=childWindow.VeldrenSceneFormat.readWorldTransform(bridge.exportWorld(),'overworld',authoredId);
+ assert.equal(persistedTransform.x,47);assert.equal(persistedTransform.y,50,'revert restores the exact original local transform');
+ console.log('PASS: editor camera/navigation, scene-authored transforms and subtree editing, verified v2 save/revert, and temporary placement lifecycle.');
 })().catch(error=>{console.error(error);process.exitCode=1});
-

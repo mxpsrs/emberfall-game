@@ -10,18 +10,19 @@ function recordPlayerDeparture(x,y){
 function outgoingMovementTrail(){return movementTrailScene===currentScene&&movementTrail.length&&Math.hypot(px-movementTrail.at(-1)[1],py-movementTrail.at(-1)[2])<=2?movementTrail.map(([seq,x,y,at])=>[seq,x,y,Math.min(60000,Math.max(0,Date.now()-at))]):[];}
 let onlineSyncBusy=false,onlineSyncTimer=null;
 async function syncOnlineWorld(){
+ if(window.VELDREN_CONTEXT==='editor')return;
  if(onlineSyncBusy)return;onlineSyncBusy=true;clearTimeout(onlineSyncTimer);onlineSyncTimer=null;try{await syncOnlineWorldOnce();}finally{onlineSyncBusy=false;if(!cloudDisconnected&&!cloudConflict&&!onlineSyncTimer)scheduleOnlineSync(100);}
 }
-function scheduleOnlineSync(delay){clearTimeout(onlineSyncTimer);onlineSyncTimer=setTimeout(()=>{onlineSyncTimer=null;syncOnlineWorld();},delay);}
+function scheduleOnlineSync(delay){if(window.VELDREN_CONTEXT==='editor')return;clearTimeout(onlineSyncTimer);onlineSyncTimer=setTimeout(()=>{onlineSyncTimer=null;syncOnlineWorld();},delay);}
 async function syncOnlineWorldOnce(){
  if(cloudDisconnected||cloudConflict)return;
  // The editor is a camera over an authenticated world snapshot, not another
  // player session. Polling /api/players here would overwrite the live tab's
  // presence because both tabs share the same account identity.
- if(typeof editorViewportReady==='function'&&editorViewportReady()){
+ if(window.VELDREN_CONTEXT==='editor'){
   onlinePeers.clear();onlineScene=null;
   if(typeof sharedActivityStream!=='undefined'&&sharedActivityStream){sharedActivityStream.close();sharedActivityStream=null;}
-  scheduleOnlineSync(5000);return;
+  return;
  }
  if(!assetsReady||!s.character||!cloudReady||$('creator').open||document.hidden){scheduleOnlineSync(1200);return;}
  // Presence must follow the saved journey, for every island layout version.
@@ -35,7 +36,6 @@ async function syncOnlineWorldOnce(){
  // An island request can still be in flight when Rowan finishes the crossing.
  if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
  if(await handleConnectionResponse(response))return;if(!response.ok)throw new Error('offline');if(cloudDisconnected||cloudConflict)return;const data=await response.json();if(cloudDisconnected||cloudConflict)return;
- if(typeof editorViewportReady==='function'&&editorViewportReady()){onlinePeers.clear();onlineScene=null;scheduleOnlineSync(5000);return;}
  if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}
  if(onlineScene!==currentScene){onlinePeers.clear();onlineScene=currentScene;if(typeof gameMessage==='function')gameMessage('Connected to '+(currentScene==='tutorial'?'Firstlight Isle':'the shared world')+'.',{key:'world-connection'});}
  if(typeof applySharedWorld==='function')applySharedWorld(data);
@@ -79,7 +79,7 @@ function drawOnlinePlayers(mesh,labels){if(onlineScene!==currentScene)return;for
  hitboxes.push({x:feet.x-width/2,y:Math.min(feet.y,head.y)-6,w:width,h:Math.abs(feet.y-head.y)+12,depth:feet.depth,o:{type:'player',id:peer.id,name:peer.name,username:peer.username,x:peer.x,y:peer.y}});
  labels.push([peer.name,peer.drawX+.5,2.15,peer.drawY+.5,'#bce2ee']);if(typeof socialOverheads!=='undefined'){const chat=socialOverheads.get(peer.username?.toLowerCase());if(chat&&Date.now()<chat.until)pushOverheadChat(labels,chat.text,peer.drawX,peer.drawY);}if(peer.emote)labels.push([peer.emote,peer.drawX+.5,2.6,peer.drawY+.5,'#f6e6b5']);
 }}
-setTimeout(syncOnlineWorld,1000);
+if(window.VELDREN_CONTEXT!=='editor')setTimeout(syncOnlineWorld,1000);
 
 let followedPlayerId=null,followRouteAt=0,followSequence=null,followEpoch=null,followRetryAt=0;
 function followPlayer(id){const peer=onlinePeers.get(id);if(!peer||onlineScene!==currentScene)return;stop();followedPlayerId=id;followRouteAt=0;followSequence=null;followEpoch=null;followRetryAt=0;toast('Following '+peer.name);updatePlayerFollow();}

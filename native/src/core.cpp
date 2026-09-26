@@ -1,7 +1,9 @@
 #include "veldren/core.h"
+#include "veldren/scene.h"
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <memory>
 #include <limits>
 #include <queue>
@@ -19,6 +21,7 @@ constexpr std::size_t kCrowdedActorCount = 128;
 
 struct ActorRecord {
   VeldrenActorState state;
+  veldren::EntityId entity;
   float far_time = 0;
   float heading = 0;
   float phase = 0;
@@ -40,23 +43,49 @@ class World {
     if (actor.id == 0 || !Finite(actor)) return false;
     const auto found = index_.find(actor.id);
     if (found == index_.end()) {
+      const auto entity = scene_.create(actor_name(actor), {}, "runtime:actor:" + std::to_string(actor.id));
+      const float initial_heading = std::fmod(actor.id * 2.399F, 6.28318530718F);
+      veldren::Transform transform;
+      transform.position = {actor.x, 0, actor.z};
+      transform.rotation = {0, std::sin(initial_heading / 2), 0, std::cos(initial_heading / 2)};
+      scene_.set_local(entity, transform);
+      scene_.add_component(entity, std::string(veldren::component_type::ActorController),
+                           controller_fields(actor));
+      scene_.add_component(entity, std::string(veldren::component_type::Animator), {{"clip", "idle"}});
+      scene_.add_component(entity, std::string(veldren::component_type::MeshRenderer),
+                           {{"renderer", "actor-pipeline"}, {"visible", true}});
+      update_actor_kind(entity, actor);
       index_.emplace(actor.id, actors_.size());
-      actors_.push_back({actor, 0, std::fmod(actor.id * 2.399F, 6.28318530718F), 0, 0, 0, 0,
+      actors_.push_back({actor, entity, 0, initial_heading, 0, 0, 0, 0,
                          VELDREN_CLIP_IDLE, 0});
     } else {
       auto& record = actors_[found->second];
       if ((actor.flags & VELDREN_ACTOR_TELEPORT) != 0) {
         record.state.x = actor.x;
         record.state.z = actor.z;
+        auto transform = scene_.local_transform(record.entity);
+        transform.position = {actor.x, transform.position.y, actor.z};
+        scene_.set_local(record.entity, transform);
         record.phase = 0;
         record.blend = 0;
         record.motion_speed = 0;
       }
+      const bool controller_changed = record.state.target_x != actor.target_x ||
+                                      record.state.target_z != actor.target_z ||
+                                      record.state.speed != actor.speed ||
+                                      record.state.gait_distance != actor.gait_distance ||
+                                      record.state.flags != actor.flags;
       record.state.target_x = actor.target_x;
       record.state.target_z = actor.target_z;
       record.state.speed = actor.speed;
       record.state.gait_distance = actor.gait_distance;
       record.state.flags = actor.flags;
+      if (controller_changed) {
+        scene_.add_component(record.entity, std::string(veldren::component_type::ActorController),
+                             controller_fields(record.state));
+        scene_.rename(record.entity, actor_name(record.state));
+        update_actor_kind(record.entity, record.state);
+      }
     }
     return true;
   }
@@ -66,10 +95,12 @@ class World {
     if (found == index_.end()) return false;
     const std::size_t removed = found->second;
     const std::size_t last = actors_.size() - 1;
+    const auto removed_entity = actors_[removed].entity;
     if (removed != last) {
       actors_[removed] = actors_[last];
       index_[actors_[removed].state.id] = removed;
     }
+    scene_.remove(removed_entity, veldren::ChildDisposition::Destroy);
     actors_.pop_back();
     index_.erase(found);
     return true;
@@ -96,8 +127,9 @@ class World {
     const float elapsed = std::min(seconds, 1.0F);
     const float radius_squared = near_radius * near_radius;
     for (auto& actor : actors_) {
-      const float dx = actor.state.x - player_x;
-      const float dz = actor.state.z - player_z;
+      const auto at = position(actor);
+      const float dx = static_cast<float>(at.x) - player_x;
+      const float dz = static_cast<float>(at.z) - player_z;
       const bool active = (actor.state.flags & VELDREN_ACTOR_ALWAYS_ACTIVE) != 0 ||
                           dx * dx + dz * dz < radius_squared;
       if (active) {
@@ -119,11 +151,11 @@ class World {
     const float radius_squared = radius * radius;
     std::uint32_t count = 0;
     for (const auto& record : actors_) {
-      const auto& actor = record.state;
-      const float dx = actor.x - center_x;
-      const float dz = actor.z - center_z;
+      const auto at = position(record);
+      const float dx = static_cast<float>(at.x) - center_x;
+      const float dz = static_cast<float>(at.z) - center_z;
       if (dx * dx + dz * dz > radius_squared + kArrivalEpsilon) continue;
-      out[count++] = actor.id;
+      out[count++] = record.state.id;
       if (count == capacity) break;
     }
     return count;
@@ -135,7 +167,8 @@ class World {
     const auto found = index_.find(id);
     if (found == index_.end()) return false;
     const auto& actor = actors_[found->second];
-    *out = {actor.state.id, actor.state.x, actor.state.z, actor.heading, actor.phase,
+    const auto at = position(actor);
+    *out = {actor.state.id, static_cast<float>(at.x), static_cast<float>(at.z), actor.heading, actor.phase,
             actor.blend, actor.motion_speed, actor.render_flags};
     return true;
   }
@@ -184,7 +217,8 @@ class World {
     }
     return true;
   }
-  void Reset() { actors_.clear(); index_.clear(); }
+  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); }
+  std::string scene_json() const { return scene_.serialize(); }
   void Seed(std::uint32_t low, std::uint32_t high) {
     random_state_ = (static_cast<std::uint64_t>(high) << 32U) | low;
     if (random_state_ == 0) random_state_ = 0x9e3779b97f4a7c15ULL;
@@ -208,6 +242,38 @@ class World {
   }
 
  private:
+  static std::string actor_name(const VeldrenActorState& actor) {
+    if ((actor.flags & VELDREN_ACTOR_PLAYER) != 0) return "Player";
+    if ((actor.flags & VELDREN_ACTOR_HUMAN) != 0) return "Veldren Actor";
+    if ((actor.flags & VELDREN_ACTOR_WOLF) != 0) return "Wolf";
+    if ((actor.flags & VELDREN_ACTOR_RAT) != 0) return "Giant Rat";
+    if ((actor.flags & VELDREN_ACTOR_SLIME) != 0) return "Slime";
+    return "Monster";
+  }
+
+  static veldren::Json::Object controller_fields(const VeldrenActorState& actor) {
+    return {{"actorId", double(actor.id)}, {"targetX", double(actor.target_x)},
+            {"targetZ", double(actor.target_z)}, {"speed", double(actor.speed)},
+            {"gaitDistance", double(actor.gait_distance)}, {"flags", double(actor.flags)}};
+  }
+
+  void update_actor_kind(const veldren::EntityId& entity, const VeldrenActorState& actor) {
+    const auto kind = (actor.flags & VELDREN_ACTOR_PLAYER) != 0
+                          ? veldren::component_type::PlayerRepresentation
+                          : (actor.flags & VELDREN_ACTOR_HUMAN) != 0
+                                ? veldren::component_type::NPC
+                                : veldren::component_type::Monster;
+    for (const auto role : {veldren::component_type::NPC, veldren::component_type::Monster,
+                            veldren::component_type::PlayerRepresentation}) {
+      if (role != kind) scene_.remove_component(entity, role);
+    }
+    scene_.add_component(entity, std::string(kind), {{"actorId", double(actor.id)}});
+  }
+
+  veldren::Vec3 position(const ActorRecord& record) const {
+    return scene_.local_transform(record.entity).position;
+  }
+
   static bool Finite(const VeldrenActorState& actor) {
     return std::isfinite(actor.x) && std::isfinite(actor.z) &&
            std::isfinite(actor.target_x) && std::isfinite(actor.target_z) &&
@@ -215,22 +281,27 @@ class World {
            std::isfinite(actor.gait_distance) && actor.gait_distance >= 0;
   }
 
-  static void StepActor(ActorRecord& record, float dt, bool has_player,
-                        float player_x, float player_z) {
+  void StepActor(ActorRecord& record, float dt, bool has_player,
+                 float player_x, float player_z) {
     auto& actor = record.state;
-    const float before_x = actor.x;
-    const float before_z = actor.z;
-    const float dx = actor.target_x - actor.x;
-    const float dz = actor.target_z - actor.z;
+    auto transform = scene_.local_transform(record.entity);
+    const float before_x = static_cast<float>(transform.position.x);
+    const float before_z = static_cast<float>(transform.position.z);
+    const float dx = actor.target_x - before_x;
+    const float dz = actor.target_z - before_z;
+    float current_x = before_x;
+    float current_z = before_z;
     const float distance_squared = dx * dx + dz * dz;
     if (distance_squared > kArrivalEpsilon) {
       const float distance = std::sqrt(distance_squared);
       const float travel = std::min(distance, Speed(actor) * dt);
-      actor.x += dx / distance * travel;
-      actor.z += dz / distance * travel;
+      current_x += dx / distance * travel;
+      current_z += dz / distance * travel;
     }
-    const float moved_x = actor.x - before_x;
-    const float moved_z = actor.z - before_z;
+    actor.x = current_x;
+    actor.z = current_z;
+    const float moved_x = current_x - before_x;
+    const float moved_z = current_z - before_z;
     const float moved = std::hypot(moved_x, moved_z);
     const bool walking = moved > 0.0003F && moved < 2.0F;
     const float measured_speed = walking && dt > 0 ? moved / dt : 0;
@@ -240,15 +311,22 @@ class World {
       const float gait = actor.gait_distance > 0 ? actor.gait_distance : 1.15F;
       record.phase = std::fmod(record.phase + moved / gait, 1.0F);
     }
-    float desired = record.heading;
+    const float previous_heading = record.heading;
+    float desired = previous_heading;
     if (walking) desired = std::atan2(moved_x, moved_z);
     else if (has_player && (actor.flags & VELDREN_ACTOR_FACE_PLAYER) != 0 &&
-             std::hypot(player_x - actor.x, player_z - actor.z) < 12.0F)
-      desired = std::atan2(player_x - actor.x, player_z - actor.z);
+             std::hypot(player_x - current_x, player_z - current_z) < 12.0F)
+      desired = std::atan2(player_x - current_x, player_z - current_z);
     const float delta = std::atan2(std::sin(desired - record.heading),
                                    std::cos(desired - record.heading));
     record.heading += delta * std::min(1.0F, dt * 15.0F);
     record.render_flags = walking ? static_cast<std::uint32_t>(VELDREN_RENDER_MOVING) : 0U;
+    if (current_x != before_x || current_z != before_z || record.heading != previous_heading) {
+      transform.position.x = current_x;
+      transform.position.z = current_z;
+      transform.rotation = {0, std::sin(record.heading / 2), 0, std::cos(record.heading / 2)};
+      scene_.set_local(record.entity, transform);
+    }
   }
 
   static float Speed(const VeldrenActorState& actor) {
@@ -273,6 +351,7 @@ class World {
 
   std::vector<ActorRecord> actors_;
   std::unordered_map<std::uint32_t, std::size_t> index_;
+  veldren::Scene scene_{"runtime"};
   std::uint64_t random_state_ = 0x9e3779b97f4a7c15ULL;
 };
 
@@ -492,6 +571,19 @@ std::int32_t veldren_pathfind(const std::uint8_t* cells, std::uint32_t width,
 
 std::uint32_t veldren_world_count(const void* world) {
   return world ? AsWorld(world)->Count() : 0;
+}
+
+std::uint32_t veldren_world_scene_serialize(const void* world, char* out,
+                                            std::uint32_t capacity) {
+  if (!world) return 0;
+  const auto json = AsWorld(world)->scene_json();
+  if (json.size() >= std::numeric_limits<std::uint32_t>::max()) return 0;
+  const auto required = static_cast<std::uint32_t>(json.size());
+  if (out && capacity > required) {
+    std::memcpy(out, json.data(), required);
+    out[required] = '\0';
+  }
+  return required;
 }
 
 std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum) {

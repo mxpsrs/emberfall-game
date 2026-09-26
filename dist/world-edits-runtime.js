@@ -10,19 +10,25 @@
    const response=await fetch('/api/editor/edits',{cache:'no-store'});
    if(response.ok){
     const payload=await response.json();
-    if(payload?.edits?.version!==1||!Array.isArray(payload.edits.changes))throw Error('Invalid editor API world layer');
-    Object.assign(state,payload.edits,{loaded:true,source:'editor-api'});
+    const edits=payload?.world?window.VeldrenSceneFormat.toLegacy(payload.world,{forRender:true}):payload?.edits;
+    if(edits?.version!==1||!Array.isArray(edits.changes))throw Error('Invalid editor API world layer');
+    Object.assign(state,edits,{loaded:true,source:'editor-api',world:payload.world||window.VeldrenSceneFormat.fromLegacy(edits)});
     state.meta={path:payload.path,runtimePath:payload.runtimePath,sha256:payload.sha256,runtimeSha256:payload.runtimeSha256};
     return state;
    }
   }catch(error){console.warn('Veldren editor API unavailable; using static world layer.',error)}
 
   try{
+   const sceneResponse=await fetch('/world-scene.json?cache='+Date.now(),{cache:'no-store'});
+   if(sceneResponse.ok){
+    const world=await sceneResponse.json(),data=window.VeldrenSceneFormat.toLegacy(world,{forRender:true});
+    Object.assign(state,data,{loaded:true,source:'static-scene',world});return state;
+   }
    const response=await fetch('/world-edits.json?cache='+Date.now(),{cache:'no-store'});
    if(response.ok){
     const data=await response.json();
     if(data?.version!==1||!Array.isArray(data.changes))throw Error('Invalid static Veldren world layer');
-    Object.assign(state,data,{loaded:true,source:'static'});
+    Object.assign(state,data,{loaded:true,source:'static',world:window.VeldrenSceneFormat.fromLegacy(data)});
     return state;
    }
    throw Error('Static world layer HTTP '+response.status);
@@ -110,6 +116,26 @@
  }
 
  const completed=new WeakMap();
+ function synchronizeSceneRenderables(world=state.world,onlyScene=null){
+  if(!world||typeof worldScenes==='undefined')return;
+  const records=window.VeldrenSceneFormat.renderables(world).filter(record=>onlyScene==null||record.scene===String(onlyScene));
+  const liveIds=new Set(records.map(record=>record.id));
+  for(const record of records){
+   const scene=worldScenes[record.scene];if(!scene?.objects)continue;
+   let object=scene.objects.find(item=>item._sceneEntityId===record.id);
+   if(!object){
+    object={id:record.id,_sceneEntityId:record.id,type:'prop',dead:0,hitAt:-100,attackAt:-100,walkThrough:true};
+    scene.objects.push(object);
+   }
+   Object.assign(object,{name:record.name,x:record.x,y:record.y,homeX:record.x,homeY:record.y,
+    drawX:record.x,drawY:record.y,editorAsset:record.asset,
+    editorTransform:{rotation:record.rotation,scale:record.scale}});
+  }
+  const sceneNames=onlyScene==null?Object.keys(worldScenes):[String(onlyScene)];
+  for(const name of sceneNames){const scene=worldScenes[name];if(!scene?.objects)continue;
+   for(let index=scene.objects.length-1;index>=0;index--){const item=scene.objects[index];if(item._sceneEntityId&&!liveIds.has(item._sceneEntityId)){scene.objects.splice(index,1);if(typeof currentScene!=='undefined'&&currentScene===name){const active=objects.indexOf(item);if(active>=0)objects.splice(active,1)}}}
+  }
+ }
  const status=window.VELDREN_WORLD_EDITS_STATUS={revision:0,total:0,applied:0,matched:0,unmatched:0,rejected:0,errors:[],source:null};
  function validate(c){
   if(!c||typeof c!=='object'||Array.isArray(c)||!['building','object'].includes(c.kind)||typeof c.scene!=='string'||!c.scene||c.id==null)throw Error('Invalid edit identity');
@@ -214,8 +240,13 @@
  }
 
  // Await all extension scripts, but never wrap scene construction/activation.
- window.VeldrenWorldEdits={validate,applyDocument,state,async applyFinishedWorld(){
+ window.VeldrenWorldEdits={validate,applyDocument,state,refreshSceneRenderables(world,sceneName){
+  synchronizeSceneRenderables(world||state.world,sceneName??null);
+  if(sceneName!=null&&typeof currentScene!=='undefined'&&currentScene===String(sceneName))syncCurrentScene();
+  return true;
+ },async applyFinishedWorld(){
   await ready;installRenderTransforms();window.VeldrenBuildings?.install();
+  synchronizeSceneRenderables();
   try{return applyDocument()}catch{status.errors.push({reason:'Editor layer unavailable'});return status;}
  }};
  const originalBoot=boot;

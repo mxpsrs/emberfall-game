@@ -83,9 +83,8 @@ let facing=1, lastAttack=-100, assetsReady=false, selectedLook=s.character?.look
 const canvas=$('world'), ctx=canvas.getContext('2d');
 const art={};
 const looks=[{name:'Blue wanderer',description:'Short brown hair, blue tunic'},{name:'Crimson wanderer',description:'Auburn ponytail, crimson tunic'},{name:'Emerald wanderer',description:'Short black hair, emerald tunic'},{name:'Violet wanderer',description:'Silver hair, violet tunic'}];
-function editorViewportReady(){return window.VeldrenEditorBridge?.isReady?.()===true;}
 function save() {
-  if(!assetsReady||window.realmStartup?.failed||editorViewportReady())return;
+  if(window.VELDREN_CONTEXT==='editor'||!assetsReady||window.realmStartup?.failed)return;
   queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch{}
 }
 function toast(text){if(typeof gameMessage==='function')gameMessage(text);else if(typeof addChatLine==='function')addChatLine(text,'game');else console.info(text);}
@@ -345,12 +344,6 @@ function frame(now){
   const mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(globalThis.navigator?.userAgent||''),interval=1000/(mobile?30:60);if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(editorViewportReady()){
-    // The editor camera has its own input loop. Keep visual animations running,
-    // but never advance the player's character, world timers, AI or autosave.
-    if(assetsReady&&!document.hidden){time+=dt;draw();}
-    requestAnimationFrame(frame);return;
-  }
   if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
   if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.maintenancePreparing)updateWorldTimers();
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
@@ -384,11 +377,13 @@ $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListen
 $('modal').addEventListener('close',()=>{if(!$('modal').open&&window.realmTrade)endTrade();renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
+  if(window.VELDREN_CONTEXT==='editor')return;
   if(!assetsReady||$('modal').open||$('creator').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
   if(typeof cameraKeyDown==='function')cameraKeyDown(e);
   const key=e.key.toLowerCase();if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
 });
 async function boot(){
+  if(window.VELDREN_CONTEXT==='editor')throw new Error('Runtime boot cannot run in an editor context');
   if(window.realmStartup?.failed)return;
   realmLoadStatus('Loading your character and the world…',35,'auth');
   try{

@@ -666,7 +666,7 @@ async function loadRebuiltTextures(){
  // copies in WebKit.  Mobile now decodes the purpose-built 1024px atlas only.
  [REALM_ATLAS_IMAGE,MODULAR_ICON_IMAGE]=await Promise.all([realmLoadImage(atlas),realmLoadImage('assets/realms/armor-icons.png')]);
 }
-function startRebuiltRealm(){boot();}
+function startRebuiltRealm(){if(window.VELDREN_CONTEXT!=='editor')boot();}
 
 const posedCapeCache=new WeakMap(),capeModelCache=new Map();
 function capeModelMesh(sex,id,wind=false){

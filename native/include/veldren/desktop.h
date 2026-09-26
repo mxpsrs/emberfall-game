@@ -1,6 +1,7 @@
 #pragma once
 
 #include "veldren/core.h"
+#include "veldren/scene.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -52,6 +53,7 @@ class VeldrenDesktopClient {
   VeldrenDesktopFrame step(float seconds, float player_x, float player_z, float visibility_radius);
   std::span<const VeldrenRenderState> render_states() const;
   std::span<const VeldrenAnimationState> animation_states() const;
+  const veldren::Scene& scene() const;
   void* core_world() const;
 
  private:
@@ -61,6 +63,7 @@ class VeldrenDesktopClient {
   std::vector<VeldrenRenderState> render_states_;
   std::vector<VeldrenAnimationState> animation_states_;
   std::vector<std::uint32_t> visible_ids_;
+  mutable veldren::Scene scene_cache_{"runtime"};
 };
 
 int veldren_run_desktop(VeldrenDesktopClient& client,

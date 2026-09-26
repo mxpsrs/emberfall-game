@@ -103,7 +103,7 @@ function setupExpandedWorld(){
  for(const [id,kind,title]of [['stoneInn','inn','Stoneford Lodge'],['stoneShop','shop','Stoneford Supplies'],['inn','inn','Wayfarer’s Rest'],['shop','shop','Mara’s General Store'],['forge','forge','Briarhaven Smithy'],['willowInn','inn','Willowcross Inn'],['willowShop','shop','Willowcross Market'],['mine','mine','Pinewatch Mine'],['dungeon','dungeon','Sunken Crypt']])makeInterior(id,kind,title);
  const savedScene=s.sceneId||'overworld',savedX=s.x,savedY=s.y;activateScene(worldScenes[savedScene]?savedScene:'overworld',savedX,savedY,false);
  $('ambientButton').onclick=toggleAmbient;
- canvas.addEventListener('pointerdown',()=>{if(s.sound!==false&&!ambient)startAmbient();},{once:true});
+ if(window.VELDREN_CONTEXT!=='editor')canvas.addEventListener('pointerdown',()=>{if(s.sound!==false&&!ambient)startAmbient();},{once:true});
  $('leaveInterior').onclick=leaveInterior;
  document.addEventListener('visibilitychange',()=>{if(ambient){if(document.hidden)ambient.context.suspend();else if(ambientEnabled)ambient.context.resume();}});
 }

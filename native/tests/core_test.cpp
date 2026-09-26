@@ -1,4 +1,5 @@
 #include "veldren/core.h"
+#include "veldren/scene.h"
 
 #include <cassert>
 #include <cmath>
@@ -18,6 +19,29 @@ int main() {
   VeldrenActorState actor{};
   assert(veldren_actor_read(world, 39, &actor) == 1);
   assert(std::abs(actor.x - 41.0F) < 0.001F);
+  const auto scene_bytes = veldren_world_scene_serialize(world, nullptr, 0);
+  assert(scene_bytes > 0);
+  std::vector<char> scene_json(static_cast<std::size_t>(scene_bytes) + 1);
+  assert(veldren_world_scene_serialize(world, scene_json.data(), scene_json.size()) == scene_bytes);
+  const auto runtime_scene = veldren::Scene::deserialize(scene_json.data());
+  assert(runtime_scene.size() == 256);
+  const auto actor_entity = runtime_scene.inspect("runtime:actor:39");
+  assert(actor_entity.components.contains("ActorController"));
+  assert(actor_entity.components.contains("Animator"));
+  assert(actor_entity.components.contains("MeshRenderer"));
+  const auto actor_position = runtime_scene.local_transform(actor_entity.id).position;
+  assert(std::abs(actor_position.x - actor.x) < 0.001F);
+  assert(std::abs(actor_position.z - actor.z) < 0.001F);
+  actor.flags = VELDREN_ACTOR_HUMAN;
+  assert(veldren_actor_upsert(world, &actor) == 1);
+  const auto changed_role_bytes = veldren_world_scene_serialize(world, nullptr, 0);
+  std::vector<char> changed_role_json(static_cast<std::size_t>(changed_role_bytes) + 1);
+  assert(veldren_world_scene_serialize(world, changed_role_json.data(), changed_role_json.size()) == changed_role_bytes);
+  const auto changed_role_scene = veldren::Scene::deserialize(changed_role_json.data());
+  const auto changed_role_entity = changed_role_scene.inspect("runtime:actor:39");
+  assert(changed_role_entity.name == "Veldren Actor");
+  assert(changed_role_entity.components.contains("NPC"));
+  assert(!changed_role_entity.components.contains("Monster"));
   VeldrenRenderState render{};
   render.id = 39;
   assert(veldren_render_states_read(world, &render, 1) == 1);
@@ -138,6 +162,14 @@ int main() {
   assert(veldren_world_timer_events(1000, 999, 0, NAN, 0) == 1);
   assert(veldren_world_timer_events(1000, NAN, 9, 999, 5) == 2);
   assert(veldren_core_abi_version() == 11);
+  VeldrenActorState player{901, 5, 0, 5, 0, 0, 1.15F,
+                           VELDREN_ACTOR_HUMAN | VELDREN_ACTOR_PLAYER};
+  assert(veldren_actor_upsert(world, &player) == 1);
+  const auto final_scene_bytes = veldren_world_scene_serialize(world, nullptr, 0);
+  std::vector<char> final_scene_json(static_cast<std::size_t>(final_scene_bytes) + 1);
+  assert(veldren_world_scene_serialize(world, final_scene_json.data(), final_scene_json.size()) == final_scene_bytes);
+  const auto final_scene = veldren::Scene::deserialize(final_scene_json.data());
+  assert(final_scene.inspect("runtime:actor:901").components.contains("PlayerRepresentation"));
   veldren_world_destroy(world);
   std::cout << "PASS: native C++ actor simulation and visibility for 256 actors\n";
 }
