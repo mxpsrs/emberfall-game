@@ -109,11 +109,11 @@ migration does not yet make the complete generated world canonical.
 
 | Collection / state | Created and populated by | Current owner and consumers | Saved / networked | Scene equivalent and status |
 | --- | --- | --- | --- | --- |
-| `objects` (active scene), `worldScenes[scene].objects` | `dist/game.js` seeds starter objects and `add`/`spawn`; `dist/world.js` and later generators populate scene objects | Generated static props only: temporary generation records are converted by `world-ownership-runtime.js` into Scene entities. The compatibility array holds proxy views whose transforms/components read Scene state and whose persistent writes go back to Scene. Other objects remain array-owned. Gameplay/render/editor loops still use this object interface, so they need further component-index integration | Static props use deterministic generated entity IDs and WorldDocument persistence. Existing legacy IDs are retained as private aliases for old object lookups. Other object saves/network identity remain mixed | Static props have Transform, MeshRenderer, WorldDecoration, GeneratedProp, Interactable, optional Collider, optional Placement/QuestMarker components. Parent hierarchy is World → SceneGroup → prop. Migrated; derived compatibility view remains. NPCs, resources, and other objects are not migrated |
-| `buildings` (active scene), `worldScenes[scene].buildings` | `dist/game.js`, `world.js`, then settlement, civilization, tutorial, walk-in, prop-placement, and editor/building passes | Plain arrays. Renderer, collision/pathing, interior/door links, map queries, building assembly, and editor read/write these records | Editor edits may persist as v2 entities plus a v1 compatibility record. Generated buildings are not serialized as scene state or replicated as full network state | Partial authored editor entities; generated buildings have no canonical runtime entity/component ownership |
-| `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | `world.js` and later tutorial, lair, civilization, relic, and quest generators | Plain registry remains authoritative for metadata and non-migrated arrays; Scene is authoritative only for converted static props and authored v2 entities | Scene name can be present in character saves; complete generated registry and metadata are not yet saved as a world scene | Browser Native Scene API is connected, but metadata is not yet mapped into focused scene components. Not migrated |
-| `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair and tutorial/world geography/ecology generation | Per-scene arrays/maps or module maps. Renderers, movement/terrain queries, room/cave rendering, and generation passes consume them | Primarily regenerated; no canonical entity/component serialization. Some are derived caches; authored road/structure descriptors may affect world behavior | Derived caches can remain after migration; authored spatial features need explicit components or a documented generated-source model. Not migrated |
-| `wallTorches` and lighting candidate lists | `world-lighting.js` and scene-lighting queries | Torch arrays and per-frame candidate lists feed renderer lighting | Regenerated; persistent light state is not saved as scene components | Per-frame candidates are derived. Placed/generated persistent lights lack canonical `Transform` + `Light` entities |
+| `objects` (active scene), `worldScenes[scene].objects` | Procedural generation, then category migrations | Static props, building doors, permanent fire/cooking fixtures and exits are native entity projections. Remaining categories and mixed array membership still need migration | Migrated entities persist in WorldDocument; fixtures, doors and exits retain network catalog IDs | Native Transform and focused components own migrated data. NPCs, gatherables and other service objects remain unfinished |
+| `buildings` (active scene), `worldScenes[scene].buildings` | Settlement, civilization, tutorial and building generation | Native building roots and child entities; frozen compatibility lists feed renderer, collision, doors and editor | Canonical graph serialization, including building parts, modules and door state | 235 building roots, 2,312 parts and 234 doors migrated. Remaining standalone architecture is a separate category |
+| `worldScenes` and scene metadata (`title`, `entry`, `exit`, `lair`, `race`, etc.) | World, tutorial, lair, civilization, relic and quest generators | Registry remains a runtime context container. Metadata, dimensions, navigation references and lair settings project native components | WorldDocument stores SceneInfo, SceneBounds, SceneNavigation, SceneEnvironment, LairLayout and entry/exit entities | Metadata migrated; realm labels share SceneInfo. Existing buildings retain native associations; retired mine shells are not restored |
+| `decor`, `floorChunks`, `roads`, `roadBuckets`, ecology/layout records | Lair, tutorial, geography and ecology generation | Native decorations, materialized plants and road segments; renderer/spatial caches are derived | Migrated records serialize; saved catalogs and materialized chunks are authoritative | 259 decorations and 4,697 roads migrated. Unmaterialized plants remain deterministic construction input; standalone structures remain open |
+| `wallTorches` and lighting candidate lists | Lighting generation, then native migration | Frozen torch views and Scene-owned fixtures; C++ resolves world-space point lights, activation and day/night intensity | Permanent Light components and fixtures serialize; player fire expiry remains transient | 1,282 permanent lights migrated. Runtime candidates are derived from native component queries |
 | Spatial indexes (`worldObjectIndex`, buckets, ID/order maps, navigation/road caches) | `world.js`, navigation, terrain, ecology, and geography queries | Derived from legacy arrays or generator structures; used by gameplay and rendering | Not serialized or network identity | These may remain derived caches, but their source must become Scene/component indexes. Currently they index legacy state |
 | Spawn definitions embedded in `objects` (NPCs, monsters, encounter actors, spawn points) | `add`/`spawn` and scene/lair/encounter generators | Same object arrays; native actor bridge imports only active actor motion state | Shared actor state uses catalog/entity identifiers; permanent definitions and transient spawned actors are not consistently separated in browser data | No complete `SpawnPoint` + typed definition entity migration. Native actor entities do not replace world spawn definitions |
 | Gatherables embedded in `objects` (trees, ore, fish, crops and other resources) | `add` plus procedural ecology/geography/world passes | Same arrays; gathering, depletion/respawn, proximity queries, renderer, and shared-world catalog consume records | Some depletion/respawn/ownership state is server-managed; identity compatibility still depends on legacy object/catalog IDs in places | No complete `Gatherable`/resource-state component migration. Preserve server catalog identity during migration |
@@ -209,8 +209,10 @@ ported with a three-way merge, preserving the newer C++ combat formulas.
   Firstlight's previously lazy street construction finishes before ownership
   transfer. Deleted saved roads are not recreated. Settlement planning sketches
   remain generation inputs; they are not the live road network.
-- **Not migrated:** non-prop object categories, standalone structural geometry,
-  lights, spawn definitions, gatherables, and scene metadata.
+- **Migrated: permanent lights, fixtures and scene metadata.** See the ABI 15
+  light, metadata and editor initialization checkpoints below.
+- **Not migrated:** remaining non-prop object categories, standalone structural
+  geometry, spawn definitions, gatherables and remaining mixed collection ownership.
 
 Native ABI 14 adds individual entity snapshots and world-space transform edits.
 Parent-relative affine transforms survive upsert, and WorldDocument revision,
@@ -240,7 +242,7 @@ attacks must not be reintroduced to satisfy an obsolete test.
 - [x] Editor/runtime context separation in automated tests.
 - [ ] All generated categories are Scene-owned with controlled membership.
 - [ ] Building/modular renderer, collision and editor migration verified.
-- [ ] Roads, decorations, lights and metadata migration verified.
+- [x] Roads, decorations, lights and metadata migration verified in automated tests.
 - [ ] Permanent spawn definitions separated from transient live actors.
 - [ ] Gatherable lifecycle and network catalog identities verified.
 - [ ] Full generated-world save/unload/load comparison.
@@ -300,7 +302,7 @@ Road checkpoint verification:
   `node tests/world-scene-runtime.cjs`: pass.
 
 Phase 1 is still incomplete. Remaining work includes
-scene metadata, standalone structures, spawn definitions versus live actors,
+standalone structures, spawn definitions versus live actors,
 gatherable lifecycle/catalog identity and the remaining controlled collections.
 The final graphical `/play` and `/editor/` verification gate remains open.
 
@@ -360,3 +362,23 @@ Editor native initialization checkpoint:
 - A combined unload exposed a stale exit view in the light projection. The light
   adapter now drops deleted entities from other migrated categories safely;
   `node tests/world-lights-scene.cjs` covers this cross-category regression.
+
+
+Integrated verification on the editor initialization checkpoint:
+
+- `VELDREN_SCENE_CONTEXT=editor node tests/world-buildings-scene.cjs`: pass.
+  The real editor-mode WASM bridge migrates 235 buildings, 2,312 parts,
+  234 doors, 259 decorations, 4,697 roads, 1,282 lights and 259 scene metadata
+  records, then verifies hierarchy edits and exact native save/unload/load.
+- The light, metadata and editor initialization checkpoints were independently
+  confirmed on GitHub as `f303e92fdd927afbe1640c00821af407a57a48a4`,
+  `8e9c1af51c9ed756c2e09335da30baa68e08e43d` and
+  `14ec160f0e8f8048156713c2979706e113582ef4`, respectively.
+- Phase 1 remains incomplete: standalone architecture, permanent spawn
+  definitions/live actor separation, gatherables and remaining mixed collection
+  membership still need migration. The graphical play/editor verification gate
+  remains open. Nothing was deployed or merged into main.
+- Fresh `npm run build` and `node tests/built-assets.mjs`: pass on the editor
+  initialization code. 205 bundled assets, all 112 startup resources, WASM
+  delivery, JavaScript/JSON parsing, source byte parity and cache validation
+  pass. The local Worker bundle is 63,436 KiB; no hosting action was performed.
