@@ -14,9 +14,9 @@
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
   if(api.veldren_core_abi_version()!==15)throw new Error('Native world core ABI mismatch');
-  const world=api.veldren_world_create(512);let capacity=512,scratch=api.malloc(capacity*32),dataView=null;
-  if(!world||!scratch)throw new Error('Native world core could not allocate its actor state');
-  const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);
+  const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
+  if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
+  if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
   const handles=new WeakMap(),liveHandles=new Set();let nextHandle=1,destroyed=false,routeCells=0,routeIds=0,routeCapacity=0,animationScratch=0,animationCapacity=0;
   function withCString(value,fn){const bytes=new TextEncoder().encode(String(value)),pointer=api.malloc(bytes.length+1);if(!pointer)throw new Error('Native scene string allocation failed');const target=new Uint8Array(api.memory.buffer,pointer,bytes.length+1);target.set(bytes);target[bytes.length]=0;try{return fn(pointer)}finally{api.free(pointer)}}
   function readNativeText(call){const length=call(0,0);if(!length)return null;const pointer=api.malloc(length+1);if(!pointer)throw new Error('Native scene read allocation failed');try{if(call(pointer,length+1)!==length)throw new Error('Native scene read changed while copying');return new TextDecoder().decode(new Uint8Array(api.memory.buffer,pointer,length))}finally{api.free(pointer)}}
@@ -43,6 +43,9 @@
    load(document){return changed(withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1),'load');},
    revision(){return api.veldren_world_scene_revision(world);}
   };
+  // The editor has the same canonical C++ Scene, with no actor transfer buffer,
+  // simulation stepping, gameplay rules, inventory or combat capability.
+  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:15,scenes,destroy});}
   function actorFlags(actor,selected,now){
    let flags=0;
    if(actor.type==='man'||actor.type==='villager')flags|=1;

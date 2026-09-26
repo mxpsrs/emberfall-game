@@ -345,3 +345,18 @@ Scene metadata checkpoint:
 - `node tests/editor-context.cjs`, `node tests/editor-camera.cjs`,
   `node tests/world-scene-runtime.cjs` and
   `node tests/world-scene-runtime-binding.cjs`: pass.
+
+Editor native initialization checkpoint:
+
+- The editor viewport now schedules the native loader in editor context. It
+  exposes only Scene operations and teardown, allocates no actor transfer buffer,
+  and exposes no gameplay stepping, rules, inventory or combat API. The existing
+  editor render loop continues without player simulation.
+- Startup reports a missing native initialization promise immediately. Previously
+  the viewport omitted the loader required by all Scene migrations.
+- `node tests/native-editor-runtime.mjs`: pass against the actual WASM module;
+  native transforms, light queries, graph persistence, no gameplay exports called,
+  and exactly-once teardown. Runtime bridge and editor context/camera tests pass.
+- A combined unload exposed a stale exit view in the light projection. The light
+  adapter now drops deleted entities from other migrated categories safely;
+  `node tests/world-lights-scene.cjs` covers this cross-category regression.

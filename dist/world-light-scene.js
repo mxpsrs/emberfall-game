@@ -26,6 +26,7 @@
   if(!Object.getOwnPropertyDescriptor(w,'wallTorches')?.get)Object.defineProperty(w,'wallTorches',{enumerable:true,configurable:false,get:()=>torchLists.get(name)});
   const ids=native().componentIds(name,'GeneratedFixture'),byCatalog=new Map(ids.map(id=>[String(native().entity(name,id).components.CatalogIdentity.id),id])),seen=new Set(),next=[];
   for(const o of w.objects||[]){
+   if(o._generatedSceneEntity&&!native().entity(name,o._sceneEntityId))continue;
    const id=o._generatedFixture?o._sceneEntityId:fixture(o)?byCatalog.get(String(o.id)):null;
    if(o._generatedFixture||fixture(o)){if(id&&native().entity(name,id)){next.push(getView(name,id));seen.add(id);}continue;}
    next.push(o);

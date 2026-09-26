@@ -5,6 +5,7 @@ const run=source=>vm.runInContext(source,ctx),load=file=>run(fs.readFileSync(pat
 async function main(){
  const wasm=fs.readFileSync(path.join(__dirname,'../dist/native/veldren-core.wasm'));
  Object.assign(ctx,{WebAssembly,DataView,TextEncoder,TextDecoder,fetch:async()=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:p=>'/'+p});
+ if(process.env.VELDREN_SCENE_CONTEXT==='editor')ctx.window.VELDREN_CONTEXT='editor';
  load('native-runtime');await ctx.window.realmNativeReady;ctx.realmNative=ctx.window.realmNative;ctx.realmNativeReady=ctx.window.realmNativeReady;
  for(const file of ['building-assembly','building-runtime','world-scene-format','world-ownership-runtime','world-building-scene','world-scenery-scene','world-road-scene','world-light-scene','world-metadata-scene'])load(file);
  ctx.VeldrenBuildings=ctx.window.VeldrenBuildings;

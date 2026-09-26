@@ -10,12 +10,12 @@ assert.match(editorPage,/src="\/editor\/viewport\.html"/);
 assert.doesNotMatch(editorPage,/\/play\?editor/);
 assert.match(page,/window\.VELDREN_CONTEXT="editor"/);
 assert.match(page,/editor\/editor-startup\.js.*editor\/editor-entry\.js/);
-assert.doesNotMatch(page,/src="native-runtime\.js"/,'editor does not load the gameplay WASM bridge');
+assert.match(page,/src="native-runtime\.js"/,'editor schedules its scene-only native core');
 assert.match(build,/editorViewport\?\(editorAllowed\?'\/editor\/viewport\.html'/);
 assert.match(build,/\/editor\/editor-startup\.js/);
 
 const events=[],frames=[];
-const state={window:{VELDREN_CONTEXT:'editor',realmStartup:{failed:false},filamentReady:Promise.resolve(),VELDREN_WORLD_EDITS_READY:Promise.resolve(),VeldrenWorldEdits:{async applyFinishedWorld(){events.push('world-edits')}}},
+const state={window:{VELDREN_CONTEXT:'editor',realmStartup:{failed:false},filamentReady:Promise.resolve(),realmNativeReady:Promise.resolve(),VELDREN_WORLD_EDITS_READY:Promise.resolve(),VeldrenWorldEdits:{async applyFinishedWorld(){events.push('world-edits')}}},
  document:{hidden:false},art:{},px:0,py:0,target:{},assetsReady:false,last:0,time:0,
  performance:{now:()=>100},requestAnimationFrame(fn){frames.push(fn)},
  realmLoadStatus(){events.push('loading')},realmLoadImage:async path=>({path}),realmAssetURL:path=>path,

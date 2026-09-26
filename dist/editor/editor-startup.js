@@ -11,7 +11,7 @@ async function bootEditor(){
  if(window.realmStartup?.failed)return;
  try{
   realmLoadStatus('Preparing the editor world…',35,'assets');
-  await Promise.all([window.filamentReady,window.realmNativeReady,window.VELDREN_WORLD_EDITS_READY,loadRebuiltTextures(),
+  await Promise.all([window.filamentReady,window.realmNativeReady||Promise.reject(new Error('Native editor Scene core was not scheduled')),window.VELDREN_WORLD_EDITS_READY,loadRebuiltTextures(),
    ...['items','environment'].map(async name=>{art[name]=await realmLoadImage('assets/'+name+'.png');}),
    fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw Error('Item artwork unavailable');art.bounds=await response.json();})]);
   setupExpandedWorld();setupTutorialVillage();setupLoot();
