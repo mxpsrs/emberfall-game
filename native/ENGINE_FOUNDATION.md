@@ -166,7 +166,7 @@ pass.
 
 ## Current migration verification — 26 September 2026
 
-Work is on the actual `codex/veldren-phase1-foundation` branch, based on
+Work continues on `phase1-engine-foundation-wip`, based on
 `1e8c09fd98ed709531f688daf3383e6beb415348`. Earlier restored files were
 ported with a three-way merge, preserving the newer C++ combat formulas.
 
@@ -191,6 +191,15 @@ ported with a three-way merge, preserving the newer C++ combat formulas.
   derived list. Active `buildings` remains a disposable scene-selection cache.
   Editor/browser interaction and broader generated-building coverage remain
   verification gates. Startup now enables this migration after static props.
+- **Migrated: lair decorations and materialized understory.** 259 placed lair
+  decorations use native Transform, MeshRenderer, WorldDecoration, Material,
+  Interactable and Collider state. Streamed plants become native entities the
+  first time their deterministic chunk is materialized; saved chunks are
+  authoritative. Decoration membership is a controlled read-only projection.
+  Renderer/collision/editor reads use native transforms. Spatial render indexes
+  follow edited plant positions; duplicate/delete and batched parent edits
+  invalidate derived indexes and meshes. Unmaterialized understory remains a
+  documented generator input, not a second mutable world authority.
 - **Not migrated:** non-prop object categories, standalone structural geometry,
   roads, lights, spawn definitions, gatherables, and scene metadata.
 
@@ -249,3 +258,19 @@ Additional current-checkout verification:
   `make -B -C native wasm wasm-test` and `node tests/native-runtime.mjs` pass.
   Invalid component/transform/reparent upserts leave the Scene and revision
   unchanged. This is engine error handling, not a JavaScript fallback engine.
+
+### Recoverable remote checkpoints
+
+The initial 49-file checkpoint is on GitHub branch
+`phase1-engine-foundation-wip` at
+`89557c6623a93b3812c2a59310a9c218379d4502`, with the exact message
+`WIP: Phase 1 procedural world migration checkpoint`. The remote Git tree was
+verified equal to the local tree. Further substantial categories must be
+committed and uploaded to this branch. Do not deploy or merge into main.
+
+Scenery verification: `node tests/world-scenery-scene.cjs` passes canonical
+lair collision/renderer transforms, immutable collection membership, streamed
+chunk persistence, moved/duplicated plants, batched cache invalidation and
+save/unload/load. `node tests/world-buildings-scene.cjs` has also verified the
+full generated set of 235 buildings, 2,312 parts, 234 doors and 259 decorations.
+No graphical browser interaction is claimed by these headless tests.
