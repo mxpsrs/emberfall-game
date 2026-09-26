@@ -45,6 +45,10 @@ ordered entities, an optional nextEntityId high-water mark, IDs, parent IDs,
 active flags, local transforms, components and metadata. Components may add
 optional fields; unknown fields are retained. Asset references are stable
 strings such as `briar:lantern`. Account and character saves are separate.
+The native JSON codec reads and writes floating-point numbers with the classic
+locale and `max_digits10`, keeping serialized scenes locale-independent and
+compatible with Emscripten libc++ versions that lack floating-point
+`from_chars` and `to_chars`.
 
 For legacy version 1 editor edits, `LegacyWorldEdit.change` keeps the authored
 record. `MeshRenderer.asset` is extracted when available. Runtime rendering
@@ -91,15 +95,18 @@ is still required to verify this boundary in the complete production bundle.
 The browser's procedural `worldScenes` arrays and legacy rendering adapters
 are not yet scene-owned in C++ or synchronized as Filament entities from the
 new component graph. Only the native desktop representative actor slice is
-scene-owned. The C++ desktop executable compiles, but its asset smoke test could
-not run because this workspace lacks the checked-in atlas and other large
-assets. This workspace also lacks Emscripten, CMake and the `esbuild` package;
-the checked-in browser WASM artifact does not contain the new scene core, and
-the production bundle and normal browser boot remain unverified.
+scene-owned. The WebAssembly build and ABI test pass with Emscripten 3.1.6. The
+CMake configure/build and scene-core and desktop-scene tests pass. The
+asset-dependent desktop test and headless smoke test cannot run because this
+verification workspace is missing the checked-in atlas and other large assets.
+The production bundle and normal browser boot also remain unverified because
+this workspace contains only a partial repository snapshot, without the full
+production scripts and browser assets.
 
-Verified here: `make -C native -B test`, `make -C native -B desktop`, and the
-scene-format, runtime-renderer, production-worker persistence, local persistence,
-editor-camera, editor-context and editor-frame tests. The current code is not a
-completed Phase 1 release foundation until the WebAssembly build, production
-bundle and normal browser runtime have been rebuilt and verified from the full
-repository.
+Verified here: native core/scene/desktop-scene tests, the WebAssembly build and
+ABI test, the CMake build and asset-independent scene tests, `make -C native -B
+desktop`, and the scene-format, runtime-renderer, production-worker persistence,
+local persistence, editor-camera, editor-context and editor-frame tests. The
+current code is not a completed Phase 1 release foundation until the production
+bundle, asset-dependent desktop tests and normal browser runtime have been
+rebuilt and verified from the full repository.

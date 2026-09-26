@@ -4,7 +4,10 @@
 #include <charconv>
 #include <cmath>
 #include <cstdio>
+#include <iomanip>
 #include <limits>
+#include <locale>
+#include <sstream>
 #include <stdexcept>
 #include <utility>
 
@@ -101,8 +104,10 @@ class Parser {
     if (at_ < input_.size() && input_[at_] == '.') { ++at_; const auto digits = at_; while (at_ < input_.size() && input_[at_] >= '0' && input_[at_] <= '9') ++at_; if (digits == at_) invalid("Invalid JSON fraction"); }
     if (at_ < input_.size() && (input_[at_] == 'e' || input_[at_] == 'E')) { ++at_; if (at_ < input_.size() && (input_[at_] == '-' || input_[at_] == '+')) ++at_; const auto digits = at_; while (at_ < input_.size() && input_[at_] >= '0' && input_[at_] <= '9') ++at_; if (digits == at_) invalid("Invalid JSON exponent"); }
     double number = 0;
-    const auto conversion = std::from_chars(input_.data() + begin, input_.data() + at_, number);
-    if (conversion.ec != std::errc{} || !std::isfinite(number)) invalid("Invalid or nonfinite JSON number");
+    std::istringstream conversion(std::string(input_.substr(begin, at_ - begin)));
+    conversion.imbue(std::locale::classic());
+    conversion >> std::noskipws >> number;
+    if (conversion.fail() || !std::isfinite(number)) invalid("Invalid or nonfinite JSON number");
     return number;
   }
 };
@@ -129,9 +134,11 @@ void write(std::string& out, const Json& value) {
   if (auto v = std::get_if<bool>(&value.value)) { out += *v ? "true" : "false"; return; }
   if (auto v = std::get_if<double>(&value.value)) {
     if (!std::isfinite(*v)) invalid("Nonfinite JSON output");
-    char buffer[64]; const auto result = std::to_chars(buffer, buffer + sizeof buffer, *v, std::chars_format::general, std::numeric_limits<double>::max_digits10);
-    if (result.ec != std::errc{}) invalid("Could not format JSON number");
-    out.append(buffer, result.ptr); return;
+    std::ostringstream formatted;
+    formatted.imbue(std::locale::classic());
+    formatted << std::setprecision(std::numeric_limits<double>::max_digits10) << std::defaultfloat << *v;
+    if (!formatted) invalid("Could not format JSON number");
+    out += formatted.str(); return;
   }
   if (auto v = std::get_if<std::string>(&value.value)) { quote(out, *v); return; }
   if (auto v = std::get_if<Json::Array>(&value.value)) { out.push_back('['); for (const auto& item : *v) { if (&item != &v->front()) out.push_back(','); write(out, item); } out.push_back(']'); return; }

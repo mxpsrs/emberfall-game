@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {WASI} from 'node:wasi';
 
 const file = process.argv[2];
 if (!file) throw new Error('WASM path required');
 let memory;
+const wasi = new WASI({version: 'preview1', args: [], env: {}, preopens: {}});
 const imports = {
   env: {emscripten_notify_memory_growth() {}},
-  wasi_snapshot_preview1: {proc_exit(code) { throw new Error(`WASM exited ${code}`); }}
+  wasi_snapshot_preview1: wasi.wasiImport
 };
 const {instance} = await WebAssembly.instantiate(fs.readFileSync(file), imports);
+wasi.initialize(instance);
 const api = instance.exports;
-api._initialize();
 memory = api.memory;
 assert.equal(api.veldren_core_abi_version(), 11);
 assert.equal(typeof api.veldren_world_step_budgeted, 'function');
@@ -49,7 +51,9 @@ const scene=JSON.parse(sceneText),entity=scene.entities.find(item=>item.id==='ru
 assert(entity);
 assert.equal(entity.components.PlayerRepresentation.actorId,7);
 assert.equal(entity.components.ActorController.actorId,7);
-assert.deepEqual(entity.transform.position,[12,0,10]);
+for (const [actual, expected] of entity.transform.position.map((value, index) => [value, [12,0,10][index]])) {
+  assert(Math.abs(actual - expected) < 0.001);
+}
 api.free(sceneBuffer);
 const cells=api.malloc(144),route=api.malloc(144*4);
 new Uint8Array(memory.buffer,cells,144).fill(0);

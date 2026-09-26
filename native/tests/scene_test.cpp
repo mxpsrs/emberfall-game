@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <locale>
 #include <stdexcept>
 
 using namespace veldren;
@@ -14,9 +15,18 @@ bool close(double a,double b){return std::abs(a-b)<1e-8;}
 void point(Vec3 a,Vec3 b){assert(close(a.x,b.x)&&close(a.y,b.y)&&close(a.z,b.z));}
 void matrix(Mat4 a,Mat4 b){for(std::size_t i=0;i<16;++i)assert(close(a.v[i],b.v[i]));}
 void rejected(const auto& operation){bool thrown=false;try{operation();}catch(const std::invalid_argument&){thrown=true;}assert(thrown);}
+class CommaDecimal final : public std::numpunct<char> { char do_decimal_point() const override { return ','; } };
 }
 
 int main(){
+  const auto previous_locale=std::locale();
+  std::locale::global(std::locale(std::locale::classic(),new CommaDecimal));
+  const double precise=1.2345678901234567;
+  const auto precise_json=write_json(Json(precise));
+  assert(precise_json=="1.2345678901234567");
+  assert(std::get<double>(parse_json(precise_json).value)==precise);
+  assert(write_json(Json(1.25))=="1.25");
+  std::locale::global(previous_locale);
   Scene scene("overworld");const auto root=scene.create("Gate",{},"gate"),child=scene.create("Door",root,"door"),leaf=scene.create("Latch",child,"latch");
   Transform a;a.position={12,1,-7};a.scale={2,3,4};a.rotation={0,std::sin(.35),0,std::cos(.35)};scene.set_local(root,a);
   Transform b;b.position={2,0,1};b.rotation={std::sin(.21),0,0,std::cos(.21)};scene.set_local(child,b);
