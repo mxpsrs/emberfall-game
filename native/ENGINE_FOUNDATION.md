@@ -382,3 +382,27 @@ Integrated verification on the editor initialization checkpoint:
   initialization code. 205 bundled assets, all 112 startup resources, WASM
   delivery, JavaScript/JSON parsing, source byte parity and cache validation
   pass. The local Worker bundle is 63,436 KiB; no hosting action was performed.
+
+Standalone architecture checkpoint (ABI 16):
+
+- Native indexed footprint queries resolve transformed rectangles through the
+  Scene hierarchy, including nonuniform scale, ancestor activation and reload.
+  Browser collision uses these queries for migrated walls and stair openings.
+- 791 wall runs, 34 rooms, 16 interior floors, 9 gatehouses and 18 guard walk
+  surfaces now persist as native entities. Gate towers own their walls, ramp
+  endpoints and decks. Gate arches have independently editable transforms.
+  Structure maps and surface lists are controlled derived views.
+- All nine generated gatehouses retain their original geometry. Focused tests
+  cover moved/rotated/scaled tower collision and walk heights, stair openings
+  and borders, room queries, copied hierarchy references, deletion and reload.
+- `make -C native test wasm wasm-test`, native runtime/editor bridge tests,
+  `node tests/world-structures-scene.cjs`, `node tests/world-buildings-scene.cjs`,
+  editor context/camera and world scene runtime tests pass. The combined world
+  retains the previous building, decoration, road, light and metadata totals
+  through exact native save/unload/load.
+- This covers city walls, gatehouses, interior floor rooms and stair wells.
+  Bridges, quarry terrain configuration, permanent spawns, gatherables and
+  remaining mixed collection ownership are still open. Arbitrarily rotated
+  stair-hole visual clipping and graphical play/editor verification remain
+  limitations; exact native footprint collision is verified separately.
+- No deployment, publication or merge into main was performed.

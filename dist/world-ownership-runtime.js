@@ -177,6 +177,7 @@
     const data=view(fields.placement);
     return new Proxy(data,{get(value,field){return field==='yaw'?pose().rotation*Math.PI/180:Reflect.get(value,field);},set(value,field,next){if(field==='yaw'){setPose({rotation:Number(next)*180/Math.PI});return true;}return Reflect.set(value,field,next);}});
    }
+   if(current().components.StructuralLinks?.[key])return root.VeldrenStructureScene?.getView(sceneName,current().components.StructuralLinks[key]);
    if(current().components.SpatialLinks?.[key])return root.VeldrenBuildingScene?.getView(sceneName,current().components.SpatialLinks[key]);
    return view(fields[key]||['metadata',key]);
   };

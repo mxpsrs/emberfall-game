@@ -351,6 +351,55 @@ class World {
     for (const auto& id : scene->second.entities_with(component)) ids.emplace_back(id);
     return veldren::write_json(ids);
   }
+  // The horizontal footprint index is derived from canonical component data.
+  // Rebuild after any Scene revision, including ancestor edits and reloads.
+  std::string WorldFootprints(const char* scene_name, const char* component,
+                              double x, double z) const {
+    veldren::Json::Array result;
+    if (!scene_name || !component || !std::isfinite(x) || !std::isfinite(z) ||
+        std::abs(x) > 1e9 || std::abs(z) > 1e9) return "[]";
+    const auto found = world_scenes_.find(scene_name);
+    if (found == world_scenes_.end()) return "[]";
+    if (footprint_revision_ != world_scene_revision_) {
+      footprint_indices_.clear(); footprint_revision_ = world_scene_revision_;
+    }
+    auto [where, fresh] = footprint_indices_.try_emplace({scene_name, component});
+    auto& index = where->second;
+    if (fresh) for (const auto& id : found->second.component_entities(component)) {
+      const auto node = found->second.inspect(id);
+      if (!node.active_in_hierarchy || !node.components.contains("Footprint")) continue;
+      const veldren::Json fields(node.components.at("Footprint"));
+      const auto number = [&](const char* key, double fallback) { const auto* f = fields.find(key); return f ? f->number_or(fallback) : fallback; };
+      const double width = number("w", 0), depth = number("h", 0);
+      if (!(width > 0 && depth > 0 && std::isfinite(width + depth))) continue;
+      FootprintRect rect{id, node.world, number("x", 0), number("z", 0), width, depth};
+      const auto& m = rect.world.v;
+      rect.determinant = m[0] * m[10] - m[8] * m[2];
+      if (std::abs(rect.determinant) < 1e-12) continue;
+      double min_x = INFINITY, max_x = -INFINITY, min_z = INFINITY, max_z = -INFINITY;
+      for (int i = 0; i < 4; ++i) {
+        const auto p = veldren::transform_point(rect.world, {rect.x + (i & 1 ? width : 0), 0, rect.z + (i & 2 ? depth : 0)});
+        min_x = std::min(min_x, p.x); max_x = std::max(max_x, p.x);
+        min_z = std::min(min_z, p.z); max_z = std::max(max_z, p.z);
+      }
+      if (!std::isfinite(min_x + max_x + min_z + max_z) || std::max({std::abs(min_x), std::abs(max_x), std::abs(min_z), std::abs(max_z)}) > 1e9) continue;
+      const int a = int(std::floor(min_x / 16)), b = int(std::floor(max_x / 16));
+      const int c = int(std::floor(min_z / 16)), d = int(std::floor(max_z / 16));
+      const auto slot = index.rects.size(); index.rects.push_back(std::move(rect));
+      if (double(b - a + 1) * double(d - c + 1) > 4096) index.large.push_back(slot);
+      else for (int xx = a; xx <= b; ++xx) for (int zz = c; zz <= d; ++zz) index.buckets[{xx, zz}].push_back(slot);
+    }
+    const auto test = [&](std::size_t slot) {
+      const auto& r = index.rects[slot]; const auto& m = r.world.v;
+      const double dx = x - m[12], dz = z - m[14];
+      const double u = (dx * m[10] - dz * m[8]) / r.determinant;
+      const double v = (dz * m[0] - dx * m[2]) / r.determinant;
+      if (u >= r.x && u < r.x + r.w && v >= r.z && v < r.z + r.h) result.emplace_back(r.id);
+    };
+    if (auto bucket = index.buckets.find({int(std::floor(x / 16)), int(std::floor(z / 16))}); bucket != index.buckets.end()) for (auto slot : bucket->second) test(slot);
+    for (auto slot : index.large) test(slot);
+    return veldren::write_json(result);
+  }
   std::string WorldLights(const char* scene_name, double night) const {
     veldren::Json::Array lights;
     if (!scene_name || !std::isfinite(night)) return "[]";
@@ -552,6 +601,10 @@ class World {
   std::vector<ActorRecord> actors_;
   std::unordered_map<std::uint32_t, std::size_t> index_;
   veldren::Scene scene_{"runtime"};
+  struct FootprintRect { std::string id; veldren::Mat4 world; double x, z, w, h, determinant = 0; };
+  struct FootprintIndex { std::vector<FootprintRect> rects; std::map<std::pair<int,int>,std::vector<std::size_t>> buckets; std::vector<std::size_t> large; };
+  mutable std::map<std::pair<std::string,std::string>,FootprintIndex> footprint_indices_;
+  mutable std::uint32_t footprint_revision_ = std::numeric_limits<std::uint32_t>::max();
   std::map<std::string, veldren::Scene> world_scenes_;
   std::uint32_t world_scene_revision_ = 0;
   veldren::WorldDocument world_document_metadata_;
@@ -850,6 +903,13 @@ std::uint32_t veldren_world_scene_component_ids(const void* world, const char* s
   catch (...) { return 0; }
 }
 
+std::uint32_t veldren_world_scene_footprints_at(const void* world, const char* scene,
+    const char* component, double x, double z, char* out, std::uint32_t capacity) {
+  if (!world) return 0;
+  try { return CopyText(AsWorld(world)->WorldFootprints(scene, component, x, z), out, capacity); }
+  catch (...) { return 0; }
+}
+
 std::uint32_t veldren_world_scene_lights_read(const void* world, const char* scene,
                                              double night, char* out, std::uint32_t capacity) {
   if (!world) return 0;
@@ -1106,4 +1166,4 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
   return events;
 }
 
-std::uint32_t veldren_core_abi_version() { return 15; }
+std::uint32_t veldren_core_abi_version() { return 16; }

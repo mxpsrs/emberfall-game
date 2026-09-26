@@ -191,7 +191,8 @@
   world.objects=nextObjects;world.buildings=Object.freeze(result);
   tables.set(sceneName,{buildings:result,ids:new Set(ids),doorIds:new Set(doorIds)});
   if(typeof currentScene!=='undefined'&&currentScene===sceneName){if(typeof buildings!=='undefined')buildings.splice(0,buildings.length,...result);if(typeof objects!=='undefined')objects.splice(0,objects.length,...nextObjects);}
-  if(typeof civilWalkableStructures!=='undefined'){
+  if(root.VeldrenStructureScene?.enabled)root.VeldrenStructureScene.refreshSurfaces();
+  else if(typeof civilWalkableStructures!=='undefined'){
    const other=civilWalkableStructures.filter(surface=>!surface._buildingOwner&&!oldBuildings.includes(surface.building)&&!before?.buildings.includes(surface.building));
    const added=native().componentIds(sceneName,'WalkSurface').map(id=>getView(sceneName,id));civilWalkableStructures.splice(0,civilWalkableStructures.length,...other,...added);
   }

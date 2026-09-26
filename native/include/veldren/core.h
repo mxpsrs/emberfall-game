@@ -168,6 +168,10 @@ VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_set_world_transform(
 VELDREN_EXPORT std::uint32_t veldren_world_scene_component_ids(
     const void* world, const char* scene, const char* component, char* out,
     std::uint32_t capacity);
+// Returns active entities whose transformed Footprint contains a world X/Z point.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_footprints_at(
+    const void* world, const char* scene, const char* component, double x, double z,
+    char* out, std::uint32_t capacity);
 // Resolves active point lights from component data and hierarchical transforms.
 VELDREN_EXPORT std::uint32_t veldren_world_scene_lights_read(
     const void* world, const char* scene, double night, char* out, std::uint32_t capacity);

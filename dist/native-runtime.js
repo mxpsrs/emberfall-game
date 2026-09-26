@@ -13,7 +13,7 @@
   }};
   const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==15)throw new Error('Native world core ABI mismatch');
+  if(api.veldren_core_abi_version()!==16)throw new Error('Native world core ABI mismatch');
   const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
   if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
   if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
@@ -38,6 +38,7 @@
    setWorldTransform(scene,id,transform){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
    read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity)));return json?JSON.parse(json):null;},
    componentIds(scene,component){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_component_ids(world,scenePtr,typePtr,out,capacity))));return json?JSON.parse(json):[];},
+   footprintsAt(scene,component,x,z){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_footprints_at(world,scenePtr,typePtr,x,z,out,capacity))));return json?JSON.parse(json):[];},
    lights(scene,night=1){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_lights_read(world,scenePtr,night,out,capacity)));return json?JSON.parse(json):[];},
    serialize(){const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity));return json?JSON.parse(json):null;},
    load(document){return changed(withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1),'load');},
@@ -45,7 +46,7 @@
   };
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
   // simulation stepping, gameplay rules, inventory or combat capability.
-  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:15,scenes,destroy});}
+  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:16,scenes,destroy});}
   function actorFlags(actor,selected,now){
    let flags=0;
    if(actor.type==='man'||actor.type==='villager')flags|=1;
@@ -142,7 +143,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:15,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:16,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

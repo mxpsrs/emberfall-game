@@ -16,7 +16,8 @@ cooking, firemaking, smelting probabilities, inventory capacity, crafting-capaci
 checks, bank transfer quantities, and coin debits run here. `dist/native-runtime.js`
 loads the module and marshals browser state across the ABI.
 
-ABI 15 also resolves permanent point lights from native Scene components,
+ABI 16 adds indexed, hierarchy-aware footprint queries for transformed structural
+collision and room/stair-opening queries. It also resolves permanent point lights from native Scene components,
 including hierarchy activation, world transforms, scaled radii and day/night
 intensity. The browser submits those resolved sources to the renderer.
 
@@ -28,7 +29,7 @@ adapter; do not add new gameplay rules to the legacy client.
 
 ## Render and animation batches
 
-ABI 15 keeps actor interpolation state inside each native actor record, resolves combat accuracy and maximum-hit rules in C++, and returns one
+ABI 16 keeps actor interpolation state inside each native actor record, resolves combat accuracy and maximum-hit rules in C++, and returns one
 packed render-state batch per simulation step. Each 32-byte row contains the actor ID,
 interpolated position, smoothed heading, gait phase, blend, speed, and motion flags.
 The browser submits animation events as a second packed batch; C++ resolves idle,
@@ -50,7 +51,7 @@ foliage, and stronger effects remain Phase 4's native-desktop scope.
 ## Phase 4 — native desktop client
 
 The native desktop target is a C++ executable, not a web view. It links the same
-`core.cpp` used to produce the browser WebAssembly module and consumes the ABI 15
+`core.cpp` used to produce the browser WebAssembly module and consumes the ABI 16
 render and animation batches directly. Its Ultra profile targets 2560×1440 with a
 4096-pixel directional shadow map with PCF filtering, 16× anisotropic filtering,
 4× MSAA, a 900-unit far plane, 2.5× foliage density, and doubled effect density.
