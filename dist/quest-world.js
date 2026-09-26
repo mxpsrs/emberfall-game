@@ -91,7 +91,7 @@ function setupQuestWorld(){
   const farmer=worldScenes.overworld.objects.find(o=>o.name==='Farmer Tessa');if(farmer){questSite('Riverbend Farms',farmer.x+5,farmer.y,9,12);questScenery('Riverbend harvest cart',farmer.x-3,farmer.y+3,{questModel:'cart'});}
   const keeper=worldScenes.overworld.objects.find(o=>o.name==='Keeper Orin');if(keeper)questSite('Coastal beacon',keeper.x,keeper.y,8,7);
   roadBuckets=null;realmNavigation.clear();resetLandSurface();miniTerrain=null;mapServicesCache=null;
-  objects.splice(0,objects.length,...worldScenes[previous].objects);
+  (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[previous].objects):objects.splice(0,objects.length,...worldScenes[previous].objects));
  }finally{currentScene=previous;}
 }
 const questWorldSetupBefore=setupTutorialVillage;

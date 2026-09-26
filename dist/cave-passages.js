@@ -44,7 +44,7 @@ setupTutorialVillage=function(){
   }
   if(CREATURE_LAIRS[scene])arrangeCaveFurniture(scene);
  }
- buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+ buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);realmNavigation.clear();(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
  // Preserve progress and recover only coordinates invalidated by corrected scenery.
  if(!land(s.x,s.y)){const point=encounterSpawnPoint(currentScene,s.x,s.y,16)||worldScenes[currentScene].entry;[s.x,s.y]=point;[px,py]=point;path=[];}
 };

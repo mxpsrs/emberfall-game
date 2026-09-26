@@ -261,7 +261,7 @@ setupTutorialVillage=function(){civilizationSetupBefore();if(civilizationReady)r
  for(const q of surfaceQuarries){const p=settlementPlans.get(q.town);p.resourcePurpose=q.name+' supplies '+SETTLEMENTS.find(t=>t.id===q.town).name;}
  roadBuckets=null;civilClearRoutes(world);roadBuckets=null;realmNavigation.clear();resetLandSurface();miniTerrain=null;worldAtlasTerrain=null;mapServicesCache=null;
  if(civilLegacyReturns.has(saved.scene)){const returnPoint=civilLegacyReturns.get(saved.scene);saved.scene='overworld';[saved.x,saved.y]=returnPoint;s.sceneId='overworld';s.x=saved.x;s.y=saved.y;px=s.x;py=s.y;}
- currentScene=saved.scene;objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
  if(!land(saved.x,saved.y)){let point=null;for(let r=1;r<40&&!point;r++)for(let dy=-r;dy<=r&&!point;dy++)for(let dx=-r;dx<=r&&!point;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r&&land(saved.x+dx,saved.y+dy))point=[saved.x+dx,saved.y+dy];if(point)activateScene(currentScene,...point,false);}
  s.civilizationVersion=CIVILIZATION_VERSION;
 };

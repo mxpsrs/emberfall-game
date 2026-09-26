@@ -274,6 +274,7 @@
  function injectBridge(){
   try{
    const win=frame.contentWindow,doc=frame.contentDocument;if(!win||!doc)return;
+   if(doc.readyState==='loading'||!win.VeldrenAssembly||!win.VeldrenBuildings){setTimeout(injectBridge,100);return;}
    if(win.VeldrenEditorBridge){connect(win.VeldrenEditorBridge);return;}
    if(doc.getElementById('veldrenEditorRuntime'))return;
    const script=doc.createElement('script');script.id='veldrenEditorRuntime';script.src='/editor/editor-runtime.js';

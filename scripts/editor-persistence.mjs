@@ -17,7 +17,7 @@ const {fromLegacy,toLegacy,mergeLegacy,validateWorld}=globalThis.VeldrenSceneFor
 const indexPath=path.join(projectRoot,'dist','index.html');
 const publicPath='editor-data/world-edits.json';
 const runtimePath='dist/world-edits.json';
-const MAX_BYTES=8*1024*1024;
+const MAX_BYTES=32*1024*1024;
 
 function empty(){return {version:1,revision:0,updatedAt:null,changes:[]}}
 function sha(text){return createHash('sha256').update(text).digest('hex')}
@@ -68,7 +68,7 @@ async function requestBody(req){
  const chunks=[];let size=0;
  for await(const chunk of req){
   size+=chunk.length;
-  if(size>MAX_BYTES){const error=Error('Editor save exceeds 8 MB');error.status=413;throw error}
+  if(size>MAX_BYTES){const error=Error('Editor save exceeds 32 MB');error.status=413;throw error}
   chunks.push(chunk);
  }
  return Buffer.concat(chunks).toString('utf8');

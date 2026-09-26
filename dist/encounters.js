@@ -138,7 +138,7 @@ function setupEncounters(){
    if(guard){guard.dungeonGuard=true;guard.homeX=guard.x;guard.homeY=guard.y;}
   }
  }
- realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);huntProgress();
+ realmNavigation.clear();(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));huntProgress();
 }
 const villageBeforeEncounters=setupTutorialVillage;
 setupTutorialVillage=function(){villageBeforeEncounters();setupEncounters();};

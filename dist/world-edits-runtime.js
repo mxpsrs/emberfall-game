@@ -183,7 +183,7 @@
  }
  function syncCurrentScene(){
   if(!worldScenes?.[currentScene])return;
-  objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+  (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
   buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
   try{worldObjectRevision++}catch{}
   try{realmNavigation?.clear?.()}catch{}

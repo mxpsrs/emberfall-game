@@ -33,7 +33,7 @@
   }
   for(const id of ids)if(!seen.has(id))next.push(getView(name,id));
   if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(name,next);else w.objects=next;fixtureIds.set(name,new Set(ids));aliases.set(name,byCatalog);
-  if(typeof currentScene!=='undefined'&&currentScene===name&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
+  if(typeof currentScene!=='undefined'&&currentScene===name&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(next):objects.splice(0,objects.length,...next));}
   if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;
  }
  function light(offset,radius,color=[1,.74,.45],intensity=1.25,scope='always',nightOnly=false){return {type:'point',offset,radius,color,intensity,scope,nightOnly,terrainRelative:true};}

@@ -21,7 +21,8 @@ s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
 s.tutorial = Math.max(0, Math.floor(Number(s.tutorial)||0));
 if (s.character) s.character.look = Math.max(0, Math.min(3, Number(s.character.look) || 0));
-const objects = new Proxy([], {get(a,k,r){return globalThis.VeldrenWorldObjects?.activeMethod(a,k)??Reflect.get(a,k,r);},set(a,k,v){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.set(a,k,v);},deleteProperty(a,k){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.deleteProperty(a,k);},defineProperty(a,k,d){globalThis.VeldrenWorldObjects?.assertWritable();return Reflect.defineProperty(a,k,d);}}), buildings = [];
+let objects = [];
+const buildings = [];
 let serial = 0;
 function add(type, x, y, name, sprite, extra={}) {
   const o = {id:serial++, type, x, y, homeX:x, homeY:y, drawX:x, drawY:y, name, sprite, dead:0, hitAt:-100, attackAt:-100, ...extra};

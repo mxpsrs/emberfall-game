@@ -168,6 +168,7 @@
    if(key==='_generatedSceneKey')return generationKey;if(key==='_generatedLegacyId')return legacyId;
    if(key==='_generatedEntity')return current();
    if(key in transforms)return pose()[transforms[key]];
+   if(key==='editorAsset'&&!current().metadata.editorAsset){const asset=current().components.MeshRenderer?.asset,match=asset?.match(/^(briar|creature):(.+)$/);if(match)return Object.freeze({source:match[1],key:match[2]});}
    if(key==='heading')return pose().rotation*Math.PI/180;
    if(key==='editorTransform')return editorTransform;
    if(key==='walkThrough')return !current().components.Collider?.solid;
@@ -204,11 +205,12 @@
   });
  }
  function arrayReplace(array,values){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else Array.prototype.splice.call(array,0,array.length,...values);}
+ function authoredMesh(entity){const c=entity.components||{};return !Object.keys(c).some(k=>k.startsWith('Generated')||['LegacyWorldEdit','RuntimeBinding','BuildingPart','Light','ServiceDefinition','SpawnPoint'].includes(k))&&/^(briar|creature):/.test(c.MeshRenderer?.asset||'');}
  function projectNativeScene(sceneName,sceneDocument,rawObjects){
-  const records=(sceneDocument.entities||[]).filter(entity=>entity.components?.GeneratedProp);
+  const records=(sceneDocument.entities||[]).filter(entity=>entity.components?.GeneratedProp||authoredMesh(entity));
   const aliasByKey=new Map((rawObjects||[]).filter(object=>object._generatedSceneKey).map(object=>[object._generatedSceneKey,object._generatedLegacyId]));
   const previous=scenesByName.get(sceneName)?.byId;
-  const proxies=records.map(entity=>previous?.get(entity.id)||makeProjection(sceneName,entity,aliasByKey.get(entity.components.GeneratedProp.generationKey)||'')),byId=new Map(proxies.map(proxy=>[String(proxy.id),proxy])),byGeneration=new Map(proxies.map(proxy=>[proxy._generatedSceneKey,proxy]));
+  const proxies=records.map(entity=>previous?.get(entity.id)||makeProjection(sceneName,entity,aliasByKey.get(entity.components.GeneratedProp?.generationKey||entity.id)||'')),byId=new Map(proxies.map(proxy=>[String(proxy.id),proxy])),byGeneration=new Map(proxies.map(proxy=>[proxy._generatedSceneKey,proxy]));
   const scene=worldRegistry()[sceneName];if(!scene)return {count:proxies.length,proxies};
   const original=scene.objects||[],seen=new Set(),next=[];
   for(const object of original){
@@ -247,7 +249,7 @@
     for(const id of affected){const proxy=table.byId.get(id);if(proxy){if(typeof staticMeshes3!=='undefined')staticMeshes3.delete(proxy);if(typeof staticMeshQueues3!=='undefined')staticMeshQueues3.prop.delete(proxy);}}
     if(event.kind==='transform'||entity){invalidateWorld();continue;}
    }
-   if(event.kind==='upsert'&&!root.realmNative.scenes.entity(name,event.id)?.components.GeneratedProp)continue;
+   if(event.kind==='upsert'){const n=root.realmNative.scenes.entity(name,event.id);if(!n?.components.GeneratedProp&&!authoredMesh(n||{})&&!scenesByName.get(name)?.byId.has(event.id))continue;}
    const scene=root.realmNative.scenes.read(name)||{entities:[]};projectNativeScene(name,scene,worldRegistry()[name]?.objects||[]);
   }
   invalidateWorld();

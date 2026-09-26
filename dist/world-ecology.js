@@ -142,16 +142,16 @@ const ecologySetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){
  ecologySetupBefore();if(ecologyReady)return;
  const saved={scene:currentScene,x:s.x,y:s.y};
- for(const scene of ['overworld','tutorial']){const w=worldScenes[scene];currentScene=scene;objects.splice(0,objects.length,...w.objects);buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyTerrain(scene,w);}
+ for(const scene of ['overworld','tutorial']){const w=worldScenes[scene];currentScene=scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyTerrain(scene,w);}
  ecologyReady=true;
  for(const [scene,w]of Object.entries(worldScenes)){
   if(!w.objects.some(o=>o.type==='tree')&&!['overworld','tutorial'].includes(scene))continue;
-  currentScene=scene;objects.splice(0,objects.length,...w.objects);buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyPlant(scene,w);
+  currentScene=scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyPlant(scene,w);
  }
  // Visual footings are finalized only after deterministic object placement
  // and ecology's terrain pass. Their elevation must not change resource IDs,
  // room furnishing or NPCs.
  if(typeof propFinalizeSupportPads==='function')propFinalizeSupportPads();
  propFootingsReady=true;
- currentScene=saved.scene;objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);resetLandSurface();realmNavigation.clear();roadBuckets=null;miniTerrain=null;worldUnderstory.clear();worldObjectRevision++;
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);resetLandSurface();realmNavigation.clear();roadBuckets=null;miniTerrain=null;worldUnderstory.clear();worldObjectRevision++;
 };

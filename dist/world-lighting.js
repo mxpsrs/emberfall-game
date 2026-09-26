@@ -82,7 +82,7 @@ function setupSettlementLanterns(){
    place(town.x+3,town.y+3,town.id);
    for(const seg of organicRoads){const dx=seg.b[0]-seg.a[0],dy=seg.b[1]-seg.a[1],length=Math.hypot(dx,dy);if(!length)continue;const count=Math.ceil(length/13);for(let i=0;i<=count;i++){const x=seg.a[0]+dx*i/count,y=seg.a[1]+dy*i/count;if(Math.hypot(x-town.x,y-town.y)>radius)continue;place(x-dy/length*2.6,y+dx/length*2.6,town.id);}}
   }else for(const o of [...w.objects].filter(o=>o.tutor||o.type==='elder'))place(o.x+3,o.y+3,'Firstlight Isle');
- }}finally{currentScene=previous;realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[previous].objects);}
+ }}finally{currentScene=previous;realmNavigation.clear();(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[previous].objects):objects.splice(0,objects.length,...worldScenes[previous].objects));}
 }
 function drawStreetLantern3(r,o,x,z){
  const p=groundedPainter(r,x,z),metal='#46453e';

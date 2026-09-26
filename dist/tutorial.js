@@ -186,7 +186,7 @@ function setupTutorialVillage(){
  const dummy=make('magic-dummy','dummy','Spell practice dummy',79,66,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';dummy.interiorBuilding='realm_briarhaven_3';place(dummy,79,66);
  // Sera teaches remembrance; no additional world actors are needed.
  dressTutorWorkplaces(world);setupSkillWorld(world);setupTrainingPen(world);
- if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
+ if(inWorld()){(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
  normalizeJourney(s);renderTutorial();
 }
 function talkTutor(o){

@@ -674,3 +674,27 @@ interaction or hosted capacity claim is made.
   spawn ownership, controlled membership and actor affine rendering tests pass.
   The full generated runtime ownership/roundtrip test also passed with controlled
   membership. A fresh production build and graphical acceptance are in progress.
+
+### Full-world persistence and browser acceptance fixes
+
+- A real built-Worker editor session exposed the old 8 MB save limit. The full
+  generated document is 14,861,865 bytes (the editor version includes additional
+  authored state). The endpoint now accepts worlds up to 32 MB. Large documents
+  are gzip compressed into 256 KiB chunks using two revision banks in the existing
+  `editor_world` table. A guarded atomic batch commits chunks and the current
+  manifest together; the previous manifest remains independently recoverable.
+  Small existing documents and legacy clients retain their existing format.
+- The full generated production-storage test passes with five chunks and a
+  largest row of 262,144 bytes. Exact reread, checksum/revision verification,
+  concurrent compare-and-swap, injected transaction rollback and character-save
+  isolation pass. No new database migration or account-table write is required.
+- The browser editor exposed and fixed early bridge injection before assembly
+  dependencies loaded. Native authored mesh views now use controlled ownership.
+  Static props receive the native affine basis once at render submission.
+- Active membership now uses frozen lists selected by an explicit checked API.
+  Construction uses plain arrays, avoiding the per-access proxy overhead found
+  during graphical startup. Focused membership, renderer, socket and native
+  actor checks pass; the full generated runtime comparison has been repeated.
+- Updated the renderer contract test to match the pre-existing browser-decoded
+  atlases, dedicated terrain material, light limits and two-cascade desktop
+  profile. Production renderer settings were not changed in this work.

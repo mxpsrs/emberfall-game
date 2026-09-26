@@ -107,7 +107,7 @@ function propFinalizeSupportPads(){
  const saved={scene:currentScene,objects:[...objects],buildings:[...buildings],footingsReady:propFootingsReady},w=worldScenes.overworld,pending=[];
  // Measure the terrain exactly as players will see it, including the earlier
  // tent and quarry pads, before introducing any of these final supports.
- propFootingsReady=true;currentScene='overworld';objects.splice(0,objects.length,...w.objects);buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();
+ propFootingsReady=true;currentScene='overworld';(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();
  for(const o of w.objects){
   if(!o.placement||o.placement.room)continue;
   const box=propBox(o),cx=(box.left+box.right)/2,cy=(box.top+box.bottom)/2,samples=[[cx,cy],[box.left,box.top],[box.right,box.top],[box.left,box.bottom],[box.right,box.bottom]],heights=samples.map(([x,y])=>walkSurfaceHeight(x,y));
@@ -116,7 +116,7 @@ function propFinalizeSupportPads(){
  }
  propFootingsReady=saved.footingsReady;
  for(const p of pending){propWorkPads.push(p);propSupportPads.push(p);propIndexPad(p);}
- currentScene=saved.scene;objects.splice(0,objects.length,...saved.objects);buildings.splice(0,buildings.length,...saved.buildings);resetLandSurface();
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(saved.objects):objects.splice(0,objects.length,...saved.objects));buildings.splice(0,buildings.length,...saved.buildings);resetLandSurface();
 }
 let propPlacementReady=false;
 function propKind(o){if(o.propKind)return o.propKind;if(!['prop','range','camp','forge','practiceForge','furnace','cache'].includes(o.type))return null;return PROP_KINDS.find(([,match])=>match(o))?.[0]||null;}
@@ -398,7 +398,7 @@ setupTutorialVillage=function(){
   const rooms=propRoomContexts(scene,w);for(const room of rooms)propDressRoom(w,room);
   if(scene==='overworld'||scene==='tutorial')propDressOutdoors(w,rooms);propAnnotateAuthored(w,scene);
  }
- currentScene=saved.scene;objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);realmNavigation.clear();resetLandSurface();miniTerrain=null;worldObjectRevision++;
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);realmNavigation.clear();resetLandSurface();miniTerrain=null;worldObjectRevision++;
  propPlacementReport.setupMilliseconds=Date.now()-began;
  if(!land(saved.x,saved.y)){let point=null;for(let r=1;r<=12&&!point;r++)for(let dy=-r;dy<=r&&!point;dy++)for(let dx=-r;dx<=r&&!point;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r&&land(saved.x+dx,saved.y+dy))point=[saved.x+dx,saved.y+dy];if(point)activateScene(currentScene,...point,false);}
 };

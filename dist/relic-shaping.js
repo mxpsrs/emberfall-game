@@ -159,7 +159,7 @@ function setupRelicWorld(){
  put('fairy_between','keeper','Nim · Keeper of the lake',32,42,{type:'villager',characterSprite:true,race:'elf',talk:'This is the space between your worlds. The lake remembers power; your inscriptions give it a shape. Selene may draw a thread home, but the source stays here.',relicKey:null});
  for(const [i,[x,y]]of [[13,24],[21,19],[31,13],[48,12],[59,21],[62,37],[56,51],[43,55],[14,43]].entries())put('fairy_between',null,'Moonwillow tree',x,y,{type:'tree',resourceId:'willow',treeArt:'broadleaf'});
  for(const [x,y]of [[22,47],[27,46],[32,45],[37,44]])put('fairy_between',null,'Lake path lantern',x,y,{type:'camp',walkThrough:true});
- if(currentScene==='overworld')objects.splice(0,objects.length,...world.objects);resetLandSurface();realmNavigation.clear();
+ if(currentScene==='overworld')(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));resetLandSurface();realmNavigation.clear();
 }
 const relicSetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){relicSetupBefore();setupRelicWorld();};

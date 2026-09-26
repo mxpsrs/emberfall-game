@@ -165,7 +165,7 @@ function setupCreatureLairs(){
   lair.returnPoint=encounterSpawnPoint('overworld',point[0],point[1]+2,6);
   if(!lair.returnPoint)throw new Error('No clear return point for '+lair.title);
  }
- setupForestGiantHabitat(mainland);realmNavigation.clear();objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+ setupForestGiantHabitat(mainland);realmNavigation.clear();(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
 }
 function setupForestGiantHabitat(world){
  if(!creatureAssets.forestgiant)return;const habitat=FOREST_GIANT_HABITAT;

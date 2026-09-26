@@ -152,7 +152,7 @@ function syncMountainWorld(){
  syncMountainExpert();
  const watcher=mountainObject('watcher')?.o;if(watcher&&q.stage>=7){watcher.hp=0;watcher.dead=Infinity;watcher.collected=true;}
  const survivor=mountainObject('survivor')?.o;if(survivor)survivor.name=q.stage>=9?'Dorrin · Safe passage opened':'Trapped miner Dorrin';
- realmNavigation.clear();mapServicesCache=null;objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+ realmNavigation.clear();mapServicesCache=null;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
 }
 const mountainSetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){mountainSetupBefore();setupMountainQuest();};

@@ -317,7 +317,7 @@ setupExpandedWorld=function(){
    world.objects.push({id:2800000+count++,type:'tree',x,y,drawX:x,drawY:y,name:'Silverwood tree',sprite:4,race:'elf',realmScenery:true,dead:0});used.add(x+':'+y);
   }
  }
- if(inWorld())objects.splice(0,objects.length,...world.objects);
+ if(inWorld())(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));
  realmNavigation.clear();
 };
 

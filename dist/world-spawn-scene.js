@@ -92,7 +92,7 @@
    next.push(o);
   }
   for(const id of ids)if(!seen.has(id))next.push(getView(scene,id));
-  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else objects.splice(0,objects.length,...next);}
+  if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.project(scene,next);else w.objects=next;if(typeof currentScene!=='undefined'&&currentScene===scene&&typeof objects!=='undefined'){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(next):objects.splice(0,objects.length,...next));}
  }
  async function migrate(){
   capture();const document=native().serialize();let count=0;
@@ -150,7 +150,8 @@
    const painter=root.VeldrenLightScene.painter(r,matrix,[x,z]),localMotion={...motion,heading};
    const logical=new Proxy(o,{get(target,k){if(k==='_creatureMotion')return localMotion;if(k==='heading'||k==='roomYaw'||k==='attackHeading')return heading;return Reflect.get(target,k);}});
    const height=before(painter,logical,x,z);
-   if(o._creatureSockets)for(const socket of Object.values(o._creatureSockets)){const p=painter.transformPoint([socket.x,socket.y,socket.z]);socket.x=p[0];socket.y=p[1];socket.z=p[2];}
+   const ground=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(x,z):typeof landHeight==='function'?landHeight(x,z):0;
+   if(o._creatureSockets)for(const socket of Object.values(o._creatureSockets)){const terrain=typeof landHeight==='function'?landHeight(socket.x,socket.z):0,p=painter.transformPoint([socket.x,socket.y+ground-terrain,socket.z]);socket.x=p[0];socket.y=p[1];socket.z=p[2];}
    return (height||0)*Math.hypot(matrix[1],matrix[5],matrix[9])+matrix[7];
   };
  }

@@ -71,7 +71,7 @@ function updateWorldTimers(now=Date.now()){
   o.x=Number.isFinite(o.homeX)?o.homeX:o.x;o.y=Number.isFinite(o.homeY)?o.homeY:o.y;o.drawX=o.x;o.drawY=o.y;delete o._creatureMotion;delete o.enraged;delete o.attackRecovery;delete o.attackWindup;delete o.attackMove;
   projectiles=projectiles.filter(p=>p.o!==o);meleeImpacts=meleeImpacts.filter(p=>p.o!==o);
  }
- if(expiredObjects.size&&globalThis.VeldrenWorldObjects?.enabled){for(const o of expiredObjects)VeldrenWorldObjects.removeSession(o);}else if(expiredObjects.size){for(const scene of Object.values(worldScenes))scene.objects=scene.objects.filter(o=>!expiredObjects.has(o));const active=objects.filter(o=>!expiredObjects.has(o));objects.splice(0,objects.length,...active);}
+ if(expiredObjects.size&&globalThis.VeldrenWorldObjects?.enabled){for(const o of expiredObjects)VeldrenWorldObjects.removeSession(o);}else if(expiredObjects.size){for(const scene of Object.values(worldScenes))scene.objects=scene.objects.filter(o=>!expiredObjects.has(o));const active=objects.filter(o=>!expiredObjects.has(o));(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(active):objects.splice(0,objects.length,...active));}
  if(expireGroundLoot(now)||expiredObjects.size)save();
 }
 function setupLoot(){

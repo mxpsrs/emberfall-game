@@ -112,7 +112,7 @@ function syncMainStoryWorld(){
   if(q.stage>=17||q.rescued.includes(key))mainStoryMoveMiner(key,'overworld',encounterSpawnPoint('overworld',h.x+(key==='bera'?2:-2),h.y+3,12)||[h.x,h.y+3]);
   else mainStoryMoveMiner(key,safe&&q.stage>=15?scene:'story_mine',safe&&q.stage>=15?saved:[o.homeX,o.homeY]);
  }
- realmNavigation.clear();mapServicesCache=null;objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+ realmNavigation.clear();mapServicesCache=null;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
 }
 // Escort transitions carry both miners through the physical mine mouth, never
 // through a quest-guide teleport. Old completed and partially rescued saves survive.
@@ -124,7 +124,7 @@ leaveInterior=function(){
   if(waiting.some(k=>{const o=mainStoryObject(k);return Math.hypot(o.x-px,o.y-py)>12;})){stop();toast('Bera and Oren are waiting in the mine. Bring them close before leading them out.');return false;}
   const result=mainStoryLeaveBefore();if(currentScene==='overworld'){
    q.escortScene='overworld';for(const [i,k]of waiting.entries()){const p=encounterSpawnPoint('overworld',px+i*2,py+2,8)||[px,py];mainStoryMoveMiner(k,'overworld',p);(q.positions??={})[k]=p;}
-   objects.splice(0,objects.length,...worldScenes.overworld.objects);save();
+   (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes.overworld.objects):objects.splice(0,objects.length,...worldScenes.overworld.objects));save();
   }return result;
  }return mainStoryLeaveBefore();
 };
