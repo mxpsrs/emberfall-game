@@ -146,6 +146,7 @@ Json AssetRegistry::command(const Json& r) {
   const auto op=text(r,"op"),id=text(r,"id");
   if(op=="load"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");load(*manifest);return diagnostics();}
   if(op=="record")return record(id);
+  if(op=="material-plan")return material_plan(id,text(r,"profile"));
   if(op=="texture-variant"){const auto* usage=r.find("usage");if(!usage)throw std::invalid_argument("Texture usage required");return texture_variant(id,text(r,"profile"),*usage);}
   if(op=="list")return list(text(r,"type"));
   if(op=="document")return document();

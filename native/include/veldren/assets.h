@@ -11,6 +11,7 @@ class AssetRegistry {
   Json document() const;
   Json record(const std::string& id) const;
   Json list(const std::string& type = {}) const;
+  Json material_plan(const std::string& id,const std::string& profile) const;
   Json texture_variant(const std::string& id,const std::string& profile,const Json& usage) const;
   std::vector<std::string> dependencies(const std::string& id, bool transitive) const;
   std::vector<std::string> dependents(const std::string& id, bool transitive) const;

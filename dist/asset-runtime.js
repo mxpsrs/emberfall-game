@@ -77,6 +77,7 @@
    }catch(error){if(session===epoch)assets.destroy();throw error;}
   },
   record,
+  materialPlan(id,profile){return freeze(request({op:'material-plan',id,profile}));},
   textureVariant(id,profile,usage){return freeze(request({op:'texture-variant',id,profile,usage}));},
   has(id){if(!ids)ids=new Set(request({op:'list'}));return ids.has(id);},
   list(type=''){if(!catalogs.has(type))catalogs.set(type,Object.freeze(request({op:'list',type})));return catalogs.get(type);},
@@ -125,7 +126,7 @@
   mesh(id){if(!assets.has(id))return null;const definition=record(id);if(definition.type!=='model'&&definition.type!=='mesh')throw Error('Asset is not geometry: '+id);return payloads.get(id)||null;},
   destroy(){
    ++epoch;initializing?.abort();initializing=null;
-   for(const listener of [...disposeListeners])listener();disposeListeners.clear();
+   for(const listener of [...disposeListeners].reverse())listener();disposeListeners.clear();
    for(const release of [...textureLeases])release();textureApi=null;
    for(const lease of leases){lease.closed=true;retire(lease.entry);}leases.clear();legacyLeases.clear();
    destroyNative?.();destroyNative=null;command=null;ready=false;ids=null;records.clear();catalogs.clear();payloads.clear();models.clear();

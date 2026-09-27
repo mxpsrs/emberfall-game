@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_import.cpp src/asset_texture.cpp)
+add_library(veldren_core STATIC src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
 target_include_directories(veldren_core PUBLIC include)
 target_include_directories(veldren_core SYSTEM PRIVATE third_party)
 
@@ -62,3 +62,7 @@ add_test(NAME asset-textures COMMAND veldren-texture-test ${CMAKE_CURRENT_SOURCE
 
 add_executable(veldren-texture-variants tools/texture_variants.cpp)
 target_link_libraries(veldren-texture-variants PRIVATE veldren_core ZLIB::ZLIB)
+
+add_executable(veldren-material-test tests/material_test.cpp)
+target_link_libraries(veldren-material-test PRIVATE veldren_core)
+add_test(NAME asset-materials COMMAND veldren-material-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/asset-registry.json)

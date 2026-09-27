@@ -210,3 +210,40 @@ variants in actual WASM + Filament NOOP with shared GPU handles, hash/dimension/
 mip-byte checks and complete release. The existing 34-source texture tests,
 six PBR binary checks and 100 unload-cycle tests remain included. Browser profile
 visual quality and canonical Scene submission remain acceptance work.
+
+## Native PBR material plans and GPU lifetime — 27 September 2026
+
+`AssetRegistry::material_plan` now resolves canonical material records into
+content-keyed Filament plans. C++ chooses the six compiled lit/unlit and
+opaque/mask/blend shaders; maps factors, emissive strength, alpha cutoff,
+double-sided state, normal scale and occlusion strength; resolves profile
+textures; and computes column-major KHR texture-transform matrices for UV0–UV7.
+Sampler/filter mappings and neutral default textures are native decisions.
+Equivalent materials with different stable IDs share the same content key.
+
+`asset-materials.js` performs IO and Filament handle marshalling from those
+plans. It shares shader binaries and immutable material instances, holds native
+material dependency leases, and releases instances before their textures and
+shaders. Exact leases, last-user cancellation, rejected loads, allocation errors,
+late completion and teardown are handled. Asset disposal now invokes dependent
+resource owners in reverse registration order.
+
+Validation: native material tests exercise all 1,548 catalog/profile plans,
+content sharing, UV transforms/channels, sampler mapping, emissive strength and
+invalid type/profile/channel rejection. Actual WASM + Filament NOOP tests cover
+both runtime and editor, all six shader variants, 26 distinct real materials,
+100 concurrent shared leases, injected instance allocation failure, cancellation,
+late asynchronous completion and 30 complete unload cycles. The rebuilt WASM
+passes its ABI test. NOOP validation is not graphical acceptance.
+
+The pinned Filament 1.77 JavaScript TextureSampler exposes one shared wrap mode,
+not independent S/T setters. Mixed-axis wrapping fails explicitly in the adapter;
+C++ preserves both intended modes. This limitation remains open. The current
+material tests cover recoverable real textures plus native defaults; one original
+source image is still unavailable in this restored local workspace. It remains
+present in the verified GitHub checkpoint and is not removed or replaced.
+
+Scene-driven canonical mesh submission, animation, browser/editor visual tests,
+complete reimport/asset-browser work and the 87 MiB build-size blocker remain.
+This material-resource checkpoint is not Phase 2 completion and changes no live
+site, production data or main branch.
