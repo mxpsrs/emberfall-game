@@ -29,6 +29,17 @@ try{
   for(const file of fs.readdirSync('dist/materials').filter(name=>/^veldren-pbr-.*\.filamat$/.test(name))){
    const material=engine.createMaterial(new Uint8Array(fs.readFileSync('dist/materials/'+file)));assert(material);const instance=material.createInstance();engine.destroyMaterialInstance(instance);engine.destroyMaterial(material);
   }
+  const registry=JSON.parse(fs.readFileSync('dist/assets/asset-registry.json','utf8')),verified=new Set();
+  for(const record of registry.records)for(const profile of ['browser-mobile','browser'])for(const entry of record.variants?.[profile]||[]){
+   if(verified.has(entry.key))continue;verified.add(entry.key);
+   const variant=assets.textureVariant(record.id,profile,entry.settings);
+   const pixels=new Uint8Array(fs.readFileSync('dist/'+variant.derivedPath));
+   const a=pool.acquire(pixels,variant.processing),b=pool.acquire(pixels,variant.processing);
+   assert.equal(a.texture,b.texture);assert.equal(a.info.levels[0].width,variant.width);assert.equal(a.info.levels[0].height,variant.height);
+   assert.equal(a.info.gpuBytes,variant.gpuBytes);assert.equal(a.info.sourceHash,variant.derivedHash);
+   a.release();b.release();assert.equal(pool.diagnostics().textures,0);
+  }
+  assert.equal(verified.size,68);
   const files=fs.readdirSync('dist/assets/canonical/images');assert.equal(files.length,34);
   for(const file of files){
    const bytes=new Uint8Array(fs.readFileSync('dist/assets/canonical/images/'+file));

@@ -48,7 +48,7 @@ build/veldren-desktop: src/core.cpp src/scene.cpp src/desktop.cpp src/desktop_re
 asset-test: build/asset-test
 	./build/asset-test ../dist/assets/asset-registry.json
 
-build/asset-test: src/assets.cpp src/scene.cpp tests/assets_test.cpp include/veldren/assets.h include/veldren/scene.h
+build/asset-test: src/assets.cpp src/scene.cpp tests/assets_test.cpp include/veldren/assets.h include/veldren/asset_profile.h include/veldren/scene.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/assets.cpp src/scene.cpp tests/assets_test.cpp -o $@
 
@@ -57,7 +57,7 @@ wasm: ../dist/native/veldren-core.wasm
 wasm-test: wasm
 	node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
 
-../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/assets.cpp include/veldren/assets.h src/core.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
+../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
 	mkdir -p ../dist/native
 	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/asset_texture.cpp src/asset_import.cpp src/assets.cpp src/core.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
 
@@ -79,3 +79,7 @@ texture-test: build/texture-test
 build/texture-test: src/asset_texture.cpp src/asset_import.cpp src/scene.cpp tests/texture_test.cpp include/veldren/asset_texture.h third_party/stb_image.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/asset_texture.cpp src/asset_import.cpp src/scene.cpp tests/texture_test.cpp -o $@
+
+build/texture-variants: src/asset_texture.cpp src/asset_import.cpp src/scene.cpp tools/texture_variants.cpp include/veldren/asset_texture.h include/veldren/asset_profile.h third_party/stb_image.h
+	mkdir -p build
+	$(CXX) $(CXXFLAGS) src/asset_texture.cpp src/asset_import.cpp src/scene.cpp tools/texture_variants.cpp -lz -o $@

@@ -77,6 +77,7 @@
    }catch(error){if(session===epoch)assets.destroy();throw error;}
   },
   record,
+  textureVariant(id,profile,usage){return freeze(request({op:'texture-variant',id,profile,usage}));},
   has(id){if(!ids)ids=new Set(request({op:'list'}));return ids.has(id);},
   list(type=''){if(!catalogs.has(type))catalogs.set(type,Object.freeze(request({op:'list',type})));return catalogs.get(type);},
   dependencies:id=>request({op:'dependencies',id}),dependents:id=>request({op:'dependents',id}),

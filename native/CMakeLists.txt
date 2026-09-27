@@ -59,3 +59,6 @@ target_link_libraries(veldren-asset-import PRIVATE veldren_core)
 add_executable(veldren-texture-test tests/texture_test.cpp)
 target_link_libraries(veldren-texture-test PRIVATE veldren_core)
 add_test(NAME asset-textures COMMAND veldren-texture-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/canonical/images)
+
+add_executable(veldren-texture-variants tools/texture_variants.cpp)
+target_link_libraries(veldren-texture-variants PRIVATE veldren_core ZLIB::ZLIB)

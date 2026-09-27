@@ -179,3 +179,34 @@ Next: implement the browser/desktop texture variant pipeline and restore the
 normal build gate, then canonical model/material submission, Scene-driven GPU
 sharing/lifetime, reimport/editor integration and final acceptance. Nothing was
 published, deployed or merged into main; no account or player data was changed.
+
+## Native texture delivery profiles — 27 September 2026
+
+C++ now defines and selects three explicit profiles: `browser-mobile` (256px,
+8x anisotropy), `browser` (512px, 16x), and `desktop` (8192px, 16x). The offline
+native processor derives content-addressed PNGs using the existing linear-light,
+alpha-coverage and normal-map processing. It validates every encoded output
+against the exact processed pixels. All full-resolution sources remain intact.
+Python only supplies filesystem IO, cache keys and catalog bindings.
+
+The 845 canonical image IDs resolve to 34 unique source/usage combinations and
+102 profile jobs. The two browser profiles reference 68 outputs, shared across
+IDs; their unique delivery payload is 10,816,137 bytes. Desktop keeps all original
+encoded bytes for this corpus. Registry commands reject unknown profiles,
+unavailable usages, stale source hashes, duplicate usage definitions and
+out-of-budget dimensions. Processing verifies the derived SHA256, not the source
+SHA256, when a browser fetches a variant. Source hashes remain import provenance.
+
+The build consumes an explicit browser image allowlist. This excludes only
+full-resolution images that have browser replacements, retains all models and
+existing game resources, and keeps the 64 MiB Worker gate. The complete build
+still fails that gate at **87 MiB** (down from about 180 MiB before profiles).
+Legacy packed geometry and canonical models still coexist; delivery is not yet
+accepted. No hosting configuration or deployment was changed.
+
+Verification covers all 2,535 registered selections in both actual-WASM runtime
+and editor contexts, native atomic rejection tests, and all 68 distinct browser
+variants in actual WASM + Filament NOOP with shared GPU handles, hash/dimension/
+mip-byte checks and complete release. The existing 34-source texture tests,
+six PBR binary checks and 100 unload-cycle tests remain included. Browser profile
+visual quality and canonical Scene submission remain acceptance work.

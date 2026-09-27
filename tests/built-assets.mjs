@@ -23,11 +23,16 @@ assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*102
 for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','assets/spirits.png'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert((await body(nativeCore)).length>10000,'native gameplay core ships as a real WASM binary');
 // Canonical image paths retain the exact bytes validated by the C++ importer.
-for(const name of Object.keys(versions).filter(name=>name.startsWith('assets/canonical/images/'))){
+for(const name of Object.keys(versions).filter(name=>/^assets\/canonical\/(images|variants)\//.test(name))){
  const response=await request('/'+versions[name]);assert.equal(response.status,200);
  const bytes=await body(response);assert.deepEqual(bytes,readFileSync(new URL('../dist/'+name,import.meta.url)));
  assert.equal(createHash('sha256').update(bytes).digest('hex'),name.split('/').pop().split('.')[0]);
 }
+const delivery=JSON.parse(readFileSync(new URL('../art/derived/browser-assets.json',import.meta.url)));
+const shipped=new Set(Object.keys(versions).filter(name=>/^assets\/canonical\/(images|variants)\//.test(name)));
+assert.deepEqual(shipped,new Set(delivery.canonicalImages),'Every declared browser texture ships, with no desktop-only payloads');
+const registry=JSON.parse(readFileSync(new URL('../dist/assets/asset-registry.json',import.meta.url)));
+for(const record of registry.records)for(const profile of delivery.profiles)for(const variant of record.variants?.[profile]||[])assert(shipped.has(variant.derivedPath));
 let totalBytes=0;
 for(const url of urls){
  const response=await request('/'+url);assert.equal(response.status,200,url);assert(response.headers.get('Cache-Control').includes('immutable'),url);

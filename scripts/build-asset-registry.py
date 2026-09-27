@@ -51,6 +51,11 @@ by_id={r['id']:r for r in records}
 if canonical.exists():
  for definition in json.loads(canonical.read_text())['records']:by_id[definition['id']]=definition
 records=list(by_id.values())
+variant_path=ROOT/'art/derived/texture-variants.json'
+if variant_path.exists():
+ for id,variants in json.loads(variant_path.read_text())['bindings'].items():
+  if id not in by_id:raise ValueError('Texture variants reference an unknown asset: '+id)
+  by_id[id]['variants']=variants
 manifest={'format':'veldren.assets','version':1,'records':sorted(records,key=lambda r:r['id'])}
 output=ROOT/'dist/assets/asset-registry.json';output.write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(records),'native asset records from existing Veldren assets.')

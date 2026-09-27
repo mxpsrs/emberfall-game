@@ -29,6 +29,19 @@ int main(int argc,char** argv){
   registry.acquire(wall);const auto affected=registry.invalidate(texture);assert(affected.size()>1);
   assert(registry.record(wall).find("generation")->number_or()==2);
   registry.release(wall);assert(registry.document()==old);
+  // Reject malformed/stale profile records atomically, preserving live catalog.
+  auto with_variant=manifest;
+  auto& definitions=std::get<Json::Array>(std::get<Json::Object>(with_variant.value).at("records").value);
+  for(auto& definition:definitions)if(definition.find("variants")&&definition.find("variants")->find("browser")){
+    auto& profiles=std::get<Json::Object>(std::get<Json::Object>(definition.value).at("variants").value);
+    auto& entries=std::get<Json::Array>(profiles.at("browser").value);
+    const auto saved=entries[0];auto& entry=std::get<Json::Object>(entries[0].value);
+    entry["width"]=513;rejected([&]{registry.load(with_variant);});assert(registry.document()==old);
+    entries[0]=saved;std::get<Json::Object>(entries[0].value)["sourceHash"]=std::string(64,'0');
+    rejected([&]{registry.load(with_variant);});assert(registry.document()==old);
+    entries[0]=saved;entries.push_back(saved);rejected([&]{registry.load(with_variant);});assert(registry.document()==old);
+    break;
+  }
   const auto handle=veldren_assets_create();assert(handle);assert(!veldren_assets_command(handle,"{bad"));veldren_assets_destroy(handle);assert(!veldren_assets_response(handle,nullptr,0));
   std::cout<<"PASS: actual Veldren catalog, stable IDs, dependency closure/reverse index, atomic validation, 100 shared leases, release and invalidation.\n";
 }

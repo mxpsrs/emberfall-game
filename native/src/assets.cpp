@@ -1,4 +1,5 @@
 #include "veldren/assets.h"
+#include "veldren/asset_profile.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -11,10 +12,29 @@ namespace {
 std::string text(const Json& j, const char* key) { const auto* v=j.find(key); return v?v->string_or():""; }
 Json strings(const std::vector<std::string>& values) { Json::Array out; for(const auto& v:values)out.emplace_back(v);return out; }
 const std::set<std::string> types{"model","mesh","texture","material","skeleton","animation","collision","audio","prefab"};
+bool hash_valid(const std::string& value){return value.size()==64&&value.find_first_not_of("0123456789abcdef")==std::string::npos;}
+void validate_variants(const Json& definition){
+  const auto* variants=definition.find("variants");if(!variants)return;
+  for(const auto& [profile,entries]:variants->object()){
+    const auto policy=asset_profile(profile);std::set<std::string> usages;
+    for(const auto& entry:entries.array()){
+      const auto* settings=entry.find("settings");if(!settings)throw std::invalid_argument("Texture variant settings missing");
+      const auto role=text(*settings,"role"),color=text(*settings,"colorSpace");
+      const auto* alpha=settings->find("alphaCutoff");const double cutoff=alpha?alpha->number_or(-1):0;
+      const auto width=entry.find("width"),height=entry.find("height");
+      const auto path=text(entry,"derivedPath");
+      if(!path.starts_with("assets/canonical/")||path.find("..")!=std::string::npos||path.find('\\')!=std::string::npos||!hash_valid(text(entry,"derivedHash"))||text(entry,"sourceHash")!=text(definition,"sourceHash"))throw std::invalid_argument("Invalid/stale texture variant source");
+      if(!width||!height||width->number_or(-1)<1||height->number_or(-1)<1||width->number_or()>policy.max_texture_dimension||height->number_or()>policy.max_texture_dimension||std::floor(width->number_or())!=width->number_or()||std::floor(height->number_or())!=height->number_or())throw std::invalid_argument("Texture variant exceeds profile dimensions");
+      if(!std::set<std::string>{"baseColor","emissive","normal","metallicRoughness","occlusion","data"}.contains(role)||(color!="srgb"&&color!="linear")||(role=="normal"&&color!="linear")||!std::isfinite(cutoff)||cutoff<0||cutoff>1)throw std::invalid_argument("Invalid texture variant usage");
+      if(!usages.insert(write_json(Json::Array{role,color,cutoff})).second)throw std::invalid_argument("Duplicate texture variant usage");
+    }
+  }
+}
 void validate(const Json& j) {
   const auto id=text(j,"id");
   if(id.empty()||id.find_first_of(" \t\r\n")!=std::string::npos)throw std::invalid_argument("Invalid stable asset ID");
   if(!types.contains(text(j,"type")))throw std::invalid_argument("Unsupported asset type: "+id);
+  if(text(j,"type")=="texture")validate_variants(j);
   if(text(j,"name").empty())throw std::invalid_argument("Asset name required: "+id);
   if(const auto* bounds=j.find("bounds")) {
     if(bounds->array().size()!=2)throw std::invalid_argument("Asset AABB requires min/max: "+id);
@@ -74,6 +94,20 @@ void AssetRegistry::load(const Json& manifest) {
 Json AssetRegistry::document() const {Json::Array records;for(const auto& [id,e]:entries_){(void)id;records.push_back(e.definition);}return Json::Object{{"format","veldren.assets"},{"version",1},{"records",records}};}
 Json AssetRegistry::record(const std::string& id) const {const auto& e=require(id);auto out=e.definition.object();out["loadState"]=e.state;out["users"]=double(e.users);out["generation"]=double(e.generation);return out;}
 Json AssetRegistry::list(const std::string& type) const {Json::Array out;for(const auto& [id,e]:entries_)if(type.empty()||text(e.definition,"type")==type)out.emplace_back(id);return out;}
+Json AssetRegistry::texture_variant(const std::string& id,const std::string& profile,const Json& usage) const {
+  const auto policy=asset_profile(profile);const auto& definition=require(id).definition;
+  if(text(definition,"type")!="texture")throw std::invalid_argument("Asset is not a texture: "+id);
+  const auto* variants=definition.find("variants");const auto* entries=variants?variants->find(profile):nullptr;
+  const auto role=text(usage,"role"),color=text(usage,"colorSpace");const auto* alpha=usage.find("alphaCutoff");const auto cutoff=alpha?alpha->number_or(-1):0;
+  if(entries)for(const auto& entry:entries->array()){
+    const auto* settings=entry.find("settings");const auto* stored_alpha=settings->find("alphaCutoff");
+    if(text(*settings,"role")==role&&text(*settings,"colorSpace")==color&&(stored_alpha?stored_alpha->number_or(-1):0)==cutoff){
+      auto result=entry.object(),processing=settings->object();processing["sourceHash"]=text(entry,"derivedHash");processing["maxDimension"]=double(policy.max_texture_dimension);
+      result["processing"]=processing;result["anisotropy"]=double(policy.anisotropy);result["asset"]=id;return result;
+    }
+  }
+  throw std::invalid_argument("Texture usage unavailable for profile: "+id+" / "+profile);
+}
 std::vector<std::string> AssetRegistry::dependencies(const std::string& id,bool transitive) const {
   require(id);std::vector<std::string> out;std::set<std::string> visited;
   std::function<void(const std::string&)> walk=[&](const std::string& name){for(const auto& dep:require(name).dependencies)if(visited.insert(dep).second){if(transitive)walk(dep);out.push_back(dep);}};
@@ -112,6 +146,7 @@ Json AssetRegistry::command(const Json& r) {
   const auto op=text(r,"op"),id=text(r,"id");
   if(op=="load"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");load(*manifest);return diagnostics();}
   if(op=="record")return record(id);
+  if(op=="texture-variant"){const auto* usage=r.find("usage");if(!usage)throw std::invalid_argument("Texture usage required");return texture_variant(id,text(r,"profile"),*usage);}
   if(op=="list")return list(text(r,"type"));
   if(op=="document")return document();
   if(op=="dependencies")return strings(dependencies(id,true));

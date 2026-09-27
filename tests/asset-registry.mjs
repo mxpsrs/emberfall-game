@@ -10,6 +10,19 @@ for(const mode of ['runtime','editor']){
  context.window=context;vm.createContext(context);
  for(const name of ['asset-runtime','native-runtime'])vm.runInContext(fs.readFileSync('dist/'+name+'.js','utf8'),context,{filename:name});
  const native=await context.realmNativeReady,assets=context.VeldrenAssets;assert(assets.ready);assert.equal(assets.diagnostics().records,manifest.records.length);
+ // Every registered profile must resolve through the actual native command.
+ let variants=0;
+ for(const record of manifest.records)for(const [profile,entries] of Object.entries(record.variants||{}))for(const entry of entries){
+  const variant=assets.textureVariant(record.id,profile,entry.settings);
+  assert.equal(variant.derivedPath,entry.derivedPath);
+  assert.equal(variant.processing.sourceHash,entry.derivedHash);
+  assert.equal(variant.processing.maxDimension,profile==='desktop'?8192:profile==='browser'?512:256);
+  assert(Object.isFrozen(variant.processing));variants++;
+ }
+ assert.equal(variants,845*3);
+ const canonical=manifest.records.find(r=>r.variants);
+ assert.throws(()=>assets.textureVariant(canonical.id,'unknown',{role:'baseColor',colorSpace:'srgb'}));
+ assert.throws(()=>assets.textureVariant(canonical.id,'browser',{role:'missing',colorSpace:'srgb'}));
  assert(assets.list('texture').length>=10);assert(assets.list('animation').length>100);
  const wall='rebuilt:Wall_Plaster_Straight',mesh=packed.models.Wall_Plaster_Straight;
  const realMesh={bounds:mesh.bounds,p:Buffer.from(mesh.p,'base64'),i:Buffer.from(mesh.i,'base64')};

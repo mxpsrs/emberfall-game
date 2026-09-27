@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
+execFileSync('python3',['scripts/build-texture-variants.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-asset-registry.py'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
@@ -11,7 +12,10 @@ import {createCanvas,loadImage} from '@napi-rs/canvas';
 import './build-icons.mjs';
 // Preserve the authored browser game and bundle its assets with the API Worker.
 const assets={};
-async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p),relative=path.relative('dist',p).split(path.sep).join('/');let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.txt':'text/plain; charset=utf-8','.wasm':'application/wasm','.filamat':'application/octet-stream','.ktx2':'image/ktx2','.glb':'model/gltf-binary','.gltf':'model/gltf+json'})[ext]||'application/octet-stream';
+const delivery=JSON.parse(fs.readFileSync('art/derived/browser-assets.json','utf8'));
+const browserImages=new Set(delivery.canonicalImages);
+for(const file of browserImages)if(!fs.existsSync(path.join('dist',file)))throw new Error('Missing browser texture: '+file);
+async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p),relative=path.relative('dist',p).split(path.sep).join('/');if((relative.startsWith('assets/canonical/images/')||relative.startsWith('assets/canonical/variants/'))&&!browserImages.has(relative))continue;let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.txt':'text/plain; charset=utf-8','.wasm':'application/wasm','.filamat':'application/octet-stream','.ktx2':'image/ktx2','.glb':'model/gltf-binary','.gltf':'model/gltf+json'})[ext]||'application/octet-stream';
  // Filament's createTextureFromPng consumes the file bytes directly. Keep
  // this renderer atlas as PNG instead of applying the site's WebP delivery
  // optimization, which otherwise makes the first authenticated draw throw.
