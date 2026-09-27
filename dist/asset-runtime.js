@@ -123,7 +123,7 @@
     }});
    }catch(error){release();throw error;}
   },
-  bindLegacy(source,models){for(const [key,mesh]of Object.entries(models))payloads.set(source+':'+key,mesh);},
+  bindLegacy(source,models){for(const [key,mesh]of Object.entries(models)){const id=source+':'+key;payloads.set(id,mesh);Object.defineProperty(mesh,'canonicalAsset',{value:id,configurable:true});}},
   mesh(id){if(!assets.has(id))return null;const definition=record(id);if(definition.type!=='model'&&definition.type!=='mesh')throw Error('Asset is not geometry: '+id);return payloads.get(id)||null;},
   destroy(){
    ++epoch;initializing?.abort();initializing=null;

@@ -8,6 +8,6 @@ module.exports=async function initializeNativeAssets(context,root){
  });api=instance.exports;api._initialize();
  Object.assign(context,{TextEncoder,TextDecoder,Uint8Array,AbortController,realmAssetURL:p=>p,
   fetch:async()=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(root,'dist/assets/asset-registry.json'),'utf8'))})});
- for(const name of ['asset-runtime','asset-textures'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+name+'.js'),'utf8'),context);
+ for(const name of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+name+'.js'),'utf8'),context);
  await context.VeldrenAssets.initialize(api);return context.VeldrenAssets;
 };

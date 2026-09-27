@@ -273,3 +273,27 @@ invalidation, allocation failure, cancellation, 20 unload cycles and teardown.
 This is resource-stage verification, not graphical or full-phase acceptance.
 Production frame wiring, animation, editor/reimport, delivery budget and final
 visual acceptance remain in progress. No deployment or main merge occurred.
+
+## Production frame canonical submission checkpoint
+
+The game and editor now initialize the canonical material/model/draw owners.
+Existing unchanged imported meshes carry their stable registry ID at the IO
+binding boundary. The production Filament painter submits that ID and the native
+Scene transform; the asset owner resolves submeshes and materials through C++.
+Geometry modified by legacy procedural adapters remains explicitly on the
+compatibility path. During initial asynchronous loading, the existing mesh is
+displayed until the canonical draw is ready; source/model errors are surfaced.
+
+Chromium 134 WebGL/SwiftShader renders the real Quaternius plaster wall with its
+canonical PBR textures through the production painter and native geometry plan.
+The screenshot was visually inspected. Page errors are empty and native/model/
+material/texture disposal releases all canonical resources. Reproduce with
+`node scripts/phase2-model-browser.mjs` (external Playwright is supported through
+`VELDREN_PLAYWRIGHT`). Evidence is under `docs/qa/phase2-asset-rendering/canonical-*`.
+Actual Filament runtime, unchanged-transform caching and registry tests also pass.
+
+The previously unavailable source PNG is now recovered from the official free
+Medieval Village pack and verified against its original SHA256. All 102 texture
+profile outputs are available without changing image pixels or profile settings.
+The full build still fails the unchanged 64 MiB gate at approximately 88 MiB;
+final delivery, editor/reimport and overall acceptance are not complete.

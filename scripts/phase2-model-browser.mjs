@@ -6,7 +6,7 @@ import http from 'node:http';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 const playwright=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES,'playwright/index.mjs')));
-const root=path.resolve('dist'),output=path.resolve('.qa/phase2-textures');fs.mkdirSync(output,{recursive:true});
+const root=path.resolve('dist'),output=path.resolve('.qa/phase2-models');fs.mkdirSync(output,{recursive:true});
 const html=`<!doctype html><style>body{margin:0;background:#121820}.realm-surface{position:absolute;top:0;left:0}</style><canvas id="world"></canvas>
 <script>
 window.VELDREN_CONTEXT='editor';
@@ -27,10 +27,15 @@ window.acceptance=(async()=>{
  -3,0,-3,0,1,0,1,1,1,1,0,0, -3,0,3,0,1,0,1,1,1,1,0,1, 3,0,3,0,1,0,1,1,1,1,1,1,
  -3,0,-3,0,1,0,1,1,1,1,0,0, 3,0,3,0,1,0,1,1,1,1,1,1, 3,0,-3,0,1,0,1,1,1,1,1,0
  ]),buffer={data:raw},entries=[{buffer,stride:48,model:[1,0,0,10,0,1,0,0,0,0,1,20],terrain:true}];
+ const model='rebuilt:Wall_Plaster_Straight';gpu.assetDraws.begin('overworld');gpu.assetDraws.submit(model,[1,0,0,0,0,1,0,0,0,0,1,0,10,0,20,1]);gpu.assetDraws.end();
+ while(gpu.assetDraws.diagnostics().loading)await new Promise(resolve=>setTimeout(resolve,10));
+ if(gpu.assetDraws.diagnostics().failures.length)throw Error(gpu.assetDraws.diagnostics().failures.join(';'));
+ const canonicalMesh={};VeldrenAssets.bindLegacy('rebuilt',{Wall_Plaster_Straight:canonicalMesh});
+ entries.push(gpu.canonicalEntry(canonicalMesh,[1,0,0,10,0,1,0,0,0,0,1,20]));
  // Keep submitting until the test captures the actual GPU surface.
  let frames=0;function frame(){gpu.render(entries,[],null);frames++;window.testFrames=frames;window.testFrame=requestAnimationFrame(frame)}frame();
  await new Promise(resolve=>{function wait(){if(frames>=20)resolve();else requestAnimationFrame(wait)}wait()});
- return {textures:gpu.textureResources.diagnostics(),renderables:gpu.scene.getRenderableCount(),native:realmNative.kind,errors:gpu.engine.hasUnrecoverableFailure()};
+ return {models:gpu.modelResources.diagnostics(),draws:gpu.assetDraws.diagnostics(),textures:gpu.textureResources.diagnostics(),renderables:gpu.scene.getRenderableCount(),native:realmNative.kind,errors:gpu.engine.hasUnrecoverableFailure()};
 })();window.acceptance.catch(error=>{window.failure=String(error)});
 </script>`;
 const server=http.createServer((request,response)=>{
@@ -47,9 +52,9 @@ try{
  browser=await playwright.chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const page=await browser.newPage({viewport:{width:800,height:600}}),errors=[];page.on('pageerror',error=>errors.push(String(error)));
  await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'load',timeout:120000});
- const result=await page.evaluate(()=>window.acceptance);assert.equal(result.errors,false);assert.equal(result.native,'cpp-wasm');assert.equal(result.textures.textures,2);assert.equal(result.renderables,1);assert.deepEqual(errors,[]);
- await page.screenshot({path:path.join(output,'terrain.png')});
+ const result=await page.evaluate(()=>window.acceptance);assert.equal(result.errors,false);assert.equal(result.native,'cpp-wasm');assert(result.models.geometry>0);assert(result.draws.instances>0);assert(result.renderables>1);assert.deepEqual(errors,[]);
+ await page.screenshot({path:path.join(output,'canonical-wall.png')});
  const teardown=await page.evaluate(()=>{cancelAnimationFrame(window.testFrame);realmNative.destroy();return testGPU.textureResources.diagnostics()});assert.equal(teardown.textures,0);assert.equal(teardown.gpuBytes,0);
  fs.writeFileSync(path.join(output,'result.json'),JSON.stringify({backend:'Chromium WebGL SwiftShader',result,teardown,pageErrors:errors},null,2)+'\n');
- console.log('PASS: actual Chromium WebGL native atlas decode/mips, two Filament textures, rendered terrain, zero page errors and zero texture resources after teardown.');
+ console.log('PASS: actual Chromium WebGL canonical PBR wall, native geometry/materials, zero page errors and zero resources after teardown.');
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}

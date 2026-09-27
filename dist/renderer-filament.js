@@ -78,6 +78,14 @@ function createRealmFilamentGPU(){
  try{atlas=textureResources.acquire(assets.atlasBytes,textureSettings).texture;groundSurfaces=textureResources.acquire(assets.groundSurfacesBytes,textureSettings).texture;}
  catch(error){textureResources.destroy();throw error;}
  assets.atlasBytes=null;assets.groundSurfacesBytes=null;
+ const materialResources=createVeldrenMaterialResources(engine,VeldrenAssets,textureResources),modelResources=createVeldrenModelResources(engine,VeldrenAssets,materialResources);
+ const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,realmMobileFilament()?'browser-mobile':'browser');
+ const canonicalEligibility=new Map();
+ function canonicalEntry(mesh,model,style={}){
+  const id=mesh.canonicalAsset;if(!id||style.dissolve||style.boss)return {...realmMeshEntry(backend,mesh),model,...style};
+  if(!canonicalEligibility.has(id))canonicalEligibility.set(id,VeldrenAssets.has(id)&&VeldrenAssets.record(id).importSettings?.importer==='veldren-gltf-1');
+  return canonicalEligibility.get(id)?{canonicalAsset:id,mesh,model,...style}:{...realmMeshEntry(backend,mesh),model,...style};
+ }
  const minFilter=Filament.MinFilter.LINEAR_MIPMAP_LINEAR;
  const sampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);sampler.setAnisotropy(quality.anisotropy);
  const groundSampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);groundSampler.setAnisotropy(quality.anisotropy);
@@ -196,12 +204,13 @@ function createRealmFilamentGPU(){
   const url=typeof realmAssetURL==='function'?realmAssetURL(path):path,loader=engine.createAssetLoader(),asset=loader.createAsset(await glbSource(path));if(!asset){loader.delete();throw new Error('GLB could not be parsed: '+path);}
   await new Promise((resolve,reject)=>{try{asset.loadResources(resolve,()=>{},url.slice(0,url.lastIndexOf('/')+1),null,{normalizeSkinningWeights:true});}catch(error){reject(error);}});asset.releaseSourceData();return {asset,loader,add(){scene.addEntities(asset.getEntities());},remove(){scene.removeEntities(asset.getEntities());},destroy(){scene.removeEntities(asset.getEntities());loader.destroyAsset(asset);loader.delete();}};
  }
- backend={kind:'filament',textureResources,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;},loadGlb,
+ backend={kind:'filament',textureResources,materialResources,modelResources,assetDraws,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;},loadGlb,
   render(entries,dynamic,g){
    if(engine.hasUnrecoverableFailure())throw new Error('Filament reported an unrecoverable renderer failure');
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
-   const next=nextEntities;for(const entry of entries)acquire(entry,next);
+   const next=nextEntities;assetDraws.begin(currentScene);
+   try{for(const entry of entries){if(entry.canonicalAsset){if(!assetDraws.submit(entry.canonicalAsset,realmFilamentMatrix(entry.model)))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next);}else acquire(entry,next);}}finally{assetDraws.end();}
    if(dynamic.length){
     const count=Math.floor(dynamic.length/12),capacity=dynamicCapacity(count);dynamicResourceIndex=(dynamicResourceIndex+1)%dynamicResources.length;let resource=dynamicResources[dynamicResourceIndex];
     if(!resource||resource.capacity<capacity){
@@ -227,9 +236,9 @@ painter3=function(g,project){
  if(project!==project3){const painter=canvasPainterRealm(g,project);painter.software=true;return painter;}
  if(!realmGPU||realmGPU.kind!=='filament')realmGPU=createRealmFilamentGPU();
  const gpu=realmGPU,entries=[],dynamic=[];
- const painter={face(points,color,normals,materialId,colors,uvs){realmFaceData(dynamic,points,color,normals,materialId,colors,uvs);},indexed(mesh,m,style={}){entries.push({...realmMeshEntry(gpu,mesh),model:m,...style});},cached(cached){
-  if(cached.kind==='assembly'){for(const i of cached.instances||[]){const model=affineMultiply(cached.model,i.matrix);model[7]-=typeof landHeight==='function'?landHeight(model[3],model[11]):0;entries.push({...realmMeshEntry(gpu,i.mesh),model,...(i.ghost?{dissolve:.45}:{})});}for(const f of cached.faces)realmFaceData(dynamic,f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
-  if(cached.kind!=='building')for(const instance of cached.instances||[])entries.push({...realmMeshEntry(gpu,instance.mesh),model:instance.matrix});
+ const painter={face(points,color,normals,materialId,colors,uvs){realmFaceData(dynamic,points,color,normals,materialId,colors,uvs);},indexed(mesh,m,style={}){entries.push(gpu.canonicalEntry(mesh,m,style));},cached(cached){
+  if(cached.kind==='assembly'){for(const i of cached.instances||[]){const model=affineMultiply(cached.model,i.matrix);model[7]-=typeof landHeight==='function'?landHeight(model[3],model[11]):0;entries.push(gpu.canonicalEntry(i.mesh,model,i.ghost?{dissolve:.45}:{}));}for(const f of cached.faces)realmFaceData(dynamic,f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
+  if(cached.kind!=='building')for(const instance of cached.instances||[])entries.push(gpu.canonicalEntry(instance.mesh,instance.matrix));
   if(!cached.faces.length&&cached.kind!=='building')return cached.height;
   let entry=gpu.cache.get(cached);if(!entry){const data=[];if(cached.kind==='building')for(const instance of cached.instances||[])realmIndexedData(data,instance.mesh,instance.matrix);for(const face of cached.faces){let materialId=face.material||0;if(!materialId&&cached.kind==='building'){const value=parseInt(face.color.slice(1),16),red=value>>16,green=(value>>8)&255,blue=value&255,top=face.points.reduce((sum,p)=>sum+p[1],0)/face.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)materialId=6;else if(red>green*1.15&&green>blue*1.1)materialId=5;}realmFaceData(data,face.points,face.color,face.normals,materialId,face.colors,face.uvs);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);}entries.push(cached.model?{...entry,model:cached.model}:entry);return cached.height;
  },flush(){gpu.render([...realmTerrainEntries(gpu),...entries],dynamic,g);trimRealmMeshes(gpu);gpu.frameId++;}};
