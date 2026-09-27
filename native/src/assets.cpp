@@ -37,6 +37,16 @@ void validate(const Json& j) {
   if(!types.contains(text(j,"type")))throw std::invalid_argument("Unsupported asset type: "+id);
   if(text(j,"type")=="texture")validate_variants(j);
   if(text(j,"name").empty())throw std::invalid_argument("Asset name required: "+id);
+  if(const auto* lods=j.find("lods")){
+    int previous=-1;double distance=-1;
+    for(const auto& lod:lods->array()){
+      const auto* level=lod.find("level");const auto* threshold=lod.find("threshold");
+      const auto n=level?level->number_or(-1):-1,d=threshold?threshold->number_or(-1):-1;
+      if(n<0||n>2||n!=std::floor(n)||n<=previous||!std::isfinite(d)||d<0||d<=distance||text(lod,"asset").empty())throw std::invalid_argument("Invalid LOD definition: "+id);
+      if(previous==-1&&(n!=0||d!=0||text(lod,"asset")!=id))throw std::invalid_argument("LOD0 must reference the original asset at distance zero");
+      previous=int(n);distance=d;
+    }
+  }
   if(const auto* bounds=j.find("bounds")) {
     if(bounds->array().size()!=2)throw std::invalid_argument("Asset AABB requires min/max: "+id);
     for(const auto& point:bounds->array())if(point.array().size()!=3)throw std::invalid_argument("Invalid asset AABB: "+id);
@@ -62,11 +72,13 @@ void AssetRegistry::load(const Json& manifest) {
     if(const auto* deps=record.find("dependencies"))for(const auto& dep:deps->array()) {
       const auto name=dep.string_or();if(name.empty()||!entry.dependencies.insert(name).second)throw std::invalid_argument("Invalid or duplicate dependency: "+id);
     }
+    if(const auto* lods=record.find("lods"))for(const auto& lod:lods->array())if(text(lod,"asset")!=id)entry.dependencies.insert(text(lod,"asset"));
     if(!next.entries_.emplace(id,std::move(entry)).second)throw std::invalid_argument("Duplicate stable asset ID: "+id);
   }
   for(const auto& [id,entry]:next.entries_)for(const auto& dep:entry.dependencies) {
     next.require(dep);next.reverse_[dep].insert(id);
   }
+  for(const auto& [id,entry]:next.entries_)if(const auto* lods=entry.definition.find("lods"))for(const auto& lod:lods->array())if(text(next.require(text(lod,"asset")).definition,"type")!="model")throw std::invalid_argument("LOD must reference a model: "+id);
   std::map<std::string,int> colors;
   std::function<void(const std::string&,unsigned)> visit=[&](const std::string& id,unsigned depth) {
     if(depth>512)throw std::invalid_argument("Asset dependency depth exceeds 512");
@@ -146,6 +158,15 @@ Json AssetRegistry::diagnostics() const {
 Json AssetRegistry::command(const Json& r) {
   const auto op=text(r,"op"),id=text(r,"id");
   if(op=="load"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");load(*manifest);return diagnostics();}
+  if(op=="validate"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");AssetRegistry candidate;candidate.load(*manifest);return candidate.diagnostics();}
+  if(op=="lod"){
+    const auto* distance=r.find("distance");const auto d=distance?distance->number_or(-1):-1;
+    if(!std::isfinite(d)||d<0)throw std::invalid_argument("Invalid LOD distance");
+    const auto& definition=require(id).definition;const auto* lods=definition.find("lods");
+    Json selected=Json::Object{{"level",0},{"asset",id},{"threshold",0}};
+    if(lods)for(const auto& lod:lods->array())if(lod.find("threshold")->number_or()<=d)selected=lod;
+    return selected;
+  }
   if(op=="record")return record(id);
   if(op=="material-plan")return material_plan(id,text(r,"profile"));
   if(op=="render-plan"){const auto* model=r.find("model");if(!model)throw std::invalid_argument("Canonical model required");return asset_render_plan(*this,*model);}

@@ -57,5 +57,8 @@ if variant_path.exists():
   if id not in by_id:raise ValueError('Texture variants reference an unknown asset: '+id)
   by_id[id]['variants']=variants
 manifest={'format':'veldren.assets','version':1,'records':sorted(records,key=lambda r:r['id'])}
-output=ROOT/'dist/assets/asset-registry.json';output.write_text(json.dumps(manifest,separators=(',',':'))+'\n')
+import argparse,os
+parser=argparse.ArgumentParser();parser.add_argument('--output',type=pathlib.Path)
+output=parser.parse_args().output or ROOT/'dist/assets/asset-registry.json'
+temporary=output.with_name(output.name+'.tmp');temporary.write_text(json.dumps(manifest,separators=(',',':'))+'\n');os.replace(temporary,output)
 print('Exported',len(records),'native asset records from existing Veldren assets.')

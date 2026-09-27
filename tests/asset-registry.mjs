@@ -49,6 +49,20 @@ for(const mode of ['runtime','editor']){
   assert.equal(assets.record(wall).loadState,'unloaded');assert.equal(assets.diagnostics().dependencyLeases,0);
  }
  assets.invalidate(texture);assert.equal(assets.record(wall).generation,2);
+ // Reimport invalidates the changed dependency's model without editing Scene IDs.
+ const generation=assets.record(wall).generation,live=assets.leaseModel(wall);await live.ready;
+ const broken=structuredClone(manifest);broken.records.push(broken.records[0]);
+ assert.throws(()=>assets.reload(broken));assert.equal(assets.record(wall).generation,generation);assert.equal(assets.record(wall).users,1);
+ const updated=structuredClone(manifest);updated.records.find(r=>r.id===texture).name+=' reimported';
+ let notices=0;const unsubscribe=assets.onReload(()=>notices++);assets.reload(updated);assert.equal(notices,1);unsubscribe();
+ assert.equal(assets.record(wall).generation,generation+1);assert.equal(assets.record(wall).users,1);live.release();
+ assert.deepEqual(native.scenes.serialize(),saved,'asset reload leaves persisted Scene content unchanged');
+ const next=assets.leaseModel(wall);await next.ready;next.release();assert.equal(assets.diagnostics().dependencyLeases,0);
+ const lower=updated.records.find(r=>r.type==='model'&&r.id!==wall&&!r.dependencies?.includes(wall)).id;
+ updated.records.find(r=>r.id===wall).lods=[{level:0,asset:wall,threshold:0},{level:1,asset:lower,threshold:25}];
+ assets.reload(updated);assert.equal(assets.lod(wall,24.99).asset,wall);assert.equal(assets.lod(wall,25).asset,lower);assert(assets.dependencies(wall).includes(lower));
+ assert.throws(()=>assets.lod(wall,-1));const invalidLOD=structuredClone(updated);invalidLOD.records.find(r=>r.id===wall).lods[1].threshold=0;
+ assert.throws(()=>assets.reload(invalidLOD));assert.equal(assets.lod(wall,100).asset,lower);
  native.destroy();assert(!assets.ready);assert.equal(calls.filter(n=>n==='veldren_assets_destroy').length,1);
  console.log('PASS: '+mode+' actual-WASM registry, real modular mesh resolution, scene stable IDs, cached reads, dependencies, 100 leases, release and teardown.');
 }

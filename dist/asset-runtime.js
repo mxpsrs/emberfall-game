@@ -3,7 +3,7 @@
 (()=>{
  let command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
  const payloads=new Map(),models=new Map(),leases=new Set(),legacyLeases=new Map();
- const textureLeases=new Set(),disposeListeners=new Set();
+ const textureLeases=new Set(),disposeListeners=new Set(),reloadListeners=new Set();
  const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
  function request(value){if(!command)throw Error('Native asset registry is not ready');return command(value);}
  function record(id){if(!records.has(id))records.set(id,freeze(request({op:'record',id})));return records.get(id);}
@@ -79,6 +79,16 @@
   record,
   materialPlan(id,profile){return freeze(request({op:'material-plan',id,profile}));},
   renderPlan(model){return freeze(request({op:'render-plan',model}));},
+  lod(id,distance){return freeze(request({op:'lod',id,distance}));},
+  validate(manifest){return request({op:'validate',manifest});},
+  reload(manifest){
+   // Native load is transactional and preserves stable root leases. A rejected
+   // import leaves every live definition and cached generation intact.
+   const result=request({op:'load',manifest});records.clear();catalogs.clear();ids=null;
+   for(const entry of [...models.values()])if(!assets.has(entry.id)||record(entry.id).generation!==entry.generation)retire(entry);
+   for(const listener of [...reloadListeners])listener();return result;
+  },
+  async refresh(){const response=await fetch(realmAssetURL('assets/asset-registry.json').split('?')[0],{cache:'no-store'});if(!response.ok)throw Error('Updated asset manifest unavailable');return assets.reload(await response.json());},
   textureVariant(id,profile,usage){return freeze(request({op:'texture-variant',id,profile,usage}));},
   has(id){if(!ids)ids=new Set(request({op:'list'}));return ids.has(id);},
   list(type=''){if(!catalogs.has(type))catalogs.set(type,Object.freeze(request({op:'list',type})));return catalogs.get(type);},
@@ -96,6 +106,7 @@
   },
   ioDiagnostics:()=>({models:models.size,leases:leases.size}),
   onDispose(listener){disposeListeners.add(listener);return ()=>disposeListeners.delete(listener);},
+  onReload(listener){reloadListeners.add(listener);return ()=>reloadListeners.delete(listener);},
   processTexture(bytes,options={}){
    if(!ready||!textureApi?.veldren_texture_create)throw Error('Native texture processing unavailable');
    const api=textureApi,session=epoch;
@@ -127,7 +138,7 @@
   mesh(id){if(!assets.has(id))return null;const definition=record(id);if(definition.type!=='model'&&definition.type!=='mesh')throw Error('Asset is not geometry: '+id);return payloads.get(id)||null;},
   destroy(){
    ++epoch;initializing?.abort();initializing=null;
-   for(const listener of [...disposeListeners].reverse())listener();disposeListeners.clear();
+   for(const listener of [...disposeListeners].reverse())listener();disposeListeners.clear();reloadListeners.clear();
    for(const release of [...textureLeases])release();textureApi=null;
    for(const lease of leases){lease.closed=true;retire(lease.entry);}leases.clear();legacyLeases.clear();
    destroyNative?.();destroyNative=null;command=null;ready=false;ids=null;records.clear();catalogs.clear();payloads.clear();models.clear();

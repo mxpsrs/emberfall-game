@@ -70,3 +70,6 @@ add_test(NAME asset-materials COMMAND veldren-material-test ${CMAKE_CURRENT_SOUR
 add_executable(veldren-render-asset-test tests/render_asset_test.cpp)
 target_link_libraries(veldren-render-asset-test PRIVATE veldren_core)
 add_test(NAME asset-render COMMAND veldren-render-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets)
+
+add_executable(veldren-asset-validate tools/validate_assets.cpp)
+target_link_libraries(veldren-asset-validate PRIVATE veldren_core)

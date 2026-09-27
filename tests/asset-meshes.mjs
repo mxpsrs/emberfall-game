@@ -28,6 +28,10 @@ try{
   for(const name of [id,'rebuilt:Roof_RoundTiles_4x6','rebuilt:WindowShutters_Thin_Flat_Open','avatar:male','avatar:female','kenney:tree-oak']){
    if(!assets.has(name))continue;const lease=models.acquire(name,'browser-mobile');const model=await lease.ready;assert(model.plan.geometry.length>0);lease.release();assert.equal(models.diagnostics().gpuBytes,0);
   }
+  draws.begin('rig');assert.equal(draws.submit('avatar:male',matrix),false);draws.end();
+  for(let n=0;n<100&&draws.diagnostics().loading;n++)await new Promise(resolve=>setTimeout(resolve,10));
+  draws.begin('rig');assert(draws.submit('avatar:male',matrix));draws.end();assert(scene.getRenderableCount()>0);
+  draws.begin('empty');draws.end();assert.equal(scene.getRenderableCount(),0);assert.equal(models.diagnostics().gpuBytes,0);
   const original=F.VertexBuffer.Builder;F.VertexBuffer.Builder=()=>{throw Error('injected vertex allocation failure');};const bad=models.acquire(id,'browser');await assert.rejects(bad.ready,/injected/);F.VertexBuffer.Builder=original;assert.equal(models.diagnostics().gpuBytes,0);assert.equal(assets.diagnostics().dependencyLeases,0);
   for(let n=0;n<20;n++){const lease=models.acquire(id,'browser-mobile');await lease.ready;lease.release();}
   const cancelled=models.acquire(id,'browser');cancelled.release();await assert.rejects(cancelled.ready,{name:'AbortError'});

@@ -96,6 +96,10 @@ build/render-asset-test: src/asset_render.cpp src/asset_material.cpp src/asset_i
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/render_asset_test.cpp -o $@
 
+build/asset-validate: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tools/validate_assets.cpp
+	mkdir -p build
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
 build/material-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp include/veldren/assets.h include/veldren/asset_profile.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp -o $@

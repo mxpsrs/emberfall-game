@@ -261,7 +261,7 @@ Json imported_asset_records(const Json& model,const std::string& source_path){
   Json::Array records,model_dependencies;
   const auto hash=field(model,"sourceHash");
   auto add=[&](const std::string& key,const std::string& type,const std::string& name,Json::Array deps,Json::Object extra=Json::Object{}){
-    Json::Object record{{"id",key},{"type",type},{"name",name},{"sourcePath",source_path},{"derivedPath",derived},{"sourceHash",hash},{"importSettings",Json::Object{{"importer",field(model,"importerVersion")}}},{"dependencies",std::move(deps)},{"validation",field(model,"validation")},{"variants",Json::Object{}}};
+    Json::Object record{{"id",key},{"type",type},{"name",name.empty()?key:name},{"sourcePath",source_path},{"derivedPath",derived},{"sourceHash",hash},{"importSettings",Json::Object{{"importer",field(model,"importerVersion")}}},{"dependencies",std::move(deps)},{"validation",field(model,"validation")},{"variants",Json::Object{}}};
     for(auto& [k,v]:extra)record[k]=std::move(v);
     records.emplace_back(std::move(record));
   };

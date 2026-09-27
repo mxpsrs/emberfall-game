@@ -17,7 +17,7 @@ uses={};jobs={};source_bytes={}
 processor=digest(b''.join((ROOT/name).read_bytes() for name in [
     'native/src/asset_texture.cpp','native/tools/texture_variants.cpp',
     'native/include/veldren/asset_profile.h','native/third_party/stb_image.h']))
-for path in sorted((DIST/'assets/canonical/models').glob('*.json')):
+for path in sorted({DIST/r['derivedPath'] for r in registry['records'] if r['type']=='model'}):
     model=json.loads(path.read_text())
     for material in model['materials']:
         for binding in material.values():

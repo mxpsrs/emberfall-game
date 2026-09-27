@@ -14,10 +14,17 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   try{
    manager.create(root);parent=manager.getInstance(root);
    for(const draw of model.draws){
-    if(draw.skin)throw Error('Animated canonical draw requires a native pose');
     const entity=filament.EntityManager.get().create();entities.push(entity);
-    filament.RenderableManager.Builder(1).boundingBox(draw.resource.bounds).material(0,draw.materialInstance)
-     .geometry(0,filament.RenderableManager$PrimitiveType.TRIANGLES,draw.resource.vb,draw.resource.ib).castShadows(true).receiveShadows(true).build(engine,entity);
+    const builder=filament.RenderableManager.Builder(1).boundingBox(draw.resource.bounds).material(0,draw.materialInstance)
+     .geometry(0,filament.RenderableManager$PrimitiveType.TRIANGLES,draw.resource.vb,draw.resource.ib).castShadows(true).receiveShadows(true);
+    if(draw.skin)builder.skinning(draw.boneCount);
+    builder.build(engine,entity);
+    if(draw.skin){
+     // The 1.77 builder binding stores a pointer to a temporary vector. Upload
+     // after build through the manager, which consumes the matrices immediately.
+     const bytes=Uint8Array.from(atob(draw.bones),c=>c.charCodeAt(0)),matrices=new Float32Array(bytes.buffer),renderables=engine.getRenderableManager(),renderable=renderables.getInstance(entity);
+     try{renderables.setBonesFromMatrices(renderable,Array.from({length:draw.boneCount},(_,i)=>Array.from(matrices.subarray(i*16,i*16+16))),0);}finally{renderable.delete();}
+    }
     const instance=manager.getInstance(entity);try{manager.setParent(instance,parent);manager.setTransform(instance,draw.matrix);}finally{instance.delete();}
    }
    return {root,entities,active:false,matrix:null};
@@ -28,7 +35,8 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();sceneKey=key;}
   for(const pool of pools.values())pool.used=0;
  }
- function submit(id,matrix){
+ function submit(id,matrix,distance=0){
+  if(assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
   const generation=assets.record(id).generation;let pool=pools.get(id);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(id);pool=null;}
   if(!pool){

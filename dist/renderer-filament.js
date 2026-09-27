@@ -210,7 +210,7 @@ function createRealmFilamentGPU(){
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
    const next=nextEntities;assetDraws.begin(currentScene);
-   try{for(const entry of entries){if(entry.canonicalAsset){if(!assetDraws.submit(entry.canonicalAsset,realmFilamentMatrix(entry.model)))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next);}else acquire(entry,next);}}finally{assetDraws.end();}
+   try{for(const entry of entries){if(entry.canonicalAsset){if(!assetDraws.submit(entry.canonicalAsset,realmFilamentMatrix(entry.model),Math.hypot((entry.model?.[3]||0)-px,(entry.model?.[11]||0)-py)))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next);}else acquire(entry,next);}}finally{assetDraws.end();}
    if(dynamic.length){
     const count=Math.floor(dynamic.length/12),capacity=dynamicCapacity(count);dynamicResourceIndex=(dynamicResourceIndex+1)%dynamicResources.length;let resource=dynamicResources[dynamicResourceIndex];
     if(!resource||resource.capacity<capacity){

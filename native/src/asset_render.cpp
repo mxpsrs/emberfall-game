@@ -36,7 +36,7 @@ Json asset_render_plan(const AssetRegistry& registry,const Json& model) {
  const auto id=text(model,"id");const auto definition=registry.record(id);
  if(text(model,"format")!="veldren.model"||field(model,"version").number_or()!=1||text(model,"sourceHash")!=text(definition,"sourceHash"))fail("stale model identity");
  const auto generation=field(definition,"generation");
- Json::Array geometry,draws;std::map<std::string,Json::Array> mesh_draws;std::map<std::string,const Json*> nodes,materials;
+ Json::Array geometry,draws;std::map<std::string,unsigned> joint_limits;std::map<std::string,Json::Array> mesh_draws;std::map<std::string,const Json*> nodes,materials;
  for(const auto& m:field(model,"materials").array())materials.emplace(text(m,"id"),&m);
  for(const auto& mesh:field(model,"meshes").array()) {
   Json::Array primitives;
@@ -74,8 +74,15 @@ Json asset_render_plan(const AssetRegistry& registry,const Json& model) {
    V lo{INFINITY,INFINITY,INFINITY},hi{-INFINITY,-INFINITY,-INFINITY};std::vector<float> vertices(count*23);
    for(unsigned i=0;i<count;++i){const auto n=unit(vertex(normals,i));V t{tangents[i*4],tangents[i*4+1],tangents[i*4+2]};const auto proj=dot(n,t);for(unsigned k=0;k<3;++k)t[k]-=n[k]*proj;t=unit(t);if(std::abs(std::abs(tangents[i*4+3])-1)>1e-4)fail("invalid tangent handedness");for(unsigned k=0;k<3;++k){normals[i*3+k]=float(n[k]);tangents[i*4+k]=float(t[k]);const auto v=positions[i*3+k];vertices[i*23+k]=v;lo[k]=std::min(lo[k],double(v));hi[k]=std::max(hi[k],double(v));}for(unsigned k=0;k<4;++k)vertices[i*23+3+k]=colors[i*4+k];for(unsigned channel=0;channel<8;++channel)for(unsigned k=0;k<2;++k)vertices[i*23+7+channel*2+k]=uv[channel][i*2+k];}
    Json::Object packet{{"count",int(count)},{"indexCount",int(index_count)},{"vertices",encode(vertices)},{"normals",encode(normals)},{"tangents",encode(tangents)},{"indices",text(index,"data")},{"stride",92},{"bounds",Json::Object{{"center",vector({(lo[0]+hi[0])/2,(lo[1]+hi[1])/2,(lo[2]+hi[2])/2})},{"halfExtent",vector({std::max(1e-5,(hi[0]-lo[0])/2),std::max(1e-5,(hi[1]-lo[1])/2),std::max(1e-5,(hi[2]-lo[2])/2)})}}}};
-   if(const auto* j=attrs.find("JOINTS_0")){const auto joints=stream(*j,4,count),weights=stream(field(attrs,"WEIGHTS_0"),4,count);for(float v:joints)if(v<0||v!=std::floor(v)||v>65535)fail("invalid bone index");packet["joints"]=encode(joints);packet["weights"]=encode(weights);}
+   unsigned joint_limit=0;
+   if(const auto* j=attrs.find("JOINTS_0")){
+    const auto joints=stream(*j,4,count);auto weights=stream(field(attrs,"WEIGHTS_0"),4,count);
+    for(float v:joints){if(v<0||v!=std::floor(v)||v>65535)fail("invalid bone index");joint_limit=std::max(joint_limit,unsigned(v)+1);}
+    for(unsigned i=0;i<count;++i){double sum=0;for(unsigned k=0;k<4;++k){const auto w=weights[i*4+k];if(w<0)fail("negative bone weight");sum+=w;}if(sum<1e-8||std::abs(sum-1)>.01)fail("invalid bone weight sum");for(unsigned k=0;k<4;++k)weights[i*4+k]=float(weights[i*4+k]/sum);}
+    packet["joints"]=encode(joints);packet["weights"]=encode(weights);
+   }
    const auto bytes=write_json(packet);const auto key=asset_sha256(std::span(reinterpret_cast<const std::uint8_t*>(bytes.data()),bytes.size()));
+   if(joint_limit)joint_limits[key]=joint_limit;
    packet["key"]=key;packet["id"]=primitive_id;geometry.emplace_back(packet);
    primitives.emplace_back(Json::Object{{"geometry",key},{"material",material_id},{"primitive",primitive_id},{"instancingEligible",!attrs.find("JOINTS_0")&&field(p,"morphTargets").array().empty()}});
   }
@@ -86,7 +93,24 @@ Json asset_render_plan(const AssetRegistry& registry,const Json& model) {
  std::function<void(const std::string&,unsigned)> visit=[&](const std::string& key,unsigned depth){
   if(depth>512||!seen.insert(key).second||!nodes.contains(key))fail("invalid scene hierarchy");
   const auto& node=*nodes.at(key);
-  if(const auto* mesh=node.find("mesh")){const auto found=mesh_draws.find(mesh->string_or());if(found==mesh_draws.end())fail("unknown mesh");for(const auto& primitive:found->second){auto draw=primitive.object();draw["node"]=key;draw["matrix"]=matrix(field(node,"worldMatrix"));if(const auto* skin=node.find("skin"))draw["skin"]=*skin;draws.emplace_back(draw);}}
+  if(const auto* mesh=node.find("mesh")){const auto found=mesh_draws.find(mesh->string_or());if(found==mesh_draws.end())fail("unknown mesh");for(const auto& primitive:found->second){auto draw=primitive.object();draw["node"]=key;draw["matrix"]=matrix(field(node,"worldMatrix"));if(const auto* skin=node.find("skin")){
+     draw["skin"]=*skin;const Json* skeleton=nullptr;
+     for(const auto& candidate:field(model,"skeletons").array())if(text(candidate,"id")==skin->string_or())skeleton=&candidate;
+     if(!skeleton)fail("missing skeleton");
+     const auto& joints=field(*skeleton,"joints").array();
+     if(joints.empty()||joints.size()>256)fail("skin exceeds the render profile bone limit");
+     const auto limit=joint_limits.find(text(primitive,"geometry"));if(limit==joint_limits.end()||limit->second>joints.size())fail("skin vertex references an absent bone");
+     const auto inverse=stream(field(*skeleton,"inverseBindMatrices"),16,unsigned(joints.size()));
+     Mat4 mesh_world;for(unsigned k=0;k<16;++k)mesh_world.v[k]=field(node,"worldMatrix").array()[k].number_or();
+     const auto inverse_mesh=inverse_affine(mesh_world);std::vector<float> bones;
+     for(unsigned j=0;j<joints.size();++j){
+      const auto joint=nodes.find(joints[j].string_or());if(joint==nodes.end())fail("missing joint node");
+      Mat4 world,bind;const auto& source=field(*joint->second,"worldMatrix");matrix(source);
+      for(unsigned k=0;k<16;++k){world.v[k]=source.array()[k].number_or();bind.v[k]=inverse[j*16+k];}
+      const auto pose=multiply(multiply(inverse_mesh,world),bind);for(double v:pose.v)bones.push_back(float(v));
+     }
+     draw["boneCount"]=int(joints.size());draw["bones"]=encode(bones);
+    }draws.emplace_back(draw);}}
   for(const auto& child:field(node,"children").array())visit(child.string_or(),depth+1);
  };
  const auto& scenes=field(model,"scenes").array();const auto selected=integer(field(model,"defaultScene"),unsigned(scenes.size()));if(selected>=scenes.size())fail("invalid default scene");for(const auto& root:field(scenes[selected],"roots").array())visit(root.string_or(),0);

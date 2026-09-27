@@ -313,3 +313,42 @@ responsible for transport compression and audio byte ranges retained.
 all canonical models/images, 123 startup resources, immutable versions, licensed
 audio hashes and partial responses. The delivery report is generated at
 `.qa/asset-delivery.json`. Full graphical/editor acceptance is still in progress.
+
+## Reimport, LOD and rig resource checkpoint (2026-09-27)
+
+`python3 scripts/reimport-asset.py STABLE_ID SOURCE [--aliases FILE]` runs the
+native importer and validator, archives the original source and hash-checked
+external dependencies, generates immutable canonical payloads and derived
+texture profiles, then atomically publishes the runtime manifest last. Failed
+imports restore prior manifests. Repeating an import is deterministic; changing
+an external buffer changes the payload/provenance address even when the GLTF
+JSON hash stays the same. Unnamed GLTF objects receive stable fallback labels.
+The disposable-checkout reimport test exercises each of these cases.
+
+Runtime/editor registry refresh validates before replacement, preserves stable
+Scene IDs and live model roots, retires stale model generations, and notifies
+catalog consumers. Invalid definitions leave the live registry intact. Removing
+an actively leased root remains an explicit error; release that consumer before
+removing its identity. This protects Scene and material users during reimport.
+
+Native LOD validation supports ordered LOD0/1/2 distance thresholds and model
+references. Alternative levels participate in dependency/reverse invalidation.
+Production draws use native selection when a model declares alternate levels;
+current imported content retains authored LOD0. Models load on demand, share
+in-flight work, release off-screen resources after a short grace period, and
+clear immediately when switching Scene. This is a streaming foundation, not an
+authoring pass that invents lower-detail art.
+
+Native render plans now emit validated bind-pose bone matrices. Filament receives
+joint/weight streams and uploads matrices after renderable construction, avoiding
+the 1.77 JavaScript builder's temporary-matrix-pointer lifetime bug. Missing bone
+references, negative weights and invalid weight sums fail before GPU submission.
+Skeleton names, inverse binds and all 43 UAL1 clips remain unchanged in canonical
+data; existing animated gameplay controllers retain their Phase 1 behavior.
+
+Native tests cover all 190 catalog models, 326 geometry/draw packets, three
+skeleton-bearing assets, deterministic packets, invalid indices/bones/weights,
+and generation changes. Actual Filament tests cover skinned construction,
+100 shared model instances, failure/cancellation, Scene switching and complete
+release. Registry reload/LOD tests pass in both real-WASM contexts. The original
+source corpus passes all 207 files, including both 43-clip UAL1 variants.
