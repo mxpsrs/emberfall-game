@@ -59,8 +59,20 @@
    const a=creatureAssets[key];out.push({id:'creature:'+key,source:'creature',key,name:humanize(key),category:'Creature Models',size:a?.mesh?.bounds?[a.mesh.bounds[1][0]-a.mesh.bounds[0][0],a.mesh.bounds[1][1]-a.mesh.bounds[0][1],a.mesh.bounds[1][2]-a.mesh.bounds[0][2]]:null});
   }
   if(typeof PROP_RULES!=='undefined')for(const key of Object.keys(PROP_RULES).sort())out.push({id:'preset:'+key,source:'preset',key,name:humanize(key),category:'Veldren Prop Presets',size:PROP_RULES[key]?.size||null});
+  const native=window.VeldrenAssets;
+  if(native?.ready){
+   const seen=new Set();
+   for(const asset of out){const id=asset.source==='briar'?'briar:'+asset.key:asset.id;
+    if(native.has(id)&&native.record(id).importSettings?.importer==='veldren-gltf-1'){const record=native.record(id);Object.assign(asset,canonicalMetadata(record));seen.add(id);}
+   }
+   for(const id of native.list('model')){const record=native.record(id);if(record.importSettings?.importer!=='veldren-gltf-1'||seen.has(id))continue;
+    out.push({id,source:'canonical',key:id,name:record.name,category:record.dependencies?.some(id=>id.includes('/skeleton/'))?'Rigged Models':'Imported Models',previewOnly:true,...canonicalMetadata(record)});
+   }
+  }
   return out;
  }
+ function canonicalMetadata(record){return {canonicalId:record.id,generation:record.generation,sourcePath:record.sourcePath,sourceHash:record.sourceHash,validation:record.validation,dependencies:record.dependencies?.length||0,clips:record.dependencies?.filter(id=>id.includes('/animation/')).length||0,size:record.bounds?.[1].map((v,i)=>v-record.bounds[0][i])};}
+ let assetPreview=null;
  function assetById(id){return assetCatalog().find(a=>a.id===id)||null;}
 
  const snapValue=(value,step)=>step?Math.round(value/step)*step:value;
@@ -947,7 +959,7 @@
   isReady:()=>ready,initialize:becomeReady,
   adoptCanonicalDocument(value){window.VeldrenSceneFormat.validateWorld(value);projectWorld=JSON.parse(JSON.stringify(value));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;return {scenes:projectWorld.scenes.length,entities:projectWorld.scenes.reduce((sum,scene)=>sum+scene.entities.length,0)};},
   enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,setBuildingTransform,
-  buildingAssets:()=>B.catalog(),
+  buildingAssets:()=>B.catalog().map(asset=>VeldrenAssets.has(asset.id)&&VeldrenAssets.record(asset.id).importSettings?.importer==='veldren-gltf-1'?{...asset,...canonicalMetadata(VeldrenAssets.record(asset.id))}:asset),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
   beginPartPlacement(id){if(!buildingContext)throw Error('Start Building Edit first');if(!B.model(id))throw Error('Missing local asset');partPlacementAsset=B.catalog().find(asset=>asset.id===id);if(!partPlacementAsset)throw Error('Missing local asset');partPlacement=id;partPlacementRotation=0;partPlacementPoint=null;partPreview=null;tool='place';return buildingState();},
   cancelPartPlacement(){cancelPartPlacement();return buildingState();},
@@ -973,10 +985,14 @@
   setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);if(selected.entity.assembly)B.commit(selected.entity);post('change',{selection:info});return info},
   focusSelection,duplicateSelection,deleteSelection,revertSelection,togglePlayerView,
   listAssets:assetCatalog,
+  previewAsset(id,options){if(!assetPreview)assetPreview=createVeldrenAssetPreview(VeldrenAssets);return assetPreview.render(id,options);},
+  previewDiagnostics:()=>assetPreview?.diagnostics()||null,
+  refreshAssetRegistry:()=>VeldrenAssets.refresh(),
+  onAssetReload:listener=>VeldrenAssets.onReload(listener),
   assetGeometry(id){const text=String(id||''),split=text.indexOf(':');if(split<0)return null;const source=text.slice(0,split),key=text.slice(split+1),mesh=source==='mesh'?briarModels?.[key]:source==='creature'?creatureAssets?.[key]?.mesh:source==='preset'?null:B.model(text);return mesh?.p&&mesh?.i?{p:mesh.p,n:mesh.n,c:mesh.c,f:mesh.f,i:mesh.i,uv:mesh.uv,t:mesh.t,bounds:mesh.bounds,atlas:typeof REALM_ATLAS_IMAGE!=='undefined'?REALM_ATLAS_IMAGE:null}:null;},
   gameUiVisible:()=>gameUiVisible,
   setGameUiVisible,
-  beginPlacement(id){const asset=assetById(id);if(!asset)throw Error('Unknown Veldren asset '+id);placementAsset=asset;placementRotation=0;tool='place';ensurePlacementPreview(asset);return {...asset}},
+  beginPlacement(id){const asset=assetById(id);if(!asset)throw Error('Unknown Veldren asset '+id);if(asset.previewOnly)throw Error('This asset is available for inspection; use its stable ID in a compatible Scene component');placementAsset=asset;placementRotation=0;tool='place';ensurePlacementPreview(asset);return {...asset}},
   rotatePlacement,
   cancelPlacement(){placementAsset=null;placementRotation=0;removePlacementPreview();if(tool==='place')tool='select';return true},
   placementState(){return placementAsset?{...placementAsset}:null},

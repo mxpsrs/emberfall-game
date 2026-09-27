@@ -352,3 +352,26 @@ and generation changes. Actual Filament tests cover skinned construction,
 100 shared model instances, failure/cancellation, Scene switching and complete
 release. Registry reload/LOD tests pass in both real-WASM contexts. The original
 source corpus passes all 207 files, including both 43-clip UAL1 variants.
+
+## Canonical editor catalog and previews (2026-09-27)
+
+The asset browser lists all 190 canonical models alongside compatible existing
+assets and shows stable identity, bounds, generation, source provenance and
+validation. Canonical building-part cards receive the same metadata. Imported
+assets without an existing placement controller remain available for inspection;
+they do not silently enter an incompatible gameplay workflow.
+
+`editor/asset-preview.js` owns one offscreen Filament engine. It marshals the same
+native render/material/profile packets as production, renders actual textures,
+and releases model/material/texture leases after copying pixels. Inspector work
+is coalesced by request generation, thumbnail requests are serialized, and the
+UI cache remains capped at 180 small canvases. Reload Assets fetches an unversioned
+fresh registry, updates catalog metadata and invalidates cached thumbnails.
+Legacy/procedural assets retain their established CPU preview path.
+
+`phase2-editor-assets-browser.mjs` passes in actual Chromium WebGL: plaster wall,
+round-tile roof and bind-pose avatar visibly render with textured geometry; each
+capture leaves zero model/texture GPU bytes. Teardown destroys the preview
+engine and its objects. Screenshots and measurements are checked in under
+`docs/qa/phase2-asset-rendering/editor-*`. The complete built game/editor workflow
+is the final acceptance gate still running at this checkpoint.
