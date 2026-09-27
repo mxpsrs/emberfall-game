@@ -17,6 +17,15 @@
  let editorSequence=0,editorRendering=false;
  let lastAppliedScene=null;
 
+ let commands=null;
+ function commandSystem(){
+  if(!commands)commands=createVeldrenEditorCommands(window.realmNative.scenes,()=>String(currentScene),state=>{
+   sceneDocumentDirty=state.dirty;
+   if(selected?.entity?._sceneEntityId&&!window.realmNative.scenes.entity(String(currentScene),selected.entity._sceneEntityId)){selected=null;selectedScene=null;}
+   post('history',state);if(state.changed)post('change',{selection:entityInfo(selected),dirty:state.dirty});
+  });
+  return commands;
+ }
  const post=(type,payload={})=>{try{parent.postMessage({type:'veldren-editor-'+type,...payload},location.origin);}catch{}};
  const log=(message,level='info')=>post('log',{message,level});
  const ckey=(scene,kind,id)=>`${scene}|${kind}|${id}`;
@@ -225,7 +234,7 @@
   const scale=Math.max(.1,Math.min(10,Number.isFinite(Number(input.scale))?Number(input.scale):entityScale(ref)));
   if(e._generatedSceneEntity){
    const elevation=window.realmNative.scenes.entity(String(currentScene),e._sceneEntityId).worldMatrix[13];
-   if(!window.realmNative.scenes.setWorldTransform(String(currentScene),e._sceneEntityId,{position:[x,elevation,y],rotation:[0,Math.sin(rotation*Math.PI/360),0,Math.cos(rotation*Math.PI/360)],scale:[scale,scale,scale]}))throw Error('The native Scene rejected the editor transform');sceneDocumentDirty=true;
+   commandSystem().execute('Transform '+(e.name||'entity'),[{op:'transform',id:e._sceneEntityId,space:'world',transform:{position:[x,elevation,y],rotation:[0,Math.sin(rotation*Math.PI/360),0,Math.cos(rotation*Math.PI/360)],scale:[scale,scale,scale]}}]);
   }else if(e._sceneEntityId){
    if(!projectWorld)throw Error('The canonical scene document is unavailable');
    const result=window.VeldrenSceneFormat.setWorldTransform(projectWorld,String(currentScene),e._sceneEntityId,{x,y,rotation,scale});
@@ -255,7 +264,7 @@
  function recordChange(ref,base=ensureBase(ref)){
   if(ref.entity._sceneEntityId){
    const authored=authoredEntity(ref),runtime=authored?.entity.components?.RuntimeBinding;
-   if(!runtime){sceneDocumentDirty=true;return;}
+   if(!runtime){sceneDocumentDirty=commands?commands.dirty:true;return;}
    const info=entityInfo(ref),key=ckey(String(currentScene),ref.kind,ref.id),before=changes.get(key)||null;
    const unchanged=Math.abs(info.x-base.x)<1e-8&&Math.abs(info.y-base.y)<1e-8&&Math.abs(info.rotation-base.rotation)<1e-8&&Math.abs(info.scale-base.scale)<1e-8;
    const assembly=ref.kind==='building'&&ref.entity.assembly?B.serialize(ref.entity.assembly):null;
@@ -349,7 +358,7 @@
   if(sent.size!==read.size)throw new Error(`Save round-trip count mismatch (${sent.size} vs ${read.size})`);
   for(const [key,value]of sent)if(read.get(key)!==value)throw new Error(`Save round-trip mismatch for ${key}`);
   if(JSON.stringify(outgoing.terrain)!==JSON.stringify(verify.edits?.terrain))throw new Error('Terrain save round-trip mismatch');
-  projectWorld=JSON.parse(JSON.stringify(verify.world));if(window.VeldrenSceneOwnership)window.VeldrenSceneOwnership.replaceDocument(projectWorld);window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;
+  projectWorld=JSON.parse(JSON.stringify(verify.world));if(!commands&&window.VeldrenSceneOwnership)window.VeldrenSceneOwnership.replaceDocument(projectWorld);window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);if(commands)commands.saved();sceneDocumentDirty=false;
   project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};project.changes=project.changes.filter(c=>!window.VeldrenSceneOwnership?.ownsLegacy?.(c.scene,c.kind,c.id));
   changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
@@ -618,6 +627,7 @@
   finishTerrain();
   if(partDrag&&buildingContext){B.attach(buildingContext.entity,partDrag.before,worldScenes[currentScene]);partDrag=null;partPreview=null;post('building',{state:buildingState()});}
   if(drag&&selected){const original=drag.kind==='move'?{x:drag.x,y:drag.y}:drag.kind==='rotate'?{rotation:drag.rotation}:{scale:drag.scale};setEntityTransform(selected,original,false,true);}
+  if(commands?.active)commands.cancel();
   drag=null;pointer=null;
  }
  function clearTouchInput(){
@@ -680,6 +690,7 @@
   }
   if(tool==='rotate')drag={id:e.pointerId,kind:'rotate',clientX:e.clientX,rotation:entityRotation(ref)};
   if(tool==='scale')drag={id:e.pointerId,kind:'scale',clientY:e.clientY,scale:entityScale(ref)};
+  if(drag&&ref.entity._sceneEntityId&&window.realmNative?.scenes?.command)commandSystem().begin('Drag '+drag.kind);
   if(drag)try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
  }
  function onPointerMove(e){
@@ -740,6 +751,7 @@
   const surface=editorInputSurface();
   if(pointer&&e.pointerId===pointer.id){pointer=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return}
   if(drag&&e.pointerId===drag.id){
+   if(commands?.active){if(e.type==='pointercancel')commands.cancel();else commands.commit();}
    if(selected?.entity.assembly)B.commit(selected.entity);
    else invalidate(selected.entity,selected.kind);
    recordChange(selected);const info=entityInfo(selected);
@@ -758,6 +770,7 @@
  }
  function clearCameraKeys(){cameraKeys.clear();free.vx=0;free.vy=0;}
  function onKeyDown(e){
+  if(!e.target?.closest?.('input,textarea,select,[contenteditable]')&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())&&window.realmNative?.scenes?.command){e.preventDefault();e.stopImmediatePropagation();if(e.shiftKey||e.key.toLowerCase()==='y')commandSystem().redo();else commandSystem().undo();return;}
   if(e.ctrlKey||e.metaKey||e.altKey||e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
   if(partPlacement&&e.key==='Escape'){cancelPartPlacement();post('building',{state:buildingState()});e.preventDefault();e.stopImmediatePropagation();return;}
   if(partPlacement&&e.key.toLowerCase()==='r'){const step=buildingSnap.rotation||15;partPlacementRotation=snapValue(partPlacementRotation+step,step);if(partPlacementPoint)previewPart(partPlacementPoint);e.preventDefault();e.stopImmediatePropagation();return;}
@@ -808,6 +821,11 @@
   if(!selected)return;const e=selected.entity;free.x=selected.kind==='building'?e.x+e.w/2:e.x+.5;free.y=selected.kind==='building'?e.y+e.h/2:e.y+.5;free.zoomTarget=Math.max(free.zoomTarget,120);px=free.x;py=free.y;return cameraInfo();
  }
  function duplicateSelection(){
+  if(selected?.entity?._sceneEntityId&&window.realmNative?.scenes?.command){
+   if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');
+   const kind=selected.kind,result=commandSystem().execute('Duplicate entity',[{op:'duplicate',id:selected.entity._sceneEntityId}]);
+   selectRef(resolveRef(kind,result.created[0]));return entityInfo(selected);
+  }
   if(!selected)return null;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');const e=selected.entity;
   if(e._sceneEntityId&&!authoredEntity(selected)?.entity.components?.RuntimeBinding){
    projectWorld=window.VeldrenSceneOwnership?.document?.()||projectWorld;
@@ -826,6 +844,10 @@
   changes.set(ckey(currentScene,selected.kind,selected.id),change);project.changes=[...changes.values()];if(selected.kind==='object')objects.push(copy);else buildings.push(copy);post('change',{selection:info});return info;
  }
  function deleteSelection(){
+  if(selected?.entity?._sceneEntityId&&window.realmNative?.scenes?.command){
+   if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');
+   commandSystem().execute('Delete entity',[{op:'delete',id:selected.entity._sceneEntityId}]);selectRef(null);return true;
+  }
   if(!selected)return false;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');
   if(selected.entity._sceneEntityId){
    projectWorld=window.VeldrenSceneOwnership?.document?.()||projectWorld;
@@ -957,6 +979,9 @@
 
  window.VeldrenEditorBridge={
   isReady:()=>ready,initialize:becomeReady,
+  executeCommand:(label,operations)=>commandSystem().execute(label,operations),
+  beginCommand:label=>commandSystem().begin(label),commitCommand:()=>commandSystem().commit(),cancelCommand:()=>commandSystem().cancel(),
+  undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo(),historyState:()=>commandSystem().status(),
   adoptCanonicalDocument(value){window.VeldrenSceneFormat.validateWorld(value);projectWorld=JSON.parse(JSON.stringify(value));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;return {scenes:projectWorld.scenes.length,entities:projectWorld.scenes.reduce((sum,scene)=>sum+scene.entities.length,0)};},
   enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,setBuildingTransform,
   buildingAssets:()=>B.catalog().map(asset=>VeldrenAssets.has(asset.id)&&VeldrenAssets.record(asset.id).importSettings?.importer==='veldren-gltf-1'?{...asset,...canonicalMetadata(VeldrenAssets.record(asset.id))}:asset),
@@ -968,6 +993,7 @@
   setCameraKey,clearCameraKeys,
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
   setTool(next){
+   if(commands?.active)commands.cancel();
    if(next==='terrain'&&currentScene!=='overworld')throw Error('Terrain is available in the overworld');
    clearTouchInput();finishTerrain();terrainHover=null;if(next==='terrain'&&buildingContext)exitBuilding();
    tool=['select','move','rotate','scale','place','camera','terrain'].includes(next)?next:'select';drag=null;pointer=null;
@@ -988,7 +1014,7 @@
   previewAsset(id,options){if(!assetPreview)assetPreview=createVeldrenAssetPreview(VeldrenAssets);return assetPreview.render(id,options);},
   previewDiagnostics:()=>assetPreview?.diagnostics()||null,
   refreshAssetRegistry:()=>VeldrenAssets.refresh(),
-  onAssetReload:listener=>VeldrenAssets.onReload(listener),
+  onAssetReload:listener=>window.VeldrenAssets?.onReload(listener)||(()=>{}),
   assetGeometry(id){const text=String(id||''),split=text.indexOf(':');if(split<0)return null;const source=text.slice(0,split),key=text.slice(split+1),mesh=source==='mesh'?briarModels?.[key]:source==='creature'?creatureAssets?.[key]?.mesh:source==='preset'?null:B.model(text);return mesh?.p&&mesh?.i?{p:mesh.p,n:mesh.n,c:mesh.c,f:mesh.f,i:mesh.i,uv:mesh.uv,t:mesh.t,bounds:mesh.bounds,atlas:typeof REALM_ATLAS_IMAGE!=='undefined'?REALM_ATLAS_IMAGE:null}:null;},
   gameUiVisible:()=>gameUiVisible,
   setGameUiVisible,

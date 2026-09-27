@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const root=new URL('../',import.meta.url),events=[];
+const context={console,TextEncoder,TextDecoder,DataView,WebAssembly,AbortController,URL,Map,Set,
+ realmAssetURL:p=>p,VELDREN_CONTEXT:'editor',addEventListener(){},
+ fetch:async path=>{const bytes=fs.readFileSync(new URL('dist/'+String(path).replace(/^\//,''),root));return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes.toString())};}};
+context.window=context;vm.createContext(context);
+for(const path of ['dist/asset-runtime.js','dist/native-runtime.js','dist/editor/commands.js'])vm.runInContext(fs.readFileSync(new URL(path,root),'utf8'),context);
+const native=await context.realmNativeReady,n=native.scenes;
+const entity=(id,parent=null)=>({id,name:id,parent,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{},metadata:{}});
+n.upsert('town',entity('root'));n.upsert('town',entity('child','root'));n.upsert('town',entity('other'));
+n.subscribe(event=>events.push(JSON.parse(JSON.stringify(event))));
+const commands=context.createVeldrenEditorCommands(n,()=> 'town');
+commands.execute('Mixed edit',[{op:'rename',id:'child',name:'Lamp'},{op:'addComponent',id:'child',component:'Light',fields:{type:'point',intensity:5,radius:8}},{op:'reparent',id:'child',parent:'other'}]);
+assert.equal(n.entity('town','child').parent,'other');assert.equal(n.entity('town','child').name,'Lamp');
+commands.undo();assert.equal(n.entity('town','child').parent,'root');assert.equal(n.entity('town','child').components.Light,undefined);commands.redo();
+commands.begin('Drag');for(let i=0;i<200;i++)commands.execute('Drag',[{op:'transform',id:'child',transform:{position:[i,3,4],rotation:[0,0,0,1],scale:[1,1,1]},space:'world'}]);commands.commit();
+assert.equal(commands.status().undo,2);commands.undo();assert.equal(n.entity('town','child').worldMatrix[12],0);commands.redo();assert.equal(n.entity('town','child').worldMatrix[12],199);
+const copy=commands.execute('Duplicate',[{op:'duplicate',id:'other'}]).created[0];assert(n.entity('town',copy));assert.equal(n.entity('town',copy).name,'other');commands.undo();assert.equal(n.entity('town',copy),null);commands.redo();assert(n.entity('town',copy));
+const before=n.serialize();commands.execute('Delete',[{op:'delete',id:'other'}]);assert.equal(n.entity('town','child'),null);commands.undo();assert.equal(JSON.stringify(n.serialize()),JSON.stringify(before));
+commands.execute('Model',[{op:'asset',id:'child',value:'rebuilt:Wall_Plaster_Straight'}]);assert.equal(n.entity('town','child').components.MeshRenderer.asset,'rebuilt:Wall_Plaster_Straight');
+assert.throws(()=>commands.execute('Invalid asset',[{op:'asset',id:'child',value:'not-an-asset'}]),/Unknown/);
+commands.saved();assert.equal(commands.dirty,false);commands.undo();assert.equal(commands.dirty,true);commands.redo();assert.equal(commands.dirty,false);
+const saved=JSON.stringify(n.serialize());commands.begin('Cancelled');commands.execute('Move',[{op:'transform',id:'child',transform:{position:[8,9,10]}}]);commands.cancel();assert.equal(JSON.stringify(n.serialize()),saved);
+assert.throws(()=>commands.execute('Rejected',[{op:'rename',id:'child',name:'Invalid'},{op:'reparent',id:'other',parent:'child'}]),/cycle/);assert.equal(JSON.stringify(n.serialize()),saved);
+assert(events.some(e=>e.kind==='batch'&&e.changes.some(c=>c.kind==='transform')));
+assert(events.some(e=>e.kind==='batch'&&e.changes.some(c=>c.kind==='remove')));
+n.load(JSON.parse(saved));assert.equal(JSON.stringify(n.serialize()),saved);assert.equal(commands.status().undo,0);
+native.destroy();
+console.log('PASS: actual WASM command execution, native asset references, grouped drag, mixed undo/redo, incremental notifications, dirty state, rollback and exact reload.');

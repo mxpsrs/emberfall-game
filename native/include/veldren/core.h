@@ -288,3 +288,8 @@ VELDREN_EXPORT std::uint32_t veldren_world_timer_events(
     double respawn_at_milliseconds,
     float game_time);
 VELDREN_EXPORT std::uint32_t veldren_core_abi_version();
+
+extern "C" {
+VELDREN_EXPORT int veldren_editor_command(void* world,const char* scene,const char* request);
+VELDREN_EXPORT std::uint32_t veldren_editor_response(const void* world,char* out,std::uint32_t capacity);
+}

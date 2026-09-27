@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
+add_library(veldren_core STATIC src/editor.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
 target_include_directories(veldren_core PUBLIC include)
 target_include_directories(veldren_core SYSTEM PRIVATE third_party)
 
@@ -73,3 +73,7 @@ add_test(NAME asset-render COMMAND veldren-render-asset-test ${CMAKE_CURRENT_SOU
 
 add_executable(veldren-asset-validate tools/validate_assets.cpp)
 target_link_libraries(veldren-asset-validate PRIVATE veldren_core)
+
+add_executable(veldren-editor-test tests/editor_test.cpp)
+target_link_libraries(veldren-editor-test PRIVATE veldren_core)
+add_test(NAME editor-commands COMMAND veldren-editor-test)

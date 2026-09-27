@@ -99,6 +99,7 @@ enum class ChildDisposition { Destroy, ReparentToRoot };
 enum class Context { Runtime, Editor };
 
 class Scene {
+  friend class EditorHistory;
  public:
   explicit Scene(std::string name = "overworld") : name_(std::move(name)) {}
   const std::string& name() const { return name_; }

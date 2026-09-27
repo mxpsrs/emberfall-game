@@ -1,5 +1,8 @@
 'use strict';
 (() => {
+ function historyAction(redo=false){try{if(redo)bridge?.redo();else bridge?.undo();}catch(error){log(error.message,'error');}}
+ document.addEventListener('keydown',event=>{if(event.target.closest?.('input,textarea,select,[contenteditable="true"]'))return;if((event.ctrlKey||event.metaKey)&&['z','y'].includes(event.key.toLowerCase())){event.preventDefault();event.stopImmediatePropagation();historyAction(event.shiftKey||event.key.toLowerCase()==='y');}},true);
+ window.addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='veldren-editor-history')return;const state=event.data;$('undoCommand').disabled=!state.undo||state.transaction;$('redoCommand').disabled=!state.redo||state.transaction;markDirty(state.dirty);});
  const $=id=>document.getElementById(id);
  const frame=$('gameFrame'),stage=$('stage'),marker=$('selectionMarker');
  const status=$('connectionStatus'),cameraState=$('cameraState'),modeBadge=$('modeBadge'),cameraBadge=$('cameraBadge');
@@ -156,6 +159,7 @@
  modelPreviewCanvas.addEventListener('pointermove',e=>{if(!modelPreviewCanvas._orbitPoint||!inspectedAsset)return;const [x,y]=modelPreviewCanvas._orbitPoint;previewOrbit.yaw+=(e.clientX-x)*.012;previewOrbit.tilt=Math.max(-1.1,Math.min(1.1,previewOrbit.tilt+(e.clientY-y)*.008));modelPreviewCanvas._orbitPoint=[e.clientX,e.clientY];drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);});
  modelPreviewCanvas.addEventListener('pointerup',()=>{modelPreviewCanvas._orbitPoint=null;});modelPreviewCanvas.addEventListener('pointercancel',()=>{modelPreviewCanvas._orbitPoint=null;});
  modelPreviewCanvas.addEventListener('wheel',e=>{e.preventDefault();previewOrbit.zoom=Math.max(.6,Math.min(2.8,previewOrbit.zoom*Math.exp(-e.deltaY*.001)));if(inspectedAsset)drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);},{passive:false});
+ $('undoCommand').onclick=()=>historyAction();$('redoCommand').onclick=()=>historyAction(true);
  $('reloadAssets').onclick=async()=>{const button=$('reloadAssets');button.disabled=true;try{await bridge.refreshAssetRegistry();assetHint.textContent='Asset definitions refreshed.';}catch(error){log('Asset reload: '+error.message,'error');}finally{button.disabled=false;}};
  assetSearch.oninput=renderAssets;assetCategory.onchange=renderAssets;
  cancelPlacement.onclick=()=>{
@@ -332,7 +336,7 @@
   const m=event.data;
   if(m?.type==='veldren-editor-ready'){const candidate=frame.contentWindow?.VeldrenEditorBridge;if(candidate)connect(candidate);}
   if(m?.type==='veldren-editor-selection'){renderSelection(m.selection);if(m.selection)log(`Selected ${m.selection.kind} · ${m.selection.name} · id ${m.selection.id}.`,'info');}
-  if(m?.type==='veldren-editor-change'){renderSelection(m.selection);markDirty();refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
+  if(m?.type==='veldren-editor-change'){renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
   if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty();log('Terrain stroke recorded. Save World to publish the change.','ok');}}
   if(m?.type==='veldren-editor-log')log(m.message,m.level||'info');
   if(m?.type==='veldren-editor-scene'){refreshEntities();}

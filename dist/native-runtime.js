@@ -25,6 +25,24 @@
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
   function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
   const scenes={
+   command(scene,request){
+    if(!editor)throw Error('Editor commands require the editor context');
+    // References are resolved by the accepted native registry, never a second
+    // editor catalog. Existing procedural bindings remain readable unchanged.
+    const validate=(key,id)=>{const type=key==='asset'?'model':key==='material'?'material':key==='texture'?'texture':null;if(!type||!id)return;if(typeof id!=='string'||!globalThis.VeldrenAssets?.has(id)||VeldrenAssets.record(id).type!==type)throw Error('Unknown or incompatible '+type+' reference: '+id);};
+    for(const op of request.operations||[]){
+     if(op.op==='asset'||op.op==='material')validate(op.op,op.value);
+     if(op.op==='field')validate(op.field,op.value);
+     if(op.op==='setComponent'||op.op==='addComponent')for(const [key,id]of Object.entries(op.fields||{}))validate(key,id);
+     if(op.op==='create')for(const fields of Object.values(op.entity?.components||{}))for(const [key,id]of Object.entries(fields))validate(key,id);
+    }
+    withCString(scene,s=>withCString(JSON.stringify(request),r=>api.veldren_editor_command(world,s,r)));
+    const result=JSON.parse(readNativeText((out,size)=>api.veldren_editor_response(world,out,size)));
+    if(!result.ok){changed(true,'load');throw Error(result.error);}
+    const value=result.value;
+    if(value.changed){const transforms=request.action!=='undo'&&request.action!=='redo'&&(request.operations||[]).length&&(request.operations||[]).every(op=>['transform','translate','rotate','scale'].includes(op.op));scenes.batch(()=>{for(const id of new Set(value.affected))changed(true,transforms?'transform':scenes.entity(scene,id)?'upsert':'remove',scene,id);});}
+    return freeze(value);
+   },
    batch(callback){batchDepth++;try{return callback();}finally{if(--batchDepth===0){const names=[...batchedScenes];batchedScenes.clear();for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:scene===null?'load':'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}}},
    subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
    entity(scene,id){

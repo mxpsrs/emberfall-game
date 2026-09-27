@@ -1,5 +1,6 @@
 #include "veldren/core.h"
 #include "veldren/scene.h"
+#include "veldren/editor.h"
 
 #include <algorithm>
 #include <cmath>
@@ -719,14 +720,29 @@ class World {
       replacement.emplace(scene.name(), std::move(scene));
     }
     world_scenes_ = std::move(replacement);
+    editor_histories_.clear();
     resource_session_ = veldren::Scene("resource-runtime");
     document.scenes.clear();
     world_document_metadata_ = std::move(document);
     ++world_scene_revision_;
     return true;
   }
+  int EditorCommand(const char* name, const char* request) {
+    try {
+      if (!name || !request) throw std::invalid_argument("Editor scene and request required");
+      auto found=world_scenes_.find(name);
+      if(found==world_scenes_.end())throw std::invalid_argument("Editor scene does not exist");
+      auto value=editor_histories_[name].command(found->second,veldren::parse_json(request));
+      if(value.find("changed")->bool_or()){++world_scene_revision_;PruneResourceStates();}
+      editor_response_=veldren::write_json(veldren::Json::Object{{"ok",true},{"value",std::move(value)}});return 1;
+    } catch(const std::exception& error) {
+      ++world_scene_revision_;
+      editor_response_=veldren::write_json(veldren::Json::Object{{"ok",false},{"error",error.what()}});return 0;
+    }
+  }
+  const std::string& EditorResponse() const { return editor_response_; }
   std::uint32_t WorldSceneRevision() const { return world_scene_revision_; }
-  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); resource_session_ = veldren::Scene("resource-runtime"); world_scenes_.clear(); world_document_metadata_ = {}; ++world_scene_revision_; }
+  void Reset() { actors_.clear(); index_.clear(); scene_ = veldren::Scene("runtime"); resource_session_ = veldren::Scene("resource-runtime"); world_scenes_.clear(); editor_histories_.clear(); world_document_metadata_ = {}; ++world_scene_revision_; }
   std::string scene_json() const { return scene_.serialize(); }
   void Seed(std::uint32_t low, std::uint32_t high) {
     random_state_ = (static_cast<std::uint64_t>(high) << 32U) | low;
@@ -869,6 +885,8 @@ class World {
   mutable std::map<std::string,TerrainIndex> terrain_indices_;
   mutable std::uint32_t terrain_revision_ = std::numeric_limits<std::uint32_t>::max();
   std::map<std::string, veldren::Scene> world_scenes_;
+  std::map<std::string, veldren::EditorHistory> editor_histories_;
+  std::string editor_response_;
   std::uint32_t world_scene_revision_ = 0;
   veldren::WorldDocument world_document_metadata_;
   std::uint64_t random_state_ = 0x9e3779b97f4a7c15ULL;
@@ -1475,3 +1493,10 @@ std::uint32_t veldren_world_timer_events(double now, double expires_at,
 }
 
 std::uint32_t veldren_core_abi_version() { return 19; }
+
+extern "C" int veldren_editor_command(void* world, const char* scene, const char* request) {
+  return world ? AsWorld(world)->EditorCommand(scene,request) : 0;
+}
+extern "C" std::uint32_t veldren_editor_response(const void* world,char* out,std::uint32_t capacity) {
+  return world ? CopyText(AsWorld(world)->EditorResponse(),out,capacity) : 0;
+}
