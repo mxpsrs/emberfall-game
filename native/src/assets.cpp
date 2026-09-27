@@ -1,5 +1,6 @@
 #include "veldren/assets.h"
 #include "veldren/asset_profile.h"
+#include "veldren/asset_render.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -147,6 +148,7 @@ Json AssetRegistry::command(const Json& r) {
   if(op=="load"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");load(*manifest);return diagnostics();}
   if(op=="record")return record(id);
   if(op=="material-plan")return material_plan(id,text(r,"profile"));
+  if(op=="render-plan"){const auto* model=r.find("model");if(!model)throw std::invalid_argument("Canonical model required");return asset_render_plan(*this,*model);}
   if(op=="texture-variant"){const auto* usage=r.find("usage");if(!usage)throw std::invalid_argument("Texture usage required");return texture_variant(id,text(r,"profile"),*usage);}
   if(op=="list")return list(text(r,"type"));
   if(op=="document")return document();

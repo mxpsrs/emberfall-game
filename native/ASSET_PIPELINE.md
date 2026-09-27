@@ -247,3 +247,29 @@ Scene-driven canonical mesh submission, animation, browser/editor visual tests,
 complete reimport/asset-browser work and the 87 MiB build-size blocker remain.
 This material-resource checkpoint is not Phase 2 completion and changes no live
 site, production data or main branch.
+
+## Canonical geometry resource checkpoint — 27 September 2026
+
+The native `asset_render_plan` validates canonical float/index streams, computes
+geometry bounds, derives tangent bases using the normal map's UV channel and
+transform, and emits deterministic content-keyed vertex/index packets. It retains
+default-scene draw bindings, exact node matrices, skeletons and animation clips.
+The browser marshals these packets to Filament; the Filament SurfaceOrientation
+binding packs the native tangent basis into the backend quaternion format.
+
+`asset-meshes.js` shares vertex/index buffers and PBR materials across exact model
+leases. `asset-draws.js` maps native Scene transforms to render-only parent/child
+entities, shares model resources across instances, releases surplus instances,
+clears on Scene changes and retires invalidated generations. Disposal removes
+renderables before releasing geometry, materials and textures. Skin streams are
+uploaded and retained; animated draw submission still requires the pose stage.
+
+Verification: `make -C native render-asset-test` passes 190 real models, 326
+geometry packets/draw bindings, three skeleton-bearing assets and one animation
+library; malformed indices, stale source identities and generations are checked.
+`node tests/asset-meshes.mjs` passes actual WASM and Filament NOOP in runtime and
+editor contexts: 100 shared instances, movement, deletion, Scene switch,
+invalidation, allocation failure, cancellation, 20 unload cycles and teardown.
+This is resource-stage verification, not graphical or full-phase acceptance.
+Production frame wiring, animation, editor/reimport, delivery budget and final
+visual acceptance remain in progress. No deployment or main merge occurred.

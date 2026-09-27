@@ -48,18 +48,18 @@ build/veldren-desktop: src/core.cpp src/scene.cpp src/desktop.cpp src/desktop_re
 asset-test: build/asset-test
 	./build/asset-test ../dist/assets/asset-registry.json
 
-build/asset-test: src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp include/veldren/assets.h include/veldren/asset_profile.h include/veldren/scene.h
+build/asset-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp include/veldren/assets.h include/veldren/asset_profile.h include/veldren/scene.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp -o $@
 
 wasm: ../dist/native/veldren-core.wasm
 
 wasm-test: wasm
 	node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
 
-../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
+../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
 	mkdir -p ../dist/native
-	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/asset_texture.cpp src/asset_import.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
+	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
 
 clean:
 	rm -rf build ../dist/native/veldren-core.wasm
@@ -88,6 +88,14 @@ build/texture-variants: src/asset_texture.cpp src/asset_import.cpp src/scene.cpp
 material-test: build/material-test
 	./build/material-test ../dist/assets/asset-registry.json
 
-build/material-test: src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp include/veldren/assets.h include/veldren/asset_profile.h
+.PHONY: render-asset-test
+render-asset-test: build/render-asset-test
+	./build/render-asset-test ../dist/assets
+
+build/render-asset-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/render_asset_test.cpp include/veldren/asset_render.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/render_asset_test.cpp -o $@
+
+build/material-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp include/veldren/assets.h include/veldren/asset_profile.h
+	mkdir -p build
+	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/material_test.cpp -o $@
