@@ -23,7 +23,7 @@ if(!restoreDirectory)db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').
 db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').update(token).digest('hex'),owner,Date.now()+86400000);
 if(!restoreDirectory)db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:43,y:52,hp:10,gold:0,xp:{},bag:{},character:{name:'PhaseOneQA',look:0,race:'human',frame:'male',hair:0},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
 if(restoreDirectory)assert.equal(db.prepare('SELECT username FROM game_accounts WHERE id=?').get(owner)?.username,'PhaseOneQA');
-const requests=[],errors=[];let browser,qaPage;
+const requests=[],errors=[];let browser,qaPage,profileTimer;
 const server=createServer(async(req,res)=>{try{const chunks=[];for await(const chunk of req)chunks.push(chunk);const body=Buffer.concat(chunks);requests.push({path:req.url,method:req.method});const request=new Request('http://'+req.headers.host+req.url,{method:req.method,headers:req.headers,...(body.length?{body}:{})});const response=await worker.fetch(request,env);if(response.status>=400)console.log('HTTP',response.status,req.method,req.url,(await response.clone().text()).slice(0,300));res.statusCode=response.status;response.headers.forEach((v,k)=>res.setHeader(k,v));if(response.body)Readable.fromWeb(response.body).pipe(res);else res.end();}catch(e){console.error(e);res.statusCode=500;res.end(String(e));}});
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;mkdirSync('.qa/phase3',{recursive:true});
 try{
@@ -37,7 +37,9 @@ try{
  const frame=page.frames().find(f=>f.url().includes('viewport.html'));
  assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.isReady()),true,'editor startup must succeed');
  const before=await frame.evaluate(()=>JSON.stringify(s));
- await page.locator('#sceneSelect').selectOption('overworld');
+ if(process.env.VELDREN_BROWSER_PROFILE){const cdp=await context.newCDPSession(page);await cdp.send('Debugger.enable');cdp.on('Debugger.paused',async event=>{console.log('PROFILE_STACK',JSON.stringify(event.callFrames.slice(0,18).map(f=>({name:f.functionName,url:f.url,line:f.location.lineNumber}))));await cdp.send('Debugger.resume').catch(()=>{});});profileTimer=setInterval(()=>cdp.send('Debugger.pause').catch(()=>{}),30000);}
+ console.log('Scene selector options',await page.locator('#sceneSelect').evaluate(e=>Array.from(e.options,o=>o.value).slice(0,6)));
+ await page.locator('#sceneSelect').selectOption('overworld',{timeout:90000});console.log('Scene selection event finished');
  assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.sceneName()),'overworld');assert.equal(await frame.evaluate(()=>JSON.stringify(s)),before,'scene selection leaves character state unchanged');
  console.log('Independent scene selector passed');
  await page.locator('#terrainTool').click();
@@ -63,4 +65,4 @@ try{
  assert.equal(await play.evaluate(()=>cloudDisconnected),false);await play.screenshot({path:'.qa/phase3/play-regression.png'});assert.deepEqual(errors,[]);
  writeFileSync('.qa/phase3/terrain-play-result.json',JSON.stringify({fixture:data,terrainNodes:terrain.scenes.overworld.heightNodes.length,save:{revision:save.revision,verified:save.roundTripVerified},runtime:{...runtime,terrain:undefined},errors},null,2));
  console.log('PASS: scene selection, real terrain pointer stroke, shared history, save/reload and /play regression');
-}finally{await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));storage.close();}
+}catch(error){console.error('Browser acceptance failed',error);await qaPage?.screenshot({path:'.qa/phase3/terrain-failure.png',timeout:15000}).catch(()=>{});throw error;}finally{clearInterval(profileTimer);await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));storage.close();}

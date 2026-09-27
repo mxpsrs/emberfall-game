@@ -386,11 +386,11 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
 }
 building3=function(r,b){
  const kind=b.archetype;
- if(kind==='mine'&&!b.walkIn){b.visualHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'mine',b.race||realmArtRace(b.x,b.y),b.x+b.w/2,b.y+b.h/2,b.w,b.h,4.5);return b.visualHeight;}
- if(!b.walkIn&&/beacon/i.test(b.name)){b.visualHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'watchTower',b.race||'human',b.x+b.w/2,b.y+b.h/2,b.w,b.h,7);return b.visualHeight;}
- if(b.arch||/crypt|ruins/i.test(b.name)){const k=b.w/2;rebuiltPlace(r,'Wall_Arch',b.x+b.w/2,0,b.y+b.h/2,k,0,1.1);b.visualHeight=3.3;return 3.3;}
- if(kind==='castle'){b.visualHeight=worldCastle(r,b);return b.visualHeight;}
- b.visualHeight=rebuiltHouse(r,b,{tower:/beacon/i.test(b.name)});return b.visualHeight;
+ if(kind==='mine'&&!b.walkIn){const renderedHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'mine',b.race||realmArtRace(b.x,b.y),b.x+b.w/2,b.y+b.h/2,b.w,b.h,4.5);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ if(!b.walkIn&&/beacon/i.test(b.name)){const renderedHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'watchTower',b.race||'human',b.x+b.w/2,b.y+b.h/2,b.w,b.h,7);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ if(b.arch||/crypt|ruins/i.test(b.name)){const k=b.w/2;rebuiltPlace(r,'Wall_Arch',b.x+b.w/2,0,b.y+b.h/2,k,0,1.1);if(!b._generatedBuildingEntity)b.visualHeight=3.3;return 3.3;}
+ if(kind==='castle'){const renderedHeight=worldCastle(r,b);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ const renderedHeight=rebuiltHouse(r,b,{tower:/beacon/i.test(b.name)});if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;
 };
 
 const propBeforeRebuild=prop3;

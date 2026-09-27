@@ -181,7 +181,7 @@ building3=function(r,b){
  profile3(p,x,7.8,z,w*.75,.7,w*.75,[[-.5,.85],[.5,1]],'#999d92',v=>v,8);
  profile3(p,x,8.4,z,w*.5,.7,w*.5,[[-.5,.65],[.5,1]],'#514638',v=>v,8);
  for(const side of [-1,1])for(const y of [3,5.5])box3(p,x+side*w*.3,y,z,.04,.7,.35,'#293331');
- b.visualHeight=10;return 10;
+ if(!b._generatedBuildingEntity)b.visualHeight=10;return 10;
 };
 
 function sideQuestObjective(frontier,index){

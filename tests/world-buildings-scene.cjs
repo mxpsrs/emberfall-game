@@ -68,6 +68,8 @@ async function main(){
  const part=assembled.modules.find(m=>m.role==='wall'&&!m.objectId);assert(part,'representative wall module');const partBefore=part.local[3];part.local[3]=partBefore+.25;
  assert(Math.abs(b.assembly.modules.find(m=>m.id===part.id).local[3]-(partBefore+.25))<1e-9,'module writes flow to canonical Transform');
  const rendered=ctx.VeldrenBuildingScene.renderAssembly(b);assert(rendered.instances.length>0,'module renderer resolves canonical asset references');
+ const renderCheck=run(`(()=>{const previous=currentScene,before=realmNative.scenes.revision(),kinds=new Set();try{currentScene='overworld';for(const b of worldScenes.overworld.buildings){const key=[b.race,b.archetype,b.variant].join(':');if(kinds.has(key))continue;kinds.add(key);building3({indexed(){},face(){}},b);}}finally{currentScene=previous;}return {before,after:realmNative.scenes.revision(),kinds:kinds.size};})()`);
+ assert(renderCheck.kinds>10);assert.equal(renderCheck.after,renderCheck.before,'rendering canonical buildings never authors height fields or invalidates Scene history');
  const saved=native.serialize();assert(native.load({format:'veldren.world',version:2,scenes:[]}));assert.equal(registry.overworld.buildings.length,0,'unload drops derived building views');assert(native.load(saved));
  assert.equal(JSON.stringify(native.serialize()),JSON.stringify(saved),'complete generated building hierarchy/components/transforms round-trip');
  const restored=registry.overworld.buildings.find(b=>b._sceneEntityId===origin.id);assert(restored);assert.equal(restored.service.id,origin.doorId);

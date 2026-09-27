@@ -148,7 +148,7 @@
  function displaySceneMatrix(node){const matrix=[...node.worldMatrix];if(node.components.MeshRenderer?.renderPath!=='canonical'&&typeof landHeight==='function')matrix[13]+=landHeight(matrix[12],matrix[14]);return matrix;}
  function canonicalRef(id){
   const node=window.realmNative.scenes.entity(String(currentScene),id);if(!node)return null;
-  const source=allEntities().find(e=>e.entityId===id);if(source)return resolveRef(source.kind,source.id);
+  const source=node.components.GeneratedBuilding?resolveRef('building',id):resolveRef('object',id);if(source)return source;
   const read=()=>window.realmNative.scenes.entity(String(currentScene),id),entity={_sceneEntityId:id,id,type:'prop',get name(){return read()?.name},get x(){return read()?.worldMatrix[12]||0},get y(){return read()?.worldMatrix[14]||0},get height(){return read()?.worldMatrix[13]||0},get editorTransform(){const m=read()?.worldMatrix;return {rotation:m?Math.atan2(m[8],m[10])*180/Math.PI:0,scale:m?Math.hypot(...m.slice(0,3)):1};}};
   return {kind:'object',id,entity};
  }
@@ -1032,7 +1032,7 @@
   ready=true;
   T?.setHistoryOwner?.({execute:value=>commandSystem().execute('Edit terrain',[{op:'terrain',value}]),undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo()});
   window.realmNative?.scenes?.subscribe?.(event=>{if(event.kind==='load'&&T)T.applyDocument(window.realmNative.scenes.serialize()?.terrain);});
-  window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
+  window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(editorRendering)throw Error('Rendering cannot modify authored Scene data');if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
   if(window.createVeldrenSelection){canonicalSelection=window.VeldrenEditorSelection=createVeldrenSelection({native:window.realmNative.scenes,scene:()=>String(currentScene),assets:VeldrenAssets,displayMatrix:displaySceneMatrix,onChange:ids=>{selected=ids.length?canonicalRef(ids[0]):null;selectedScene=selected?String(currentScene):null;post('selection',{selection:entityInfo(selected),ids});}});}
   if(window.createVeldrenTransformTools)window.VeldrenEditorTools=createVeldrenTransformTools({native:window.realmNative.scenes,commands:commandSystem(),scene:()=>String(currentScene),selection:()=>canonicalSelection?canonicalSelection.ids:selected?.entity?._sceneEntityId?[selected.entity._sceneEntityId]:[],bounds:node=>canonicalSelection?.bounds(node),displayMatrix:displaySceneMatrix,mode:()=>tool,report:message=>log(message,'error')});
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);

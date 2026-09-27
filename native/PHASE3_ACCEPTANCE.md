@@ -39,12 +39,18 @@ aggregates across scenes, and undo can return to the saved boundary.
 | Graphics | Chromium WebGL renders all three handle modes; populated editor shows canonical imported assets and Inspector selection |
 | Populated authoring | Hierarchy click, Inspector rename/position, undo/redo, reparent, prefab actions, Firstlight Smithy editing, verified save and exact fresh reload; no page errors or gameplay-controller requests |
 | Persistence routes | Atomic v2 save, legacy preservation, concurrent save conflict, validation and account/character preservation in disposable local tests |
-| Generated world | Building/road/light/structure/spawn/resource/bridge/quarry/service Scene ownership and complete native round-trip |
+| Generated world | Building/road/light/structure/spawn/resource/bridge/quarry/service Scene ownership, unchanged Scene revision while rendering multiple building variants, and complete native round-trip |
 | Build and assets | Fresh build; all 124 startup resources; JavaScript/JSON parsing, licensed asset records, byte-preserving delivery and runtime/editor ABI checks |
 
 The populated authoring script saved revision 9 and reloaded both prefab metadata
 and the edited wall exactly. It operates on a disposable local Worker, account
 and SQLite database; no production account or world is changed.
+
+The overworld browser check identified render-time height writes entering native
+command history and repeatedly refreshing the Scene. All generated-building
+render paths now leave authored height components unchanged, and the editor
+rejects writes during drawing. The generated-world regression covers this
+behavior; the graphical rerun is still pending.
 
 ## Native editing performance
 

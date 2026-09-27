@@ -255,7 +255,7 @@
 
  async function refreshEntities(){
   if(!bridge)return;
-  entities=bridge.listEntities();sceneName.textContent=bridge.currentSceneName();renderHierarchy();
+  entities=bridge.sceneHierarchy&&bridge.canonicalSelection?.()?[]:bridge.listEntities();sceneName.textContent=bridge.currentSceneName();renderHierarchy();
  }
 
  function updateFromFields(){

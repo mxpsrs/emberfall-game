@@ -397,7 +397,7 @@ building3=function(r,b){
   civilAuthoredStair3(q,b.civilRampart);
   for(const side of [-1,1])beamArt(stone,[ramp.x+(side>0?ramp.w:0),.55,ramp.y+ramp.h],[ramp.x+(side>0?ramp.w:0),rise+.55,ramp.y],.09,p.stone,8);
  }
- return b.visualHeight=12;
+ if(!b._generatedBuildingEntity)b.visualHeight=12;return 12;
 };
 const civilPropBefore=prop3;
 prop3=function(r,o,x,z){

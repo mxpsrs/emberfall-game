@@ -73,7 +73,7 @@ building3=function(r,b){
  if(!inWorld())return buildingBeforeBriar(r,b);
  const race=b.race||realmArtRace(b.x,b.y),key=realmBuildingAsset(b),mesh=briarModels[key],[lo,hi]=mesh.bounds,scale=Math.min((b.w+.12)/(hi[0]-lo[0]),(b.h+.12)/(hi[2]-lo[2]));
  const height=key==='castle'?(race==='elf'?9:race==='dwarf'?7.2:8):key==='gate'?3.5:key==='tower'?6:Math.max(scale*(race==='elf'?1.35:race==='dwarf'?1:1.18)*(hi[1]-lo[1]),race==='dwarf'?3.5:3.9);
- b.visualHeight=realmArtFit(r,key,race,b.x+b.w/2,b.y+b.h/2,b.w+.12,b.h+.12,height);return b.visualHeight;
+ const renderedHeight=realmArtFit(r,key,race,b.x+b.w/2,b.y+b.h/2,b.w+.12,b.h+.12,height);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;
 };
 const propBeforeBriar=prop3;
 prop3=function(r,o,x,z){

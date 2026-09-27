@@ -171,3 +171,19 @@ The native microbenchmark measured post-transform picking at 0.54 ms median and
 recorded in `PHASE3_ACCEPTANCE.md`. These are not rendering FPS or hosted-capacity
 claims. Toolbar/viewport undo also finishes an active terrain stroke before
 reversing it, so a transient brush cannot survive a history change.
+
+## Read-only rendering checkpoint
+
+The overworld graphical check exposed legacy building renderers writing their
+calculated visual height through canonical projections. With authoring commands
+installed, those writes became history entries and repeatedly refreshed the whole
+world. All legacy building render paths now return calculated heights without
+mutating generated building components. The editor rejects projection writes
+while drawing, making future violations visible. The general hierarchy also
+avoids building the legacy flattened entity list when native panels are active;
+canonical selection resolves the requested entity directly.
+
+The full generated-world regression now renders multiple building variants and
+asserts that the native Scene revision is unchanged. That check passes alongside
+geometry, hierarchy, door, surface and complete save/unload/load checks. The
+visible terrain/scene-switch and /play check is being rerun on this build.
