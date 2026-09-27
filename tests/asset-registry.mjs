@@ -4,7 +4,7 @@ import vm from 'node:vm';
 const wasm=fs.readFileSync('dist/native/veldren-core.wasm'),manifest=JSON.parse(fs.readFileSync('dist/assets/asset-registry.json','utf8'));
 const packed=JSON.parse(fs.readFileSync('dist/assets/realms/models.js','utf8').replace(/^[^=]*=/,'').replace(/;\s*$/,''));
 for(const mode of ['runtime','editor']){
- const calls=[],events={};const context={VELDREN_CONTEXT:mode,addEventListener:(event,fn)=>events[event]=fn,TextEncoder,TextDecoder,DataView,Uint8Array,Float32Array,Map,Set,atob,realmAssetURL:p=>p,
+ const calls=[],events={};const context={VELDREN_CONTEXT:mode,addEventListener:(event,fn)=>events[event]=fn,TextEncoder,TextDecoder,DataView,Uint8Array,Float32Array,Map,Set,atob,AbortController,realmAssetURL:p=>p,
   fetch:async path=>({ok:true,status:200,json:async()=>path==='assets/asset-registry.json'?manifest:JSON.parse(fs.readFileSync('dist/'+path,'utf8')),arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),
   WebAssembly:{async instantiate(...args){const r=await WebAssembly.instantiate(...args);return {instance:{exports:Object.fromEntries(Object.entries(r.instance.exports).map(([name,value])=>[name,typeof value==='function'?(...args)=>{calls.push(name);return value(...args)}:value]))}}}}};
  context.window=context;vm.createContext(context);

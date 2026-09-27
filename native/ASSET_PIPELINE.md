@@ -78,3 +78,35 @@ The native importer emits the model's registry definitions and dependency graph.
 Runtime/editor `VeldrenAssets.loadModel(id)` resolves a canonical model via its registry record, shares an in-flight fetch and immutable decoded document across users, and acquires the native dependency closure. `releaseModel(id)` drops the CPU document and unloads unleased metadata after the final user. This is exercised against real derived modular geometry in both runtime and editor WASM tests. Current world rendering still uses packed geometry adapters; the Scene-to-Filament migration has not yet been accepted.
 
 Recovery checkpoint preceding this work: `501ac03c68a818a952dd7d5b8bd9e39ca58734bb` (asset registry).
+
+## Asynchronous model lifetime checkpoint — 27 September 2026
+
+Continued from remote checkpoint `5af8892e323efdf7616c22e35df38f6d58bc7804`.
+The browser IO bridge now exposes `leaseModel(id)` with a `ready` promise and
+an idempotent `release()` bound to that exact request. The existing
+`loadModel`/`releaseModel` interface remains available. Registry identity,
+dependency counts and invalidation generations remain owned by C++.
+
+Concurrent users share a single fetch and immutable document. Dependency
+invalidation retires the cached generation; a new consumer fetches a fresh
+document, while existing owners can finish with their previous immutable one.
+Last release cancels pending IO. Failure, cancellation and retry release only
+their own leases. Teardown cancels pending requests, and an epoch guard prevents
+late fetch/JSON results or initialization failures from touching a new registry.
+This closes stale-cache and teardown races before GPU resources are attached.
+
+Verification on the actual checked-in WASM, in both runtime and editor modes:
+
+- `node tests/asset-lifecycle.mjs`: shared fetches, exact/double release,
+  dependency invalidation, cancel/reacquire, 100 concurrent failures, late
+  network/JSON completion, teardown/reinitialize and 1,000 balanced stress leases.
+- `node tests/asset-registry.mjs`: existing catalog, native graph and lease checks.
+- `node tests/native-runtime.mjs` and `node tests/native-editor-runtime.mjs`: pass.
+- `make -C native asset-test texture-test`: fresh native binaries pass, including
+  all 34 real texture images in the recovered checkpoint.
+
+The prior recovery checkpoint's checked-in WASM does not yet export its new
+texture functions. Rebuilding that binary and compiling the material variants
+remain required before the texture stage can be used in the browser. No GPU
+lifecycle, graphical acceptance or overall Phase 2 completion is claimed here.
+Nothing was deployed or merged into main.
