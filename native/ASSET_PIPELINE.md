@@ -154,6 +154,10 @@ Verification:
   renderer contract, character parity and building components: pass.
 - Filament runtime and 256-entity transform regression: pass; stationary
   geometry resubmits no transforms, one edited matrix updates one entity.
+- Full generated-world regression against the rebuilt WASM: pass, preserving
+  all Phase 1 ownership category totals, original geometry and catalog IDs,
+  hierarchy propagation and exact 14,861,865-byte save/unload/load. Output is
+  retained in `docs/qa/phase2-asset-rendering/world-regression.txt`.
 - `scripts/phase2-texture-browser.mjs`: actual Chromium 134 WebGL/SwiftShader
   renders the native-processed terrain texture, two resident textures totaling
   27,962,024 GPU bytes, no page errors, zero texture handles/bytes after teardown.
