@@ -826,7 +826,7 @@
   if(next){window.VeldrenEditorBridge.setTool(next);post('tool',{tool:next});return true;}return false;
  }
  function onKeyDown(e){
-  if(!e.target?.closest?.('input,textarea,select,[contenteditable]')&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())&&window.realmNative?.scenes?.command){e.preventDefault();e.stopImmediatePropagation();if(e.shiftKey||e.key.toLowerCase()==='y')commandSystem().redo();else commandSystem().undo();return;}
+  if(!e.target?.closest?.('input,textarea,select,[contenteditable]')&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())&&window.realmNative?.scenes?.command){e.preventDefault();e.stopImmediatePropagation();finishTerrain();if(e.shiftKey||e.key.toLowerCase()==='y')commandSystem().redo();else commandSystem().undo();return;}
   if(e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
   if(tool!=='place'&&shortcut(e)){e.preventDefault();e.stopImmediatePropagation();return;}
   if(e.ctrlKey||e.metaKey||e.altKey)return;
@@ -1084,7 +1084,7 @@
   revertPrefab:id=>commandSystem().execute('Revert prefab overrides',[{op:'prefabRevert',id}]),
   unpackPrefab:id=>commandSystem().execute('Unpack prefab',[{op:'prefabUnpack',id}]),
   beginCommand:label=>commandSystem().begin(label),commitCommand:()=>commandSystem().commit(),cancelCommand:()=>commandSystem().cancel(),
-  undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo(),historyState:()=>commandSystem().status(),
+  undo(){finishTerrain();return commandSystem().undo();},redo(){finishTerrain();return commandSystem().redo();},historyState:()=>commandSystem().status(),
   adoptCanonicalDocument(value){window.VeldrenSceneFormat.validateWorld(value);projectWorld=JSON.parse(JSON.stringify(value));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;return {scenes:projectWorld.scenes.length,entities:projectWorld.scenes.reduce((sum,scene)=>sum+scene.entities.length,0)};},
   enterBuilding:()=>commandSystem().transaction('Enter Building Edit',enterBuilding),
   startNewBuilding:()=>commandSystem().transaction('Create building',startNewBuilding),

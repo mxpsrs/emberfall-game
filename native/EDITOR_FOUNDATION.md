@@ -156,3 +156,18 @@ checks scene selection, a real terrain pointer stroke, the saved-state boundary,
 terrain reload and /play against a disposable local Worker/account/database.
 Set VELDREN_PLAYWRIGHT to a local Playwright entry point if it is not installed
 in this checkout. These scripts do not write production data.
+
+## Incremental picking checkpoint
+
+On a 20,856-entity saved document (15,496 overworld entities), editing previously
+invalidated all picking bounds and non-transform edits reread the entire Scene.
+Selection now patches affected canonical records, updates descendant bounds when
+a parent transform/activation changes, and refits existing BVH branches. Creation,
+removal, reparenting, undo/redo, hide/lock and scene/load changes have actual-WASM
+coverage. Asset registry reload still performs a full bounds refresh.
+
+The native microbenchmark measured post-transform picking at 0.54 ms median and
+0.64 ms p95. Cold document/index costs and the scope of these measurements are
+recorded in `PHASE3_ACCEPTANCE.md`. These are not rendering FPS or hosted-capacity
+claims. Toolbar/viewport undo also finishes an active terrain stroke before
+reversing it, so a transient brush cannot survive a history change.
