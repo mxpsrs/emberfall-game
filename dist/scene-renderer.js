@@ -13,3 +13,8 @@ function createVeldrenSceneRenderer(native,assets,draws){
  }
  return {render,destroy(){unsubscribe();draws.destroy();}};
 }
+
+function veldrenLegacySceneVisible(entity,sceneName){
+ const id=entity?._sceneEntityId;if(!id)return true;if(globalThis.VeldrenEditorSelection?.hidden(id))return false;
+ const node=globalThis.realmNative?.scenes.entity(String(sceneName),id);if(!node)return false;const mesh=node.components.MeshRenderer;return node.activeInHierarchy&&!!mesh&&mesh.visible!==false&&mesh.renderPath!=='canonical';
+}

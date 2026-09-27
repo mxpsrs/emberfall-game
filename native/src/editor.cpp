@@ -37,6 +37,12 @@ void validate_component(const std::string& type,const Json::Object& fields,const
   auto nonnegative=[&](const char* key){auto at=fields.find(key);if(at!=fields.end()&&number(at->second)<0)fail(std::string(key)+" must be nonnegative");};
   if(type=="Light"){nonnegative("intensity");nonnegative("range");nonnegative("radius");}
   if(type=="Collider"){nonnegative("radius");nonnegative("height");}
+  auto vector_field=[&](const char* key,bool positive){const auto at=fields.find(key);if(at==fields.end())return;const auto& values=at->second.array();if(values.size()!=3)fail(std::string(key)+" requires three numbers");for(const auto& value:values)if(positive?number(value)<=0:!std::isfinite(number(value)))fail(std::string("Invalid ")+key);};
+  if(type=="Collider")vector_field("size",true);
+  if(type=="Light"){vector_field("color",false);const auto at=fields.find("type");if(at!=fields.end()&&!std::set<std::string>{"point","spot","directional","sun"}.contains(at->second.string_or()))fail("Unsupported light type");}
+  if(type=="SpawnPoint"){vector_field("homeOffset",false);vector_field("renderOrigin",false);}
+  if(type=="MeshRenderer"){const auto at=fields.find("asset");if(at==fields.end()||at->second.string_or().empty())fail("MeshRenderer requires an asset reference");}
+  for(const auto* key:{"visible","castShadows","receiveShadows","solid","stationary"}){const auto at=fields.find(key);if(at!=fields.end()&&!std::holds_alternative<bool>(at->second.value))fail(std::string(key)+" requires a boolean");}
   for(const auto& [key,value]:fields){
     if((type=="SpawnPoint"||type=="Gatherable"||type=="CombatStats")&&(key=="hp"||key=="dead"||key=="respawnAt"||key=="attackAt"||key=="target"))fail("Transient gameplay state is not a permanent component field");
     const std::string expected=key=="asset"?"model":key=="material"?"material":key=="texture"?"texture":"";
@@ -112,8 +118,12 @@ void EditorHistory::apply(Scene& scene,const Json& op,const AssetValidator& asse
     const auto parent=scene.require(id).parent;if(!parent.empty())touch(scene,parent);touch_branch(scene,id);scene.remove(id,ChildDisposition::Destroy);
   }else if(kind=="duplicate"){
     const auto parent=op.find("parent")?text(op,"parent"):scene.require(id).parent;if(!parent.empty()){scene.require(parent);touch(scene,parent);}
+    std::vector<EntityId> originals{id};for(std::size_t i=0;i<originals.size();++i){const auto& children=scene.require(originals[i]).children;originals.insert(originals.end(),children.begin(),children.end());}
     const auto made=scene.duplicate(id,parent,true);std::vector<EntityId> ids{made};
     for(std::size_t i=0;i<ids.size();++i){pending_->before.emplace(ids[i],std::nullopt);const auto& children=scene.require(ids[i]).children;ids.insert(ids.end(),children.begin(),children.end());affected_.emplace_back(ids[i]);}
+    std::map<EntityId,EntityId> mapping;for(std::size_t i=0;i<ids.size();++i)mapping[originals[i]]=ids[i];
+    std::function<void(Json&)> rewrite=[&](Json& value){if(auto* s=std::get_if<std::string>(&value.value)){if(mapping.contains(*s))*s=mapping.at(*s);}else if(auto* a=std::get_if<Json::Array>(&value.value)){for(auto& child:*a)rewrite(child);}else if(auto* o=std::get_if<Json::Object>(&value.value)){for(auto& [key,child]:*o){(void)key;rewrite(child);}}};
+    for(const auto& copy:ids){auto& node=scene.require(copy);for(auto& [type,fields]:node.components){Json value(fields);rewrite(value);fields=value.object();if(fields.contains("generationKey"))fields["generationKey"]="editor-copy:"+copy;if(type=="CatalogIdentity")fields["id"]=copy;}Json metadata(node.metadata);rewrite(metadata);node.metadata=metadata.object();}
     created_.emplace_back(made);
   }else if(kind=="addComponent"||kind=="setComponent"||kind=="field"||kind=="asset"||kind=="material"){
     const auto type=text(op,"component",kind=="asset"||kind=="material"?"MeshRenderer":"");

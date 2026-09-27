@@ -103,9 +103,11 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  await new Promise(resolve=>setImmediate(resolve));
  const bridge=childWindow.VeldrenEditorBridge,tick=now=>{const fn=childFrames.shift();assert.equal(typeof fn,'function');fn(now)};
  const toolbar=parentDocument.getElementById('moveTool');parentDocument.activeElement=toolbar;
+ assert.equal(bridge.shortcut({key:'w'}),true,'W chooses Move outside Camera mode');
+ parentDocument.getElementById('cameraTool').onclick();
  const start=bridge.cameraState();
  const down=key('w',toolbar);dispatch(parentWindow,'keydown',down);assert(down.prevented,'toolbar focus forwards W');
- assert.equal(parentDocument.getElementById('modeBadge').textContent,undefined,'W cannot switch to Move');
+ assert.equal(parentDocument.getElementById('modeBadge').textContent,'CAMERA','W remains navigation in Camera mode');
  tick(100);tick(200);assert(bridge.cameraState().y<start.y,'W moves camera from outer toolbar');
  dispatch(parentWindow,'keyup',key('w',toolbar));
  const stopAt=bridge.cameraState().y;tick(600);assert(stopAt-bridge.cameraState().y<2,'release stops forward travel');
@@ -135,7 +137,7 @@ vm.runInContext(fs.readFileSync(path.join(dist,'editor.js'),'utf8'),parent,{file
  assert(bridge.cameraState().zoom>beforeTouch.zoom,'two-finger pinch zooms the editor');
  dispatch(childDocument,'pointerup',touch(11,320,200));
  dispatch(childDocument,'pointerup',touch(12,500,200));
- bridge.setTool('select');
+ bridge.setTool('camera');
  dispatch(childDocument,'keydown',key('s',world));tick(1000);const ownKey=bridge.cameraState().y;assert(ownKey>still,'iframe key input still works');dispatch(childDocument,'keyup',key('s',world));
  // The selection remains visible as it crosses spatial buckets, and expensive
  // terrain/navigation and outer hierarchy updates occur once when drag ends.

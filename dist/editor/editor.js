@@ -342,6 +342,7 @@
   if(event.origin!==location.origin||event.source!==frame.contentWindow)return;
   const m=event.data;
   if(m?.type==='veldren-editor-ready'){const candidate=frame.contentWindow?.VeldrenEditorBridge;if(candidate)connect(candidate);}
+  if(m?.type==='veldren-editor-tool')setTool(m.tool);
   if(m?.type==='veldren-editor-selection'){renderSelection(m.selection);if(m.selection)log(`Selected ${m.selection.kind} · ${m.selection.name} · id ${m.selection.id}.`,'info');}
   if(m?.type==='veldren-editor-change'){renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
   if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty();log('Terrain stroke recorded. Save World to publish the change.','ok');}}
@@ -351,9 +352,10 @@
 
  window.addEventListener('keydown',event=>{
   const editing=!!event.target?.closest?.('input,textarea,select,[contenteditable]')||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+  if(!editing&&tool!=='place'&&bridge?.shortcut?.(event)){event.preventDefault();return;}
   // Toolbar and hierarchy controls keep focus in this outer document. Forward
   // navigation to the renderer iframe so a selected tool cannot steal WASD.
-  if(!editing&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&bridge?.setCameraKey?.(event.key,true)){
+  if(!editing&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&(tool==='camera'||event.shiftKey||event.key.toLowerCase().startsWith('arrow'))&&bridge?.setCameraKey?.(event.key,true)){
    event.preventDefault();return;
   }
   if(!editing&&activeAsset&&event.key.toLowerCase()==='r'){event.preventDefault();const angle=bridge?.rotatePlacement?.(15)||0;assetHint.textContent=`PLACING: ${activeAsset.name} · ${Math.round(angle)}° · move over the viewport · click to place · R rotates · Esc cancels`;return;}

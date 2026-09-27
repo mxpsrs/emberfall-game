@@ -773,13 +773,25 @@
   return ready;
  }
  function clearCameraKeys(){cameraKeys.clear();free.vx=0;free.vy=0;}
+ function shortcut(input){
+  const key=String(input.key).toLowerCase();
+  if(input.ctrlKey||input.metaKey){if(key==='d'){duplicateSelection();return true;}return false;}
+  if(input.altKey)return false;
+  if(key==='delete'||key==='backspace'){deleteSelection();return true;}
+  if(key==='f'){focusSelection();return true;}
+  if(key==='escape'){window.VeldrenEditorTools?.cancel();window.VeldrenEditorBridge.setTool('select');post('tool',{tool:'select'});return true;}
+  const next=key==='c'?(tool==='camera'?'select':'camera'):tool!=='camera'&&!input.shiftKey?{w:'move',e:'rotate',r:'scale'}[key]:null;
+  if(next){window.VeldrenEditorBridge.setTool(next);post('tool',{tool:next});return true;}return false;
+ }
  function onKeyDown(e){
   if(!e.target?.closest?.('input,textarea,select,[contenteditable]')&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())&&window.realmNative?.scenes?.command){e.preventDefault();e.stopImmediatePropagation();if(e.shiftKey||e.key.toLowerCase()==='y')commandSystem().redo();else commandSystem().undo();return;}
-  if(e.ctrlKey||e.metaKey||e.altKey||e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
+  if(e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
+  if(tool!=='place'&&shortcut(e)){e.preventDefault();e.stopImmediatePropagation();return;}
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
   if(partPlacement&&e.key==='Escape'){cancelPartPlacement();post('building',{state:buildingState()});e.preventDefault();e.stopImmediatePropagation();return;}
   if(partPlacement&&e.key.toLowerCase()==='r'){const step=buildingSnap.rotation||15;partPlacementRotation=snapValue(partPlacementRotation+step,step);if(partPlacementPoint)previewPart(partPlacementPoint);e.preventDefault();e.stopImmediatePropagation();return;}
   if(tool==='place'&&placementAsset&&e.key.toLowerCase()==='r'){rotatePlacement(15);e.preventDefault();e.stopImmediatePropagation();return;}
-  if(setCameraKey(e.key,true)){e.preventDefault();e.stopImmediatePropagation();}
+  if((tool==='camera'||e.shiftKey||e.key.toLowerCase().startsWith('arrow'))&&setCameraKey(e.key,true)){e.preventDefault();e.stopImmediatePropagation();}
  }
  function onKeyUp(e){if(setCameraKey(e.key,false)){e.preventDefault();e.stopImmediatePropagation()}}
  function cameraTick(now){
@@ -1018,7 +1030,7 @@
   cancelPartPlacement(){cancelPartPlacement();return buildingState();},
   moveEntrance(host){const m=assembly()?.modules.find(m=>m.role==='entrance');if(!m)throw Error('No linked entrance');partId=m.id;return setPart({host});},currentSceneName:()=>worldScenes?.[currentScene]?.title||String(currentScene),
   getSelection:()=>entityInfo(selected),selectionProjection,cameraState:cameraInfo,listEntities:allEntities,
-  setCameraKey,clearCameraKeys,
+  setCameraKey,clearCameraKeys,shortcut,
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
   setTool(next){
    window.VeldrenEditorTools?.cancel();

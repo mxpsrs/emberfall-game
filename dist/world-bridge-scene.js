@@ -51,7 +51,7 @@
   if(r.indexed)painter.indexed=(mesh,m,style)=>{const matrix=Array.from(m);matrix[7]+=cached.base-landHeight(matrix[3],matrix[11]);r.indexed(mesh,matrix,style);};
   briarEmit(painter,cached.mesh,A().transform(x,0,z));return 2;
  }
- function draw(r,scene){for(const b of list(scene)){const data=resolve(b);if(!data?.n.activeInHierarchy)continue;const pad=Math.max(data.c.span,data.c.width)*Math.max(Math.hypot(data.m[0],data.m[8]),Math.hypot(data.m[2],data.m[10]));if(typeof realmWideWorldLimit3==='function'&&Math.hypot(b.x-px,b.z-py)>realmWideWorldLimit3()+pad)continue;render(r,b);}}
+ function draw(r,scene){for(const b of list(scene)){const data=resolve(b);if(!data?.n.activeInHierarchy||root.VeldrenEditorSelection?.hidden(data.n.id))continue;const pad=Math.max(data.c.span,data.c.width)*Math.max(Math.hypot(data.m[0],data.m[8]),Math.hypot(data.m[2],data.m[10]));if(typeof realmWideWorldLimit3==='function'&&Math.hypot(b.x-px,b.z-py)>realmWideWorldLimit3()+pad)continue;render(r,b);}}
  function invalidate(){meshes.clear();if(typeof realmNavigation!=='undefined')realmNavigation.clear();if(typeof resetLandSurface==='function')resetLandSurface();if(typeof miniTerrain!=='undefined')miniTerrain=null;if(typeof worldAtlasTerrain!=='undefined')worldAtlasTerrain=null;if(typeof mapServicesCache!=='undefined')mapServicesCache=null;}
  async function migrate(){
   capture();const doc=native().serialize();let count=0,scene=doc.scenes.find(s=>s.scene==='overworld');

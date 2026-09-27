@@ -91,7 +91,7 @@
   if(r.indexed)q.indexed=(mesh,matrix,style)=>r.indexed(mesh,A.multiply(m,matrix),style);return q;
  }
  function render(r,view,lair){
-  const node=native().entity(view._generatedSceneName,view._sceneEntityId);if(!node?.activeInHierarchy)return;
+  const node=native().entity(view._generatedSceneName,view._sceneEntityId);if(!node?.activeInHierarchy||root.VeldrenEditorSelection?.hidden(node.id))return;
   const m=root.VeldrenBuildingScene.matrices.row(node.worldMatrix),q=painter(r,m),kind=node.components.WorldDecoration.kind,shape=node.components.DecorationShape;
   if(kind==='plant')rebuiltPlace(q,view.model,0,0,0,1,0,1,node.components.Material?.tint);
   else if(kind==='model')lairModel(q,view.model,0,0,0,shape.height,0,node.components.Material?.tint);

@@ -70,3 +70,21 @@ the player-independent editor context. Full Phase 3 graphical acceptance, prefab
 and building workflows, persistence and /play acceptance are still outstanding.
 
 Remote command checkpoint: `b565855ff658d674448bd616255a9854f78a9111`.
+
+## Selection validation checkpoint
+
+Editor-only hiding now reaches legacy world objects, buildings, native modular
+pieces, bridges, structural walls/rooms, scenery and light emitters without
+changing canonical active state. Locked branches reject hierarchy/Inspector
+mutation and cannot be selected. Native component validation rejects malformed
+vectors, non-boolean flags, empty mesh references and unsupported light types.
+Duplicated subtrees now remap internal component references and receive unique
+catalog/generation identities; source entities remain unchanged.
+
+Shortcuts: W/E/R choose Move/Rotate/Scale outside Camera mode. C toggles Camera
+mode, where WASD moves and Q/E zooms. Shift+WASD navigates quickly in every tool;
+arrows rotate/tilt. F focuses, Delete/Backspace deletes, Ctrl/Cmd+D duplicates,
+Ctrl/Cmd+Z undoes and Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes. Escape cancels the
+current gesture and returns to Select. Text fields retain normal editing keys.
+
+Remote 3D gizmo checkpoint: `a86290a21cd6c25c38e2d76fb4b570f08a39b68e`.

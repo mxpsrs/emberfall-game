@@ -35,6 +35,10 @@ int main(){
  }
  call(R"({"action":"begin","label":"Cancelled drag"})");call(R"({"operations":[{"op":"transform","id":"wall","transform":{"position":[8,9,10]}}]})");call(R"({"action":"cancel"})");assert(scene.serialize()==valid);
  call(R"({"operations":[{"op":"create","entity":{"id":"new","name":"New","parent":"root","components":{"Collider":{"shape":"box","radius":1}}}}]})");assert(scene.contains("new"));call(R"({"action":"undo"})");assert(!scene.contains("new"));call(R"({"action":"redo"})");assert(scene.contains("new"));
+ scene.add_component("wall","BuildingAccess",{{"entrance","door"}});scene.add_component("wall","GeneratedBuilding",{{"generationKey","original"}});scene.add_component("door","BuildingPart",{{"building","wall"}});
+ const auto branch=call(R"({"operations":[{"op":"duplicate","id":"wall"}]})").find("created")->array()[0].string_or();const auto child=scene.inspect(branch).children[0];
+ assert(scene.component(branch,"BuildingAccess")->at("entrance").string_or()==child);assert(scene.component(child,"BuildingPart")->at("building").string_or()==branch);assert(scene.component(branch,"GeneratedBuilding")->at("generationKey").string_or()!="original");
+ for(const char* bad:{R"({"operations":[{"op":"addComponent","id":"other","component":"MeshRenderer","fields":{}}]})",R"({"operations":[{"op":"addComponent","id":"other","component":"Collider","fields":{"size":[1,-1,1]}}]})",R"({"operations":[{"op":"addComponent","id":"other","component":"Light","fields":{"color":[1,2]}}]})",R"({"operations":[{"op":"field","id":"wall","component":"Light","field":"visible","value":"yes"}]})"}){const auto before=scene.serialize();bool rejected=false;try{call(bad);}catch(const std::exception&){rejected=true;}assert(rejected);assert(scene.serialize()==before);}
  assert(Scene::deserialize(scene.serialize()).serialize()==scene.serialize());
  std::cout<<"PASS: canonical mixed commands, affine reparent undo, exact deletion restore, components/indexes, duplicate identity, 300-tick transaction, dirty/save states, invalid rollback and serialization.\n";
 }

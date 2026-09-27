@@ -105,6 +105,7 @@
  function sources(scene,night){
   const w=registry()[scene],inside=(x,z)=>w?.buildings.some(b=>b.walkIn&&(typeof withinWalkIn==='function'?withinWalkIn(b,x,z):x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h)),result=[];
   for(const light of native().lights(scene,night)){
+   if(root.VeldrenEditorSelection?.hidden(light.id))continue;
    const node=native().entity(scene,light.id),meta=node.metadata;
    if(light.scope==='object'){
     if(meta.interiorBuilding||meta.collected||meta.dead>(typeof time==='undefined'?0:time))continue;

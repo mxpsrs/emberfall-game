@@ -346,7 +346,7 @@
  function renderAssembly(b){
   const scene=b._generatedSceneName,id=b._sceneEntityId,definition=entity(scene,id).components.ModularBuilding,instances=[],faces=[],A=root.VeldrenAssembly,filter=root.VeldrenBuildings.floorFilter;
   for(const moduleId of present(scene,definition.modules)){
-   const node=entity(scene,moduleId),m=moduleData(scene,moduleId,id);if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;
+   const node=entity(scene,moduleId);if(!node.activeInHierarchy||node.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(moduleId))continue;const m=moduleData(scene,moduleId,id);if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;
    if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;
    if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(node.components.MeshGeometry?.faces){for(const face of node.components.MeshGeometry.faces)faces.push({...face,points:face.points.map(p=>A.point(m.local,p))});continue;}
