@@ -59,6 +59,8 @@ const child={console,window:childWindow,document:childDocument,location:{origin:
  px:40,py:50,s:{x:40,y:50,character:null},screen:{w:800,h:390},view3d:{yaw:0,tilt:.4,zoom:110,min:58,max:132},
  prop3(){},briarTransform(){return []},briarEmit(r,mesh){r.face(mesh.p,'#fff')},draw3d(){},draw(){},unproject3(sx,sy){return {x:child.px+sx/10,z:child.py+sy/10}},
  stop(){},resize(){},target:null};
+childWindow.realmNative={scenes:{componentIds:()=>[],entity:()=>null}};
+child.createVeldrenEditorCommands=()=>({transaction:(_label,fn)=>fn(),saved(){},block(){},active:false});
 childWindow.VeldrenBuildings=child.VeldrenBuildings;
 childWindow.matchMedia=()=>({matches:false});
 vm.createContext(child);

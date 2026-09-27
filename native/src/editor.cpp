@@ -92,6 +92,22 @@ void EditorHistory::clear(){undo_.clear();redo_.clear();pending_.reset();state_=
 
 void EditorHistory::apply(Scene& scene,const Json& op,const AssetValidator& assets) {
   const auto kind=text(op,"op"),id=text(op,"id");
+  if(kind.starts_with("prefab")){apply_prefab(scene,op,assets);return;}
+  if(kind=="replace"){
+    const auto& value=required(op,"entity");const auto target=text(value,"id");
+    if(!scene.contains(target)){auto create=op.object();create["op"]="create";apply(scene,create,assets);return;}
+    const auto current=scene.inspect(target);const auto parent=text(value,"parent");
+    const auto pose=value.find("transform")?transform(*value.find("transform")):Transform{};
+    const auto fields=required(value,"components").object();
+    for(const auto& [type,data]:fields){const auto old=current.components.find(type);if(old==current.components.end()||old->second!=data.object())validate_component(type,data.object(),assets);}
+    touch(scene,target);if(!current.parent.empty())touch(scene,current.parent);if(!parent.empty())touch(scene,parent);
+    scene.reparent(target,parent,false);scene.set_local(target,pose);scene.rename(target,text(value,"name",current.name));
+    scene.set_active(target,value.find("active")?value.find("active")->bool_or(true):true);
+    scene.set_metadata(target,value.find("metadata")?value.find("metadata")->object():Json::Object{});
+    for(const auto& [type,data]:current.components){(void)data;if(!fields.contains(type))scene.remove_component(target,type);}
+    for(const auto& [type,data]:fields)scene.add_component(target,type,data.object());
+    affected_.emplace_back(target);return;
+  }
   if(kind=="create"){
     const auto& value=required(op,"entity");const auto name=text(value,"name","Entity"),parent=text(value,"parent");auto requested=text(value,"id");
     const auto pose=value.find("transform")?transform(*value.find("transform")):Transform{};

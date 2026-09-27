@@ -21,9 +21,9 @@ desktop-test: build/desktop-test
 desktop-smoke: build/veldren-desktop
 	./build/veldren-desktop --headless --frames=240 --assets=..
 
-build/core-test: src/core.cpp src/editor.cpp src/scene.cpp tests/core_test.cpp include/veldren/core.h include/veldren/scene.h
+build/core-test: src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp tests/core_test.cpp include/veldren/core.h include/veldren/scene.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/scene.cpp tests/core_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp tests/core_test.cpp -o $@
 
 build/scene-test: src/scene.cpp tests/scene_test.cpp include/veldren/scene.h
 	mkdir -p build
@@ -33,17 +33,17 @@ build/scene-migrate: src/scene.cpp tools/migrate_scene.cpp include/veldren/scene
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/scene.cpp tools/migrate_scene.cpp -o $@
 
-build/desktop-test: src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp tests/desktop_test.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
+build/desktop-test: src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp tests/desktop_test.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp tests/desktop_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp tests/desktop_test.cpp -o $@
 
-build/desktop-scene-test: src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp tests/desktop_scene_test.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
+build/desktop-scene-test: src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp tests/desktop_scene_test.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp tests/desktop_scene_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp tests/desktop_scene_test.cpp -o $@
 
-build/veldren-desktop: src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp src/desktop_renderer.cpp src/desktop_main.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
+build/veldren-desktop: src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp src/desktop_renderer.cpp src/desktop_main.cpp include/veldren/core.h include/veldren/scene.h include/veldren/desktop.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/scene.cpp src/desktop.cpp src/desktop_renderer.cpp src/desktop_main.cpp -ldl -lz -o $@
+	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp src/desktop_renderer.cpp src/desktop_main.cpp -ldl -lz -o $@
 
 asset-test: build/asset-test
 	./build/asset-test ../dist/assets/asset-registry.json
@@ -57,9 +57,9 @@ wasm: ../dist/native/veldren-core.wasm
 wasm-test: wasm
 	node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
 
-../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
+../dist/native/veldren-core.wasm: src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
 	mkdir -p ../dist/native
-	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/editor.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
+	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
 
 clean:
 	rm -rf build ../dist/native/veldren-core.wasm
@@ -107,6 +107,6 @@ build/material-test: src/asset_render.cpp src/asset_material.cpp src/asset_impor
 .PHONY: editor-test
 editor-test: build/editor-test
 	./build/editor-test
-build/editor-test: src/scene.cpp src/editor.cpp tests/editor_test.cpp include/veldren/editor.h include/veldren/scene.h
+build/editor-test: src/scene.cpp src/editor.cpp src/editor_prefabs.cpp tests/editor_test.cpp include/veldren/editor.h include/veldren/scene.h
 	mkdir -p build
-	$(CXX) $(CXXFLAGS) src/scene.cpp src/editor.cpp tests/editor_test.cpp -o $@
+	$(CXX) $(CXXFLAGS) src/scene.cpp src/editor.cpp src/editor_prefabs.cpp tests/editor_test.cpp -o $@

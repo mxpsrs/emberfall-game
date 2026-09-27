@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/editor.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
+add_library(veldren_core STATIC src/editor.cpp src/editor_prefabs.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
 target_include_directories(veldren_core PUBLIC include)
 target_include_directories(veldren_core SYSTEM PRIVATE third_party)
 

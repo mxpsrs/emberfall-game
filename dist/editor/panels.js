@@ -1,7 +1,7 @@
 'use strict';
 (function(root){
  function createVeldrenScenePanels({bridge,list,inspector,count,log}){
-  const expanded=new Set(),defaults={MeshRenderer:{asset:'',visible:true,castShadows:true,receiveShadows:true},Light:{type:'point',intensity:1,color:[1,1,1],radius:8},Collider:{shape:'box',size:[1,1,1],solid:true},Interactable:{action:'examine',label:'Object'},SpawnPoint:{version:1,stationary:false,homeOffset:[0,0,0]},Gatherable:{kind:'tree',requiredLevel:1}},readOnly=new Set(['RuntimeBinding','LegacyWorldEdit','PlayerRepresentation','ActorController','CatalogIdentity','WorldGeneration','GeneratedProp','GeneratedBuilding','GeneratedSpawn','GeneratedGatherable','BuildingPart','BuildingModule']);let query='';
+  const expanded=new Set(),defaults={MeshRenderer:{asset:'',visible:true,castShadows:true,receiveShadows:true},Light:{type:'point',intensity:1,color:[1,1,1],radius:8},Collider:{shape:'box',size:[1,1,1],solid:true},Interactable:{action:'examine',label:'Object'},SpawnPoint:{version:1,stationary:false,homeOffset:[0,0,0]},Gatherable:{kind:'tree',requiredLevel:1}},readOnly=new Set(['RuntimeBinding','LegacyWorldEdit','PlayerRepresentation','ActorController','CatalogIdentity','WorldGeneration','GeneratedProp','GeneratedBuilding','GeneratedSpawn','GeneratedGatherable','BuildingPart','BuildingModule','PrefabDefinition','PrefabInstance']);let query='';
   const element=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
   function action(label,ops){try{if(ops.some(op=>bridge.canonicalSelection().locked(op.id)||op.parent&&bridge.canonicalSelection().locked(op.parent)))throw Error('Unlock the entity or branch before editing');bridge.executeCommand(label,ops);render(query);inspect();}catch(error){log(error.message,'error');}}
   const button=(label,fn)=>{const b=element('button',label);b.type='button';b.onclick=fn;return b;};
@@ -31,12 +31,17 @@
    inspector.append(element('h2',node.name),element('small',ids.length>1?ids.length+' selected · Inspector edits primary entity':id));
    const common=fieldset('Entity');input(common,'Name',node.name,name=>action('Rename',[{op:'rename',id,name}]));input(common,'Active in game',node.active,active=>action('Active state',[{op:'active',id,active}]));
    common.append(button('Focus',()=>bridge.focusSelection()),button('Duplicate',()=>{bridge.duplicateSelection();render(query);inspect();}),button('Delete',()=>{bridge.deleteSelection();render(query);inspect();}));
+   const prefab=fieldset(node.components.PrefabDefinition?'Prefab definition':'Prefab');
+   const perform=(fn)=>{try{fn();render(query);inspect();}catch(error){log(error.message,'error');}};
+   if(node.components.PrefabDefinition){prefab.append(button('Instantiate',()=>perform(()=>bridge.instantiatePrefab(id))));}
+   else if(node.components.PrefabInstance){const state=node.components.PrefabInstance;prefab.append(element('p','Linked instance · revision '+state.revision),button('Update all instances',()=>perform(()=>bridge.updatePrefab(id))),button('Revert overrides',()=>perform(()=>bridge.revertPrefab(id))),button('Unpack',()=>perform(()=>bridge.unpackPrefab(id))));}
+   else{const name=element('input');name.value=node.name;name.setAttribute('aria-label','Prefab name');prefab.append(name,button('Create prefab',()=>perform(()=>bridge.createPrefab(id,name.value))));}
    const transform=fieldset('Local Transform');for(const [key,labels]of [['position',['X','Y','Z']],['rotation',['X','Y','Z','W']],['scale',['X','Y','Z']]]){
     const group=element('div');group.className='component-vector';transform.append(element('strong',key==='rotation'?'Rotation quaternion':key),group);
     (node.transform[key]||[]).forEach((value,index)=>input(group,labels[index],value,next=>{bridge.editTransformField(id,key,index,next);render(query);inspect();}));
    }
    if(node.transform.affine)input(transform,'Exact affine matrix',node.transform.affine,affine=>action('Edit affine transform',[{op:'transform',id,transform:{affine}}]));
-   for(const [type,stored]of Object.entries(node.components)){const fields=type==='MeshRenderer'?{material:'',visible:true,castShadows:true,receiveShadows:true,...stored}:stored;const panel=fieldset(type),disabled=readOnly.has(type);for(const [key,value]of Object.entries(fields))input(panel,key,value,next=>action('Edit '+type+'.'+key,[{op:'field',id,component:type,field:key,value:next}]),disabled);
+   for(const [type,stored]of Object.entries(node.components)){if(['PrefabDefinition','PrefabInstance'].includes(type))continue;const fields=type==='MeshRenderer'?{material:'',visible:true,castShadows:true,receiveShadows:true,...stored}:stored;const panel=fieldset(type),disabled=readOnly.has(type);for(const [key,value]of Object.entries(fields))input(panel,key,value,next=>action('Edit '+type+'.'+key,[{op:'field',id,component:type,field:key,value:next}]),disabled);
     if(!disabled)panel.append(button('Remove component',()=>action('Remove '+type,[{op:'removeComponent',id,component:type}])));
    }
    const add=fieldset('Add component'),types=element('select');for(const type of Object.keys(defaults))if(!node.components[type])types.append(new Option(type,type));add.append(types,button('Add',()=>{const component=types.value;if(!component)return;const fields=structuredClone(defaults[component]);if(component==='MeshRenderer')fields.asset=bridge.assetReferences('model','')[0]?.id||'';action('Add '+component,[{op:'addComponent',id,component,fields}]);}));

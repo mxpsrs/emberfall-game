@@ -29,6 +29,7 @@ class EditorHistory {
   bool commit(Scene& scene);
   void cancel(Scene& scene);
   void apply(Scene& scene, const Json& operation, const AssetValidator& assets);
+  void apply_prefab(Scene& scene, const Json& operation, const AssetValidator& assets);
   Json status(bool changed) const;
 };
 }  // namespace veldren

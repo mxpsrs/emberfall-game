@@ -276,6 +276,7 @@
   if(node.components.MeshRenderer.asset!==data.model){delete node.components.MeshGeometry;delete node.components.MeshVariant;}
   node.components.MeshRenderer={...node.components.MeshRenderer,asset:data.model};node.components.MeshBounds={bounds:copy(data.bounds)};
   if(data.stairs){node.components.StairConnection=copy(data.stairs);delete node.components.StairConnection.origin;}else delete node.components.StairConnection;
+  if(data.host){const host=present(scene,entity(scene,building).components.ModularBuilding?.modules).find(key=>entity(scene,key)?.components.BuildingModule?.key===data.host);if(host&&host!==id)node.parent=host;}
   if(node.parent===building)node.transform=affineTransform(data.local);
   else{const world=A.multiply(matrices.row(entity(scene,building).worldMatrix),data.local),local=A.multiply(A.inverse(matrices.row(entity(scene,node.parent).worldMatrix)),world);node.transform=affineTransform(local);}
   if(!native().upsert(scene,node))throw Error('Invalid Scene building module '+id);

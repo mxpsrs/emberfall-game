@@ -344,7 +344,7 @@
   if(m?.type==='veldren-editor-ready'){const candidate=frame.contentWindow?.VeldrenEditorBridge;if(candidate)connect(candidate);}
   if(m?.type==='veldren-editor-tool')setTool(m.tool);
   if(m?.type==='veldren-editor-selection'){renderSelection(m.selection);if(m.selection)log(`Selected ${m.selection.kind} · ${m.selection.name} · id ${m.selection.id}.`,'info');}
-  if(m?.type==='veldren-editor-change'){renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
+  if(m?.type==='veldren-editor-change'){refreshAssets();renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
   if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty();log('Terrain stroke recorded. Save World to publish the change.','ok');}}
   if(m?.type==='veldren-editor-log')log(m.message,m.level||'info');
   if(m?.type==='veldren-editor-scene'){refreshEntities();}

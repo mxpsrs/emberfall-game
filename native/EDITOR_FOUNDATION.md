@@ -88,3 +88,35 @@ Ctrl/Cmd+Z undoes and Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redoes. Escape cancels the
 current gesture and returns to Select. Text fields retain normal editing keys.
 
 Remote 3D gizmo checkpoint: `a86290a21cd6c25c38e2d76fb4b570f08a39b68e`.
+
+## Prefab and modular command integration checkpoint (2026-09-27)
+
+Building projection writes now dispatch native `replace`, transform and delete
+commands after editor startup. Building Edit conversion, creation, part changes,
+duplicate/delete and placement are grouped in the same history as the general
+Inspector and 3D tools. The old separate building history is removed. Selecting
+a module selects its canonical entity; dragging uses the 3D handles. Linked
+openings inherit their host wall transform. Save rejects unfinished gestures and
+blocks edits until the persisted document has been reread and verified.
+
+Native prefab definitions are versioned `PrefabDefinition` components on inactive
+Scene roots. Each `PrefabInstance` stores the definition reference, stable node
+mapping and inherited base. Templates are immutable snapshots, not another
+editable world. Native create/instantiate/update/revert/unpack commands retain
+internal links, preserve instance placement and field overrides, propagate new
+children and retain intentional local deletions. Updates undo as one transaction.
+Removed customized branches remain loose instance children; unchanged removed
+leaves are deleted. Nested linked instances must be unpacked first. Definitions
+and instance state persist in the existing WorldDocument with no new save store.
+
+The Inspector exposes prefab actions and the asset catalog lists definitions.
+Imported models can be placed through canonical MeshRenderer commands. Imported
+placement previews share Phase 2 Filament resources and are never saved as
+entities. Prefab previews use their imported model members.
+
+Focused actual-WASM tests cover prefab internal links, independent overrides,
+update/undo/redo, added/deleted children, revert, unpack and serialization. The
+building fixture checks that multiple native projection writes form one exact
+undo/redo transaction. General command, camera, context and frame checks pass.
+The populated-world graphical workflow and final Phase 3 acceptance remain
+pending at this checkpoint. Nothing is deployed or merged into main.

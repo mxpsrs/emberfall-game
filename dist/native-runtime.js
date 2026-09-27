@@ -24,7 +24,9 @@
   const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
   function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  let commandWriter=null;
   const scenes={
+   setCommandWriter(writer){if(!editor)throw Error('Command writer requires editor context');commandWriter=writer;},
    command(scene,request){
     if(!editor)throw Error('Editor commands require the editor context');
     // References are resolved by the accepted native registry, never a second
@@ -33,6 +35,7 @@
     if(request.operations)request={...request,operations:request.operations.flatMap(op=>{
      const asset=op.op==='asset'?op.value:op.component==='MeshRenderer'?(op.field==='asset'?op.value:op.fields?.asset):op.op==='create'?op.entity?.components?.MeshRenderer?.asset:null;
      if(!asset||!globalThis.VeldrenAssets?.has(asset)||VeldrenAssets.record(asset).importSettings?.importer!=='veldren-gltf-1')return [op];
+     if(op.op==='create'&&op.entity?.components?.BuildingPart)return [op];
      if(op.op==='create')return [{...op,entity:{...op.entity,components:{...op.entity.components,MeshRenderer:{...op.entity.components.MeshRenderer,renderPath:'canonical'}}}}];
      return [op,{op:'field',id:op.id,component:'MeshRenderer',field:'renderPath',value:'canonical'}];
     })};
@@ -40,7 +43,14 @@
      if(op.op==='asset'||op.op==='material')validate(op.op,op.value);
      if(op.op==='field')validate(op.field,op.value);
      if(op.op==='setComponent'||op.op==='addComponent')for(const [key,id]of Object.entries(op.fields||{}))validate(key,id);
-     if(op.op==='create')for(const fields of Object.values(op.entity?.components||{}))for(const [key,id]of Object.entries(fields))validate(key,id);
+     if(op.op==='create'||op.op==='replace'){
+      const previous=op.op==='replace'?scenes.entity(scene,op.entity.id):null;
+      for(const [type,fields]of Object.entries(op.entity?.components||{}))for(const [key,id]of Object.entries(fields)){
+       if(previous?.components?.[type]?.[key]===id)continue;
+       if(type==='MeshRenderer'&&key==='asset'&&typeof id==='string'&&(id.startsWith('captured:')&&op.entity.components.MeshGeometry||id.startsWith('linked:')&&op.entity.components.BuildingModule?.objectId))continue;
+       validate(key,id);
+      }
+     }
     }
     withCString(scene,s=>withCString(JSON.stringify(request),r=>api.veldren_editor_command(world,s,r)));
     const result=JSON.parse(readNativeText((out,size)=>api.veldren_editor_response(world,out,size)));
@@ -57,10 +67,10 @@
     const json=withCString(scene,scenePtr=>withCString(id,idPtr=>readNativeText((out,capacity)=>api.veldren_world_scene_entity_read(world,scenePtr,idPtr,out,capacity))));
     const result=json?freeze(JSON.parse(json)):null;entityCache.set(key,result);return result;
    },
-   upsert(scene,entity){return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
-   remove(scene,id){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
-   setTransform(scene,id,transform){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
-   setWorldTransform(scene,id,transform){return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   upsert(scene,entity){if(commandWriter){commandWriter(scene,{op:'replace',entity});return true;}return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
+   remove(scene,id){if(commandWriter){commandWriter(scene,{op:'delete',id});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
+   setTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   setWorldTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform,space:'world'});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
    read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity)));return json?JSON.parse(json):null;},
    componentIds(scene,component){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_component_ids(world,scenePtr,typePtr,out,capacity))));return json?JSON.parse(json):[];},
    footprintsAt(scene,component,x,z){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_footprints_at(world,scenePtr,typePtr,x,z,out,capacity))));return json?JSON.parse(json):[];},

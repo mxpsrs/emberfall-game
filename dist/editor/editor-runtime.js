@@ -17,7 +17,7 @@
  let editorSequence=0,editorRendering=false;
  let lastAppliedScene=null;
 
- let commands=null,canonicalSelection=null;
+ let commands=null,canonicalSelection=null,saving=false;
  function commandSystem(){
   if(!commands)commands=createVeldrenEditorCommands(window.realmNative.scenes,()=>String(currentScene),state=>{
    sceneDocumentDirty=state.dirty;
@@ -75,9 +75,10 @@
     if(native.has(id)&&native.record(id).importSettings?.importer==='veldren-gltf-1'){const record=native.record(id);Object.assign(asset,canonicalMetadata(record));seen.add(id);}
    }
    for(const id of native.list('model')){const record=native.record(id);if(record.importSettings?.importer!=='veldren-gltf-1'||seen.has(id))continue;
-    out.push({id,source:'canonical',key:id,name:record.name,category:record.dependencies?.some(id=>id.includes('/skeleton/'))?'Rigged Models':'Imported Models',previewOnly:true,...canonicalMetadata(record)});
+    out.push({id,source:'canonical',key:id,name:record.name,category:record.dependencies?.some(id=>id.includes('/skeleton/'))?'Rigged Models':'Imported Models',previewOnly:false,...canonicalMetadata(record)});
    }
   }
+  if(ready&&window.realmNative?.scenes)for(const id of window.realmNative.scenes.componentIds(String(currentScene),'PrefabDefinition')){const node=window.realmNative.scenes.entity(String(currentScene),id);out.push({id:'prefab:'+id,key:id,source:'prefab',name:node.name,category:'Prefabs'});}
   return out;
  }
  function canonicalMetadata(record){return {canonicalId:record.id,generation:record.generation,sourcePath:record.sourcePath,sourceHash:record.sourceHash,validation:record.validation,dependencies:record.dependencies?.length||0,clips:record.dependencies?.filter(id=>id.includes('/animation/')).length||0,size:record.bounds?.[1].map((v,i)=>v-record.bounds[0][i])};}
@@ -350,6 +351,9 @@
    assembly:c.assembly||null,name:c.name||null,type:c.type||null,subtype:c.subtype||null,baseX:Number(c.baseX)||0,baseY:Number(c.baseY)||0});
  }
  async function saveProject(){
+  if(saving)throw Error('Save is already in progress');
+  if(commands?.active||terrainDrag||partDrag)throw Error('Finish the current edit before saving');
+  saving=true;commands?.block(true);try{
   const legacy={version:1,revision:projectMeta.revision+1,updatedAt:new Date().toISOString(),changes:[...changes.values()].map(normalizeChange),terrain:T.serialize()};
   const preserveIds=quarantined.filter(c=>c&&c.scene&&c.kind&&c.id!=null).map(c=>`${c.scene}:${c.kind}:${c.id}`);
   const nativeDocument=window.VeldrenSceneOwnership?.document?.();
@@ -373,6 +377,7 @@
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
   localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes,terrain:verify.edits.terrain}));
   return {...result,roundTripVerified:true};
+  }finally{saving=false;commands?.block(false);}
  }
 
 
@@ -488,22 +493,39 @@
  }
 
  function removePlacementPreview(){
-  if(!placementPreview)return;const scene=placementPreview._editorScene;if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.removeSession(placementPreview);else{const list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);}try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
+  if(!placementPreview)return;if(placementPreview._editorCanonicalPreview){placementPreview=null;return;}const scene=placementPreview._editorScene;if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.removeSession(placementPreview);else{const list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);}try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
  }
  function ensurePlacementPreview(asset){
   if(placementPreview&&placementPreview._editorAssetId===asset.id&&placementPreview._editorScene===String(currentScene))return placementPreview;
   removePlacementPreview();const x=Number.isFinite(free.x)?free.x:Number(px)||0,y=Number.isFinite(free.y)?free.y:Number(py)||0,template=asset.source==='preset'?(presetTemplates[asset.key]||{name:asset.name}):{name:asset.name};
+  if(asset.canonicalId||asset.source==='canonical'||asset.source==='prefab'){
+   let draws=[];
+   if(asset.source==='prefab'){
+    const definition=realmNative.scenes.entity(String(currentScene),asset.key)?.components.PrefabDefinition;
+    if(!definition)throw Error('Prefab definition is missing');
+    const entities=Object.values(definition.nodes),world={scenes:[{scene:'preview',entities}]};
+    for(const node of entities){const mesh=node.components.MeshRenderer;if(!node.active||mesh?.visible===false||!mesh?.asset||!VeldrenAssets.has(mesh.asset)||VeldrenAssets.record(mesh.asset).importSettings?.importer!=='veldren-gltf-1')continue;
+     draws.push({asset:mesh.asset,matrix:VeldrenSceneFormat.readWorldTransform(world,'preview',node.id).matrix,options:{material:mesh.material||'',castShadows:false}});
+    }
+   }else draws=[{asset:asset.canonicalId||asset.id,matrix:VeldrenEditorGeometry.identity(),options:{castShadows:false}}];
+   placementPreview={x,y,_editorCanonicalPreview:true,_editorAssetId:asset.id,_editorScene:String(currentScene),editorTransform:{rotation:placementRotation},draws};return placementPreview;
+  }
   placementPreview={id:`editor-preview-${++editorSequence}`,type:'prop',...template,propKind:asset.source==='preset'?asset.key:undefined,x,y,homeX:x,homeY:y,drawX:x,drawY:y,dead:0,hitAt:-100,attackAt:-100,editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},walkThrough:true,placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Temporary asset placement preview'},_editorPreview:true,_editorAssetId:asset.id,_editorScene:String(currentScene)};
   if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.addSession(String(currentScene),placementPreview,'preview');else{const list=sceneObjects(currentScene);list.push(placementPreview);if(list!==objects&&!objects.includes(placementPreview))objects.push(placementPreview);}worldObjectRevision++;worldObjectIndex=null;return placementPreview;
  }
  function movePlacementPreview(x,y){
   if(!placementAsset)return;const o=ensurePlacementPreview(placementAsset),oldX=o.x,oldY=o.y;x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);if(Math.abs(oldX-x)<.001&&Math.abs(oldY-y)<.001)return;
-  o.x=o.drawX=o.homeX=x;o.y=o.drawY=o.homeY=y;o.editorTransform.rotation=placementRotation;updatePreviewIndex(o,oldX,oldY);invalidate(o,'object',true);
+  o.x=o.drawX=o.homeX=x;o.y=o.drawY=o.homeY=y;o.editorTransform.rotation=placementRotation;if(o._editorCanonicalPreview)return;updatePreviewIndex(o,oldX,oldY);invalidate(o,'object',true);
  }
  function rotatePlacement(delta=15){if(!placementAsset)return false;placementRotation=(placementRotation+Number(delta)||0)%360;if(placementPreview)placementPreview.editorTransform.rotation=placementRotation;return placementRotation;}
  function createPlacedAsset(asset,x,y){
   if(!asset)throw Error('No asset selected');
   x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);
+  if(asset.canonicalId||asset.source==='canonical'||asset.source==='prefab'){
+   const angle=placementRotation*Math.PI/360,transform={position:[x,typeof landHeight==='function'?landHeight(x,y):0,y],rotation:[0,Math.sin(angle),0,Math.cos(angle)],scale:[1,1,1]};
+   const op=asset.source==='prefab'?{op:'prefabInstantiate',id:asset.key,transform}:{op:'create',entity:{name:asset.name,transform,components:{MeshRenderer:{asset:asset.canonicalId||asset.id,renderPath:'canonical',visible:true}}}};
+   const result=commandSystem().execute('Place '+asset.name,[op]);canonicalSelection.select(result.created[0]);post('change',{selection:entityInfo(selected),placed:true,asset});return entityInfo(selected);
+  }
   const id=`editor-asset-${Date.now()}-${++editorSequence}`;
   let base={type:'prop',name:asset.name,walkThrough:true};
   if(asset.source==='preset')base={...(presetTemplates[asset.key]||{type:'prop',name:asset.name}),propKind:asset.key,walkThrough:false};
@@ -519,18 +541,23 @@
   post('change',{selection:info,placed:true,asset});return info;
  }
 
+ window.VeldrenEditorPlacement=()=>{
+  const preview=placementPreview;if(!preview?._editorCanonicalPreview)return [];
+  const G=VeldrenEditorGeometry,root=G.multiply(G.translation([preview.x,landHeight(preview.x,preview.y),preview.y]),G.rotation([0,1,0],placementRotation*Math.PI/180));
+  return preview.draws.map(draw=>({...draw,matrix:G.multiply(root,draw.matrix)}));
+ };
  const A=globalThis.VeldrenAssembly,B=window.VeldrenBuildings;
  function cancelPartPlacement(){partPlacement=null;partPlacementAsset=null;partPreview=null;partPlacementPoint=null;partPlacementRotation=0;if(tool==='place')tool='select';}
  let buildingContext=null,partId=null,partPlacement=null,partPlacementAsset=null,partPreview=null,partDrag=null,buildingFloor=0,partPlacementRotation=0,partPlacementPoint=null;
  let buildingSnap={grid:.25,rotation:15,vertical:3,mode:'edge'},floorIsolated=false,floorsBelow=true;
- const buildingHistory=new A.History();
+
  function assembly(){return buildingContext?.entity.assembly;}
- function buildingState(){const a=assembly(),parent=a?.parent;return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(a).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},transform:parent?{x:parent[3],z:parent[11],rotation:Math.atan2(parent[2],parent[0])*180/Math.PI}:null,isolate:floorIsolated,below:floorsBelow,undo:buildingHistory.undoStack.length,redo:buildingHistory.redoStack.length,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
+ function buildingState(){const a=assembly(),parent=a?.parent;return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(a).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},transform:parent?{x:parent[3],z:parent[11],rotation:Math.atan2(parent[2],parent[0])*180/Math.PI}:null,isolate:floorIsolated,below:floorsBelow,undo:commandSystem().status().undo,redo:commandSystem().status().redo,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
  function recordBuilding(before){
   const b=buildingContext.entity;B.commit(b);const key=ckey(currentScene,'building',buildingContext.id),previous=changes.get(key);
   if(!b._generatedBuildingEntity&&(buildingContext.created||previous?.created)){const data=deepClone(b);delete data.assembly;data.id=buildingContext.id;changes.set(key,{...(previous||{}),scene:String(currentScene),kind:'building',id:buildingContext.id,name:b.name,type:'building',subtype:'modular',baseX:Number(data.x)||0,baseY:Number(data.y)||0,created:true,data});}
   recordChange(buildingContext);if(!b._generatedBuildingEntity)changes.get(key).assembly=A.serialize(b.assembly);
-  if(before)buildingHistory.push(before,b.assembly);post('building',{state:buildingState()});post('change',{selection:entityInfo(buildingContext)});
+  post('building',{state:buildingState()});post('change',{selection:entityInfo(buildingContext)});
  }
  function startNewBuilding(){
   if(!worldScenes?.[currentScene])throw Error('The active scene is not ready');
@@ -551,7 +578,7 @@
   if(buildingContext?.uncommittedEmpty&&!assembly()?.modules.length){const b=buildingContext.entity,list=sceneBuildings(currentScene),i=list.indexOf(b);if(b._generatedBuildingEntity)window.realmNative.scenes.remove(String(currentScene),b._sceneEntityId);else if(i>=0)list.splice(i,1);if(buildings!==list){const active=buildings.indexOf(b);if(active>=0)buildings.splice(active,1);}B.cache.delete(b);if(selected?.entity===b)selected=null;}
   cancelPartPlacement();partDrag=null;B.floorFilter=null;buildingContext=null;partId=null;post('building',{state:null});return true;
  }
- function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
+ function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;const module=window.realmNative.scenes.componentIds(String(currentScene),'BuildingModule').find(key=>window.realmNative.scenes.entity(String(currentScene),key)?.components.BuildingModule.key===id&&window.realmNative.scenes.entity(String(currentScene),key)?.components.BuildingPart?.building===buildingContext.entity._sceneEntityId);if(module)canonicalSelection?.select(module);partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
  function setPart(input,history=true){
   const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)throw Error('Select a part');const before=A.serialize(a);
   try{
@@ -567,14 +594,14 @@
   // A wall opening is a component of its host, so moving the wall carries
   // its door/service coordinates using the same local delta.
   const old=before.modules.find(p=>p.id===m.id);
-  if(old&&['wall','window'].includes(m.role)){const delta=A.multiply(m.local,A.inverse(old.local));for(const linked of a.modules.filter(p=>p.host===m.id)){linked.local=A.multiply(delta,linked.local);if(linked.opening){linked.opening.service=A.point(delta,linked.opening.service);const basis=[...delta];basis[3]=basis[7]=basis[11]=0;linked.opening.normal=A.point(basis,linked.opening.normal);}}}
+  if(old&&!buildingContext.entity._generatedBuildingEntity&&['wall','window'].includes(m.role)){const delta=A.multiply(m.local,A.inverse(old.local));for(const linked of a.modules.filter(p=>p.host===m.id)){linked.local=A.multiply(delta,linked.local);if(linked.opening){linked.opening.service=A.point(delta,linked.opening.service);const basis=[...delta];basis[3]=basis[7]=basis[11]=0;linked.opening.normal=A.point(basis,linked.opening.normal);}}}
   if(m.role==='stairs'&&!m.stairs?.rampPath&&!B.stairConnection(buildingContext.entity,m))throw Error('The stairs must rise from ground to an existing upper floor landing');
   B.sync(buildingContext.entity);if(history)recordBuilding(before);return buildingState();
   }catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);throw error;}
  }
  function deletePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.objectId)throw Error('Gameplay-linked parts must be moved, not deleted');const before=A.serialize(a);if(m.role==='entrance'&&m.host){const host=a.modules.find(p=>p.id===m.host);if(host?.originalModel){host.model=host.originalModel;host.role='wall';delete host.originalModel;}}a.modules=a.modules.filter(p=>p.id!==partId&&p.host!==partId);partId=null;recordBuilding(before);return buildingState();}
  function duplicatePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.role==='entrance'||m.objectId)throw Error('Gameplay-linked components cannot be duplicated');const before=A.serialize(a),copy=A.clone(m);copy.id='part-editor-'+Date.now()+'-'+(++editorSequence);copy.local[3]+=buildingSnap.grid||.25;delete copy.host;if(copy.role==='stairs'){copy.stairs={fromFloor:copy.floor,toFloor:copy.floor+1,origin:[copy.local[3],copy.local[7],copy.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,copy))throw Error('The stairs must reach an existing upper floor landing');}a.modules.push(copy);partId=copy.id;recordBuilding(before);return buildingState();}
- function buildingUndo(redo=false){const a=assembly();if(!a)return;const next=redo?buildingHistory.redo(a):buildingHistory.undo(a);if(next){B.attach(buildingContext.entity,next,worldScenes[currentScene]);recordBuilding();}return buildingState();}
+ function buildingUndo(redo=false){if(redo)commandSystem().redo();else commandSystem().undo();post('building',{state:buildingState()});return buildingState();}
  function setBuildingTransform(input,history=true){const a=assembly();if(!a)throw Error('Start Building Edit first');const before=A.serialize(a),parent=[...a.parent],angle=Math.atan2(parent[2],parent[0]),scale=Math.hypot(parent[0],parent[8])||1,x=input.x==null?parent[3]:Number(input.x),z=input.z==null?parent[11]:Number(input.z),rotation=input.rotation==null?angle*180/Math.PI:Number(input.rotation);if(![x,z,rotation].every(Number.isFinite))throw Error('Enter valid building position and rotation');a.parent=A.transform(x,0,z,snapValue(rotation,buildingSnap.rotation)*Math.PI/180,scale);B.sync(buildingContext.entity);recordBuilding(history?before:null);return buildingState();}
  function setFloor(floor,isolate=floorIsolated,below=floorsBelow){buildingFloor=floor==='roof'?'roof':Number(floor);floorIsolated=!!isolate;floorsBelow=!!below;B.floorFilter={building:buildingContext?.entity,floor:buildingFloor,isolate:floorIsolated,below:floorsBelow};return buildingState();}
  function visiblePart(m){return !floorIsolated||(buildingFloor==='roof'?m.role==='roof':m.floor===buildingFloor||floorsBelow&&m.floor<buildingFloor);}
@@ -590,14 +617,20 @@
   else{if(m.role==='stairs'){m.stairs={fromFloor:m.floor,toFloor:m.floor+1,origin:[m.local[3],m.local[7],m.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,m))throw Error('The stairs must reach an existing upper floor landing');}a.modules.push(m);partId=m.id;}
   recordBuilding(before);return buildingState();
  }
- function buildingPointerDown(e,p){if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;if(partPlacement){previewPart(p);try{placePart()}catch(error){log(error.message,'warn')}return true;}
-  const m=pickPart(p);partId=m?.id||null;post('building',{state:buildingState()});if(!m)return true;
-  const w=editorUnproject(p.sx,p.sy);partDrag={id:e.pointerId,before:A.serialize(assembly()),start:A.point(A.inverse(assembly().parent),[w.x,0,w.z]),local:[...m.local],clientX:e.clientX,clientY:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return true;}
+ function buildingPointerDown(e,p){
+  if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;
+  if(partPlacement){previewPart(p);try{commandSystem().transaction('Place building part',placePart)}catch(error){log(error.message,'warn')}return true;}
+  const camera=window.VeldrenEditorTools?.camera;if(!camera)return true;
+  const rect=p.surface.getBoundingClientRect(),G=VeldrenEditorGeometry,ray=G.cameraRay(camera,(e.clientX-rect.left)/rect.width,(e.clientY-rect.top)/rect.height);
+  const hit=canonicalSelection.candidates(ray).find(hit=>window.realmNative.scenes.entity(String(currentScene),hit.id)?.components.BuildingPart?.building===buildingContext.entity._sceneEntityId);
+  if(hit){const node=window.realmNative.scenes.entity(String(currentScene),hit.id);selectPart(node.components.BuildingModule.key);}else{partId=null;canonicalSelection.select(null);post('building',{state:buildingState()});}
+  return true;
+ }
  function buildingPointerMove(e,p){if(!buildingContext)return false;if(partPlacement){previewPart(p);return true;}if(!partDrag||partDrag.id!==e.pointerId)return false;const m=assembly().modules.find(p=>p.id===partId);if(!m)return true;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]);
   try{if(tool==='rotate')setPart({rotation:snapValue(Math.atan2(partDrag.local[2],partDrag.local[0])*180/Math.PI+(e.clientX-partDrag.clientX)*.5,buildingSnap.rotation)},false);else if(tool==='scale')setPart({scale:Math.max(.1,Math.hypot(partDrag.local[0],partDrag.local[8])*Math.exp((partDrag.clientY-e.clientY)*.008))},false);else{
    const candidate={...m,role:m.role==='entrance'?'door':m.role,local:[...partDrag.local]};candidate.local[3]+=q[0]-partDrag.start[0];candidate.local[11]+=q[2]-partDrag.start[2];const result=A.snap(assembly(),candidate,buildingSnap);partPreview=result;if(m.role!=='entrance')setPart({x:result.module.local[3],height:result.module.local[7],z:result.module.local[11]},false);
   }}catch(error){log(error.message,'warn')}return true;}
- function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);}catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);log(error.message,'warn')}partDrag=null;partPreview=null;try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}return true;}
+ function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);commandSystem().commit();}catch(error){commandSystem().cancel();log(error.message,'warn')}partDrag=null;partPreview=null;try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}return true;}
  function drawBuildingGhost(m,valid){const mesh=B.model(m.model),p=mesh?.p,indices=mesh?.i;if(!p?.length||!indices?.length)return;const matrix=A.multiply(assembly().parent,m.local),colors=mesh.f||mesh.c,normals=mesh.n,total=Math.floor(indices.length/3),step=Math.max(1,Math.ceil(total/360)),faces=[],light=[.35,.82,.45],ll=Math.hypot(...light);for(let face=0;face<total;face+=step){const ia=Number(indices[face*3]),ib=Number(indices[face*3+1]),ic=Number(indices[face*3+2]),pts=[];for(const i of [ia,ib,ic]){const at=i*3,world=A.point(matrix,[Number(p[at])||0,Number(p[at+1])||0,Number(p[at+2])||0]),screen=editorProject(...world);pts.push({x:screen.x,y:screen.y,d:screen.depth});}if(pts.some(v=>!Number.isFinite(v.x)||!Number.isFinite(v.y)))continue;const n=[0,1,2].map(ch=>[ia,ib,ic].reduce((sum,i)=>sum+(Number(normals?.[i*3+ch])||0),0)),dot=(n[0]*light[0]+n[1]*light[1]+n[2]*light[2])/(Math.hypot(...n)*ll||1),shade=.38+.62*Math.max(0,dot),rgb=[0,1,2].map(ch=>Math.round(255*Math.max(0,Math.min(1,[ia,ib,ic].reduce((sum,i)=>sum+(Number(colors?.[i*3+ch])||.48),0)/3*shade))));faces.push({pts,d:pts.reduce((a,v)=>a+v.d,0)/3,color:'rgb('+rgb.join(',')+')'});}faces.sort((a,b)=>a.d-b.d);ctx.save();ctx.globalAlpha=.82;ctx.strokeStyle=valid?'rgba(150,255,220,.28)':'rgba(255,145,155,.42)';ctx.lineWidth=.55;for(const face of faces){ctx.beginPath();face.pts.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p.x,p.y));ctx.closePath();ctx.fillStyle=face.color;ctx.fill();ctx.stroke();}ctx.restore();}
  function drawBuildingOverlay(){if(!buildingContext)return;if(partPreview?.module)drawBuildingGhost(partPreview.module,partPreview.valid);const m=partPreview?.module||assembly().modules.find(m=>m.id===partId);if(!m)return;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],points=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])points.push(editorProject(...A.point(matrix,[x,y,z])));ctx.save();ctx.strokeStyle=partPreview?(partPreview.valid?'#64e5bb':'#ff6c80'):'#80c7ff';ctx.fillStyle=partPreview?(partPreview.valid?'#64e5bb33':'#ff6c8033'):'#80c7ff22';ctx.lineWidth=2;for(const face of [[0,1,3,2],[4,5,7,6],[0,4,6,2],[1,5,7,3]]){ctx.beginPath();face.forEach((i,j)=>ctx[j?'lineTo':'moveTo'](points[i].x,points[i].y));ctx.closePath();ctx.fill();ctx.stroke();}ctx.restore();}
  function drawTerrainOverlay(){
@@ -668,6 +701,7 @@
   }
   if(e.button===1||e.button===2){pointer={id:e.pointerId,kind:'pan',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
   if(e.button===0&&tool==='camera'){pointer={id:e.pointerId,kind:'orbit',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
+  if(saving)return;
   if(e.button===0&&tool==='terrain'){
    if(currentScene!=='overworld'){log('Terrain editing is available in the overworld.','warn');return;}
    const w=terrainPoint(p);if(!w)return;
@@ -685,7 +719,7 @@
   if(e.button!==0)return;
   if(tool==='place'){
    if(!placementAsset){log('Choose an asset from the Assets browser first.','warn');return;}
-   const w=editorUnproject(p.sx,p.sy);movePlacementPreview(w.x,w.z);createPlacedAsset(placementAsset,w.x,w.z);return;
+   const w=editorUnproject(p.sx,p.sy);movePlacementPreview(w.x,w.z);commandSystem().transaction('Place asset',()=>createPlacedAsset(placementAsset,w.x,w.z));return;
   }
   if(canonicalSelection&&window.VeldrenEditorTools?.camera){const camera=VeldrenEditorTools.camera,G=VeldrenEditorGeometry,rect=p.surface.getBoundingClientRect();canonicalSelection.pick(G.cameraRay(camera,(e.clientX-rect.left)/rect.width,(e.clientY-rect.top)/rect.height),[e.clientX,e.clientY],e.ctrlKey||e.metaKey||e.shiftKey);return;}
   const ref=pick(e);selectRef(ref);
@@ -988,6 +1022,7 @@
   free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
   applyAll();window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
   ready=true;
+  window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
   if(window.createVeldrenSelection){canonicalSelection=window.VeldrenEditorSelection=createVeldrenSelection({native:window.realmNative.scenes,scene:()=>String(currentScene),assets:VeldrenAssets,displayMatrix:displaySceneMatrix,onChange:ids=>{selected=ids.length?canonicalRef(ids[0]):null;selectedScene=selected?String(currentScene):null;post('selection',{selection:entityInfo(selected),ids});}});}
   if(window.createVeldrenTransformTools)window.VeldrenEditorTools=createVeldrenTransformTools({native:window.realmNative.scenes,commands:commandSystem(),scene:()=>String(currentScene),selection:()=>canonicalSelection?canonicalSelection.ids:selected?.entity?._sceneEntityId?[selected.entity._sceneEntityId]:[],bounds:node=>canonicalSelection?.bounds(node),displayMatrix:displaySceneMatrix,mode:()=>tool,report:message=>log(message,'error')});
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
@@ -1020,10 +1055,21 @@
   sceneHierarchy:query=>canonicalSelection?.hierarchy(query),
   hideEntity:(id,value)=>canonicalSelection?.hide(id,value),lockEntity:(id,value)=>canonicalSelection?.lock(id,value),
   executeCommand:(label,operations)=>commandSystem().execute(label,operations),
+  createPrefab(id,name){return commandSystem().execute('Create prefab',[{op:'prefabCreate',id,name}]);},
+  instantiatePrefab(id){const result=commandSystem().execute('Instantiate prefab',[{op:'prefabInstantiate',id,transform:{position:[free.x,landHeight(free.x,free.y),free.y]}}]);canonicalSelection.select(result.created[0]);return result;},
+  updatePrefab:id=>commandSystem().execute('Update prefab instances',[{op:'prefabUpdate',id}]),
+  revertPrefab:id=>commandSystem().execute('Revert prefab overrides',[{op:'prefabRevert',id}]),
+  unpackPrefab:id=>commandSystem().execute('Unpack prefab',[{op:'prefabUnpack',id}]),
   beginCommand:label=>commandSystem().begin(label),commitCommand:()=>commandSystem().commit(),cancelCommand:()=>commandSystem().cancel(),
   undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo(),historyState:()=>commandSystem().status(),
   adoptCanonicalDocument(value){window.VeldrenSceneFormat.validateWorld(value);projectWorld=JSON.parse(JSON.stringify(value));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;return {scenes:projectWorld.scenes.length,entities:projectWorld.scenes.reduce((sum,scene)=>sum+scene.entities.length,0)};},
-  enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,setBuildingTransform,
+  enterBuilding:()=>commandSystem().transaction('Enter Building Edit',enterBuilding),
+  startNewBuilding:()=>commandSystem().transaction('Create building',startNewBuilding),
+  exitBuilding:()=>commandSystem().transaction('Exit Building Edit',exitBuilding),buildingState,selectPart,
+  setPart:input=>commandSystem().transaction('Edit building part',()=>setPart(input)),
+  deletePart:()=>commandSystem().transaction('Delete building part',deletePart),
+  duplicatePart:()=>commandSystem().transaction('Duplicate building part',duplicatePart),buildingUndo,setFloor,
+  setBuildingTransform:input=>commandSystem().transaction('Transform building',()=>setBuildingTransform(input)),
   buildingAssets:()=>B.catalog().map(asset=>VeldrenAssets.has(asset.id)&&VeldrenAssets.record(asset.id).importSettings?.importer==='veldren-gltf-1'?{...asset,...canonicalMetadata(VeldrenAssets.record(asset.id))}:asset),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
   beginPartPlacement(id){if(!buildingContext)throw Error('Start Building Edit first');if(!B.model(id))throw Error('Missing local asset');partPlacementAsset=B.catalog().find(asset=>asset.id===id);if(!partPlacementAsset)throw Error('Missing local asset');partPlacement=id;partPlacementRotation=0;partPlacementPoint=null;partPreview=null;tool='place';return buildingState();},
