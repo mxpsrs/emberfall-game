@@ -3,6 +3,7 @@ import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import worker from '../dist/server/index.js';
+import {sourceOnlyAssets} from '../scripts/asset-delivery.mjs';
 const request=path=>worker.fetch(new Request('https://veldren.test'+path),{});
 async function body(response){
  assert.equal(response.headers.get('Content-Encoding'),null,'Worker must return ordinary bodies; the hosting runtime owns transport compression');
@@ -20,7 +21,7 @@ assert.equal(releaseResponse.status,200);assert.equal(releaseResponse.headers.ge
 assert.deepEqual(JSON.parse((await body(releaseResponse)).toString()),{release},'open tabs can detect content-only publications');
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
-for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','assets/spirits.png'])urls.push(versions[path]);
+for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert((await body(nativeCore)).length>10000,'native gameplay core ships as a real WASM binary');
 // Canonical image paths retain the exact bytes validated by the C++ importer.
 for(const name of Object.keys(versions).filter(name=>/^assets\/canonical\/(images|variants)\//.test(name))){
@@ -33,6 +34,12 @@ const shipped=new Set(Object.keys(versions).filter(name=>/^assets\/canonical\/(i
 assert.deepEqual(shipped,new Set(delivery.canonicalImages),'Every declared browser texture ships, with no desktop-only payloads');
 const registry=JSON.parse(readFileSync(new URL('../dist/assets/asset-registry.json',import.meta.url)));
 for(const record of registry.records)for(const profile of delivery.profiles)for(const variant of record.variants?.[profile]||[])assert(shipped.has(variant.derivedPath));
+for(const [file,reason] of sourceOnlyAssets){assert.equal(versions[file],undefined,reason);assert.equal((await request('/'+file)).status,404);}
+for(const record of registry.records)if(record.type==='model'&&record.importSettings?.importer==='veldren-gltf-1'){
+ assert(versions[record.derivedPath],'Canonical model ships: '+record.id);
+ const response=await request('/'+versions[record.derivedPath]);assert.equal(response.status,200);
+ assert.deepEqual(await body(response),readFileSync(new URL('../dist/'+record.derivedPath,import.meta.url)));
+}
 let totalBytes=0;
 for(const url of urls){
  const response=await request('/'+url);assert.equal(response.status,200,url);assert(response.headers.get('Cache-Control').includes('immutable'),url);

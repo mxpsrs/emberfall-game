@@ -297,3 +297,19 @@ Medieval Village pack and verified against its original SHA256. All 102 texture
 profile outputs are available without changing image pixels or profile settings.
 The full build still fails the unchanged 64 MiB gate at approximately 88 MiB;
 final delivery, editor/reimport and overall acceptance are not complete.
+
+## Delivery gate closed (2026-09-27)
+
+The Worker now fits the existing 64 MiB limit at 63.3 MiB. Content-addressed
+Brotli storage and ASCII basE91 embedding preserve response bytes. Source-only
+sheets, replaced KTX2 files, shader source and unreferenced canonical model
+versions remain in Git but do not ship in the browser module. All 190 canonical
+models and both browser texture profiles remain available; no quality profile
+was reduced. The build verifies every embedding roundtrip and repairs corrupt
+compression cache entries. HTTP bodies remain ordinary bytes, with hosting
+responsible for transport compression and audio byte ranges retained.
+
+`node tests/asset-delivery.mjs` and `node tests/built-assets.mjs` pass, including
+all canonical models/images, 123 startup resources, immutable versions, licensed
+audio hashes and partial responses. The delivery report is generated at
+`.qa/asset-delivery.json`. Full graphical/editor acceptance is still in progress.
