@@ -59,11 +59,13 @@ transactional rejection, native graph roundtrip, cached model reads and teardown
 
 ## Acceptance still outstanding
 
-Canonical GLTF/GLB import; real full-kit validation; canonical PBR materials and
-texture processing; Scene/Filament synchronization; GPU ownership and sharing;
-resource stress tests; browser/desktop derived variants; reimport; editor asset
-browser and bounded thumbnail generation; final fresh builds, visual checks and
-affected regressions. Phase 2 is not complete at this checkpoint.
+Remaining: canonical model/material submission from Scene to Filament (the
+world still uses packed geometry adapters), mesh/material GPU ownership,
+browser/desktop derived variants and delivery budgets, complete reimport,
+editor asset browser and bounded thumbnail generation, animation integration,
+final full-world visual/stress checks, fresh build and affected regressions.
+Importer, model lifetime and texture-stage evidence is recorded below. Phase 2
+is not complete.
 
 ## Canonical source importer checkpoint
 
@@ -110,3 +112,66 @@ texture functions. Rebuilding that binary and compiling the material variants
 remain required before the texture stage can be used in the browser. No GPU
 lifecycle, graphical acceptance or overall Phase 2 completion is claimed here.
 Nothing was deployed or merged into main.
+
+## Native texture / Filament checkpoint — 27 September 2026
+
+The production world and terrain atlases now use Veldren's C++ image decoder,
+linear-light mip generation and texture storage. Browser startup fetches encoded
+PNG bytes and waits for native initialization. The prior JavaScript mip
+implementation is removed. Filament receives explicit RGBA mip uploads; its PNG
+decoder remains unused. Existing mobile/desktop atlas sizes, anisotropic
+filtering and shadow settings are retained.
+
+The C ABI shares decoded pixels by source SHA256 and normalized processing
+settings. Color space, normal-map processing, dimensions and alpha coverage are
+part of the identity. An acquisition increments its native lease; the last
+release frees the mip chain. Reacquisition gets a new monotonically allocated
+handle, preventing stale references from aliasing later resources. A corrupted
+source hash is checked even when matching pixels are already cached.
+
+`asset-textures.js` maps native texture handles to one Filament texture per
+engine. Repeated acquisitions share that GPU allocation; partial release keeps
+it alive, last release destroys it, and registry teardown releases the entire
+pool. Upload failure unwinds both the native lease and Filament descriptors.
+`processTexture` only marshals encoded bytes, native metadata and pixel copies
+between the two WASM heaps. Texture policy and mip decisions remain in C++.
+
+The rebuilt `dist/native/veldren-core.wasm` includes the texture exports missing
+from checkpoint `5af8892`. All six pinned Filament 1.77 PBR material binaries
+(lit/unlit, opaque/masked/blended) are compiled and load successfully. The
+canonical PBR model-binding stage remains unfinished; the atlases still use
+the established world and terrain materials.
+
+Verification:
+
+- Native texture test: 34 real PNGs, 100 shared acquisitions per image,
+  independent color/size variants, release/reacquire, malformed inputs and hashes.
+- Fresh Emscripten 3.1.6 WASM build and standalone ABI test: pass.
+- `tests/asset-textures.mjs`: actual WASM plus Filament 1.77 NOOP, both contexts,
+  all 34 images and six material binaries, shared GPU handles, variants, upload
+  failure cleanup, 100 repeated unload cycles and final teardown: pass.
+- Model registry/lifecycle tests, native runtime/editor bridges, editor context,
+  renderer contract, character parity and building components: pass.
+- Filament runtime and 256-entity transform regression: pass; stationary
+  geometry resubmits no transforms, one edited matrix updates one entity.
+- `scripts/phase2-texture-browser.mjs`: actual Chromium 134 WebGL/SwiftShader
+  renders the native-processed terrain texture, two resident textures totaling
+  27,962,024 GPU bytes, no page errors, zero texture handles/bytes after teardown.
+  Screenshot visually inspected. This is a focused local rendering check,
+  not full `/play`/`/editor/` or physical mobile-device acceptance.
+
+Source delivery now preserves canonical PNG bytes rather than converting them
+to WebP and breaking native decoding/content hashes. A built-response regression
+checks byte and hash parity for every canonical image once the bundle can build.
+
+**Open build gate:** the fresh full production build fails the existing 64 MiB
+Worker limit at approximately 180 MiB. Original canonical PNG sources alone
+occupy about 80 MiB. The limit was not raised and no assets were silently dropped.
+Browser-specific derived texture variants and an appropriate delivery selection
+must resolve this before the full built-asset audit and Phase 2 acceptance.
+The original sources remain available for native/high-resolution derivation.
+
+Next: implement the browser/desktop texture variant pipeline and restore the
+normal build gate, then canonical model/material submission, Scene-driven GPU
+sharing/lifetime, reimport/editor integration and final acceptance. Nothing was
+published, deployed or merged into main; no account or player data was changed.

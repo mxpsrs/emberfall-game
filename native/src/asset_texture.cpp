@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <cstdlib>
 #include <limits>
 #include <memory>
 #include <stdexcept>
@@ -10,6 +11,11 @@
 #define STBI_ONLY_JPEG
 #define STBI_NO_STDIO
 #define STBI_MAX_DIMENSIONS 8192
+// Keep decoder invariants active without linking assert's stdio printer into
+// the browser core. Recoverable malformed-image errors use stbi_failure_reason.
+#ifdef __EMSCRIPTEN__
+#define STBI_ASSERT(condition) ((condition) ? (void)0 : std::abort())
+#endif
 #include <stb_image.h>
 
 namespace veldren {
@@ -72,7 +78,7 @@ AssetImage decode_asset_image(std::span<const std::uint8_t> bytes) {
 }
 AssetTexture build_texture(AssetImage image, TextureSettings settings) {
   if (!image.width || !image.height || image.width > 8192 || image.height > 8192 || image.pixels.size() != std::size_t(image.width) * image.height * 4) throw std::invalid_argument("Invalid RGBA image");
-  if (!settings.max_dimension || settings.max_dimension > 8192 || settings.alpha_cutoff < 0 || settings.alpha_cutoff > 1 || (settings.normal && settings.srgb)) throw std::invalid_argument("Invalid texture processing settings");
+  if (!settings.max_dimension || settings.max_dimension > 8192 || !std::isfinite(settings.alpha_cutoff) || settings.alpha_cutoff < 0 || settings.alpha_cutoff > 1 || (settings.normal && settings.srgb)) throw std::invalid_argument("Invalid texture processing settings");
   AssetTexture texture; texture.settings = settings;
   if (std::max(image.width, image.height) > settings.max_dimension) {
     const double scale = double(settings.max_dimension) / std::max(image.width, image.height);
@@ -85,14 +91,19 @@ AssetTexture build_texture(AssetImage image, TextureSettings settings) {
   }
   return texture;
 }
-AssetTexture import_texture(std::span<const std::uint8_t> bytes, const Json& options) {
-  const auto hash = asset_sha256(bytes);
-  if (const auto* expected = options.find("sourceHash"); expected && expected->string_or() != hash) throw std::invalid_argument("Texture content hash mismatch");
+TextureSettings texture_settings(const Json& options) {
   TextureSettings settings;
   if (const auto* value = options.find("colorSpace")) { const auto name = value->string_or(); if (name != "srgb" && name != "linear") throw std::invalid_argument("Invalid texture color space"); settings.srgb = name == "srgb"; }
   if (const auto* value = options.find("role")) settings.normal = value->string_or() == "normal";
   if (const auto* value = options.find("maxDimension")) { const auto n = value->number_or(-1); if (n < 1 || n > 8192 || n != std::floor(n)) throw std::invalid_argument("Invalid maximum texture dimension"); settings.max_dimension = std::uint32_t(n); }
   if (const auto* value = options.find("alphaCutoff")) settings.alpha_cutoff = value->number_or(-1);
+  if (!std::isfinite(settings.alpha_cutoff) || settings.alpha_cutoff < 0 || settings.alpha_cutoff > 1 || (settings.normal && settings.srgb)) throw std::invalid_argument("Invalid texture processing settings");
+  return settings;
+}
+AssetTexture import_texture(std::span<const std::uint8_t> bytes, const Json& options) {
+  const auto hash = asset_sha256(bytes);
+  if (const auto* expected = options.find("sourceHash"); expected && expected->string_or() != hash) throw std::invalid_argument("Texture content hash mismatch");
+  const auto settings = texture_settings(options);
   auto texture = build_texture(decode_asset_image(bytes), settings); texture.source_hash = hash; texture.source_bytes = bytes.size(); return texture;
 }
 Json AssetTexture::metadata() const {
@@ -102,7 +113,9 @@ Json AssetTexture::metadata() const {
 }
 }
 namespace {
-std::map<std::uint32_t, veldren::AssetTexture> textures;
+struct TextureEntry { veldren::AssetTexture texture; std::string key; std::uint32_t users = 1; };
+std::map<std::uint32_t, TextureEntry> textures;
+std::map<std::string, std::uint32_t> texture_keys;
 std::uint32_t next_texture = 1;
 std::string texture_error;
 std::uint32_t copy_text(const std::string& text, char* out, std::uint32_t capacity) {
@@ -112,12 +125,29 @@ std::uint32_t copy_text(const std::string& text, char* out, std::uint32_t capaci
 }
 extern "C" {
 std::uint32_t veldren_texture_create(const std::uint8_t* data, std::uint32_t size, const char* options) {
-  try { if (!data || !options || !next_texture) throw std::invalid_argument("Invalid texture input"); auto value = veldren::import_texture({data,size},veldren::parse_json(options)); const auto id=next_texture++; textures.emplace(id,std::move(value)); texture_error.clear(); return id; }
+  try {
+    if (!data || !size || size > 128 * 1024 * 1024 || !options || !next_texture) throw std::invalid_argument("Invalid texture input");
+    const auto parsed = veldren::parse_json(options);
+    const auto settings = veldren::texture_settings(parsed);
+    const auto hash = veldren::asset_sha256({data,size});
+    if (const auto* expected = parsed.find("sourceHash"); expected && expected->string_or() != hash) throw std::invalid_argument("Texture content hash mismatch");
+    const auto key = hash + veldren::write_json(veldren::Json::Array{settings.srgb,settings.normal,double(settings.max_dimension),settings.alpha_cutoff});
+    if (const auto it = texture_keys.find(key); it != texture_keys.end()) {
+      auto& entry = textures.at(it->second);
+      if (entry.users == std::numeric_limits<std::uint32_t>::max()) throw std::overflow_error("Texture lease overflow");
+      ++entry.users; texture_error.clear(); return it->second;
+    }
+    auto value = veldren::build_texture(veldren::decode_asset_image({data,size}),settings);
+    value.source_hash = hash; value.source_bytes = size;
+    const auto id = next_texture++;
+    textures.emplace(id,TextureEntry{std::move(value),key,1});texture_keys.emplace(key,id);
+    texture_error.clear();return id;
+  }
   catch (const std::exception& error) { texture_error=error.what(); return 0; }
 }
-void veldren_texture_destroy(std::uint32_t handle) { textures.erase(handle); }
-std::uint32_t veldren_texture_info(std::uint32_t handle,char* out,std::uint32_t capacity) { const auto it=textures.find(handle); return it==textures.end()?0:copy_text(veldren::write_json(it->second.metadata()),out,capacity); }
-const std::uint8_t* veldren_texture_data(std::uint32_t handle,std::uint32_t level) { const auto it=textures.find(handle); return it==textures.end()||level>=it->second.levels.size()?nullptr:it->second.levels[level].pixels.data(); }
-std::uint32_t veldren_texture_size(std::uint32_t handle,std::uint32_t level) { const auto it=textures.find(handle); return it==textures.end()||level>=it->second.levels.size()?0:std::uint32_t(it->second.levels[level].pixels.size()); }
+void veldren_texture_destroy(std::uint32_t handle) { const auto it=textures.find(handle);if(it!=textures.end()&&!--it->second.users){texture_keys.erase(it->second.key);textures.erase(it);} }
+std::uint32_t veldren_texture_info(std::uint32_t handle,char* out,std::uint32_t capacity) { const auto it=textures.find(handle); if(it==textures.end())return 0;auto metadata=it->second.texture.metadata().object();metadata["users"]=double(it->second.users);return copy_text(veldren::write_json(metadata),out,capacity); }
+const std::uint8_t* veldren_texture_data(std::uint32_t handle,std::uint32_t level) { const auto it=textures.find(handle); return it==textures.end()||level>=it->second.texture.levels.size()?nullptr:it->second.texture.levels[level].pixels.data(); }
+std::uint32_t veldren_texture_size(std::uint32_t handle,std::uint32_t level) { const auto it=textures.find(handle); return it==textures.end()||level>=it->second.texture.levels.size()?0:std::uint32_t(it->second.texture.levels[level].pixels.size()); }
 std::uint32_t veldren_texture_error(char* out,std::uint32_t capacity) { return copy_text(texture_error,out,capacity); }
 }

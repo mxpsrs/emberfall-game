@@ -1,8 +1,9 @@
 'use strict';
 // Browser IO and marshalling only. Registry/dependency/lifecycle decisions are C++.
 (()=>{
- let command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null;
+ let command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
  const payloads=new Map(),models=new Map(),leases=new Set(),legacyLeases=new Map();
+ const textureLeases=new Set(),disposeListeners=new Set();
  const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
  function request(value){if(!command)throw Error('Native asset registry is not ready');return command(value);}
  function record(id){if(!records.has(id))records.set(id,freeze(request({op:'record',id})));return records.get(id);}
@@ -60,6 +61,7 @@
    if(command)throw Error('Native asset registry already initialized');
    const handle=api.veldren_assets_create();if(!handle)throw Error('Asset registry allocation failed');
    const session=++epoch,controller=new AbortController();initializing=controller;
+   textureApi=api;
    destroyNative=()=>api.veldren_assets_destroy(handle);
    command=value=>{const bytes=new TextEncoder().encode(JSON.stringify(value)),pointer=api.malloc(bytes.length+1);if(!pointer)throw Error('Asset command allocation failed');
     try{const target=new Uint8Array(api.memory.buffer,pointer,bytes.length+1);target.set(bytes);target[bytes.length]=0;api.veldren_assets_command(handle,pointer);}finally{api.free(pointer);}
@@ -90,10 +92,40 @@
    const lease=legacyLeases.get(id)?.[0];if(!lease)throw Error('Model has no lease: '+id);releaseLease(lease);
   },
   ioDiagnostics:()=>({models:models.size,leases:leases.size}),
+  onDispose(listener){disposeListeners.add(listener);return ()=>disposeListeners.delete(listener);},
+  processTexture(bytes,options={}){
+   if(!ready||!textureApi?.veldren_texture_create)throw Error('Native texture processing unavailable');
+   const api=textureApi,session=epoch;
+   const settings=new TextEncoder().encode(JSON.stringify(options)),data=api.malloc(bytes.byteLength),config=api.malloc(settings.length+1);
+   if(!data||!config){if(data)api.free(data);if(config)api.free(config);throw Error('Native texture allocation failed');}
+   const readText=call=>{const length=call(0,0);if(!length)return null;const pointer=api.malloc(length+1);if(!pointer)throw Error('Native texture metadata allocation failed');try{call(pointer,length+1);return new TextDecoder().decode(new Uint8Array(api.memory.buffer,pointer,length));}finally{api.free(pointer);}};
+   let handle=0;
+   try{
+    new Uint8Array(api.memory.buffer,data,bytes.byteLength).set(bytes);
+    const text=new Uint8Array(api.memory.buffer,config,settings.length+1);text.set(settings);text[settings.length]=0;
+    handle=api.veldren_texture_create(data,bytes.byteLength,config);
+   }finally{api.free(data);api.free(config);}
+   if(!handle)throw Error(readText((out,size)=>api.veldren_texture_error(out,size))||'Native texture processing failed');
+   let closed=false;
+   const release=()=>{if(closed)return;closed=true;textureLeases.delete(release);api.veldren_texture_destroy(handle);};
+   textureLeases.add(release);
+   try{
+    const info=freeze(JSON.parse(readText((out,size)=>api.veldren_texture_info(handle,out,size))));
+    return Object.freeze({handle,info,release,level(index){
+     if(closed||session!==epoch)throw Error('Texture lease released');
+     const pointer=api.veldren_texture_data(handle,index),size=api.veldren_texture_size(handle,index);
+     if(!pointer||!size)throw Error('Invalid texture mip level');
+     // Filament owns a separate heap. Copy before any further native allocation.
+     return new Uint8Array(api.memory.buffer,pointer,size).slice();
+    }});
+   }catch(error){release();throw error;}
+  },
   bindLegacy(source,models){for(const [key,mesh]of Object.entries(models))payloads.set(source+':'+key,mesh);},
   mesh(id){if(!assets.has(id))return null;const definition=record(id);if(definition.type!=='model'&&definition.type!=='mesh')throw Error('Asset is not geometry: '+id);return payloads.get(id)||null;},
   destroy(){
    ++epoch;initializing?.abort();initializing=null;
+   for(const listener of [...disposeListeners])listener();disposeListeners.clear();
+   for(const release of [...textureLeases])release();textureApi=null;
    for(const lease of leases){lease.closed=true;retire(lease.entry);}leases.clear();legacyLeases.clear();
    destroyNative?.();destroyNative=null;command=null;ready=false;ids=null;records.clear();catalogs.clear();payloads.clear();models.clear();
   }

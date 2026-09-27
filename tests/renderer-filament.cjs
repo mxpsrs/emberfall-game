@@ -32,8 +32,6 @@ for(const sample of [[10.123,2.4,20.456,-.55,.8,34,3],[-42.73,8.1,611.29,1.2,.55
 }
 assert.equal(context.realmFilamentStyle({bossColor:2,dissolve:.126}).key,'t0:b20:d3');
 assert.equal(context.realmFilamentStyle({terrain:true}).key,'t1:b0:d0');
-const mips=context.realmFilamentMipLevels({width:2,height:2,pixels:new Uint8Array([0,0,0,255,100,100,100,255,200,200,200,255,255,255,255,255])});
-assert.equal(mips.length,2);assert.deepEqual([mips[1].width,mips[1].height,Array.from(mips[1].pixels)],[1,1,[175,175,175,255]],'mobile textures receive a complete linear-light mip chain');
 assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:16,glbBytes:96*1024*1024,ao:false,dithering:false,lightLimit:12});
 assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:2,stable:true,normalBias:.8,constantBias:.001,maxShadowDistance:95},'desktop retains the established two-cascade shadow profile');
 context.window.matchMedia=()=>({matches:true});assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:1,stable:true,normalBias:.8,constantBias:.001,maxShadowDistance:80},'coarse-pointer devices use the mobile-safe shadow allocation');assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:8,glbBytes:32*1024*1024,ao:false,dithering:false,lightLimit:8});delete context.window.matchMedia;
@@ -43,16 +41,10 @@ for(const file of ['startup.js','vendor/filament/filament.js','filament-bootstra
 assert.ok(html.indexOf('startup.js')<html.indexOf('vendor/filament/filament.js'));
 assert.ok(html.indexOf('filament-bootstrap.js')<html.indexOf('game.js'));
 assert.ok(html.indexOf('renderer-gl.js')<html.indexOf('renderer-filament.js'));
-assert.match(source,/Engine\.create\(surface/);assert.match(source,/realmFilamentTextureFromPixels/);assert.doesNotMatch(source,/createTextureFromKtx2/,'terrain no longer depends on a stale prebuilt KTX2');assert.match(source,/createAssetLoader/);assert.match(source,/Camera\$Projection\.PERSPECTIVE/);assert.match(source,/kind:'filament'/);
+assert.match(source,/Engine\.create\(surface/);assert.match(source,/createVeldrenTextureResources/);assert.doesNotMatch(source,/createTextureFromKtx2/,'terrain no longer depends on a stale prebuilt KTX2');assert.match(source,/createAssetLoader/);assert.match(source,/Camera\$Projection\.PERSPECTIVE/);assert.match(source,/kind:'filament'/);
 assert.match(source,/dynamicResources=\[null,null,null\]/,'dynamic geometry uses persistent triple buffering');
 assert.doesNotMatch(source,/if\(dynamicResource\)\{destroyResource\(dynamicResource\)/,'dynamic geometry is not destroyed every frame');
 assert.match(source,/MinFilter\.LINEAR_MIPMAP_LINEAR/);assert.match(source,/anisotropy:16/);assert.match(source,/attribute\(A\.COLOR,2,T\.FLOAT4/);
-assert.match(source,/realmFilamentTextureFromPixels\(engine,assets\.atlasPixels,'atlas-browser'\)/,'mobile atlas bypasses Filament native PNG decoding');
-assert.match(source,/realmFilamentTextureFromPixels\(engine,assets\.groundSurfacesPixels,'terrain-browser'\)/,'terrain uses browser-decoded pixels and the explicit mip upload path');
-assert.match(source,/levels\(levels\.length\)/,'browser-decoded mobile textures allocate a full mip chain');
-assert.match(source,/texture\.setImage\(engine,level,buffer\)/,'every generated mip level is uploaded');
-assert.match(source,/PixelBuffer\(levels\[level\]\.pixels,Filament\.PixelDataFormat\.RGBA,Filament\.PixelDataType\.UBYTE\)/,'browser-decoded RGBA mip levels use the explicit Filament upload API');
-assert.match(source,/stage\+'-allocate'/);assert.match(source,/stage\+'-buffer-'\+level/);assert.match(source,/stage\+'-upload-'\+level/);
 assert.match(source,/terrainMaterial=engine\.createMaterial/,'legacy terrain material remains loadable during the transition');
 assert.match(source,/shadowOptions\(realmFilamentShadowOptions\(\)\)/,'the sun selects mobile or desktop shadow resources before first draw');
 assert.ok(source.indexOf('surface.width=initialWidth;surface.height=initialHeight')<source.indexOf('Filament.Engine.create(surface'),'the iOS backing store exists before Filament binds its WebGL swap chain');
@@ -68,13 +60,16 @@ assert.match(source,/setFloatParameter\('terrainSurface',0\)/,'world objects sel
 assert.match(source,/ColorGrading\$ToneMapping\.ACES/,'the browser uses filmic tone mapping');assert.match(source,/IndirectLight\.Builder\(\)\.irradianceSh/,'lit assets receive bounded ambient light');assert.match(source,/glbBytes:32\*1024\*1024/,'mobile GLB residency has an explicit budget');
 assert.match(source,/receiveShadows\(!resource\.terrain\)/,'terrain avoids camera-relative cascaded shadow bands while retaining normal-based sun lighting');
 assert.match(source,/if\(style\.terrain\)\{instance=terrainMaterial\.createInstance/,'terrain uses its dedicated stable surface material');assert.match(source,/worldMaterialInstances\.add\(instance\)/,'world objects participate in normal lighting updates');
+assert.match(source,/textureResources.acquire\(assets.atlasBytes,textureSettings\)/);
+assert.match(source,/textureResources.acquire\(assets.groundSurfacesBytes,textureSettings\)/);
+assert.doesNotMatch(source,/realmFilamentMipLevels/,'mipmap decisions remain native');
 const filamentBootstrap=fs.readFileSync(path.join(root,'dist/filament-bootstrap.js'),'utf8');
 assert.match(filamentBootstrap,/initialization timed out'\)\);}},120000\)/,'slow mobile Filament startup receives the full two-minute window');
 assert.match(filamentBootstrap,/veldren-terrain\.filamat/,'startup fetches the dedicated terrain material');
 assert.match(filamentBootstrap,/atlas-filament'\+\(mobile\?'-mobile':''\)\+'\.png'/,'mobile fetches its bounded character and prop atlas');
 assert.match(filamentBootstrap,/groundSurfacesType=mobile\?'mobile-png':'png'/,'startup selects browser-decodable terrain PNGs on mobile and desktop');
 assert.match(filamentBootstrap,/ground-surfaces'\+\(mobile\?'-mobile\.png':'\.png'\)/,'startup fetches the selected grass, dirt, stone and water atlas');
-assert.match(filamentBootstrap,/decodedAtlas=await browserPixels\(atlas\),decodedGround=await browserPixels\(groundSurfaces\)/,'both atlases use browser pixel decoding on desktop and mobile');
+assert.match(filamentBootstrap,/Promise.all\(\[encodedImage\(atlas\),encodedImage\(groundSurfaces\),window.realmNativeReady\]/);
 const rebuiltSource=fs.readFileSync(path.join(root,'dist/realms-rebuilt.js'),'utf8');
 assert.match(rebuiltSource,/mobile\?'assets\/realms\/atlas-filament-mobile\.png':'assets\/realms\/atlas\.png'/,'mobile UI rendering decodes the bounded atlas directly');
 assert.doesNotMatch(rebuiltSource,/small\.width=small\.height=2048/,'mobile never decodes the full atlas just to create another downscaled copy');

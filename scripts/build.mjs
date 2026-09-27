@@ -15,7 +15,7 @@ async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true
  // Filament's createTextureFromPng consumes the file bytes directly. Keep
  // this renderer atlas as PNG instead of applying the site's WebP delivery
  // optimization, which otherwise makes the first authenticated draw throw.
- if(ext==='.png'&&!['assets/realms/atlas-filament.png','assets/realms/atlas-filament-mobile.png','assets/realms/ground-surfaces.png','assets/realms/ground-surfaces-mobile.png'].includes(relative)){const img=await loadImage(bytes),c=createCanvas(img.width,img.height);c.getContext('2d').drawImage(img,0,0);bytes=await c.encode('webp',88);mime='image/webp';}assets['/'+relative]={data:bytes.toString('base64'),mime,length:bytes.length};}}}
+ if(ext==='.png'&&!relative.startsWith('assets/canonical/')&&!['assets/realms/atlas-filament.png','assets/realms/atlas-filament-mobile.png','assets/realms/ground-surfaces.png','assets/realms/ground-surfaces-mobile.png'].includes(relative)){const img=await loadImage(bytes),c=createCanvas(img.width,img.height);c.getContext('2d').drawImage(img,0,0);bytes=await c.encode('webp',88);mime='image/webp';}assets['/'+relative]={data:bytes.toString('base64'),mime,length:bytes.length};}}}
 await walk('dist');
 // Versioned assets can be reused across visits. The document and account API
 // remain fresh, so new publications never depend on clearing a phone's cache.

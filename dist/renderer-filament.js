@@ -45,29 +45,6 @@ function realmFilamentBounds(positions){
 function realmFilamentNative(stage,task){
  try{return task();}catch(error){const wrapped=new Error('Filament '+stage+' failed: '+String(error));wrapped.cause=error;throw wrapped;}
 }
-function realmFilamentMipLevels(image,srgb=true){
- const levels=[image];let source=image;
- while(source.width>1||source.height>1){
-  const width=Math.max(1,source.width>>1),height=Math.max(1,source.height>>1),pixels=new Uint8Array(width*height*4);
-  for(let y=0;y<height;y++)for(let x=0;x<width;x++)for(let channel=0;channel<4;channel++){
-   let total=0,count=0;
-   for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++){const sx=Math.min(source.width-1,x*2+dx),sy=Math.min(source.height-1,y*2+dy),value=source.pixels[(sy*source.width+sx)*4+channel]/255;total+=srgb&&channel<3?(value<=.04045?value/12.92:Math.pow((value+.055)/1.055,2.4)):value;count++;}
-   let value=total/count;if(srgb&&channel<3)value=value<=.0031308?value*12.92:1.055*Math.pow(value,1/2.4)-.055;
-   pixels[(y*width+x)*4+channel]=Math.round(Math.max(0,Math.min(1,value))*255);
-  }
-  source={width,height,pixels};levels.push(source);
- }
- return levels;
-}
-function realmFilamentTextureFromPixels(engine,image,stage){
- if(!image?.pixels||!image.width||!image.height)throw new Error('Decoded texture pixels are unavailable');
- const levels=realmFilamentMipLevels(image),texture=realmFilamentNative(stage+'-allocate',()=>Filament.Texture.Builder().width(image.width).height(image.height).levels(levels.length).sampler(Filament.Texture$Sampler.SAMPLER_2D).format(Filament.Texture$InternalFormat.SRGB8_A8).build(engine));
- for(let level=0;level<levels.length;level++){
-  const buffer=realmFilamentNative(stage+'-buffer-'+level,()=>Filament.PixelBuffer(levels[level].pixels,Filament.PixelDataFormat.RGBA,Filament.PixelDataType.UBYTE));
-  realmFilamentNative(stage+'-upload-'+level,()=>texture.setImage(engine,level,buffer));
- }
- return texture;
-}
 function realmFilamentArrays(raw,stride=12){
  const count=Math.floor(raw.length/stride),positions=new Float32Array(count*3),normals=new Float32Array(count*3),colors=new Float32Array(count*4),uvs=new Float32Array(count*2);
  for(let i=0;i<count;i++){
@@ -95,8 +72,12 @@ function createRealmFilamentGPU(){
  const colorGrading=Filament.ColorGrading.Builder().quality(Filament.ColorGrading$QualityLevel.MEDIUM).toneMapping(Filament.ColorGrading$ToneMapping.ACES).exposure(.2).contrast(1.04).saturation(1.03).vibrance(1.08).gamutMapping(true).build(engine);view.setColorGrading(colorGrading);
  const skySh=new Float32Array([.52,.60,.72,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
  const indirectLight=Filament.IndirectLight.Builder().irradianceSh(3,skySh).intensity(18000).build(engine);scene.setIndirectLight(indirectLight);
- const assets=window.VELDREN_FILAMENT_ASSETS,material=engine.createMaterial(assets.material),terrainMaterial=engine.createMaterial(assets.terrainMaterial),atlas=realmFilamentTextureFromPixels(engine,assets.atlasPixels,'atlas-browser'),groundSurfaces=realmFilamentTextureFromPixels(engine,assets.groundSurfacesPixels,'terrain-browser');
- assets.atlasPixels=null;assets.groundSurfacesPixels=null;
+ const assets=window.VELDREN_FILAMENT_ASSETS,material=engine.createMaterial(assets.material),terrainMaterial=engine.createMaterial(assets.terrainMaterial);
+ const textureResources=createVeldrenTextureResources(engine,VeldrenAssets),textureSettings={colorSpace:'srgb',maxDimension:realmMobileFilament()?1024:2048};
+ let atlas,groundSurfaces;
+ try{atlas=textureResources.acquire(assets.atlasBytes,textureSettings).texture;groundSurfaces=textureResources.acquire(assets.groundSurfacesBytes,textureSettings).texture;}
+ catch(error){textureResources.destroy();throw error;}
+ assets.atlasBytes=null;assets.groundSurfacesBytes=null;
  const minFilter=Filament.MinFilter.LINEAR_MIPMAP_LINEAR;
  const sampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);sampler.setAnisotropy(quality.anisotropy);
  const groundSampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);groundSampler.setAnisotropy(quality.anisotropy);
@@ -215,7 +196,7 @@ function createRealmFilamentGPU(){
   const url=typeof realmAssetURL==='function'?realmAssetURL(path):path,loader=engine.createAssetLoader(),asset=loader.createAsset(await glbSource(path));if(!asset){loader.delete();throw new Error('GLB could not be parsed: '+path);}
   await new Promise((resolve,reject)=>{try{asset.loadResources(resolve,()=>{},url.slice(0,url.lastIndexOf('/')+1),null,{normalizeSkinningWeights:true});}catch(error){reject(error);}});asset.releaseSourceData();return {asset,loader,add(){scene.addEntities(asset.getEntities());},remove(){scene.removeEntities(asset.getEntities());},destroy(){scene.removeEntities(asset.getEntities());loader.destroyAsset(asset);loader.delete();}};
  }
- backend={kind:'filament',surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;},loadGlb,
+ backend={kind:'filament',textureResources,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;},loadGlb,
   render(entries,dynamic,g){
    if(engine.hasUnrecoverableFailure())throw new Error('Filament reported an unrecoverable renderer failure');
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}

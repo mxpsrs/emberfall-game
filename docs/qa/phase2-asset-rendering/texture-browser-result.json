@@ -1,0 +1,19 @@
+{
+  "backend": "Chromium WebGL SwiftShader",
+  "result": {
+    "textures": {
+      "textures": 2,
+      "leases": 2,
+      "gpuBytes": 27962024
+    },
+    "renderables": 1,
+    "native": "cpp-wasm",
+    "errors": false
+  },
+  "teardown": {
+    "textures": 0,
+    "leases": 0,
+    "gpuBytes": 0
+  },
+  "pageErrors": []
+}
