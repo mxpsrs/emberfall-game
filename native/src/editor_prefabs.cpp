@@ -18,7 +18,7 @@ std::vector<EntityId> branch(const Scene& scene,const EntityId& root){
 }
 Json normalized(const Scene& scene,const EntityId& id,const Object& names,const EntityId& root){
   auto value=scene.entity_json(id).object();auto components=value.at("components").object();components.erase("PrefabInstance");value["components"]=components;
-  if(id==root){value["parent"]=nullptr;value["transform"]=Object{{"position",Json::Array{0,0,0}},{"rotation",Json::Array{0,0,0,1}},{"scale",Json::Array{1,1,1}}};}
+  if(id==root){value["parent"]=nullptr;auto pose=value.at("transform").object();pose["position"]=Json::Array{0,0,0};if(pose.contains("affine")){auto matrix=pose.at("affine").array();matrix[12]=matrix[13]=matrix[14]=0;pose["affine"]=matrix;}value["transform"]=pose;}
   Json result(value);remap(result,names);return result;
 }
 Object capture(const Scene& scene,const EntityId& root,Object& mapping){
@@ -71,7 +71,7 @@ void EditorHistory::apply_prefab(Scene& scene,const Json& operation,const AssetV
     for(const auto& key:order){execute({{"op","create"},{"entity",Object{{"name","Prefab entity"}}}});mapping[key]=created_.back();}
     const auto instance=mapping.at(root).string_or();
     for(const auto& key:order){Json value=nodes.at(key);remap(value,mapping);auto entity=value.object();
-      if(key==root){entity["parent"]=string(operation,"parent");if(const auto* pose=operation.find("transform"))entity["transform"]=*pose;}
+      if(key==root){entity["parent"]=string(operation,"parent");if(const auto* input=operation.find("transform")){auto pose=entity.at("transform").object();for(const auto& [field,value]:input->object())pose[field]=value;if(input->find("rotation")||input->find("scale"))pose.erase("affine");else if(pose.contains("affine")&&input->find("position")){auto matrix=pose.at("affine").array();for(unsigned i=0;i<3;++i)matrix[12+i]=input->find("position")->array()[i];pose["affine"]=matrix;}entity["transform"]=pose;}}
       auto components=entity.at("components").object();for(auto& [type,fields]:components){auto values=fields.object();if(values.contains("generationKey"))values["generationKey"]="prefab:"+mapping.at(key).string_or();if(type=="CatalogIdentity")values["id"]=mapping.at(key);fields=values;}entity["components"]=components;
       execute({{"op","replace"},{"entity",entity}});
     }

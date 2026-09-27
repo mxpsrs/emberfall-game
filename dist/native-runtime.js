@@ -47,7 +47,7 @@
       const previous=op.op==='replace'?scenes.entity(scene,op.entity.id):null;
       for(const [type,fields]of Object.entries(op.entity?.components||{}))for(const [key,id]of Object.entries(fields)){
        if(previous?.components?.[type]?.[key]===id)continue;
-       if(type==='MeshRenderer'&&key==='asset'&&typeof id==='string'&&(id.startsWith('captured:')&&op.entity.components.MeshGeometry||id.startsWith('linked:')&&op.entity.components.BuildingModule?.objectId))continue;
+       if(type==='MeshRenderer'&&key==='asset'&&typeof id==='string'&&(id.startsWith('captured:')&&op.entity.components.MeshGeometry||id.startsWith('linked:')&&op.entity.components.BuildingPart&&scenes.entity(scene,id.slice(7))))continue;
        validate(key,id);
       }
      }

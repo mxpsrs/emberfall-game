@@ -25,7 +25,7 @@
  const thumbnailObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){thumbnailObserver.unobserve(entry.target);queueThumbnail(entry.target)}},{rootMargin:'180px'}):{observe:queueThumbnail,unobserve(){}};let thumbnailQueue=[],thumbnailWorkPending=false,previewOrbit={yaw:.68,tilt:.52,zoom:1},watchedAtlas=null;
 
  let building=null,partAssets=[],selectedPartAssetId=null;
- function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty();}catch(error){log(error.message,'error');}}
+ function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty(bridge.historyState().dirty);}catch(error){log(error.message,'error');}}
  function renderBuilding(state){
   building=state;$('buildingPanel').hidden=!state;worldBrowser.hidden=!!state||tool==='terrain';assetBrowser.hidden=true;terrainPanel.hidden=!!state||tool!=='terrain';
   $('buildingEditTool').classList.toggle('active',!!state);if(!state){renderHierarchy();return;}
@@ -167,11 +167,11 @@
   if(tool==='place')setTool('select');renderAssets();log('Asset placement cancelled.','info');
  };
 
- let assetReloadSubscribed=false;
+ let assetReloadSubscribed=false,prefabCatalogKey=null;
  async function refreshAssets(){
   if(!bridge)return;
   if(!assetReloadSubscribed&&bridge.onAssetReload){assetReloadSubscribed=true;bridge.onAssetReload(()=>{thumbnailCache.clear();thumbnailQueue=[];refreshAssets();if(inspectedAsset){const asset=bridge.listAssets().find(a=>a.id===inspectedAsset.id);if(asset)inspectAsset(asset);}});}
-  assets=bridge.listAssets();assetById=new Map(assets.map(asset=>[asset.id,asset]));
+  prefabCatalogKey=bridge.prefabCatalogKey?.()||'';assets=bridge.listAssets();assetById=new Map(assets.map(asset=>[asset.id,asset]));
   const sample=assets.find(a=>a.source==='briar'||a.source==='creature'),atlas=sample&&bridge.assetGeometry?.(sample.id)?.atlas;if(atlas&&!atlas.complete&&atlas!==watchedAtlas){watchedAtlas=atlas;atlas.addEventListener?.('load',()=>{thumbnailCache.clear();renderAssets();if(inspectedAsset)drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);},{once:true});}
   const categories=[...new Set(assets.map(a=>a.category))].sort();
   const previous=assetCategory.value;assetCategory.replaceChildren(new Option('All categories',''));
@@ -312,6 +312,7 @@
  }
  async function connect(candidate){
   bridge=candidate;bridge.setTool(tool);updateSnap();updateTerrainBrush();terrainState();status.textContent='Connected to Veldren world';terminalState.textContent='Connected';
+  if(bridge.listScenes){$('sceneSelect').replaceChildren(...bridge.listScenes().map(scene=>new Option(scene.name,scene.id)));$('sceneSelect').value=bridge.sceneName();$('sceneSelect').onchange=()=>{try{bridge.selectScene($('sceneSelect').value);setTool('select');refreshEntities();refreshAssets();}catch(error){$('sceneSelect').value=bridge.sceneName();log(error.message,'error');}};}
   gameUiVisible=!!bridge.gameUiVisible?.();
   if(gameUiVisible)bridge.setGameUiVisible(false);
   gameUiVisible=false;gameUiToggle.classList.remove('active');gameUiToggle.setAttribute('aria-pressed','false');gameUiToggle.textContent='UI Edit';
@@ -344,8 +345,8 @@
   if(m?.type==='veldren-editor-ready'){const candidate=frame.contentWindow?.VeldrenEditorBridge;if(candidate)connect(candidate);}
   if(m?.type==='veldren-editor-tool')setTool(m.tool);
   if(m?.type==='veldren-editor-selection'){renderSelection(m.selection);if(m.selection)log(`Selected ${m.selection.kind} · ${m.selection.name} · id ${m.selection.id}.`,'info');}
-  if(m?.type==='veldren-editor-change'){refreshAssets();renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
-  if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty();log('Terrain stroke recorded. Save World to publish the change.','ok');}}
+  if(m?.type==='veldren-editor-change'){if((bridge.prefabCatalogKey?.()||'')!==prefabCatalogKey)refreshAssets();renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
+  if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty(m.dirty??true);log('Terrain history updated.','ok');}}
   if(m?.type==='veldren-editor-log')log(m.message,m.level||'info');
   if(m?.type==='veldren-editor-scene'){refreshEntities();}
  });
@@ -375,4 +376,3 @@
 
  log('Veldren editor v5 starting.','info');setTimeout(injectBridge,300);
 })();
-

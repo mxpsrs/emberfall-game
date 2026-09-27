@@ -72,9 +72,19 @@ void EditorHistory::begin(Scene& scene,const std::string& label) {
   if(pending_)fail("An editor transaction is already open");
   pending_=Record{};pending_->label=label;pending_->before_roots=scene.roots_;pending_->before_state=state_;
 }
+std::optional<Json> EditorHistory::terrain() const {
+  if(!document_extras_)return std::nullopt;
+  const auto at=document_extras_->find("terrain");return at==document_extras_->end()?std::nullopt:std::optional(at->second);
+}
+void EditorHistory::restore_terrain(const std::optional<Json>& value) {
+  if(!document_extras_)fail("Terrain requires a canonical WorldDocument");
+  if(value)(*document_extras_)["terrain"]=*value;else document_extras_->erase("terrain");
+  terrain_changed_=true;
+}
 bool EditorHistory::commit(Scene& scene) {
   if(!pending_)fail("No editor transaction is open");
   bool different=scene.roots_!=pending_->before_roots;
+  if(pending_->terrain_touched){pending_->after_terrain=terrain();different=different||pending_->before_terrain!=pending_->after_terrain;}
   for(const auto& [id,before]:pending_->before){
     const auto at=scene.nodes_.find(id);pending_->after[id]=at==scene.nodes_.end()?std::nullopt:std::optional(at->second);
     // Cached matrices/dirty flags are derived; history compares persistent fields.
@@ -87,11 +97,33 @@ bool EditorHistory::commit(Scene& scene) {
   if(different){pending_->after_roots=scene.roots_;pending_->after_state=++serial_;state_=serial_;undo_.push_back(std::move(*pending_));redo_.clear();if(undo_.size()>256)undo_.erase(undo_.begin());}
   pending_.reset();return different;
 }
-void EditorHistory::cancel(Scene& scene) {if(!pending_)return;restore(scene,pending_->before,pending_->before_roots);pending_.reset();}
+void EditorHistory::cancel(Scene& scene) {if(!pending_)return;restore(scene,pending_->before,pending_->before_roots);if(pending_->terrain_touched)restore_terrain(pending_->before_terrain);pending_.reset();}
 void EditorHistory::clear(){undo_.clear();redo_.clear();pending_.reset();state_=saved_=serial_=0;affected_.clear();created_.clear();}
 
 void EditorHistory::apply(Scene& scene,const Json& op,const AssetValidator& assets) {
   const auto kind=text(op,"op"),id=text(op,"id");
+  if(kind=="terrain"){
+    if(scene.name()!="overworld"||!document_extras_)fail("Terrain editing requires the overworld document");
+    const auto& value=required(op,"value");
+    if(number(required(value,"version"))!=1)fail("Invalid terrain version");
+    const auto& scenes=required(value,"scenes").object();
+    for(const auto& [name,data]:scenes){
+      if(name!="overworld")fail("Invalid terrain scene");
+      for(const auto* key:{"heightNodes","paintCells"}){
+        const auto& entries=required(data,key).array();if(entries.size()>25000)fail("Too many terrain edits");
+        std::set<std::pair<int,int>> seen;
+        for(const auto& item:entries){
+          const auto x=number(required(item,"x")),z=number(required(item,"z"));
+          if(x< -128||x>2048||z< -128||z>2048||std::floor(x)!=x||std::floor(z)!=z)fail("Invalid terrain coordinate");
+          if(!seen.emplace(int(x),int(z)).second)fail("Duplicate terrain coordinate");
+          if(std::string(key)=="heightNodes"){const auto delta=number(required(item,"delta"));if(delta< -16||delta>16)fail("Invalid terrain height offset");}
+          else if(!std::set<std::string>{"grass","dirt","stone","paving"}.contains(text(item,"material")))fail("Invalid terrain material");
+        }
+      }
+    }
+    if(!pending_->terrain_touched){pending_->before_terrain=terrain();pending_->terrain_touched=true;}
+    restore_terrain(value);return;
+  }
   if(kind.starts_with("prefab")){apply_prefab(scene,op,assets);return;}
   if(kind=="replace"){
     const auto& value=required(op,"entity");const auto target=text(value,"id");
@@ -131,6 +163,7 @@ void EditorHistory::apply(Scene& scene,const Json& op,const AssetValidator& asse
     if(!previous.empty())touch(scene,previous);
     scene.reparent(id,parent,op.find("preserveWorld")?op.find("preserveWorld")->bool_or(true):true);
   }else if(kind=="delete"){
+    if(scene.component(id,"PrefabDefinition"))for(const auto& instance:scene.entities_with("PrefabInstance"))if(scene.component(instance,"PrefabInstance")->at("definition").string_or()==id)fail("Unpack or delete prefab instances before deleting their definition");
     const auto parent=scene.require(id).parent;if(!parent.empty())touch(scene,parent);touch_branch(scene,id);scene.remove(id,ChildDisposition::Destroy);
   }else if(kind=="duplicate"){
     const auto parent=op.find("parent")?text(op,"parent"):scene.require(id).parent;if(!parent.empty()){scene.require(parent);touch(scene,parent);}
@@ -154,9 +187,12 @@ void EditorHistory::apply(Scene& scene,const Json& op,const AssetValidator& asse
   }else fail("Unknown editor operation: "+kind);
 }
 Json EditorHistory::status(bool changed) const {
-  return Json::Object{{"changed",changed},{"undo",double(undo_.size())},{"redo",double(redo_.size())},{"transaction",bool(pending_)},{"dirty",state_!=saved_||bool(pending_)},{"state",double(state_)},{"affected",affected_},{"created",created_},{"undoLabel",undo_.empty()?"":undo_.back().label},{"redoLabel",redo_.empty()?"":redo_.back().label}};
+  Json::Object value{{"changed",changed},{"undo",double(undo_.size())},{"redo",double(redo_.size())},{"transaction",bool(pending_)},{"dirty",state_!=saved_||bool(pending_)},{"state",double(state_)},{"affected",affected_},{"created",created_},{"undoLabel",undo_.empty()?"":undo_.back().label},{"redoLabel",redo_.empty()?"":redo_.back().label}};
+  if(terrain_changed_)value["terrain"]=terrain().value_or(Json{});
+  return value;
 }
-Json EditorHistory::command(Scene& scene,const Json& request,const AssetValidator& assets) {
+Json EditorHistory::command(Scene& scene,const Json& request,const AssetValidator& assets,Json::Object* document_extras) {
+  document_extras_=document_extras;terrain_changed_=false;
   affected_.clear();created_.clear();const auto action=text(request,"action","execute");bool changed=false;
   if(action=="begin")begin(scene,text(request,"label","Edit"));
   else if(action=="commit")changed=commit(scene);
@@ -168,6 +204,7 @@ Json EditorHistory::command(Scene& scene,const Json& request,const AssetValidato
     auto& from=action=="undo"?undo_:redo_;auto& to=action=="undo"?redo_:undo_;
     if(!from.empty()){auto record=std::move(from.back());from.pop_back();const auto& patch=action=="undo"?record.before:record.after;
       restore(scene,patch,action=="undo"?record.before_roots:record.after_roots);state_=action=="undo"?record.before_state:record.after_state;
+      if(record.terrain_touched)restore_terrain(action=="undo"?record.before_terrain:record.after_terrain);
       for(const auto& [id,node]:patch){(void)node;affected_.emplace_back(id);}to.push_back(std::move(record));changed=true;}
   }else if(action=="execute"){
     const bool own=!pending_;if(own)begin(scene,text(request,"label","Edit"));

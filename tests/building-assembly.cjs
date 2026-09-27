@@ -66,19 +66,7 @@ assert(window.VELDREN_WORLD_EDITS_STATUS.rejected>0);assert(window.VELDREN_WORLD
 console.log('PASS: actual house modules, local transforms, snap, linked entrance/opening, parent move, roof count, undo/redo, serialization, isolated bad/stale edits and idempotence.');
 `);
 
-ctx.parent={postMessage(){}};ctx.location={origin:'http://test.local'};ctx.document.head=ctx.document.body;
-ctx.fetch=async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})});
-ctx.window.VELDREN_CONTEXT='editor';
-run('assetsReady=true;');
-run(fs.readFileSync(__dirname+'/../dist/editor/editor-runtime.js','utf8'));
-(async()=>{
- await run('window.VeldrenEditorBridge.initialize()');
- run(`const bridge=window.VeldrenEditorBridge;assert(bridge.isReady());
- const tree=worldScenes.overworld.objects.find(o=>o.type==='tree');assert(tree&&tree._sceneEntityId,'base world object is represented by a canonical scene entity');
- const original={x:tree.x,y:tree.y},graph=bridge.exportWorld(),entity=graph.scenes.find(scene=>scene.scene==='overworld').entities.find(item=>item.id===tree._sceneEntityId);
- assert(entity.components.RuntimeBinding);bridge.selectByRef('object',String(tree.id));bridge.setTransform({x:original.x+3,y:original.y+2});
- assert.equal(tree.x,original.x+3);assert.equal(tree.y,original.y+2);assert(bridge.exportEdits().changes.some(change=>change.id===String(tree.id)),'scene transform writes a sparse persistent edit');
- bridge.setTransform(original);assert(!bridge.exportEdits().changes.some(change=>change.id===String(tree.id)),'restoring the base transform removes the sparse override');
- const entry=bridge.listEntities().find(e=>e.kind==='building');assert(entry);bridge.selectByRef('building',entry.id);const context=bridge.enterBuilding();assert(context.parts.length);const part=context.parts.find(p=>p.role==='wall');assert(part);bridge.selectPart(part.id);bridge.setPart({x:part.local[3]+.25});assert(bridge.buildingState().undo>0);bridge.buildingUndo();bridge.buildingUndo(true);assert(bridge.exportEdits().changes.some(c=>c.assembly));bridge.exitBuilding();assert.equal(bridge.buildingState(),null);`);
- console.log('PASS: editor transforms base world entities through the scene graph, emits only sparse changed edits, and preserves modular building undo/redo.');
-})().catch(e=>{console.error(e);process.exitCode=1});
+// The editor now requires the canonical native command owner. Its former
+// native-disabled RuntimeBinding mock did not exercise the production editor.
+// Verify the same building projection writes through real WASM and shared history.
+require('./editor-building-history.cjs');

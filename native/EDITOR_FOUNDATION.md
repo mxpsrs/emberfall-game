@@ -120,3 +120,39 @@ building fixture checks that multiple native projection writes form one exact
 undo/redo transaction. General command, camera, context and frame checks pass.
 The populated-world graphical workflow and final Phase 3 acceptance remain
 pending at this checkpoint. Nothing is deployed or merged into main.
+
+## Authoring and terrain checkpoint
+
+The populated built editor has passed hierarchy selection, Inspector name and
+transform edits, exact undo/redo, world-preserving reparenting, prefab actions,
+conversion/editing of Firstlight Smithy, grouped building undo/redo, verified
+WorldDocument save, and exact reload. No gameplay-controller requests or browser
+page errors occurred. This exercise found and fixed validation of linked interior
+entities during building conversion and stale building context after rollback.
+Prefab instances now preserve authored root scale/rotation when placed; deleting
+a referenced definition is rejected. Added children and removed branches have
+actual-WASM coverage.
+
+Terrain now commits one native command per finished brush stroke in the existing
+WorldDocument terrain field. Terrain, Inspector and building operations share
+ordered history and saved-state tracking. The browser heightfield is a render/
+brush projection; a rejected commit restores the preview. Native validation
+checks coordinates, height limits, duplicate cells, materials and size limits.
+Rollback and undo/redo restore both document terrain and its projection. The
+standalone terrain brush fixture retains local history for testing outside the
+editor; the production editor always installs the canonical command owner.
+
+An editor scene selector changes the rendered scene and camera focus without
+changing character state. Scene histories remain separate; document dirty state
+aggregates across scenes. Save retains history and blocks concurrent writes until
+the reread matches. A final graphical terrain/scene-selection and /play regression
+is pending at this checkpoint. The work remains on the Phase 3 branch only.
+
+Run focused checks with `node tests/editor-commands.mjs`,
+`node tests/editor-prefabs.mjs`, `node tests/editor-building-history.cjs`, and
+`node tests/editor-terrain-history.mjs`. `scripts/phase3-authoring-browser.mjs`
+checks populated authoring and save/reload; `scripts/phase3-terrain-play-browser.mjs`
+checks scene selection, a real terrain pointer stroke, the saved-state boundary,
+terrain reload and /play against a disposable local Worker/account/database.
+Set VELDREN_PLAYWRIGHT to a local Playwright entry point if it is not installed
+in this checkout. These scripts do not write production data.

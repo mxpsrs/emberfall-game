@@ -4,7 +4,7 @@
 (function(){
  const MATERIALS=new Set(['grass','dirt','stone','paving']);
  const heights=new Map(),paints=new Map(),undoStack=[],redoStack=[];
- let active=null,revision=0,lastDocument='',error=null;
+ let active=null,revision=0,lastDocument='',error=null,historyOwner=null,historyState={undo:0,redo:0},strokeBefore=null;
  const coord=(x,z)=>x+':'+z;
  const number=(n,min,max,label)=>{if(typeof n!=='number'||!Number.isFinite(n)||n<min||n>max)throw Error('Invalid terrain '+label);return n;};
  const validPosition=(item,label)=>{
@@ -76,12 +76,16 @@
   if(kind==='height')value=Math.max(-16,Math.min(16,Math.round(value*1000)/1000))||null;
   if(value===old)return false;remember(kind,key);if(value==null)map.delete(key);else map.set(key,value);return true;
  }
- function beginStroke(){if(active)endStroke();active=new Map();return true;}
+ function beginStroke(){if(active)endStroke();strokeBefore=historyOwner?serialize():null;active=new Map();return true;}
  function endStroke(){
   if(!active)return {changed:false,revision};
   const entries=[...active.values()].map(item=>({...item,after:(item.kind==='height'?heights:paints).get(item.key)??null})).filter(item=>item.before!==item.after);
-  active=null;if(entries.length){undoStack.push(entries);if(undoStack.length>40)undoStack.shift();redoStack.length=0;lastDocument=JSON.stringify(serialize());}
-  return {changed:!!entries.length,revision,undo:undoStack.length,redo:redoStack.length};
+  active=null;if(entries.length){
+   if(historyOwner){lastDocument=JSON.stringify(serialize());try{historyOwner.execute(serialize());}catch(cause){lastDocument='';applyDocument(strokeBefore);throw cause;}}
+   else {undoStack.push(entries);if(undoStack.length>40)undoStack.shift();redoStack.length=0;}
+   lastDocument=JSON.stringify(serialize());
+  }
+  strokeBefore=null;return {changed:!!entries.length,...state()};
  }
  function eligible(x,z){
   if(x< -128||z< -128||x>2048||z>2048)return false;
@@ -94,7 +98,7 @@
   const mode=input.mode;if(!['raise','lower','flatten','smooth','paint','erase'].includes(mode))throw Error('Unknown terrain brush');
   const strength=number(input.strength??.25,0,4,'brush strength');
   if(mode==='paint'&&!MATERIALS.has(input.material))throw Error('Invalid terrain paint material');
-  if(!active)active=new Map();
+  if(!active)beginStroke();
   const target=mode==='flatten'?number(input.target??(typeof landHeight==='function'?landHeight(x,z):0),-64,64,'flatten height'):0;
   const nodeUpdates=[],paintUpdates=[],landHeightAt=(a,b)=>typeof landHeight==='function'?landHeight(a,b):heightDelta(a,b);
   const radiusSquared=radius*radius,bounds={minX:Infinity,minZ:Infinity,maxX:-Infinity,maxZ:-Infinity};let changed=0;
@@ -135,15 +139,17 @@
   }
   opposite.push(entries);invalidate(bounds);lastDocument=JSON.stringify(serialize());return {changed:true,bounds,revision,undo:undoStack.length,redo:redoStack.length};
  }
- function undo(){return replay(undoStack,redoStack,'before');}
- function redo(){return replay(redoStack,undoStack,'after');}
+ function undo(){endStroke();return historyOwner?historyOwner.undo():replay(undoStack,redoStack,'before');}
+ function redo(){endStroke();return historyOwner?historyOwner.redo():replay(redoStack,undoStack,'after');}
  function reset(scene='overworld'){
   if(scene!=='overworld')throw Error('Sculpt and paint are available in the overworld');
   beginStroke();const bounds={minX:Infinity,minZ:Infinity,maxX:-Infinity,maxZ:-Infinity};let changed=0;
   for(const [kind,map] of [['height',heights],['paint',paints]])for(const key of [...map.keys()]){const [x,z]=key.split(':').map(Number);if(set(kind,x,z,null)){changed++;bounds.minX=Math.min(x,bounds.minX);bounds.minZ=Math.min(z,bounds.minZ);bounds.maxX=Math.max(x+1,bounds.maxX);bounds.maxZ=Math.max(z+1,bounds.maxZ);}}
   endStroke();if(changed)invalidate();return {changed,bounds:changed?bounds:null,revision};
  }
- function state(){return {revision,undo:undoStack.length,redo:redoStack.length,heightNodes:heights.size,paintCells:paints.size,error};}
- window.VeldrenTerrainEdits={applyDocument,serialize,stroke,beginStroke,endStroke,undo,redo,reset,invalidate,heightDelta,paint,state,
-  get revision(){return revision},get error(){return error},get history(){return {undo:undoStack.length,redo:redoStack.length}},get count(){return {heightNodes:heights.size,paintCells:paints.size}}};
+ function state(){return {revision,undo:historyOwner?historyState.undo:undoStack.length,redo:historyOwner?historyState.redo:redoStack.length,heightNodes:heights.size,paintCells:paints.size,error};}
+ function setHistoryOwner(owner){if(active)throw Error('Finish the terrain stroke first');historyOwner=owner;undoStack.length=redoStack.length=0;}
+ function setHistoryState(value){historyState={undo:value.undo,redo:value.redo};}
+ window.VeldrenTerrainEdits={applyDocument,serialize,stroke,beginStroke,endStroke,undo,redo,reset,invalidate,heightDelta,paint,state,setHistoryOwner,setHistoryState,
+  get revision(){return revision},get error(){return error},get history(){const {undo,redo}=state();return {undo,redo}},get count(){return {heightNodes:heights.size,paintCells:paints.size}}};
 })();

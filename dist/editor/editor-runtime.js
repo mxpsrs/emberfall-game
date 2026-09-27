@@ -21,6 +21,9 @@
  function commandSystem(){
   if(!commands)commands=createVeldrenEditorCommands(window.realmNative.scenes,()=>String(currentScene),state=>{
    sceneDocumentDirty=state.dirty;
+   T?.setHistoryState?.(state);if(Object.prototype.hasOwnProperty.call(state,'terrain'))T.applyDocument(state.terrain);
+   if(T)post('terrain',{state:T.state(),changed:false});
+   if(buildingContext&&!window.realmNative.scenes.entity(String(currentScene),buildingContext.entity._sceneEntityId)?.components.ModularBuilding){buildingContext=null;partId=null;partPreview=null;B.floorFilter=null;post('building',{state:null});}
    if(selected?.entity?._sceneEntityId&&!window.realmNative.scenes.entity(String(currentScene),selected.entity._sceneEntityId)){selected=null;selectedScene=null;}
    post('history',state);if(state.changed&&!state.transaction)post('change',{selection:entityInfo(selected),dirty:state.dirty});
   });
@@ -523,7 +526,12 @@
   x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);
   if(asset.canonicalId||asset.source==='canonical'||asset.source==='prefab'){
    const angle=placementRotation*Math.PI/360,transform={position:[x,typeof landHeight==='function'?landHeight(x,y):0,y],rotation:[0,Math.sin(angle),0,Math.cos(angle)],scale:[1,1,1]};
-   const op=asset.source==='prefab'?{op:'prefabInstantiate',id:asset.key,transform}:{op:'create',entity:{name:asset.name,transform,components:{MeshRenderer:{asset:asset.canonicalId||asset.id,renderPath:'canonical',visible:true}}}};
+   let prefabTransform=transform;
+   if(asset.source==='prefab'){
+    const definition=realmNative.scenes.entity(String(currentScene),asset.key).components.PrefabDefinition,world={scenes:[{scene:'preview',entities:Object.values(definition.nodes)}]},G=VeldrenEditorGeometry;
+    prefabTransform={affine:G.multiply(G.multiply(G.translation(transform.position),G.rotation([0,1,0],placementRotation*Math.PI/180)),VeldrenSceneFormat.readWorldTransform(world,'preview',definition.root).matrix)};
+   }
+   const op=asset.source==='prefab'?{op:'prefabInstantiate',id:asset.key,transform:prefabTransform}:{op:'create',entity:{name:asset.name,transform,components:{MeshRenderer:{asset:asset.canonicalId||asset.id,renderPath:'canonical',visible:true}}}};
    const result=commandSystem().execute('Place '+asset.name,[op]);canonicalSelection.select(result.created[0]);post('change',{selection:entityInfo(selected),placed:true,asset});return entityInfo(selected);
   }
   const id=`editor-asset-${Date.now()}-${++editorSequence}`;
@@ -561,7 +569,7 @@
  }
  function startNewBuilding(){
   if(!worldScenes?.[currentScene])throw Error('The active scene is not ready');
-  const x=snapValue(Number(free.x)||0,buildingSnap.grid),y=snapValue(Number(free.y)||0,buildingSnap.grid),id='editor-building-'+(++editorSequence);
+  const x=snapValue(Number(free.x)||0,buildingSnap.grid),y=snapValue(Number(free.y)||0,buildingSnap.grid),id='editor-building-'+Date.now()+'-'+(++editorSequence);
   let b={id,name:'New Modular Building',type:'building',archetype:'modular',race:'human',x,y,w:1,h:1,editorCreated:true,editorTransform:{rotation:0,scale:1}};b._editorId=id;
   if(window.VeldrenBuildingScene&&window.realmNative){b=window.VeldrenBuildingScene.createBuilding(String(currentScene),b);}
   else{const list=sceneBuildings(currentScene);list.push(b);if(list!==buildings&&!buildings.includes(b))buildings.push(b);B.create(b,{version:1,buildingId:id,parent:A.transform(x,0,y),modules:[],layout:[]},worldScenes[currentScene]);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'building',b,list.length-1);if(graphEntity)b._sceneEntityId=graphEntity.id;}
@@ -570,7 +578,7 @@
   log('Empty modular assembly started at '+x.toFixed(2)+', '+y.toFixed(2)+'. It is not saved until a part is placed.','ok');post('selection',{selection:entityInfo(ref)});return buildingState();
  }
  function enterBuilding(){
-  if(selected?.kind==='building'){buildingContext=selected;B.ensure(selected.entity,worldScenes[currentScene]);buildingContext.created=!!changes.get(ckey(currentScene,'building',buildingContext.id))?.created;buildingContext.uncommittedEmpty=false;}
+  if(selected?.kind==='building'){B.ensure(selected.entity,worldScenes[currentScene]);buildingContext=selected;buildingContext.created=!!changes.get(ckey(currentScene,'building',buildingContext.id))?.created;buildingContext.uncommittedEmpty=false;}
   else return startNewBuilding();
   partId=null;cancelPartPlacement();buildingFloor=0;tool='select';return buildingState();
  }
@@ -656,8 +664,8 @@
  function finishTerrain(){
   if(!terrainDrag)return;
   const changed=terrainDrag.any;
-  T.endStroke();terrainDrag=null;
-  post('terrain',{state:T.state(),changed});
+  terrainDrag=null;T.endStroke();
+  post('terrain',{state:T.state(),changed,dirty:commands?.dirty});
  }
 
  function touchGeometry(){
@@ -1022,6 +1030,8 @@
   free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
   applyAll();window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
   ready=true;
+  T?.setHistoryOwner?.({execute:value=>commandSystem().execute('Edit terrain',[{op:'terrain',value}]),undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo()});
+  window.realmNative?.scenes?.subscribe?.(event=>{if(event.kind==='load'&&T)T.applyDocument(window.realmNative.scenes.serialize()?.terrain);});
   window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
   if(window.createVeldrenSelection){canonicalSelection=window.VeldrenEditorSelection=createVeldrenSelection({native:window.realmNative.scenes,scene:()=>String(currentScene),assets:VeldrenAssets,displayMatrix:displaySceneMatrix,onChange:ids=>{selected=ids.length?canonicalRef(ids[0]):null;selectedScene=selected?String(currentScene):null;post('selection',{selection:entityInfo(selected),ids});}});}
   if(window.createVeldrenTransformTools)window.VeldrenEditorTools=createVeldrenTransformTools({native:window.realmNative.scenes,commands:commandSystem(),scene:()=>String(currentScene),selection:()=>canonicalSelection?canonicalSelection.ids:selected?.entity?._sceneEntityId?[selected.entity._sceneEntityId]:[],bounds:node=>canonicalSelection?.bounds(node),displayMatrix:displaySceneMatrix,mode:()=>tool,report:message=>log(message,'error')});
@@ -1039,6 +1049,18 @@
   canonicalSelection:()=>canonicalSelection,
   selectEntity:(id,additive=false)=>canonicalSelection?.select(id,additive),
   sceneName:()=>String(currentScene),
+  listScenes:()=>Object.entries(worldScenes).map(([id,scene])=>({id,name:scene.title||id})),
+  selectScene(id){
+   if(saving||commands?.active||terrainDrag||partDrag)throw Error('Finish the current edit before switching scenes');
+   if(!worldScenes[id])throw Error('Unknown scene');
+   if(id===currentScene)return id;
+   if(buildingContext)commandSystem().transaction('Exit Building Edit',exitBuilding);
+   window.VeldrenEditorTools?.cancel();clearCameraKeys();clearTouchInput();removePlacementPreview();cancelPartPlacement();placementAsset=null;tool='select';
+   canonicalSelection?.select(null);currentScene=id;
+   const scene=worldScenes[id];if(window.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.select(scene.objects);else objects.splice(0,objects.length,...scene.objects);
+   buildings.splice(0,buildings.length,...scene.buildings);free.x=scene.entry?.[0]??55;free.y=scene.entry?.[1]??50;free.vx=free.vy=0;px=free.x;py=free.y;
+   if(typeof resetLandSurface==='function')resetLandSurface();miniTerrain=null;terrainHover=null;canonicalSelection?.invalidate();commandSystem().status();post('tool',{tool});post('scene');return id;
+  },
   assetReferences:(type,query='')=>VeldrenAssets.list(type).map(id=>VeldrenAssets.record(id)).filter(record=>!query||[record.id,record.name].some(value=>String(value).toLowerCase().includes(query.toLowerCase()))).slice(0,150).map(record=>({id:record.id,name:record.name,type:record.type,validation:record.validation})),
   displayMatrix:displaySceneMatrix,
   editTransformField(id,key,index,value){
@@ -1055,6 +1077,7 @@
   sceneHierarchy:query=>canonicalSelection?.hierarchy(query),
   hideEntity:(id,value)=>canonicalSelection?.hide(id,value),lockEntity:(id,value)=>canonicalSelection?.lock(id,value),
   executeCommand:(label,operations)=>commandSystem().execute(label,operations),
+  prefabCatalogKey:()=>window.realmNative.scenes.componentIds(String(currentScene),'PrefabDefinition').map(id=>{const node=window.realmNative.scenes.entity(String(currentScene),id);return id+':'+node.name+':'+node.components.PrefabDefinition.revision;}).join('|'),
   createPrefab(id,name){return commandSystem().execute('Create prefab',[{op:'prefabCreate',id,name}]);},
   instantiatePrefab(id){const result=commandSystem().execute('Instantiate prefab',[{op:'prefabInstantiate',id,transform:{position:[free.x,landHeight(free.x,free.y),free.y]}}]);canonicalSelection.select(result.created[0]);return result;},
   updatePrefab:id=>commandSystem().execute('Update prefab instances',[{op:'prefabUpdate',id}]),
@@ -1093,7 +1116,7 @@
    terrainBrush={mode,radius:Math.max(1,Math.min(12,Number(input?.radius)||terrainBrush.radius)),strength:Math.max(.05,Math.min(1,Number(input?.strength)||terrainBrush.strength)),material:['grass','dirt','stone','paving'].includes(input?.material)?input.material:terrainBrush.material};
    return {...terrainBrush};
   },
-  terrainUndo(redo=false){finishTerrain();const result=redo?T.redo():T.undo();post('terrain',{state:T.state(),changed:result.changed});return T.state();},
+  terrainUndo(redo=false){finishTerrain();const result=redo?T.redo():T.undo();post('terrain',{state:T.state(),changed:result.changed,dirty:commands?.dirty});return T.state();},
   configureGizmo:config=>window.VeldrenEditorTools?.configuration(config),
   setSnap(config){window.VeldrenEditorTools?.configuration({translation:Number(config?.position)||0,rotation:Number(config?.rotation)||0});snap={position:Math.max(0,Number(config?.position)||0),rotation:Math.max(0,Number(config?.rotation)||0)};return {...snap}},
   setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);if(selected.entity.assembly)B.commit(selected.entity);post('change',{selection:info});return info},

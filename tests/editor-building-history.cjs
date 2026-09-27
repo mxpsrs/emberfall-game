@@ -14,6 +14,8 @@ async function main(){
  bridge.setAssembly('test',id,{version:1,buildingId:id,parent:A.transform(10,0,20),modules:[{id:'wall',model:'rebuilt:Wall',role:'wall',floor:0,local:A.transform(1,0,0),bounds:[[0,0,0],[1,3,.2]]},{id:'door',objectId:'27',model:'rebuilt:Door',role:'entrance',floor:0,local:A.transform(2,0,3),bounds:[[0,0,0],[1,2,.1]],opening:{service:[2,0,4],normal:[0,0,1],width:1}}]});
  ctx.VeldrenAssets={has:id=>['rebuilt:Wall','rebuilt:Door'].includes(id),record:id=>({id,type:'model'})};load('editor/commands');const commands=ctx.createVeldrenEditorCommands(native,()=> 'test');
  native.setCommandWriter((scene,op)=>commands.execute('Building edit',[op]));
+ native.upsert('test',{id:'furniture',name:'Furniture',parent:id,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'rebuilt:Wall'}},metadata:{}});
+ native.command('test',{action:'markSaved'});const initialUndo=commands.status().undo;
  const beforeHistory=JSON.stringify(native.serialize());
  commands.begin('Grouped building edit');
  const assembly=canonical.assembly;assert.equal(assembly.modules.length,2);const wall=assembly.modules.find(m=>m.id==='wall');wall.local[3]=3;assert.equal(canonical.assembly.modules.find(m=>m.id==='wall').local[3],3);
@@ -21,7 +23,9 @@ async function main(){
  assembly.parent=A.transform(30,0,40,Math.PI/2,2);assert.equal(canonical.x,30);assert.equal(canonical.y,40);
  const newPart=JSON.parse(JSON.stringify(wall));newPart.id='part-editor-copy';assembly.modules.push(newPart);assert.equal(assembly.modules.length,3);
  assembly.modules=assembly.modules.filter(m=>m.id!==newPart.id);assert.equal(assembly.modules.length,2);
- commands.commit();const edited=JSON.stringify(native.serialize());assert.equal(commands.status().undo,1,'all building mutations share a single history record');
+ const linked={id:'linked-interior',model:'linked:furniture',objectId:'furniture',role:'interior',floor:0,local:A.identity(),bounds:[[-.5,0,-.5],[.5,1,.5]]};
+ assembly.modules.push(linked);assert(assembly.modules.some(m=>m.id===linked.id));assembly.modules=assembly.modules.filter(m=>m.id!==linked.id);
+ commands.commit();const edited=JSON.stringify(native.serialize());assert.equal(commands.status().undo,initialUndo+1,'all building mutations share a single history record');
  commands.undo();assert.equal(JSON.stringify(native.serialize()),beforeHistory);commands.redo();assert.equal(JSON.stringify(native.serialize()),edited);
  native.setCommandWriter(null);
  const saved=native.serialize();assert(native.load({format:'veldren.world',version:2,scenes:[]}));assert.equal(ctx.worldScenes.test.buildings.length,0);assert.equal(ctx.worldScenes.test.objects.length,0);

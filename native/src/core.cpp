@@ -732,7 +732,7 @@ class World {
       if (!name || !request) throw std::invalid_argument("Editor scene and request required");
       auto found=world_scenes_.find(name);
       if(found==world_scenes_.end())throw std::invalid_argument("Editor scene does not exist");
-      auto value=editor_histories_[name].command(found->second,veldren::parse_json(request));
+      auto value=editor_histories_[name].command(found->second,veldren::parse_json(request),{},&world_document_metadata_.extras);
       if(value.find("changed")->bool_or()){++world_scene_revision_;PruneResourceStates();}
       editor_response_=veldren::write_json(veldren::Json::Object{{"ok",true},{"value",std::move(value)}});return 1;
     } catch(const std::exception& error) {
