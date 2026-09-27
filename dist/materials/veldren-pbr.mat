@@ -1,6 +1,8 @@
 // Veldren canonical PBR material. Build six immutable variants offline.
 material {
     name : VeldrenPbr,
+    // GLTF UVs and native image rows already share the same origin.
+    flipUV : false,
     requires : [ color, uv0, uv1, custom0, custom1, custom2, custom3, custom4, custom5 ],
     variables : [ uv23, uv45, uv67 ],
     shadingModel : VELDREN_SHADING,

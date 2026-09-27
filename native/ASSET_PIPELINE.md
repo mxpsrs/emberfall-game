@@ -1,6 +1,9 @@
 # Phase 2 asset and rendering pipeline
 
-Status: in progress. Phase 1 remains accepted at
+Status: complete. Final acceptance and reproduction commands are in
+[`PHASE2-ASSET-RENDERING-ACCEPTANCE-2026-09-27.md`](../docs/PHASE2-ASSET-RENDERING-ACCEPTANCE-2026-09-27.md).
+The sections below preserve implementation history; their intermediate pending
+gates are superseded by the final acceptance. Phase 1 remains accepted at
 `f49ef4896b910a57bfc3dbd56948fcebca830c30`. Work branch:
 `phase2-asset-rendering-wip`, created and independently verified at that exact
 commit before implementation. Nothing is deployed or merged into main.
@@ -57,7 +60,7 @@ live state, and preserves active roots.
 Registry checks cover 100 shared dependency leases, release, invalidation,
 transactional rejection, native graph roundtrip, cached model reads and teardown.
 
-## Acceptance still outstanding
+## Registry checkpoint's open gates (subsequently closed)
 
 Remaining: canonical model/material submission from Scene to Filament (the
 world still uses packed geometry adapters), mesh/material GPU ownership,
@@ -375,3 +378,29 @@ capture leaves zero model/texture GPU bytes. Teardown destroys the preview
 engine and its objects. Screenshots and measurements are checked in under
 `docs/qa/phase2-asset-rendering/editor-*`. The complete built game/editor workflow
 is the final acceptance gate still running at this checkpoint.
+
+## Final Phase 2 acceptance (2026-09-27)
+
+All scoped foundation gates passed. The final built editor renders its world and
+canonical inspector simultaneously, refreshes asset definitions through the
+unversioned manifest, and produces a new visible preview after reload. The final
+world crop contains 35,727 distinct colors, with zero page errors and zero editor
+player-controller requests. The complete built game/editor workflow also passes
+startup, transform, duplicate/delete, save and a fresh editor boot retaining the
+saved native entity. These checks use a disposable local database/account.
+
+Canonical materials now disable Filament's default UV flip, matching native image
+rows across all imported UV channels. Both renderers select their engine's GL
+context before `beginFrame` and again at submission: frame setup can flush commands,
+and Filament's convenience binding bypasses its JavaScript context selector.
+Preview capture waits for successful frames, preserves aspect ratio, cancels stale
+generations and releases its asset leases. Actual two-engine WebGL checks cover
+wall, roof and bind-pose avatar previews while the other engine continues drawing.
+
+The final Worker is 66,380,266 bytes (63.3 MiB), below the unchanged 64 MiB gate,
+with 462 assets. Delivery verifies canonical payloads, the current native WASM,
+all six current material binaries, editor source versions, 123 startup resources
+and licensed audio/ranges. Native, texture/material/model lifecycle, reimport,
+LOD, animation compatibility, mobile-sized renderer and full generated-world
+regressions pass. Evidence and limitations are recorded in the linked report and
+`docs/qa/phase2-asset-rendering/`. No Phase 3, deployment or main merge is included.

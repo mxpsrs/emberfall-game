@@ -1,0 +1,38 @@
+{
+  "runtime": {
+    "ready": true,
+    "failed": false,
+    "stage": "Preparing Briarhaven…",
+    "abi": 19,
+    "owned": true,
+    "scene": "tutorial",
+    "objects": 215,
+    "quarries": true,
+    "services": true
+  },
+  "editor": {
+    "ready": true,
+    "failed": false,
+    "context": "editor",
+    "services": true,
+    "quarries": true,
+    "membership": true,
+    "worldBytes": 14949706
+  },
+  "edit": {
+    "id": "generated:tutorial:prop:1584ce26cca61b10",
+    "x": 32,
+    "rotation": 29.999999999999993,
+    "scale": 1.2
+  },
+  "saved": {
+    "revision": 9,
+    "count": 11,
+    "path": "production world edits",
+    "bytes": 11762,
+    "sha256": "c3afb7de46ea3ec1a227c1607e168dd9371be176763e267cfb5de8619821552f",
+    "sceneDirty": false
+  },
+  "errors": [],
+  "requests": 510
+}

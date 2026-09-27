@@ -22,7 +22,15 @@ assert.deepEqual(JSON.parse((await body(releaseResponse)).toString()),{release},
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
 for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png'])urls.push(versions[path]);
-const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert((await body(nativeCore)).length>10000,'native gameplay core ships as a real WASM binary');
+const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert.deepEqual(await body(nativeCore),readFileSync(new URL('../dist/native/veldren-core.wasm',import.meta.url)),'The current native core ships byte for byte');
+for(const file of ['editor/editor.js','editor/editor-runtime.js','editor/asset-preview.js','editor/index.html','editor/viewport.html']){
+ const version=createHash('sha256').update('identity-v1\0').update(readFileSync(new URL('../dist/'+file,import.meta.url))).digest('hex').slice(0,16);
+ assert.equal(versions[file],file+'?v='+version,'Built editor source is current: '+file);
+}
+for(const shading of ['lit','unlit'])for(const alpha of ['opaque','mask','blend']){
+ const file='materials/veldren-pbr-'+shading+'-'+alpha+'.filamat';
+ assert.deepEqual(await body(await request('/'+versions[file])),readFileSync(new URL('../dist/'+file,import.meta.url)),'Canonical material binary is current');
+}
 // Canonical image paths retain the exact bytes validated by the C++ importer.
 for(const name of Object.keys(versions).filter(name=>/^assets\/canonical\/(images|variants)\//.test(name))){
  const response=await request('/'+versions[name]);assert.equal(response.status,200);

@@ -1,0 +1,2142 @@
+{
+  "contractTests": "passed",
+  "realAssets": 207,
+  "results": [
+    {
+      "source": "art/external/kenney-nature/flower_purpleA.glb",
+      "hash": "f6fc34c96a03420a74fe36d4c2d0ec88f15204fcad99cd1416c3c4ecb22e48c4",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/flower_redA.glb",
+      "hash": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/flower_yellowA.glb",
+      "hash": "8a3b08cd2ca411c21f9c581d5bda651d78b13c50cba45ad8fa0389398ead6d1d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/grass_large.glb",
+      "hash": "af49a595624abca7249824eeefb944d4baf974abeeb5b16110d175da3563d6cd",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/grass_leafsLarge.glb",
+      "hash": "a68b9b3d9639afaeb4ace840d5a8e3f21ffc4e8afc1eab15566500fbb2bee3e3",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/hanging_moss.glb",
+      "hash": "2124c2d038054f1ea89d470a6095d35c2fbdb2674916db93400ea6ed5f499cb0",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/log_stackLarge.glb",
+      "hash": "58dc0ce3321b3b57f7b8c5aea47e1a212a5f462822af57a26f9ba5c4d48e65ab",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/mushroom_redGroup.glb",
+      "hash": "29f02df0589dd2b09e8d2aff6a4662394dac5cfcf1fec701640dcbd6127e0802",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/mushroom_tanGroup.glb",
+      "hash": "2dc979485f164d7dce34329096271f44e0c9ea329c104251d94bcfbc8f8fe05e",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/plant_bushDetailed.glb",
+      "hash": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "art/external/kenney-nature/rock_largeA.glb",
+      "hash": "6dd15390fd96501dcd1454765a17ba61dbbd8d47705dfe5149c8dd92b353ce25",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 2,
+      "skins": 0,
+      "clips": 0,
+      "issues": [
+        {
+          "code": "orphan-root-parent",
+          "message": "Detached an unreachable exporter helper from a declared scene root",
+          "severity": "recoverable error"
+        }
+      ]
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Balcony_Cross_Corner.gltf",
+      "hash": "7029b4722a0565f1583c6018c1f0402f485ed56ae21a0a95e2107bb61609719d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Balcony_Cross_Straight.gltf",
+      "hash": "4a7f10317c672de0309fea51d1911e5df6d61b6c5ab08093389b8588cf8826c9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Balcony_Simple_Corner.gltf",
+      "hash": "10abdc6beb85b336c22425c829320d228475ebb33bd94936bd6477d4e0d7c2ed",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Balcony_Simple_Straight.gltf",
+      "hash": "00b028b35860ca9a8c6af8e4b1946ca39a4b6cac29a8d283164f41f1d27f0360",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_ExteriorWide_Brick.gltf",
+      "hash": "7db9618e10db78fc1d8b1bfe0b917a5df3db95ca41b9e2f7225934914d237df3",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_ExteriorWide_Wood.gltf",
+      "hash": "b3304d8f85b7ab4deac439051a56a379b851d613b332264d5e89fc47b31fc108",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Exterior_Brick.gltf",
+      "hash": "5021a098ff1c69eb388b62ed73183d7db4ddfc7cf944e0dc24c48532567cc443",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Exterior_TopDown.gltf",
+      "hash": "2eaec44e5d0e0dd9a63690b04192190fc21257543647a5ab539e848c67071f07",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Exterior_TopOnly.gltf",
+      "hash": "ed020e537b10f81be3185e42bc07c208d03c498a1a423ad988a19d4cceb34fd5",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Exterior_Wood.gltf",
+      "hash": "8f1ad0c8d0cb656601be4b6a48ca1ed5574d182c814ff27508bc91c81d0959a0",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Interior_Big.gltf",
+      "hash": "7893bddbfde2a4904b51e799a87dfc3ae342512bc04cc88c417279cba2ea3036",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Corner_Interior_Small.gltf",
+      "hash": "d35822d87d61399175d1b04c3e646dd0304c763533b3ee0cc621e8d6003e8c6d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/DoorFrame_Flat_Brick.gltf",
+      "hash": "494e41138191781ff96a4cc47687b3bb57ae81007d62a13a6303dd9e4cef9c75",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/DoorFrame_Flat_WoodDark.gltf",
+      "hash": "e12b923833fe91ba7c26c3984b0d7860a498bc955f6092b2af9fc0f3012105c6",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/DoorFrame_Round_Brick.gltf",
+      "hash": "1fda0a9226529304d1fa188e0c35ceb966927a66f477253e3bff19b674be0158",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/DoorFrame_Round_WoodDark.gltf",
+      "hash": "d96fb7e3b6b7a5cb97339a7667dee3d9e03b5b0a02cbea283bd75a69f58bb4a7",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_1_Flat.gltf",
+      "hash": "7e69ba9bcaf45238daa22b96461e9af6c80a59f422f9effb6de7f32e1fc677d8",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_1_Round.gltf",
+      "hash": "243fe5e3418e2459bcab858055d34e5441b60180a5efaadef440419e25cc27aa",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_2_Flat.gltf",
+      "hash": "12799646808b9df25324f242fc7ef21d96e24508dc8b8376935aff055f5dcfb4",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_2_Round.gltf",
+      "hash": "6f8ae926aabc02bba3d0b6bdaa283edfb61925d475c3eb5e1468cfba9bafc118",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_4_Flat.gltf",
+      "hash": "93227b03b1502cea785e2e5e31492a5d0e3cfc934a3d767e0cad9b28ca192eed",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_4_Round.gltf",
+      "hash": "1c97a6b767f8ded473aa1dae86306121634422245524e7eba0e7a524e4950b49",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_8_Flat.gltf",
+      "hash": "6c0a4d774c54b8700a90a267039044b78c693c20641deb8bf97e7716e11bf721",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Door_8_Round.gltf",
+      "hash": "4c3680e6e08142269b3c4a9061f79750475c4b4fad0cabd1bd943f642e1d13aa",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_Brick.gltf",
+      "hash": "95d965e18f1bfdc78846eb38b30fe04613d6fe4aa6b5b3a1c3d04f40fd47a0ad",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_RedBrick.gltf",
+      "hash": "2efd193ffd50ce213d3368db8a304b8f992d7609a72075c81fe800cbf662e3d3",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_UnevenBrick.gltf",
+      "hash": "8943b3e5a80a56ac7e3670ae90075e40e610f4c6fa6cbaabf643a57ff8a62dce",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark.gltf",
+      "hash": "2ee57724a06289164fee75ad62eb770f7f8cc9cb1b51c041da477c086775cd8d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark_Half1.gltf",
+      "hash": "4a2d556f7c3bddcac9f175990170ce32f351f4434967a8cdf1640ff8cf42a680",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark_Half2.gltf",
+      "hash": "f55ad7fd3b7daaac8239ba166ac7e7627a13d662c105a413db07381700b82665",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark_Half3.gltf",
+      "hash": "358299b0017ae71a205b51d9bdc44dfba74f0bd1bb2ade4510b66ae871b9e582",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark_OverhangCorner.gltf",
+      "hash": "23e43643fcefef8d408f4219ef1f58114dab08d6e27855d3c9ba9c691201590e",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodDark_OverhangCorner2.gltf",
+      "hash": "00664e32c0282f9c6cc3236919787869857dbec0cc728c53f4d4b63b035980d2",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodLight.gltf",
+      "hash": "8d2e6db247268ec775e758d53e9bc786b64f5d96926dfef8eabd079ca3061447",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodLight_OverhangCorner.gltf",
+      "hash": "50a3db50db0d258a50262b5631b26b02e554179dc616b1758e76f9cdcc3be09d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Floor_WoodLight_OverhangCorner2.gltf",
+      "hash": "c0d215ee8e170f1b25203f93129d14b1e094905a9dbbfe14ad23057b29a36ad4",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/HoleCover_90Angle.gltf",
+      "hash": "60cd986935768788b56aa53f64760ddb85f22a98bda1035e4534a1617b755748",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/HoleCover_90Half.gltf",
+      "hash": "df5aa97afd8f68a1ecc2d630adf8090975614fb7b579152b7177687383044fdf",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/HoleCover_90Stairs.gltf",
+      "hash": "8dff949a2574191740bbfd9de80cc4a7f54d33e1b327abeeaf792e05127eb7df",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/HoleCover_Straight.gltf",
+      "hash": "b18eef3815082a7c9fad24cb00ea8e7fcc23695339fa253830d39585d5964068",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/HoleCover_StraightHalf.gltf",
+      "hash": "cd03e23c66289aa0e720e441a163ba723869ce5604ceba1312f95ad7fc17311e",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Plaster_Corner.gltf",
+      "hash": "e3eae7217cdc22382e0e0c060156001eed7d03c842d0d7262e411f7d4a2bab6d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Plaster_Corner_Front.gltf",
+      "hash": "766b0f24f25856ade805e2e9ca3d67430f90f1d88bcd9cb68a5b9db572e8dab5",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Plaster_Long.gltf",
+      "hash": "4c85ead6e6aded5eca5d2fc3455c2f4c00a3e46efdb7ad58a0f61212aeee5e91",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Plaster_Short.gltf",
+      "hash": "a2016fa4b1dd49415d8b3af12e0edf5db29dbe4fef24efd474e1c7f95fd0f27c",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_RoofIncline_Plaster.gltf",
+      "hash": "04152d111c300e0490ee37797d6162770041889ce81347bb6ab280e79ad76bab",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_RoofIncline_UnevenBricks.gltf",
+      "hash": "d1906b8e7e7673444c727bb046eafbcdd2d93bc9ba54bc6d094416a1e1c0e9ff",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Roof_Plaster.gltf",
+      "hash": "bc2a87647e144c1321c7def327ac3fa5f11dc51ed9a7f8bd5deb76e31e30241c",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Roof_UnevenBricks.gltf",
+      "hash": "937dfb5989b28b833361b8b7d96c1bb43d719a087aaf5d3ea933e154acd18516",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_Plaster_Long_L.gltf",
+      "hash": "be4d646261139a2eb688e0cd64359970bb2c5e293ccfd73889d1e6f2b6f52345",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_Plaster_Long_R.gltf",
+      "hash": "1a0736d9c476008e7d2a635d13a0fc2e5730cd0a0dd1a6fa5659c239230e0e81",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_Plaster_Short_L.gltf",
+      "hash": "41b7f9c8263ce7f42029c1aee9cfddbd38e77bb6a32a8b182c4669a73ceb8be9",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_Plaster_Short_R.gltf",
+      "hash": "d7eb20ffdcdbc2af368bcd2f8fd6d9ecfeb8cc836a23fe87734edf2a60b2ee6c",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Long_L.gltf",
+      "hash": "1dd2ca52da0d66bf081e95d2293fd51c1e16f437c4cad2a4937bd2b5fa39fef9",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Long_R.gltf",
+      "hash": "6b9ea6370f80bbd140d052ab280a96e3b69054494c66f6064f0049853df95f01",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Short_L.gltf",
+      "hash": "a2ccd1c16465d1387782489b7a2e4ac0e9c7eac1e453f4d2e42afde621a899d5",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Short_R.gltf",
+      "hash": "5a46594dd7e5878ce51f05dc9d675973d8460003652e7f1794de1d5aba9fd766",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_UnevenBrick_Corner.gltf",
+      "hash": "25e78839c6bf96eaef940154b921ce0d0d9f94eb2921dca33fda0ac21e3d292f",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_UnevenBrick_Corner_Front.gltf",
+      "hash": "4fd17b6d3133b60166a42f5b578c9779e54b2f8b26dfaa89917884dcc1707af8",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_UnevenBrick_Long.gltf",
+      "hash": "5b8e2f030a8896ce60da57fa986d57f07281679a7c3b1cae2a493317c928e90d",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Overhang_UnevenBrick_Short.gltf",
+      "hash": "37061651bb2c1ef5eed781886da12091f381d7ade496946f35755643278f2b95",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Brick1.gltf",
+      "hash": "7930b8037d1b50c3510eff18bf902417b799fde476f90d3babca9e03cdb83e0b",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Brick2.gltf",
+      "hash": "8b3143dfe27d409f1abeac4e2cfc6d4b9bcb1ae6d8a298ef3623de0885a733a1",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Brick3.gltf",
+      "hash": "b79e0717cd385d1ad10d27fffe15f9b96baa72442d5fb8f2c5d89940683d7125",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Brick4.gltf",
+      "hash": "6801f77751b8def76043d0598cafc66d8293852bcbca36a31e0498ca7d0e3026",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Chimney.gltf",
+      "hash": "eeda2bd328baa49ce2260b2df1f0280db4ebc3752fa784371b2da5752697c3ba",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Chimney2.gltf",
+      "hash": "45e93dfdacd304864ec90fd8a36392bf743b62a35d3b850ac3a25cb4330dc3c6",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Crate.gltf",
+      "hash": "fb1d2ae668cc2761f9177110424e0c5c80a6698ef44f9cac642cb4a766d37883",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_ExteriorBorder_Corner.gltf",
+      "hash": "64e35a741c816d4762ef3313427b1427143e37f9e2b7d5d464344fdcef801d38",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_ExteriorBorder_Straight1.gltf",
+      "hash": "32d565f8338fc0b50a3493bad39e5fc4e2df536ff9e1506443708e92d969f5e4",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_ExteriorBorder_Straight2.gltf",
+      "hash": "2e7220f1567ed484f29a840c6120d61f1ab1d134a67b972871b22d82dff7d671",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_MetalFence_Ornament.gltf",
+      "hash": "9c5dd021577393ad42179a72014d0d334b750bee70c818fb0efb81da10bd0280",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_MetalFence_Simple.gltf",
+      "hash": "210c7853fc190af06297927588738b60738af4cbe0fe7373cbfbfa1769ec78d9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Support.gltf",
+      "hash": "c7292aa4f0f73a3d83c2ea5d0f9f3c726e17b13156679c9dfa043646a9f08037",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine1.gltf",
+      "hash": "5326ab98fef8a68b3b4d980c066d882b21e1d0489ccbc1228fd4b156d5f21ac1",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine2.gltf",
+      "hash": "773e4763b072359d9b563a63de6fd9b6e79271f145b4e1fabceb5d3481ce9e0f",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine4.gltf",
+      "hash": "6d5f7dee9b28dbbc7c7fc549ba5b5c45a66185e3f76840d6dd7240e81afdafb9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine5.gltf",
+      "hash": "a6fce6fa6dfddf0cbe51ba831eae73a24bf50389eac6961f5034edc8bd141580",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine6.gltf",
+      "hash": "50cfa774187c2328a0705986d4b0f80f25b08048f9ce42ef9930bc85b24918af",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Vine9.gltf",
+      "hash": "543744599f9155567a08fecf512bb01892f9fcbd171d73485c09331d201a34f9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_Wagon.gltf",
+      "hash": "f81bf401710cd59f1325a5cdb36d335c2e5277c8416d79eefffdc646ec3fae83",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_WoodenFence_Extension1.gltf",
+      "hash": "8eccb1f1e52e58e99b649f34fcdf66871a0395d1d8a5d9c0a24e9eca68581178",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_WoodenFence_Extension2.gltf",
+      "hash": "29e1ebbb38f3027e9aff48078b34bee07983d5d1e6657426a61b44165975c004",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Prop_WoodenFence_Single.gltf",
+      "hash": "c9f787c03c62dd94268da84bf3e4dacf554b2a5a9beee38314e37ff5d929c407",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_2x4_RoundTile.gltf",
+      "hash": "519c03acf5162aed3fb49dec59d4176026340e4189c68f60a01b795c6c2ad1df",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Dormer_RoundTile.gltf",
+      "hash": "c204215f437c2b231aadb287c45392125afc71e8e4bf80fcefdd31de00223483",
+      "meshes": 1,
+      "primitives": 4,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_FrontSupports.gltf",
+      "hash": "814b678257ff3de1b1079188d6b3fe0a107c5193962b92a31623ce7c6b4ec8ab",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick2.gltf",
+      "hash": "88a44cb9bd2fdcf3bf2dfe2a25cbc33f26e247d858eba418c2983e7e086b1145",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick4.gltf",
+      "hash": "a231d35e4929f087526a6126a25a2732efa3799be6119d55107c241ca124564f",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick4_Half_L.gltf",
+      "hash": "034d59e03fe1fc61ac4b985d7a0f3ba3b9ae8d97733e0859b9de8351b6ad7335",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick4_Half_R.gltf",
+      "hash": "a0cd7a51a65973e324c55f85601f2bb029b1100f844ff985869d54764fe353d3",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick6.gltf",
+      "hash": "140784aaedc9eaa2795da24280406c65ee6232ff060a7fc5f2a1d0530a4be0d0",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick6_Half_L.gltf",
+      "hash": "7a0495a2c9dd6e5c7b9d19a2d2f42f62c3134dc77d7dced2caa4ef0c4111aa5d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick6_Half_R.gltf",
+      "hash": "5411145264fb7c19dc01f1db3b6e515259dea95028382e1b1dc6a68c2be108c8",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick8.gltf",
+      "hash": "ecd3588791a7b3b5ebf93b2bcd611aae714bf1cd695ec86c32a939a86bce8590",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick8_Half_L.gltf",
+      "hash": "05a95a19d2bc6dea6d572c6c76e492c43305980303c1b7b67296d74fc4fa6fd9",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Front_Brick8_Half_R.gltf",
+      "hash": "7045f92be87410a86f5d8bce96b2bd5b69b0d87c2c00c813d2cd4a8aa0d37120",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Log.gltf",
+      "hash": "10ef55acbb4cc3c9b4e6e5d8ec5b20d8ec82663ed229f993379aa7040f81536c",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Modular_RoundTiles.gltf",
+      "hash": "b49ac4330af1e39dff9dce714bb4d92b165cb6975f3fb19d59fca7761cce49ed",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTile_2x1.gltf",
+      "hash": "4710ee3a7451f47577771939fafb7fb0ca688713fa8cfb87212dd3409caa2fd6",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTile_2x1_Long.gltf",
+      "hash": "a284ae84bd9eb0d9a6b05e42aa64e23d826f773ff8706619c80f4a346a0d279f",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_4x4.gltf",
+      "hash": "c6a7ce0649b897a7746929b44c448f4343f55ccd969ca1e4462f2f18b61676e4",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_4x6.gltf",
+      "hash": "4d969026106822eb2106a32a8d596416e069f63e20f53b475839076fb635ed5a",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_4x8.gltf",
+      "hash": "a33d41c743c8ff6b835de3fc3284b3e8ab8cf3c7b1b2c113e16e5fe05a4c7449",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x10.gltf",
+      "hash": "c91658413d74c970c6bdd166aa612d44c5fb1cd8852db76f34714ec1c4336397",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x12.gltf",
+      "hash": "e27546e8495dc60f78ece9bcc6bd9ed0f37214e4181e9538200c002978e96a77",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x14.gltf",
+      "hash": "de3b8400fd6894acfa862f6781d0827148aae92a494a4f99c055b48311b185db",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x4.gltf",
+      "hash": "c7a019fb592cd0f00a8b49d8cb45aed0fea084d3dd0abe2da0ce650848999fc4",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x6.gltf",
+      "hash": "646a34dc9c8da1f2766b8c338b31e045b536a9c6efcebbd9ee44b84906cd18bb",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_6x8.gltf",
+      "hash": "ca277d643a9fecdaa4c7268243d160739547727ee9a3bbbb20578a5eceff03df",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_8x10.gltf",
+      "hash": "d19ff6699fa5da7d5520f3153d5de445c5ed6242618575a9d69768d225cf3bc6",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_8x12.gltf",
+      "hash": "48f1c83fe27c8b4dcd42046867d1c64269012f92f454f48eebb891619d77c813",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_8x14.gltf",
+      "hash": "aa56907f91b9cba4f502fd360d677e6f09d28cffd4fb6d64c7c4f78b53cc6b68",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_RoundTiles_8x8.gltf",
+      "hash": "9c345408d676cc1dd25b17e44f29bb2bd7c64a3ab9ae1659eafbcb529534693f",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Support2.gltf",
+      "hash": "819006c2dd411105ef3d4a8514cab26303844a4ddaa04e58310ccb58167bc2ed",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Tower_RoundTiles.gltf",
+      "hash": "b484ef0275ec4012933f020a6d60d84ec8ed3816c7b97b19565db0e493cbb74e",
+      "meshes": 1,
+      "primitives": 4,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1.gltf",
+      "hash": "8b93dcb9bfa468842f45738f3d900c05ebf96db276a8dbdd78788420372b60c0",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_Center.gltf",
+      "hash": "7eae55e33fd7ae829c75d097a182ecea55673c9d07707a7c503e94dbceefedf9",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_Center_Mirror.gltf",
+      "hash": "a3827f56264e48e096996e27a95b00b7ad4abdd1763ab2cfe846cca74ff2d370",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_Corner.gltf",
+      "hash": "1577dd900ac326dc5d202729d3d3f2cee901b6ac17f4ea8d340d32f4b98b1b0e",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_L.gltf",
+      "hash": "7f36fa6b0a007a04ae66ce85cf0855d0a0fc078bc90a8d6777d9aa4abf155102",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_Middle.gltf",
+      "hash": "9f842c2ff1d53db7dcfe3f95b704955e27bff877d3a78791e855d77f0484b81b",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Roof_Wooden_2x1_R.gltf",
+      "hash": "22f1e20db96548836b4841703f0bf4a9955ae8fdea9ed844b9416c81546a1df5",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stair_Interior_Rails.gltf",
+      "hash": "5b64a488eda31ae05ea805bbf52f5601cd592bfd3f3cbf4088509b1e1bb5cdce",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stair_Interior_Simple.gltf",
+      "hash": "dae162fb6f92b39714f72a9c7ddbf42a8d4d1b01a0357932144ce4f9f09d3bd4",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stair_Interior_Solid.gltf",
+      "hash": "333bf204c5e3f6df7b856e79c102d02cab281ade76117b6dab69895f56004b94",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stair_Interior_SolidExtended.gltf",
+      "hash": "ff62d4852ad6e5a3df7748d9d8fdebba17716849de505dd3452a2514d35b7f9d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_NoFirstStep.gltf",
+      "hash": "1900e1a4f08a1d11df97e227d3ca276ef201bea393fec6c59d60219b8c2cfac3",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Platform.gltf",
+      "hash": "6793dfacd6cd556d22b6d698aa47acab9490b51209eff743092518eae579715f",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Platform45.gltf",
+      "hash": "1f4d7a8e7f57fb3d2c694eb8dfdd3e57d3f19b5e4f6caf6fc62cee4212f838b1",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Platform45Clean.gltf",
+      "hash": "f6f8d120303b76fdda2b4c2c61dbfec0c4c9fc22e88760f2f25a98e6fcb00174",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_PlatformU.gltf",
+      "hash": "fc5344174eedd10f80e1ce0b70aa7ee6af96c87c80db32bf40a5036fb3f61954",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_SidePlatform.gltf",
+      "hash": "8cb77073d5d3e56c5a1e82691bcf7601c3ee3ea803c2a2bbdeab0b6d6be00ce0",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Sides.gltf",
+      "hash": "ad44393192a780705c4aee64eeea7acaa31b01edf842dc7b7ffd846eb75bf73d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Sides45.gltf",
+      "hash": "c0c94d432cb04056ac766c7344ed5e8e25683f34d390bbabc6f6371e6db7422e",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_SidesU.gltf",
+      "hash": "556c116b288878581a5a46c0fb1cd3a30f2194ffb504cee0109a49444f2a5ee5",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_SingleSide.gltf",
+      "hash": "5c8339d88bb94f966a56596ea2b43b43a791660522de41d808300d8bfa71c89a",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_SingleSideThick.gltf",
+      "hash": "4dd3a0854d33a4b14e8b0f83360c2040fe5c58372c5383b335d63a52c0eb6e94",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Straight.gltf",
+      "hash": "6fc0e396d3441eb06d451690bb50244b047f8d73e9d1ff61c429fb5c46e9e3c7",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Straight_Center.gltf",
+      "hash": "7987b48577c1efd698ec58d8d288951f316e7ea119717800bd09fe1a2f4d4337",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Straight_L.gltf",
+      "hash": "47d486cef5fb490e5e72280289aa562d029b2a7818487b33283329c4bb749901",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Stairs_Exterior_Straight_R.gltf",
+      "hash": "9d27bc397cf0618d0720f0f151a717ed888f5575bd45ac55a9360fceedfb1bce",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Arch.gltf",
+      "hash": "4038e91fdd2ddbe2bcd098e34ccf401d5a40e9912fb75239a7a5acb202e476ce",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_BottomCover.gltf",
+      "hash": "193d9d1e6d1f150aba4194a4485d106e78519da269b5022cb55a6bf6b7389c04",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Door_Flat.gltf",
+      "hash": "d2bf9bd8bb88068c79ec6c2bcb0915b0dfc94341f02d9612a4d97da9583e75b3",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Door_Round.gltf",
+      "hash": "15514442b52ed9e4bea685faaf83c45ca68a227810d5cec5f66b0f311f5f6fc7",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Door_RoundInset.gltf",
+      "hash": "98e8e183cc17a10532f168156ce35035de08a73248456b551bda38b9a6b3dda6",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Straight.gltf",
+      "hash": "3bef920cbba4d124df4ca401439d893e0569f88f56049239e3480a04008fd0ac",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Straight_Base.gltf",
+      "hash": "7a0872134768cceeccb176c223915c53386eb8b563667ae922fa2d534aa5c629",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Straight_L.gltf",
+      "hash": "fc2e8406c3ad8515dd7a316ec653d7164965c5e814ce0384007ad4975a79686a",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Straight_R.gltf",
+      "hash": "7617828da5be6424eae563f2dedb11a447967999fa21bcd60ff5e15547948603",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Window_Thin_Round.gltf",
+      "hash": "94eedafb4964e5e41098a39387298e122598a1b8dd31193070b4639a76b4e0b2",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Flat.gltf",
+      "hash": "548aab2c01d593a744a9704511068e5485d84bee6f722c50e071cf866aa2ba62",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Flat2.gltf",
+      "hash": "2cc0413cfe7416f3a0885a5e6d87e728506cd9308cdc3f3f43c99ca8f6d1a34d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Round.gltf",
+      "hash": "99400c34093727a7fb82345c1afc9ae151797c1d4452ebf32fdb314ce85ea0aa",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_Plaster_WoodGrid.gltf",
+      "hash": "63493359c240943f1d70a53ea021fdf9726175642bc765ab5af03967b3b8b0c0",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Door_Flat.gltf",
+      "hash": "51c6364927fbe67bab7dc979bb7e95a98f2444fa59fe72dc3db6e50afce4136c",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Door_Round.gltf",
+      "hash": "4bbb83c8ac7799e142dec6783a030d59cc67812751ef9eb36febe15a586caef1",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Straight.gltf",
+      "hash": "3b004772bace43cc43bf76f3c75d47f68dce175510a26690468efe63bfc05f95",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Thin_Round.gltf",
+      "hash": "e43cde1412d15cf255d6d5f4eb0b28fdb5b19e34ad0765a8891073f090d13b4d",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Wide_Flat.gltf",
+      "hash": "3e50147bd935675187019398ea590466fbecf81b35fa3db3bae870faf2cdda43",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Wide_Round.gltf",
+      "hash": "9ca99d6f1ae1065230355e8098f61dc5ef72a7f2dc095af02480f3906f18e44b",
+      "meshes": 1,
+      "primitives": 3,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Thin_Flat_Closed.gltf",
+      "hash": "7e2b10bc0de0e92543f9ee6962651b0714d53c463e250c9bf1e9126dd64b86a0",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Thin_Flat_Open.gltf",
+      "hash": "998cc67c1cbc7d00aa4215895732caf3254f64a086dce366ea1df0301a85f410",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Thin_Round_Closed.gltf",
+      "hash": "3dbdfbc57aeb708f8dc73314b6c6a407a53316a32d1ddd9d7bc1541480da9bbf",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Thin_Round_Open.gltf",
+      "hash": "6aff6c02fc9670f7623849ccc9a1f55f13f624ac8a9521aa2054a2a23520ec6f",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Wide_Flat_Closed.gltf",
+      "hash": "5b9b105aad29aa567d40788a09f2f824856ba4c4eaf07f28d66bacab56d804a1",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Wide_Flat_Open.gltf",
+      "hash": "af66b3955894e35a88f63743984d82cf692ba4c0c00166f790ae337f50a1e240",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Wide_Round_Closed.gltf",
+      "hash": "852e2cc26c15c9ecaa8bb57ff1d992b6fc5e64cc677c5e30cf2df79d63714dae",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/WindowShutters_Wide_Round_Open.gltf",
+      "hash": "057f7df672397df7de31c809292c9a6dd3a206329b32c8fc469a6c12efe1b8fc",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Roof_Thin.gltf",
+      "hash": "17ee993634742c2cfb3b6b9aa844cfe03e2dec9c8bee48f5a8121e809d543310",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Roof_Wide.gltf",
+      "hash": "bc58f2e6f8545c6a9afcb46ffcbc17753ed412da3f29072a0f24bc4de7611a2d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Thin_Flat1.gltf",
+      "hash": "3065d7788d7e844c156f34e1282619acbaa05f433aabdad22b870efec30c5ebf",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Thin_Round1.gltf",
+      "hash": "02ffe8984b2a7bffda79d6d598e852c39681c23bbdd7486dd8bcec3613286a4d",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Wide_Flat1.gltf",
+      "hash": "28b91e0693bac3763248c72497f234085fccb646f1adee505dc87c62b5ad8403",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "medieval-village-megakit/glTF/Window_Wide_Round1.gltf",
+      "hash": "031c380ad522cae16c4fdbc8d74b18017e3ad3214f05ff1e8696624fc6329a4e",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-animation-library/Unreal-Godot/UAL1_Standard.glb",
+      "hash": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 43,
+      "issues": []
+    },
+    {
+      "source": "universal-animation-library/Unreal-Godot/UAL1_Standard_RM.glb",
+      "hash": "be684571ed655a1b892c2c07e6e2aeca053b606c442d34004adaf1d944090d01",
+      "meshes": 1,
+      "primitives": 2,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 43,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Base Characters/Godot - UE/Superhero_Female_FullBody.gltf",
+      "hash": "adedf28000a0716f689b009a70314506fc62f827498f77ba852acb5610f3f3f4",
+      "meshes": 3,
+      "primitives": 3,
+      "nodes": 69,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Base Characters/Godot - UE/Superhero_Male_FullBody.gltf",
+      "hash": "e7fcea214ecf8855afbf910b50de6f9c7d1decfb71ca28bad8a4481452dafeb4",
+      "meshes": 3,
+      "primitives": 3,
+      "nodes": 69,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Eyebrows_Female.gltf",
+      "hash": "9d24b43ac63197c3c242349d54d599d7d8dd5bdee6e7ce37847224f3ff1fb14d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Eyebrows_Regular.gltf",
+      "hash": "a91059d18fad4bd3af7546a4226976d8a2139eb82c3fe0790a1c5287c6ac6ed8",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Beard.gltf",
+      "hash": "c91ef54606aad25a9d1191deaba90cb411c0067d8cef262b2f4819f242e5b365",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Buns.gltf",
+      "hash": "2bb3593575e21c9af39a53e48c42c1314b0a894e9577f3f14abffcb145cd56c5",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Buzzed.gltf",
+      "hash": "43752a4c8f2464eb2494a8ab179bf7ad237638a3d47fb3de0a38361db40e1451",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_BuzzedFemale.gltf",
+      "hash": "3f30e5a7b0fc6d04d2980a4e937cc5e4b03ca923c9247869168ef13e1b40b747",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Long.gltf",
+      "hash": "94500e2e37e09efc8b8b920b8c6437ef1c76ca35863992b82d0d5de6e77122e9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_SimpleParted.gltf",
+      "hash": "ce6c666d00bcca2baa0c58d0442505f90f8feff952592effc4697a2341e9e56d",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 1,
+      "skins": 0,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Eyebrows_Female.gltf",
+      "hash": "ec294eb3dbe1b2027090e336255fa34ade5f2182c8964530404f3af7ad45939e",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Eyebrows_Regular.gltf",
+      "hash": "ced6afcce12cc72a27e30fc06880401aff2b3fe883a01739299a5b49e5f7509e",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_Beard.gltf",
+      "hash": "80013b9791ce12c65fbe693cf669b02ef5c38091c653bf13b9415d2d8380e0ce",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_Buns.gltf",
+      "hash": "cbdd6f509ec8f1021361b53da6fa1a077b95762ebc8bc2d8acae59bb0cb263c1",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_Buzzed.gltf",
+      "hash": "6e709c691d4feccda9788df917bf9604e751f02da21cee2bc81bcc3d26b3b580",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_BuzzedFemale.gltf",
+      "hash": "096a7a4ea5bcadc588f4c1e95f04b3461f8a20f3643a0308cfd23e81e180ab32",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_Long.gltf",
+      "hash": "27e2c63e8f98c79fb600268ffcc92b36c621b8653b5a7dcbadb08328f3f887a9",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    },
+    {
+      "source": "universal-base-characters/Hairstyles/Rigged to Head Bone/glTF (Godot -Unreal)/Hair_SimpleParted.gltf",
+      "hash": "fe0f354d7f95d83d38e15c60794dcc063fa4d60550706f3d7ba51491cdc07c56",
+      "meshes": 1,
+      "primitives": 1,
+      "nodes": 67,
+      "skins": 1,
+      "clips": 0,
+      "issues": []
+    }
+  ]
+}

@@ -3,7 +3,13 @@
   "results": [
     {
       "id": "rebuilt:Wall_Plaster_Straight",
-      "colors": 3649,
+      "colors": 4256,
+      "mainPixel": [
+        87,
+        88,
+        90,
+        255
+      ],
       "resources": {
         "models": {
           "models": 0,
@@ -26,7 +32,13 @@
     },
     {
       "id": "rebuilt:Roof_RoundTiles_4x6",
-      "colors": 7687,
+      "colors": 7244,
+      "mainPixel": [
+        86,
+        87,
+        89,
+        255
+      ],
       "resources": {
         "models": {
           "models": 0,
@@ -49,7 +61,13 @@
     },
     {
       "id": "avatar:male",
-      "colors": 2904,
+      "colors": 2364,
+      "mainPixel": [
+        87,
+        88,
+        89,
+        255
+      ],
       "resources": {
         "models": {
           "models": 0,
@@ -72,5 +90,7 @@
     }
   ],
   "native": "cpp-wasm",
+  "reimportCancelled": true,
+  "multipleCanvases": true,
   "pageErrors": []
 }
