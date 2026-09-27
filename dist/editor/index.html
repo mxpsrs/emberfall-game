@@ -41,6 +41,10 @@
         <option value="90">90°</option>
       </select>
     </label>
+    <label class="toolbar-field">Space <select id="gizmoSpace"><option value="world">World</option><option value="local">Local</option></select></label>
+    <label class="toolbar-field">Pivot <select id="gizmoPivot"><option value="object">Object</option><option value="center">Selection center</option></select></label>
+    <label class="toolbar-field">Scale step <select id="scaleSnap"><option value="0">Off</option><option value="0.1" selected>0.1</option><option value="0.25">0.25</option></select></label>
+    <label class="toolbar-field"><input id="gizmoSnap" type="checkbox" checked> Snap</label>
     <span class="toolbar-spacer"></span>
     <span id="saveState">No unsaved changes</span>
     <button id="saveWorld" class="primary" type="button">Save World</button>
@@ -155,6 +159,7 @@
       Select any world entity or building, or open <b>Assets</b> to inspect Veldren models before placement.
     </p>
 
+    <section id="componentInspector" aria-label="Canonical component inspector"></section>
     <fieldset id="transformFields" disabled>
       <legend>Transform</legend>
       <label><span>Scene</span><input id="sceneField" type="text" readonly></label>
@@ -196,6 +201,6 @@
   <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"></div>
 </section>
 
-<script src="/editor/editor.js"></script>
+<script src="/editor/panels.js"></script><script src="/editor/editor.js"></script>
 </body>
 </html>

@@ -201,6 +201,7 @@
   bridge?.setSnap(config);bridge?.setBuildingSnap({grid:config.position,rotation:config.rotation});log(`Snap · position ${config.position||'off'} · rotation ${config.rotation?config.rotation+'°':'off'}.`,'info');
  }
  positionSnap.onchange=rotationSnap.onchange=updateSnap;
+ for(const id of ["gizmoSpace","gizmoPivot","scaleSnap","gizmoSnap"])if($(id))$(id).onchange=()=>bridge?.configureGizmo({orientation:$("gizmoSpace").value,pivot:$("gizmoPivot").value,scale:Number($("scaleSnap").value),snapping:$("gizmoSnap").checked});
 
  playerView.onclick=()=>{
   if(!bridge)return;
@@ -219,13 +220,14 @@
   log(gameUiVisible?'Game UI revealed for UI editing.':'Game UI hidden · clean world viewport restored.','ok');
  };
 
+ let canonicalPanels=null;
  function renderSelection(info){
   selection=info||null;const on=!!selection;fields.disabled=!on;
   for(const b of [focusButton,duplicateButton,revertButton,deleteButton])b.disabled=!on;
   marker.hidden=!on;protectedNote.hidden=!selection?.protected;
   if(!on){
    objectName.textContent='Nothing selected';objectType.textContent='—';sceneField.value=idField.value=xField.value=yField.value=rotationField.value=scaleField.value='';
-   hint.textContent='Select any entity or building from the viewport or hierarchy.';return;
+   hint.textContent='Select any entity or building from the viewport or hierarchy.';canonicalPanels?.inspect();renderHierarchy();return;
   }
   objectName.textContent=selection.name||'Unnamed';objectType.textContent=selection.kind||selection.type||'entity';
   sceneField.value=selection.scene||'';idField.value=selection.id||'';
@@ -234,6 +236,11 @@
   renderHierarchy();
  }
  function renderHierarchy(){
+  if(bridge?.sceneHierarchy&&bridge.canonicalSelection?.()&&window.createVeldrenScenePanels){
+   if(!canonicalPanels){canonicalPanels=createVeldrenScenePanels({bridge,list:entityList,inspector:$('componentInspector'),count:entityCount,log});fields.hidden=true;}
+   canonicalPanels.render(search.value);canonicalPanels.inspect();return;
+  }
+
   const q=search.value.trim().toLowerCase(),showO=showObjects.checked,showB=showBuildings.checked;
   const filtered=entities.filter(e=>(e.kind==='building'?showB:showO)&&(!q||[e.name,e.type,e.subtype,e.id].some(v=>String(v||'').toLowerCase().includes(q))));
   entityCount.textContent=`${filtered.length} / ${entities.length}`;entityList.replaceChildren();

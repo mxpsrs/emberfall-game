@@ -9,14 +9,14 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   for(const entity of [...instance.entities,instance.root]){engine.destroyEntity(entity);filament.EntityManager.get().destroy(entity);entity.delete();}
  }
  function removePool(pool){for(const instance of pool.instances)removeInstance(instance);pool.instances=[];pool.lease.release();}
- function makeInstance(model){
+ function makeInstance(model,options={}){
   const root=filament.EntityManager.get().create(),entities=[];let parent;
   try{
    manager.create(root);parent=manager.getInstance(root);
    for(const draw of model.draws){
     const entity=filament.EntityManager.get().create();entities.push(entity);
     const builder=filament.RenderableManager.Builder(1).boundingBox(draw.resource.bounds).material(0,draw.materialInstance)
-     .geometry(0,filament.RenderableManager$PrimitiveType.TRIANGLES,draw.resource.vb,draw.resource.ib).castShadows(true).receiveShadows(true);
+     .geometry(0,filament.RenderableManager$PrimitiveType.TRIANGLES,draw.resource.vb,draw.resource.ib).castShadows(options.castShadows!==false).receiveShadows(options.receiveShadows!==false);
     if(draw.skin)builder.skinning(draw.boneCount);
     builder.build(engine,entity);
     if(draw.skin){
@@ -35,16 +35,16 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();sceneKey=key;}
   for(const pool of pools.values())pool.used=0;
  }
- function submit(id,matrix,distance=0){
+ function submit(id,matrix,distance=0,options=null){
   if(assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
-  const generation=assets.record(id).generation;let pool=pools.get(id);
-  if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(id);pool=null;}
+  const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
+  if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){
-   const lease=resources.acquire(id,profile);pool={lease,model:null,error:null,instances:[],used:0,lastUsed:frame};pools.set(id,pool);
+   const lease=resources.acquire(id,profile,options||{});pool={lease,model:null,error:null,instances:[],used:0,lastUsed:frame};pools.set(key,pool);
    const current=pool;lease.ready.then(model=>{current.model=model;},error=>{current.error=error;});
   }
   pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return false;
-  const slot=pool.used++,instance=pool.instances[slot]||(pool.instances[slot]=makeInstance(pool.model));
+  const slot=pool.used++,instance=pool.instances[slot]||(pool.instances[slot]=makeInstance(pool.model,options||{}));
   if(!instance.matrix||matrix.some((v,i)=>v!==instance.matrix[i])){
    const transform=manager.getInstance(instance.root);try{manager.setTransform(transform,matrix);}finally{transform.delete();}instance.matrix=Array.from(matrix);
   }

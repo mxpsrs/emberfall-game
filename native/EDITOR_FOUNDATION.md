@@ -35,3 +35,38 @@ have not yet been integrated with the command foundation. Proper 3D gizmos,
 canonical picking/multi-selection, hierarchy/inspector, prefabs, modular building
 authoring and full populated-world graphical/persistence acceptance remain.
 No deployment, main merge, production data writes or Phase 4 work is included.
+
+## 3D transform checkpoint
+
+Original ray/axis/plane math drives X/Y/Z translation, XY/XZ/YZ planes,
+three rotation rings, axis scale and uniform scale. Local orientation removes
+inherited stretch from handle axes; commands preserve the full affine matrix.
+World/local, object/selection-center pivots and translation/angle/scale snapping
+are explicit editor settings. A gesture snapshots only selected root matrices
+and commits one command, including multi-selection.
+
+Handles and selection bounds use a bounded Filament vertex buffer, an unlit
+editor material, the real viewport camera and a separately submitted overlay
+view. The owner releases its resources on unload. Existing terrain-relative
+entities use the same grounding offset as the accepted renderer; persistent
+transforms remain canonical. Select mode no longer starts an implicit 2D drag.
+
+Canonical ray picking, overlap cycling, additive selection and inherited
+editor-only hide/lock state are connected. A cached BVH handles ray queries.
+The hierarchy now reads the Scene graph, supports expansion/filtering/rename
+and command-based reparenting; the general inspector edits native components.
+These newer panels still require the broader category acceptance workflows.
+
+Authored canonical MeshRenderer draws reuse Phase 2 model/material/texture
+resource owners in both contexts. Asset edits choose that render path; model
+material overrides and shadow flags have managed resource ownership.
+
+Verified focused tests include native command/controller affine cases, geometry
+math, selection/filtering, model/material/lifecycle regressions and editor camera/
+context/frame regressions. A Chromium WebGL test shows all three 3D handle modes
+with zero page errors. The built populated Firstlight Isle editor test performs
+a real pointer drag, confirms one history entry and exact undo/redo, and keeps
+the player-independent editor context. Full Phase 3 graphical acceptance, prefab
+and building workflows, persistence and /play acceptance are still outstanding.
+
+Remote command checkpoint: `b565855ff658d674448bd616255a9854f78a9111`.

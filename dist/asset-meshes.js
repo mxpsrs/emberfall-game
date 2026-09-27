@@ -38,18 +38,18 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
    const model=await entry.model.ready;check();const plan=assets.renderPlan(model);entry.plan=plan;
    const meshes=new Map();for(const packet of plan.geometry){check();const lease=geometryLease(packet);entry.geometry.push(lease);meshes.set(packet.key,lease.resource);}
    const bound=new Map();
-   for(const draw of plan.draws){if(bound.has(draw.material))continue;check();const lease=materials.acquire(draw.material,entry.profile);entry.materials.push(lease);bound.set(draw.material,await lease.ready);}
-   check();return Object.freeze({plan,draws:plan.draws.map(draw=>Object.freeze({...draw,resource:meshes.get(draw.geometry),materialInstance:bound.get(draw.material)}))});
+   for(const draw of plan.draws){const material=entry.materialOverride||draw.material;if(bound.has(material))continue;check();const lease=materials.acquire(material,entry.profile);entry.materials.push(lease);bound.set(material,await lease.ready);}
+   check();return Object.freeze({plan,draws:plan.draws.map(draw=>Object.freeze({...draw,resource:meshes.get(draw.geometry),materialInstance:bound.get(entry.materialOverride||draw.material)}))});
   }catch(error){clean(entry);throw error;}
  }
  function release(lease){
   if(lease.closed)return;lease.closed=true;leases.delete(lease);const entry=lease.entry;
   if(--entry.users===0){entry.retired=true;if(models.get(entry.key)===entry)models.delete(entry.key);clean(entry);}
  }
- function acquire(id,profile){
-  if(disposed)throw Error('Model resource owner destroyed');const generation=assets.record(id).generation,key=id+'@'+generation+':'+profile;
+ function acquire(id,profile,options={}){
+  if(disposed)throw Error('Model resource owner destroyed');const generation=assets.record(id).generation,key=id+'@'+generation+':'+profile+(options.material?':'+options.material+'@'+assets.record(options.material).generation:'');
   let entry=models.get(key);
-  if(!entry){entry={key,profile,users:0,retired:false,cleaned:false,geometry:[],materials:[],model:assets.leaseModel(id)};models.set(key,entry);entry.ready=Promise.resolve().then(()=>build(entry));}
+  if(!entry){entry={key,profile,materialOverride:options.material||null,users:0,retired:false,cleaned:false,geometry:[],materials:[],model:assets.leaseModel(id)};models.set(key,entry);entry.ready=Promise.resolve().then(()=>build(entry));}
   entry.users++;const lease={entry,closed:false};leases.add(lease);
   return Object.freeze({id,generation,ready:entry.ready.then(value=>{if(lease.closed||disposed)throw abort();return value;}).catch(error=>{release(lease);throw error;}),release:()=>release(lease)});
  }

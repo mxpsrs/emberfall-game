@@ -30,6 +30,12 @@
     // References are resolved by the accepted native registry, never a second
     // editor catalog. Existing procedural bindings remain readable unchanged.
     const validate=(key,id)=>{const type=key==='asset'?'model':key==='material'?'material':key==='texture'?'texture':null;if(!type||!id)return;if(typeof id!=='string'||!globalThis.VeldrenAssets?.has(id)||VeldrenAssets.record(id).type!==type)throw Error('Unknown or incompatible '+type+' reference: '+id);};
+    if(request.operations)request={...request,operations:request.operations.flatMap(op=>{
+     const asset=op.op==='asset'?op.value:op.component==='MeshRenderer'?(op.field==='asset'?op.value:op.fields?.asset):op.op==='create'?op.entity?.components?.MeshRenderer?.asset:null;
+     if(!asset||!globalThis.VeldrenAssets?.has(asset)||VeldrenAssets.record(asset).importSettings?.importer!=='veldren-gltf-1')return [op];
+     if(op.op==='create')return [{...op,entity:{...op.entity,components:{...op.entity.components,MeshRenderer:{...op.entity.components.MeshRenderer,renderPath:'canonical'}}}}];
+     return [op,{op:'field',id:op.id,component:'MeshRenderer',field:'renderPath',value:'canonical'}];
+    })};
     for(const op of request.operations||[]){
      if(op.op==='asset'||op.op==='material')validate(op.op,op.value);
      if(op.op==='field')validate(op.field,op.value);
