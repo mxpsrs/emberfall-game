@@ -186,4 +186,21 @@ canonical selection resolves the requested entity directly.
 The full generated-world regression now renders multiple building variants and
 asserts that the native Scene revision is unchanged. That check passes alongside
 geometry, hierarchy, door, surface and complete save/unload/load checks. The
-visible terrain/scene-switch and /play check is being rerun on this build.
+visible scene-switch check now completes and preserves character state.
+
+## Graphical acceptance blocker (2026-09-28)
+
+Phase 3 remains unfinished. The overworld viewport is blank after scene selection:
+the original picking function and Filament camera receive non-finite anchor
+coordinates, despite finite detached-camera state and directly sampled terrain.
+A separately loaded saved WorldDocument has valid terrain and picking. A fresh
+copy of the camera function also computes a valid hit in the paused browser;
+the cause of the original function's divergent binding/evaluation is unresolved.
+The terrain browser test now checks for actual land before dragging and records
+the failing camera inputs. No workaround or speculative camera change is shipped.
+
+`PHASE3_ACCEPTANCE.md` records the passed checks, the reproduction, and the gates
+still outstanding. The final binding inspection was interrupted by execution
+environment recovery. Terrain pointer/save/reload and `/play` acceptance must be
+completed before this branch can be called accepted. Nothing is deployed or
+merged into main.

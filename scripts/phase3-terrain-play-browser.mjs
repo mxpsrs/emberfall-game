@@ -44,7 +44,19 @@ try{
  console.log('Independent scene selector passed');
  await page.locator('#terrainTool').click();
  const box=await frame.locator('#world').boundingBox();assert(box);
- await page.mouse.move(box.x+box.width*.5,box.y+box.height*.5);await page.mouse.down();await page.mouse.move(box.x+box.width*.54,box.y+box.height*.5,{steps:4});await page.mouse.up();
+ const ground=await frame.evaluate(()=>{
+  const candidates=[];
+  for(const y of [.82,.9,.7,.6])for(const x of [.5,.4,.6,.3,.7]){
+   const p=unproject3(screen.w*x,screen.h*y);
+   if(Number.isFinite(p.x)&&Number.isFinite(p.z)&&p.x>=0&&p.z>=0&&p.x<1152&&p.z<768&&!worldWaterSurface(p.x,p.z))candidates.push({x,y,world:p});
+  }
+  return {point:candidates[0],camera:VeldrenEditorBridge.cameraState(),anchor:[px,py],view:{...view3d},distance:cameraDistance3(),height:walkSurfaceHeight(px+.5,py+.5),frame:meshFrame3,renderer:realmGPU?.kind,size:[screen.w,screen.h],sample:unproject3(screen.w*.5,screen.h*.5)};
+ });
+ console.log('Terrain ground probe',JSON.stringify(ground));
+ if(!ground.point)writeFileSync('.qa/phase3/terrain-camera-failure.json',JSON.stringify(ground,null,2));
+ assert(ground.point,'visible ground must be available for a terrain stroke');
+ const gx=box.x+box.width*ground.point.x,gy=box.y+box.height*ground.point.y;
+ await page.mouse.move(gx,gy);await page.mouse.down();await page.mouse.move(gx+box.width*.025,gy,{steps:4});await page.mouse.up();
  const terrain=await frame.evaluate(()=>VeldrenTerrainEdits.serialize());assert(terrain.scenes.overworld.heightNodes.length>0,'pointer stroke sculpts visible overworld');
  const state=await frame.evaluate(()=>VeldrenEditorBridge.historyState());assert.equal(state.undo,1);assert(state.dirty);
  await page.locator('#undoCommand').click();assert.equal(await frame.evaluate(()=>VeldrenTerrainEdits.state().heightNodes),0);assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.historyState().dirty),false);

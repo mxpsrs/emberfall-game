@@ -1,11 +1,13 @@
 # Phase 3 acceptance record
 
-Date: 2026-09-27. Branch: `phase3-editor-foundation-wip` in
+Updated: 2026-09-28. Branch: `phase3-editor-foundation-wip` in
 `mxpsrs/emberfall-game`. Accepted Phase 2 base:
 `9e72e514610f6e8de01ae782e406e10fc5a8443a`.
 
-Status: implementation and focused checks pass; final graphical terrain and
-/play verification is in progress. No deployment or main merge is included.
+Status: **not accepted**. Implemented authoring features and focused checks pass,
+but the graphical overworld check exposes a camera/picking failure. Terrain
+pointer/save/reload and `/play` acceptance remain blocked. No deployment or main
+merge is included.
 
 ## Ownership and behavior
 
@@ -36,7 +38,7 @@ aggregates across scenes, and undo can return to the saved boundary.
 | Building editing | Actual generated house assembly, snapping and openings; native linked interior parts; grouped module/door edits, duplicate/delete and exact undo/reload |
 | Terrain | Actual-WASM shared entity/terrain ordering, native validation, no-op behavior, transaction rollback, rejected preview rollback and persistence |
 | Picking and hierarchy | Actual-WASM incremental subtree updates, parent transforms, active state, inherited hide/lock, reparent/delete undo and scene/load invalidation |
-| Graphics | Chromium WebGL renders all three handle modes; populated editor shows canonical imported assets and Inspector selection |
+| Graphics | Chromium WebGL renders all three handle modes; populated tutorial editor shows canonical imported assets and Inspector selection; overworld camera check fails |
 | Populated authoring | Hierarchy click, Inspector rename/position, undo/redo, reparent, prefab actions, Firstlight Smithy editing, verified save and exact fresh reload; no page errors or gameplay-controller requests |
 | Persistence routes | Atomic v2 save, legacy preservation, concurrent save conflict, validation and account/character preservation in disposable local tests |
 | Generated world | Building/road/light/structure/spawn/resource/bridge/quarry/service Scene ownership, unchanged Scene revision while rendering multiple building variants, and complete native round-trip |
@@ -50,7 +52,35 @@ The overworld browser check identified render-time height writes entering native
 command history and repeatedly refreshing the Scene. All generated-building
 render paths now leave authored height components unchanged, and the editor
 rejects writes during drawing. The generated-world regression covers this
-behavior; the graphical rerun is still pending.
+behavior. The graphical rerun now completes scene selection without changing
+character state or creating history entries. It then fails the visible-ground
+precondition, as described below.
+
+## Outstanding graphical blocker
+
+On the disposable revision-9 fixture, switching from Firstlight to `overworld`
+leaves a blank viewport. The detached camera reports `(42, 51)`, yaw `-2.05`,
+tilt `0.27`, zoom `118`, and viewport `870 × 682`. Its distance is finite
+(`5.322333574251256`), but the original `unproject3` returns non-finite coordinates
+and the Filament camera reports non-finite eye/center values.
+
+Diagnostics distinguish this from a missing terrain surface: all four nearby
+terrain nodes, grading, foundations, and a direct ground sample are finite. The
+saved native WorldDocument loads separately with ground height
+`2.4732103814964477` and a correct ray hit at the camera anchor. In the paused
+browser, a freshly evaluated copy of the original camera function also returns
+the correct hit, while the original function passes non-finite coordinates to
+`walkSurfaceHeight`. This is evidence of a live camera binding/evaluation issue;
+its root cause is **not yet established**. Replacing functions at runtime was a
+diagnostic comparison, not a committed fix.
+
+The browser acceptance now probes actual land before dragging and writes its
+camera inputs to `.qa/phase3/terrain-camera-failure.json` on this failure. The
+stroke/save/reload and `/play` assertions must pass on a fresh built Worker after
+the correction; native terrain tests alone do not satisfy that gate. The last
+binding inspection was interrupted by execution-environment transport recovery,
+which terminated the running browser. No terrain edit was saved by the failing
+checks.
 
 ## Native editing performance
 
