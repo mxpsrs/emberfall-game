@@ -119,7 +119,7 @@ function createRealmFilamentGPU(){
   vb.setBufferAt(engine,0,arrays.positions);vb.setBufferAt(engine,1,tangents);vb.setBufferAt(engine,2,arrays.colors);vb.setBufferAt(engine,3,arrays.uvs);
   let ib=null;const indices=entry.index?.buffer?.data;
   if(indices){ib=Filament.IndexBuffer.Builder().indexCount(indices.length).bufferType(Filament.IndexBuffer$IndexType.USHORT).build(engine);ib.setBuffer(engine,indices);}
-  const resource={buffer:entry.buffer,vb,ib,bounds:entry.bounds||realmFilamentBounds(arrays.positions),gpuBytes:arrays.count*44+(indices?.byteLength||0),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral,residencyId:"legacy:"+(++resourceSerial),lastFrame:renderFrame};
+  const resource={buffer:entry.buffer,indexStaging:entry.index,vb,ib,bounds:entry.bounds||realmFilamentBounds(arrays.positions),gpuBytes:arrays.count*44+(indices?.byteLength||0),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral,residencyId:"legacy:"+(++resourceSerial),lastFrame:renderFrame};
   resources.add(resource);if(!ephemeral)resourceByBuffer.set(entry.buffer,resource);return resource;
  }
  function dynamicCapacity(count){return Math.max(768,Math.ceil(count/768)*768);}
@@ -245,8 +245,9 @@ function createRealmFilamentGPU(){
    // existing handles and releases the returned IDs through their owners.
    if(globalThis.realmNative?.scenes?.performance){
     const inventory=[...resources],reservedGpu=modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes;
-    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0),r.lastFrame===renderFrame])});
-    residencyStats=result.stats;const retire=new Set(result.evict);
+    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0),r.lastFrame===renderFrame,r.buffer?.retire&&!r.ephemeral?(r.buffer.data?.byteLength||0):0])});
+    residencyStats=result.stats;const retire=new Set(result.evict),discard=new Set(result.discardStaging);
+    for(const resource of inventory)if(discard.has(resource.residencyId))resource.buffer.data=null;
     for(const resource of inventory)if(retire.has(resource.residencyId)){
      resource.buffer?.retire?.();destroyResource(resource);backend.releaseBuffer(resource.buffer);
      if(resource.ephemeral){const slot=dynamicResources.indexOf(resource);if(slot>=0)dynamicResources[slot]=null;}

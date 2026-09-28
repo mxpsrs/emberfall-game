@@ -69,6 +69,8 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.deepEqual(Array.from(replacement.buffer.data),Array.from(beforeRetirement));
   const mesh={packed:beforeRetirement},firstEntry=context.realmMeshEntry(gpu,mesh);gpu.render([{...firstEntry,model:models[0]}],[],null);
   assert(gpu.sharedMeshes.has(mesh));assert(gpu.meshBytes>0);
+  assert.equal(firstEntry.buffer.data,null,'reconstructible CPU upload staging is freed while the GPU mesh remains active');
+  gpu.render([{...firstEntry,model:models[0]}],[],null);assert.equal(gpu.scene.getRenderableCount(),1);
   for(let i=0;i<122;i++)gpu.render([],[],null);
   assert.equal(gpu.sharedMeshes.has(mesh),false);assert.equal(gpu.meshUse.size,0);assert.equal(gpu.meshBytes,0);
   const secondEntry=context.realmMeshEntry(gpu,mesh);assert.notEqual(secondEntry,firstEntry);

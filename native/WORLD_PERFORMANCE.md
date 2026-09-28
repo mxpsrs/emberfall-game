@@ -211,3 +211,21 @@ its prior numeric-input blocker is resolved without changing Inspector code.
 A new populated travel/revisit browser comparison is running. This is still a
 Phase 4 checkpoint: explicit asynchronous cell residency/prefetch, full stress
 and mobile graphical acceptance, and measured final comparisons remain open.
+
+### Reconstructible upload staging
+
+The first travel run exposed a visible working set slightly above the staging
+budget in the building-heavy view. A further native decision now discards upload
+staging immediately when the existing cache supplies a reconstruction callback.
+The live GPU resource remains resident and can be submitted again without an
+upload. Shared index staging stays available until its last mesh reference is
+released; dynamic arrays and non-reconstructible buffers remain accounted for.
+This reduces duplicate CPU storage rather than evicting visible geometry.
+
+The native resource test, rebuilt WASM, real Filament transform/retirement/cache
+reconstruction test, renderer contract and canonical resource tests pass after
+this change. The browser harness can restrict viewpoints and resolves fixed
+camera targets once, so test navigation no longer repeatedly queries every
+entity. The first resource checkpoint is remotely verified at
+`1f32af18e5caf9e53500f175e29242c8a48148d2`. Its graphical receipts are kept
+separate from the staging refinement's verification.

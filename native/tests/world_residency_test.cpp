@@ -14,6 +14,11 @@ int main(){
  for(int i=0;i<2;i++)assert(run({row("b",60,20,false)}).find("evict")->array().empty());
  assert(run({row("b",60,20,false)}).find("evict")->array().size()==1);
  assert(run({}).find("stats")->find("tracked")->number_or()==0);
+ // Reconstructible upload staging can be dropped while its visible GPU mesh
+ // stays resident. Non-reconstructible staging remains protected with its user.
+ r=state.reconcile(Json::Array{Json::Array{"uploaded",80,150,true,150}},budget);
+ assert(r.find("evict")->array().empty());assert(r.find("discardStaging")->array().at(0).string_or()=="uploaded");
+ assert(r.find("stats")->find("cpuBytes")->number_or()==0);assert(!r.find("stats")->find("overBudget")->bool_or());
  // CPU staging and externally owned shared resources use the same budget.
  r=run({row("cpu",0,101,false)});assert(r.find("evict")->array().size()==1);
  r=state.reconcile(Json::Array{row("old",50,0,false)},budget,90);assert(r.find("evict")->array().size()==1);
