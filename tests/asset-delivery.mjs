@@ -4,7 +4,11 @@ import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {brotliDecompressSync} from 'node:zlib';
-import {encodeAsset,decodeAsset,compressAsset} from '../scripts/asset-delivery.mjs';
+import {encodeAsset,decodeAsset,compressAsset,acceptsBrotli} from '../scripts/asset-delivery.mjs';
+for(const [header,expected] of [['br',true],['gzip, br',true],['br;q=0, *;q=1',false],['*;q=1',true],['br;q=0.5',true],['gzip',false],['',false]]){
+ assert.equal(acceptsBrotli(new Request('https://veldren.test',{headers:{'Accept-Encoding':header}})),expected);
+}
+assert.equal(acceptsBrotli({cf:{clientAcceptEncoding:'gzip'},headers:new Headers({'Accept-Encoding':'gzip, br'})}),false);
 for(let size=0;size<4096;size++){
  const bytes=Buffer.alloc(size);for(let i=0;i<size;i++)bytes[i]=(i*47+(i>>3)*11+size)%256;
  const encoded=encodeAsset(bytes);assert(!/["\\`]/.test(encoded));assert.deepEqual(Buffer.from(decodeAsset(encoded,size)),bytes);

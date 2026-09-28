@@ -2,12 +2,21 @@ import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
+import {brotliDecompressSync} from 'node:zlib';
 import worker from '../dist/server/index.js';
 import {sourceOnlyAssets} from '../scripts/asset-delivery.mjs';
-const request=path=>worker.fetch(new Request('https://veldren.test'+path),{});
+const request=path=>worker.fetch(new Request('https://veldren.test'+path,{headers:{'Accept-Encoding':'gzip, br'}}),{});
 async function body(response){
- assert.equal(response.headers.get('Content-Encoding'),null,'Worker must return ordinary bodies; the hosting runtime owns transport compression');
- return Buffer.from(await response.arrayBuffer());
+ const bytes=Buffer.from(await response.arrayBuffer()),encoding=response.headers.get('Content-Encoding');
+ assert([null,'br'].includes(encoding));
+ return encoding==='br'?brotliDecompressSync(bytes):bytes;
+}
+assert.match(readFileSync(new URL('../dist/server/index.js',import.meta.url),'utf8'),/encodeBody:passThrough\?'manual':'automatic'/,'Compressed responses must disable automatic recompression');
+for(const encoding of ['identity','gzip','br;q=0, gzip']){
+ const response=await worker.fetch(new Request('https://veldren.test/game-icons.js',{headers:{'Accept-Encoding':encoding}}),{});
+ assert.equal(response.headers.get('Content-Encoding'),null);
+ assert.equal(response.headers.get('Vary'),'Accept-Encoding');
+ assert.deepEqual(await body(response),readFileSync(new URL('../dist/game-icons.js',import.meta.url)),'Identity fallback streams exact bytes');
 }
 const page=await request('/play');assert.equal(page.status,200);assert.equal(page.headers.get('Cache-Control'),'no-cache');
 const html=(await body(page)).toString();assert.match(html,/^<!doctype html>/i,'Home screen launch must receive HTML, never compressed bytes');
@@ -72,7 +81,7 @@ for(const path of ['assets/realms/atlas-filament-mobile.png','assets/realms/grou
 const creatureUrl='/'+versions['assets/realms/approved-creatures.js'];
 const creatures=await request(creatureUrl);assert.equal(creatures.status,200);
 assert.deepEqual(await body(creatures),readFileSync(new URL('../dist/assets/realms/approved-creatures.js',import.meta.url)));
-const creatureHead=await worker.fetch(new Request('https://veldren.test'+creatureUrl,{method:'HEAD'}),{});
+const creatureHead=await worker.fetch(new Request('https://veldren.test'+creatureUrl,{method:'HEAD',headers:{'Accept-Encoding':'gzip, br'}}),{});
 assert.equal(creatureHead.status,200);assert.equal((await creatureHead.arrayBuffer()).byteLength,0);
 for(const header of ['Content-Type','Cache-Control','ETag','Content-Encoding'])assert.equal(creatureHead.headers.get(header),creatures.headers.get(header));
 const legacyVersion=createHash('sha256').update(readFileSync(new URL('../dist/creatures.js',import.meta.url))).digest('hex').slice(0,16);

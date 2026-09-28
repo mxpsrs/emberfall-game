@@ -24,6 +24,20 @@ export function decodeAsset(value,length){
  if(index!==length)throw Error('Truncated embedded asset');return out;
 }
 
+// Respect an explicit br;q=0 and Cloudflare's original browser header.
+export function acceptsBrotli(request){
+ const header=request.cf?.clientAcceptEncoding??request.headers.get('Accept-Encoding')??'';
+ let wildcard=false;
+ for(const entry of header.toLowerCase().split(',')){
+  const [name,...parameters]=entry.trim().split(';');
+  const parameter=parameters.map(p=>p.trim()).find(p=>p.startsWith('q='));
+  const quality=parameter===undefined?1:Number(parameter.slice(2));
+  if(name==='br')return Number.isFinite(quality)&&quality>0;
+  if(name==='*')wildcard=Number.isFinite(quality)&&quality>0;
+ }
+ return wildcard;
+}
+
 // Source-only artifacts remain in Git. These formats/sheets have no consumer in
 // either current startup; all game/editor models and active textures still ship.
 export const sourceOnlyAssets=new Map([
