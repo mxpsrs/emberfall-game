@@ -17,7 +17,7 @@ struct WorldSpatialRecord {
   WorldBounds bounds;
   Vec3 anchor;
   std::string asset, category, render_path;
-  bool dynamic=false, terrain_relative=false, uncertain_bounds=false, light=false;
+  bool renderable=false, dynamic=false, terrain_relative=false, uncertain_bounds=false, light=false;
   std::vector<WorldCellKey> cells;
 };
 struct WorldPartitionStats {
@@ -55,6 +55,7 @@ class WorldPartition {
 
 // Native browser ABI looks up the existing canonical owners, not JSON copies.
 Scene* world_scene_for_performance(void* world,const char* name);
+std::string world_lights_for_performance(void* world,const char* scene,double night,const std::vector<EntityId>& ids);
 AssetRegistry* asset_registry_for_performance(std::uint32_t handle);
 }
 extern "C" {

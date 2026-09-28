@@ -16,6 +16,10 @@ function realmFilamentCameraCenter(x,y,z,yaw,pitch,zoom,dpr){
  const step=1/(Math.max(1,zoom)*Math.max(1,dpr)),right=Math.round((x*c-z*s)/step)*step,up=Math.round(((x*s+z*c)*st-y*ct)/step)*step;
  return [right*c+up*s*st+depth*s*ct,-up*ct+depth*st,-right*s+up*c*st+depth*c*ct];
 }
+function realmFilamentCameraState(dprNow=realmPixelScale()){
+ const landCamera=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0,pitch=cameraPitch3(),yaw=view3d.yaw,zoom=cameraZoom3(),anchor=typeof cameraAnchor3==='number'?cameraAnchor3:.82,fov=typeof cameraFov3==='number'?cameraFov3:54,distance=typeof cameraDistance3==='function'?cameraDistance3():screen.h/(2*Math.tan(fov*Math.PI/360))/zoom,center=realmFilamentCameraCenter(px+.5,landCamera,py+.5,yaw,pitch,zoom,dprNow),eye=[center[0]+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,center[2]+Math.cos(yaw)*Math.cos(pitch)*distance],near=.25,half=near*Math.tan(fov*Math.PI/360),aspect=screen.w/screen.h;
+ return {eye,center,near,far:320,left:-half*aspect,right:half*aspect,bottom:-2*(1-anchor)*half,top:2*anchor*half,width:screen.w,height:screen.h};
+}
 const realmFilamentWorldStyle={key:'t0:b0:d0',boss:0,dissolve:0,terrain:0};
 const realmFilamentTerrainStyle={key:'t1:b0:d0',boss:0,dissolve:0,terrain:1};
 const realmFilamentStyleCache=new Map();
@@ -231,10 +235,10 @@ function createRealmFilamentGPU(){
    }
    const remove=[],add=[];for(const entity of activeEntities)if(!next.has(entity))remove.push(entity);for(const entity of next)if(!activeEntities.has(entity))add.push(entity);
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
-   const dprNow=dpr,landCamera=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0,pitch=cameraPitch3(),yaw=view3d.yaw,zoom=cameraZoom3(),anchor=typeof cameraAnchor3==='number'?cameraAnchor3:.82,fov=typeof cameraFov3==='number'?cameraFov3:54,distance=typeof cameraDistance3==='function'?cameraDistance3():screen.h/(2*Math.tan(fov*Math.PI/360))/zoom,center=realmFilamentCameraCenter(px+.5,landCamera,py+.5,yaw,pitch,zoom,dprNow),eye=[center[0]+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,center[2]+Math.cos(yaw)*Math.cos(pitch)*distance],near=.25,half=near*Math.tan(fov*Math.PI/360),aspect=screen.w/screen.h;
-   camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,-half*aspect,half*aspect,-2*(1-anchor)*half,2*anchor*half,near,320);
+   const cameraState=realmFilamentCameraState(dpr),{eye,center,near,far,left,right,bottom,top}=cameraState;
+   camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
    authoredDraws?.render(String(currentScene),eye);
-   window.VeldrenEditorTools?.frame(this,{eye,center,up:[0,1,0],near,left:-half*aspect,right:half*aspect,bottom:-2*(1-anchor)*half,top:2*anchor*half,width:screen.w,height:screen.h});
+   window.VeldrenEditorTools?.frame(this,{...cameraState,up:[0,1,0]});
    const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,lighting=typeof realmLightingState==='function'?realmLightingState():{lights:[],cave:0,house:0,night:0},day=1-lighting.night,sky=lair?.fog||[.055+.35*day,.075+.58*day,.14+.69*day];if(surface.style&&!lair){const top=`rgb(${Math.round(13+70*day)},${Math.round(25+145*day)},${Math.round(55+178*day)})`,haze=`rgb(${Math.round(30+150*day)},${Math.round(43+181*day)},${Math.round(67+176*day)})`,background=`radial-gradient(ellipse at 22% 15%,rgba(255,255,255,${(.28*day).toFixed(2)}) 0,rgba(255,255,255,0) 20%),radial-gradient(ellipse at 68% 22%,rgba(244,251,255,${(.22*day).toFixed(2)}) 0,rgba(244,251,255,0) 25%),linear-gradient(${top},${haze} 70%,rgb(166,205,190))`;if(background!==previousSkyBackground){surface.style.background=background;previousSkyBackground=background;}}
    updateLights(lighting);updateMaterials(lighting,lair);renderer.setClearOptions({clearColor:[...sky,lair?1:0],clear:true,discard:true});
    // Select this engine's GL context before beginFrame (which can flush) and

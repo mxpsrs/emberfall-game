@@ -1,4 +1,5 @@
 #include "veldren/world_performance.h"
+#include "veldren/world_visibility.h"
 #include <cstring>
 #include <cmath>
 #include <memory>
@@ -20,6 +21,28 @@ Json command(PerformanceHandle& h,const Json& request){
  h.partition.synchronize(*scene,*assets);const auto action=op->string_or();
  if(action=="sync")return h.partition.diagnostics();
  if(action=="query"){auto ids=h.partition.query({vector(request.find("min")),vector(request.find("max"))});return Json::Object{{"ids",strings(ids)},{"stats",h.partition.diagnostics()}};}
+ if(action=="visible"){
+  const auto* value=request.find("camera");if(!value)throw std::invalid_argument("Visibility camera required");
+  const auto scalar=[&](const char* key){const auto* v=value->find(key);return v?v->number_or(NAN):NAN;};
+  veldren::WorldCamera camera;camera.eye=vector(value->find("eye"));camera.center=vector(value->find("center"));camera.near_plane=scalar("near");camera.far_plane=scalar("far");camera.left=scalar("left");camera.right=scalar("right");camera.bottom=scalar("bottom");camera.top=scalar("top");camera.viewport_height=scalar("height");
+  const auto* profile=request.find("profile");const auto& policies=veldren::world_visibility_profile(profile?profile->string_or():"browser");
+  const auto visibility=veldren::WorldVisibility{}.evaluate(h.partition,camera,policies);Json::Array packets,lights;
+  for(const auto& id:visibility.ids){const auto* record=h.partition.record(id);if(record->light)lights.emplace_back(id);if(record->render_path!="canonical")continue;
+   const auto node=scene->inspect(id);const auto found=node.components.find("MeshRenderer");if(found==node.components.end())continue;const auto& mesh=found->second;
+   const auto visible=mesh.find("visible");if(visible!=mesh.end()&&!visible->second.bool_or(true))continue;
+   Json::Array matrix;for(double n:node.world.v)matrix.emplace_back(n);
+   const auto material=mesh.find("material"),cast=mesh.find("castShadows"),receive=mesh.find("receiveShadows");
+   const double distance=std::hypot(node.world.v[12]-camera.eye.x,node.world.v[13]-camera.eye.y,node.world.v[14]-camera.eye.z);
+   packets.emplace_back(Json::Array{id,record->asset,matrix,material==mesh.end()?Json(""):material->second,cast==mesh.end()?Json(true):cast->second,receive==mesh.end()?Json(true):receive->second,distance});
+  }
+  auto stats=h.partition.diagnostics().object();stats["consideredSpatialRecords"]=double(visibility.considered);stats["visibleSpatialRecords"]=double(visibility.ids.size());stats["consideredRenderables"]=double(visibility.considered_renderables);stats["visibleRenderables"]=double(visibility.visible_renderables);stats["frustumCulled"]=double(visibility.frustum_culled);stats["distanceCulled"]=double(visibility.distance_culled);stats["projectedCulled"]=double(visibility.projected_culled);stats["visibleLights"]=double(visibility.lights);
+  return Json::Object{{"ids",strings(visibility.ids)},{"packets",packets},{"lights",lights},{"stats",stats}};
+ }
+ if(action=="lights"){
+  const auto candidates=h.partition.query({vector(request.find("min")),vector(request.find("max"))});std::vector<veldren::EntityId> ids;
+  for(const auto& id:candidates)if(h.partition.record(id)->light)ids.push_back(id);
+  const auto* night=request.find("night");return veldren::parse_json(veldren::world_lights_for_performance(h.world,h.scene.c_str(),night?night->number_or(1):1,ids));
+ }
  if(action=="record"){
   const auto* id=request.find("id");if(!id)throw std::invalid_argument("Entity ID required");const auto* record=h.partition.record(id->string_or());if(!record)return nullptr;
   Json::Array cells;for(const auto key:record->cells)cells.emplace_back(Json::Array{key.x,key.z});

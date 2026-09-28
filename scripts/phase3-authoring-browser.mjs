@@ -43,7 +43,12 @@ try{
  await inspector.getByLabel('Name',{exact:true}).fill('Phase 3 edited wall');await inspector.getByLabel('Name',{exact:true}).press('Tab');
  assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.sceneEntity('phase3-wall').name),'Phase 3 edited wall');
  const transform=inspector.locator('fieldset').filter({has:page.locator('legend', {hasText:'Local Transform'})});
- await transform.getByLabel('Y',{exact:true}).first().fill('1.25');await transform.getByLabel('Y',{exact:true}).first().press('Tab');
+ await page.evaluate(()=>{window.__phase3InspectorEvents=[];const panel=document.querySelector('#componentInspector');for(const type of ['input','change','focusin','focusout'])panel.addEventListener(type,event=>{if(event.target.matches('input'))__phase3InspectorEvents.push({type,label:event.target.getAttribute('aria-label'),value:event.target.value});},true);});
+ console.log('Inspector before numeric edit',await frame.evaluate(()=>VeldrenEditorBridge.sceneEntity('phase3-wall').transform));
+ await transform.getByLabel('Y',{exact:true}).first().fill('1.25');
+ console.log('Inspector numeric input',await transform.getByLabel('Y',{exact:true}).first().inputValue());
+ await transform.getByLabel('Y',{exact:true}).first().press('Tab');
+ console.log('Inspector after numeric edit',await frame.evaluate(()=>VeldrenEditorBridge.sceneEntity('phase3-wall').transform),await page.evaluate(()=>__phase3InspectorEvents));
  assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.sceneEntity('phase3-wall').transform.position[1]),1.25);
  await page.locator('#undoCommand').click();assert.equal(await frame.evaluate(()=>VeldrenEditorBridge.sceneEntity('phase3-wall').transform.position[1]),0);await page.locator('#redoCommand').click();
  console.log('Inspector UI edits and undo/redo passed');

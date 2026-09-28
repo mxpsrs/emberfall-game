@@ -53,7 +53,12 @@ assert.match(source,/setAntiAliasing\(Filament\.View\$AntiAliasing\.FXAA\)/,'non
 assert.doesNotMatch(source,/setTemporalAntiAliasingOptions/,'temporal history cannot smear or lag the moving world');
 assert.match(source,/center=realmFilamentCameraCenter\(px\+\.5,landCamera,py\+\.5,yaw,pitch,zoom,dprNow\)/,'the live camera uses the backing-pixel-locked center');
 assert.match(source,/anchor=typeof cameraAnchor3==='number'\?cameraAnchor3:\.82/,'standalone Filament startup retains the third-person frame anchor');
-assert.match(source,/\-2\*\(1-anchor\)\*half,2\*anchor\*half/,'the perspective frustum keeps the player low in frame and shows the world ahead');
+Object.assign(context,{px:12,py:34,screen:{w:1440,h:900},view3d:{yaw:-.5},walkSurfaceHeight:()=>7,cameraPitch3:()=>.8,cameraZoom3:()=>34,realmPixelScale:()=>2});
+const cameraState=context.realmFilamentCameraState(),half=.25*Math.tan(54*Math.PI/360);
+assert.equal(cameraState.bottom,-2*(1-.82)*half,'the shared culling/render camera preserves the lower frame anchor');
+assert.equal(cameraState.top,2*.82*half);assert.equal(cameraState.left,-half*1.6);assert.equal(cameraState.right,half*1.6);assert.equal(cameraState.far,320);
+assert.deepEqual(Array.from(cameraState.center),Array.from(context.realmFilamentCameraCenter(12.5,7,34.5,-.5,.8,34,2)));
+assert.match(source,/setProjection\(Filament.Camera\$Projection.PERSPECTIVE,left,right,bottom,top,near,far\)/,'Filament consumes the shared projection');
 assert.match(source,/instance\.setTextureParameter\('atlas',atlas,sampler\)/,'lit terrain shares the stable world material atlas binding');
 assert.match(source,/groundSampler\.setAnisotropy\(quality\.anisotropy\)/,'quality profile controls oblique terrain filtering');
 assert.match(source,/setFloatParameter\('terrainSurface',0\)/,'world objects select the world material branch');

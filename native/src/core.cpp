@@ -661,14 +661,15 @@ class World {
     return support ? height*(1-support_blend)+support_height*support_blend : height;
   }
 
-  std::string WorldLights(const char* scene_name, double night) const {
+  std::string WorldLights(const char* scene_name, double night, const std::vector<veldren::EntityId>* selected=nullptr) const {
     veldren::Json::Array lights;
     if (!scene_name || !std::isfinite(night)) return "[]";
     const auto found = world_scenes_.find(scene_name);
     if (found == world_scenes_.end()) return "[]";
     const auto& scene = found->second;
     night = std::clamp(night, 0.0, 1.0);
-    for (const auto& id : scene.component_entities(veldren::component_type::Light)) {
+    const auto ids=selected?*selected:scene.entities_with(veldren::component_type::Light);
+    for (const auto& id : ids) {
       const auto node = scene.inspect(id);
       if (!node.active_in_hierarchy) continue;
       const veldren::Json fields(node.components.at("Light"));
@@ -1503,3 +1504,7 @@ extern "C" std::uint32_t veldren_editor_response(const void* world,char* out,std
 }
 
 namespace veldren { Scene* world_scene_for_performance(void* world,const char* name){return world?AsWorld(world)->PerformanceScene(name):nullptr;} }
+
+namespace veldren {
+std::string world_lights_for_performance(void* world,const char* scene,double night,const std::vector<EntityId>& ids){return world?AsWorld(world)->WorldLights(scene,night,&ids):"[]";}
+}

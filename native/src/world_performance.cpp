@@ -42,7 +42,7 @@ void WorldPartition::update(Scene& scene,const AssetRegistry& assets,const Entit
  remove(id);if(!scene.contains(id))return;const auto n=scene.inspect(id);if(!n.active_in_hierarchy)return;
  const auto* mesh=component(n,"MeshRenderer"),*light=component(n,"Light"),*road=component(n,"RoadSegment"),*building=component(n,"BuildingFootprint"),*footprint=component(n,"Footprint"),*collider=component(n,"Collider"),*bridge=component(n,"Bridge"),*quarry=component(n,"Quarry");
  if(!mesh&&!light&&!road&&!building&&!footprint&&!collider&&!bridge&&!quarry)return;
- WorldSpatialRecord item;item.id=id;item.asset=text(mesh,"asset");item.render_path=text(mesh,"renderPath");item.dynamic=component(n,"ActorDefinition")||component(n,"ActorController");item.light=light;
+ WorldSpatialRecord item;item.id=id;item.asset=text(mesh,"asset");item.render_path=text(mesh,"renderPath");item.renderable=mesh&&(!field(mesh,"visible")||field(mesh,"visible")->bool_or(true));item.dynamic=component(n,"ActorDefinition")||component(n,"ActorController");item.light=light;
  item.category=building||bridge||quarry?"structure":road?"terrain":item.dynamic?"actor":component(n,"Gatherable")&&text(component(n,"Gatherable"),"type")=="tree"?"tree":component(n,"GeneratedDecoration")?"scenery":light?"light":"prop";
  WorldBounds local{{-1,0,-1},{1,4,1}};bool known=false;
  if(!item.asset.empty()&&assets.has(item.asset)){const auto definition=assets.record(item.asset);if(const auto* b=definition.find("bounds")){local=array_bounds(*b);known=true;}}
@@ -54,7 +54,9 @@ void WorldPartition::update(Scene& scene,const AssetRegistry& assets,const Entit
  else if(!known&&footprint&&field(footprint,"w")&&field(footprint,"h")){const double x=number(footprint,"x"),z=number(footprint,"z");local={{x,-4,z},{x+number(footprint,"w"),24,z+number(footprint,"h")}};known=true;}
  if(!known){local={{-16,-32,-16},{16,64,16}};item.uncertain_bounds=true;}
  if(light){const double r=number(light,"radius",12);local.min={std::min(local.min.x,-r),std::min(local.min.y,-r),std::min(local.min.z,-r)};local.max={std::max(local.max.x,r),std::max(local.max.y,r),std::max(local.max.z,r)};}
- item.bounds=transform_bounds(n.world,local);item.anchor=transform_point(n.world,{});item.terrain_relative=item.render_path!="canonical";
+ item.bounds=transform_bounds(n.world,local);
+ if(light){Vec3 offset;const auto* o=field(light,"offset");if(o&&o->array().size()==3)offset={o->array()[0].number_or(),o->array()[1].number_or(),o->array()[2].number_or()};const auto center=transform_point(n.world,offset);const auto& m=n.world.v;const double radius=number(light,"radius",12)*std::max({std::hypot(m[0],m[1],m[2]),std::hypot(m[4],m[5],m[6]),std::hypot(m[8],m[9],m[10])});item.bounds.min={std::min(item.bounds.min.x,center.x-radius),std::min(item.bounds.min.y,center.y-radius),std::min(item.bounds.min.z,center.z-radius)};item.bounds.max={std::max(item.bounds.max.x,center.x+radius),std::max(item.bounds.max.y,center.y+radius),std::max(item.bounds.max.z,center.z+radius)};}
+ item.anchor=transform_point(n.world,{});item.terrain_relative=item.render_path!="canonical";
  if(item.terrain_relative){item.bounds.min.x-=1;item.bounds.max.x+=1;item.bounds.min.z-=1;item.bounds.max.z+=1;}
  const auto exact=item.bounds;
  if(item.terrain_relative){item.bounds.min.y-=256;item.bounds.max.y+=512;}

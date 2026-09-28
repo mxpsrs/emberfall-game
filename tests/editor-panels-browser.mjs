@@ -9,9 +9,9 @@ try{
  await page.setContent('<div id="list"></div><div id="inspector"></div><span id="count"></span>');
  await page.addScriptTag({content:readFileSync(new URL('../dist/editor/panels.js',import.meta.url),'utf8')});
  await page.evaluate(()=>{
-  const node={id:'wall',name:'Wall',active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{}};window.edits=[];
+  const node={id:'wall',name:'Wall',active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{}};window.edits=[];window.positions=[];
   const selection={ids:['wall'],locked:()=>false,hidden:()=>false};
-  const bridge={canonicalSelection:()=>selection,sceneEntity:()=>structuredClone(node),sceneHierarchy:()=>({visible:new Set(['wall']),nodes:new Map([['wall',structuredClone(node)]]),children:new Map(),roots:['wall']}),assetReferences:()=>[],executeCommand(_label,ops){for(const op of ops){if(op.op==='rename'){node.name=op.name;edits.push(op.name);}}}};
+  const bridge={canonicalSelection:()=>selection,sceneEntity:()=>structuredClone(node),sceneHierarchy:()=>({visible:new Set(['wall']),nodes:new Map([['wall',structuredClone(node)]]),children:new Map(),roots:['wall']}),assetReferences:()=>[],editTransformField(id,key,index,value){node.transform[key][index]=value;positions.push([...node.transform.position]);},executeCommand(_label,ops){for(const op of ops){if(op.op==='rename'){node.name=op.name;edits.push(op.name);}}}};
   window.panels=createVeldrenScenePanels({bridge,list:document.querySelector('#list'),inspector:document.querySelector('#inspector'),count:document.querySelector('#count'),log(message){throw Error(message);}});panels.render();panels.inspect();
  });
  // Removing a focused input dispatches its change handler synchronously. That
@@ -25,6 +25,9 @@ try{
  assert.equal(await page.locator('.canonical-name').textContent(),'Hierarchy rename');
  assert.equal(await page.getByLabel('Name',{exact:true}).inputValue(),'Hierarchy rename');
  assert.deepEqual(await page.evaluate(()=>edits),['Inspector rename','Hierarchy rename']);
+ const position=page.locator('fieldset').filter({has:page.locator('legend',{hasText:'Local Transform'})}).getByLabel('Y',{exact:true}).first();
+ await position.fill('1.25');await page.evaluate(()=>panels.inspect());await position.press('Tab');
+ assert.equal(await position.inputValue(),'1.25');assert.deepEqual(await page.evaluate(()=>positions),[[0,1.25,0]]);
  assert.deepEqual(errors,[]);
  console.log('PASS: focused Inspector and hierarchy refresh commit once, retain current values and avoid reentrant DOM removal errors.');
 }finally{await browser.close();}

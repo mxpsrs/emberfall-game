@@ -1,0 +1,2391 @@
+{
+  "label": "baseline-complete",
+  "sourceBase": "3f0deb4daf83a8aec108f5c896af1d47cb0e2542",
+  "environment": {
+    "browser": "134.0.6998.35",
+    "renderer": "SwiftShader software GPU",
+    "viewport": [
+      1440,
+      900
+    ],
+    "samplesPerView": 3
+  },
+  "editorReadyMs": 171645.02101400003,
+  "playReadyMs": 137976.02255999995,
+  "counts": {
+    "scenes": 259,
+    "entities": 20806,
+    "perScene": [
+      {
+        "name": "civil_briarhaven_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_copperdelve_102",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_crownreach_103",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_deepforge_104",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_ironhollow_101",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_105",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_6",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_6",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_7",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "dungeon",
+        "entities": 26,
+        "renderables": 18
+      },
+      {
+        "name": "fairy_between",
+        "entities": 24,
+        "renderables": 16
+      },
+      {
+        "name": "forge",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "inn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "inn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "lair_colossus",
+        "entities": 88,
+        "renderables": 80
+      },
+      {
+        "name": "lair_varkesh",
+        "entities": 96,
+        "renderables": 88
+      },
+      {
+        "name": "lair_veyr",
+        "entities": 136,
+        "renderables": 127
+      },
+      {
+        "name": "lair_xalith",
+        "entities": 106,
+        "renderables": 98
+      },
+      {
+        "name": "mine",
+        "entities": 27,
+        "renderables": 20
+      },
+      {
+        "name": "ork_warrens",
+        "entities": 53,
+        "renderables": 45
+      },
+      {
+        "name": "overworld",
+        "entities": 15496,
+        "renderables": 8728
+      },
+      {
+        "name": "quest_underiron",
+        "entities": 88,
+        "renderables": 79
+      },
+      {
+        "name": "realm_aelindor_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_aelindor_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_aelindor_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_aelindor_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_aelindor_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_aelindor_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_aelindor_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_aelindor_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_briarhaven_3",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_briarhaven_4",
+        "entities": 11,
+        "renderables": 3
+      },
+      {
+        "name": "realm_copperdelve_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_copperdelve_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_copperdelve_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_copperdelve_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_copperdelve_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_copperdelve_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_copperdelve_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_crownreach_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_crownreach_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_crownreach_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_crownreach_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_crownreach_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_crownreach_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_crownreach_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_deepforge_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_deepforge_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_deepforge_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_deepforge_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_deepforge_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_deepforge_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_fernwatch_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_fernwatch_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_fernwatch_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_fernwatch_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_fernwatch_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_fernwatch_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_fernwatch_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_greyhaven_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_greyhaven_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_greyhaven_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_greyhaven_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_greyhaven_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_ironhollow_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_ironhollow_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_ironhollow_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_ironhollow_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_ironhollow_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_ironhollow_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_ironhollow_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_ironhollow_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_moonwillow_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_moonwillow_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_moonwillow_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_moonwillow_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_moonwillow_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_silverbrook_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_silverbrook_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_silverbrook_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_silverbrook_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_silverbrook_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_silverbrook_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_silverbrook_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_2",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_3",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_4",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_stonehearth_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_stonehearth_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_stonehearth_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_stonehearth_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_stonehearth_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_stonehearth_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_2",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_3",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_4",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "shop",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "stoneInn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "stoneInn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "stoneShop",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "story_mine",
+        "entities": 61,
+        "renderables": 52
+      },
+      {
+        "name": "story_shrine",
+        "entities": 106,
+        "renderables": 97
+      },
+      {
+        "name": "tutorial",
+        "entities": 656,
+        "renderables": 223
+      },
+      {
+        "name": "willowInn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "willowInn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "willowShop",
+        "entities": 14,
+        "renderables": 6
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "populated-editor-hierarchy",
+      "scene": "tutorial",
+      "camera": {
+        "x": 55,
+        "y": 50,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 118,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 16.299999997019768,
+          "visibilityQueryMs": 2.7000000029802322,
+          "consideredObjects": 417,
+          "consideredBuildings": 6,
+          "drawCalls": 601,
+          "instancedCalls": 601,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 2.7000000029802322,
+              "renderMs": 7.400000002235174
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 21998304,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 20.5,
+          "visibilityQueryMs": 5.100000001490116,
+          "consideredObjects": 417,
+          "consideredBuildings": 6,
+          "drawCalls": 601,
+          "instancedCalls": 601,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 4.600000001490116,
+              "renderMs": 6.899999998509884
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 21998304,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 24.600000001490116,
+          "visibilityQueryMs": 8.600000001490116,
+          "consideredObjects": 417,
+          "consideredBuildings": 6,
+          "drawCalls": 601,
+          "instancedCalls": 601,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 3.599999997764826,
+              "renderMs": 7.799999997019768
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 21998304,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        }
+      ]
+    },
+    {
+      "name": "dense-settlement",
+      "scene": "overworld",
+      "camera": {
+        "x": 18.5,
+        "y": 15.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99989965063588,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 660,
+          "visibilityQueryMs": 26.299999997019768,
+          "consideredObjects": 494,
+          "consideredBuildings": 229,
+          "drawCalls": 2171,
+          "instancedCalls": 2171,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 83.69999999925494,
+              "renderMs": 94.19999999925494
+            },
+            "legacy": {
+              "meshes": 517,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 125269356,
+              "stagingBytes": 134570016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 679.1000000014901,
+          "visibilityQueryMs": 12.200000002980232,
+          "consideredObjects": 443,
+          "consideredBuildings": 229,
+          "drawCalls": 2177,
+          "instancedCalls": 2177,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 77.10000000149012,
+              "renderMs": 98.40000000223517
+            },
+            "legacy": {
+              "meshes": 517,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 125269356,
+              "stagingBytes": 134570016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 699.1999999992549,
+          "visibilityQueryMs": 17.600000001490116,
+          "consideredObjects": 494,
+          "consideredBuildings": 229,
+          "drawCalls": 2177,
+          "instancedCalls": 2177,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 79,
+              "renderMs": 89.19999999925494
+            },
+            "legacy": {
+              "meshes": 517,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 125269356,
+              "stagingBytes": 134570016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        }
+      ]
+    },
+    {
+      "name": "wilderness",
+      "scene": "overworld",
+      "camera": {
+        "x": 165.5,
+        "y": 142.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99999999989285,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 391.29999999701977,
+          "visibilityQueryMs": 12.100000005215406,
+          "consideredObjects": 752,
+          "consideredBuildings": 229,
+          "drawCalls": 2057,
+          "instancedCalls": 2057,
+          "hardwareInstances": 3586,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1397,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 52.100000001490116,
+              "renderMs": 56.100000001490116
+            },
+            "legacy": {
+              "meshes": 647,
+              "materials": 2,
+              "renderables": 954,
+              "gpuBytes": 207967992,
+              "stagingBytes": 223588944,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 425.8999999985099,
+          "visibilityQueryMs": 15.899999998509884,
+          "consideredObjects": 810,
+          "consideredBuildings": 229,
+          "drawCalls": 2057,
+          "instancedCalls": 2057,
+          "hardwareInstances": 3586,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1397,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 51.399999998509884,
+              "renderMs": 56.099999997764826
+            },
+            "legacy": {
+              "meshes": 647,
+              "materials": 2,
+              "renderables": 954,
+              "gpuBytes": 207967992,
+              "stagingBytes": 223588944,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 670.3000000007451,
+          "visibilityQueryMs": 22.100000001490116,
+          "consideredObjects": 752,
+          "consideredBuildings": 229,
+          "drawCalls": 2057,
+          "instancedCalls": 2057,
+          "hardwareInstances": 3586,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1397,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 96.19999999925494,
+              "renderMs": 103.29999999701977
+            },
+            "legacy": {
+              "meshes": 647,
+              "materials": 2,
+              "renderables": 954,
+              "gpuBytes": 207967992,
+              "stagingBytes": 223588944,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        }
+      ]
+    },
+    {
+      "name": "building-heavy",
+      "scene": "overworld",
+      "camera": {
+        "x": 264.5,
+        "y": 49.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99999999999999,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 618.8999999985099,
+          "visibilityQueryMs": 14,
+          "consideredObjects": 386,
+          "consideredBuildings": 229,
+          "drawCalls": 1703,
+          "instancedCalls": 1703,
+          "hardwareInstances": 2661,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1214,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 56.80000000074506,
+              "renderMs": 65
+            },
+            "legacy": {
+              "meshes": 720,
+              "materials": 2,
+              "renderables": 812,
+              "gpuBytes": 291437368,
+              "stagingBytes": 313917072,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1058,
+              "submissions": 1058,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 630.6999999992549,
+          "visibilityQueryMs": 15.199999999254942,
+          "consideredObjects": 386,
+          "consideredBuildings": 229,
+          "drawCalls": 1703,
+          "instancedCalls": 1703,
+          "hardwareInstances": 2661,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1214,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 80.29999999701977,
+              "renderMs": 87.69999999925494
+            },
+            "legacy": {
+              "meshes": 720,
+              "materials": 2,
+              "renderables": 812,
+              "gpuBytes": 291437368,
+              "stagingBytes": 313917072,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1058,
+              "submissions": 1058,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 934.3000000007451,
+          "visibilityQueryMs": 38,
+          "consideredObjects": 386,
+          "consideredBuildings": 229,
+          "drawCalls": 1703,
+          "instancedCalls": 1703,
+          "hardwareInstances": 2661,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1214,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 101.79999999701977,
+              "renderMs": 115.89999999850988
+            },
+            "legacy": {
+              "meshes": 720,
+              "materials": 2,
+              "renderables": 812,
+              "gpuBytes": 291437368,
+              "stagingBytes": 313917072,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1058,
+              "submissions": 1058,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        }
+      ]
+    },
+    {
+      "name": "long-distance-overview",
+      "scene": "overworld",
+      "camera": {
+        "x": 264.5,
+        "y": 49.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 25.109144834480066,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 15774.800000000745,
+          "visibilityQueryMs": 100.19999999925494,
+          "consideredObjects": 406,
+          "consideredBuildings": 229,
+          "drawCalls": 2264,
+          "instancedCalls": 2264,
+          "hardwareInstances": 3295,
+          "transformSubmissions": 694,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1449,
+              "dynamicVertices": 0,
+              "transformSubmissions": 694,
+              "synchronizationMs": 243.29999999701977,
+              "renderMs": 256.79999999701977
+            },
+            "legacy": {
+              "meshes": 879,
+              "materials": 2,
+              "renderables": 1046,
+              "gpuBytes": 514275978,
+              "stagingBytes": 556874352,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1060,
+              "submissions": 1060,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 14091.300000000745,
+          "visibilityQueryMs": 74.09999999776483,
+          "consideredObjects": 409,
+          "consideredBuildings": 229,
+          "drawCalls": 2238,
+          "instancedCalls": 2238,
+          "hardwareInstances": 3345,
+          "transformSubmissions": 259,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1452,
+              "dynamicVertices": 0,
+              "transformSubmissions": 213,
+              "synchronizationMs": 233.69999999925494,
+              "renderMs": 254.69999999925494
+            },
+            "legacy": {
+              "meshes": 890,
+              "materials": 2,
+              "renderables": 1048,
+              "gpuBytes": 516245266,
+              "stagingBytes": 558994992,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1062,
+              "submissions": 1062,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 640.5999999977648,
+          "visibilityQueryMs": 13.300000000745058,
+          "consideredObjects": 387,
+          "consideredBuildings": 229,
+          "drawCalls": 2261,
+          "instancedCalls": 2261,
+          "hardwareInstances": 3385,
+          "transformSubmissions": 73,
+          "renderer": {
+            "firstRenderMs": 178107,
+            "frame": {
+              "submittedPackets": 1457,
+              "dynamicVertices": 0,
+              "transformSubmissions": 5,
+              "synchronizationMs": 62.099999997764826,
+              "renderMs": 73.39999999850988
+            },
+            "legacy": {
+              "meshes": 892,
+              "materials": 2,
+              "renderables": 1052,
+              "gpuBytes": 516382810,
+              "stagingBytes": 559145040,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 167824
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1064,
+              "submissions": 1064,
+              "instances": 410,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 747000000
+        }
+      ]
+    },
+    {
+      "name": "ordinary-gameplay",
+      "scene": "tutorial",
+      "camera": {
+        "x": 42,
+        "y": 51,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 118,
+        "min": 58,
+        "max": 132
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 96.69999999925494,
+          "visibilityQueryMs": 7.699999999254942,
+          "consideredObjects": 430,
+          "consideredBuildings": 6,
+          "drawCalls": 843,
+          "instancedCalls": 843,
+          "hardwareInstances": 933,
+          "transformSubmissions": 13,
+          "renderer": {
+            "firstRenderMs": 136216.30000000075,
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 13,
+              "synchronizationMs": 28.899999998509884,
+              "renderMs": 33
+            },
+            "legacy": {
+              "meshes": 295,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 29161540,
+              "stagingBytes": 30724944,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 81.59999999776483,
+          "visibilityQueryMs": 5.899999998509884,
+          "consideredObjects": 430,
+          "consideredBuildings": 6,
+          "drawCalls": 851,
+          "instancedCalls": 851,
+          "hardwareInstances": 933,
+          "transformSubmissions": 15,
+          "renderer": {
+            "firstRenderMs": 136216.30000000075,
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 15,
+              "synchronizationMs": 27.900000002235174,
+              "renderMs": 32.70000000298023
+            },
+            "legacy": {
+              "meshes": 300,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 31735652,
+              "stagingBytes": 33195936,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 52.600000001490116,
+          "visibilityQueryMs": 8.00000000372529,
+          "consideredObjects": 583,
+          "consideredBuildings": 6,
+          "drawCalls": 852,
+          "instancedCalls": 852,
+          "hardwareInstances": 933,
+          "transformSubmissions": 17,
+          "renderer": {
+            "firstRenderMs": 136216.30000000075,
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 17,
+              "synchronizationMs": 10.800000000745058,
+              "renderMs": 14.800000000745058
+            },
+            "legacy": {
+              "meshes": 309,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 35792068,
+              "stagingBytes": 37108752,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "CPU frame time includes software-renderer submission; not hardware FPS.",
+    "GPU bytes are known allocation estimates, not driver VRAM.",
+    "Decoded canonical CPU asset bytes are unavailable; firstRenderMs is relative to viewport navigation.",
+    "Visibility timing covers the existing spatial object query; preparation and drawing are interleaved.",
+    "Measurements were captured while native compilation also ran; CPU times are descriptive and not isolated benchmark comparisons.",
+    "Initial entity counts precede explicit scenery preparation during camera travel; screenshot hierarchy counts can grow as prepared scenery materializes outside rendering.",
+    "Overview samples include camera interpolation; exact recorded camera state is retained."
+  ],
+  "checkpoint": "29bc1352dc02800de27eb16d3f43b5ba169238b1"
+}

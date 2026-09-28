@@ -7,6 +7,9 @@ for(const path of ['asset-runtime.js','native-runtime.js','world-performance.js'
 const native=await context.realmNativeReady,n=native.scenes;context.realmNative=native;await context.VeldrenAssets.ready;
 const entity=(id,x)=>({id,name:id,parent:null,active:true,transform:{position:[x,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'procedural:test',renderPath:'canonical'},Collider:{bounds:[[-1,-1,-1],[1,1,1]]}},metadata:{}});
 n.upsert('test',entity('near',0));n.upsert('test',entity('far',2000));
+const camera={eye:[0,0,10],center:[0,0,0],near:1,far:100,left:-1,right:1,bottom:-1,top:1,height:900};
+const visible=n.performance('test',{op:'visible',camera});assert.deepEqual(Array.from(visible.ids),['near']);assert.equal(visible.packets.length,1);assert.equal(visible.packets[0][0],'near');
+assert.equal(visible.packets[0][2][12],0);assert.equal(visible.stats.visibleRenderables,1);
 const original=n.serialize(),q=()=>n.performance('test',{op:'query',min:[-4,-4,-4],max:[4,4,4]});
 assert.deepEqual(Array.from(q().ids),['near']);assert.equal(q().stats.updated,0);
 n.command('test',{operations:[{op:'transform',id:'near',transform:{position:[100,0,0]}}]});assert.equal(q().ids.length,0);n.command('test',{action:'undo'});assert.deepEqual(Array.from(q().ids),['near']);assert.deepEqual(n.serialize(),original);

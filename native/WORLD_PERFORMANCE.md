@@ -49,11 +49,17 @@ Native transform median was 0.0304 ms; post-transform picking median was
 The static Filament fixture retains 256 first-frame transform updates, zero
 stationary updates, and one update for one moved object.
 
-The six-view graphical baseline capture is still in progress. Initial samples
-that included skipped Filament presentations are not accepted measurements. The
-harness now waits for model loads and samples presented frames only. The native
-baseline and instrumentation tests above have passed; no full browser-baseline
-or Phase 4 acceptance is claimed at this checkpoint.
+The completed six-view graphical baseline is recorded in
+`docs/qa/phase4-world-performance/baseline-browser.json`. The disposable local
+Worker authenticated `/play`; all six views rendered with zero browser page
+errors. Dense settlement submitted 1,537 application packets and 2,177 WebGL calls;
+wilderness submitted 1,397 packets / 2,057 calls; building-heavy submitted
+1,214 packets / 1,703 calls. Calls include renderer passes and existing automatic
+instancing. Compatibility geometry retained approximately 125 MB, 208 MB and
+291 MB respectively, rising to 516 MB after the overview. This identifies a real
+resource-lifetime target; it is not yet an improvement claim. Native compilation
+ran concurrently, so these CPU times are descriptive rather than isolated FPS
+benchmarks. Exact camera states and the three frame samples are retained.
 
 ## Native partition checkpoint
 
@@ -98,3 +104,31 @@ occlusion implementation is claimed.
 
 Nothing has been deployed or merged into main. Production data is untouched.
 Spirits remain retired. Phase 5 and Phase 6 are outside this work.
+
+## Visibility implementation (acceptance in progress)
+
+The native partition now supplies camera-frustum candidates and conservative
+six-plane world-AABB tests before geometry preparation. Filament and native
+visibility consume one shared camera projection, including the asymmetric frame
+anchor and pixel-locked center. Category tables select browser, mobile-browser or
+native-desktop distance and projected-size policies. Large structures/terrain
+retain full camera range; bounds distance, rather than pivot distance, governs
+large silhouettes. Unknown procedural bounds are not projected-size culled.
+Conservative terrain-relative bounds prioritize correctness until exact prepared
+geometry bounds are available. No occlusion rejection is enabled.
+
+Native visibility returns compact canonical draw packets (stable entity ID,
+asset, matrix, material and shadow state) and bounded counters. The authored
+renderer consumes these instead of traversing every canonical renderable in
+JavaScript each frame. Lights use the same native partition for range queries,
+then the existing native light-property conversion. Authored properties remain
+unchanged. Browser graphical checks for this checkpoint are still running.
+
+Culling checkpoint validation: native visibility and partition tests pass, as do
+the actual-WASM bridge, canonical picking regression, static-transform renderer
+test, shared-camera renderer test, and packaged-asset checks. The populated
+editor rendered and accepted the hierarchy/name interaction, but the full
+Inspector workflow observed a numeric Y edit remaining at zero. This is an
+open acceptance blocker, not a passing graphical editor result. The focused
+DOM test (including numeric edit during refresh) passes; the complete workflow
+is being traced before changing accepted Inspector behavior.
