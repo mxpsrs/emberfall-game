@@ -35,8 +35,8 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();sceneKey=key;}
   for(const pool of pools.values())pool.used=0;
  }
- function submit(id,matrix,distance=0,options=null){
-  if(assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
+ function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false){
+  if(!lodSelected&&assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){

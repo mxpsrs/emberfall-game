@@ -57,9 +57,9 @@ wasm: ../dist/native/veldren-core.wasm
 wasm-test: wasm
 	node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
 
-../dist/native/veldren-core.wasm: src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp include/veldren/world_visibility.h include/veldren/world_performance.h src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
+../dist/native/veldren-core.wasm: src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
 	mkdir -p ../dist/native
-	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
+	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
 
 clean:
 	rm -rf build ../dist/native/veldren-core.wasm
@@ -115,13 +115,20 @@ build/editor-test: src/scene.cpp src/editor.cpp src/editor_prefabs.cpp tests/edi
 world-performance-test: build/world-performance-test
 	./build/world-performance-test ../dist/assets/asset-registry.json
 
-build/world-performance-test: src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/editor.cpp src/editor_prefabs.cpp tests/world_performance_test.cpp include/veldren/world_visibility.h include/veldren/world_performance.h include/veldren/scene.h include/veldren/assets.h
+build/world-performance-test: src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/editor.cpp src/editor_prefabs.cpp tests/world_performance_test.cpp include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h include/veldren/scene.h include/veldren/assets.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) $(filter %.cpp,$^) -o $@
 
 .PHONY: world-visibility-test
 world-visibility-test: build/world-visibility-test
 	./build/world-visibility-test
-build/world-visibility-test: src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_visibility_test.cpp include/veldren/world_visibility.h include/veldren/world_performance.h
+build/world-visibility-test: src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_visibility_test.cpp include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h
+	mkdir -p build
+	$(CXX) $(CXXFLAGS) $(filter %.cpp,$^) -o $@
+
+.PHONY: world-lod-test
+world-lod-test: build/world-lod-test
+	./build/world-lod-test
+build/world-lod-test: src/world_lod.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_lod_test.cpp include/veldren/world_lod.h include/veldren/assets.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) $(filter %.cpp,$^) -o $@

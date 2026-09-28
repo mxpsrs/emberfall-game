@@ -43,9 +43,14 @@ void WorldPartition::update(Scene& scene,const AssetRegistry& assets,const Entit
  const auto* mesh=component(n,"MeshRenderer"),*light=component(n,"Light"),*road=component(n,"RoadSegment"),*building=component(n,"BuildingFootprint"),*footprint=component(n,"Footprint"),*collider=component(n,"Collider"),*bridge=component(n,"Bridge"),*quarry=component(n,"Quarry");
  if(!mesh&&!light&&!road&&!building&&!footprint&&!collider&&!bridge&&!quarry)return;
  WorldSpatialRecord item;item.id=id;item.asset=text(mesh,"asset");item.render_path=text(mesh,"renderPath");item.renderable=mesh&&(!field(mesh,"visible")||field(mesh,"visible")->bool_or(true));item.dynamic=component(n,"ActorDefinition")||component(n,"ActorController");item.light=light;
- item.category=building||bridge||quarry?"structure":road?"terrain":item.dynamic?"actor":component(n,"Gatherable")&&text(component(n,"Gatherable"),"type")=="tree"?"tree":component(n,"GeneratedDecoration")?"scenery":light?"light":"prop";
+ item.category=building||bridge||quarry?"structure":road?"terrain":item.dynamic?"actor":component(n,"Gatherable")&&(text(component(n,"Gatherable"),"kind")=="tree"||text(component(n,"Gatherable"),"type")=="tree")?"tree":component(n,"GeneratedDecoration")?"scenery":light?"light":"prop";
  WorldBounds local{{-1,0,-1},{1,4,1}};bool known=false;
- if(!item.asset.empty()&&assets.has(item.asset)){const auto definition=assets.record(item.asset);if(const auto* b=definition.find("bounds")){local=array_bounds(*b);known=true;}}
+ if(!item.asset.empty()&&assets.has(item.asset)){
+  const auto definition=assets.record(item.asset);if(const auto* b=definition.find("bounds")){local=array_bounds(*b);known=true;}
+  // Authored levels may have slightly different extents. Their conservative
+  // union avoids disappearing silhouettes during a presentation-only swap.
+  if(const auto* lods=definition.find("lods"))for(const auto& lod:lods->array()){const auto id=lod.find("asset")->string_or();if(id==item.asset)continue;const auto level=assets.record(id);if(const auto* b=level.find("bounds")){const auto extent=array_bounds(*b);if(!known){local=extent;known=true;}else{local.min={std::min(local.min.x,extent.min.x),std::min(local.min.y,extent.min.y),std::min(local.min.z,extent.min.z)};local.max={std::max(local.max.x,extent.max.x),std::max(local.max.y,extent.max.y),std::max(local.max.z,extent.max.z)};}}}
+ }
  if(building){local={{-2,-2,-2},{number(building,"w",1)+2,std::max(24.0,number(component(n,"BuildingAppearance"),"visualHeight",24))+4,number(building,"h",1)+2}};known=true;}
  else if(bridge){const double width=number(bridge,"width",8),span=number(bridge,"span",32);local={{-width,-8,-span},{width,24,span}};known=true;}
  else if(quarry){const double rx=number(quarry,"rx",32)+4,rz=number(quarry,"ry",32)+4;local={{-rx,-64,-rz},{rx,64,rz}};known=true;}

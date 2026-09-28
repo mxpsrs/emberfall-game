@@ -351,7 +351,7 @@
    if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;
    if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(node.components.MeshGeometry?.faces){for(const face of node.components.MeshGeometry.faces)faces.push({...face,points:face.points.map(p=>A.point(m.local,p))});continue;}
-   const asset=node.components.MeshGeometry?.mesh||root.VeldrenBuildings.model(m.model),mesh=node.components.MeshVariant?{...asset,...node.components.MeshVariant}:asset;if(mesh)instances.push({mesh,matrix:m.local});
+   const asset=node.components.MeshGeometry?.mesh||root.VeldrenBuildings.model(m.model),mesh=node.components.MeshVariant?{...asset,...node.components.MeshVariant}:asset;if(mesh)instances.push({mesh,matrix:m.local,entityId:moduleId});
   }
   return {instances,faces,height:b.visualHeight||4,kind:'assembly',model:matrices.row(entity(scene,id).worldMatrix)};
  }

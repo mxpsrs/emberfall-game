@@ -8,7 +8,7 @@ function createVeldrenSceneRenderer(native,assets,draws){
   if(name!==scene){scene=name;dirty=true;}
   const prepared=globalThis.VeldrenWorldPerformance?.frame(name);
   if(dirty&&!prepared?.packets){ids=new Set(native.componentIds(name,'MeshRenderer').filter(id=>native.entity(name,id)?.components.MeshRenderer.renderPath==='canonical'));dirty=false;}
-  draws.begin(name);try{if(prepared?.packets){for(const [id,asset,matrix,material,castShadows,receiveShadows,distance] of prepared.packets){if(globalThis.VeldrenEditorSelection?.hidden(id))continue;draws.submit(asset,matrix,distance,{material,castShadows,receiveShadows});}}else for(const id of ids){const node=native.entity(name,id),mesh=node?.components.MeshRenderer;if(!node?.activeInHierarchy||mesh.visible===false||globalThis.VeldrenEditorSelection?.hidden(id))continue;
+  draws.begin(name);try{if(prepared?.packets){for(const [id,asset,matrix,material,castShadows,receiveShadows,distance] of prepared.packets){if(globalThis.VeldrenEditorSelection?.hidden(id))continue;draws.submit(asset,matrix,distance,{material,castShadows,receiveShadows},id,true);}}else for(const id of ids){const node=native.entity(name,id),mesh=node?.components.MeshRenderer;if(!node?.activeInHierarchy||mesh.visible===false||globalThis.VeldrenEditorSelection?.hidden(id))continue;
    const matrix=node.worldMatrix,distance=Math.hypot(matrix[12]-camera[0],matrix[13]-camera[1],matrix[14]-camera[2]);draws.submit(mesh.asset,matrix,distance,{material:mesh.material||'',castShadows:mesh.castShadows!==false,receiveShadows:mesh.receiveShadows!==false});
   }for(const preview of globalThis.VeldrenEditorPlacement?.()||[])draws.submit(preview.asset,preview.matrix,0,preview.options);
   }finally{draws.end();}

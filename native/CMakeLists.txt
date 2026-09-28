@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/editor.cpp src/editor_prefabs.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
+add_library(veldren_core STATIC src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/editor.cpp src/editor_prefabs.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
 target_include_directories(veldren_core PUBLIC include)
 target_include_directories(veldren_core SYSTEM PRIVATE third_party)
 
@@ -84,3 +84,6 @@ add_test(NAME world-performance COMMAND veldren-world-performance-test ${CMAKE_C
 add_executable(veldren-world-visibility-test tests/world_visibility_test.cpp)
 target_link_libraries(veldren-world-visibility-test PRIVATE veldren_core)
 add_test(NAME world-visibility COMMAND veldren-world-visibility-test)
+add_executable(veldren-world-lod-test tests/world_lod_test.cpp)
+target_link_libraries(veldren-world-lod-test PRIVATE veldren_core)
+add_test(NAME world-lod COMMAND veldren-world-lod-test)

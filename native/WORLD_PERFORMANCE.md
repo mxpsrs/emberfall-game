@@ -132,3 +132,36 @@ Inspector workflow observed a numeric Y edit remaining at zero. This is an
 open acceptance blocker, not a passing graphical editor result. The focused
 DOM test (including numeric edit during refresh) passes; the complete workflow
 is being traced before changing accepted Inspector behavior.
+
+## LOD integration checkpoint
+
+`AssetRegistry::select_lod` is the single implementation of the existing Phase 2
+LOD threshold decision. Optional current level and a 12% hysteresis band stabilize
+runtime transitions; the original stateless registry command stays compatible.
+`WorldLodState` holds current/target decisions by stable render identity, resets
+on registry revision changes and retires old entries. None of this is serialized.
+The partition unions authored LOD bounds. Canonical draw packets resolve their
+asset natively; compatibility model instances submit a compact native LOD batch
+before existing Phase 2 GPU acquisition. Both paths retain material/shadow options
+and use the existing generation-safe shared model/material/texture leases.
+
+The actual registry has **325 model definitions and zero authored multi-level
+LOD sets**. Production world draws therefore remain valid LOD0, with explicit
+missing-LOD diagnostics. No runtime decimation or invented lower-quality art is
+introduced. Stability tests declare fixture levels referencing real model IDs;
+they verify selection/lifecycle behavior, not the visual quality of nonexistent
+production LOD1/LOD2 art. Authored future levels use the same registry interface.
+
+Passed: `make -C native world-lod-test asset-test`, the rebuilt WASM target,
+`node tests/world-performance.mjs /path/to/exported-world.json`,
+`node tests/asset-meshes.mjs`, `node tests/renderer-filament.cjs`, and
+`node tests/filament-static-transforms.cjs`. Native tests exercise 300 threshold
+oscillations, exact return to LOD0, missing levels and reimport reset. Actual
+Filament/NOOP resource tests cover both editor/runtime, 100 shared copies,
+cancellation, failures, invalidation, 20 unload cycles and zero residual resources.
+These resource tests are not substituted for browser graphical acceptance.
+
+The traced populated-editor rerun passed Inspector numeric edits, undo/redo,
+hierarchy, prefabs and modular building history without an Inspector source
+change. Save/fresh-reload completion is still being verified; the earlier
+numeric-input failure remains recorded until the complete rerun finishes.

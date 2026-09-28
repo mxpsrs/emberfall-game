@@ -23,6 +23,7 @@ class AssetRegistry {
   std::vector<std::string> invalidate(const std::string& id);
   Json diagnostics() const;
   Json command(const Json& request);
+  Json select_lod(const std::string& id,double distance,int current=-1,double hysteresis=0) const;
  private:
   struct Entry {
     Json definition;

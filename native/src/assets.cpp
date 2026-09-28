@@ -155,17 +155,27 @@ Json AssetRegistry::diagnostics() const {
   Json::Object states;std::uint64_t leases=0;for(const auto& [id,e]:entries_){(void)id;states[e.state]=states[e.state].number_or()+1;leases+=e.users;}
   return Json::Object{{"records",double(entries_.size())},{"roots",double(roots_.size())},{"dependencyLeases",double(leases)},{"revision",double(revision_)},{"states",states}};
 }
+Json AssetRegistry::select_lod(const std::string& id,double distance,int current,double hysteresis)const{
+ if(!std::isfinite(distance)||distance<0||!std::isfinite(hysteresis)||hysteresis<0||hysteresis>.45||current < -1||current>2)throw std::invalid_argument("Invalid LOD decision");
+ const auto* lods=require(id).definition.find("lods");Json target=Json::Object{{"level",0},{"asset",id},{"threshold",0}},previous=target;bool found=current==0;
+ if(lods)for(const auto& lod:lods->array()){if(lod.find("threshold")->number_or()<=distance)target=lod;if(lod.find("level")->number_or()==current){previous=lod;found=true;}}
+ Json selected=target;const int desired=int(target.find("level")->number_or());
+ if(found&&current>=0&&hysteresis>0){
+  if(desired>current&&distance<target.find("threshold")->number_or()*(1+hysteresis))selected=previous;
+  else if(desired<current&&distance>=previous.find("threshold")->number_or()*(1-hysteresis))selected=previous;
+ }
+ if(current>=0||hysteresis>0){auto result=selected.object();result["targetLevel"]=desired;result["missingLods"]=!lods||lods->array().size()<2;return result;}
+ return selected;
+}
 Json AssetRegistry::command(const Json& r) {
   const auto op=text(r,"op"),id=text(r,"id");
   if(op=="load"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");load(*manifest);return diagnostics();}
   if(op=="validate"){const auto* manifest=r.find("manifest");if(!manifest)throw std::invalid_argument("Manifest required");AssetRegistry candidate;candidate.load(*manifest);return candidate.diagnostics();}
   if(op=="lod"){
-    const auto* distance=r.find("distance");const auto d=distance?distance->number_or(-1):-1;
-    if(!std::isfinite(d)||d<0)throw std::invalid_argument("Invalid LOD distance");
-    const auto& definition=require(id).definition;const auto* lods=definition.find("lods");
-    Json selected=Json::Object{{"level",0},{"asset",id},{"threshold",0}};
-    if(lods)for(const auto& lod:lods->array())if(lod.find("threshold")->number_or()<=d)selected=lod;
-    return selected;
+    const auto* distance=r.find("distance"),*current=r.find("current"),*hysteresis=r.find("hysteresis");
+    const double level=current?current->number_or(-2):-1;
+    if(level!=std::floor(level)||level < -1||level>2)throw std::invalid_argument("Invalid current LOD");
+    return select_lod(id,distance?distance->number_or(-1):-1,int(level),hysteresis?hysteresis->number_or(-1):0);
   }
   if(op=="record")return record(id);
   if(op=="material-plan")return material_plan(id,text(r,"profile"));

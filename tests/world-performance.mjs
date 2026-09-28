@@ -5,7 +5,7 @@ const context={console,TextEncoder,TextDecoder,DataView,WebAssembly,AbortControl
 context.window=context;vm.createContext(context);
 for(const path of ['asset-runtime.js','native-runtime.js','world-performance.js'])vm.runInContext(fs.readFileSync(new URL('../dist/'+path,import.meta.url),'utf8'),context);
 const native=await context.realmNativeReady,n=native.scenes;context.realmNative=native;await context.VeldrenAssets.ready;
-const entity=(id,x)=>({id,name:id,parent:null,active:true,transform:{position:[x,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'procedural:test',renderPath:'canonical'},Collider:{bounds:[[-1,-1,-1],[1,1,1]]}},metadata:{}});
+const entity=(id,x)=>({id,name:id,parent:null,active:true,transform:{position:[x,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'rebuilt:Wall_Plaster_Straight',renderPath:'canonical'},Collider:{bounds:[[-1,-1,-1],[1,1,1]]}},metadata:{}});
 n.upsert('test',entity('near',0));n.upsert('test',entity('far',2000));
 const camera={eye:[0,0,10],center:[0,0,0],near:1,far:100,left:-1,right:1,bottom:-1,top:1,height:900};
 const visible=n.performance('test',{op:'visible',camera});assert.deepEqual(Array.from(visible.ids),['near']);assert.equal(visible.packets.length,1);assert.equal(visible.packets[0][0],'near');
@@ -25,4 +25,14 @@ if(process.argv[2]){
  assert.deepEqual(n.serialize(),before);assert.equal(n.performance('overworld',{op:'sync'}).updated,0);
  console.log(JSON.stringify({scope:'actual WorldDocument, C++/WASM partition and renderer ID bridge',entities:scene.entities.length,records:stats.records,indexMs,localCandidates:query.stats.considered,bridgeCandidates:view.objects.length,canonicalUnchanged:true}));
 }
+// Test-only authored levels reference real assets; no production art is changed.
+const manifest=JSON.parse(fs.readFileSync('dist/assets/asset-registry.json','utf8')),model='rebuilt:Wall_Plaster_Straight';
+const variants=manifest.records.filter(r=>r.type==='model'&&r.id!==model&&r.importSettings?.importer==='veldren-gltf-1').slice(0,2).map(r=>r.id);assert.equal(variants.length,2);
+manifest.records.find(r=>r.id===model).lods=[{level:0,asset:model,threshold:0},{level:1,asset:variants[0],threshold:100},{level:2,asset:variants[1],threshold:200}];
+context.VeldrenAssets.reload(manifest);n.upsert('lod',entity('lod-entity',0));const saved=n.serialize();
+const choose=distance=>n.performance('lod',{op:'lod-batch',entries:[['lod-entity',model,distance]]});
+assert.equal(choose(0).selections[0][1],0);for(let i=0;i<30;i++)assert.equal(choose(i%2?101:99).selections[0][1],0);
+assert.equal(choose(113).selections[0][0],variants[0]);for(let i=0;i<30;i++)assert.equal(choose(i%2?101:99).selections[0][1],1);
+assert.equal(choose(225).selections[0][0],variants[1]);assert.equal(choose(0).selections[0][0],model);assert.deepEqual(n.serialize(),saved);
+console.log('PASS: actual-WASM stable native LOD batch with real asset IDs and unchanged Scene');
 native.destroy();assert.throws(()=>n.performance('test',{op:'sync'}));console.log('PASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown');
