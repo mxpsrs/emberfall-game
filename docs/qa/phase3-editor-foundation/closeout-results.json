@@ -1,0 +1,241 @@
+{
+  "completionDate": "2026-09-28",
+  "status": "complete",
+  "repository": "mxpsrs/emberfall-game",
+  "branch": "phase3-editor-foundation-wip",
+  "phase2Base": "9e72e514610f6e8de01ae782e406e10fc5a8443a",
+  "initialRemoteHead": "550c443e116a471dbd64cef22cd0f329114bb279",
+  "testedImplementationCommit": "133d771a65a0691984e1757a57273db898ff52bf",
+  "nativeWasmGitBlob": "8f89312436908e2c725b02ea416e63f6e39f9906",
+  "environment": {
+    "node": "24.19.0",
+    "gcc": "13.3.0",
+    "emscripten": "3.1.6",
+    "playwright": "1.62.1",
+    "chromium": "134 headless shell",
+    "graphics": "SwiftShader",
+    "scope": "disposable local Worker/account/SQLite only"
+  },
+  "build": {
+    "command": "npm run build",
+    "moduleBytes": 66511949,
+    "assetCount": 470,
+    "startupResources": 124,
+    "textureVariants": 102,
+    "textureVariantsRegenerated": 0
+  },
+  "checks": [
+    {
+      "command": "make -C native editor-test test wasm-test",
+      "exitCode": 0,
+      "seconds": 0.72,
+      "output": "make: Entering directory '<checkout>/native'\n./build/editor-test\nPASS: canonical mixed commands, affine reparent undo, exact deletion restore, components/indexes, duplicate identity, 300-tick transaction, dirty/save states, invalid rollback and serialization.\n./build/core-test\nPASS: native C++ actor simulation and visibility for 256 actors\n./build/scene-test\nPASS: hierarchy, affine reparent, deep transforms, components, deterministic round-trip, editor isolation and real legacy world migration.\n./build/desktop-scene-test\nPASS: C++ actor simulation updates scene-owned player, NPC and monster representations; renderer state reflects scene transforms.\nnode tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm\n(node:12) ExperimentalWarning: WASI is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS: standalone C++ WebAssembly ABI executes without generated gameplay JavaScript\nmake: Leaving directory '<checkout>/native'\n"
+    },
+    {
+      "command": "node tests/editor-commands.mjs",
+      "exitCode": 0,
+      "seconds": 1.04,
+      "output": "PASS: actual WASM command execution, native asset references, grouped drag, mixed undo/redo, incremental notifications, dirty state, rollback and exact reload.\n"
+    },
+    {
+      "command": "node tests/editor-prefabs.mjs",
+      "exitCode": 0,
+      "seconds": 0.94,
+      "output": "PASS: actual-WASM prefab create/instantiate, internal links, overrides, update undo/redo, add/delete, revert, unpack and exact serialization\n"
+    },
+    {
+      "command": "node tests/editor-building-history.cjs",
+      "exitCode": 0,
+      "seconds": 0.41,
+      "output": "PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.\n"
+    },
+    {
+      "command": "node tests/editor-terrain-history.mjs",
+      "exitCode": 0,
+      "seconds": 0.29,
+      "output": "PASS: actual-WASM terrain and entity shared undo/redo, saved boundary, no-op, transaction rollback, validation, blocked preview rollback and persistence\n"
+    },
+    {
+      "command": "node tests/editor-selection.mjs",
+      "exitCode": 0,
+      "seconds": 1.7,
+      "output": "PASS: actual-WASM incremental picking, parent transforms, active state, reparent/delete undo, hierarchy filters, inherited hide/lock and scene/load invalidation\n"
+    },
+    {
+      "command": "node tests/building-assembly.cjs",
+      "exitCode": 0,
+      "seconds": 74.7,
+      "output": "Finish your apprenticeship with Rowan before travelling to the mainland.\nPASS: actual house modules, local transforms, snap, linked entrance/opening, parent move, roof count, undo/redo, serialization, isolated bad/stale edits and idempotence.\nPASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.\n"
+    },
+    {
+      "command": "node tests/world-buildings-scene.cjs",
+      "exitCode": 0,
+      "seconds": 438.92,
+      "output": "WorldDocument bytes: 14861865\nPASS: 235 buildings, 2312 parts, 234 doors plus 259 lair decorations and 4697 road segments and 1282 lights and 259 scene metadata records and {\"walls\":791,\"rooms\":34,\"floors\":16,\"gates\":9,\"surfaces\":18,\"holes\":0} and 770 spawn definitions and 4372 gatherables and 7 bridges and {\"quarries\":5,\"pads\":30,\"attached\":104} and {\"services\":40,\"colliders\":40,\"supports\":0}: Scene ownership, geometry parity, hierarchy propagation, door catalog/state, surfaces and save/unload/load.\n"
+    },
+    {
+      "command": "node tests/editor-camera.cjs",
+      "exitCode": 0,
+      "seconds": 0.17,
+      "output": "PASS: editor camera/navigation, scene-authored transforms and subtree editing, verified v2 save/revert, and temporary placement lifecycle.\n"
+    },
+    {
+      "command": "node tests/editor-context.cjs",
+      "exitCode": 0,
+      "seconds": 0.11,
+      "output": "PASS: authenticated editor viewport has a dedicated, playerless startup and render loop.\n"
+    },
+    {
+      "command": "node tests/editor-frame.cjs",
+      "exitCode": 0,
+      "seconds": 0.97,
+      "output": "PASS: editor renders visual frames without gameplay simulation or saves and does not replace a playing tab\u2019s presence.\n"
+    },
+    {
+      "command": "node tests/editor-scenery-streaming.cjs",
+      "exitCode": 0,
+      "seconds": 0.17,
+      "output": "PASS: canonical scenery streaming preserves history, existing edits and persistence; active gestures and failed construction are isolated.\n"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "seconds": null,
+      "output": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> build\n> node scripts/build.mjs\n\nBuilt 72 shared icons from 64 credited selections.\nTexture variants: 102 unique outputs for 845 stable image IDs; 0 rebuilt; 10816137 browser image bytes\nExported 2987 native asset records from existing Veldren assets.\nExported 4705 shared world entities.\nBuilt character-save Worker and 470 game assets; 64953 KiB module.\n",
+      "note": "Final rebuild after the panel regression repair, completed separately before this workflow."
+    },
+    {
+      "command": "node tests/built-assets.mjs",
+      "exitCode": 0,
+      "seconds": 2.78,
+      "output": "PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.\nPASS: readable home page, all 124 startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. 55.91 MiB before hosting compression.\n"
+    },
+    {
+      "command": "node tests/editor-production.mjs",
+      "exitCode": 0,
+      "seconds": 1.12,
+      "output": "PASS: production play/editor routes, script loading, owner access, building/terrain save-readback, concurrent-save conflict, old-client terrain preservation, validation and account/save preservation.\n"
+    },
+    {
+      "command": "node tests/editor-local-persistence.mjs",
+      "exitCode": 0,
+      "seconds": 0.22,
+      "output": "PASS: local editor persistence migrates v1 edits, saves v2 hierarchy atomically, preserves v2 data on legacy saves, and keeps runtime mirrors in sync.\n"
+    },
+    {
+      "command": "node tests/editor-geometry.mjs",
+      "exitCode": 0,
+      "seconds": 0.11,
+      "output": "Editor geometry: camera rays, axis/plane snapping, rotation, affine parents and transformed bounds pass\n"
+    },
+    {
+      "command": "node tests/editor-panels-browser.mjs",
+      "exitCode": 0,
+      "seconds": 0.72,
+      "output": "PASS: focused Inspector and hierarchy refresh commit once, retain current values and avoid reentrant DOM removal errors.\n"
+    },
+    {
+      "command": "node scripts/phase3-gizmo-browser.mjs",
+      "exitCode": 0,
+      "seconds": 1.98,
+      "output": "log: FEngine (32 bits) created at 0x202860 (threading is disabled)\n\nlog: [WebKit], [WebKit WebGL], [OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium))], [OpenGL ES GLSL ES 3.00 (WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium))]\n\nlog: Feature level: 1\n\nlog: Active workarounds: \n\nlog: Backend feature level: 1\n\nlog: FEngine feature level: 1\n\nwarning: Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently\n[\n  { mode: 'move', colored: 3066 },\n  { mode: 'rotate', colored: 5338 },\n  { mode: 'scale', colored: 2557 }\n]\n[{\"mode\":\"move\",\"colored\":3066},{\"mode\":\"rotate\",\"colored\":5338},{\"mode\":\"scale\",\"colored\":2557}]\n"
+    },
+    {
+      "command": "node scripts/phase3-authoring-browser.mjs",
+      "exitCode": 0,
+      "seconds": 574.7,
+      "output": "Populated editor { scene: 'tutorial', count: 656 }\nInspector UI edits and undo/redo passed\nHierarchy and prefab actions passed\nBuilding acceptance {\n  name: 'Firstlight Smithy',\n  part: 'part-00002',\n  history: {\n    affected: [],\n    changed: false,\n    created: [],\n    dirty: true,\n    redo: 0,\n    redoLabel: '',\n    state: 9,\n    transaction: false,\n    undo: 8,\n    undoLabel: 'Edit building part'\n  }\n}\nPASS: populated hierarchy, Inspector, native prefabs, grouped building edit, save/reload and editor isolation\n"
+    },
+    {
+      "command": "VELDREN_BROWSER_STAGE=terrain node scripts/phase3-terrain-play-browser.mjs",
+      "exitCode": 0,
+      "seconds": 438.15,
+      "output": "Local Worker imported\nDisposable storage opened\nLaunching browser\nOpening editor http://127.0.0.1:41119\nPHASE3_STAGE [\"assets\",false,false,false]\nPHASE3_STAGE [\"assets\",false,true,false]\nEditor ready\nPHASE3_STAGE [\"assets\",false,true,true]\nScene selector options [ 'overworld', 'stoneInn', 'stoneShop', 'inn', 'shop', 'forge' ]\nScene selection event finished\nIndependent scene selector passed\nRendered camera follows detached navigation\nTerrain ground probe {\"point\":{\"x\":0.5,\"y\":0.82,\"world\":{\"x\":41.83797980504018,\"z\":52.77409778202297}},\"camera\":{\"x\":41.33797990695219,\"y\":52.27409783497636,\"yaw\":-2.05,\"tilt\":0.27,\"zoom\":118,\"playerView\":false},\"anchor\":[41.33797990695219,52.27409783497636],\"view\":{\"yaw\":-2.05,\"tilt\":0.27,\"zoom\":118,\"min\":2,\"max\":1600},\"distance\":5.322333574251256,\"height\":2.475607829297793,\"frame\":14,\"renderer\":\"filament\",\"size\":[870,682],\"sample\":{\"x\":182.10831113667476,\"z\":125.65843621411754}}\nTerrain pointer, native history and dirty boundary passed\nPASS: rendered camera, terrain pointer/history and verified save\n"
+    },
+    {
+      "command": "VELDREN_BROWSER_STAGE=reload node scripts/phase3-terrain-play-browser.mjs",
+      "exitCode": 0,
+      "seconds": 254.95,
+      "output": "Local Worker imported\nDisposable storage opened\nLaunching browser\nPHASE3_STAGE [\"assets\",false,true,false]\nPHASE3_STAGE [\"assets\",false,true,true]\nPASS: terrain verified save/reload and editor isolation\n"
+    },
+    {
+      "command": "VELDREN_BROWSER_STAGE=play node scripts/phase3-terrain-play-browser.mjs",
+      "exitCode": 0,
+      "seconds": 273.53,
+      "output": "Local Worker imported\nDisposable storage opened\nLaunching browser\nPHASE3_STAGE [\"auth\",false,false,null]\nPHASE3_STAGE [\"first-draw\",false,true,null]\nPASS: /play load, saved terrain, canonical ownership and world input\n"
+    }
+  ],
+  "authoring": {
+    "initial": {
+      "scene": "tutorial",
+      "count": 656
+    },
+    "prefab": {
+      "definition": "entity-1",
+      "copy": "entity-2"
+    },
+    "buildingResult": {
+      "name": "Firstlight Smithy",
+      "part": "part-00002",
+      "history": {
+        "affected": [],
+        "changed": false,
+        "created": [],
+        "dirty": true,
+        "redo": 0,
+        "redoLabel": "",
+        "state": 9,
+        "transaction": false,
+        "undo": 8,
+        "undoLabel": "Edit building part"
+      }
+    },
+    "save": {
+      "revision": 9,
+      "verified": true
+    },
+    "reload": true,
+    "errors": []
+  },
+  "terrainReload": {
+    "revision": 10,
+    "verified": true,
+    "errors": []
+  },
+  "play": {
+    "terrainNodes": 29,
+    "save": {
+      "revision": 10,
+      "verified": true
+    },
+    "runtime": {
+      "ready": true,
+      "failed": false,
+      "abi": 19,
+      "owned": true,
+      "scene": "tutorial",
+      "quarries": true,
+      "services": true
+    },
+    "errors": []
+  },
+  "resolvedDuringCloseout": [
+    {
+      "issue": "Recovered compiler paths were incomplete",
+      "resolution": "Temporary environment wrapper; final native/WASM tests pass and rebuild matches committed binary byte-for-byte."
+    },
+    {
+      "issue": "Focused Inspector removal re-entered replaceChildren and produced a browser NotFoundError",
+      "before": "Populated authoring and focused DOM reproduction failed.",
+      "resolution": "Panel replacement guards service nested refresh requests after the active refresh. Focused regression and populated authoring rerun pass."
+    },
+    {
+      "issue": "Execution environment restarted during an authoring rerun",
+      "resolution": "Completed native/build evidence retained; browser workflows resumed with separate terrain/reload/play receipts."
+    }
+  ],
+  "deployment": false,
+  "mainMerged": false,
+  "phase4Started": false,
+  "productionDataModified": false
+}

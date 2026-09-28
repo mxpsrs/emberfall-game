@@ -1,15 +1,22 @@
 # Phase 3 editor foundation
 
-Phase 3 implementation and local acceptance are complete on
-`phase3-editor-foundation-wip`,
-created and independently verified on GitHub at accepted Phase 2 commit
-`9e72e514610f6e8de01ae782e406e10fc5a8443a` before implementation.
+Status: **COMPLETE — final Phase 3 acceptance**.
 
-The sections below preserve chronological checkpoints. Their pending-work and
-blocker statements describe those earlier checkpoints; `PHASE3_ACCEPTANCE.md`
-records the current result.
+Repository: `mxpsrs/emberfall-game`. Branch: `phase3-editor-foundation-wip`.
+Accepted Phase 2 base: `9e72e514610f6e8de01ae782e406e10fc5a8443a`.
+The implementation and local acceptance checkpoint was independently verified at
+`550c443e116a471dbd64cef22cd0f329114bb279` before formal closeout.
 
-## Native command checkpoint
+Final formal acceptance, exact verification commands and truthful limitations are
+recorded in [PHASE3-EDITOR-FOUNDATION-ACCEPTANCE-2026-09-28.md](../docs/PHASE3-EDITOR-FOUNDATION-ACCEPTANCE-2026-09-28.md).
+The technical record remains in [PHASE3_ACCEPTANCE.md](PHASE3_ACCEPTANCE.md).
+Nothing was deployed or merged into main, and Phase 4 was not started.
+
+All checkpoint sections below are **historical and superseded by final
+acceptance**. Their statements about pending work, unfinished implementation or
+blockers describe the state at those checkpoints; they are not current gates.
+
+## Historical checkpoint: native commands
 
 `EditorHistory` mutates the accepted `Scene` directly. It retains before/after
 node deltas, sibling/root order and stable created IDs. There is no editable
@@ -41,7 +48,7 @@ canonical picking/multi-selection, hierarchy/inspector, prefabs, modular buildin
 authoring and full populated-world graphical/persistence acceptance remain.
 No deployment, main merge, production data writes or Phase 4 work is included.
 
-## 3D transform checkpoint
+## Historical checkpoint: 3D transforms
 
 Original ray/axis/plane math drives X/Y/Z translation, XY/XZ/YZ planes,
 three rotation rings, axis scale and uniform scale. Local orientation removes
@@ -76,7 +83,7 @@ and building workflows, persistence and /play acceptance are still outstanding.
 
 Remote command checkpoint: `b565855ff658d674448bd616255a9854f78a9111`.
 
-## Selection validation checkpoint
+## Historical checkpoint: selection validation
 
 Editor-only hiding now reaches legacy world objects, buildings, native modular
 pieces, bridges, structural walls/rooms, scenery and light emitters without
@@ -94,7 +101,7 @@ current gesture and returns to Select. Text fields retain normal editing keys.
 
 Remote 3D gizmo checkpoint: `a86290a21cd6c25c38e2d76fb4b570f08a39b68e`.
 
-## Prefab and modular command integration checkpoint (2026-09-27)
+## Historical checkpoint: prefab and modular command integration (2026-09-27)
 
 Building projection writes now dispatch native `replace`, transform and delete
 commands after editor startup. Building Edit conversion, creation, part changes,
@@ -126,7 +133,7 @@ undo/redo transaction. General command, camera, context and frame checks pass.
 The populated-world graphical workflow and final Phase 3 acceptance remain
 pending at this checkpoint. Nothing is deployed or merged into main.
 
-## Authoring and terrain checkpoint
+## Historical checkpoint: authoring and terrain
 
 The populated built editor has passed hierarchy selection, Inspector name and
 transform edits, exact undo/redo, world-preserving reparenting, prefab actions,
@@ -162,7 +169,7 @@ terrain reload and /play against a disposable local Worker/account/database.
 Set VELDREN_PLAYWRIGHT to a local Playwright entry point if it is not installed
 in this checkout. These scripts do not write production data.
 
-## Incremental picking checkpoint
+## Historical checkpoint: incremental picking
 
 On a 20,856-entity saved document (15,496 overworld entities), editing previously
 invalidated all picking bounds and non-transform edits reread the entire Scene.
@@ -177,7 +184,7 @@ recorded in `PHASE3_ACCEPTANCE.md`. These are not rendering FPS or hosted-capaci
 claims. Toolbar/viewport undo also finishes an active terrain stroke before
 reversing it, so a transient brush cannot survive a history change.
 
-## Read-only rendering checkpoint
+## Historical checkpoint: read-only rendering
 
 The overworld graphical check exposed legacy building renderers writing their
 calculated visual height through canonical projections. With authoring commands
@@ -193,7 +200,7 @@ asserts that the native Scene revision is unchanged. That check passes alongside
 geometry, hierarchy, door, surface and complete save/unload/load checks. The
 visible scene-switch check now completes and preserves character state.
 
-## Graphical acceptance blocker (2026-09-28)
+## Historical resolved blocker: graphical acceptance (2026-09-28)
 
 Phase 3 remains unfinished. The overworld viewport is blank after scene selection:
 the original picking function and Filament camera receive non-finite anchor
@@ -210,7 +217,7 @@ environment recovery. Terrain pointer/save/reload and `/play` acceptance must be
 completed before this branch can be called accepted. Nothing is deployed or
 merged into main.
 
-## Camera binding correction (2026-09-28)
+## Historical correction: camera bindings (2026-09-28)
 
 The live Chromium scope inspection found non-finite camera anchor values in the
 original renderer functions while the editor read finite coordinates. The shared
@@ -225,7 +232,7 @@ another authored Scene write during drawing. The write guard correctly rejects
 it; that render path and the remaining fresh reload/play checks are being
 resolved. The camera/context/frame checks and all 124 built startup assets pass.
 
-## Scenery preparation and graphical terrain checkpoint
+## Historical checkpoint: scenery preparation and graphical terrain
 
 The remaining render-time write was lazy understory construction. Visible plant
 chunks are now prepared before drawing; drawing reads existing canonical chunks.
@@ -243,7 +250,7 @@ The screenshot was visually checked. The run reports zero page errors. Fresh
 reload and `/play` are the remaining acceptance checks at this checkpoint.
 
 
-## Final local acceptance (2026-09-28)
+## Completed implementation acceptance (2026-09-28)
 
 All remaining Phase 3 gates above are complete. The populated overworld editor
 passes independent camera movement/picking, a real terrain brush stroke, exact
@@ -259,3 +266,14 @@ preparation, and the full native save/unload/load regression passes. The focused
 scenery streaming, editor frame and built-asset regressions also pass. See
 `PHASE3_ACCEPTANCE.md` for evidence, reproduction and practical limits. This is
 local acceptance, without a main merge, deployment or hosted-capacity claim.
+
+
+## Formal closeout — 2026-09-28
+
+The final verification suite and graphical authoring/terrain/reload/play checks
+pass. A focused-field DOM replacement regression exposed by the rerun was
+reproduced and repaired in the panel refresh code; the focused regression and
+full populated workflow pass after that repair. Native ownership and all earlier
+camera, render-write and terrain reload corrections remain intact. The formal
+acceptance linked at the top supersedes every historical pending gate above.
+No deployment, main merge or Phase 4 work occurred.
