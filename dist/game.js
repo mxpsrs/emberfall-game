@@ -78,7 +78,9 @@ const fighter=o=>o&&['enemy','boss','man','dummy'].includes(o.type);
 let blocked=(x,y)=>worldWall(x,y)||water(x,y)||trainingGateClosedAt(x,y)||buildings.some(b=>inBuilding(b,x,y))||globalThis.VeldrenGatherableScene?.blocked(currentScene,x,y)||globalThis.VeldrenServiceScene?.blocked(currentScene,x,y)||objects.some(o=>!o._generatedGatherable&&!o._generatedService&&o.x===x&&o.y===y&&!fighter(o)&&!o.collected&&!o.walkThrough);
 const land=(x,y)=>!blocked(x,y);
 if((!s.sceneId||s.sceneId==='overworld')&&!land(s.x,s.y)){s.x=14;s.y=17;}
-let px=s.x, py=s.y, path=[], target=null, elapsed=0, moveClock=0;
+// Shared mutable camera anchor for separately loaded renderer/editor scripts.
+var px=s.x, py=s.y;
+let path=[], target=null, elapsed=0, moveClock=0;
 let tab='quests', floaters=[], time=0, camera={x:0,y:0}, screen={w:0,h:0}, last=0, toastUntil=0, saveClock=0;
 let facing=1, lastAttack=-100, assetsReady=false, selectedLook=s.character?.look||0, editingCharacter=false, hitboxes=[];
 const canvas=$('world'), ctx=canvas.getContext('2d');

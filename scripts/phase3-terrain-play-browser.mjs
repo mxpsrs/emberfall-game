@@ -28,7 +28,7 @@ const server=createServer(async(req,res)=>{try{const chunks=[];for await(const c
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;mkdirSync('.qa/phase3',{recursive:true});
 try{
  console.log('Launching browser');
- browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});const context=await browser.newContext({viewport:{width:1440,height:900}});await context.addCookies([{name:'ember_session',value:token,url:origin}]);
+ browser=await chromium.launch({headless:true,...(process.env.VELDREN_CHROMIUM?{executablePath:process.env.VELDREN_CHROMIUM}:{}),args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});const context=await browser.newContext({viewport:{width:1440,height:900}});await context.addCookies([{name:'ember_session',value:token,url:origin}]);
  await context.addInitScript(()=>{let previous='';setInterval(()=>{const state=globalThis.realmStartup;if(!state)return;const text=JSON.stringify([state.stageCode,state.failed,state.finished,globalThis.VeldrenEditorBridge?.isReady()]);if(text!==previous){previous=text;console.log('PHASE3_STAGE',text);}},5000);});
  const page=qaPage=await context.newPage();page.on('console',msg=>{if(msg.type()==='error'||msg.text().startsWith('PHASE3_STAGE'))console.log(msg.text().slice(0,300));});page.on('pageerror',e=>{errors.push(String(e));console.log('PAGE ERROR',String(e))});
  console.log('Opening editor',origin);

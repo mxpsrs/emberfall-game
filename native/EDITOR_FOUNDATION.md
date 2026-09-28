@@ -204,3 +204,18 @@ still outstanding. The final binding inspection was interrupted by execution
 environment recovery. Terrain pointer/save/reload and `/play` acceptance must be
 completed before this branch can be called accepted. Nothing is deployed or
 merged into main.
+
+## Camera binding correction (2026-09-28)
+
+The live Chromium scope inspection found non-finite camera anchor values in the
+original renderer functions while the editor read finite coordinates. The shared
+`px`/`py` camera anchor now uses explicit window-backed bindings across classic
+scripts. A fresh built browser returns the correct overworld ground hit and
+passes a real pointer terrain stroke, native undo/redo and the saved dirty-state
+boundary. The terrain surface and camera mathematics are unchanged. The engine
+mechanism behind the former lexical-binding divergence is not established.
+
+This is still a checkpoint, not final acceptance. Valid camera rendering exposed
+another authored Scene write during drawing. The write guard correctly rejects
+it; that render path and the remaining fresh reload/play checks are being
+resolved. The camera/context/frame checks and all 124 built startup assets pass.

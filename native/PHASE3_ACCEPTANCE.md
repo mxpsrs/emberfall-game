@@ -5,8 +5,9 @@ Updated: 2026-09-28. Branch: `phase3-editor-foundation-wip` in
 `9e72e514610f6e8de01ae782e406e10fc5a8443a`.
 
 Status: **not accepted**. Implemented authoring features and focused checks pass,
-but the graphical overworld check exposes a camera/picking failure. Terrain
-pointer/save/reload and `/play` acceptance remain blocked. No deployment or main
+and the camera binding correction now passes real overworld terrain input and
+undo/redo. Another render-time Scene write is rejected by the authoring guard;
+clean graphical rendering and final save/reload plus `/play` remain outstanding. No deployment or main
 merge is included.
 
 ## Ownership and behavior
@@ -38,7 +39,7 @@ aggregates across scenes, and undo can return to the saved boundary.
 | Building editing | Actual generated house assembly, snapping and openings; native linked interior parts; grouped module/door edits, duplicate/delete and exact undo/reload |
 | Terrain | Actual-WASM shared entity/terrain ordering, native validation, no-op behavior, transaction rollback, rejected preview rollback and persistence |
 | Picking and hierarchy | Actual-WASM incremental subtree updates, parent transforms, active state, inherited hide/lock, reparent/delete undo and scene/load invalidation |
-| Graphics | Chromium WebGL renders all three handle modes; populated tutorial editor shows canonical imported assets and Inspector selection; overworld camera check fails |
+| Graphics | Chromium WebGL renders all three handle modes; populated tutorial editor shows canonical imported assets and Inspector selection; overworld ground picking and terrain input now pass; a render-time write remains |
 | Populated authoring | Hierarchy click, Inspector rename/position, undo/redo, reparent, prefab actions, Firstlight Smithy editing, verified save and exact fresh reload; no page errors or gameplay-controller requests |
 | Persistence routes | Atomic v2 save, legacy preservation, concurrent save conflict, validation and account/character preservation in disposable local tests |
 | Generated world | Building/road/light/structure/spawn/resource/bridge/quarry/service Scene ownership, unchanged Scene revision while rendering multiple building variants, and complete native round-trip |
@@ -56,7 +57,7 @@ behavior. The graphical rerun now completes scene selection without changing
 character state or creating history entries. It then fails the visible-ground
 precondition, as described below.
 
-## Outstanding graphical blocker
+## Camera correction and remaining graphical gate
 
 On the disposable revision-9 fixture, switching from Firstlight to `overworld`
 leaves a blank viewport. The detached camera reports `(42, 51)`, yaw `-2.05`,
@@ -77,10 +78,19 @@ diagnostic comparison, not a committed fix.
 The browser acceptance now probes actual land before dragging and writes its
 camera inputs to `.qa/phase3/terrain-camera-failure.json` on this failure. The
 stroke/save/reload and `/play` assertions must pass on a fresh built Worker after
-the correction; native terrain tests alone do not satisfy that gate. The last
-binding inspection was interrupted by execution-environment transport recovery,
-which terminated the running browser. No terrain edit was saved by the failing
-checks.
+the correction; native terrain tests alone do not satisfy that gate. The initial
+binding inspection was interrupted by execution-environment transport recovery.
+The resumed inspection confirmed non-finite `px`/`py` values in the original
+renderer's Script scope while the editor read `(42, 51)`. Window-backed shared
+anchor bindings restore consistent reads in a fresh Chromium run. The existing
+camera math returns the expected `(42.5, 51.5)` ground hit, and a real terrain
+stroke plus native undo/redo and dirty-boundary assertions pass. The underlying
+engine mechanism behind the previous lexical binding divergence is unconfirmed.
+
+Valid camera rendering also exposes another authored Scene write during drawing.
+The existing guard rejects it. Final acceptance requires correcting that render
+path and completing the fresh save/reload and `/play` assertions with zero page
+errors. This intermediate checkpoint does not claim those gates have passed.
 
 ## Native editing performance
 
