@@ -5,7 +5,12 @@
   const element=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
   function action(label,ops){try{if(ops.some(op=>bridge.canonicalSelection().locked(op.id)||op.parent&&bridge.canonicalSelection().locked(op.parent)))throw Error('Unlock the entity or branch before editing');bridge.executeCommand(label,ops);render(query);inspect();}catch(error){log(error.message,'error');}}
   const button=(label,fn)=>{const b=element('button',label);b.type='button';b.onclick=fn;return b;};
+  // Removing a focused field can synchronously commit it and request another
+  // refresh. Finish the current DOM replacement before refreshing that panel.
+  let rendering=false,renderPending=false,inspecting=false,inspectPending=false;
   function render(filter=''){
+   query=filter;if(rendering){renderPending=true;return true;}rendering=true;
+   try{
    query=filter;const graph=bridge.sceneHierarchy(filter);if(!graph)return false;const selection=bridge.canonicalSelection(),chosen=new Set(selection.ids);list.replaceChildren();count.textContent=graph.visible.size+' entities';
    const rootDrop=element('div','Scene roots · drop here to unparent');rootDrop.className='hierarchy-root';rootDrop.ondragover=e=>e.preventDefault();rootDrop.ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('application/veldren-entity');if(id)action('Unparent',[{op:'reparent',id,parent:'',preserveWorld:true}]);};list.append(rootDrop);
    let drawn=0;function visit(id,depth){if(!graph.visible.has(id)||drawn++>=2000)return;const n=graph.nodes.get(id),kids=graph.children.get(id)||[],row=element('div');row.className='canonical-row'+(chosen.has(id)?' selected':'')+(!n.active?' inactive':'');row.style.paddingLeft=(depth*14)+'px';row.draggable=true;row.setAttribute('role','treeitem');row.setAttribute('aria-selected',String(chosen.has(id)));row.dataset.entityId=id;
@@ -15,6 +20,7 @@
     row.ondragstart=e=>e.dataTransfer.setData('application/veldren-entity',id);row.ondragover=e=>e.preventDefault();row.ondrop=e=>{e.preventDefault();e.stopPropagation();const child=e.dataTransfer.getData('application/veldren-entity');if(child)action('Reparent',[{op:'reparent',id:child,parent:id,preserveWorld:true}]);};list.append(row);
     if(query||expanded.has(id))for(const child of kids)visit(child,depth+1);
    }for(const id of graph.roots)visit(id,0);if(drawn>=2000)list.append(element('p','Search to narrow this hierarchy (2,000 visible rows).'));return true;
+   }finally{rendering=false;if(renderPending){renderPending=false;render(query);}}
   }
   function fieldset(title){const f=element('fieldset');f.append(element('legend',title));inspector.append(f);return f;}
   function labeled(parent,label,input){const row=element('label'),span=element('span',label);row.append(span,input);parent.append(row);return input;}
@@ -27,6 +33,8 @@
    control.disabled=disabled;control.setAttribute('aria-label',key);control.onchange=()=>{try{const result=object?JSON.parse(control.value):typeof value==='boolean'?control.checked:typeof value==='number'?Number(control.value):control.value;if(typeof result==='number'&&!Number.isFinite(result))throw Error('Finite numeric value required');submit(result);}catch(error){log(error.message,'error');inspect();}};return labeled(parent,key,control);
   }
   function inspect(){
+   if(inspecting){inspectPending=true;return;}inspecting=true;
+   try{
    inspector.replaceChildren();const selection=bridge.canonicalSelection(),ids=selection?.ids||[];if(!ids.length){inspector.append(element('p','Select an entity to edit its components.'));return;}const id=ids[0],node=bridge.sceneEntity(id);if(!node)return;
    inspector.append(element('h2',node.name),element('small',ids.length>1?ids.length+' selected · Inspector edits primary entity':id));
    const common=fieldset('Entity');input(common,'Name',node.name,name=>action('Rename',[{op:'rename',id,name}]));input(common,'Active in game',node.active,active=>action('Active state',[{op:'active',id,active}]));
@@ -45,6 +53,7 @@
     if(!disabled)panel.append(button('Remove component',()=>action('Remove '+type,[{op:'removeComponent',id,component:type}])));
    }
    const add=fieldset('Add component'),types=element('select');for(const type of Object.keys(defaults))if(!node.components[type])types.append(new Option(type,type));add.append(types,button('Add',()=>{const component=types.value;if(!component)return;const fields=structuredClone(defaults[component]);if(component==='MeshRenderer')fields.asset=bridge.assetReferences('model','')[0]?.id||'';action('Add '+component,[{op:'addComponent',id,component,fields}]);}));
+   }finally{inspecting=false;if(inspectPending){inspectPending=false;inspect();}}
   }
   return {render,inspect};
  }
