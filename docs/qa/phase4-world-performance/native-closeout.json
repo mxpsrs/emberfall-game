@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "40d2d3d762f1b34ff86cdd15bc214ebe2dbdafc1",
+  "command": [
+    "make",
+    "-C",
+    "native",
+    "world-performance-test",
+    "world-visibility-test",
+    "world-lod-test",
+    "world-residency-test",
+    "world-streaming-test"
+  ],
+  "exitCode": 0,
+  "durationMs": 149810.69,
+  "output": "make: Entering directory '/tmp/veldren-phase3-recovery/native'\nmkdir -p build\ng++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/editor.cpp src/editor_prefabs.cpp tests/world_performance_test.cpp -o build/world-performance-test\n./build/world-performance-test ../dist/assets/asset-registry.json\nPASS: incremental cells, static/dynamic separation, transformed parent bounds, large spans, history/delete restore, grounding, runtime identity, reload and journal overflow.\nmkdir -p build\ng++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_visibility_test.cpp -o build/world-visibility-test\n./build/world-visibility-test\nPASS: camera planes, asymmetric projection, large intersecting bounds, rotated view, category distance, projected size and read-only Scene.\nmkdir -p build\ng++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_lod_test.cpp -o build/world-lod-test\n./build/world-lod-test\nPASS: existing LOD thresholds, explicit target/current levels, 300 threshold oscillations, hysteresis, exact LOD0 return, LOD0-only art, retirement and reimport reset.\n./build/world-residency-test\nPASS: native resource budgets, LRU, grace, active protection, cancellation, release acknowledgement, CPU/shared accounting and 1000 travel cycles.\n./build/world-streaming-test\nPASS: bounded prioritized loads, shared cell demand, teleport cancellation, late receipt isolation, retirement, editor pins, generation changes, pressure and unchanged canonical owners.\nmake: Leaving directory '/tmp/veldren-phase3-recovery/native'\n"
+}

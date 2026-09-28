@@ -1,6 +1,9 @@
 # Phase 4 world performance and streaming
 
-Status: **IN PROGRESS**. This is an implementation record, not acceptance.
+Status: **COMPLETE — local implementation and acceptance**. The final result
+and limits are in [PHASE4_ACCEPTANCE.md](PHASE4_ACCEPTANCE.md). The chronological
+checkpoint entries below retain their original status; historical open software
+gates are superseded by that closeout, not by hardware-performance certification.
 Repository: `mxpsrs/emberfall-game`; branch: `phase4-world-performance-wip`.
 The branch was created on GitHub from the exact accepted Phase 3 commit
 `3f0deb4daf83a8aec108f5c896af1d47cb0e2542` and independently queried before work.

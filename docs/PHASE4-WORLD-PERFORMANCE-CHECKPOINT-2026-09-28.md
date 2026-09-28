@@ -1,7 +1,10 @@
 # Phase 4 performance and streaming checkpoint
 
-Status: **in progress, not final acceptance**. Work remains on
-`phase4-world-performance-wip`; nothing was deployed or merged into `main`.
+Status: **historical implementation checkpoint**. The later local acceptance is
+complete and recorded in `native/PHASE4_ACCEPTANCE.md` and
+`docs/PHASE4-WORLD-PERFORMANCE-ACCEPTANCE-2026-09-28.md`. Hardware limits below
+remain unverified. Work remains on `phase4-world-performance-wip`; nothing was
+deployed or merged into `main`.
 
 Implementation checkpoint: `06932597af7263fa2d9dff0f4601f93121fd34c8`.
 Its complete GitHub tree was independently read back and matched all 1,310

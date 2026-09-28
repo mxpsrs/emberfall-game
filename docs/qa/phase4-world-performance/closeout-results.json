@@ -1,0 +1,359 @@
+{
+  "reports": [
+    {
+      "path": "docs/qa/phase4-world-performance/streaming-desktop-browser.json",
+      "sourceCommit": "06932597af7263fa2d9dff0f4601f93121fd34c8",
+      "label": "streaming-desktop",
+      "mobile": false,
+      "views": 10,
+      "frames": 30,
+      "pendingFrames": 3,
+      "failedLoads": 0,
+      "pageErrors": 0,
+      "sampledBudgetOverruns": 0,
+      "peakGpuBytes": 268376098,
+      "peakCpuBytes": 6667068,
+      "routes": {
+        "populated-editor-hierarchy": [
+          {
+            "lap": 0,
+            "gpuBytes": 52822218,
+            "cpuBytes": 417930,
+            "geometryResources": 232,
+            "streamResources": 1,
+            "streamCells": 2,
+            "evictions": 0
+          }
+        ],
+        "dense-settlement": [
+          {
+            "lap": 0,
+            "gpuBytes": 190111848,
+            "cpuBytes": 5535444,
+            "geometryResources": 550,
+            "streamResources": 3,
+            "streamCells": 196,
+            "evictions": 0
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 264482262,
+            "cpuBytes": 3075390,
+            "geometryResources": 420,
+            "streamResources": 3,
+            "streamCells": 198,
+            "evictions": 779
+          }
+        ],
+        "wilderness": [
+          {
+            "lap": 0,
+            "gpuBytes": 252575088,
+            "cpuBytes": 6667068,
+            "geometryResources": 671,
+            "streamResources": 2,
+            "streamCells": 196,
+            "evictions": 0
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 266652612,
+            "cpuBytes": 4397436,
+            "geometryResources": 652,
+            "streamResources": 2,
+            "streamCells": 198,
+            "evictions": 843
+          }
+        ],
+        "building-heavy": [
+          {
+            "lap": 0,
+            "gpuBytes": 267809656,
+            "cpuBytes": 6660984,
+            "geometryResources": 479,
+            "streamResources": 3,
+            "streamCells": 196,
+            "evictions": 265
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 267755822,
+            "cpuBytes": 3532626,
+            "geometryResources": 609,
+            "streamResources": 3,
+            "streamCells": 198,
+            "evictions": 988
+          }
+        ],
+        "long-distance-overview": [
+          {
+            "lap": 0,
+            "gpuBytes": 264157404,
+            "cpuBytes": 1071768,
+            "geometryResources": 382,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 531
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 265768940,
+            "cpuBytes": 970296,
+            "geometryResources": 348,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 1369
+          }
+        ],
+        "ordinary-gameplay": [
+          {
+            "lap": 0,
+            "gpuBytes": 67643268,
+            "cpuBytes": 2226324,
+            "geometryResources": 308,
+            "streamResources": 1,
+            "streamCells": 2,
+            "evictions": 0
+          }
+        ]
+      }
+    },
+    {
+      "path": "docs/qa/phase4-world-performance/streaming-mobile-browser.json",
+      "sourceCommit": "06932597af7263fa2d9dff0f4601f93121fd34c8",
+      "label": "streaming-mobile",
+      "mobile": true,
+      "views": 6,
+      "frames": 18,
+      "pendingFrames": 0,
+      "failedLoads": 0,
+      "pageErrors": 0,
+      "sampledBudgetOverruns": 0,
+      "peakGpuBytes": 133896786,
+      "peakCpuBytes": 4265304,
+      "routes": {
+        "populated-editor-hierarchy": [
+          {
+            "lap": 0,
+            "gpuBytes": 29269200,
+            "cpuBytes": 380328,
+            "geometryResources": 263,
+            "streamResources": 1,
+            "streamCells": 3,
+            "evictions": 0
+          }
+        ],
+        "dense-settlement": [
+          {
+            "lap": 0,
+            "gpuBytes": 132575364,
+            "cpuBytes": 3855312,
+            "geometryResources": 399,
+            "streamResources": 2,
+            "streamCells": 201,
+            "evictions": 1
+          }
+        ],
+        "wilderness": [
+          {
+            "lap": 0,
+            "gpuBytes": 132459748,
+            "cpuBytes": 4265304,
+            "geometryResources": 413,
+            "streamResources": 2,
+            "streamCells": 198,
+            "evictions": 97
+          }
+        ],
+        "building-heavy": [
+          {
+            "lap": 0,
+            "gpuBytes": 133896786,
+            "cpuBytes": 1465002,
+            "geometryResources": 291,
+            "streamResources": 3,
+            "streamCells": 184,
+            "evictions": 262
+          }
+        ],
+        "long-distance-overview": [
+          {
+            "lap": 0,
+            "gpuBytes": 129667938,
+            "cpuBytes": 653334,
+            "geometryResources": 296,
+            "streamResources": 3,
+            "streamCells": 172,
+            "evictions": 348
+          }
+        ],
+        "ordinary-gameplay": [
+          {
+            "lap": 0,
+            "gpuBytes": 45525844,
+            "cpuBytes": 2487312,
+            "geometryResources": 309,
+            "streamResources": 1,
+            "streamCells": 3,
+            "evictions": 0
+          }
+        ]
+      }
+    },
+    {
+      "path": "docs/qa/phase4-world-performance/streaming-soak-browser.json",
+      "sourceCommit": "40d2d3d762f1b34ff86cdd15bc214ebe2dbdafc1",
+      "label": "streaming-soak",
+      "mobile": false,
+      "views": 14,
+      "frames": 42,
+      "pendingFrames": 0,
+      "failedLoads": 0,
+      "pageErrors": 0,
+      "sampledBudgetOverruns": 0,
+      "peakGpuBytes": 257077080,
+      "peakCpuBytes": 5782332,
+      "routes": {
+        "populated-editor-hierarchy": [
+          {
+            "lap": 0,
+            "gpuBytes": 52822218,
+            "cpuBytes": 417930,
+            "geometryResources": 232,
+            "streamResources": 1,
+            "streamCells": 2,
+            "evictions": 0
+          }
+        ],
+        "dense-settlement": [
+          {
+            "lap": 0,
+            "gpuBytes": 189672552,
+            "cpuBytes": 4576980,
+            "geometryResources": 550,
+            "streamResources": 3,
+            "streamCells": 196,
+            "evictions": 0
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 257077080,
+            "cpuBytes": 5782332,
+            "geometryResources": 727,
+            "streamResources": 3,
+            "streamCells": 196,
+            "evictions": 0
+          },
+          {
+            "lap": 2,
+            "gpuBytes": 257077080,
+            "cpuBytes": 5782332,
+            "geometryResources": 727,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 0
+          },
+          {
+            "lap": 3,
+            "gpuBytes": 235631916,
+            "cpuBytes": 5307876,
+            "geometryResources": 607,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 120
+          },
+          {
+            "lap": 4,
+            "gpuBytes": 235311852,
+            "cpuBytes": 5282172,
+            "geometryResources": 598,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 129
+          },
+          {
+            "lap": 5,
+            "gpuBytes": 235311852,
+            "cpuBytes": 5282172,
+            "geometryResources": 598,
+            "streamResources": 3,
+            "streamCells": 195,
+            "evictions": 129
+          }
+        ],
+        "wilderness": [
+          {
+            "lap": 0,
+            "gpuBytes": 252169584,
+            "cpuBytes": 5782332,
+            "geometryResources": 671,
+            "streamResources": 2,
+            "streamCells": 196,
+            "evictions": 0
+          },
+          {
+            "lap": 1,
+            "gpuBytes": 257077080,
+            "cpuBytes": 5782332,
+            "geometryResources": 727,
+            "streamResources": 2,
+            "streamCells": 195,
+            "evictions": 0
+          },
+          {
+            "lap": 2,
+            "gpuBytes": 257077080,
+            "cpuBytes": 5782332,
+            "geometryResources": 727,
+            "streamResources": 2,
+            "streamCells": 195,
+            "evictions": 0
+          },
+          {
+            "lap": 3,
+            "gpuBytes": 235628236,
+            "cpuBytes": 5307540,
+            "geometryResources": 606,
+            "streamResources": 2,
+            "streamCells": 195,
+            "evictions": 121
+          },
+          {
+            "lap": 4,
+            "gpuBytes": 235311852,
+            "cpuBytes": 5282172,
+            "geometryResources": 598,
+            "streamResources": 2,
+            "streamCells": 195,
+            "evictions": 129
+          },
+          {
+            "lap": 5,
+            "gpuBytes": 235311852,
+            "cpuBytes": 5282172,
+            "geometryResources": 598,
+            "streamResources": 2,
+            "streamCells": 195,
+            "evictions": 129
+          }
+        ],
+        "ordinary-gameplay": [
+          {
+            "lap": 0,
+            "gpuBytes": 68031244,
+            "cpuBytes": 2218080,
+            "geometryResources": 309,
+            "streamResources": 1,
+            "streamCells": 2,
+            "evictions": 0
+          }
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Known GPU/staging allocation estimates only; not complete heap or driver VRAM.",
+    "Recorded route passes and samples are not continuous hardware FPS certification.",
+    "In-flight loads are allowed within profile limits; every final view sample settled."
+  ]
+}
