@@ -71,20 +71,23 @@
  }
  function chunk(bx,bz){
   const scene='overworld',parent='generated:'+scene+':root:understory',id=idFor(scene,'understory-chunk',[bx,bz]);
+  if(!native().entity(scene,parent)?.components.UnderstoryGenerator)return readChunk(bx,bz);
   let group=native().entity(scene,id);
   if(!group){
    const generated=worldUnderstoryPlacements(bx,bz),repeats=new Map(),children=generated.map(source=>{const key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);return createEntity(scene,source,id,'understory',ordinal);});
    // The generator output is construction-only. Coordinates are moved into
    // native Transform fields, and the temporary records are discarded.
    materializing=true;
-   try{native().batch(()=>{if(!native().upsert(scene,{id,name:'Understory '+bx+', '+bz,parent,active:true,transform:identity(),components:{GeneratedChunk:{x:bx,z:bz,complete:true}},metadata:{}}))throw Error('Cannot create understory chunk');for(const node of children)if(!native().upsert(scene,node))throw Error('Cannot create understory decoration');});}
+   try{native().materializeUnderstory(scene,{id,name:'Understory '+bx+', '+bz,parent,active:true,transform:identity(),components:{GeneratedChunk:{x:bx,z:bz,complete:true}},metadata:{}},children);}
    finally{materializing=false;}
   }
   // Rendering is spatially indexed from native world transforms, not the original
   // generator's child list. Moved and duplicated plants follow their edited position.
-  return Object.freeze([...(plantChunks.get(bx+':'+bz)||[])]);
+  return readChunk(bx,bz);
 
  }
+ function readChunk(bx,bz){return Object.freeze([...(plantChunks.get(bx+':'+bz)||[])]);}
+ function prepareChunks(chunks){native().batch(()=>{for(const [bx,bz]of chunks)chunk(bx,bz);});}
  function painter(r,m){
   const A=root.VeldrenAssembly,inverse=A.inverse(m),normal=n=>{const v=[inverse[0]*n[0]+inverse[4]*n[1]+inverse[8]*n[2],inverse[1]*n[0]+inverse[5]*n[1]+inverse[9]*n[2],inverse[2]*n[0]+inverse[6]*n[1]+inverse[10]*n[2]],length=Math.hypot(...v)||1;return v.map(x=>x/length);};
   const q={software:r.software,face(points,color,normals,material,colors,uvs){r.face(points.map(p=>A.point(m,p)),color,normals?.map(normal),material,colors,uvs);}};
@@ -105,5 +108,5 @@
   const radius=kind==='plinth'&&!allowPlinth?k:kind==='pillar'?.8*k:kind==='crystal'?.85*k:kind==='egg'?1.35*k:kind==='hearth'?k+.2:kind==='orrery'?1.3*k:kind==='runeBasin'?.8*k:0;
   return radius>0&&Math.hypot(p[0],p[2])<radius;
  }
- root.VeldrenSceneryScene={migrate,chunk,render,blocked,getView,selectables(scene){return byScene.get(scene)||[];},get enabled(){return enabled;}};
+ root.VeldrenSceneryScene={migrate,chunk,readChunk,prepareChunks,render,blocked,getView,selectables(scene){return byScene.get(scene)||[];},get enabled(){return enabled;}};
 })(globalThis);

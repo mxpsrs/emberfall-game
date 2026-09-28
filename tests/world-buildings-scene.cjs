@@ -70,6 +70,14 @@ async function main(){
  const rendered=ctx.VeldrenBuildingScene.renderAssembly(b);assert(rendered.instances.length>0,'module renderer resolves canonical asset references');
  const renderCheck=run(`(()=>{const previous=currentScene,before=realmNative.scenes.revision(),kinds=new Set();try{currentScene='overworld';for(const b of worldScenes.overworld.buildings){const key=[b.race,b.archetype,b.variant].join(':');if(kinds.has(key))continue;kinds.add(key);building3({indexed(){},face(){}},b);}}finally{currentScene=previous;}return {before,after:realmNative.scenes.revision(),kinds:kinds.size};})()`);
  assert(renderCheck.kinds>10);assert.equal(renderCheck.after,renderCheck.before,'rendering canonical buildings never authors height fields or invalidates Scene history');
+ // Exercise the world traversal, including lazy scenery, with a submission-only
+ // painter. Browser acceptance checks actual Filament output separately.
+ ctx.Path2D=class Path2D{};
+ const frameCheck=run(`(()=>{const previous={scene:currentScene,x:px,y:py,w:screen.w,h:screen.h,painter:painter3};try{
+  currentScene='overworld';VeldrenWorldObjects.select(worldScenes.overworld.objects);buildings.splice(0,buildings.length,...worldScenes.overworld.buildings);px=42;py=51;screen.w=870;screen.h=682;resetLandSurface();
+  painter3=()=>({face(){},indexed(){},cached(){},flush(){}});prepareWorldUnderstory();const before=realmNative.scenes.revision();draw3d();return {before,after:realmNative.scenes.revision()};
+ }finally{painter3=previous.painter;currentScene=previous.scene;px=previous.x;py=previous.y;screen.w=previous.w;screen.h=previous.h;VeldrenWorldObjects.select(worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);}})()`);
+ assert.equal(frameCheck.after,frameCheck.before,'drawing the populated world does not materialize or edit canonical entities');
  const saved=native.serialize();assert(native.load({format:'veldren.world',version:2,scenes:[]}));assert.equal(registry.overworld.buildings.length,0,'unload drops derived building views');assert(native.load(saved));
  assert.equal(JSON.stringify(native.serialize()),JSON.stringify(saved),'complete generated building hierarchy/components/transforms round-trip');
  const restored=registry.overworld.buildings.find(b=>b._sceneEntityId===origin.id);assert(restored);assert.equal(restored.service.id,origin.doorId);

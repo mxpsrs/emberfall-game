@@ -1046,6 +1046,7 @@
 
  window.VeldrenEditorBridge={
   isReady:()=>ready,initialize:becomeReady,
+  prepareFrame(){if(ready&&!saving&&!commands?.active&&typeof prepareWorldUnderstory==='function'){const revision=window.realmNative.scenes.revision();prepareWorldUnderstory();if(window.realmNative.scenes.revision()!==revision)post('change',{selection:entityInfo(selected),dirty:commands?.dirty||sceneDocumentDirty});}},
   canonicalSelection:()=>canonicalSelection,
   selectEntity:(id,additive=false)=>canonicalSelection?.select(id,additive),
   sceneName:()=>String(currentScene),

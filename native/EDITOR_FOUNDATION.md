@@ -1,8 +1,12 @@
 # Phase 3 editor foundation
 
-In progress on `phase3-editor-foundation-wip`, created and independently verified
-on GitHub at accepted Phase 2 commit
+Implementation and final verification are on `phase3-editor-foundation-wip`,
+created and independently verified on GitHub at accepted Phase 2 commit
 `9e72e514610f6e8de01ae782e406e10fc5a8443a` before implementation.
+
+The sections below preserve chronological checkpoints. Their pending-work and
+blocker statements describe those earlier checkpoints; `PHASE3_ACCEPTANCE.md`
+records the current result.
 
 ## Native command checkpoint
 
@@ -219,3 +223,20 @@ This is still a checkpoint, not final acceptance. Valid camera rendering exposed
 another authored Scene write during drawing. The write guard correctly rejects
 it; that render path and the remaining fresh reload/play checks are being
 resolved. The camera/context/frame checks and all 124 built startup assets pass.
+
+## Scenery preparation and graphical terrain checkpoint
+
+The remaining render-time write was lazy understory construction. Visible plant
+chunks are now prepared before drawing; drawing reads existing canonical chunks.
+Construction only inserts missing generated entities, preserves existing edits,
+rolls back failed insertion and stays outside user command history. The editor
+defers it during active gestures and Save verification, and refreshes hierarchy
+views without marking navigation dirty. The gameplay loop prepares the same data.
+
+Actual-WASM tests pass for history isolation, preservation through undo/redo,
+existing entity protection, failed construction and persistence. The populated
+Chromium editor now renders the overworld, keeps camera/picking aligned while
+navigating, preserves character state and empty command history, applies a real
+terrain pointer stroke, and passes exact undo/redo plus verified revision-11 Save.
+The screenshot was visually checked. The run reports zero page errors. Fresh
+reload and `/play` are the remaining acceptance checks at this checkpoint.

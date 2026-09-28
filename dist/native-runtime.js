@@ -68,6 +68,23 @@
     const result=json?freeze(JSON.parse(json)):null;entityCache.set(key,result);return result;
    },
    upsert(scene,entity){if(commandWriter){commandWriter(scene,{op:'replace',entity});return true;}return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
+   materializeUnderstory(scene,group,children){
+    // Construction-only streaming into the canonical Scene. Never replace an
+    // existing authored entity or turn camera navigation into an editor command.
+    if(scene!=='overworld'||!group?.components?.GeneratedChunk||group.parent!=='generated:overworld:root:understory'||!group.id?.startsWith('generated:overworld:understory-chunk:')||!Array.isArray(children)||children.some(node=>node.parent!==group.id||node.components?.GeneratedDecoration?.category!=='understory'||!node.id?.startsWith('generated:overworld:understory:')))throw Error('Invalid understory construction');
+    if(scenes.entity(scene,group.id))return false;
+    if(editor&&commandWriter&&scenes.command(scene,{action:'status'}).transaction)throw Error('Finish the editor gesture before streaming scenery');
+    const inserted=[];
+    return scenes.batch(()=>{try{
+     for(const node of [group,...children]){
+      if(scenes.entity(scene,node.id))continue;
+      const ok=withCString(scene,s=>withCString(JSON.stringify(node),n=>api.veldren_world_scene_entity_upsert(world,s,n)===1));
+      if(!ok)throw Error('Cannot construct understory entity');
+      inserted.push(node.id);changed(true,'upsert',scene,node.id);
+     }
+     return true;
+    }catch(error){for(const id of inserted.reverse())changed(withCString(scene,s=>withCString(id,n=>api.veldren_world_scene_entity_remove(world,s,n)===1)),'remove',scene,id);throw error;}});
+   },
    remove(scene,id){if(commandWriter){commandWriter(scene,{op:'delete',id});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
    setTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
    setWorldTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform,space:'world'});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},

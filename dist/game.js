@@ -369,7 +369,7 @@ function frame(now){
     saveClock+=dt;if(saveClock>10&&!window.playerTrade&&!$('creator').open){saveClock=0;save();}
   }
   if(window.playerTrade||$('creator').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
-  if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
+  if(assetsReady&&!document.hidden){if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();draw();}requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));
 $('closeModal').onclick=close;$('journal').onclick=showHelp;$('mapBtn').onclick=worldMap;
@@ -409,7 +409,7 @@ async function boot(){
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
     realmSetStartupStage('scene-ownership');await window.VeldrenSceneOwnership?.migrateStaticProps();await window.VeldrenBuildingScene?.migrate();await window.VeldrenSceneryScene?.migrate();await window.VeldrenRoadScene?.migrate();await window.VeldrenLightScene?.migrate();await window.VeldrenMetadataScene?.migrate();await window.VeldrenStructureScene?.migrate();await window.VeldrenSpawnScene?.migrate();await window.VeldrenGatherableScene?.migrate();await window.VeldrenBridgeScene?.migrate();await window.VeldrenQuarryScene?.migrate();await window.VeldrenServiceScene?.migrate();window.VeldrenWorldObjects?.install();
     realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
-    assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
+    assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();draw();
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();
     realmLoadComplete();save();requestAnimationFrame(frame);
   }catch(error){

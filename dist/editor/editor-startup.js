@@ -3,7 +3,7 @@
 // world generators and Filament renderer have no player/controller authority.
 function editorFrame(now){
  const dt=Math.min(Math.max(0,(now-last)/1000),.05);last=now;
- if(assetsReady&&!document.hidden){time+=dt;draw();}
+ if(assetsReady&&!document.hidden){time+=dt;window.VeldrenEditorBridge?.prepareFrame?.();draw();}
  requestAnimationFrame(editorFrame);
 }
 async function bootEditor(){
