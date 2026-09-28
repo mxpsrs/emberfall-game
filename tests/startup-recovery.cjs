@@ -31,3 +31,16 @@ vm.runInContext("realmLoadStatus('Starting the renderer…',32)",progressing.ctx
 const bench=require('../scripts/benchmark-desktop.cjs');
 vm.runInContext("let queued=0;queueCloudSave=()=>queued++;assetsReady=false;save();assert.equal(queued,0);assetsReady=true;window.realmStartup={failed:true};save();assert.equal(queued,0);window.realmStartup.failed=false;save();assert.equal(queued,1);",bench.ctx);
 console.log('PASS: critical scripts, scoped runtime errors, recoverable rejections, one-shot diagnostics, login wait, mobile stall window, retry, and protected character saves.');
+async function checkPaintBoundary(){
+ const test=setup(),frames=[];test.ctx.requestAnimationFrame=fn=>frames.push(fn);test.ctx.ran=false;
+ const work=vm.runInContext("realmStartupStep('Preparing world',80,'scene-ownership',()=>{ran=true;return 42;})",test.ctx);
+ assert.equal(test.elements.get('loadingStatus').textContent,'Preparing world');assert.equal(test.ctx.ran,false);
+ frames.shift()();assert.equal(test.ctx.ran,false,'heavy work waits until after the paint callback');
+ test.timers.at(-1)();assert.equal(await work,42);assert.equal(test.ctx.ran,true);
+ test.ctx.ran=false;
+ const interrupted=vm.runInContext("realmStartupStep('Connecting world',93,'scene-ownership',()=>{ran=true;})",test.ctx);
+ frames.shift()();test.ctx.window.realmStartup.failed=true;test.timers.at(-1)();
+ await assert.rejects(interrupted,/Startup was interrupted/);assert.equal(test.ctx.ran,false,'failed startup cannot continue into gameplay');
+ console.log('PASS: startup paints progress before heavy work and stops after interruption.');
+}
+checkPaintBoundary().catch(error=>{console.error(error);process.exitCode=1;});

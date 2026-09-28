@@ -20,10 +20,23 @@
   if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
   const handles=new WeakMap(),liveHandles=new Set();let nextHandle=1,destroyed=false,routeCells=0,routeIds=0,routeCapacity=0,animationScratch=0,animationCapacity=0;
   function withCString(value,fn){const bytes=new TextEncoder().encode(String(value)),pointer=api.malloc(bytes.length+1);if(!pointer)throw new Error('Native scene string allocation failed');const target=new Uint8Array(api.memory.buffer,pointer,bytes.length+1);target.set(bytes);target[bytes.length]=0;try{return fn(pointer)}finally{api.free(pointer)}}
-  function readNativeText(call){const length=call(0,0);if(!length)return null;const pointer=api.malloc(length+1);if(!pointer)throw new Error('Native scene read allocation failed');try{if(call(pointer,length+1)!==length)throw new Error('Native scene read changed while copying');return new TextDecoder().decode(new Uint8Array(api.memory.buffer,pointer,length))}finally{api.free(pointer)}}
+  const textSizes=new Map(),textDecoder=new TextDecoder();
+  function readNativeText(call,kind='record'){
+   // The native copy API returns the required size even when the supplied
+   // buffer is too small. Usually one call can both serialize and copy.
+   let capacity=textSizes.get(kind)||4096,pointer=api.malloc(capacity);
+   if(!pointer)throw new Error('Native scene read allocation failed');
+   try{
+    let length=call(pointer,capacity);if(!length)return null;
+    if(length>=capacity){api.free(pointer);pointer=0;capacity=length+1;pointer=api.malloc(capacity);if(!pointer)throw new Error('Native scene read allocation failed');if(call(pointer,capacity)!==length)throw new Error('Native scene read changed while copying');}
+    textSizes.set(kind,Math.max(4096,Math.ceil((length+1)*1.25)));
+    return textDecoder.decode(new Uint8Array(api.memory.buffer,pointer,length));
+   }finally{if(pointer)api.free(pointer);}
+  }
   const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
   function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  function finishBatch(){if(--batchDepth!==0)return;const names=[...batchedScenes];batchedScenes.clear();if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}
   let commandWriter=null,performanceHandle=0;
   const scenes={
    performance(scene,request){
@@ -66,13 +79,14 @@
     if(value.changed){const transforms=request.action!=='undo'&&request.action!=='redo'&&(request.operations||[]).length&&(request.operations||[]).every(op=>['transform','translate','rotate','scale'].includes(op.op));scenes.batch(()=>{for(const id of new Set(value.affected))changed(true,transforms?'transform':scenes.entity(scene,id)?'upsert':'remove',scene,id);});}
     return freeze(value);
    },
-   batch(callback){batchDepth++;try{return callback();}finally{if(--batchDepth===0){const names=[...batchedScenes];batchedScenes.clear();for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:scene===null?'load':'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}}},
+   batch(callback){batchDepth++;try{return callback();}finally{finishBatch();}},
+   async batchAsync(callback){batchDepth++;try{return await callback();}finally{finishBatch();}},
    subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
    entity(scene,id){
     const revision=api.veldren_world_scene_revision(world);if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
-    const key=JSON.stringify([scene,id]);if(entityCache.has(key))return entityCache.get(key);
+    let entries=entityCache.get(scene);if(!entries){entries=new Map();entityCache.set(scene,entries);}if(entries.has(id))return entries.get(id);
     const json=withCString(scene,scenePtr=>withCString(id,idPtr=>readNativeText((out,capacity)=>api.veldren_world_scene_entity_read(world,scenePtr,idPtr,out,capacity))));
-    const result=json?freeze(JSON.parse(json)):null;entityCache.set(key,result);return result;
+    const result=json?freeze(JSON.parse(json)):null;entries.set(id,result);return result;
    },
    upsert(scene,entity){if(commandWriter){commandWriter(scene,{op:'replace',entity});return true;}return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
    materializeUnderstory(scene,group,children){
@@ -95,14 +109,14 @@
    remove(scene,id){if(commandWriter){commandWriter(scene,{op:'delete',id});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
    setTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
    setWorldTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform,space:'world'});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
-   read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity)));return json?JSON.parse(json):null;},
+   read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity),'scene'));return json?JSON.parse(json):null;},
    componentIds(scene,component){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_component_ids(world,scenePtr,typePtr,out,capacity))));return json?JSON.parse(json):[];},
    footprintsAt(scene,component,x,z){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_footprints_at(world,scenePtr,typePtr,x,z,out,capacity))));return json?JSON.parse(json):[];},
    quarrySample(scene,x,z,pad=0,id=''){const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_world_scene_quarry_sample(world,s,e,x,z,pad,out,capacity))));return json?JSON.parse(json):null;},
    quarryRampAt(scene,x,z){return withCString(scene,s=>api.veldren_world_scene_quarry_ramp_at(world,s,x,z)===1);},
    terrainPadHeight(scene,x,z,height,footing=false){return withCString(scene,s=>api.veldren_world_scene_terrain_pad_height(world,s,x,z,height,Number(footing)));},
    lights(scene,night=1){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_lights_read(world,scenePtr,night,out,capacity)));return json?JSON.parse(json):[];},
-   serialize(){const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity));return json?JSON.parse(json):null;},
+   serialize(){const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity),'document');return json?JSON.parse(json):null;},
    load(document){return changed(withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1),'load');},
    revision(){return api.veldren_world_scene_revision(world);}
   };

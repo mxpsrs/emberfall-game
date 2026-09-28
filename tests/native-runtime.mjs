@@ -70,5 +70,21 @@ assert.equal(native.scenes.remove('overworld',region.id),true);assert.equal(nati
 assert.equal(native.scenes.load(savedWorld),true);const reloaded=native.scenes.read('overworld');assert.equal(reloaded.entities.length,2);assert.equal(reloaded.entities.find(entity=>entity.id===barrel.id).transform.position[0],4);
 savedWorld.revision=17;savedWorld.updatedAt='2026-09-26T09:00:00Z';savedWorld.terrain={version:1,patches:[]};assert(native.scenes.load(savedWorld));
 const metadataRoundtrip=native.scenes.serialize();assert.equal(metadataRoundtrip.revision,17);assert.equal(metadataRoundtrip.updatedAt,savedWorld.updatedAt);assert.deepEqual(JSON.parse(JSON.stringify(metadataRoundtrip.terrain)),JSON.parse(JSON.stringify(savedWorld.terrain)));
+// Construction can span paint turns, but reads must still see native writes.
+const changes=[],unsubscribe=native.scenes.subscribe(event=>changes.push(event));
+await native.scenes.batchAsync(async()=>{
+ assert(native.scenes.load(savedWorld));await Promise.resolve();
+ const wide={...barrel,metadata:{text:'world-data-'.repeat(10000)}};
+ assert(native.scenes.upsert('overworld',wide));
+ assert.equal(native.scenes.entity('overworld',barrel.id).metadata.text,wide.metadata.text,'a growing native read retries with sufficient capacity');
+ assert.equal(changes.length,0,'derived projections wait for the construction boundary');
+ assert.equal(native.scenes.serialize().scenes[0].entities.find(e=>e.id===barrel.id).metadata.text,wide.metadata.text);
+});
+assert.equal(changes.length,1);assert.equal(changes[0].kind,'load','one final rebuild covers loads and subsequent writes');
+changes.length=0;
+await assert.rejects(native.scenes.batchAsync(async()=>{native.scenes.load(savedWorld);throw Error('construction failed');}),/construction failed/);
+assert.equal(changes.length,1,'failure releases the notification boundary');
+native.scenes.setTransform('overworld',barrel.id,{position:[7,0,9],rotation:[0,0,0,1],scale:[1,1,1]});
+assert.equal(changes.length,2,'later edits still notify immediately');unsubscribe();
 listeners.pagehide();assert.throws(()=>native.stepActors([],0.1,0,0,null,3),/stopped/);
 console.log('PASS: browser bridge loads the C++ WASM core and delegates actor simulation');

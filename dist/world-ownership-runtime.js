@@ -235,6 +235,18 @@
   try{invalidateWorld();}catch{}
   return {migrated:changed,scenes:output.length,authoritative};
  }
+ async function migrateWorld(step=(_message,_progress,_stage,task)=>task()){
+  const reports={};
+  // Keep all writes in the native Scene. Defer derived-view notifications
+  // until construction is complete, instead of rebuilding the whole world
+  // after each category is added. Each mapper installs its own new views.
+  await root.realmNative.scenes.batchAsync(async()=>{
+   const stages=[['Props',()=>migrateStaticProps()],...['Building','Scenery','Road','Light','Metadata','Structure','Spawn','Gatherable','Bridge','Quarry','Service'].map(name=>[name,()=>root['Veldren'+name+'Scene'].migrate()])];
+   for(let i=0;i<stages.length;i++){const [name,task]=stages[i];reports[name]=await step('Preparing world · '+(i+1)+' of '+stages.length,80+i,'scene-ownership',task);}
+   await step('Connecting the world…',93,'scene-ownership',()=>{});
+  });
+  root.VeldrenWorldObjects.install();return reports;
+ }
  function onSceneChange(event){
   const names=event.kind==='load'?Object.keys(worldRegistry()):[event.scene];
   for(const name of names){
@@ -285,5 +297,5 @@
   writeEntity(scene,entity);return scenesByName.get(scene)?.byId.get(id);
  }
  function status(){return {captured:generationCaptured,migrated:generatedCount,scenes:scenesByName.size,savedCatalogAuthoritative:authoritative};}
- root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},captureGenerationIdentity,migrateStaticProps,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
+ root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},captureGenerationIdentity,migrateStaticProps,migrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
 })(globalThis);

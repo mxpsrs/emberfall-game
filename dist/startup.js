@@ -4,6 +4,13 @@ const REALM_LOADING_STALL_MS=120000;
 const REALM_DIAGNOSTIC_STAGES={scripts:'SCR','script-download':'SDL','script-runtime':'SRT',auth:'AUT','native-init':'NAT','filament-init':'FIL',character:'SAV',assets:'AST','scene-ownership':'SCN','world-setup':'WRL','world-generation':'WGN','tutorial-generation':'TUT','editor-world':'EDT','hud-init':'HUD','first-draw':'DRW',timeout:'TMO'};
 window.realmStartup={failed:false,finished:false,paused:false,stage:'Loading the game…',stageCode:'scripts',loaded:0,timer:null,timerGeneration:0,reportedFailure:false};
 function realmSetStartupStage(stage){const state=window.realmStartup;if(!state.failed&&!state.finished&&stage)state.stageCode=stage;}
+async function realmStartupStep(message,progress,stage,task){
+ realmLoadStatus(message,progress,stage);
+ // Promise-only migration chains never yield a browser paint or input turn.
+ await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+ if(window.realmStartup.failed)throw Error('Startup was interrupted');
+ return realmStartupTask(stage,task);
+}
 function realmStartupTask(stage,task){return Promise.resolve().then(task).catch(error=>{realmSetStartupStage(stage);if(error&&typeof error==='object'){try{if(!error.realmStartupStage)error.realmStartupStage=stage;}catch{}throw error;}const wrapped=new Error(typeof error==='string'?error:'Startup task failed');wrapped.realmStartupStage=stage;throw wrapped;});}
 function realmDiagnosticCode(stage=window.realmStartup?.stageCode){return 'VLD-'+(REALM_DIAGNOSTIC_STAGES[stage]||'UNK');}
 function realmDiagnosticText(value,limit){return String(value??'').replace(/([?&](?:password|token|session|key)=)[^&#\s]*/gi,'$1[redacted]').replace(/("(?:password|state)"\s*:\s*")[^"]*/gi,'$1[redacted]').slice(0,limit);}
