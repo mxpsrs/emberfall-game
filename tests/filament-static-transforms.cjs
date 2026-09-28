@@ -23,7 +23,7 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   let groundHeight=0,transforms=0;
   const original=F.TransformManager.prototype.setTransform;
   F.TransformManager.prototype.setTransform=function(...args){transforms++;return original.apply(this,args);};
-  const context={Filament:F,console,Math,Float32Array,Uint8Array,Uint16Array,Map,Set,WeakMap,Promise,Error,Number,Array,
+  const context={Filament:F,console,performance,Math,Float32Array,Uint8Array,Uint16Array,Map,Set,WeakMap,Promise,Error,Number,Array,
    document:{createElement(){return {className:'',dataset:{},style:{},setAttribute(){},width:0,height:0};},getElementById(id){return id==='world'?world:null;}},
    VELDREN_FILAMENT_ASSETS:{material:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-world.filamat'))),terrainMaterial:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.filamat'))),atlasBytes:textures,groundSurfacesBytes:textures},
    realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>groundHeight,
@@ -49,6 +49,12 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
    assert.equal(movementTransforms,1,'mutated model matrix moves only its own entity');
    assert.equal(groundingTransforms,256,'terrain sculpting immediately regrounds all visible entities');
   }
+  assert.equal(gpu.diagnostics().frame,null,'production frame instrumentation is disabled by default');
+  context.VELDREN_PERFORMANCE=true;render();
+  const measured=gpu.diagnostics();assert.equal(measured.frame.submittedPackets,256);assert.equal(measured.frame.transformSubmissions,0);
+  assert.equal(measured.legacy.meshes,1);assert.equal(measured.legacy.renderables,256);assert.equal(measured.legacy.gpuBytes,3*44);
+  assert(measured.frame.renderMs>=measured.frame.synchronizationMs);assert(measured.firstRenderMs>0);
+  context.VELDREN_PERFORMANCE=false;render();assert.equal(gpu.diagnostics().frame,null);
   context.VeldrenAssets.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}

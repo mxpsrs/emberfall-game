@@ -60,5 +60,5 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   }
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();}
- return Object.freeze({begin,submit,end,destroy,diagnostics:()=>({models:pools.size,instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),loading:[...pools.values()].filter(p=>!p.model&&!p.error).length,failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
+ return Object.freeze({begin,submit,end,destroy,diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),loading:[...pools.values()].filter(p=>!p.model&&!p.error).length,failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
 }

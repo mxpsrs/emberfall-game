@@ -93,7 +93,7 @@ function createRealmFilamentGPU(){
  const materialInstances=new Map(),terrainMaterialInstances=new Set(),worldMaterialInstances=new Set(),resources=new Set(),resourceByBuffer=new WeakMap(),activeEntities=new Set(),nextEntities=new Set(),activePools=new Set();
  const sharedMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map();
  const transformManager=engine.getTransformManager(),lightManager=engine.getLightManager(),matrixScratch=new Float32Array(16);
- const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null,previousSkyBackground='';
+ const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null,previousSkyBackground='',frameMetrics=null,firstRenderMs=null;
  const styleInstance=style=>{
   let instance=materialInstances.get(style.key);if(instance)return instance;
   if(style.terrain){instance=terrainMaterial.createInstance();instance.setTextureParameter('groundSurfaces',groundSurfaces,groundSampler);terrainMaterialInstances.add(instance);}
@@ -115,7 +115,7 @@ function createRealmFilamentGPU(){
   vb.setBufferAt(engine,0,arrays.positions);vb.setBufferAt(engine,1,tangents);vb.setBufferAt(engine,2,arrays.colors);vb.setBufferAt(engine,3,arrays.uvs);
   let ib=null;const indices=entry.index?.buffer?.data;
   if(indices){ib=Filament.IndexBuffer.Builder().indexCount(indices.length).bufferType(Filament.IndexBuffer$IndexType.USHORT).build(engine);ib.setBuffer(engine,indices);}
-  const resource={buffer:entry.buffer,vb,ib,bounds:entry.bounds||realmFilamentBounds(arrays.positions),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral};
+  const resource={buffer:entry.buffer,vb,ib,bounds:entry.bounds||realmFilamentBounds(arrays.positions),gpuBytes:arrays.count*44+(indices?.byteLength||0),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral};
   resources.add(resource);if(!ephemeral)resourceByBuffer.set(entry.buffer,resource);return resource;
  }
  function dynamicCapacity(count){return Math.max(768,Math.ceil(count/768)*768);}
@@ -167,6 +167,7 @@ function createRealmFilamentGPU(){
   let changed=!previous;
   for(let i=0;!changed&&i<16;i++)if(previous[i]!==matrix[i])changed=true;
   if(!changed)return;
+  if(frameMetrics)frameMetrics.transformSubmissions++;
   const instance=transformManager.getInstance(entity);transformManager.setTransform(instance,matrix);instance.delete();
   if(previous)previous.set(matrix);else pool.transforms[slot]=new Float32Array(matrix);
  }
@@ -206,7 +207,12 @@ function createRealmFilamentGPU(){
   await new Promise((resolve,reject)=>{try{asset.loadResources(resolve,()=>{},url.slice(0,url.lastIndexOf('/')+1),null,{normalizeSkinningWeights:true});}catch(error){reject(error);}});asset.releaseSourceData();return {asset,loader,add(){scene.addEntities(asset.getEntities());},remove(){scene.removeEntities(asset.getEntities());},destroy(){scene.removeEntities(asset.getEntities());loader.destroyAsset(asset);loader.delete();}};
  }
  backend={kind:'filament',textureResources,materialResources,modelResources,assetDraws,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;},loadGlb,
+  // Snapshot only on an explicit development request; never enumerate resources
+  // in the normal frame loop. GPU bytes are allocation estimates, not driver VRAM.
+  diagnostics(){return {firstRenderMs,frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
   render(entries,dynamic,g){
+   const measured=window.VELDREN_PERFORMANCE===true,start=measured?performance.now():0;
+   frameMetrics=measured?{submittedPackets:entries.length,dynamicVertices:dynamic.length/12,transformSubmissions:0,synchronizationMs:0,renderMs:0}:null;
    if(engine.hasUnrecoverableFailure())throw new Error('Filament reported an unrecoverable renderer failure');
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
@@ -233,7 +239,9 @@ function createRealmFilamentGPU(){
    updateLights(lighting);updateMaterials(lighting,lair);renderer.setClearOptions({clearColor:[...sky,lair?1:0],clear:true,discard:true});
    // Select this engine's GL context before beginFrame (which can flush) and
    // again for submission. The convenience binding bypasses the JS selector.
+   if(frameMetrics)frameMetrics.synchronizationMs=performance.now()-start;
    engine.execute();if(renderer.beginFrame(swapChain)){renderer.renderView(view);window.VeldrenEditorTools?.render(renderer);renderer.endFrame();}engine.execute();
+   if(frameMetrics){frameMetrics.renderMs=performance.now()-start;if(firstRenderMs===null)firstRenderMs=performance.now();}
   }};
  window.VeldrenFilament={version:'1.77.0-pc-stable',backend,loadGlb};return backend;
 }
