@@ -165,3 +165,49 @@ The traced populated-editor rerun passed Inspector numeric edits, undo/redo,
 hierarchy, prefabs and modular building history without an Inspector source
 change. Save/fresh-reload completion is still being verified; the earlier
 numeric-input failure remains recorded until the complete rerun finishes.
+
+## Resource lifetime and stable instance checkpoint
+
+`WorldResourceResidency` now makes presentation-resource retention decisions in
+C++. The Filament adapter submits the existing owners' allocation inventory and
+releases the returned IDs. Profiles budget estimated GPU allocations / retained
+staging bytes at 128/64 MiB for mobile browser, 256/128 MiB for browser, and
+1024/512 MiB for native desktop. Canonical geometry and texture allocations are
+charged as reserved shared GPU bytes. These are allocation estimates, not driver
+VRAM or complete browser heap budgets. Visible allocations are protected even
+when they exceed a budget; `overBudget` and pinned byte counts expose that case
+instead of reducing quality or dropping visible objects.
+
+Idle resources follow a bounded grace interval and least-recent-use order. An
+eviction remains pending until the next inventory acknowledges release; reuse
+cancels a pending eviction. Resource records disappear after acknowledgement.
+GPU destruction now also retires entity-manager IDs. Shared mesh, terrain and
+compiled-building caches invalidate their entry when their staging/GPU buffer is
+retired, allowing exact reconstruction from the existing source geometry on
+return. None of these operations unloads canonical entities, changes selection,
+writes history, edits a WorldDocument, or affects gameplay/network identities.
+
+Canonical draw pools now bind instances by the stable identity already supplied
+by the native packets and generated modular draws. Visibility reordering and
+removing an earlier instance no longer move every following slot. They retain
+the Phase 2 shared model/material/texture leases and Filament's existing automatic
+instancing. Different material/shadow options and model generations stay in
+separate compatible pools. No new geometry merger or instancing backend exists.
+
+Passed: `make -C native world-residency-test`, rebuilt WASM,
+`node tests/world-performance.mjs .qa/phase4/baseline-complete/world.json`,
+`node tests/asset-meshes.mjs`, `node tests/filament-static-transforms.cjs`,
+`node tests/renderer-filament.cjs`, normal `npm run build`, built-asset checks,
+editor selection regression, and native desktop test/headless smoke. The native
+resource test covers 1,000 travel cycles, CPU/shared accounting, active-resource
+protection, reacquisition and release acknowledgement. Actual Filament tests
+verify zero transform uploads on reordered/culled stable instances, one upload
+for one moved instance, eviction and exact byte reconstruction. Complete saved
+world content remains identical across native residency operations.
+
+The earlier populated-editor rerun completed save/fresh reload as well as
+Inspector, hierarchy, prefab and building history checks with zero page errors;
+its prior numeric-input blocker is resolved without changing Inspector code.
+A new populated travel/revisit browser comparison is running. This is still a
+Phase 4 checkpoint: explicit asynchronous cell residency/prefetch, full stress
+and mobile graphical acceptance, and measured final comparisons remain open.

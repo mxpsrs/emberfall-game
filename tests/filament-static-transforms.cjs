@@ -23,12 +23,17 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   let groundHeight=0,transforms=0;
   const original=F.TransformManager.prototype.setTransform;
   F.TransformManager.prototype.setTransform=function(...args){transforms++;return original.apply(this,args);};
-  const context={Filament:F,console,performance,Math,Float32Array,Uint8Array,Uint16Array,Map,Set,WeakMap,Promise,Error,Number,Array,
+  const context={TextEncoder,TextDecoder,AbortController,atob,realmAssetURL:p=>p,Filament:F,console,performance,Math,Float32Array,Uint8Array,Uint16Array,Map,Set,WeakMap,Promise,Error,Number,Array,
    document:{createElement(){return {className:'',dataset:{},style:{},setAttribute(){},width:0,height:0};},getElementById(id){return id==='world'?world:null;}},
    VELDREN_FILAMENT_ASSETS:{material:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-world.filamat'))),terrainMaterial:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.filamat'))),atlasBytes:textures,groundSurfacesBytes:textures},
    realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>groundHeight,
-   screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
-  context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);await require('./helpers/native-assets.cjs')(context,root);
+   screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},profile3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
+  context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+file+'.js'),'utf8'),context);
+  // Real native residency decisions via the production world bridge.
+  Object.assign(context,{WebAssembly,DataView,URL,addEventListener(){},fetch:async p=>{const bytes=fs.readFileSync(path.join(root,'dist',String(p)));return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes.toString())};}});
+  vm.runInContext(fs.readFileSync(path.join(root,'dist/native-runtime.js'),'utf8'),context);
+  context.realmNative=await context.realmNativeReady;
+  vm.runInContext(fs.readFileSync(path.join(root,'dist/renderer-gl.js'),'utf8'),context,{filename:'renderer-gl.js'});
   vm.runInContext(fs.readFileSync(path.join(root,'dist/renderer-filament.js'),'utf8'),context,{filename:'renderer-filament.js'});
   const gpu=context.createRealmFilamentGPU(),raw=new Float32Array([
    0,0,0,0,1,0,1,0,0,1,0,0,
@@ -55,7 +60,21 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.equal(measured.legacy.meshes,1);assert.equal(measured.legacy.renderables,256);assert.equal(measured.legacy.gpuBytes,3*44);
   assert(measured.frame.renderMs>=measured.frame.synchronizationMs);assert(measured.firstRenderMs>0);
   context.VELDREN_PERFORMANCE=false;render();assert.equal(gpu.diagnostics().frame,null);
-  context.VeldrenAssets.destroy();
+  const beforeRetirement=buffer.data.slice();let retired=0;buffer.retire=()=>retired++;
+  for(let i=0;i<122;i++)gpu.render([],[],null);
+  assert.equal(retired,1);assert.equal(gpu.diagnostics().legacy.meshes,0);assert.equal(buffer.data,null);
+  assert.equal(gpu.scene.getRenderableCount(),0);assert(gpu.diagnostics().residency.evictions>=1);
+  const replacement=gpu.upload(beforeRetirement);gpu.render([{...replacement,model:models[0]}],[],null);
+  assert.equal(gpu.diagnostics().legacy.meshes,1);assert.equal(gpu.scene.getRenderableCount(),1);
+  assert.deepEqual(Array.from(replacement.buffer.data),Array.from(beforeRetirement));
+  const mesh={packed:beforeRetirement},firstEntry=context.realmMeshEntry(gpu,mesh);gpu.render([{...firstEntry,model:models[0]}],[],null);
+  assert(gpu.sharedMeshes.has(mesh));assert(gpu.meshBytes>0);
+  for(let i=0;i<122;i++)gpu.render([],[],null);
+  assert.equal(gpu.sharedMeshes.has(mesh),false);assert.equal(gpu.meshUse.size,0);assert.equal(gpu.meshBytes,0);
+  const secondEntry=context.realmMeshEntry(gpu,mesh);assert.notEqual(secondEntry,firstEntry);
+  assert.deepEqual(Array.from(secondEntry.buffer.data),Array.from(beforeRetirement));gpu.render([{...secondEntry,model:models[0]}],[],null);
+  assert.equal(gpu.scene.getRenderableCount(),1);
+  context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}
 })).finally(()=>fs.rmSync(temporary,{recursive:true,force:true})).catch(error=>{console.error(error);process.exitCode=1;});

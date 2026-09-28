@@ -35,4 +35,9 @@ assert.equal(choose(0).selections[0][1],0);for(let i=0;i<30;i++)assert.equal(cho
 assert.equal(choose(113).selections[0][0],variants[0]);for(let i=0;i<30;i++)assert.equal(choose(i%2?101:99).selections[0][1],1);
 assert.equal(choose(225).selections[0][0],variants[1]);assert.equal(choose(0).selections[0][0],model);assert.deepEqual(n.serialize(),saved);
 console.log('PASS: actual-WASM stable native LOD batch with real asset IDs and unchanged Scene');
+const residencyDocument=n.serialize(),mb=1024*1024;
+let resident=n.performance('lod',{op:'residency',profile:'browser-mobile',resources:[['old',90*mb,30*mb,true]]});assert.equal(resident.evict.length,0);
+resident=n.performance('lod',{op:'residency',profile:'browser-mobile',resources:[['old',90*mb,30*mb,false],['current',90*mb,30*mb,true]]});assert.deepEqual(Array.from(resident.evict),['old']);
+assert.deepEqual(n.serialize(),residencyDocument);assert.equal(n.entity('lod','lod-entity').id,'lod-entity');
+console.log('PASS: actual-WASM memory budgets retire presentation only and preserve the complete WorldDocument');
 native.destroy();assert.throws(()=>n.performance('test',{op:'sync'}));console.log('PASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown');

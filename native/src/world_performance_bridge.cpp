@@ -1,13 +1,14 @@
 #include "veldren/world_performance.h"
 #include "veldren/world_visibility.h"
 #include "veldren/world_lod.h"
+#include "veldren/world_residency.h"
 #include <cstring>
 #include <cmath>
 #include <memory>
 #include <stdexcept>
 
 namespace {
-struct PerformanceHandle {void* world;std::uint32_t assets;std::string scene,response;veldren::WorldPartition partition;veldren::WorldLodState canonical_lods,compatibility_lods;};
+struct PerformanceHandle {void* world;std::uint32_t assets;std::string scene,response;veldren::WorldPartition partition;veldren::WorldLodState canonical_lods,compatibility_lods;veldren::WorldResourceResidency residency;};
 std::map<std::uint32_t,PerformanceHandle> handles;
 std::uint32_t next_handle=1;
 using veldren::Json;
@@ -16,6 +17,11 @@ Json numbers(veldren::Vec3 v){return Json::Array{v.x,v.y,v.z};}
 Json strings(const std::vector<veldren::EntityId>& ids){Json::Array out;out.reserve(ids.size());for(const auto& id:ids)out.emplace_back(id);return out;}
 Json command(PerformanceHandle& h,const Json& request){
  const auto* op=request.find("op"),*name=request.find("scene");if(!op||!name)throw std::invalid_argument("Performance operation and Scene required");
+ if(op->string_or()=="residency"){
+  const auto* rows=request.find("resources"),*profile=request.find("profile"),*gpu=request.find("reservedGpu"),*cpu=request.find("reservedCpu");
+  if(!rows)throw std::invalid_argument("Resource inventory required");
+  return h.residency.reconcile(*rows,veldren::world_residency_profile(profile?profile->string_or():"browser"),gpu?gpu->number_or(-1):0,cpu?cpu->number_or(-1):0);
+ }
  auto* assets=veldren::asset_registry_for_performance(h.assets);auto* scene=veldren::world_scene_for_performance(h.world,name->string_or().c_str());
  if(!assets||!scene)throw std::invalid_argument("Canonical owner unavailable");
  if(h.scene!=scene->name()||!scene->spatial_tracking()){h.partition.reset();h.canonical_lods.clear();h.compatibility_lods.clear();h.scene=scene->name();}
@@ -65,7 +71,7 @@ Json command(PerformanceHandle& h,const Json& request){
 }
 }
 extern "C" {
-std::uint32_t veldren_performance_create(void* world,std::uint32_t assets){if(!world||!veldren::asset_registry_for_performance(assets)||!next_handle)return 0;const auto id=next_handle++;handles.emplace(id,PerformanceHandle{world,assets,{},{},{},{},{}});return id;}
+std::uint32_t veldren_performance_create(void* world,std::uint32_t assets){if(!world||!veldren::asset_registry_for_performance(assets)||!next_handle)return 0;const auto id=next_handle++;handles.emplace(id,PerformanceHandle{world,assets,{},{},{},{},{},{}});return id;}
 void veldren_performance_destroy(std::uint32_t handle){handles.erase(handle);}
 int veldren_performance_command(std::uint32_t handle,const char* request){auto it=handles.find(handle);if(it==handles.end()||!request)return 0;try{it->second.response=veldren::write_json(Json::Object{{"ok",true},{"value",command(it->second,veldren::parse_json(request))}});return 1;}catch(const std::exception& e){it->second.response=veldren::write_json(Json::Object{{"ok",false},{"error",e.what()}});return 0;}}
 std::uint32_t veldren_performance_response(std::uint32_t handle,char* out,std::uint32_t capacity){const auto it=handles.find(handle);if(it==handles.end())return 0;const auto& text=it->second.response;if(out&&capacity>text.size()){std::memcpy(out,text.data(),text.size());out[text.size()]=0;}return static_cast<std::uint32_t>(text.size());}

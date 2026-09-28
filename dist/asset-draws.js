@@ -8,7 +8,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(instance.active)scene.removeEntities(instance.entities);
   for(const entity of [...instance.entities,instance.root]){engine.destroyEntity(entity);filament.EntityManager.get().destroy(entity);entity.delete();}
  }
- function removePool(pool){for(const instance of pool.instances)removeInstance(instance);pool.instances=[];pool.lease.release();}
+ function removePool(pool){for(const instance of pool.instances)removeInstance(instance);pool.instances=[];pool.identities.clear();pool.lease.release();}
  function makeInstance(model,options={}){
   const root=filament.EntityManager.get().create(),entities=[];let parent;
   try{
@@ -40,11 +40,14 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){
-   const lease=resources.acquire(id,profile,options||{});pool={lease,model:null,error:null,instances:[],used:0,lastUsed:frame};pools.set(key,pool);
+   const lease=resources.acquire(id,profile,options||{});pool={lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
    const current=pool;lease.ready.then(model=>{current.model=model;},error=>{current.error=error;});
   }
   pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return false;
-  const slot=pool.used++,instance=pool.instances[slot]||(pool.instances[slot]=makeInstance(pool.model,options||{}));
+  const slot=pool.used++,keyIdentity=identity==null?'slot:'+slot:'entity:'+identity;
+  let instance=pool.identities.get(keyIdentity);
+  if(!instance){instance=makeInstance(pool.model,options||{});instance.identity=keyIdentity;pool.identities.set(keyIdentity,instance);pool.instances.push(instance);}
+  instance.seen=frame;
   if(!instance.matrix||matrix.some((v,i)=>v!==instance.matrix[i])){
    const transform=manager.getInstance(instance.root);try{manager.setTransform(transform,matrix);}finally{transform.delete();}instance.matrix=Array.from(matrix);
   }
@@ -52,10 +55,10 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
  }
  function end(){
   for(const [id,pool] of pools){
-   for(let i=pool.used;i<pool.instances.length;i++)if(pool.instances[i].active){scene.removeEntities(pool.instances[i].entities);pool.instances[i].active=false;}
+   for(const instance of pool.instances)if(instance.seen!==frame&&instance.active){scene.removeEntities(instance.entities);instance.active=false;}
    // The small grace interval avoids allocating again on a culling boundary;
    // changing Scene clears immediately, and excess instance slots are removed.
-   while(pool.instances.length>pool.used+8)removeInstance(pool.instances.pop());
+   let idle=0;pool.instances=pool.instances.filter(instance=>{if(instance.seen===frame||++idle<=8)return true;removeInstance(instance);pool.identities.delete(instance.identity);return false;});
    if(frame-pool.lastUsed>30){removePool(pool);pools.delete(id);}
   }
  }

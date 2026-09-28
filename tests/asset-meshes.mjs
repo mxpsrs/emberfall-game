@@ -23,6 +23,15 @@ try{
   for(let n=0;n<100&&draws.diagnostics().loading;n++)await new Promise(resolve=>setTimeout(resolve,10));
   draws.begin('one');for(let i=0;i<100;i++)assert(draws.submit(id,matrix));draws.end();assert.equal(draws.diagnostics().instances,100);assert(scene.getRenderableCount()>=100);assert.equal(models.diagnostics().models,1);
   draws.begin('one');draws.submit(id,[...matrix.slice(0,12),5,2,4,1]);draws.end();assert.equal(draws.diagnostics().instances,9);assert(scene.getRenderableCount()<10);
+  // Stable Scene identities preserve transforms when visibility changes order.
+  const originalTransform=F.TransformManager.prototype.setTransform;let submissions=0;
+  F.TransformManager.prototype.setTransform=function(...args){submissions++;return originalTransform.apply(this,args);};
+  const poses=Array.from({length:24},(_,i)=>[...matrix.slice(0,12),i,2,4,1]);
+  draws.begin('one');for(let i=0;i<24;i++)draws.submit(id,poses[i],0,null,'stable:'+i);draws.end();
+  submissions=0;draws.begin('one');for(let i=23;i>=0;i--)draws.submit(id,poses[i],0,null,'stable:'+i);draws.end();assert.equal(submissions,0);
+  draws.begin('one');for(let i=1;i<24;i++)draws.submit(id,poses[i],0,null,'stable:'+i);draws.end();assert.equal(submissions,0);
+  poses[7][12]+=2;draws.begin('one');for(let i=1;i<24;i++)draws.submit(id,poses[i],0,null,'stable:'+i);draws.end();assert.equal(submissions,1);
+  F.TransformManager.prototype.setTransform=originalTransform;
   assets.invalidate(id);draws.begin('one');assert.equal(draws.submit(id,matrix),false);draws.end();
   draws.begin('two');draws.end();assert.equal(scene.getRenderableCount(),0);assert.equal(models.diagnostics().geometry,0);
   for(const name of [id,'rebuilt:Roof_RoundTiles_4x6','rebuilt:WindowShutters_Thin_Flat_Open','avatar:male','avatar:female','kenney:tree-oak']){
