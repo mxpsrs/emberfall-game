@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ZLIB REQUIRED)
 
-add_library(veldren_core STATIC src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/editor.cpp src/editor_prefabs.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
+add_library(veldren_core STATIC src/world_streaming.cpp src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/editor.cpp src/editor_prefabs.cpp src/core.cpp src/desktop.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/asset_texture.cpp)
 target_include_directories(veldren_core PUBLIC include)
 target_include_directories(veldren_core SYSTEM PRIVATE third_party)
 
@@ -91,3 +91,7 @@ add_test(NAME world-lod COMMAND veldren-world-lod-test)
 add_executable(veldren-world-residency-test tests/world_residency_test.cpp)
 target_link_libraries(veldren-world-residency-test PRIVATE veldren_core)
 add_test(NAME world-residency COMMAND veldren-world-residency-test)
+
+add_executable(veldren-world-streaming-test tests/world_streaming_test.cpp)
+target_link_libraries(veldren-world-streaming-test PRIVATE veldren_core)
+add_test(NAME world-streaming COMMAND veldren-world-streaming-test)

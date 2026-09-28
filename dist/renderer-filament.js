@@ -83,8 +83,9 @@ function createRealmFilamentGPU(){
  catch(error){textureResources.destroy();throw error;}
  assets.atlasBytes=null;assets.groundSurfacesBytes=null;
  const materialResources=createVeldrenMaterialResources(engine,VeldrenAssets,textureResources),modelResources=createVeldrenModelResources(engine,VeldrenAssets,materialResources);
- const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,realmMobileFilament()?'browser-mobile':'browser');
- const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,realmMobileFilament()?'browser-mobile':'browser')):null;
+ const resourceProfile=realmMobileFilament()?'browser-mobile':'browser',streaming=typeof createVeldrenWorldStreaming==='function'?createVeldrenWorldStreaming(realmNative.scenes,VeldrenAssets,modelResources,resourceProfile):null;
+ const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming);
+ const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming)):null;
  const canonicalEligibility=new Map();
  function canonicalEntry(mesh,model,style={}){
   const id=mesh.canonicalAsset;if(!id||style.dissolve||style.boss)return {...realmMeshEntry(backend,mesh),model,...style};
@@ -213,14 +214,14 @@ function createRealmFilamentGPU(){
  backend={kind:'filament',textureResources,materialResources,modelResources,assetDraws,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,releaseBuffer(buffer){const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;buffer.retire=null;for(const [target,bound] of fakeBindings)if(bound===buffer)fakeBindings.delete(target);},loadGlb,
   // Snapshot only on an explicit development request; never enumerate resources
   // in the normal frame loop. GPU bytes are allocation estimates, not driver VRAM.
-  diagnostics(){return {firstRenderMs,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
+  diagnostics(){return {firstRenderMs,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
   render(entries,dynamic,g){
    renderFrame++;const measured=window.VELDREN_PERFORMANCE===true,start=measured?performance.now():0;
    frameMetrics=measured?{submittedPackets:entries.length,dynamicVertices:dynamic.length/12,transformSubmissions:0,synchronizationMs:0,renderMs:0}:null;
    if(engine.hasUnrecoverableFailure())throw new Error('Filament reported an unrecoverable renderer failure');
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
-   const next=nextEntities;assetDraws.begin(currentScene);
+   const next=nextEntities;streaming?.begin(String(currentScene));assetDraws.begin(currentScene);
    const canonical=entries.filter(e=>e.canonicalAsset),canonicalMatrices=canonical.map(e=>realmFilamentMatrix(e.model)),cameraForLod=realmFilamentCameraState(dpr);
    let lodResult=null;if(canonical.length&&realmNative.scenes.performance)lodResult=realmNative.scenes.performance(currentScene,{op:'lod-batch',entries:canonical.map((e,i)=>[e.instanceId||'unbound:'+e.canonicalAsset+':'+(e.model||[]).join(',')+':'+i,e.canonicalAsset,Math.hypot(canonicalMatrices[i][12]-cameraForLod.eye[0],canonicalMatrices[i][13]-cameraForLod.eye[1],canonicalMatrices[i][14]-cameraForLod.eye[2])])});
    this.lodDiagnostics=lodResult?.stats||null;let canonicalIndex=0;
@@ -241,6 +242,7 @@ function createRealmFilamentGPU(){
    const cameraState=realmFilamentCameraState(dpr),{eye,center,near,far,left,right,bottom,top}=cameraState;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
    authoredDraws?.render(String(currentScene),eye);
+   streaming?.end(cameraState.center,[...resources].reduce((n,r)=>n+r.gpuBytes,0)+modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes);
    // Native policy owns the budget/LRU decision; this layer only inventories
    // existing handles and releases the returned IDs through their owners.
    if(globalThis.realmNative?.scenes?.performance){

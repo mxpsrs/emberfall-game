@@ -1,0 +1,3361 @@
+{
+  "label": "staging-final",
+  "sourceBase": "3f0deb4daf83a8aec108f5c896af1d47cb0e2542",
+  "environment": {
+    "browser": "134.0.6998.35",
+    "renderer": "SwiftShader software GPU",
+    "viewport": [
+      1440,
+      900
+    ],
+    "mobile": false,
+    "samplesPerView": 3
+  },
+  "editorReadyMs": 294017.274397,
+  "playReadyMs": 217820.74400399998,
+  "counts": {
+    "scenes": 259,
+    "entities": 20806,
+    "perScene": [
+      {
+        "name": "civil_briarhaven_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_briarhaven_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_copperdelve_102",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_crownreach_103",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_deepforge_104",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_ironhollow_101",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_105",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_stoneford_6",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_0",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_1",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_2",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_3",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_4",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_5",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_6",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "civil_willowcross_7",
+        "entities": 7,
+        "renderables": 0
+      },
+      {
+        "name": "dungeon",
+        "entities": 26,
+        "renderables": 18
+      },
+      {
+        "name": "fairy_between",
+        "entities": 24,
+        "renderables": 16
+      },
+      {
+        "name": "forge",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "inn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "inn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "lair_colossus",
+        "entities": 88,
+        "renderables": 80
+      },
+      {
+        "name": "lair_varkesh",
+        "entities": 96,
+        "renderables": 88
+      },
+      {
+        "name": "lair_veyr",
+        "entities": 136,
+        "renderables": 127
+      },
+      {
+        "name": "lair_xalith",
+        "entities": 106,
+        "renderables": 98
+      },
+      {
+        "name": "mine",
+        "entities": 27,
+        "renderables": 20
+      },
+      {
+        "name": "ork_warrens",
+        "entities": 53,
+        "renderables": 45
+      },
+      {
+        "name": "overworld",
+        "entities": 15496,
+        "renderables": 8728
+      },
+      {
+        "name": "quest_underiron",
+        "entities": 88,
+        "renderables": 79
+      },
+      {
+        "name": "realm_aelindor_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_aelindor_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_aelindor_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_aelindor_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_aelindor_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_aelindor_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_aelindor_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_aelindor_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_aelindor_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_briarhaven_3",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_briarhaven_4",
+        "entities": 11,
+        "renderables": 3
+      },
+      {
+        "name": "realm_copperdelve_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_copperdelve_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_copperdelve_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_copperdelve_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_copperdelve_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_copperdelve_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_copperdelve_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_copperdelve_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_crownreach_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_crownreach_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_crownreach_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_crownreach_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_crownreach_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_crownreach_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_crownreach_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_crownreach_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_deepforge_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_deepforge_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_deepforge_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_deepforge_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_deepforge_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_deepforge_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_deepforge_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_fernwatch_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_fernwatch_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_fernwatch_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_fernwatch_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_fernwatch_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_fernwatch_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_fernwatch_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_greyhaven_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_greyhaven_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_greyhaven_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_greyhaven_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_greyhaven_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_greyhaven_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_ironhollow_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_ironhollow_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_ironhollow_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_25",
+        "entities": 23,
+        "renderables": 15
+      },
+      {
+        "name": "realm_ironhollow_25_lower",
+        "entities": 105,
+        "renderables": 96
+      },
+      {
+        "name": "realm_ironhollow_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_ironhollow_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_ironhollow_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_ironhollow_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_ironhollow_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_moonwillow_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_moonwillow_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_12",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_13",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_14",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_15",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_16",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_17",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_18",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_19",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_moonwillow_20",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_21",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_22",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_23",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_24",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_moonwillow_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_moonwillow_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_moonwillow_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_silverbrook_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_silverbrook_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_silverbrook_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_silverbrook_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_silverbrook_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_silverbrook_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_silverbrook_5",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_2",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_3",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stoneford_4",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_0",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "realm_stonehearth_0_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "realm_stonehearth_1",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_10",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_11",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_2",
+        "entities": 12,
+        "renderables": 4
+      },
+      {
+        "name": "realm_stonehearth_3",
+        "entities": 15,
+        "renderables": 7
+      },
+      {
+        "name": "realm_stonehearth_4",
+        "entities": 13,
+        "renderables": 5
+      },
+      {
+        "name": "realm_stonehearth_5",
+        "entities": 26,
+        "renderables": 19
+      },
+      {
+        "name": "realm_stonehearth_6",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_7",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_8",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_stonehearth_9",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_2",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_3",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "realm_willowcross_4",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "shop",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "stoneInn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "stoneInn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "stoneShop",
+        "entities": 14,
+        "renderables": 6
+      },
+      {
+        "name": "story_mine",
+        "entities": 61,
+        "renderables": 52
+      },
+      {
+        "name": "story_shrine",
+        "entities": 106,
+        "renderables": 97
+      },
+      {
+        "name": "tutorial",
+        "entities": 656,
+        "renderables": 223
+      },
+      {
+        "name": "willowInn",
+        "entities": 16,
+        "renderables": 8
+      },
+      {
+        "name": "willowInn_cellar",
+        "entities": 32,
+        "renderables": 23
+      },
+      {
+        "name": "willowShop",
+        "entities": 14,
+        "renderables": 6
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "populated-editor-hierarchy",
+      "scene": "tutorial",
+      "camera": {
+        "x": 55,
+        "y": 50,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 118,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 95.40000000223517,
+          "visibilityQueryMs": 8.5,
+          "consideredObjects": 215,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 155,
+            "consideredSpatialRecords": 360,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 155,
+            "visibleSpatialRecords": 360,
+            "objects": 149,
+            "buildings": 5
+          },
+          "drawCalls": 605,
+          "instancedCalls": 605,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 231,
+              "cpuBudget": 134217728,
+              "cpuBytes": 417930,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 52822218,
+              "overBudget": false,
+              "pinnedCpuBytes": 415110,
+              "pinnedGpuBytes": 52785430,
+              "resident": 232,
+              "tracked": 232
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 32.600000001490116,
+              "renderMs": 48
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 0,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 108.30000000074506,
+          "visibilityQueryMs": 40.099999997764826,
+          "consideredObjects": 365,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 155,
+            "consideredSpatialRecords": 360,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 155,
+            "visibleSpatialRecords": 360,
+            "objects": 149,
+            "buildings": 5
+          },
+          "drawCalls": 605,
+          "instancedCalls": 605,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 231,
+              "cpuBudget": 134217728,
+              "cpuBytes": 417930,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 52822218,
+              "overBudget": false,
+              "pinnedCpuBytes": 415110,
+              "pinnedGpuBytes": 52785430,
+              "resident": 232,
+              "tracked": 232
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 20.699999999254942,
+              "renderMs": 40
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 0,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 84.59999999776483,
+          "visibilityQueryMs": 9.399999998509884,
+          "consideredObjects": 215,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 155,
+            "consideredSpatialRecords": 360,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 155,
+            "visibleSpatialRecords": 360,
+            "objects": 149,
+            "buildings": 5
+          },
+          "drawCalls": 605,
+          "instancedCalls": 605,
+          "hardwareInstances": 667,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 231,
+              "cpuBudget": 134217728,
+              "cpuBytes": 417930,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 52822218,
+              "overBudget": false,
+              "pinnedCpuBytes": 415110,
+              "pinnedGpuBytes": 52785430,
+              "resident": 232,
+              "tracked": 232
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 375,
+              "dynamicVertices": 0,
+              "transformSubmissions": 0,
+              "synchronizationMs": 29.299999997019768,
+              "renderMs": 44.69999999925494
+            },
+            "legacy": {
+              "meshes": 232,
+              "materials": 2,
+              "renderables": 372,
+              "gpuBytes": 20583042,
+              "stagingBytes": 0,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        }
+      ]
+    },
+    {
+      "name": "dense-settlement",
+      "scene": "overworld",
+      "camera": {
+        "x": 18.5,
+        "y": 15.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99982606916181,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 960.6000000014901,
+          "visibilityQueryMs": 5.799999997019768,
+          "consideredObjects": 179,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6201,
+            "consideredRenderables": 3637,
+            "consideredSpatialRecords": 6118,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 15657,
+            "staticRecords": 15204,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2068,
+            "visibleSpatialRecords": 3536,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2134,
+          "instancedCalls": 2134,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 5535444,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 190111848,
+              "overBudget": false,
+              "pinnedCpuBytes": 2190414,
+              "pinnedGpuBytes": 146993994,
+              "resident": 550,
+              "tracked": 550
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1104,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 76.80000000074506,
+              "renderMs": 85.89999999850988
+            },
+            "legacy": {
+              "meshes": 550,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 149467320,
+              "stagingBytes": 1622016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 1445.199999999255,
+          "visibilityQueryMs": 32.600000001490116,
+          "consideredObjects": 230,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6201,
+            "consideredRenderables": 3637,
+            "consideredSpatialRecords": 6118,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 15657,
+            "staticRecords": 15204,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2068,
+            "visibleSpatialRecords": 3536,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2138,
+          "instancedCalls": 2138,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 5535444,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 190111848,
+              "overBudget": false,
+              "pinnedCpuBytes": 2190414,
+              "pinnedGpuBytes": 146993994,
+              "resident": 550,
+              "tracked": 550
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1104,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 145.30000000074506,
+              "renderMs": 160.70000000298023
+            },
+            "legacy": {
+              "meshes": 550,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 149467320,
+              "stagingBytes": 1622016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 1191.7999999970198,
+          "visibilityQueryMs": 11.199999999254942,
+          "consideredObjects": 179,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6201,
+            "consideredRenderables": 3637,
+            "consideredSpatialRecords": 6118,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 15657,
+            "staticRecords": 15204,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2068,
+            "visibleSpatialRecords": 3536,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2138,
+          "instancedCalls": 2138,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 5535444,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 190111848,
+              "overBudget": false,
+              "pinnedCpuBytes": 2190414,
+              "pinnedGpuBytes": 146993994,
+              "resident": 550,
+              "tracked": 550
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1104,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 102.19999999925494,
+              "renderMs": 110.19999999925494
+            },
+            "legacy": {
+              "meshes": 550,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 149467320,
+              "stagingBytes": 1622016,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        }
+      ]
+    },
+    {
+      "name": "wilderness",
+      "scene": "overworld",
+      "camera": {
+        "x": 165.5,
+        "y": 142.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99999999709506,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 677.2000000029802,
+          "visibilityQueryMs": 17.699999999254942,
+          "consideredObjects": 383,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1950,
+          "instancedCalls": 1950,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 252575088,
+              "overBudget": false,
+              "pinnedCpuBytes": 2623230,
+              "pinnedGpuBytes": 136946482,
+              "resident": 671,
+              "tracked": 671
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 88.69999999925494,
+              "renderMs": 98
+            },
+            "legacy": {
+              "meshes": 671,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 211930560,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 599.5999999977648,
+          "visibilityQueryMs": 10,
+          "consideredObjects": 383,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1992,
+          "instancedCalls": 1992,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 252575088,
+              "overBudget": false,
+              "pinnedCpuBytes": 1738494,
+              "pinnedGpuBytes": 136540978,
+              "resident": 671,
+              "tracked": 671
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 60.5,
+              "renderMs": 67.5
+            },
+            "legacy": {
+              "meshes": 671,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 211930560,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 609.8000000007451,
+          "visibilityQueryMs": 10.099999997764826,
+          "consideredObjects": 383,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1992,
+          "instancedCalls": 1992,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 252575088,
+              "overBudget": false,
+              "pinnedCpuBytes": 1738494,
+              "pinnedGpuBytes": 136540978,
+              "resident": 671,
+              "tracked": 671
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 72.19999999925494,
+              "renderMs": 78.60000000149012
+            },
+            "legacy": {
+              "meshes": 671,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 211930560,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        }
+      ]
+    },
+    {
+      "name": "dense-settlement-return-1",
+      "scene": "overworld",
+      "camera": {
+        "x": 18.5,
+        "y": 15.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99999999999991,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 671.6999999992549,
+          "visibilityQueryMs": 5.400000002235174,
+          "consideredObjects": 179,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6641,
+            "consideredRenderables": 4077,
+            "consideredSpatialRecords": 6558,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2508,
+            "visibleSpatialRecords": 3976,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2105,
+          "instancedCalls": 2105,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 3148878,
+              "pinnedGpuBytes": 147433290,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 49.400000002235174,
+              "renderMs": 65
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 718.1000000014901,
+          "visibilityQueryMs": 4.400000002235174,
+          "consideredObjects": 179,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6641,
+            "consideredRenderables": 4077,
+            "consideredSpatialRecords": 6558,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2508,
+            "visibleSpatialRecords": 3976,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2105,
+          "instancedCalls": 2105,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 3148878,
+              "pinnedGpuBytes": 147433290,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 47.30000000074506,
+              "renderMs": 52.19999999925494
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 688.8999999985099,
+          "visibilityQueryMs": 5.800000000745058,
+          "consideredObjects": 179,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6641,
+            "consideredRenderables": 4077,
+            "consideredSpatialRecords": 6558,
+            "distanceCulled": 2265,
+            "dynamicRecords": 453,
+            "frustumCulled": 317,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 164,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 111,
+            "visibleRenderables": 2508,
+            "visibleSpatialRecords": 3976,
+            "objects": 1068,
+            "buildings": 41
+          },
+          "drawCalls": 2125,
+          "instancedCalls": 2125,
+          "hardwareInstances": 3410,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 299,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 2264142,
+              "pinnedGpuBytes": 147027786,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 478,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 478,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1537,
+              "dynamicVertices": 3960,
+              "transformSubmissions": 0,
+              "synchronizationMs": 49.5,
+              "renderMs": 53.900000002235174
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 1060,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1211,
+              "submissions": 1211,
+              "instances": 478,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        }
+      ]
+    },
+    {
+      "name": "wilderness-return-1",
+      "scene": "overworld",
+      "camera": {
+        "x": 165.5,
+        "y": 142.5,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 119.99999999999999,
+        "min": 2,
+        "max": 1600
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 654.1000000014901,
+          "visibilityQueryMs": 9.5,
+          "consideredObjects": 383,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1950,
+          "instancedCalls": 1950,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 2623230,
+              "pinnedGpuBytes": 136946482,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 68.30000000074506,
+              "renderMs": 74.30000000074506
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 671.6999999992549,
+          "visibilityQueryMs": 14.399999998509884,
+          "consideredObjects": 441,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1950,
+          "instancedCalls": 1950,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 2623230,
+              "pinnedGpuBytes": 136946482,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 65.70000000298023,
+              "renderMs": 71.60000000149012
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 673.0999999977648,
+          "visibilityQueryMs": 14.800000000745058,
+          "consideredObjects": 441,
+          "consideredBuildings": 229,
+          "partition": {
+            "cells": 718,
+            "considered": 6132,
+            "consideredRenderables": 3016,
+            "consideredSpatialRecords": 4886,
+            "distanceCulled": 1396,
+            "dynamicRecords": 453,
+            "frustumCulled": 326,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 195,
+            "rebuilds": 1,
+            "records": 16097,
+            "staticRecords": 15644,
+            "updated": 0,
+            "visibleLights": 210,
+            "visibleRenderables": 1857,
+            "visibleSpatialRecords": 3164,
+            "objects": 1291,
+            "buildings": 63
+          },
+          "drawCalls": 1950,
+          "instancedCalls": 1950,
+          "hardwareInstances": 3584,
+          "transformSubmissions": 0,
+          "renderer": {
+            "firstRenderMs": 278913.30000000075,
+            "residency": {
+              "active": 323,
+              "cpuBudget": 134217728,
+              "cpuBytes": 6667068,
+              "discardedStagingBytes": 0,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 257482584,
+              "overBudget": false,
+              "pinnedCpuBytes": 2623230,
+              "pinnedGpuBytes": 136946482,
+              "resident": 727,
+              "tracked": 727
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 444,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 444,
+                "tracked": 1539,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 1396,
+              "dynamicVertices": 4788,
+              "transformSubmissions": 0,
+              "synchronizationMs": 62.599999997764826,
+              "renderMs": 69.09999999776483
+            },
+            "legacy": {
+              "meshes": 727,
+              "materials": 2,
+              "renderables": 953,
+              "gpuBytes": 216838056,
+              "stagingBytes": 1658880,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 3,
+              "geometry": 6,
+              "leases": 3,
+              "gpuBytes": 99592
+            },
+            "materials": {
+              "materials": 4,
+              "shaders": 2,
+              "leases": 6
+            },
+            "textures": {
+              "textures": 14,
+              "leases": 22,
+              "gpuBytes": 40544936
+            },
+            "draws": {
+              "models": 3,
+              "activeRenderables": 1144,
+              "submissions": 1144,
+              "instances": 453,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 949000000
+        }
+      ]
+    },
+    {
+      "name": "ordinary-gameplay",
+      "scene": "tutorial",
+      "camera": {
+        "x": 42,
+        "y": 51,
+        "yaw": -2.05,
+        "tilt": 0.27,
+        "zoom": 118,
+        "min": 58,
+        "max": 132
+      },
+      "frames": [
+        {
+          "presented": true,
+          "cpuFrameMs": 207.19999999925494,
+          "visibilityQueryMs": 7.699999999254942,
+          "consideredObjects": 215,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 188,
+            "consideredSpatialRecords": 513,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 188,
+            "visibleSpatialRecords": 513,
+            "objects": 180,
+            "buildings": 6
+          },
+          "drawCalls": 855,
+          "instancedCalls": 855,
+          "hardwareInstances": 933,
+          "transformSubmissions": 10,
+          "renderer": {
+            "firstRenderMs": 216089.59999999776,
+            "residency": {
+              "active": 288,
+              "cpuBudget": 134217728,
+              "cpuBytes": 1291920,
+              "discardedStagingBytes": 1750080,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 61400716,
+              "overBudget": false,
+              "pinnedCpuBytes": 824364,
+              "pinnedGpuBytes": 59042624,
+              "resident": 295,
+              "tracked": 295
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 10,
+              "synchronizationMs": 74.69999999925494,
+              "renderMs": 83.59999999776483
+            },
+            "legacy": {
+              "meshes": 295,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 29161540,
+              "stagingBytes": 221184,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 66.69999999925494,
+          "visibilityQueryMs": 1.7000000029802322,
+          "consideredObjects": 215,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 188,
+            "consideredSpatialRecords": 513,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 188,
+            "visibleSpatialRecords": 513,
+            "objects": 180,
+            "buildings": 6
+          },
+          "drawCalls": 848,
+          "instancedCalls": 848,
+          "hardwareInstances": 933,
+          "transformSubmissions": 18,
+          "renderer": {
+            "firstRenderMs": 216089.59999999776,
+            "residency": {
+              "active": 289,
+              "cpuBudget": 134217728,
+              "cpuBytes": 1772436,
+              "discardedStagingBytes": 2134464,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 64351204,
+              "overBudget": false,
+              "pinnedCpuBytes": 848388,
+              "pinnedGpuBytes": 59419000,
+              "resident": 301,
+              "tracked": 301
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 18,
+              "synchronizationMs": 25.399999998509884,
+              "renderMs": 28.699999999254942
+            },
+            "legacy": {
+              "meshes": 301,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 32112028,
+              "stagingBytes": 221184,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        },
+        {
+          "presented": true,
+          "cpuFrameMs": 72.5,
+          "visibilityQueryMs": 6.699999999254942,
+          "consideredObjects": 368,
+          "consideredBuildings": 6,
+          "partition": {
+            "cells": 16,
+            "considered": 562,
+            "consideredRenderables": 188,
+            "consideredSpatialRecords": 513,
+            "distanceCulled": 0,
+            "dynamicRecords": 30,
+            "frustumCulled": 0,
+            "largeRecords": 0,
+            "projectedCulled": 0,
+            "queriedCells": 12,
+            "rebuilds": 1,
+            "records": 633,
+            "staticRecords": 603,
+            "updated": 0,
+            "visibleLights": 6,
+            "visibleRenderables": 188,
+            "visibleSpatialRecords": 513,
+            "objects": 180,
+            "buildings": 6
+          },
+          "drawCalls": 848,
+          "instancedCalls": 848,
+          "hardwareInstances": 933,
+          "transformSubmissions": 17,
+          "renderer": {
+            "firstRenderMs": 216089.59999999776,
+            "residency": {
+              "active": 289,
+              "cpuBudget": 134217728,
+              "cpuBytes": 2338200,
+              "discardedStagingBytes": 1105296,
+              "evicting": 0,
+              "evictions": 0,
+              "gpuBudget": 268435456,
+              "gpuBytes": 69913124,
+              "overBudget": false,
+              "pinnedCpuBytes": 848388,
+              "pinnedGpuBytes": 59419000,
+              "resident": 314,
+              "tracked": 314
+            },
+            "lod": {
+              "compatibility": {
+                "lod0": 3,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 3,
+                "tracked": 3,
+                "transitions": 0
+              },
+              "canonical": {
+                "lod0": 0,
+                "lod1": 0,
+                "lod2": 0,
+                "missingLods": 0,
+                "tracked": 0,
+                "transitions": 0
+              }
+            },
+            "frame": {
+              "submittedPackets": 467,
+              "dynamicVertices": 1248,
+              "transformSubmissions": 17,
+              "synchronizationMs": 26,
+              "renderMs": 33.19999999925494
+            },
+            "legacy": {
+              "meshes": 314,
+              "materials": 2,
+              "renderables": 465,
+              "gpuBytes": 37673948,
+              "stagingBytes": 221184,
+              "cachedGlbBytes": 0
+            },
+            "models": {
+              "models": 1,
+              "geometry": 2,
+              "leases": 1,
+              "gpuBytes": 82840
+            },
+            "materials": {
+              "materials": 2,
+              "shaders": 2,
+              "leases": 2
+            },
+            "textures": {
+              "textures": 8,
+              "leases": 12,
+              "gpuBytes": 32156336
+            },
+            "draws": {
+              "models": 1,
+              "activeRenderables": 6,
+              "submissions": 6,
+              "instances": 3,
+              "loading": 0,
+              "failures": []
+            }
+          },
+          "browserHeapBytes": 793000000
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "CPU frame time includes software-renderer submission; not hardware FPS.",
+    "GPU bytes are known allocation estimates, not driver VRAM.",
+    "Decoded canonical CPU asset bytes are unavailable; firstRenderMs is relative to viewport navigation.",
+    "VisibilityQueryMs retains the old query probe for baseline comparison; current native partition counters are reported separately."
+  ],
+  "sourceCommit": "39c5a21778ce58e3265a4b725928db1b9785d9bb"
+}

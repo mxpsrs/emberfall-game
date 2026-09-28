@@ -1,7 +1,7 @@
 'use strict';
 // Scene transforms arrive from the native Scene; Filament owns the corresponding
 // render-only hierarchy. No draw handle or load status is serialized.
-function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=Filament){
+function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=Filament,streaming=null){
  const pools=new Map(),manager=engine.getTransformManager();let disposed=false,frame=0,sceneKey=null;
  const unsubscribe=assets.onDispose(destroy);
  function removeInstance(instance){
@@ -37,6 +37,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
  }
  function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false){
   if(!lodSelected&&assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
+  if(streaming&&!streaming.want(id,matrix,options,identity))return false;
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){
@@ -63,5 +64,5 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   }
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();}
- return Object.freeze({begin,submit,end,destroy,diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),loading:[...pools.values()].filter(p=>!p.model&&!p.error).length,failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
+ return Object.freeze({begin,submit,end,destroy,diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
 }

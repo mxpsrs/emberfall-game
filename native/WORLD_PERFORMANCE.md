@@ -229,3 +229,47 @@ camera targets once, so test navigation no longer repeatedly queries every
 entity. The first resource checkpoint is remotely verified at
 `1f32af18e5caf9e53500f175e29242c8a48148d2`. Its graphical receipts are kept
 separate from the staging refinement's verification.
+
+## Native cell resource scheduling checkpoint
+
+`WorldStreaming` schedules asynchronous resource demand in the existing native
+32-unit cells. It shares asset/material generations across cells, prioritizes
+visible demand and canonical editor selection pins, prefetches nearby canonical
+renderers, cancels stale pending work, and reports loading/resident/failed/
+unloading/unloaded cell states. Browser/mobile/desktop profiles allow 4/2/8 loads
+in flight. Speculative prefetch stops above 80% of the corresponding GPU budget;
+idle retention is bounded. A changed adapter epoch regrants resources after
+registry or document reload, and late completion of a cancelled lease is ignored.
+
+The JavaScript adapter only marshals demand and completion and acquires/releases
+the existing Phase 2 shared model leases. Compatibility imported submeshes join
+through actual draw demand; their existing geometry fallback remains available
+while queued. Source-derived procedural terrain/building geometry uses the
+bounded reconstruction/retirement path described above. Canonical entities,
+world definitions and history remain resident: this is resource streaming, not
+world-data paging. No duplicate asset registry, entity store or renderer exists.
+
+Passed: native scheduler tests, rebuilt WASM, actual WASM/Filament integration,
+WorldDocument/LOD/residency regressions, static-transform reconstruction and
+renderer contract, and normal production build. Integration checks cover the
+two-load mobile limit, shared allocations, cancellation, remote selection pins,
+undo, generation invalidation, unchanged-definition registry reload, document
+reload, 12 travel/unload cycles and zero retained allocations on teardown.
+Populated graphical verification of this new scheduler is the next gate.
+
+Committed graphical receipts for the preceding checkpoints are under
+`docs/qa/phase4-world-performance/`: `residency-browser.json` (10 viewpoints),
+`residency-mobile-browser.json` (6), and `staging-final-browser.json` (6).
+All completed with zero page errors, including authenticated local gameplay.
+The first checkpoint reduced retained compatibility GPU allocations after the
+overview from 516.38 MB baseline to 124.71 MB, then 122.61 MB on revisit.
+Its staging overages remained visible in diagnostics and motivated the second
+checkpoint. With that refinement, retained upload staging after dense/wilderness
+travel and return was 1.66 MB versus 223.59 MB baseline at wilderness. Shared index
+staging is counted separately by the native budget. These are allocation/lifetime
+comparisons; concurrent SwiftShader runs do not establish hardware FPS gains.
+
+Phase 4 remains in progress. Production has no authored LOD1/LOD2 art, physical
+mobile/Safari and hardware performance acceptance are unverified, and cell
+streaming graphical travel/soak and final editor regressions remain open. No
+production deployment, main merge, Phase 5 or Phase 6 work has occurred.
