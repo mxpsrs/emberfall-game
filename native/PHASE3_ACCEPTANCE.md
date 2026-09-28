@@ -4,10 +4,11 @@ Updated: 2026-09-28. Branch: `phase3-editor-foundation-wip` in
 `mxpsrs/emberfall-game`. Accepted Phase 2 base:
 `9e72e514610f6e8de01ae782e406e10fc5a8443a`.
 
-Status: **final verification in progress**. Populated overworld rendering, camera
-navigation/picking, terrain pointer input, shared undo/redo and verified
-revision-11 save and exact fresh reload now pass with zero browser page errors.
-The final `/play` check remains. No deployment or main merge is included.
+Status: **Phase 3 editor foundation accepted in local verification**. Populated
+overworld rendering, camera navigation/picking, terrain pointer input, shared
+undo/redo, verified revision-11 save, exact fresh reload and the authenticated
+`/play` regression pass with zero browser page errors. No deployment or main
+merge is included. Hardware frame-rate and hosted-capacity limits remain below.
 
 ## Ownership and behavior
 
@@ -38,8 +39,9 @@ aggregates across scenes, and undo can return to the saved boundary.
 | Building editing | Actual generated house assembly, snapping and openings; native linked interior parts; grouped module/door edits, duplicate/delete and exact undo/reload |
 | Terrain | Actual-WASM shared entity/terrain ordering, native validation, no-op behavior, transaction rollback, rejected preview rollback and persistence |
 | Picking and hierarchy | Actual-WASM incremental subtree updates, parent transforms, active state, inherited hide/lock, reparent/delete undo and scene/load invalidation |
-| Graphics | Chromium WebGL renders all three handle modes; populated tutorial editor shows canonical imported assets and Inspector selection; overworld ground picking and terrain input now pass; read-only scenery preparation corrected |
+| Graphics | Chromium WebGL renders all three handle modes and the populated tutorial/overworld; detached camera alignment, ground picking and a real terrain stroke pass; screenshots visually checked |
 | Populated authoring | Hierarchy click, Inspector rename/position, undo/redo, reparent, prefab actions, Firstlight Smithy editing, verified save and exact fresh reload; no page errors or gameplay-controller requests |
+| Gameplay regression | Authenticated `/play` starts in the disposable character’s tutorial scene, reads all 40 saved overworld height nodes exactly, retains native object/quarry/service ownership, accepts world input and remains connected with zero page errors |
 | Persistence routes | Atomic v2 save, legacy preservation, concurrent save conflict, validation and account/character preservation in disposable local tests |
 | Generated world | Building/road/light/structure/spawn/resource/bridge/quarry/service Scene ownership, unchanged Scene revision while rendering multiple building variants and the full overworld traversal after scenery preparation, and complete native round-trip |
 | Build and assets | Fresh build; all 124 startup resources; JavaScript/JSON parsing, licensed asset records, byte-preserving delivery and runtime/editor ABI checks |
@@ -81,7 +83,23 @@ zero page errors. Its screenshot shows the populated overworld and brush. Browse
 checks support resumable terrain, reload and play stages using the same
 disposable fixture. The fresh editor reload restores the revision-11 terrain
 exactly, with zero page errors and no character/player/social/activity requests.
-The final gameplay receipt is pending.
+The authenticated `/play` run also loads that exact terrain document, starts
+without failure at native ABI 19, retains canonical object/quarry/service
+ownership and remains connected after a real world-canvas click. Its screenshot
+shows the tutorial character and populated world; it was visually inspected.
+This is a load/input smoke check, not a measured movement-distance or FPS test.
+
+The full generated-world regression passes unchanged Scene revision across
+multiple building variants and an entire overworld draw after scenery preparation,
+followed by exact serialization/unload/load. The actual-WASM scenery test passes
+history isolation, preservation of existing edits, active-gesture rejection and
+failed-construction rollback. Camera/context/frame, terrain history, selection
+and all 124 built startup resources also pass.
+
+Implementation checkpoint `1a6d075fc2b84c89cc8c682ef4c5105b9e8f437c` was
+independently verified on the Phase 3 branch, including every file in its tree.
+The recovered checkout was rebundled using verified committed asset derivatives;
+this continuation does not claim a new full-resolution source-asset regeneration.
 
 ## Native editing performance
 

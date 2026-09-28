@@ -1,6 +1,7 @@
 # Phase 3 editor foundation
 
-Implementation and final verification are on `phase3-editor-foundation-wip`,
+Phase 3 implementation and local acceptance are complete on
+`phase3-editor-foundation-wip`,
 created and independently verified on GitHub at accepted Phase 2 commit
 `9e72e514610f6e8de01ae782e406e10fc5a8443a` before implementation.
 
@@ -240,3 +241,21 @@ navigating, preserves character state and empty command history, applies a real
 terrain pointer stroke, and passes exact undo/redo plus verified revision-11 Save.
 The screenshot was visually checked. The run reports zero page errors. Fresh
 reload and `/play` are the remaining acceptance checks at this checkpoint.
+
+
+## Final local acceptance (2026-09-28)
+
+All remaining Phase 3 gates above are complete. The populated overworld editor
+passes independent camera movement/picking, a real terrain brush stroke, exact
+native undo/redo and dirty-state restoration, verified Save at revision 11 and
+exact fresh reload of 40 height nodes. The editor makes no gameplay-controller
+requests. The authenticated `/play` run loads the same saved terrain, retains
+canonical object/quarry/service ownership, renders the tutorial scene and stays
+connected after world input. Both browser runs report zero page errors; the
+editor and gameplay screenshots were visually inspected.
+
+Full-world drawing leaves the canonical Scene revision unchanged after scenery
+preparation, and the full native save/unload/load regression passes. The focused
+scenery streaming, editor frame and built-asset regressions also pass. See
+`PHASE3_ACCEPTANCE.md` for evidence, reproduction and practical limits. This is
+local acceptance, without a main merge, deployment or hosted-capacity claim.

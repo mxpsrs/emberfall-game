@@ -102,6 +102,6 @@ await page.waitForFunction(()=>document.querySelector('iframe')?.contentWindow?.
  await play.evaluate(()=>{if($('creator').open)$('creator').close();if($('modal').open)$('modal').close();renderUI();});const canvas=await play.locator('#world').boundingBox();assert(canvas);await play.mouse.click(canvas.x+canvas.width*.55,canvas.y+canvas.height*.6);await play.waitForTimeout(1000);
  assert.equal(await play.evaluate(()=>cloudDisconnected),false);await play.screenshot({path:'.qa/phase3/play-regression.png'});assert.deepEqual(errors,[]);
  writeFileSync('.qa/phase3/terrain-play-result.json',JSON.stringify({fixture:data,terrainNodes:terrain.scenes.overworld.heightNodes.length,save:{revision:save.revision,verified:save.roundTripVerified},runtime:{...runtime,terrain:undefined},errors},null,2));
- console.log('PASS: /play load, saved terrain, canonical ownership and movement');
+ console.log('PASS: /play load, saved terrain, canonical ownership and world input');
  }
 }catch(error){console.error('Browser acceptance failed',error);await qaPage?.screenshot({path:'.qa/phase3/terrain-failure.png',timeout:15000}).catch(()=>{});throw error;}finally{clearInterval(profileTimer);await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));storage.close();}
