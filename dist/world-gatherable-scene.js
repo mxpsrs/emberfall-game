@@ -6,6 +6,7 @@
  const identity=()=>({position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]});
  const groups={Gatherable:['type','resourceId'],ResourceAppearance:['treeArt','race','briarhavenDetail'],ResourcePlacement:['interiorBuilding','roomYaw','civilization','quarry','ecology','realmScenery','forest','settlementTree','firstlightDetail','firstlightGrove','fishingHabitat'],QuestMarker:['tutorialRole','relicKey','questScenery']};
  const fields=Object.fromEntries(Object.entries(groups).flatMap(([type,keys])=>keys.map(key=>[key,['components',type,key]])));
+ fields.placement=['components','Placement'];
  const stateFields={respawnAt:'respawnAt',hitAt:'hitAt',harvestedUntil:'harvestedUntil',collected:'collected',_sharedReady:'sharedReady',_sharedDeadUntil:'sharedDeadUntil',_treeRegrowAt:'treeRegrowAt',_treeRegrown:'treeRegrown',_sharedRevision:'sharedRevision',_sharedGeneration:'sharedGeneration',_sharedOwner:'sharedOwner',_sharedTarget:'sharedTarget',_sharedHazard:'sharedHazard',_sharedPhase:'sharedPhase'};
  const transient=new Set(['dead','attackAt','deathAt','hp','maxhp','slowUntil','enraged','attackRecovery','attackWindup','attackMove',...Object.keys(stateFields)]),positional=new Set(['x','y','height','homeX','homeY','drawX','drawY','heading','editorTransform']);
  const views=new Map(),sources=new Map(),aliases=new Map(),previews=new Map();let enabled=false,renderInstalled=false;
@@ -80,9 +81,10 @@
    const group=rootId+':resources';s.entities.push({id:group,name:'Gatherable resources',parent:rootId,active:true,transform:identity(),components:{SceneGroup:{category:'Resources'}},metadata:{}});
    for(const o of w.objects||[]){if(!o._generatedGatherableId||o._generatedGatherable)continue;
     for(const field of Object.keys(o))if(!field.startsWith('_')&&!fields[field]&&!transient.has(field)&&!positional.has(field)&&!['id','name','sprite','collisionRadius','walkThrough'].includes(field))throw Error('Unmapped generated resource field: '+field);
-    const A=root.VeldrenAssembly,M=root.VeldrenBuildingScene.matrices,worldMatrix=A.transform(o.x,o.height||0,o.y,(o.editorTransform?.rotation||0)*Math.PI/180,o.editorTransform?.scale||1);
+    const A=root.VeldrenAssembly,M=root.VeldrenBuildingScene.matrices,rotation=o.editorTransform?.rotation!==undefined?o.editorTransform.rotation*Math.PI/180:(o.placement?.yaw??o.heading??0),worldMatrix=A.transform(o.x,o.height||0,o.y,rotation,o.editorTransform?.scale||1);
     const building=(w.buildings||[]).find(b=>b.service?.destination===o.interiorBuilding&&o.interiorBuilding),parent=building?._sceneEntityId||group,local=building?A.multiply(A.inverse(M.row(node(scene,parent).worldMatrix)),worldMatrix):worldMatrix;
     const components={GeneratedGatherable:{version:1},CatalogIdentity:{id:o.id,scene}};
+    if(o.placement!==undefined){components.Placement=copy(o.placement);if(!components.Placement||typeof components.Placement!=='object')throw Error('Invalid resource placement');delete components.Placement.yaw;}
     for(const [type,keys]of Object.entries(groups)){const data={};for(const field of keys)if(o[field]!==undefined){const value=copy(o[field]);if(value===undefined)throw Error('Invalid resource definition field: '+field);data[field]=value;}if(Object.keys(data).length)components[type]=data;}
     components.Gatherable.harvest=copy(legacyDefinition(o))??null;
     components.MeshRenderer={asset:'procedural:resource/'+o.type,sprite:o.sprite||0,visible:true};components.Interactable={action:o.type==='crop'?'farm':'gather',label:o.name||o.type};
