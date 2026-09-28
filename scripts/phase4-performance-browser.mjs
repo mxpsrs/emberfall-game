@@ -42,8 +42,9 @@ try{
  for(const [name,x,z,zoomOut] of [['dense-settlement',14,17,false],['wilderness',165,140,false],['building-heavy',254,39,false],['long-distance-overview',254,39,true]]){
   await frame.evaluate(({x,z})=>{const n=realmNative.scenes.read('overworld').entities.filter(e=>e.components?.MeshRenderer&&e.activeInHierarchy!==false).map(e=>({id:e.id,m:realmNative.scenes.entity('overworld',e.id).worldMatrix})).sort((a,b)=>Math.hypot(a.m[12]-x,a.m[14]-z)-Math.hypot(b.m[12]-x,b.m[14]-z))[0];VeldrenEditorBridge.selectEntity(n.id);VeldrenEditorBridge.focusSelection();},{x,z});
   if(zoomOut){const box=await frame.locator('#world').boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.wheel(0,1100);}
-  results.push(await sample(frame,name));await page.screenshot({path:output+'/'+name+'.png'});
+  results.push(await sample(frame,name));
   writeFileSync(output+'/partial.json',JSON.stringify({editorReadyMs,counts,results,errors},null,2));
+  await page.screenshot({path:output+'/'+name+'.png',timeout:180000});
  }
  assert.equal(requests.filter(p=>/^\/api\/(character|players|social|activity)/.test(p)).length,0);await page.close();
  const play=await context.newPage();watch(play);const playStart=performance.now();await play.goto(origin+'/play',{waitUntil:'domcontentloaded',timeout:120000});await play.waitForFunction(()=>typeof assetsReady!=='undefined'&&assetsReady,{},{timeout:600000});const playReadyMs=performance.now()-playStart;await install(play);results.push(await sample(play,'ordinary-gameplay'));await play.screenshot({path:output+'/ordinary-gameplay.png'});

@@ -375,6 +375,7 @@ class World {
     ++world_scene_revision_;
     return true;
   }
+  veldren::Scene* PerformanceScene(const char* name) {if(!name)return nullptr;const auto it=world_scenes_.find(name);return it==world_scenes_.end()?nullptr:&it->second;}
   std::string WorldSceneJson(const char* scene_name) const {
     if (!scene_name) return {};
     const auto scene = world_scenes_.find(scene_name);
@@ -1500,3 +1501,5 @@ extern "C" int veldren_editor_command(void* world, const char* scene, const char
 extern "C" std::uint32_t veldren_editor_response(const void* world,char* out,std::uint32_t capacity) {
   return world ? CopyText(AsWorld(world)->EditorResponse(),out,capacity) : 0;
 }
+
+namespace veldren { Scene* world_scene_for_performance(void* world,const char* name){return world?AsWorld(world)->PerformanceScene(name):nullptr;} }

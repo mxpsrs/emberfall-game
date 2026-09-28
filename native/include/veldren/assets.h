@@ -7,6 +7,8 @@ namespace veldren {
 // The registry also owns transient dependency leases; neither is Scene identity.
 class AssetRegistry {
  public:
+  bool has(const std::string& id) const { return entries_.contains(id); }
+  std::uint64_t revision() const { return revision_; }
   void load(const Json& manifest);
   Json document() const;
   Json record(const std::string& id) const;

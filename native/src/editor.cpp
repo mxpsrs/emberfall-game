@@ -63,7 +63,7 @@ void EditorHistory::restore(Scene& scene,const Patch& patch,const std::vector<En
     const auto old=scene.nodes_.find(id);
     if(old!=scene.nodes_.end())for(const auto& [type,fields]:old->second.components){(void)fields;auto& ids=scene.component_index_[type];ids.erase(id);if(ids.empty())scene.component_index_.erase(type);}
     if(node){scene.nodes_[id]=*node;for(const auto& [type,fields]:node->components){(void)fields;scene.component_index_[type].insert(id);}}
-    else scene.nodes_.erase(id);
+    else {scene.nodes_.erase(id);scene.record_spatial_change(id);}
   }
   scene.roots_=roots;
   for(const auto& [id,node]:patch)if(node)scene.mark_dirty(id);

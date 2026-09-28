@@ -1,7 +1,7 @@
 'use strict';
 // Browser IO and marshalling only. Registry/dependency/lifecycle decisions are C++.
 (()=>{
- let command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
+ let registryHandle=0,command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
  const payloads=new Map(),models=new Map(),leases=new Set(),legacyLeases=new Map();
  const textureLeases=new Set(),disposeListeners=new Set(),reloadListeners=new Set();
  const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
@@ -57,9 +57,10 @@
  }
  const assets={
   get ready(){return ready;},
+  get nativeHandle(){return registryHandle;},
   async initialize(api){
    if(command)throw Error('Native asset registry already initialized');
-   const handle=api.veldren_assets_create();if(!handle)throw Error('Asset registry allocation failed');
+   const handle=api.veldren_assets_create();registryHandle=handle;if(!handle)throw Error('Asset registry allocation failed');
    const session=++epoch,controller=new AbortController();initializing=controller;
    textureApi=api;
    destroyNative=()=>api.veldren_assets_destroy(handle);
@@ -141,7 +142,7 @@
    for(const listener of [...disposeListeners].reverse())listener();disposeListeners.clear();reloadListeners.clear();
    for(const release of [...textureLeases])release();textureApi=null;
    for(const lease of leases){lease.closed=true;retire(lease.entry);}leases.clear();legacyLeases.clear();
-   destroyNative?.();destroyNative=null;command=null;ready=false;ids=null;records.clear();catalogs.clear();payloads.clear();models.clear();
+   destroyNative?.();destroyNative=null;registryHandle=0;command=null;ready=false;ids=null;records.clear();catalogs.clear();payloads.clear();models.clear();
   }
  };
  globalThis.VeldrenAssets=Object.freeze(assets);

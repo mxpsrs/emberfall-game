@@ -24,8 +24,15 @@
   const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
   function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
-  let commandWriter=null;
+  let commandWriter=null,performanceHandle=0;
   const scenes={
+   performance(scene,request){
+    if(destroyed)throw Error('Native world destroyed');
+    if(!performanceHandle){performanceHandle=api.veldren_performance_create(world,globalThis.VeldrenAssets?.nativeHandle||0);if(!performanceHandle)throw Error('World performance owner unavailable');}
+    withCString(JSON.stringify({...request,scene}),p=>api.veldren_performance_command(performanceHandle,p));
+    const result=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(performanceHandle,out,size)));
+    if(!result.ok)throw Error(result.error);return result.value;
+   },
    setCommandWriter(writer){if(!editor)throw Error('Command writer requires editor context');commandWriter=writer;},
    command(scene,request){
     if(!editor)throw Error('Editor commands require the editor context');
@@ -173,7 +180,7 @@
    if(!active.length)return;if(api.veldren_animation_states_resolve(world,animationScratch,active.length)!==active.length)throw new Error('Native world core lost actor animation state');
    const clips=['idle','walk','run','death','hit','attack','attack2','attack3','cast','cast2','throw'];for(let index=0;index<active.length;index++){const offset=animationScratch+index*48;active[index]._nativeAnimation={clip:clips[memory.getUint32(offset+4,true)]||'idle',baseClip:clips[memory.getUint32(offset+12,true)]||'idle',phase:memory.getFloat32(offset+20,true),blend:memory.getFloat32(offset+24,true),basePhase:memory.getFloat32(offset+44,true)};}
   }
-  function destroy(){if(destroyed)return;destroyed=true;globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
+  function destroy(){if(destroyed)return;destroyed=true;if(performanceHandle)api.veldren_performance_destroy(performanceHandle);globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
   window.addEventListener('pagehide',destroy,{once:true});
   const rules={
    chance:probability=>api.veldren_random_chance(world,probability)===1,

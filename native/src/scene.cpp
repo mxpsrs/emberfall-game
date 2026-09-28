@@ -264,12 +264,23 @@ EntityId Scene::create(std::string name, EntityId parent, EntityId id) {
   Node node; node.id=id; node.parent=parent; node.name=std::move(name);
   nodes_.emplace(id,std::move(node));
   if (parent.empty()) roots_.push_back(id); else require(parent).children.push_back(id);
-  return id;
+  record_spatial_change(id);return id;
 }
 void Scene::mark_dirty(const EntityId& id) {
-  if(require(id).children.empty()){require(id).dirty=true;return;}
+  if(require(id).children.empty()){require(id).dirty=true;record_spatial_change(id);return;}
   std::vector<EntityId> pending{id};
-  while (!pending.empty()) { auto next=std::move(pending.back());pending.pop_back();auto& n=require(next);n.dirty=true;pending.insert(pending.end(),n.children.begin(),n.children.end()); }
+  while (!pending.empty()) { auto next=std::move(pending.back());pending.pop_back();auto& n=require(next);n.dirty=true;record_spatial_change(next);pending.insert(pending.end(),n.children.begin(),n.children.end()); }
+}
+void Scene::record_spatial_change(const EntityId& id) {
+  if(!spatial_tracking_)return;
+  spatial_changes_.emplace_back(++spatial_revision_,id);
+  if(spatial_changes_.size()>8192)spatial_changes_.pop_front();
+}
+std::optional<std::vector<EntityId>> Scene::spatial_changes_since(std::uint64_t revision) const {
+  if(revision>spatial_revision_||(!spatial_changes_.empty()&&revision<spatial_changes_.front().first-1))return std::nullopt;
+  std::set<EntityId> ids;
+  for(auto it=spatial_changes_.rbegin();it!=spatial_changes_.rend()&&it->first>revision;++it)ids.insert(it->second);
+  return std::vector<EntityId>(ids.begin(),ids.end());
 }
 Mat4 Scene::world_transform(const EntityId& id) const {
   std::vector<const Node*> chain; const Node* n=&require(id);
@@ -297,7 +308,7 @@ const std::set<EntityId>& Scene::component_entities(std::string_view type) const
   const auto it=component_index_.find(std::string(type));return it==component_index_.end()?empty:it->second;
 }
 void Scene::rename(const EntityId& id,std::string name) { require(id).name=std::move(name); }
-void Scene::set_active(const EntityId& id,bool active) { require(id).active=active; }
+void Scene::set_active(const EntityId& id,bool active) { require(id).active=active;mark_dirty(id); }
 void Scene::set_local(const EntityId& id,Transform local) { validate_transform(local);require(id).local=std::move(local);mark_dirty(id); }
 Transform Scene::local_transform(const EntityId& id) const { return require(id).local; }
 void Scene::detach(const EntityId& id) { const auto parent=require(id).parent;auto& siblings=parent.empty()?roots_:require(parent).children;auto it=std::find(siblings.begin(),siblings.end(),id);if(it==siblings.end())invalid("Broken scene hierarchy");siblings.erase(it); }
@@ -318,7 +329,7 @@ void Scene::remove(const EntityId& id,ChildDisposition children) {
   std::vector<EntityId> ids{id};
   if(children==ChildDisposition::Destroy)for(std::size_t i=0;i<ids.size();++i){const auto& n=require(ids[i]);ids.insert(ids.end(),n.children.begin(),n.children.end());}
   detach(id);
-  for(const auto& removed:ids){for(const auto& [type,fields]:require(removed).components){(void)fields;auto at=component_index_.find(type);at->second.erase(removed);if(at->second.empty())component_index_.erase(at);}nodes_.erase(removed);}
+  for(const auto& removed:ids){for(const auto& [type,fields]:require(removed).components){(void)fields;auto at=component_index_.find(type);at->second.erase(removed);if(at->second.empty())component_index_.erase(at);}nodes_.erase(removed);record_spatial_change(removed);}
 }
 EntityId Scene::duplicate(const EntityId& id,EntityId parent,bool subtree) {
   require(id);if(!parent.empty())require(parent);
@@ -329,8 +340,8 @@ EntityId Scene::duplicate(const EntityId& id,EntityId parent,bool subtree) {
   return mapped.at(id);
 }
 void Scene::set_metadata(const EntityId& id,Json::Object metadata){require(id).metadata=std::move(metadata);}
-void Scene::add_component(const EntityId& id,std::string type,Json::Object fields){if(type.empty())invalid("Component type cannot be empty");require(id).components[type]=std::move(fields);component_index_[type].insert(id);}
-bool Scene::remove_component(const EntityId& id,std::string_view type){const auto key=std::string(type);if(!require(id).components.erase(key))return false;auto it=component_index_.find(key);it->second.erase(id);if(it->second.empty())component_index_.erase(it);return true;}
+void Scene::add_component(const EntityId& id,std::string type,Json::Object fields){if(type.empty())invalid("Component type cannot be empty");require(id).components[type]=std::move(fields);component_index_[type].insert(id);record_spatial_change(id);}
+bool Scene::remove_component(const EntityId& id,std::string_view type){const auto key=std::string(type);if(!require(id).components.erase(key))return false;auto it=component_index_.find(key);it->second.erase(id);if(it->second.empty())component_index_.erase(it);record_spatial_change(id);return true;}
 std::optional<Json::Object> Scene::component(const EntityId& id,std::string_view type) const {const auto& c=require(id).components;auto it=c.find(std::string(type));if(it==c.end())return std::nullopt;return it->second;}
 void Scene::set_world(const EntityId& id, Transform world) {
   const auto& parent = require(id).parent;

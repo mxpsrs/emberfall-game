@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <deque>
 #include <map>
 #include <optional>
 #include <set>
@@ -111,6 +112,12 @@ class Scene {
   std::vector<EntityId> entities_with(std::string_view type) const;
   const std::set<EntityId>& component_entities(std::string_view type) const;
   std::size_t size() const { return nodes_.size(); }
+  // Optional bounded runtime change feed. Never serialized; enabled by the
+  // spatial consumer only, so construction pays no journal allocation cost.
+  bool spatial_tracking() const { return spatial_tracking_; }
+  void enable_spatial_tracking() { spatial_tracking_=true; }
+  std::uint64_t spatial_revision() const { return spatial_revision_; }
+  std::optional<std::vector<EntityId>> spatial_changes_since(std::uint64_t revision) const;
   void rename(const EntityId& id, std::string name);
   void set_active(const EntityId& id, bool active);
   void set_local(const EntityId& id, Transform local);
@@ -149,6 +156,10 @@ class Scene {
   std::vector<EntityId> roots_;
   std::unordered_map<std::string, std::set<EntityId>> component_index_;
   std::uint64_t next_id_ = 1;
+  bool spatial_tracking_=false;
+  std::uint64_t spatial_revision_=0;
+  std::deque<std::pair<std::uint64_t,EntityId>> spatial_changes_;
+  void record_spatial_change(const EntityId& id);
   Node& require(const EntityId& id);
   const Node& require(const EntityId& id) const;
   void mark_dirty(const EntityId& id);

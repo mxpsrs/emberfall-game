@@ -55,16 +55,40 @@ harness now waits for model loads and samples presented frames only. The native
 baseline and instrumentation tests above have passed; no full browser-baseline
 or Phase 4 acceptance is claimed at this checkpoint.
 
-## Next implementation — not yet completed
+## Native partition checkpoint
 
-The intended acceleration is one native XZ cell partition with vertical bounds,
-separate static/dynamic membership, and conservative handling for objects spanning
-many cells. It will reference stable Scene IDs and derived bounds only. The actual
-world is a broad outdoor surface with small dense settlement clusters, long roads,
-and buildings spanning cell edges; a cell scheme allows the same index to serve
-visibility and residency demand without another authored world.
+One native 32-unit XZ grid now references canonical Scene IDs and conservative
+world-space bounds. Static and dynamic memberships are separate sets inside the
+same cells. Objects covering more than 64 cells use a conservative overflow
+list. Queries intersect bounds, never just pivots. Eight transformed asset-bound
+corners support parent rotation, scale, and affine transforms. Building, bridge,
+road and quarry components supply structural extents; uncertain procedural
+geometry deliberately retains conservative bounds.
 
-The following remain implementation/acceptance gates: incremental membership,
+A bounded, optional Scene change journal updates affected entities and descendants.
+Static content does no membership work on unchanged frames. Movement, creation,
+deletion, component changes, inherited active state, reparenting and editor undo
+feed the same journal. A fresh document, registry reimport or journal overflow
+triggers an explicit rebuild. Runtime actor positions and terrain grounding are
+presentation overlays and never enter WorldDocument serialization.
+
+The browser world renderer now asks this partition for candidate objects and
+buildings. JavaScript only resolves returned IDs to the existing canonical views;
+transient fires/previews and relocated actors keep their existing lifetime owners.
+The current broad phase includes a conservative silhouette margin. Proper native
+camera-frustum evaluation is the next gate; this checkpoint does not claim it.
+
+Tests passed: `make -C native world-performance-test scene-test editor-test`,
+`node tests/world-performance.mjs /path/to/exported-world.json`, and
+`node tests/editor-selection.mjs`. The actual 15,496-entity overworld contains
+14,832 spatial records. A 64-unit region considered 454 candidates; unchanged
+synchronization updated zero memberships. The native/WASM renderer-ID bridge
+preserved the complete serialized WorldDocument exactly. Test coverage includes
+large spans, transformed parents, cell movement, delete/undo/redo, reload,
+static/dynamic separation, and bounded-journal recovery. These are structural
+measurements, not a completed graphical performance comparison.
+
+The following remain implementation/acceptance gates: graphical partition verification,
 frustum/category distance evaluation, existing Phase 2 LOD selection with
 hysteresis, native compact render preparation, compatible instancing, explicit
 cell residency states and existing asset leases, profile memory budgets, editor

@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const context={console,TextEncoder,TextDecoder,DataView,WebAssembly,AbortController,URL,Map,Set,realmAssetURL:p=>p,VELDREN_CONTEXT:'editor',addEventListener(){},fetch:async path=>{const bytes=fs.readFileSync(new URL('../dist/'+String(path).replace(/^\//,''),import.meta.url));return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes.toString())};}};
+context.window=context;vm.createContext(context);
+for(const path of ['asset-runtime.js','native-runtime.js','world-performance.js'])vm.runInContext(fs.readFileSync(new URL('../dist/'+path,import.meta.url),'utf8'),context);
+const native=await context.realmNativeReady,n=native.scenes;context.realmNative=native;await context.VeldrenAssets.ready;
+const entity=(id,x)=>({id,name:id,parent:null,active:true,transform:{position:[x,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'procedural:test',renderPath:'canonical'},Collider:{bounds:[[-1,-1,-1],[1,1,1]]}},metadata:{}});
+n.upsert('test',entity('near',0));n.upsert('test',entity('far',2000));
+const original=n.serialize(),q=()=>n.performance('test',{op:'query',min:[-4,-4,-4],max:[4,4,4]});
+assert.deepEqual(Array.from(q().ids),['near']);assert.equal(q().stats.updated,0);
+n.command('test',{operations:[{op:'transform',id:'near',transform:{position:[100,0,0]}}]});assert.equal(q().ids.length,0);n.command('test',{action:'undo'});assert.deepEqual(Array.from(q().ids),['near']);assert.deepEqual(n.serialize(),original);
+const objects=[{_sceneEntityId:'near',x:0,y:0},{_sceneEntityId:'far',x:2000,y:0},{_editorPreview:true,x:0,y:0}];
+const projected=context.VeldrenWorldPerformance.prepare('test',objects,[],-4,4,-4,4);assert.equal(projected.objects.length,2);assert.equal(projected.objects[0],objects[0]);
+n.load(original);assert.deepEqual(Array.from(q().ids),['near']);
+if(process.argv[2]){
+ const document=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));n.load(document);const before=n.serialize(),start=performance.now();
+ const stats=n.performance('overworld',{op:'sync'}),indexMs=performance.now()-start;assert(stats.records>10000);
+ const query=n.performance('overworld',{op:'query',min:[0,-1000,0],max:[64,1000,64]});assert(query.stats.considered<stats.records/2);
+ const scene=document.scenes.find(s=>s.scene==='overworld'),proxies=scene.entities.filter(e=>e.components.MeshRenderer).map(e=>({_sceneEntityId:e.id}));
+ const view=context.VeldrenWorldPerformance.prepare('overworld',proxies,[],0,64,0,64);assert(view.objects.length>0&&view.objects.length<proxies.length);
+ assert.deepEqual(n.serialize(),before);assert.equal(n.performance('overworld',{op:'sync'}).updated,0);
+ console.log(JSON.stringify({scope:'actual WorldDocument, C++/WASM partition and renderer ID bridge',entities:scene.entities.length,records:stats.records,indexMs,localCandidates:query.stats.considered,bridgeCandidates:view.objects.length,canonicalUnchanged:true}));
+}
+native.destroy();assert.throws(()=>n.performance('test',{op:'sync'}));console.log('PASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown');

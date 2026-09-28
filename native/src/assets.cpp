@@ -194,3 +194,5 @@ void veldren_assets_destroy(std::uint32_t handle){asset_handles.erase(handle);}
 int veldren_assets_command(std::uint32_t handle,const char* json){auto it=asset_handles.find(handle);if(it==asset_handles.end()||!json)return 0;try{it->second.response=veldren::write_json(veldren::Json::Object{{"ok",true},{"value",it->second.registry.command(veldren::parse_json(json))}});return 1;}catch(const std::exception& e){it->second.response=veldren::write_json(veldren::Json::Object{{"ok",false},{"error",e.what()}});return 0;}}
 std::uint32_t veldren_assets_response(std::uint32_t handle,char* out,std::uint32_t capacity){auto it=asset_handles.find(handle);if(it==asset_handles.end())return 0;const auto& s=it->second.response;if(out&&capacity>s.size()){std::memcpy(out,s.data(),s.size());out[s.size()]=0;}return std::uint32_t(s.size());}
 }
+
+namespace veldren { AssetRegistry* asset_registry_for_performance(std::uint32_t handle){const auto it=asset_handles.find(handle);return it==asset_handles.end()?nullptr:&it->second.registry;} }
