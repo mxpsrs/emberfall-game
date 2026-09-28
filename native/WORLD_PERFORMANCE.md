@@ -273,3 +273,29 @@ Phase 4 remains in progress. Production has no authored LOD1/LOD2 art, physical
 mobile/Safari and hardware performance acceptance are unverified, and cell
 streaming graphical travel/soak and final editor regressions remain open. No
 production deployment, main merge, Phase 5 or Phase 6 work has occurred.
+
+### Completed software verification of the cell scheduler
+
+The implementation was pushed and its complete 1,310-file GitHub tree verified at
+`06932597af7263fa2d9dff0f4601f93121fd34c8`. The populated desktop run completed 10
+views, including all four travel viewpoints twice and authenticated gameplay;
+the mobile-sized run completed six views. All 48 measured frames presented with
+zero failed loads and no reported GPU/staging budget overruns. Three desktop
+samples caught one asynchronous load in flight; every viewpoint's final sample
+had drained its queue. Native stress covered 1,000 travel cycles, and actual
+WASM/Filament covered 12 unload/reload cycles with complete resource release.
+
+The full populated editor regression also passed Inspector numeric/name edits,
+undo/redo, preserve-world reparent, prefab updates, grouped modular building
+edits, verified save, fresh reload and editor isolation, with zero page errors.
+Representative mobile gameplay, mobile overview, desktop return overview and
+fresh editor reload screenshots were visually inspected. Raw receipts and the
+checkpoint report are committed under `docs/qa/phase4-world-performance/` and
+`docs/PHASE4-WORLD-PERFORMANCE-CHECKPOINT-2026-09-28.md`.
+
+The final desktop overview retained 223.44 MB of compatibility GPU buffers,
+versus 516.38 MB in the baseline route; its revisit retained 225.06 MB after
+1,369 cumulative evictions. The final policy retains reusable GPU cache up to
+its own budget instead of evicting it to satisfy a duplicate CPU staging budget.
+Physical-device/hardware performance, extended hardware soak and future authored
+LOD art remain unverified. Phase 4 is still in progress, not formally accepted.
