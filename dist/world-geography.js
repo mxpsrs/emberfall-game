@@ -50,7 +50,7 @@ setupTutorialVillage=function(){
  physicalBridges=bridgesInRealm().filter((b,i,a)=>a.findIndex(p=>p.x===b.x&&p.z===b.z)===i);realmNavigation.clear();resetLandSurface();miniTerrain=null;
  for(const p of s.groundLoot||[])if(p.scene==='overworld'&&water(p.x,p.y)){const [x,y]=nearestGeographyLand(p.x,p.y);Object.assign(p,{x,y});}
  if(s.sceneId==='overworld'&&water(s.x,s.y)){const [x,y]=nearestGeographyLand(s.x,s.y);s.x=x;s.y=y;px=x;py=y;}
- currentScene=previous;if(previous==='overworld')objects.splice(0,objects.length,...w.objects);
+ currentScene=previous;if(previous==='overworld')(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));
 };
 
 const geographyKingdomBefore=kingdomAt;

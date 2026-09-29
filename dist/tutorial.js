@@ -145,7 +145,6 @@ function guide(){
  if(!inWorld()||Math.hypot(s.x-43,s.y-52)>90){dialog('Continue on Firstlight Isle','<p>Your tutors are on Firstlight Isle. Return to Rowan’s square to continue this lesson. Your belongings, levels and bank come with you.</p>',[['Return to the square',()=>{close();activateScene(worldScenes.tutorial?'tutorial':'overworld',42,51);renderTutorial();}],['Stay here',close]]);return;}
  if(step.event==='combat-stats'){openCombatStats();return;}
  if(['bag','skills','bury','fire','mix-dough','equip-dagger','training-gear','ranged-gear'].includes(step.event)&&!(step.event==='fire'&&tutorialGoal())){openTutorialPanel(step.event==='skills'?'skills':'bag');return;}
- if(step.event==='spirit'&&spiritHasBond()){openSpirits();return;}
  let point=tutorialGoal();
  if(point){if(point.dead>time){toast('The practice target will be ready again shortly.');return;}engage(point.tutorialDoor||point);}
  else toast(step.event==='loot'?'Defeat another rat to find fresh drops.':'Follow the lesson above.');
@@ -187,12 +186,11 @@ function setupTutorialVillage(){
  const dummy=make('magic-dummy','dummy','Spell practice dummy',79,66,{...species.dummy,kind:'dummy',maxhp:40,hp:40,atk:0});dummy.name='Spell practice dummy';dummy.interiorBuilding='realm_briarhaven_3';place(dummy,79,66);
  // Sera teaches remembrance; no additional world actors are needed.
  dressTutorWorkplaces(world);setupSkillWorld(world);setupTrainingPen(world);
- if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
+ if(inWorld()){(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));buildings.splice(0,buildings.length,...world.buildings);}realmNavigation.clear();miniTerrain=null;roadBuckets=null;resetLandSurface();
  normalizeJourney(s);renderTutorial();
 }
 function talkTutor(o){
  const role=o.tutor,expected=tutorialStep()?.event;
- if(role==='worship'&&expected==='spirit'){openFirstSpiritChoice();return;}
  if(role==='magic'&&tutorialStep()){
   const ready=giveTutorialMagicSupplies();
   if(expected==='talk-magic'&&ready){dialog(TUTORS.magic.name,'<p>“'+TUTORS.magic.text+'”</p>',[['Continue',()=>{close();tutorialEvent('talk-magic');}]]);return;}
@@ -246,7 +244,7 @@ function lightLog(){
  if(!s.bag.logs)return false;stop();
  if(!inWorld()||buildings.some(b=>b.walkIn?withinWalkIn(b,px,py):px>=b.x&&px<b.x+b.w&&py>=b.y&&py<b.y+b.h)||water(s.x,s.y)){toast('Light a fire on clear ground outdoors.');return false;}
  if(objects.some(o=>o.type==='camp'&&Math.hypot(o.x-px,o.y-py)<1)){toast('There is already a fire here.');return false;}
- s.bag.logs--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,expires:time+PLAYER_FIRE_LIFETIME/1000,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};worldScenes.overworld.objects.push(o);objects.push(o);gain('Firemaking',20);tutorialEvent('fire');renderUI();save();toast('Fire lit · +20 Firemaking XP');return true;
+ s.bag.logs--;const o={id:practiceFireSerial++,type:'camp',name:'Log fire',x:s.x,y:s.y,homeX:s.x,homeY:s.y,drawX:s.x,drawY:s.y,sprite:7,dead:0,walkThrough:true,expires:time+PLAYER_FIRE_LIFETIME/1000,expiresAt:Date.now()+PLAYER_FIRE_LIFETIME};if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.addSession('overworld',o,'fire');else{worldScenes.overworld.objects.push(o);objects.push(o);}gain('Firemaking',20);tutorialEvent('fire');renderUI();save();toast('Fire lit · +20 Firemaking XP');return true;
 }
 function cookTrout(){
  if(!s.bag.rawShrimp){toast('Net some shrimp first.');return false;}
@@ -345,14 +343,15 @@ function trainingRatCanMove(o,x,y){
  // A clear border also keeps the enlarged bodies and tails off the fence.
  return insideTrainingPen(x,y,1)&&!objects.some(a=>a!==o&&a.penId===o.penId&&a.dead<=time&&(a.x===x&&a.y===y||Math.hypot((a.drawX??a.x)-x,(a.drawY??a.y)-y)<.8));
 }
-function trainingGateClosedAt(x,y){const g=trainingPenGate;return inWorld()&&g&&g.x===x&&g.y===y&&g.openedAt===undefined&&objects.includes(g);}
+function trainingGateOccupies(x,y){const g=trainingPenGate;return !!g&&(g._generatedService?globalThis.VeldrenServiceScene.contains(g,x,y):g.x===x&&g.y===y);}
+function trainingGateClosedAt(x,y){const g=trainingPenGate;return inWorld()&&g&&trainingGateOccupies(x,y)&&g.openedAt===undefined&&objects.includes(g);}
 function trainingGateFraction(){const g=trainingPenGate;if(!g)return 0;const m=g.motion;if(!m)return g.openedAt===undefined?0:1;const t=Math.max(0,Math.min(1,(time-m.start)/.24));return m.from+(m.to-m.from)*t*t*(3-2*t);}
 function setTrainingGate(open){const g=trainingPenGate;if(!g||(g.openedAt!==undefined)===open)return;const from=trainingGateFraction();if(open)g.openedAt=time;else delete g.openedAt;g.blocksSight=!open;g.motion={from,to:open?1:0,start:time};}
 function prepareTrainingGateStep(next){
- const g=trainingPenGate;if(!inWorld()||!g||next[0]!==g.x||next[1]!==g.y||!objects.includes(g))return true;
+ const g=trainingPenGate;if(!inWorld()||!g||!trainingGateOccupies(next[0],next[1])||!objects.includes(g))return true;
  setTrainingGate(true);return trainingGateFraction()>.95;
 }
-function crossingTrainingGate(){const g=trainingPenGate;return inWorld()&&g&&g.openedAt!==undefined&&(s.x===g.x&&s.y===g.y||path[0]?.[0]===g.x&&path[0]?.[1]===g.y);}
+function crossingTrainingGate(){const g=trainingPenGate;return inWorld()&&g&&g.openedAt!==undefined&&(trainingGateOccupies(s.x,s.y)||path[0]&&trainingGateOccupies(...path[0]));}
 function updateTrainingGate(){
  const g=trainingPenGate;if(!g)return;
  const nearby=inWorld()&&Math.abs(px-g.x)<.85&&Math.abs(py-g.y)<.85;

@@ -1,0 +1,14 @@
+material {
+    name : VeldrenEditorTools,
+    shadingModel : unlit,
+    doubleSided : true,
+    depthWrite : false,
+    depthCulling : false,
+    requires : [ color ]
+}
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor = getColor();
+    }
+}

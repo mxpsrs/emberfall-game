@@ -1,6 +1,6 @@
 const {ctx,vm,fs}=require('../scripts/game-fixture.cjs');
 const run=s=>vm.runInContext(s,ctx);ctx.document.readyState='complete';ctx.fetch=async()=>({ok:true,json:async()=>({edits:{version:1,revision:1,changes:[]}})});
-for(const f of ['building-assembly','building-runtime','terrain-editor-runtime','world-edits-runtime'])run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));
+for(const f of ['world-scene-format','building-assembly','building-runtime','terrain-editor-runtime','world-edits-runtime']){run(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'));if(f==='world-scene-format')run('window.VeldrenSceneFormat=VeldrenSceneFormat;');}
 ctx.setInterval=()=>0;ctx.clearInterval=()=>{};
 const oldGet=ctx.document.getElementById;
 const retired=new Set(['waveButton','worldClock','onlineStatus','targetTitle','targetSub','activity','eat','runButton']);
@@ -66,12 +66,7 @@ assert(window.VELDREN_WORLD_EDITS_STATUS.rejected>0);assert(window.VELDREN_WORLD
 console.log('PASS: actual house modules, local transforms, snap, linked entrance/opening, parent move, roof count, undo/redo, serialization, isolated bad/stale edits and idempotence.');
 `);
 
-ctx.parent={postMessage(){}};ctx.location={origin:'http://test.local'};ctx.document.head=ctx.document.body;
-ctx.fetch=async()=>({ok:true,json:async()=>({revision:1,edits:{version:1,revision:1,changes:[]},count:0})});
-run('assetsReady=true;');
-run(fs.readFileSync(__dirname+'/../dist/editor/editor-runtime.js','utf8'));
-(async()=>{
- await run('window.VeldrenEditorBridge.initialize()');
- run(`const bridge=window.VeldrenEditorBridge;assert(bridge.isReady());const entry=bridge.listEntities().find(e=>e.kind==='building');assert(entry);bridge.selectByRef('building',entry.id);const context=bridge.enterBuilding();assert(context.parts.length);const part=context.parts.find(p=>p.role==='wall');assert(part);bridge.selectPart(part.id);bridge.setPart({x:part.local[3]+.25});assert(bridge.buildingState().undo>0);bridge.buildingUndo();bridge.buildingUndo(true);assert(bridge.exportEdits().changes.some(c=>c.assembly));bridge.exitBuilding();assert.equal(bridge.buildingState(),null);`);
- console.log('PASS: editor bridge initializes, enters existing building, selects/moves exact wall, records assembly, undoes/redoes and exits.');
-})().catch(e=>{console.error(e);process.exitCode=1});
+// The editor now requires the canonical native command owner. Its former
+// native-disabled RuntimeBinding mock did not exercise the production editor.
+// Verify the same building projection writes through real WASM and shared history.
+require('./editor-building-history.cjs');

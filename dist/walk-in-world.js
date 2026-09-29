@@ -65,7 +65,7 @@ function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn
  for(const [i,[name,x,y]]of furnishings.entries())place({id:1600000+b.service.id*100+i,type:'prop',name,sprite:12,dead:0},b.x+x,b.y+y);
 
  }
- if(inWorld()){objects.splice(0,objects.length,...world.objects);buildings.splice(0,buildings.length,...world.buildings);}
+ if(inWorld()){(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));buildings.splice(0,buildings.length,...world.buildings);}
  // Existing saves inside a shop now resume inside that shop's physical world footprint.
  const b=world.buildings.find(b=>b.walkIn&&b.service.destination===s.sceneId);if(b){const [w,h]=sceneSizes[s.sceneId]||[16,14],x=Math.round(b.x+1+s.x/(w-1)*(b.w-3)),y=Math.round(b.y+1+s.y/(h-1)*(b.h-3));activateScene('overworld',x,y,false);}
 }

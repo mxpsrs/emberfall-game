@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-29",
+  "baseline": "v217 / 533b2956957c627705f3c89576b575d7cabd50e2",
+  "backend": "Bundled real Filament NOOP, native WASM, production world and asset registry. No GPU rasterization, network download, authenticated hosted load or physical device.",
+  "before": {
+    "constructionMs": 35659.917765,
+    "nativeImportMs": 25981.687066,
+    "firstDrawMs": 14521.025381,
+    "startupSubtotalMs": 76162.63021199999,
+    "medianWarmDrawMs": 131.28121899999678,
+    "rssMiB": 1011,
+    "renderFailures": []
+  },
+  "after": {
+    "constructionMs": 948.3234880000001,
+    "nativeImportMs": 26353.225851000003,
+    "firstDrawMs": 15105.334948999996,
+    "startupSubtotalMs": 42406.884288,
+    "medianWarmDrawMs": 121.26577700000053,
+    "rssMiB": 932,
+    "renderFailures": []
+  },
+  "checks": [
+    "prebuilt graph roundtrip and cyclic references",
+    "259 scenes and 9742 world objects",
+    "fresh tutorial and current-version saved character restoration",
+    "old layout saves retain procedural migration",
+    "network fallback and invalid graph rejection",
+    "cached projections reflect parent transforms and in-batch writes",
+    "native read scopes invalidate on Scene writes and unwind after errors",
+    "permanent spawn and gatherable session behavior",
+    "full building/door/road/light/structure/metadata ownership and save/load",
+    "native WASM actor simulation"
+  ],
+  "remaining": [
+    "Native Scene conversion/import still runs at startup; this is prebuilt construction data, not a fully cooked native scene.",
+    "Older layout saves use the existing generation/migration path.",
+    "CPU draw time remains above a 30 FPS budget.",
+    "iPhone stability/FPS and 39-player hosted capacity remain unverified."
+  ]
+}

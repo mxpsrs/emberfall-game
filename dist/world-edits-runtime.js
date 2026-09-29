@@ -10,19 +10,25 @@
    const response=await fetch('/api/editor/edits',{cache:'no-store'});
    if(response.ok){
     const payload=await response.json();
-    if(payload?.edits?.version!==1||!Array.isArray(payload.edits.changes))throw Error('Invalid editor API world layer');
-    Object.assign(state,payload.edits,{loaded:true,source:'editor-api'});
+    const edits=payload?.world?window.VeldrenSceneFormat.toLegacy(payload.world,{forRender:true}):payload?.edits;
+    if(edits?.version!==1||!Array.isArray(edits.changes))throw Error('Invalid editor API world layer');
+    Object.assign(state,edits,{loaded:true,source:'editor-api',world:payload.world||convertLegacyWorld(edits)});
     state.meta={path:payload.path,runtimePath:payload.runtimePath,sha256:payload.sha256,runtimeSha256:payload.runtimeSha256};
     return state;
    }
   }catch(error){console.warn('Veldren editor API unavailable; using static world layer.',error)}
 
   try{
+   const sceneResponse=await fetch('/world-scene.json?cache='+Date.now(),{cache:'no-store'});
+   if(sceneResponse.ok){
+    const world=await sceneResponse.json(),data=window.VeldrenSceneFormat.toLegacy(world,{forRender:true});
+    Object.assign(state,data,{loaded:true,source:'static-scene',world});return state;
+   }
    const response=await fetch('/world-edits.json?cache='+Date.now(),{cache:'no-store'});
    if(response.ok){
     const data=await response.json();
     if(data?.version!==1||!Array.isArray(data.changes))throw Error('Invalid static Veldren world layer');
-    Object.assign(state,data,{loaded:true,source:'static'});
+    Object.assign(state,data,{loaded:true,source:'static',world:convertLegacyWorld(data)});
     return state;
    }
    throw Error('Static world layer HTTP '+response.status);
@@ -35,6 +41,10 @@
 
  const ready=load();
  window.VELDREN_WORLD_EDITS_READY=ready;
+
+ function convertLegacyWorld(edits){
+  try{return window.VeldrenSceneFormat?.fromLegacy(edits)||null}catch{return null}
+ }
 
  const normalize=c=>({
   ...c,
@@ -56,7 +66,7 @@
    return c.name&&Number.isFinite(c.baseX)&&Number.isFinite(c.baseY)?list.find(b=>(!c.name||b.name===c.name)&&fallbackDistance(b,c)<2.5)||null:null;
   }
   const list=scene.objects||[];
-  return list.find(o=>String(o.id)===String(c.id))||
+  return list.find(o=>String(o.id)===String(c.id)||String(o._generatedEntityId||'')===String(c.id)||String(o._generatedLegacyId||'')===String(c.id))||
     (c.name&&Number.isFinite(c.baseX)&&Number.isFinite(c.baseY)?list.find(o=>(!c.name||o.name===c.name)&&(!c.type||o.type===c.type)&&fallbackDistance(o,c)<2.5)||null:null);
  }
  function moveObject(o,x,y){
@@ -110,6 +120,28 @@
  }
 
  const completed=new WeakMap();
+ function synchronizeSceneRenderables(world=state.world,onlyScene=null){
+  if(!world||typeof worldScenes==='undefined')return;
+  const records=window.VeldrenSceneFormat.renderables(world).filter(record=>onlyScene==null||record.scene===String(onlyScene));
+  const liveIds=new Set(records.map(record=>record.id)),pending=new Map();const listFor=name=>{if(!pending.has(name))pending.set(name,[...worldScenes[name].objects]);return pending.get(name);};
+  for(const record of records){
+   const scene=worldScenes[record.scene];if(!scene?.objects)continue;
+   let object=listFor(record.scene).find(item=>item._sceneEntityId===record.id);
+   if(object?._generatedSceneEntity)continue;
+   if(!object){
+    object={id:record.id,_sceneEntityId:record.id,type:'prop',dead:0,hitAt:-100,attackAt:-100,walkThrough:true};
+    listFor(record.scene).push(object);
+   }
+   Object.assign(object,{name:record.name,x:record.x,y:record.y,homeX:record.x,homeY:record.y,
+    drawX:record.x,drawY:record.y,editorAsset:record.asset,
+    editorTransform:{rotation:record.rotation,scale:record.scale}});
+  }
+  const sceneNames=onlyScene==null?Object.keys(worldScenes):[String(onlyScene)];
+  for(const name of sceneNames){const scene=worldScenes[name];if(!scene?.objects)continue;
+   const list=listFor(name);for(let index=list.length-1;index>=0;index--){const item=list[index];if(item._sceneEntityId&&!item._generatedSceneEntity&&!liveIds.has(item._sceneEntityId)){list.splice(index,1);if(!globalThis.VeldrenWorldObjects?.enabled&&typeof currentScene!=='undefined'&&currentScene===name){const active=objects.indexOf(item);if(active>=0)objects.splice(active,1)}}}
+   if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.project(name,list);else scene.objects=list;
+  }
+ }
  const status=window.VELDREN_WORLD_EDITS_STATUS={revision:0,total:0,applied:0,matched:0,unmatched:0,rejected:0,errors:[],source:null};
  function validate(c){
   if(!c||typeof c!=='object'||Array.isArray(c)||!['building','object'].includes(c.kind)||typeof c.scene!=='string'||!c.scene||c.id==null)throw Error('Invalid edit identity');
@@ -133,6 +165,7 @@
     seen=completed.get(scene);if(!seen){seen=new Set();completed.set(scene,seen)}
     key=JSON.stringify(c);if(seen.has(key))continue;
     let entity=resolve(scene,c);
+    if(entity?._generatedSceneEntity){seen.add(key);continue;}
     if(c.deleted){
      if(!entity){status.unmatched++;status.errors.push(errorDetail(raw,index,'Entity not found'));seen.add(key);continue;}
      const list=c.kind==='building'?scene.buildings:scene.objects;list.splice(list.indexOf(entity),1);
@@ -150,7 +183,7 @@
  }
  function syncCurrentScene(){
   if(!worldScenes?.[currentScene])return;
-  objects.splice(0,objects.length,...worldScenes[currentScene].objects);
+  (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));
   buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
   try{worldObjectRevision++}catch{}
   try{realmNavigation?.clear?.()}catch{}
@@ -214,9 +247,23 @@
  }
 
  // Await all extension scripts, but never wrap scene construction/activation.
- window.VeldrenWorldEdits={validate,applyDocument,state,async applyFinishedWorld(){
+ window.VeldrenWorldEdits={validate,applyDocument,state,refreshSceneRenderables(world,sceneName){
+  synchronizeSceneRenderables(world||state.world,sceneName??null);
+  if(sceneName!=null&&typeof currentScene!=='undefined'&&currentScene===String(sceneName))syncCurrentScene();
+  return true;
+ },async prepareNativeWorld(){
   await ready;installRenderTransforms();window.VeldrenBuildings?.install();
-  try{return applyDocument()}catch{status.errors.push({reason:'Editor layer unavailable'});return status;}
+  const terrain=window.VeldrenTerrainEdits?.applyDocument(state.terrain);if(terrain?.error)throw Error('Invalid terrain edits: '+terrain.error);
+  window.VeldrenRuntimeWorld=state.world;
+ },async applyFinishedWorld(){
+  await ready;installRenderTransforms();window.VeldrenBuildings?.install();
+  synchronizeSceneRenderables();
+  try{
+   const result=applyDocument();
+   window.VeldrenSceneFormat.attachRuntimeWorld(state.world,worldScenes);
+   window.VeldrenRuntimeWorld=state.world;
+   return result;
+  }catch(error){status.errors.push({reason:'Editor layer unavailable: '+(error?.message||'Error')});return status;}
  }};
  const originalBoot=boot;
  boot=async function(...args){await Promise.all([ready,domReady()]);return originalBoot.apply(this,args)};

@@ -55,6 +55,7 @@ enum VeldrenActorFlags : std::uint32_t {
   VELDREN_ACTOR_RAT = 1U << 5,
   VELDREN_ACTOR_FACE_PLAYER = 1U << 6,
   VELDREN_ACTOR_TELEPORT = 1U << 7,
+  VELDREN_ACTOR_PLAYER = 1U << 8,
 };
 
 enum VeldrenRenderFlags : std::uint32_t {
@@ -99,6 +100,7 @@ VELDREN_EXPORT std::uint32_t veldren_actors_upsert(
     void* world,
     const VeldrenActorState* actors,
     std::uint32_t count);
+VELDREN_EXPORT std::uint32_t veldren_actor_set_heading(void* world, std::uint32_t id, float heading);
 VELDREN_EXPORT std::uint32_t veldren_actor_remove(void* world, std::uint32_t id);
 VELDREN_EXPORT std::uint32_t veldren_actor_read(const void* world, std::uint32_t id, VeldrenActorState* out);
 VELDREN_EXPORT std::uint32_t veldren_actors_read(
@@ -146,6 +148,59 @@ VELDREN_EXPORT std::int32_t veldren_pathfind(
     std::uint32_t* out_ids,
     std::uint32_t out_capacity);
 VELDREN_EXPORT std::uint32_t veldren_world_count(const void* world);
+// Returns the UTF-8 JSON byte length (excluding NUL). When out is non-null and
+// capacity is greater than that length, writes the JSON plus a NUL byte.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_serialize(
+    const void* world, char* out, std::uint32_t capacity);
+// Persistent world scenes are stored separately from the transient actor
+// simulation scene. Entity records use the version-2 scene JSON field shape.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_upsert(
+    void* world, const char* scene, const char* entity_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_remove(
+    void* world, const char* scene, const char* entity_id);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_set_transform(
+    void* world, const char* scene, const char* entity_id, const char* transform_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_read(
+    const void* world, const char* scene, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_read(
+    const void* world, const char* scene, const char* entity_id, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_entity_set_world_transform(
+    void* world, const char* scene, const char* entity_id, const char* transform_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_component_ids(
+    const void* world, const char* scene, const char* component, char* out,
+    std::uint32_t capacity);
+// Returns active entities whose transformed Footprint contains a world X/Z point.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_footprints_at(
+    const void* world, const char* scene, const char* component, double x, double z,
+    char* out, std::uint32_t capacity);
+// Native quarry profile and transformed worksite terrain evaluation.
+// An empty ID selects the first active quarry containing the padded point.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_quarry_sample(
+    const void* world, const char* scene, const char* id, double x, double z,
+    double pad, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_quarry_ramp_at(
+    const void* world, const char* scene, double x, double z);
+VELDREN_EXPORT double veldren_world_scene_terrain_pad_height(
+    const void* world, const char* scene, double x, double z, double height,
+    std::uint32_t footing);
+// Resolves active point lights from component data and hierarchical transforms.
+VELDREN_EXPORT std::uint32_t veldren_world_scene_lights_read(
+    const void* world, const char* scene, double night, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_document_serialize(
+    const void* world, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_world_document_load(
+    void* world, const char* document_json);
+VELDREN_EXPORT std::uint32_t veldren_world_scene_revision(const void* world);
+// Resource session data is native-owned and excluded from WorldDocument.
+VELDREN_EXPORT std::uint32_t veldren_resource_state_read(
+    const void* world, const char* scene, const char* id, char* out, std::uint32_t capacity);
+VELDREN_EXPORT std::uint32_t veldren_resource_state_patch(
+    void* world, const char* scene, const char* id, const char* patch_json);
+VELDREN_EXPORT std::uint32_t veldren_resources_tick(
+    void* world, double now, double game_time);
+VELDREN_EXPORT std::uint32_t veldren_resource_phase(
+    const void* world, const char* scene, const char* id,
+    double now, double game_time, std::uint32_t flags);
 VELDREN_EXPORT std::uint32_t veldren_random_bounded(void* world, std::uint32_t exclusive_maximum);
 VELDREN_EXPORT std::uint32_t veldren_random_chance(void* world, float probability);
 VELDREN_EXPORT std::uint32_t veldren_roll_attack(
@@ -164,6 +219,11 @@ VELDREN_EXPORT std::uint32_t veldren_combat_level(
     std::uint32_t magic,
     std::uint32_t ranged);
 VELDREN_EXPORT float veldren_attack_roll_chance(float attack, float defense);
+VELDREN_EXPORT float veldren_player_accuracy(std::uint32_t skill_level, std::uint32_t target_level);
+VELDREN_EXPORT float veldren_enemy_accuracy(std::uint32_t enemy_level, std::uint32_t defense_level);
+VELDREN_EXPORT std::uint32_t veldren_player_max_hit(
+    std::uint32_t magic_style, std::uint32_t skill_level, std::int32_t weapon_power,
+    std::int32_t spell_power, std::int32_t magic_bonus);
 VELDREN_EXPORT std::uint32_t veldren_physical_max_hit(
     std::uint32_t effective_level,
     std::int32_t strength_bonus,
@@ -228,3 +288,8 @@ VELDREN_EXPORT std::uint32_t veldren_world_timer_events(
     double respawn_at_milliseconds,
     float game_time);
 VELDREN_EXPORT std::uint32_t veldren_core_abi_version();
+
+extern "C" {
+VELDREN_EXPORT int veldren_editor_command(void* world,const char* scene,const char* request);
+VELDREN_EXPORT std::uint32_t veldren_editor_response(const void* world,char* out,std::uint32_t capacity);
+}

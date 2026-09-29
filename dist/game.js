@@ -21,7 +21,8 @@ s.hp = Math.max(1, Math.min(s.hp, maxhp()));
 s.quest = Math.max(0, Math.min(5, s.quest));
 s.tutorial = Math.max(0, Math.floor(Number(s.tutorial)||0));
 if (s.character) s.character.look = Math.max(0, Math.min(3, Number(s.character.look) || 0));
-const objects = [], buildings = [];
+let objects = [];
+const buildings = [];
 let serial = 0;
 function add(type, x, y, name, sprite, extra={}) {
   const o = {id:serial++, type, x, y, homeX:x, homeY:y, drawX:x, drawY:y, name, sprite, dead:0, hitAt:-100, attackAt:-100, ...extra};
@@ -74,18 +75,19 @@ function inBuilding(b,x,y) {
   return !b.arch || x===b.x || x===b.x+b.w-1;
 }
 const fighter=o=>o&&['enemy','boss','man','dummy'].includes(o.type);
-let blocked=(x,y)=>worldWall(x,y)||water(x,y)||trainingGateClosedAt(x,y)||buildings.some(b=>inBuilding(b,x,y))||objects.some(o=>o.x===x&&o.y===y&&!fighter(o)&&!o.collected&&!o.walkThrough);
+let blocked=(x,y)=>worldWall(x,y)||water(x,y)||trainingGateClosedAt(x,y)||buildings.some(b=>inBuilding(b,x,y))||globalThis.VeldrenGatherableScene?.blocked(currentScene,x,y)||globalThis.VeldrenServiceScene?.blocked(currentScene,x,y)||objects.some(o=>!o._generatedGatherable&&!o._generatedService&&o.x===x&&o.y===y&&!fighter(o)&&!o.collected&&!o.walkThrough);
 const land=(x,y)=>!blocked(x,y);
 if((!s.sceneId||s.sceneId==='overworld')&&!land(s.x,s.y)){s.x=14;s.y=17;}
-let px=s.x, py=s.y, path=[], target=null, elapsed=0, moveClock=0;
+// Shared mutable camera anchor for separately loaded renderer/editor scripts.
+var px=s.x, py=s.y;
+let path=[], target=null, elapsed=0, moveClock=0;
 let tab='quests', floaters=[], time=0, camera={x:0,y:0}, screen={w:0,h:0}, last=0, toastUntil=0, saveClock=0;
 let facing=1, lastAttack=-100, assetsReady=false, selectedLook=s.character?.look||0, editingCharacter=false, hitboxes=[];
 const canvas=$('world'), ctx=canvas.getContext('2d');
 const art={};
 const looks=[{name:'Blue wanderer',description:'Short brown hair, blue tunic'},{name:'Crimson wanderer',description:'Auburn ponytail, crimson tunic'},{name:'Emerald wanderer',description:'Short black hair, emerald tunic'},{name:'Violet wanderer',description:'Silver hair, violet tunic'}];
-function editorViewportReady(){return window.VeldrenEditorBridge?.isReady?.()===true;}
 function save() {
-  if(!assetsReady||window.realmStartup?.failed||editorViewportReady())return;
+  if(window.VELDREN_CONTEXT==='editor'||!assetsReady||window.realmStartup?.failed)return;
   queueCloudSave();try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch{}
 }
 function toast(text){if(typeof gameMessage==='function')gameMessage(text);else if(typeof addChatLine==='function')addChatLine(text,'game');else console.info(text);}
@@ -290,14 +292,14 @@ function draw(){
     }
     const o=entry.o,x=(o.drawX+.5)*TILE-camera.x,bottom=(o.drawY+.96)*TILE-camera.y;
     if(x< -90||x>w+90||bottom< -20||bottom>h+130)continue;
-    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=o.type==='spirit'?'spirits':MONSTER_ART[o.kind]!==undefined?'monsters':living&&o.type!=='dummy'?'heroes':living?'characters':'environment';
+    const living=fighter(o)||o.characterSprite||['elder','shop'].includes(o.type),atlas=MONSTER_ART[o.kind]!==undefined?'monsters':living&&o.type!=='dummy'?'heroes':living?'characters':'environment';
     let width=living?48:56,height=living?59:62;
     if(o.type==='crop'){width=37;height=o.harvestedUntil>time?13:37;}if(o.type==='tree'){width=91;height=111;}if(o.type==='ore'){width=58;height=47;}if(o.type==='fish'){width=36;height=28;}if(o.type==='boss'||o.kind==='warden'){width=70;height=90;}if(o.kind==='wolf'||o.kind==='ridgewolf'){width=58;height=49;}if(o.kind==='slime'||o.kind==='rat'){width=45;height=37;}
     if(o.type!=='fish')shadow(ctx,x,bottom,Math.min(25,width*.3));
     if(target===o)groundRing(o.x,o.y,fighter(o)?'#ef957d':'#f5d79a',22);
     const pulse=time-o.hitAt<.25?Math.sin((time-o.hitAt)/.25*Math.PI)*.045:0;
     const walking=Math.hypot(o.drawX-o.x,o.drawY-o.y)>.02;
-    const bob=living&&o.type!=='dummy'?(walking?Math.sin(time*11+o.id)*1.8:Math.sin(time*2+o.id)*.6):o.type==='spirit'?Math.sin(time*2.8+o.id)*3:0;
+    const bob=living&&o.type!=='dummy'?(walking?Math.sin(time*11+o.id)*1.8:Math.sin(time*2+o.id)*.6):0;
     const attacking=time-o.attackAt<.28;const lunge=attacking?Math.sin((time-o.attackAt)/.28*Math.PI)*5*(s.x<o.x?-1:1):0;const rect=sprite(ctx,atlas,atlas==='monsters'?MONSTER_ART[o.kind]:atlas==='heroes'?(o.sprite%4)*4+(walking?Math.floor(time*8+o.id)%4:1):o.sprite,x+lunge,bottom+bob,width*(1+pulse),height*(1-pulse),living&&s.x<o.x?-1:1,pulse*.35+(o.type==='tree'?Math.sin(time*.9+o.id)*.009:walking?Math.sin(time*11+o.id)*.025:0));
     if(rect)hitboxes.push({...rect,o});
     if(o.type==='questgiver')label('!',x,bottom-height-15,'#ffe0a0',20);
@@ -309,7 +311,7 @@ function draw(){
     }
     if(o.type==='camp'){const g=ctx.createRadialGradient(x,bottom-13,2,x,bottom-13,43);g.addColorStop(0,'#f9b34a22');g.addColorStop(1,'#f9b34a00');ctx.fillStyle=g;ctx.fillRect(x-43,bottom-56,86,86);}
   }
-  drawWorldMood();drawProjectiles();drawSpiritEffect();
+  drawWorldMood();drawProjectiles();
   for(const f of floaters){ctx.globalAlpha=Math.min(1,f.life*2);const x=(f.x+.5)*TILE-camera.x,y=(f.y+.5)*TILE-camera.y-48-(1.4-f.life)*25;if(f.experience)drawExperienceDrop(f,x,y);else label(f.text,x,y,f.color,15);}ctx.globalAlpha=1;
   const region=s.y<9&&s.x>10&&s.x<22?['Hollow Ruins','Skeletons & the ruins guardian']:s.x>=26&&s.y>=26?['The Southern Road','Bandit territory']:s.y>25&&s.x<15?['Marsh Edge','Slimes in the reeds']:s.y>18&&s.x<11?['Stillwater Lake','Fishing waters']:s.x>21&&s.y<11?['Iron Ridge','Rich iron deposits']:s.x>=24&&s.y>=11&&s.y<20?['Goblin Camp','Scavengers on the old road']:s.x>19&&s.y>=20?['Wolf Thicket','Briar wolf territory']:s.x<10?['Oakwood','Ancient oaks & wild rats']:['Briarhaven','Inn · General store · Smithy'];
   const activeRegion=regionInfo()||region;$('region').textContent=activeRegion[0];$('regionSub').textContent=activeRegion[1];drawMinimap();
@@ -327,7 +329,7 @@ function advanceMovement(dt){
    if(typeof recordPlayerDeparture==='function')recordPlayerDeparture(s.x,s.y);
    if(next[0]!==s.x)facing=next[0]>s.x?1:-1;[s.x,s.y]=next;distance=Math.hypot(s.x-px,s.y-py);if(distance<1e-6)continue;
   }
-  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*spiritBuild(s,lv('Worship')).runCost*(typeof fieldEquipmentEffects==='function'?fieldEquipmentEffects(s).runCost:1);
+  const running=s.runEnabled&&s.runEnergy>0,speed=running?4.5:2.25,runCost=1.8*(typeof fieldEquipmentEffects==='function'?fieldEquipmentEffects(s).runCost:1);
   const used=Math.min(remaining,distance/speed,running?s.runEnergy/runCost:Infinity),step=Math.min(distance,used*speed);
   playerMotion.heading=Math.atan2(s.x-px,s.y-py);px+=(s.x-px)/distance*step;py+=(s.y-py)/distance*step;
   travelled+=step;playerMotion.phase=(playerMotion.phase+step/(running?3.2:1.4))%1;playerMotion.running=running;
@@ -345,12 +347,6 @@ function frame(now){
   const mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(globalThis.navigator?.userAgent||''),interval=1000/(mobile?30:60);if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(editorViewportReady()){
-    // The editor camera has its own input loop. Keep visual animations running,
-    // but never advance the player's character, world timers, AI or autosave.
-    if(assetsReady&&!document.hidden){time+=dt;draw();}
-    requestAnimationFrame(frame);return;
-  }
   if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
   if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.maintenancePreparing)updateWorldTimers();
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
@@ -366,14 +362,14 @@ function frame(now){
     }
     updatePlayerAction();updateTrainingGate();updateCombat(dt);}
     livingWorld(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
-    if(time>=expiryScanAt){expiryScanAt=time+.25;for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}}
+    if(time>=expiryScanAt){expiryScanAt=time+.25;for(const o of (globalThis.VeldrenWorldObjects?.enabled?VeldrenWorldObjects.timed(currentScene):objects))if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}}
     advanceWorldActors(dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     
     saveClock+=dt;if(saveClock>10&&!window.playerTrade&&!$('creator').open){saveClock=0;save();}
   }
   if(window.playerTrade||$('creator').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
-  if(assetsReady&&!document.hidden)draw();requestAnimationFrame(frame);
+  if(assetsReady&&!document.hidden){if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();draw();}requestAnimationFrame(frame);
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));
 $('closeModal').onclick=close;$('journal').onclick=showHelp;$('mapBtn').onclick=worldMap;
@@ -384,11 +380,13 @@ $('cancelCreator').onclick=()=> $('creator').close();$('creator').addEventListen
 $('modal').addEventListener('close',()=>{if(!$('modal').open&&window.realmTrade)endTrade();renderUI();save();});
 document.addEventListener('visibilitychange',()=>{save();last=performance.now();});window.addEventListener('pagehide',save);window.addEventListener('resize',resize);
 document.addEventListener('keydown',e=>{
+  if(window.VELDREN_CONTEXT==='editor')return;
   if(!assetsReady||$('modal').open||$('creator').open||e.target?.closest?.('input,textarea,select,[contenteditable]')||e.ctrlKey||e.metaKey||e.altKey)return;
   if(typeof cameraKeyDown==='function')cameraKeyDown(e);
   const key=e.key.toLowerCase();if(key==='e')eat();if(key==='r'&&!e.repeat){e.preventDefault();toggleRun();}
 });
 async function boot(){
+  if(window.VELDREN_CONTEXT==='editor')throw new Error('Runtime boot cannot run in an editor context');
   if(window.realmStartup?.failed)return;
   realmLoadStatus('Loading your character and the world…',35,'auth');
   try{
@@ -403,13 +401,20 @@ async function boot(){
       realmStartupTask('assets',()=>fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw new Error('Item artwork unavailable');art.bounds=await response.json();update();}))
     ]);
     if(window.realmStartup?.failed)return;
-    realmLoadStatus('Preparing Briarhaven…',90);
-    await new Promise(resolve=>requestAnimationFrame(resolve));
-    realmSetStartupStage('world-generation');setupExpandedWorld();normalizeSpiritRemoval(s);
-    realmSetStartupStage('tutorial-generation');setupTutorialVillage();setupLoot();
-    realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
-    realmSetStartupStage('hud-init');initHud();resize();renderUI();renderAction();
-    assetsReady=true;renderUI();renderTutorial();realmSetStartupStage('first-draw');draw();
+    const prebuilt=await realmStartupStep('Loading the world…',76,'world-generation',()=>globalThis.VeldrenPrebuiltWorld.load());
+    if(!prebuilt){
+     await realmStartupStep('Preparing Briarhaven…',76,'world-generation',()=>setupExpandedWorld());
+     await realmStartupStep('Preparing the landscape…',77,'tutorial-generation',()=>setupTutorialVillage());
+    }
+    if(!globalThis.VeldrenPrebuiltWorld.nativeReady)setupLoot();
+    window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();window.VeldrenQuarryScene?.capture();window.VeldrenServiceScene?.capture();
+    realmSetStartupStage('editor-world');
+    if(!await globalThis.VeldrenPrebuiltWorld.activateNative(realmStartupStep)){
+     await window.VeldrenWorldEdits?.applyFinishedWorld();
+     await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
+    }
+    await realmStartupStep('Preparing your view…',96,'hud-init',()=>{initHud();resize();renderUI();renderAction();});
+    await realmStartupStep('Entering the realm…',98,'first-draw',()=>{assetsReady=true;renderUI();renderTutorial();if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();draw();});
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();
     realmLoadComplete();save();requestAnimationFrame(frame);
   }catch(error){

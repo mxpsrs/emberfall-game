@@ -1,22 +1,34 @@
 'use strict';
 (() => {
  if(window.VeldrenEditorBridge)return;
+ if(window.VELDREN_CONTEXT!=='editor')throw Error('World editor requires its dedicated editor viewport');
  const STORAGE_KEY='veldren-world-edits-backup-v2';
  const FREE_ZOOM_MIN=2,FREE_ZOOM_MAX=1600;
  const CAMERA_KEYS=new Set(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','shift']);
  const cameraKeys=new Set();
  const free={x:null,y:null,vx:0,vy:0,yawTarget:0,tiltTarget:.4,zoomTarget:100};
- let ready=false,initializing=null,tool='select',selected=null,selectedScene=null,playerView=false,placementAsset=null,placementPreview=null,placementRotation=0,gameUiVisible=false;
+ let ready=false,initializing=null,tool='select',selected=null,selectedScene=null,placementAsset=null,placementPreview=null,placementRotation=0,gameUiVisible=false;
  let pointer=null,drag=null,lastTick=performance.now(),snap={position:.25,rotation:15};
  let quarantined=[];
- let project={version:1,revision:0,updatedAt:null,changes:[]},changes=new Map(),projectMeta={revision:0,count:0,path:'editor-data/world-edits.json',bytes:0,sha256:''};
+ let project={version:1,revision:0,updatedAt:null,changes:[]},projectWorld=null,sceneDocumentDirty=false,changes=new Map(),projectMeta={revision:0,count:0,path:'editor-data/world-edits.json',bytes:0,sha256:''};
  const T=window.VeldrenTerrainEdits;
  let terrainBrush={mode:'raise',radius:3,strength:.25,material:'grass'},terrainHover=null,terrainDrag=null;
  const touchPoints=new Map();let touchGesture=null;
  let editorSequence=0,editorRendering=false;
- let playerCamera={min:58,max:132,yaw:-2.05,tilt:.27,zoom:118};
  let lastAppliedScene=null;
 
+ let commands=null,canonicalSelection=null,saving=false;
+ function commandSystem(){
+  if(!commands)commands=createVeldrenEditorCommands(window.realmNative.scenes,()=>String(currentScene),state=>{
+   sceneDocumentDirty=state.dirty;
+   T?.setHistoryState?.(state);if(Object.prototype.hasOwnProperty.call(state,'terrain'))T.applyDocument(state.terrain);
+   if(T)post('terrain',{state:T.state(),changed:false});
+   if(buildingContext&&!window.realmNative.scenes.entity(String(currentScene),buildingContext.entity._sceneEntityId)?.components.ModularBuilding){buildingContext=null;partId=null;partPreview=null;B.floorFilter=null;post('building',{state:null});}
+   if(selected?.entity?._sceneEntityId&&!window.realmNative.scenes.entity(String(currentScene),selected.entity._sceneEntityId)){selected=null;selectedScene=null;}
+   post('history',state);if(state.changed&&!state.transaction)post('change',{selection:entityInfo(selected),dirty:state.dirty});
+  });
+  return commands;
+ }
  const post=(type,payload={})=>{try{parent.postMessage({type:'veldren-editor-'+type,...payload},location.origin);}catch{}};
  const log=(message,level='info')=>post('log',{message,level});
  const ckey=(scene,kind,id)=>`${scene}|${kind}|${id}`;
@@ -59,22 +71,41 @@
    const a=creatureAssets[key];out.push({id:'creature:'+key,source:'creature',key,name:humanize(key),category:'Creature Models',size:a?.mesh?.bounds?[a.mesh.bounds[1][0]-a.mesh.bounds[0][0],a.mesh.bounds[1][1]-a.mesh.bounds[0][1],a.mesh.bounds[1][2]-a.mesh.bounds[0][2]]:null});
   }
   if(typeof PROP_RULES!=='undefined')for(const key of Object.keys(PROP_RULES).sort())out.push({id:'preset:'+key,source:'preset',key,name:humanize(key),category:'Veldren Prop Presets',size:PROP_RULES[key]?.size||null});
+  const native=window.VeldrenAssets;
+  if(native?.ready){
+   const seen=new Set();
+   for(const asset of out){const id=asset.source==='briar'?'briar:'+asset.key:asset.id;
+    if(native.has(id)&&native.record(id).importSettings?.importer==='veldren-gltf-1'){const record=native.record(id);Object.assign(asset,canonicalMetadata(record));seen.add(id);}
+   }
+   for(const id of native.list('model')){const record=native.record(id);if(record.importSettings?.importer!=='veldren-gltf-1'||seen.has(id))continue;
+    out.push({id,source:'canonical',key:id,name:record.name,category:record.dependencies?.some(id=>id.includes('/skeleton/'))?'Rigged Models':'Imported Models',previewOnly:false,...canonicalMetadata(record)});
+   }
+  }
+  if(ready&&window.realmNative?.scenes)for(const id of window.realmNative.scenes.componentIds(String(currentScene),'PrefabDefinition')){const node=window.realmNative.scenes.entity(String(currentScene),id);out.push({id:'prefab:'+id,key:id,source:'prefab',name:node.name,category:'Prefabs'});}
   return out;
  }
+ function canonicalMetadata(record){return {canonicalId:record.id,generation:record.generation,sourcePath:record.sourcePath,sourceHash:record.sourceHash,validation:record.validation,dependencies:record.dependencies?.length||0,clips:record.dependencies?.filter(id=>id.includes('/animation/')).length||0,size:record.bounds?.[1].map((v,i)=>v-record.bounds[0][i])};}
+ let assetPreview=null;
  function assetById(id){return assetCatalog().find(a=>a.id===id)||null;}
 
  const snapValue=(value,step)=>step?Math.round(value/step)*step:value;
 
  function protectedObject(o){
-  return !!(o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
+  return !!(o?._generatedQuarry||o?._generatedService||o?._generatedSpawn||o?._generatedGatherable||o?.tutor||o?.mainStoryKey||o?.mountainKey||o?.questModel||o?.serviceOwner||o?.characterSprite||o?.civilStair||o?.destination||['door','exit','questgiver','elder','shop','inn','forge','enemy','boss','man','dummy'].includes(o?.type));
  }
  function buildingId(b,index){
+  if(b._generatedBuildingEntity)return b._sceneEntityId;
   if(b._editorId)return b._editorId;
   const service=b.service?.id!=null?String(b.service.id):'none';
   return b._editorId=`building:${service}:${String(b.name||'building').replace(/\|/g,'_')}:${index}`;
  }
  function sceneBuildings(scene){return worldScenes?.[scene]?.buildings||[]}
  function sceneObjects(scene){return worldScenes?.[scene]?.objects||[]}
+ function authoredEntity(ref){
+  const id=ref?.entity?._sceneEntityId;if(!id||!projectWorld)return null;
+  const scene=projectWorld.scenes.find(item=>item.scene===String(currentScene));const entity=window.realmNative?.scenes?.entity(String(currentScene),String(id))||scene?.entities.find(item=>item.id===String(id));
+  return entity?{scene,entity}:null;
+ }
  function refForObject(o){return {kind:'object',entity:o,id:String(o.id)}}
  function refForBuilding(b,scene=String(currentScene)){
   const list=sceneBuildings(scene),index=Math.max(0,list.indexOf(b));return {kind:'building',entity:b,id:buildingId(b,index)};
@@ -84,11 +115,12 @@
    const list=sceneBuildings(scene);for(let i=0;i<list.length;i++)if(buildingId(list[i],i)===String(id))return {kind:'building',entity:list[i],id:String(id)};
    return null;
   }
-  const o=sceneObjects(scene).find(o=>String(o.id)===String(id));return o?{kind:'object',entity:o,id:String(id)}:null;
+  const o=sceneObjects(scene).find(o=>String(o._sceneEntityId||'')===String(id)||String(o.id)===String(id)||String(o._generatedLegacyId||'')===String(id))||window.VeldrenSceneryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenLightScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenStructureScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenBridgeScene?.selectables(scene).find(o=>o._sceneEntityId===String(id))||window.VeldrenQuarryScene?.selectables(scene).find(o=>o._sceneEntityId===String(id)||String(o.id)===String(id));return o?{kind:'object',entity:o,id:String(o.id)}:null;
  }
  function ensureBase(ref){
   const e=ref.entity;if(e._editorBase)return e._editorBase;
-  const base={x:Number(e.x)||0,y:Number(e.y)||0,name:e.name||e.propKind||e.type||'Entity',type:ref.kind==='building'?'building':e.type||'object',subtype:ref.kind==='building'?e.archetype||e.race||'building':e.propKind||e.kind||e.type||'object'};
+  const base={x:Number(e.x)||0,y:Number(e.y)||0,rotation:entityRotation(ref),scale:entityScale(ref),name:e.name||e.propKind||e.type||'Entity',type:ref.kind==='building'?'building':e.type||'object',subtype:ref.kind==='building'?e.archetype||e.race||'building':e.propKind||e.kind||e.type||'object'};
+  const authored=authoredEntity(ref);if(authored)base.sceneTransform=JSON.parse(JSON.stringify(authored.entity.transform));
   try{Object.defineProperty(e,'_editorBase',{value:base,writable:true,configurable:true});}catch{e._editorBase=base}
   return base;
  }
@@ -101,7 +133,7 @@
  function entityScale(ref){if(ref.entity.assembly)return Math.hypot(ref.entity.assembly.parent[0],ref.entity.assembly.parent[8]);return Math.max(.1,Math.min(10,Number(ref.entity.editorTransform?.scale)||1))}
  function entityInfo(ref){
   if(!ref)return null;const e=ref.entity,base=ensureBase(ref);
-  return {scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:e.name||e.propKind||e.type||'Entity',
+  return {scene:String(currentScene),entityId:e._sceneEntityId,kind:ref.kind,id:String(ref.id),name:e.name||e.propKind||e.type||'Entity',
    type:ref.kind==='building'?'building':e.type||'object',subtype:ref.kind==='building'?e.archetype||e.race||'building':e.editorAsset?`${e.editorAsset.source}:${e.editorAsset.key}`:e.propKind||e.kind||e.type||'object',
    x:Number(e.x)||0,y:Number(e.y)||0,rotation:entityRotation(ref),scale:entityScale(ref),
    protected:ref.kind==='building'?!!(e.service||e.civilCastle||e.walkIn):protectedObject(e),baseX:base.x,baseY:base.y};
@@ -109,12 +141,21 @@
  function allEntities(){
   if(!ready)return [];
   if(buildingContext)return [entityInfo(buildingContext)];
-  const out=[];for(const o of objects)if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
+  const out=[];for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[]),...(window.VeldrenQuarryScene?.selectables(String(currentScene))||[])])if(!o._editorPreview)out.push(entityInfo(refForObject(o)));
   const list=buildings;for(let i=0;i<list.length;i++)out.push(entityInfo({kind:'building',entity:list[i],id:buildingId(list[i],i)}));
   return out;
  }
+ function displaySceneMatrix(node){const matrix=[...node.worldMatrix];if(node.components.MeshRenderer?.renderPath!=='canonical'&&typeof landHeight==='function')matrix[13]+=landHeight(matrix[12],matrix[14]);return matrix;}
+ function canonicalRef(id){
+  const node=window.realmNative.scenes.entity(String(currentScene),id);if(!node)return null;
+  const source=node.components.GeneratedBuilding?resolveRef('building',id):resolveRef('object',id);if(source)return source;
+  const read=()=>window.realmNative.scenes.entity(String(currentScene),id),entity={_sceneEntityId:id,id,type:'prop',get name(){return read()?.name},get x(){return read()?.worldMatrix[12]||0},get y(){return read()?.worldMatrix[14]||0},get height(){return read()?.worldMatrix[13]||0},get editorTransform(){const m=read()?.worldMatrix;return {rotation:m?Math.atan2(m[8],m[10])*180/Math.PI:0,scale:m?Math.hypot(...m.slice(0,3)):1};}};
+  return {kind:'object',id,entity};
+ }
  function selectRef(ref){
-  selected=ref;selectedScene=ref?String(currentScene):null;post('selection',{selection:entityInfo(selected)});return entityInfo(selected);
+  selected=ref;selectedScene=ref?String(currentScene):null;
+  if(canonicalSelection){canonicalSelection.select(ref?.entity?._sceneEntityId||null);return entityInfo(selected);}
+  post('selection',{selection:entityInfo(selected)});return entityInfo(selected);
  }
 
  function updatePreviewIndex(e,oldX,oldY){
@@ -204,7 +245,20 @@
   x=snapValue(x,snap.position);y=snapValue(y,snap.position);
   let rotation=Number.isFinite(Number(input.rotation))?Number(input.rotation):entityRotation(ref);rotation=snapValue(rotation,snap.rotation);
   const scale=Math.max(.1,Math.min(10,Number.isFinite(Number(input.scale))?Number(input.scale):entityScale(ref)));
-  if(ref.kind==='building'&&e.assembly){
+  if(e._generatedSceneEntity){
+   const elevation=window.realmNative.scenes.entity(String(currentScene),e._sceneEntityId).worldMatrix[13];
+   commandSystem().execute('Transform '+(e.name||'entity'),[{op:'transform',id:e._sceneEntityId,space:'world',transform:{position:[x,elevation,y],rotation:[0,Math.sin(rotation*Math.PI/360),0,Math.cos(rotation*Math.PI/360)],scale:[scale,scale,scale]}}]);
+  }else if(e._sceneEntityId){
+   if(!projectWorld)throw Error('The canonical scene document is unavailable');
+   const result=window.VeldrenSceneFormat.setWorldTransform(projectWorld,String(currentScene),e._sceneEntityId,{x,y,rotation,scale});
+   const scene=projectWorld.scenes.find(item=>item.scene===String(currentScene)),canonical=scene?.entities.find(item=>item.id===String(e._sceneEntityId));
+   if(!canonical)throw Error('The canonical scene transform could not be resolved');
+   // Browser runtime has the native Scene bridge; isolated editor tests and
+   // offline authoring contexts may only have the v2 document loaded.
+   if(!canonical.components?.RuntimeBinding&&window.VeldrenSceneOwnership?.setTransform&&!window.VeldrenSceneOwnership.setTransform(String(currentScene),e._sceneEntityId,canonical.transform))throw Error('The canonical Scene transform could not be synchronized');
+   moveLinkedObject(e,result.x,result.y);e.editorTransform={...(e.editorTransform||{}),rotation:result.rotation,scale:result.scale};
+   e.heading=result.rotation*Math.PI/180;if(e._creatureMotion)e._creatureMotion.heading=e.heading;sceneDocumentDirty=true;
+  }else if(ref.kind==='building'&&e.assembly){
    const angle=rotation*Math.PI/180;e.assembly.parent=A.transform(x,0,y,angle,scale);B.sync(e);
   }else if(ref.kind==='building'){
    const dx=x-oldX,dy=y-oldY;e.x=x;e.y=y;e.editorTransform={...(e.editorTransform||{}),rotation,scale};
@@ -221,6 +275,22 @@
   return entityInfo(ref);
  }
  function recordChange(ref,base=ensureBase(ref)){
+  if(ref.entity._sceneEntityId){
+   const authored=authoredEntity(ref),runtime=authored?.entity.components?.RuntimeBinding;
+   if(!runtime){sceneDocumentDirty=commands?commands.dirty:true;return;}
+   const info=entityInfo(ref),key=ckey(String(currentScene),ref.kind,ref.id),before=changes.get(key)||null;
+   const unchanged=Math.abs(info.x-base.x)<1e-8&&Math.abs(info.y-base.y)<1e-8&&Math.abs(info.rotation-base.rotation)<1e-8&&Math.abs(info.scale-base.scale)<1e-8;
+   const assembly=ref.kind==='building'&&ref.entity.assembly?B.serialize(ref.entity.assembly):null;
+   if(unchanged&&!before?.created&&!assembly)changes.delete(key);
+   else{
+    const change={...(before||{}),scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,
+     baseX:Number(before?.baseX??base.x),baseY:Number(before?.baseY??base.y),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
+    if(before?.created||ref.entity._editorCreated){change.created=true;change.data=deepClone(ref.entity)}
+    if(assembly)change.assembly=assembly;
+    changes.set(key,change);
+   }
+   project.changes=[...changes.values()];return;
+  }
   const info=entityInfo(ref),key=ckey(String(currentScene),ref.kind,ref.id),before=changes.get(key)||{};
   const change={...before,scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,
    baseX:Number(before.baseX??base.x),baseY:Number(before.baseY??base.y),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
@@ -235,13 +305,16 @@
  async function loadProject(){
   const response=await fetch('/api/editor/edits',{cache:'no-store'});if(!response.ok)throw new Error('Project edit file read failed: HTTP '+response.status);
   const payload=await response.json(),disk=payload.edits;
+  projectWorld=window.VeldrenSceneOwnership?.document?.()||(payload.world?.format==='veldren.world'?JSON.parse(JSON.stringify(payload.world)):window.VeldrenSceneFormat.fromLegacy(disk));
+  sceneDocumentDirty=false;
   if(Array.isArray(disk?.changes)){const valid=[];quarantined=[];for(const raw of disk.changes){try{window.VeldrenWorldEdits.validate(raw);valid.push(raw)}catch{quarantined.push(raw)}}disk.changes=valid;if(quarantined.length)log(quarantined.length+' incompatible edits preserved without applying.','warn');}
   if(!disk||disk.version!==1||!Array.isArray(disk.changes))throw new Error('Invalid project world edit file');
   const backup=(()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')}catch{return null}})();
-  if(!disk.changes.length&&!disk.terrain&&backup?.version===1&&Array.isArray(backup.changes)&&(backup.changes.length||backup.terrain)){
+  if(!disk.changes.length&&!disk.terrain&&!payload.world?.scenes?.some(scene=>scene.entities?.length)&&backup?.version===1&&Array.isArray(backup.changes)&&(backup.changes.length||backup.terrain)){
    project={...backup,revision:payload.revision||0,changes:backup.changes.map(normalizeChange)};
    log(`Recovered browser-backup world edits. Save World will migrate them to the project file.`,'warn');
   }else project={...disk,revision:payload.revision||disk.revision||0,changes:disk.changes.map(normalizeChange)};
+  project.changes=project.changes.filter(c=>!window.VeldrenSceneOwnership?.ownsLegacy?.(c.scene,c.kind,c.id));
   changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:payload.revision||0,count:disk.changes.length,path:payload.path,bytes:payload.bytes,sha256:payload.sha256};
   for(const c of project.changes)if(c.created){const n=Number(String(c.id).replace(/\D/g,''));if(Number.isFinite(n))editorSequence=Math.max(editorSequence,n)}
@@ -258,6 +331,7 @@
  function applyChange(change){
   change=normalizeChange(change);let ref=resolveRef(change.kind,change.id,change.scene);
   if(!ref)ref=findFallback(change.scene,change);
+  if(ref?.entity._generatedSceneEntity)return {matched:true,action:'scene-authoritative'};
   if(change.deleted){
    if(!ref)return {matched:false,action:'delete-miss'};
    const list=ref.kind==='building'?sceneBuildings(change.scene):sceneObjects(change.scene),index=list.indexOf(ref.entity);if(index>=0)list.splice(index,1);
@@ -280,20 +354,33 @@
    assembly:c.assembly||null,name:c.name||null,type:c.type||null,subtype:c.subtype||null,baseX:Number(c.baseX)||0,baseY:Number(c.baseY)||0});
  }
  async function saveProject(){
-  const outgoing={version:1,expectedRevision:projectMeta.revision,changes:[...changes.values()].map(normalizeChange).concat(quarantined),terrain:T.serialize()};
+  if(saving)throw Error('Save is already in progress');
+  if(commands?.active||terrainDrag||partDrag)throw Error('Finish the current edit before saving');
+  saving=true;commands?.block(true);try{
+  const legacy={version:1,revision:projectMeta.revision+1,updatedAt:new Date().toISOString(),changes:[...changes.values()].map(normalizeChange),terrain:T.serialize()};
+  const preserveIds=quarantined.filter(c=>c&&c.scene&&c.kind&&c.id!=null).map(c=>`${c.scene}:${c.kind}:${c.id}`);
+  const nativeDocument=window.VeldrenSceneOwnership?.document?.();
+  if(nativeDocument)projectWorld=nativeDocument;
+  const persistentWorld=projectWorld?window.VeldrenSceneFormat.withoutRuntimeBindings(projectWorld):window.VeldrenSceneFormat.fromLegacy({version:1,revision:0,changes:[]});
+  const outgoing=window.VeldrenSceneFormat.mergeLegacy(persistentWorld,legacy,{preserveIds});
+  outgoing.expectedRevision=projectMeta.revision;
   const response=await fetch('/api/editor/edits',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(outgoing)});
   const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||`Save HTTP ${response.status}`);
   const verifyResponse=await fetch(`/api/editor/edits?verify=${encodeURIComponent(result.revision)}&t=${Date.now()}`,{cache:'no-store'});
   const verify=await verifyResponse.json().catch(()=>({}));if(!verifyResponse.ok)throw new Error(verify.error||'Save verification reread failed');
   if(result.revision!==verify.revision||result.sha256!==verify.sha256||result.count!==verify.count)throw new Error('Save round-trip metadata mismatch');
-  const sent=new Map(outgoing.changes.filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(c)])),read=new Map((verify.edits?.changes||[]).filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(normalizeChange(c))]));
+  if(result.worldSha256!==verify.worldSha256||JSON.stringify(result.world)!==JSON.stringify(verify.world))throw new Error('Scene document save round-trip mismatch');
+  const sent=new Map(legacy.changes.filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(c)])),read=new Map((verify.edits?.changes||[]).filter(c=>c&&c.id!=null).map(c=>[ckey(c.scene,c.kind,c.id),canonical(normalizeChange(c))]));
   if(sent.size!==read.size)throw new Error(`Save round-trip count mismatch (${sent.size} vs ${read.size})`);
   for(const [key,value]of sent)if(read.get(key)!==value)throw new Error(`Save round-trip mismatch for ${key}`);
   if(JSON.stringify(outgoing.terrain)!==JSON.stringify(verify.edits?.terrain))throw new Error('Terrain save round-trip mismatch');
-  project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
+  projectWorld=JSON.parse(JSON.stringify(verify.world));if(!commands&&window.VeldrenSceneOwnership)window.VeldrenSceneOwnership.replaceDocument(projectWorld);window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);if(commands)commands.saved();sceneDocumentDirty=false;
+  project={...verify.edits,revision:verify.revision,changes:(verify.edits.changes||[]).filter(c=>{try{window.VeldrenWorldEdits.validate(c);return true}catch{return false}}).map(normalizeChange)};project.changes=project.changes.filter(c=>!window.VeldrenSceneOwnership?.ownsLegacy?.(c.scene,c.kind,c.id));
+  changes=new Map(project.changes.map(c=>[ckey(c.scene,c.kind,c.id),c]));
   projectMeta={revision:verify.revision,count:verify.count,path:verify.path,bytes:verify.bytes,sha256:verify.sha256};
   localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,revision:verify.revision,updatedAt:verify.updatedAt,changes:project.changes,terrain:verify.edits.terrain}));
   return {...result,roundTripVerified:true};
+  }finally{saving=false;commands?.block(false);}
  }
 
 
@@ -319,6 +406,12 @@
   if(typeof prop3==='function'&&!prop3.__editorTransform){
    const before=prop3;
    prop3=function(r,o,x,z){
+    if(o?._generatedTerrain)return 0;
+    if(o?._generatedBridge)return window.VeldrenBridgeScene.render(r,o);
+    if(o?._generatedStructure)return window.VeldrenStructureScene.renderEntity(r,o);
+    if(o?._generatedWallTorch)return window.VeldrenLightScene.renderTorch(r,o);
+    if(o?._generatedDecoration)return window.VeldrenSceneryScene.render(r,o,typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null);
+    if(o?._generatedSceneEntity)return before(r,o,x,z);
     const direct=renderEditorAsset(r,o,x,z);if(direct!==null)return direct;
     const scale=Number(o?.editorTransform?.scale)||1,rotation=Number(o?.editorTransform?.rotation)||0;
     if(Math.abs(scale-1)<.0001&&Math.abs(rotation)<.0001)return before(r,o,x,z);
@@ -333,7 +426,7 @@
    const beforeCached=cachedMesh3;
    cachedMesh3=function(key,kind,build){
     const cached=beforeCached(key,kind,build);
-    if(kind==='building'&&key&&!key.assembly){
+    if(kind==='building'&&key&&!key.assembly&&!key._generatedBuildingEntity){
      // Each cached variant remembers where its world-space vertices were first
      // generated. From then on, moving/rotating/scaling the building changes
      // only this model matrix; the roof mesh itself is not regenerated.
@@ -369,22 +462,16 @@
   }
  }
  function withFreeAnchor(task){
-  if(playerView||!Number.isFinite(free.x))return task();
-  const rx=px,ry=py,sx=s.x,sy=s.y;px=free.x;py=free.y;s.x=free.x;s.y=free.y;try{return task()}finally{px=rx;py=ry;s.x=sx;s.y=sy}
+  if(!Number.isFinite(free.x))return task();
+  const x=px,y=py;px=free.x;py=free.y;try{return task()}finally{px=x;py=y;}
  }
  function editorProject(x,y,z){return withFreeAnchor(()=>project3(x,y,z))}
  function editorUnproject(x,y){return withFreeAnchor(()=>unproject3(x,y))}
  function installCameraRendering(){
-  if(typeof draw3d!=='function'||draw3d.__editorCamera)return;
-  const before=draw3d;
-  const wrapped=function(...args){
-   if(!ready||playerView)return before(...args);
-   const rx=px,ry=py,sx=s.x,sy=s.y,rt=target,name=s.character?.name;editorRendering=true;px=free.x;py=free.y;s.x=free.x;s.y=free.y;target=null;if(s.character)s.character.name='';
-   try{const result=before(...args);drawBuildingOverlay();drawTerrainOverlay();return result;}finally{if(s.character)s.character.name=name;target=rt;s.x=sx;s.y=sy;px=rx;py=ry;editorRendering=false}
-  };
-  wrapped.__editorCamera=true;draw3d=wrapped;draw=wrapped;
-  if(typeof humanoid3==='function'&&!humanoid3.__editorHidePlayer){const h=humanoid3;humanoid3=function(r,x,z,look,gear,...rest){if(editorRendering&&gear===s.equipment&&Math.hypot(x-free.x-.5,z-free.y-.5)<.05)return 0;return h(r,x,z,look,gear,...rest)};humanoid3.__editorHidePlayer=true}
-  if(typeof ring3==='function'&&!ring3.__editorHidePlayer){const rr=ring3;ring3=function(g,x,z,...rest){if(editorRendering&&Math.hypot(x-free.x-.5,z-free.y-.5)<.05)return;return rr(g,x,z,...rest)};ring3.__editorHidePlayer=true}
+   if(typeof draw3d!=='function'||draw3d.__editorCamera)return;
+   const before=draw3d;
+   const wrapped=function(...args){editorRendering=true;try{const result=before(...args);drawBuildingOverlay();drawTerrainOverlay();return result;}finally{editorRendering=false}};
+   wrapped.__editorCamera=true;draw3d=wrapped;draw=wrapped;
  }
 
  function editorInputSurface(){return document.getElementById('world')||document.querySelector('.realm-surface')}
@@ -403,73 +490,103 @@
    for(let i=hitboxes.length-1;i>=0;i--){const h=hitboxes[i],hit=h.polygon?pointInPolygon(p.sx,p.sy,h.polygon):Number.isFinite(h.x)&&p.sx>=h.x&&p.sx<=h.x+h.w&&p.sy>=h.y&&p.sy<=h.y+h.h;if(!hit)continue;if(h.building)return refForBuilding(h.building);if(h.o&&sceneObjects(currentScene).includes(h.o))return refForObject(h.o)}
   }catch{}
   const w=editorUnproject(p.sx,p.sy);let best=null,score=Infinity;
-  for(const o of objects){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
+  for(const o of [...objects,...(window.VeldrenSceneryScene?.selectables(String(currentScene))||[]),...(window.VeldrenLightScene?.selectables(String(currentScene))||[]),...(window.VeldrenStructureScene?.selectables(String(currentScene))||[]),...(window.VeldrenBridgeScene?.selectables(String(currentScene))||[]),...(window.VeldrenQuarryScene?.selectables(String(currentScene))||[])]){const d=Math.hypot((o.drawX??o.x)+.5-w.x,(o.drawY??o.y)+.5-w.z);if(d<score){best=refForObject(o);score=d}}
   for(let i=0;i<buildings.length;i++){const b=buildings[i],cx=b.x+b.w/2,cy=b.y+b.h/2,d=Math.hypot(cx-w.x,cy-w.z)-Math.hypot(b.w,b.h)/2;if(d<score){best={kind:'building',entity:b,id:buildingId(b,i)};score=d}}
   return score<Math.max(1.5,50/Math.max(10,cameraZoom3()))?best:null;
  }
 
  function removePlacementPreview(){
-  if(!placementPreview)return;const scene=placementPreview._editorScene,list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
+  if(!placementPreview)return;if(placementPreview._editorCanonicalPreview){placementPreview=null;return;}const scene=placementPreview._editorScene;if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.removeSession(placementPreview);else{const list=sceneObjects(scene),at=list.indexOf(placementPreview);if(at>=0)list.splice(at,1);const oi=objects.indexOf(placementPreview);if(oi>=0)objects.splice(oi,1);}try{staticMeshes3?.delete?.(placementPreview);staticMeshQueues3?.prop?.delete?.(placementPreview)}catch{}placementPreview=null;worldObjectRevision++;worldObjectIndex=null;
  }
  function ensurePlacementPreview(asset){
   if(placementPreview&&placementPreview._editorAssetId===asset.id&&placementPreview._editorScene===String(currentScene))return placementPreview;
   removePlacementPreview();const x=Number.isFinite(free.x)?free.x:Number(px)||0,y=Number.isFinite(free.y)?free.y:Number(py)||0,template=asset.source==='preset'?(presetTemplates[asset.key]||{name:asset.name}):{name:asset.name};
+  if(asset.canonicalId||asset.source==='canonical'||asset.source==='prefab'){
+   let draws=[];
+   if(asset.source==='prefab'){
+    const definition=realmNative.scenes.entity(String(currentScene),asset.key)?.components.PrefabDefinition;
+    if(!definition)throw Error('Prefab definition is missing');
+    const entities=Object.values(definition.nodes),world={scenes:[{scene:'preview',entities}]};
+    for(const node of entities){const mesh=node.components.MeshRenderer;if(!node.active||mesh?.visible===false||!mesh?.asset||!VeldrenAssets.has(mesh.asset)||VeldrenAssets.record(mesh.asset).importSettings?.importer!=='veldren-gltf-1')continue;
+     draws.push({asset:mesh.asset,matrix:VeldrenSceneFormat.readWorldTransform(world,'preview',node.id).matrix,options:{material:mesh.material||'',castShadows:false}});
+    }
+   }else draws=[{asset:asset.canonicalId||asset.id,matrix:VeldrenEditorGeometry.identity(),options:{castShadows:false}}];
+   placementPreview={x,y,_editorCanonicalPreview:true,_editorAssetId:asset.id,_editorScene:String(currentScene),editorTransform:{rotation:placementRotation},draws};return placementPreview;
+  }
   placementPreview={id:`editor-preview-${++editorSequence}`,type:'prop',...template,propKind:asset.source==='preset'?asset.key:undefined,x,y,homeX:x,homeY:y,drawX:x,drawY:y,dead:0,hitAt:-100,attackAt:-100,editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},walkThrough:true,placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Temporary asset placement preview'},_editorPreview:true,_editorAssetId:asset.id,_editorScene:String(currentScene)};
-  const list=sceneObjects(currentScene);list.push(placementPreview);if(list!==objects&&!objects.includes(placementPreview))objects.push(placementPreview);worldObjectRevision++;worldObjectIndex=null;return placementPreview;
+  if(globalThis.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.addSession(String(currentScene),placementPreview,'preview');else{const list=sceneObjects(currentScene);list.push(placementPreview);if(list!==objects&&!objects.includes(placementPreview))objects.push(placementPreview);}worldObjectRevision++;worldObjectIndex=null;return placementPreview;
  }
  function movePlacementPreview(x,y){
   if(!placementAsset)return;const o=ensurePlacementPreview(placementAsset),oldX=o.x,oldY=o.y;x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);if(Math.abs(oldX-x)<.001&&Math.abs(oldY-y)<.001)return;
-  o.x=o.drawX=o.homeX=x;o.y=o.drawY=o.homeY=y;o.editorTransform.rotation=placementRotation;updatePreviewIndex(o,oldX,oldY);invalidate(o,'object',true);
+  o.x=o.drawX=o.homeX=x;o.y=o.drawY=o.homeY=y;o.editorTransform.rotation=placementRotation;if(o._editorCanonicalPreview)return;updatePreviewIndex(o,oldX,oldY);invalidate(o,'object',true);
  }
  function rotatePlacement(delta=15){if(!placementAsset)return false;placementRotation=(placementRotation+Number(delta)||0)%360;if(placementPreview)placementPreview.editorTransform.rotation=placementRotation;return placementRotation;}
  function createPlacedAsset(asset,x,y){
   if(!asset)throw Error('No asset selected');
   x=snapValue(x-.5,snap.position);y=snapValue(y-.5,snap.position);
+  if(asset.canonicalId||asset.source==='canonical'||asset.source==='prefab'){
+   const angle=placementRotation*Math.PI/360,transform={position:[x,typeof landHeight==='function'?landHeight(x,y):0,y],rotation:[0,Math.sin(angle),0,Math.cos(angle)],scale:[1,1,1]};
+   let prefabTransform=transform;
+   if(asset.source==='prefab'){
+    const definition=realmNative.scenes.entity(String(currentScene),asset.key).components.PrefabDefinition,world={scenes:[{scene:'preview',entities:Object.values(definition.nodes)}]},G=VeldrenEditorGeometry;
+    prefabTransform={affine:G.multiply(G.multiply(G.translation(transform.position),G.rotation([0,1,0],placementRotation*Math.PI/180)),VeldrenSceneFormat.readWorldTransform(world,'preview',definition.root).matrix)};
+   }
+   const op=asset.source==='prefab'?{op:'prefabInstantiate',id:asset.key,transform:prefabTransform}:{op:'create',entity:{name:asset.name,transform,components:{MeshRenderer:{asset:asset.canonicalId||asset.id,renderPath:'canonical',visible:true}}}};
+   const result=commandSystem().execute('Place '+asset.name,[op]);canonicalSelection.select(result.created[0]);post('change',{selection:entityInfo(selected),placed:true,asset});return entityInfo(selected);
+  }
   const id=`editor-asset-${Date.now()}-${++editorSequence}`;
   let base={type:'prop',name:asset.name,walkThrough:true};
   if(asset.source==='preset')base={...(presetTemplates[asset.key]||{type:'prop',name:asset.name}),propKind:asset.key,walkThrough:false};
   const o={id,...base,x,y,homeX:x,homeY:y,drawX:x,drawY:y,dead:0,hitAt:-100,attackAt:-100,
    editorAsset:{source:asset.source,key:asset.key,category:asset.category},editorTransform:{rotation:placementRotation,scale:1},
    placement:{anchor:'editor',yaw:0,offset:[0,0],reason:'Placed from Veldren asset browser'},_editorCreated:true};
+  if(globalThis.VeldrenWorldObjects?.enabled){const view=VeldrenSceneOwnership.createProp(String(currentScene),o);projectWorld=VeldrenSceneOwnership.document();sceneDocumentDirty=true;selected=refForObject(view);selectedScene=String(currentScene);ensureBase(selected);invalidate(view);const info=entityInfo(selected);post('change',{selection:info,placed:true,asset});return info;}
   const list=sceneObjects(currentScene);list.push(o);if(list!==objects&&!objects.includes(o))objects.push(o);
+  const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'object',o,list.length-1);if(graphEntity)o._sceneEntityId=graphEntity.id;
   const ref=refForObject(o);ensureBase(ref);const info=entityInfo(ref);
   const change={scene:String(currentScene),kind:'object',id:String(id),name:info.name,type:info.type,subtype:info.subtype,baseX:x,baseY:y,created:true,data:deepClone(o),x,y,rotation:0,scale:1};
   change.rotation=placementRotation;changes.set(ckey(currentScene,'object',id),change);project.changes=[...changes.values()];selected=ref;selectedScene=String(currentScene);invalidate(o);
   post('change',{selection:info,placed:true,asset});return info;
  }
 
+ window.VeldrenEditorPlacement=()=>{
+  const preview=placementPreview;if(!preview?._editorCanonicalPreview)return [];
+  const G=VeldrenEditorGeometry,root=G.multiply(G.translation([preview.x,landHeight(preview.x,preview.y),preview.y]),G.rotation([0,1,0],placementRotation*Math.PI/180));
+  return preview.draws.map(draw=>({...draw,matrix:G.multiply(root,draw.matrix)}));
+ };
  const A=globalThis.VeldrenAssembly,B=window.VeldrenBuildings;
  function cancelPartPlacement(){partPlacement=null;partPlacementAsset=null;partPreview=null;partPlacementPoint=null;partPlacementRotation=0;if(tool==='place')tool='select';}
  let buildingContext=null,partId=null,partPlacement=null,partPlacementAsset=null,partPreview=null,partDrag=null,buildingFloor=0,partPlacementRotation=0,partPlacementPoint=null;
  let buildingSnap={grid:.25,rotation:15,vertical:3,mode:'edge'},floorIsolated=false,floorsBelow=true;
- const buildingHistory=new A.History();
+
  function assembly(){return buildingContext?.entity.assembly;}
- function buildingState(){const a=assembly(),parent=a?.parent;return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(a).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},transform:parent?{x:parent[3],z:parent[11],rotation:Math.atan2(parent[2],parent[0])*180/Math.PI}:null,isolate:floorIsolated,below:floorsBelow,undo:buildingHistory.undoStack.length,redo:buildingHistory.redoStack.length,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
+ function buildingState(){const a=assembly(),parent=a?.parent;return buildingContext?{id:buildingContext.id,name:buildingContext.entity.name,parts:A.serialize(a).modules,selected:partId,floor:buildingFloor,snap:{...buildingSnap},transform:parent?{x:parent[3],z:parent[11],rotation:Math.atan2(parent[2],parent[0])*180/Math.PI}:null,isolate:floorIsolated,below:floorsBelow,undo:commandSystem().status().undo,redo:commandSystem().status().redo,preview:partPreview?{valid:partPreview.valid,reason:partPreview.reason}:null}:null;}
  function recordBuilding(before){
   const b=buildingContext.entity;B.commit(b);const key=ckey(currentScene,'building',buildingContext.id),previous=changes.get(key);
-  if(buildingContext.created||previous?.created){const data=deepClone(b);delete data.assembly;data.id=buildingContext.id;changes.set(key,{...(previous||{}),scene:String(currentScene),kind:'building',id:buildingContext.id,name:b.name,type:'building',subtype:'modular',baseX:Number(data.x)||0,baseY:Number(data.y)||0,created:true,data});}
-  recordChange(buildingContext);changes.get(key).assembly=A.serialize(b.assembly);
-  if(before)buildingHistory.push(before,b.assembly);post('building',{state:buildingState()});post('change',{selection:entityInfo(buildingContext)});
+  if(!b._generatedBuildingEntity&&(buildingContext.created||previous?.created)){const data=deepClone(b);delete data.assembly;data.id=buildingContext.id;changes.set(key,{...(previous||{}),scene:String(currentScene),kind:'building',id:buildingContext.id,name:b.name,type:'building',subtype:'modular',baseX:Number(data.x)||0,baseY:Number(data.y)||0,created:true,data});}
+  recordChange(buildingContext);if(!b._generatedBuildingEntity)changes.get(key).assembly=A.serialize(b.assembly);
+  post('building',{state:buildingState()});post('change',{selection:entityInfo(buildingContext)});
  }
  function startNewBuilding(){
   if(!worldScenes?.[currentScene])throw Error('The active scene is not ready');
-  const x=snapValue(Number(free.x)||0,buildingSnap.grid),y=snapValue(Number(free.y)||0,buildingSnap.grid),id='editor-building-'+(++editorSequence);
-  const b={id,name:'New Modular Building',type:'building',archetype:'modular',race:'human',x,y,w:1,h:1,editorCreated:true,editorTransform:{rotation:0,scale:1}};b._editorId=id;
-  const list=sceneBuildings(currentScene);list.push(b);if(list!==buildings&&!buildings.includes(b))buildings.push(b);const ref={kind:'building',entity:b,id,created:true,uncommittedEmpty:true};
-  B.create(b,{version:1,buildingId:id,parent:A.transform(x,0,y),modules:[],layout:[]},worldScenes[currentScene]);
+  const x=snapValue(Number(free.x)||0,buildingSnap.grid),y=snapValue(Number(free.y)||0,buildingSnap.grid),id='editor-building-'+Date.now()+'-'+(++editorSequence);
+  let b={id,name:'New Modular Building',type:'building',archetype:'modular',race:'human',x,y,w:1,h:1,editorCreated:true,editorTransform:{rotation:0,scale:1}};b._editorId=id;
+  if(window.VeldrenBuildingScene&&window.realmNative){b=window.VeldrenBuildingScene.createBuilding(String(currentScene),b);}
+  else{const list=sceneBuildings(currentScene);list.push(b);if(list!==buildings&&!buildings.includes(b))buildings.push(b);B.create(b,{version:1,buildingId:id,parent:A.transform(x,0,y),modules:[],layout:[]},worldScenes[currentScene]);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'building',b,list.length-1);if(graphEntity)b._sceneEntityId=graphEntity.id;}
+  const ref={kind:'building',entity:b,id,created:true,uncommittedEmpty:true};
   selected=ref;selectedScene=String(currentScene);buildingContext=ref;partId=null;cancelPartPlacement();buildingFloor=0;tool='select';
   log('Empty modular assembly started at '+x.toFixed(2)+', '+y.toFixed(2)+'. It is not saved until a part is placed.','ok');post('selection',{selection:entityInfo(ref)});return buildingState();
  }
  function enterBuilding(){
-  if(selected?.kind==='building'){buildingContext=selected;B.ensure(selected.entity,worldScenes[currentScene]);buildingContext.created=!!changes.get(ckey(currentScene,'building',buildingContext.id))?.created;buildingContext.uncommittedEmpty=false;}
+  if(selected?.kind==='building'){B.ensure(selected.entity,worldScenes[currentScene]);buildingContext=selected;buildingContext.created=!!changes.get(ckey(currentScene,'building',buildingContext.id))?.created;buildingContext.uncommittedEmpty=false;}
   else return startNewBuilding();
   partId=null;cancelPartPlacement();buildingFloor=0;tool='select';return buildingState();
  }
  function exitBuilding(){
-  if(buildingContext?.uncommittedEmpty&&!assembly()?.modules.length){const b=buildingContext.entity,list=sceneBuildings(currentScene),i=list.indexOf(b);if(i>=0)list.splice(i,1);if(buildings!==list){const active=buildings.indexOf(b);if(active>=0)buildings.splice(active,1);}B.cache.delete(b);if(selected?.entity===b)selected=null;}
+  if(buildingContext?.uncommittedEmpty&&!assembly()?.modules.length){const b=buildingContext.entity,list=sceneBuildings(currentScene),i=list.indexOf(b);if(b._generatedBuildingEntity)window.realmNative.scenes.remove(String(currentScene),b._sceneEntityId);else if(i>=0)list.splice(i,1);if(buildings!==list){const active=buildings.indexOf(b);if(active>=0)buildings.splice(active,1);}B.cache.delete(b);if(selected?.entity===b)selected=null;}
   cancelPartPlacement();partDrag=null;B.floorFilter=null;buildingContext=null;partId=null;post('building',{state:null});return true;
  }
- function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
+ function selectPart(id){if(!assembly()?.modules.some(m=>m.id===id))throw Error('Part not found');partId=id;const module=window.realmNative.scenes.componentIds(String(currentScene),'BuildingModule').find(key=>window.realmNative.scenes.entity(String(currentScene),key)?.components.BuildingModule.key===id&&window.realmNative.scenes.entity(String(currentScene),key)?.components.BuildingPart?.building===buildingContext.entity._sceneEntityId);if(module)canonicalSelection?.select(module);partPlacement=null;partPreview=null;post('building',{state:buildingState()});return buildingState();}
  function setPart(input,history=true){
   const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)throw Error('Select a part');const before=A.serialize(a);
   try{
@@ -485,14 +602,14 @@
   // A wall opening is a component of its host, so moving the wall carries
   // its door/service coordinates using the same local delta.
   const old=before.modules.find(p=>p.id===m.id);
-  if(old&&['wall','window'].includes(m.role)){const delta=A.multiply(m.local,A.inverse(old.local));for(const linked of a.modules.filter(p=>p.host===m.id)){linked.local=A.multiply(delta,linked.local);if(linked.opening){linked.opening.service=A.point(delta,linked.opening.service);const basis=[...delta];basis[3]=basis[7]=basis[11]=0;linked.opening.normal=A.point(basis,linked.opening.normal);}}}
+  if(old&&!buildingContext.entity._generatedBuildingEntity&&['wall','window'].includes(m.role)){const delta=A.multiply(m.local,A.inverse(old.local));for(const linked of a.modules.filter(p=>p.host===m.id)){linked.local=A.multiply(delta,linked.local);if(linked.opening){linked.opening.service=A.point(delta,linked.opening.service);const basis=[...delta];basis[3]=basis[7]=basis[11]=0;linked.opening.normal=A.point(basis,linked.opening.normal);}}}
   if(m.role==='stairs'&&!m.stairs?.rampPath&&!B.stairConnection(buildingContext.entity,m))throw Error('The stairs must rise from ground to an existing upper floor landing');
   B.sync(buildingContext.entity);if(history)recordBuilding(before);return buildingState();
   }catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);throw error;}
  }
  function deletePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.objectId)throw Error('Gameplay-linked parts must be moved, not deleted');const before=A.serialize(a);if(m.role==='entrance'&&m.host){const host=a.modules.find(p=>p.id===m.host);if(host?.originalModel){host.model=host.originalModel;host.role='wall';delete host.originalModel;}}a.modules=a.modules.filter(p=>p.id!==partId&&p.host!==partId);partId=null;recordBuilding(before);return buildingState();}
  function duplicatePart(){const a=assembly(),m=a?.modules.find(p=>p.id===partId);if(!m)return;if(m.role==='entrance'||m.objectId)throw Error('Gameplay-linked components cannot be duplicated');const before=A.serialize(a),copy=A.clone(m);copy.id='part-editor-'+Date.now()+'-'+(++editorSequence);copy.local[3]+=buildingSnap.grid||.25;delete copy.host;if(copy.role==='stairs'){copy.stairs={fromFloor:copy.floor,toFloor:copy.floor+1,origin:[copy.local[3],copy.local[7],copy.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,copy))throw Error('The stairs must reach an existing upper floor landing');}a.modules.push(copy);partId=copy.id;recordBuilding(before);return buildingState();}
- function buildingUndo(redo=false){const a=assembly();if(!a)return;const next=redo?buildingHistory.redo(a):buildingHistory.undo(a);if(next){B.attach(buildingContext.entity,next,worldScenes[currentScene]);recordBuilding();}return buildingState();}
+ function buildingUndo(redo=false){if(redo)commandSystem().redo();else commandSystem().undo();post('building',{state:buildingState()});return buildingState();}
  function setBuildingTransform(input,history=true){const a=assembly();if(!a)throw Error('Start Building Edit first');const before=A.serialize(a),parent=[...a.parent],angle=Math.atan2(parent[2],parent[0]),scale=Math.hypot(parent[0],parent[8])||1,x=input.x==null?parent[3]:Number(input.x),z=input.z==null?parent[11]:Number(input.z),rotation=input.rotation==null?angle*180/Math.PI:Number(input.rotation);if(![x,z,rotation].every(Number.isFinite))throw Error('Enter valid building position and rotation');a.parent=A.transform(x,0,z,snapValue(rotation,buildingSnap.rotation)*Math.PI/180,scale);B.sync(buildingContext.entity);recordBuilding(history?before:null);return buildingState();}
  function setFloor(floor,isolate=floorIsolated,below=floorsBelow){buildingFloor=floor==='roof'?'roof':Number(floor);floorIsolated=!!isolate;floorsBelow=!!below;B.floorFilter={building:buildingContext?.entity,floor:buildingFloor,isolate:floorIsolated,below:floorsBelow};return buildingState();}
  function visiblePart(m){return !floorIsolated||(buildingFloor==='roof'?m.role==='roof':m.floor===buildingFloor||floorsBelow&&m.floor<buildingFloor);}
@@ -508,14 +625,20 @@
   else{if(m.role==='stairs'){m.stairs={fromFloor:m.floor,toFloor:m.floor+1,origin:[m.local[3],m.local[7],m.local[11]],rampPath:null};if(!B.stairConnection(buildingContext.entity,m))throw Error('The stairs must reach an existing upper floor landing');}a.modules.push(m);partId=m.id;}
   recordBuilding(before);return buildingState();
  }
- function buildingPointerDown(e,p){if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;if(partPlacement){previewPart(p);try{placePart()}catch(error){log(error.message,'warn')}return true;}
-  const m=pickPart(p);partId=m?.id||null;post('building',{state:buildingState()});if(!m)return true;
-  const w=editorUnproject(p.sx,p.sy);partDrag={id:e.pointerId,before:A.serialize(assembly()),start:A.point(A.inverse(assembly().parent),[w.x,0,w.z]),local:[...m.local],clientX:e.clientX,clientY:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return true;}
+ function buildingPointerDown(e,p){
+  if(!buildingContext||tool==='camera')return false;if(e.button!==0)return true;
+  if(partPlacement){previewPart(p);try{commandSystem().transaction('Place building part',placePart)}catch(error){log(error.message,'warn')}return true;}
+  const camera=window.VeldrenEditorTools?.camera;if(!camera)return true;
+  const rect=p.surface.getBoundingClientRect(),G=VeldrenEditorGeometry,ray=G.cameraRay(camera,(e.clientX-rect.left)/rect.width,(e.clientY-rect.top)/rect.height);
+  const hit=canonicalSelection.candidates(ray).find(hit=>window.realmNative.scenes.entity(String(currentScene),hit.id)?.components.BuildingPart?.building===buildingContext.entity._sceneEntityId);
+  if(hit){const node=window.realmNative.scenes.entity(String(currentScene),hit.id);selectPart(node.components.BuildingModule.key);}else{partId=null;canonicalSelection.select(null);post('building',{state:buildingState()});}
+  return true;
+ }
  function buildingPointerMove(e,p){if(!buildingContext)return false;if(partPlacement){previewPart(p);return true;}if(!partDrag||partDrag.id!==e.pointerId)return false;const m=assembly().modules.find(p=>p.id===partId);if(!m)return true;const w=editorUnproject(p.sx,p.sy),q=A.point(A.inverse(assembly().parent),[w.x,0,w.z]);
   try{if(tool==='rotate')setPart({rotation:snapValue(Math.atan2(partDrag.local[2],partDrag.local[0])*180/Math.PI+(e.clientX-partDrag.clientX)*.5,buildingSnap.rotation)},false);else if(tool==='scale')setPart({scale:Math.max(.1,Math.hypot(partDrag.local[0],partDrag.local[8])*Math.exp((partDrag.clientY-e.clientY)*.008))},false);else{
    const candidate={...m,role:m.role==='entrance'?'door':m.role,local:[...partDrag.local]};candidate.local[3]+=q[0]-partDrag.start[0];candidate.local[11]+=q[2]-partDrag.start[2];const result=A.snap(assembly(),candidate,buildingSnap);partPreview=result;if(m.role!=='entrance')setPart({x:result.module.local[3],height:result.module.local[7],z:result.module.local[11]},false);
   }}catch(error){log(error.message,'warn')}return true;}
- function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);}catch(error){B.attach(buildingContext.entity,before,worldScenes[currentScene]);log(error.message,'warn')}partDrag=null;partPreview=null;try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}return true;}
+ function buildingPointerUp(e){if(!partDrag||partDrag.id!==e.pointerId)return false;const before=partDrag.before,m=assembly().modules.find(p=>p.id===partId);try{if(m.role==='entrance'){if(!partPreview?.valid)throw Error('Choose a compatible wall');B.opening(buildingContext.entity,m,partPreview.host);}recordBuilding(before);commandSystem().commit();}catch(error){commandSystem().cancel();log(error.message,'warn')}partDrag=null;partPreview=null;try{editorInputSurface()?.releasePointerCapture?.(e.pointerId)}catch{}return true;}
  function drawBuildingGhost(m,valid){const mesh=B.model(m.model),p=mesh?.p,indices=mesh?.i;if(!p?.length||!indices?.length)return;const matrix=A.multiply(assembly().parent,m.local),colors=mesh.f||mesh.c,normals=mesh.n,total=Math.floor(indices.length/3),step=Math.max(1,Math.ceil(total/360)),faces=[],light=[.35,.82,.45],ll=Math.hypot(...light);for(let face=0;face<total;face+=step){const ia=Number(indices[face*3]),ib=Number(indices[face*3+1]),ic=Number(indices[face*3+2]),pts=[];for(const i of [ia,ib,ic]){const at=i*3,world=A.point(matrix,[Number(p[at])||0,Number(p[at+1])||0,Number(p[at+2])||0]),screen=editorProject(...world);pts.push({x:screen.x,y:screen.y,d:screen.depth});}if(pts.some(v=>!Number.isFinite(v.x)||!Number.isFinite(v.y)))continue;const n=[0,1,2].map(ch=>[ia,ib,ic].reduce((sum,i)=>sum+(Number(normals?.[i*3+ch])||0),0)),dot=(n[0]*light[0]+n[1]*light[1]+n[2]*light[2])/(Math.hypot(...n)*ll||1),shade=.38+.62*Math.max(0,dot),rgb=[0,1,2].map(ch=>Math.round(255*Math.max(0,Math.min(1,[ia,ib,ic].reduce((sum,i)=>sum+(Number(colors?.[i*3+ch])||.48),0)/3*shade))));faces.push({pts,d:pts.reduce((a,v)=>a+v.d,0)/3,color:'rgb('+rgb.join(',')+')'});}faces.sort((a,b)=>a.d-b.d);ctx.save();ctx.globalAlpha=.82;ctx.strokeStyle=valid?'rgba(150,255,220,.28)':'rgba(255,145,155,.42)';ctx.lineWidth=.55;for(const face of faces){ctx.beginPath();face.pts.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p.x,p.y));ctx.closePath();ctx.fillStyle=face.color;ctx.fill();ctx.stroke();}ctx.restore();}
  function drawBuildingOverlay(){if(!buildingContext)return;if(partPreview?.module)drawBuildingGhost(partPreview.module,partPreview.valid);const m=partPreview?.module||assembly().modules.find(m=>m.id===partId);if(!m)return;const matrix=A.multiply(assembly().parent,m.local),lo=m.bounds[0],hi=m.bounds[1],points=[];for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])points.push(editorProject(...A.point(matrix,[x,y,z])));ctx.save();ctx.strokeStyle=partPreview?(partPreview.valid?'#64e5bb':'#ff6c80'):'#80c7ff';ctx.fillStyle=partPreview?(partPreview.valid?'#64e5bb33':'#ff6c8033'):'#80c7ff22';ctx.lineWidth=2;for(const face of [[0,1,3,2],[4,5,7,6],[0,4,6,2],[1,5,7,3]]){ctx.beginPath();face.forEach((i,j)=>ctx[j?'lineTo':'moveTo'](points[i].x,points[i].y));ctx.closePath();ctx.fill();ctx.stroke();}ctx.restore();}
  function drawTerrainOverlay(){
@@ -541,8 +664,8 @@
  function finishTerrain(){
   if(!terrainDrag)return;
   const changed=terrainDrag.any;
-  T.endStroke();terrainDrag=null;
-  post('terrain',{state:T.state(),changed});
+  terrainDrag=null;T.endStroke();
+  post('terrain',{state:T.state(),changed,dirty:commands?.dirty});
  }
 
  function touchGeometry(){
@@ -554,6 +677,7 @@
   finishTerrain();
   if(partDrag&&buildingContext){B.attach(buildingContext.entity,partDrag.before,worldScenes[currentScene]);partDrag=null;partPreview=null;post('building',{state:buildingState()});}
   if(drag&&selected){const original=drag.kind==='move'?{x:drag.x,y:drag.y}:drag.kind==='rotate'?{rotation:drag.rotation}:{scale:drag.scale};setEntityTransform(selected,original,false,true);}
+  if(commands?.active)commands.cancel();
   drag=null;pointer=null;
  }
  function clearTouchInput(){
@@ -562,13 +686,13 @@
  }
  function moveTouchGesture(){
   const next=touchGeometry();if(!next||!touchGesture)return;
-  if(!playerView){
+  {
    const from=editorUnproject(touchGesture.sx,touchGesture.sy),to=editorUnproject(next.sx,next.sy);
    if(Number.isFinite(from.x)&&Number.isFinite(from.z)&&Number.isFinite(to.x)&&Number.isFinite(to.z)){
     free.x+=from.x-to.x;free.y+=from.z-to.z;
    }
    free.zoomTarget=Math.max(FREE_ZOOM_MIN,Math.min(FREE_ZOOM_MAX,free.zoomTarget*next.span/touchGesture.span));
-  }else view3d.zoom=Math.max(view3d.min,Math.min(view3d.max,view3d.zoom*next.span/touchGesture.span));
+  }
   touchGesture=next;
  }
 
@@ -585,6 +709,7 @@
   }
   if(e.button===1||e.button===2){pointer={id:e.pointerId,kind:'pan',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
   if(e.button===0&&tool==='camera'){pointer={id:e.pointerId,kind:'orbit',x:e.clientX,y:e.clientY};try{p.surface.setPointerCapture?.(e.pointerId)}catch{}return;}
+  if(saving)return;
   if(e.button===0&&tool==='terrain'){
    if(currentScene!=='overworld'){log('Terrain editing is available in the overworld.','warn');return;}
    const w=terrainPoint(p);if(!w)return;
@@ -597,26 +722,20 @@
    }catch(error){finishTerrain();log('Terrain brush failed: '+error.message,'error')}
    return;
   }
+  if(window.VeldrenEditorTools?.down(e,p.surface))return;
   if(buildingPointerDown(e,p))return;
   if(e.button!==0)return;
   if(tool==='place'){
    if(!placementAsset){log('Choose an asset from the Assets browser first.','warn');return;}
-   const w=editorUnproject(p.sx,p.sy);movePlacementPreview(w.x,w.z);createPlacedAsset(placementAsset,w.x,w.z);return;
+   const w=editorUnproject(p.sx,p.sy);movePlacementPreview(w.x,w.z);commandSystem().transaction('Place asset',()=>createPlacedAsset(placementAsset,w.x,w.z));return;
   }
+  if(canonicalSelection&&window.VeldrenEditorTools?.camera){const camera=VeldrenEditorTools.camera,G=VeldrenEditorGeometry,rect=p.surface.getBoundingClientRect();canonicalSelection.pick(G.cameraRay(camera,(e.clientX-rect.left)/rect.width,(e.clientY-rect.top)/rect.height),[e.clientX,e.clientY],e.ctrlKey||e.metaKey||e.shiftKey);return;}
   const ref=pick(e);selectRef(ref);
   if(!ref)return;
   ensureBase(ref);
 
-  // Select mode keeps the original editor behavior: click an entity and drag
-  // immediately to reposition it. The dedicated Move tool remains available
-  // for explicit transform-mode workflows, but is not required.
-  if(tool==='select'||tool==='move'){
-   const w=editorUnproject(p.sx,p.sy);
-   drag={id:e.pointerId,kind:'move',start:w,x:ref.entity.x,y:ref.entity.y};
-  }
-  if(tool==='rotate')drag={id:e.pointerId,kind:'rotate',clientX:e.clientX,rotation:entityRotation(ref)};
-  if(tool==='scale')drag={id:e.pointerId,kind:'scale',clientY:e.clientY,scale:entityScale(ref)};
-  if(drag)try{p.surface.setPointerCapture?.(e.pointerId)}catch{}
+  // Selection alone does not mutate transforms; 3D handles own gestures.
+
  }
  function onPointerMove(e){
   if(e.pointerType==='touch'&&touchPoints.has(e.pointerId)){
@@ -624,10 +743,11 @@
    if(touchGesture){if(touchPoints.size>=2)moveTouchGesture();e.preventDefault();e.stopImmediatePropagation();return;}
   }
   const bp=eventPoint(e);
+  if(bp&&window.VeldrenEditorTools?.move(e,bp.surface)){e.preventDefault();e.stopImmediatePropagation();return;}
   if(tool==='place'&&placementAsset&&bp&&isViewportTarget(e.target,bp.surface)){const w=editorUnproject(bp.sx,bp.sy);movePlacementPreview(w.x,w.z);}
   if(pointer&&e.pointerId===pointer.id){
    const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;
-   if(pointer.kind==='pan'&&!playerView){
+   if(pointer.kind==='pan'){
     const rect=bp?.rect;if(rect){
      const before=editorUnproject((e.clientX-dx-rect.left)/rect.width*screen.w,(e.clientY-dy-rect.top)/rect.height*screen.h);
      const after=editorUnproject(bp.sx,bp.sy);
@@ -661,6 +781,7 @@
   e.preventDefault();e.stopImmediatePropagation();
  }
  function onPointerUp(e){
+  if(window.VeldrenEditorTools?.up(e)){e.preventDefault();e.stopImmediatePropagation();return;}
   if(e.pointerType==='touch'&&touchPoints.delete(e.pointerId)&&touchGesture){
    if(touchPoints.size>=2)touchGesture=touchGeometry();
    else if(!touchPoints.size)touchGesture=null;
@@ -676,6 +797,7 @@
   const surface=editorInputSurface();
   if(pointer&&e.pointerId===pointer.id){pointer=null;try{surface?.releasePointerCapture?.(e.pointerId)}catch{}e.preventDefault();e.stopImmediatePropagation();return}
   if(drag&&e.pointerId===drag.id){
+   if(commands?.active){if(e.type==='pointercancel')commands.cancel();else commands.commit();}
    if(selected?.entity.assembly)B.commit(selected.entity);
    else invalidate(selected.entity,selected.kind);
    recordChange(selected);const info=entityInfo(selected);
@@ -685,30 +807,40 @@
  }
  function onWheel(e){
   const p=eventPoint(e);if(!ready||!p||!isViewportTarget(e.target,p.surface))return;
-  if(playerView){return}
   free.zoomTarget=Math.max(FREE_ZOOM_MIN,Math.min(FREE_ZOOM_MAX,free.zoomTarget*Math.exp(-e.deltaY*.0015)));e.preventDefault();e.stopImmediatePropagation();
  }
  function setCameraKey(key,pressed){
   const k=String(key||'').toLowerCase();if(!CAMERA_KEYS.has(k))return false;
-  if(pressed&&ready&&!playerView)cameraKeys.add(k);else cameraKeys.delete(k);
-  return ready&&!playerView;
+  if(pressed&&ready)cameraKeys.add(k);else cameraKeys.delete(k);
+  return ready;
  }
  function clearCameraKeys(){cameraKeys.clear();free.vx=0;free.vy=0;}
+ function shortcut(input){
+  const key=String(input.key).toLowerCase();
+  if(input.ctrlKey||input.metaKey){if(key==='d'){duplicateSelection();return true;}return false;}
+  if(input.altKey)return false;
+  if(key==='delete'||key==='backspace'){deleteSelection();return true;}
+  if(key==='f'){focusSelection();return true;}
+  if(key==='escape'){window.VeldrenEditorTools?.cancel();window.VeldrenEditorBridge.setTool('select');post('tool',{tool:'select'});return true;}
+  const next=key==='c'?(tool==='camera'?'select':'camera'):tool!=='camera'&&!input.shiftKey?{w:'move',e:'rotate',r:'scale'}[key]:null;
+  if(next){window.VeldrenEditorBridge.setTool(next);post('tool',{tool:next});return true;}return false;
+ }
  function onKeyDown(e){
-  if(e.ctrlKey||e.metaKey||e.altKey||e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
+  if(!e.target?.closest?.('input,textarea,select,[contenteditable]')&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())&&window.realmNative?.scenes?.command){e.preventDefault();e.stopImmediatePropagation();finishTerrain();if(e.shiftKey||e.key.toLowerCase()==='y')commandSystem().redo();else commandSystem().undo();return;}
+  if(e.target?.closest?.('input,textarea,select,[contenteditable]'))return;
+  if(tool!=='place'&&shortcut(e)){e.preventDefault();e.stopImmediatePropagation();return;}
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
   if(partPlacement&&e.key==='Escape'){cancelPartPlacement();post('building',{state:buildingState()});e.preventDefault();e.stopImmediatePropagation();return;}
   if(partPlacement&&e.key.toLowerCase()==='r'){const step=buildingSnap.rotation||15;partPlacementRotation=snapValue(partPlacementRotation+step,step);if(partPlacementPoint)previewPart(partPlacementPoint);e.preventDefault();e.stopImmediatePropagation();return;}
   if(tool==='place'&&placementAsset&&e.key.toLowerCase()==='r'){rotatePlacement(15);e.preventDefault();e.stopImmediatePropagation();return;}
-  if(setCameraKey(e.key,true)){e.preventDefault();e.stopImmediatePropagation();}
+  if((tool==='camera'||e.shiftKey||e.key.toLowerCase().startsWith('arrow'))&&setCameraKey(e.key,true)){e.preventDefault();e.stopImmediatePropagation();}
  }
  function onKeyUp(e){if(setCameraKey(e.key,false)){e.preventDefault();e.stopImmediatePropagation()}}
  function cameraTick(now){
   const dt=Math.min(.05,Math.max(0,(now-lastTick)/1000));lastTick=now;
-  // Renderer/bootstrap code can replace draw3d after editor startup. Restore
-  // the editor wrapper immediately so free-camera movement never falls back
-  // to the gameplay camera anchored on the player.
+  // Renderer/bootstrap code can replace draw3d after editor startup.
   if(ready&&typeof draw3d==='function'&&!draw3d.__editorCamera)installCameraRendering();
-  if(ready&&!playerView){
+  if(ready){
    const forward=Number(cameraKeys.has('w'))-Number(cameraKeys.has('s'));
    const right=Number(cameraKeys.has('d'))-Number(cameraKeys.has('a'));
    const fast=cameraKeys.has('shift'),speed=fast?85:28;
@@ -721,6 +853,7 @@
    free.vx+=(tx-free.vx)*k;free.vy+=(ty-free.vy)*k;
    if(!forward&&!right){const damp=Math.exp(-dt*7);free.vx*=damp;free.vy*=damp}
    free.x+=free.vx*dt;free.y+=free.vy*dt;
+   px=free.x;py=free.y;
 
    // Arrow keys rotate / tilt only. They never translate the camera.
    const yawInput=Number(cameraKeys.has('arrowright'))-Number(cameraKeys.has('arrowleft'));
@@ -743,31 +876,80 @@
   return {x:rect.left+q.x/screen.w*rect.width,y:rect.top+q.y/screen.h*rect.height};
  }
  function focusSelection(){
-  if(!selected)return;const e=selected.entity;free.x=selected.kind==='building'?e.x+e.w/2:e.x+.5;free.y=selected.kind==='building'?e.y+e.h/2:e.y+.5;free.zoomTarget=Math.max(free.zoomTarget,120);if(playerView)togglePlayerView();return cameraInfo();
+  if(!selected)return;const e=selected.entity;free.x=selected.kind==='building'?e.x+e.w/2:e.x+.5;free.y=selected.kind==='building'?e.y+e.h/2:e.y+.5;free.zoomTarget=Math.max(free.zoomTarget,120);px=free.x;py=free.y;return cameraInfo();
  }
  function duplicateSelection(){
-  if(!selected)return null;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');const e=selected.entity,id=`editor-${Date.now()}-${++editorSequence}`,copy=deepClone(e);copy.id=id;copy.x=Number(e.x)+1;copy.y=Number(e.y);delete copy._editorBase;delete copy._creatureMotion;copy._editorCreated=true;
-  if(selected.kind==='building'){copy.service=null;sceneBuildings(currentScene).push(copy);selected=refForBuilding(copy)}else{sceneObjects(currentScene).push(copy);selected=refForObject(copy)}
+  if(canonicalSelection?.ids.length){const result=commandSystem().execute('Duplicate selection',canonicalSelection.roots().map(id=>({op:'duplicate',id})));canonicalSelection.select(null);for(const id of result.created)canonicalSelection.select(id,true);return entityInfo(selected);}
+
+  if(selected?.entity?._sceneEntityId&&window.realmNative?.scenes?.command){
+   if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');
+   const kind=selected.kind,result=commandSystem().execute('Duplicate entity',[{op:'duplicate',id:selected.entity._sceneEntityId}]);
+   selectRef(resolveRef(kind,result.created[0]));return entityInfo(selected);
+  }
+  if(!selected)return null;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be duplicated');const e=selected.entity;
+  if(e._sceneEntityId&&!authoredEntity(selected)?.entity.components?.RuntimeBinding){
+   projectWorld=window.VeldrenSceneOwnership?.document?.()||projectWorld;
+   if(!projectWorld)throw Error('The canonical scene document is unavailable');
+   const result=window.VeldrenSceneFormat.duplicateSubtree(projectWorld,String(currentScene),e._sceneEntityId,()=>`editor-scene-${Date.now()}-${++editorSequence}`);
+   const scene=projectWorld.scenes.find(item=>item.scene===String(currentScene)),copy=scene?.entities.find(item=>item.id===result.id);
+   if(copy?.components?.GeneratedProp)copy.components.GeneratedProp.generationKey=`editor-copy:${String(currentScene)}:${result.id}`;
+   sceneDocumentDirty=true;window.VeldrenSceneOwnership?.replaceDocument?.(projectWorld);
+   if(!window.VeldrenSceneOwnership)window.VeldrenWorldEdits?.refreshSceneRenderables?.(projectWorld,String(currentScene));
+   const kind=selected.kind;selected=resolveRef(kind,result.id,currentScene);if(!selected)throw Error('The duplicated scene entity could not be resolved');selectedScene=String(currentScene);
+   invalidate(selected.entity,selected.kind);post('change',{selection:entityInfo(selected)});return entityInfo(selected);
+  }
+  const id=`editor-${Date.now()}-${++editorSequence}`,copy=deepClone(e);copy.id=id;copy.x=Number(e.x)+1;copy.y=Number(e.y);delete copy._editorBase;delete copy._creatureMotion;copy._editorCreated=true;
+  if(selected.kind==='building'){copy.service=null;sceneBuildings(currentScene).push(copy);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'building',copy,buildings.length);if(graphEntity)copy._sceneEntityId=graphEntity.id;selected=refForBuilding(copy)}else{sceneObjects(currentScene).push(copy);const graphEntity=window.VeldrenSceneFormat.attachRuntimeEntity(projectWorld,currentScene,'object',copy,objects.length);if(graphEntity)copy._sceneEntityId=graphEntity.id;selected=refForObject(copy)}
   const info=entityInfo(selected),change={scene:String(currentScene),kind:selected.kind,id:String(selected.id),name:info.name,type:info.type,subtype:info.subtype,baseX:info.x,baseY:info.y,created:true,data:deepClone(copy),x:info.x,y:info.y,rotation:info.rotation,scale:info.scale};
   changes.set(ckey(currentScene,selected.kind,selected.id),change);project.changes=[...changes.values()];if(selected.kind==='object')objects.push(copy);else buildings.push(copy);post('change',{selection:info});return info;
  }
  function deleteSelection(){
-  if(!selected)return false;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');const info=entityInfo(selected),key=ckey(currentScene,selected.kind,selected.id),existing=changes.get(key),list=selected.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),index=list.indexOf(selected.entity);
+  if(canonicalSelection?.ids.length){commandSystem().execute('Delete selection',canonicalSelection.roots().map(id=>({op:'delete',id})));canonicalSelection.select(null);return true;}
+
+  if(selected?.entity?._sceneEntityId&&window.realmNative?.scenes?.command){
+   if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');
+   commandSystem().execute('Delete entity',[{op:'delete',id:selected.entity._sceneEntityId}]);selectRef(null);return true;
+  }
+  if(!selected)return false;if(entityInfo(selected).protected)throw Error('Gameplay-linked entities cannot be deleted');
+  if(selected.entity._sceneEntityId){
+   projectWorld=window.VeldrenSceneOwnership?.document?.()||projectWorld;
+   if(!projectWorld)throw Error('The canonical scene document is unavailable');
+   const runtime=authoredEntity(selected)?.entity.components?.RuntimeBinding;
+   if(runtime){
+    const ref=selected,info=entityInfo(ref),base=ensureBase(ref),key=ckey(currentScene,ref.kind,ref.id);
+    changes.set(key,{...(changes.get(key)||{}),scene:String(currentScene),kind:ref.kind,id:String(ref.id),name:info.name,type:info.type,subtype:info.subtype,baseX:base.x,baseY:base.y,deleted:true});
+    project.changes=[...changes.values()];const list=ref.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),at=list.indexOf(ref.entity);if(at>=0)list.splice(at,1);
+    if(ref.kind==='building'){const active=buildings.indexOf(ref.entity);if(active>=0)buildings.splice(active,1)}else{const active=objects.indexOf(ref.entity);if(active>=0)objects.splice(active,1)}
+   }
+   const removed=window.VeldrenSceneFormat.deleteSubtree(projectWorld,String(currentScene),selected.entity._sceneEntityId);if(!removed.length)return false;
+   sceneDocumentDirty=true;window.VeldrenSceneOwnership?.replaceDocument?.(projectWorld);
+   if(!window.VeldrenSceneOwnership)window.VeldrenWorldEdits?.refreshSceneRenderables?.(projectWorld,String(currentScene));
+   selected=null;selectedScene=null;
+   post('change',{selection:null});return true;
+  }
+  const info=entityInfo(selected),key=ckey(currentScene,selected.kind,selected.id),existing=changes.get(key),list=selected.kind==='building'?sceneBuildings(currentScene):sceneObjects(currentScene),index=list.indexOf(selected.entity);
   if(index>=0)list.splice(index,1);if(existing?.created)changes.delete(key);else changes.set(key,{...(existing||{}),scene:String(currentScene),kind:selected.kind,id:String(selected.id),name:info.name,type:info.type,subtype:info.subtype,baseX:info.baseX,baseY:info.baseY,deleted:true});
   if(selected.kind==='object'){const i=objects.indexOf(selected.entity);if(i>=0)objects.splice(i,1)}else{const i=buildings.indexOf(selected.entity);if(i>=0)buildings.splice(i,1)}
   selected=null;project.changes=[...changes.values()];post('change',{selection:null});return true;
  }
  function revertSelection(){
   if(!selected)return null;const base=ensureBase(selected),key=ckey(currentScene,selected.kind,selected.id),change=changes.get(key);
+  if(selected.entity._sceneEntityId){
+   if(!base.sceneTransform||!projectWorld)throw Error('The original scene transform is unavailable');
+   projectWorld=window.VeldrenSceneOwnership?.document?.()||projectWorld;
+   const result=window.VeldrenSceneFormat.setLocalTransform(projectWorld,String(currentScene),selected.entity._sceneEntityId,base.sceneTransform);
+   const scene=projectWorld.scenes.find(item=>item.scene===String(currentScene)),canonical=scene?.entities.find(item=>item.id===String(selected.entity._sceneEntityId));
+   if(!canonical)throw Error('The canonical scene transform could not be resolved');
+   if(!canonical.components?.RuntimeBinding&&window.VeldrenSceneOwnership?.setTransform&&!window.VeldrenSceneOwnership.setTransform(String(currentScene),selected.entity._sceneEntityId,canonical.transform))throw Error('The canonical Scene transform could not be synchronized');
+   moveLinkedObject(selected.entity,result.x,result.y);selected.entity.editorTransform={...(selected.entity.editorTransform||{}),rotation:result.rotation,scale:result.scale};
+   selected.entity.heading=result.rotation*Math.PI/180;sceneDocumentDirty=true;invalidate(selected.entity,'object');
+   post('change',{selection:entityInfo(selected)});return entityInfo(selected);
+  }
   if(change?.created){deleteSelection();return null}
   changes.delete(key);setEntityTransform(selected,{x:base.x,y:base.y,rotation:0,scale:1},false);project.changes=[...changes.values()];post('change',{selection:entityInfo(selected)});return entityInfo(selected);
  }
- function cameraInfo(){return {x:playerView?px:free.x,y:playerView?py:free.y,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom,playerView}}
+ function cameraInfo(){return {x:free.x,y:free.y,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom,playerView:false}}
  function togglePlayerView(){
-  clearCameraKeys();
-  playerView=!playerView;
-  if(playerView){playerCamera={...playerCamera,yaw:view3d.yaw,tilt:view3d.tilt,zoom:Math.max(playerCamera.min,Math.min(playerCamera.max,view3d.zoom))};Object.assign(view3d,{min:playerCamera.min,max:playerCamera.max,zoom:playerCamera.zoom})}
-  else{view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;view3d.yaw=free.yawTarget;view3d.tilt=free.tiltTarget;view3d.zoom=free.zoomTarget}
   return cameraInfo();
  }
 
@@ -811,10 +993,8 @@
    body.veldren-editor-clean-ui #gameDock,
    body.veldren-editor-clean-ui #displayNotice,
    body.veldren-editor-clean-ui #maintenanceNotice,
-   body.veldren-editor-clean-ui #spiritBuildHud,
    body.veldren-editor-clean-ui #socialPanel,
    body.veldren-editor-clean-ui #socialQuickPanel,
-   body.veldren-editor-clean-ui #spiritQuickPanel,
    body.veldren-editor-clean-ui #quickChat,
    body.veldren-editor-clean-ui #chatPanel,
    body.veldren-editor-clean-ui #viewport>.region,
@@ -828,23 +1008,15 @@
    /* Gameplay dialogs are hidden in normal world-edit mode. Auth stays usable
       if a session expires because #loginScreen is deliberately excluded. */
    body.veldren-editor-clean-ui #modal,
-   body.veldren-editor-clean-ui #creator,
-   body.veldren-editor-clean-ui #spiritsDialog{
+   body.veldren-editor-clean-ui #creator{
     display:none!important
    }
   `;
   document.head.appendChild(style);
  }
  function setGameUiVisible(visible){
-  installEditorUiIsolation();
-  gameUiVisible=!!visible;
-  document.body.classList.toggle('veldren-editor-clean-ui',!gameUiVisible);
-  // Panels can change --dock and steal viewport width; clean mode must always
-  // own the full frame regardless of the gameplay panel state.
-  if(!gameUiVisible){document.body.classList.remove('panels-open','trade-open');}
-  try{resize()}catch{}
-  requestAnimationFrame(()=>{try{resize()}catch{}});
-  return gameUiVisible;
+  gameUiVisible=false;installEditorUiIsolation();document.body.classList.add('veldren-editor-clean-ui');
+  document.body.classList.remove('panels-open','trade-open');try{resize()}catch{}return false;
  }
 
  function becomeReady(){
@@ -854,9 +1026,15 @@
   if(typeof worldScenes==='undefined'||!worldScenes?.overworld||typeof objects==='undefined'||typeof buildings==='undefined'||typeof draw3d!=='function'||typeof unproject3!=='function')return;
   initializing=(async()=>{
   await loadProject();installTransformRendering();
-  free.x=Number(px);free.y=Number(py);playerCamera={min:view3d.min,max:view3d.max,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom};free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
-  applyAll();installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);try{stop()}catch{}
+  free.x=55;free.y=50;px=free.x;py=free.y;
+  free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
+  applyAll();window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
   ready=true;
+  T?.setHistoryOwner?.({execute:value=>commandSystem().execute('Edit terrain',[{op:'terrain',value}]),undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo()});
+  window.realmNative?.scenes?.subscribe?.(event=>{if(event.kind==='load'&&T)T.applyDocument(window.realmNative.scenes.serialize()?.terrain);});
+  window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(editorRendering)throw Error('Rendering cannot modify authored Scene data');if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
+  if(window.createVeldrenSelection){canonicalSelection=window.VeldrenEditorSelection=createVeldrenSelection({native:window.realmNative.scenes,scene:()=>String(currentScene),assets:VeldrenAssets,displayMatrix:displaySceneMatrix,onChange:ids=>{selected=ids.length?canonicalRef(ids[0]):null;selectedScene=selected?String(currentScene):null;post('selection',{selection:entityInfo(selected),ids});}});}
+  if(window.createVeldrenTransformTools)window.VeldrenEditorTools=createVeldrenTransformTools({native:window.realmNative.scenes,commands:commandSystem(),scene:()=>String(currentScene),selection:()=>canonicalSelection?canonicalSelection.ids:selected?.entity?._sceneEntityId?[selected.entity._sceneEntityId]:[],bounds:node=>canonicalSelection?.bounds(node),displayMatrix:displaySceneMatrix,mode:()=>tool,report:message=>log(message,'error')});
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
   document.addEventListener('contextmenu',e=>{if(ready&&isViewportTarget(e.target,editorInputSurface())){e.preventDefault();e.stopImmediatePropagation()}},true);
   window.addEventListener('blur',()=>{clearCameraKeys();clearTouchInput()});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearCameraKeys();clearTouchInput();}});
@@ -868,16 +1046,65 @@
 
  window.VeldrenEditorBridge={
   isReady:()=>ready,initialize:becomeReady,
-  enterBuilding,startNewBuilding,exitBuilding,buildingState,selectPart,setPart,deletePart,duplicatePart,buildingUndo,setFloor,setBuildingTransform,
-  buildingAssets:()=>B.catalog(),
+  prepareFrame(){if(ready&&!saving&&!commands?.active&&typeof prepareWorldUnderstory==='function'){const revision=window.realmNative.scenes.revision();prepareWorldUnderstory();if(window.realmNative.scenes.revision()!==revision)post('change',{selection:entityInfo(selected),dirty:commands?.dirty||sceneDocumentDirty});}},
+  canonicalSelection:()=>canonicalSelection,
+  selectEntity:(id,additive=false)=>canonicalSelection?.select(id,additive),
+  sceneName:()=>String(currentScene),
+  listScenes:()=>Object.entries(worldScenes).map(([id,scene])=>({id,name:scene.title||id})),
+  selectScene(id){
+   if(saving||commands?.active||terrainDrag||partDrag)throw Error('Finish the current edit before switching scenes');
+   if(!worldScenes[id])throw Error('Unknown scene');
+   if(id===currentScene)return id;
+   if(buildingContext)commandSystem().transaction('Exit Building Edit',exitBuilding);
+   window.VeldrenEditorTools?.cancel();clearCameraKeys();clearTouchInput();removePlacementPreview();cancelPartPlacement();placementAsset=null;tool='select';
+   canonicalSelection?.select(null);currentScene=id;
+   const scene=worldScenes[id];if(window.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.select(scene.objects);else objects.splice(0,objects.length,...scene.objects);
+   buildings.splice(0,buildings.length,...scene.buildings);free.x=scene.entry?.[0]??55;free.y=scene.entry?.[1]??50;free.vx=free.vy=0;px=free.x;py=free.y;
+   if(typeof resetLandSurface==='function')resetLandSurface();miniTerrain=null;terrainHover=null;canonicalSelection?.invalidate();commandSystem().status();post('tool',{tool});post('scene');return id;
+  },
+  assetReferences:(type,query='')=>VeldrenAssets.list(type).map(id=>VeldrenAssets.record(id)).filter(record=>!query||[record.id,record.name].some(value=>String(value).toLowerCase().includes(query.toLowerCase()))).slice(0,150).map(record=>({id:record.id,name:record.name,type:record.type,validation:record.validation})),
+  displayMatrix:displaySceneMatrix,
+  editTransformField(id,key,index,value){
+   const node=window.realmNative.scenes.entity(String(currentScene),id);if(!node||canonicalSelection?.locked(id))throw Error('Entity unavailable or locked');if(!Number.isFinite(value))throw Error('Finite transform value required');
+   const pose=JSON.parse(JSON.stringify(node.transform));
+   if(pose.affine){const G=VeldrenEditorGeometry,m=pose.affine;
+    if(key==='position')m[12+index]=value;
+    else if(key==='scale'){const current=Math.hypot(...m.slice(index*4,index*4+3));if(Math.abs(value)<1e-6)throw Error('Scale must be nonzero');for(let r=0;r<3;r++)m[index*4+r]*=value/current;}
+    else {const q=[...pose.rotation];q[index]=value;const norm=Math.hypot(...q);if(norm<1e-8)throw Error('Rotation quaternion cannot be zero');const [x,y,z,w]=q.map(v=>v/norm),rotation=[1-2*(y*y+z*z),2*(x*y+z*w),2*(x*z-y*w),0,2*(x*y-z*w),1-2*(x*x+z*z),2*(y*z+x*w),0,2*(x*z+y*w),2*(y*z-x*w),1-2*(x*x+y*y),0,0,0,0,1],axes=G.orientation(m),old=[...axes[0],0,...axes[1],0,...axes[2],0,0,0,0,1],linear=[...m];linear[12]=linear[13]=linear[14]=0;pose.affine=G.multiply(rotation,G.multiply(G.inverse(old),linear));pose.affine.splice(12,3,...m.slice(12,15));}
+   }else pose[key][index]=value;
+   return commandSystem().execute('Edit '+key,[{op:'transform',id,transform:pose}]);
+  },
+  sceneEntity:id=>window.realmNative.scenes.entity(String(currentScene),id),
+  sceneHierarchy:query=>canonicalSelection?.hierarchy(query),
+  hideEntity:(id,value)=>canonicalSelection?.hide(id,value),lockEntity:(id,value)=>canonicalSelection?.lock(id,value),
+  executeCommand:(label,operations)=>commandSystem().execute(label,operations),
+  prefabCatalogKey:()=>window.realmNative.scenes.componentIds(String(currentScene),'PrefabDefinition').map(id=>{const node=window.realmNative.scenes.entity(String(currentScene),id);return id+':'+node.name+':'+node.components.PrefabDefinition.revision;}).join('|'),
+  createPrefab(id,name){return commandSystem().execute('Create prefab',[{op:'prefabCreate',id,name}]);},
+  instantiatePrefab(id){const result=commandSystem().execute('Instantiate prefab',[{op:'prefabInstantiate',id,transform:{position:[free.x,landHeight(free.x,free.y),free.y]}}]);canonicalSelection.select(result.created[0]);return result;},
+  updatePrefab:id=>commandSystem().execute('Update prefab instances',[{op:'prefabUpdate',id}]),
+  revertPrefab:id=>commandSystem().execute('Revert prefab overrides',[{op:'prefabRevert',id}]),
+  unpackPrefab:id=>commandSystem().execute('Unpack prefab',[{op:'prefabUnpack',id}]),
+  beginCommand:label=>commandSystem().begin(label),commitCommand:()=>commandSystem().commit(),cancelCommand:()=>commandSystem().cancel(),
+  undo(){finishTerrain();return commandSystem().undo();},redo(){finishTerrain();return commandSystem().redo();},historyState:()=>commandSystem().status(),
+  adoptCanonicalDocument(value){window.VeldrenSceneFormat.validateWorld(value);projectWorld=JSON.parse(JSON.stringify(value));window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);sceneDocumentDirty=false;return {scenes:projectWorld.scenes.length,entities:projectWorld.scenes.reduce((sum,scene)=>sum+scene.entities.length,0)};},
+  enterBuilding:()=>commandSystem().transaction('Enter Building Edit',enterBuilding),
+  startNewBuilding:()=>commandSystem().transaction('Create building',startNewBuilding),
+  exitBuilding:()=>commandSystem().transaction('Exit Building Edit',exitBuilding),buildingState,selectPart,
+  setPart:input=>commandSystem().transaction('Edit building part',()=>setPart(input)),
+  deletePart:()=>commandSystem().transaction('Delete building part',deletePart),
+  duplicatePart:()=>commandSystem().transaction('Duplicate building part',duplicatePart),buildingUndo,setFloor,
+  setBuildingTransform:input=>commandSystem().transaction('Transform building',()=>setBuildingTransform(input)),
+  buildingAssets:()=>B.catalog().map(asset=>VeldrenAssets.has(asset.id)&&VeldrenAssets.record(asset.id).importSettings?.importer==='veldren-gltf-1'?{...asset,...canonicalMetadata(VeldrenAssets.record(asset.id))}:asset),
   setBuildingSnap(config){Object.assign(buildingSnap,config);return buildingState();},
   beginPartPlacement(id){if(!buildingContext)throw Error('Start Building Edit first');if(!B.model(id))throw Error('Missing local asset');partPlacementAsset=B.catalog().find(asset=>asset.id===id);if(!partPlacementAsset)throw Error('Missing local asset');partPlacement=id;partPlacementRotation=0;partPlacementPoint=null;partPreview=null;tool='place';return buildingState();},
   cancelPartPlacement(){cancelPartPlacement();return buildingState();},
   moveEntrance(host){const m=assembly()?.modules.find(m=>m.role==='entrance');if(!m)throw Error('No linked entrance');partId=m.id;return setPart({host});},currentSceneName:()=>worldScenes?.[currentScene]?.title||String(currentScene),
   getSelection:()=>entityInfo(selected),selectionProjection,cameraState:cameraInfo,listEntities:allEntities,
-  setCameraKey,clearCameraKeys,
+  setCameraKey,clearCameraKeys,shortcut,
   selectByRef(kind,id){return selectRef(resolveRef(kind,id,currentScene))},
   setTool(next){
+   window.VeldrenEditorTools?.cancel();
+   if(commands?.active)commands.cancel();
    if(next==='terrain'&&currentScene!=='overworld')throw Error('Terrain is available in the overworld');
    clearTouchInput();finishTerrain();terrainHover=null;if(next==='terrain'&&buildingContext)exitBuilding();
    tool=['select','move','rotate','scale','place','camera','terrain'].includes(next)?next:'select';drag=null;pointer=null;
@@ -890,20 +1117,26 @@
    terrainBrush={mode,radius:Math.max(1,Math.min(12,Number(input?.radius)||terrainBrush.radius)),strength:Math.max(.05,Math.min(1,Number(input?.strength)||terrainBrush.strength)),material:['grass','dirt','stone','paving'].includes(input?.material)?input.material:terrainBrush.material};
    return {...terrainBrush};
   },
-  terrainUndo(redo=false){finishTerrain();const result=redo?T.redo():T.undo();post('terrain',{state:T.state(),changed:result.changed});return T.state();},
-  setSnap(config){snap={position:Math.max(0,Number(config?.position)||0),rotation:Math.max(0,Number(config?.rotation)||0)};return {...snap}},
+  terrainUndo(redo=false){finishTerrain();const result=redo?T.redo():T.undo();post('terrain',{state:T.state(),changed:result.changed,dirty:commands?.dirty});return T.state();},
+  configureGizmo:config=>window.VeldrenEditorTools?.configuration(config),
+  setSnap(config){window.VeldrenEditorTools?.configuration({translation:Number(config?.position)||0,rotation:Number(config?.rotation)||0});snap={position:Math.max(0,Number(config?.position)||0),rotation:Math.max(0,Number(config?.rotation)||0)};return {...snap}},
   setTransform(input){if(!selected)return null;const info=setEntityTransform(selected,input,true);if(selected.entity.assembly)B.commit(selected.entity);post('change',{selection:info});return info},
   focusSelection,duplicateSelection,deleteSelection,revertSelection,togglePlayerView,
   listAssets:assetCatalog,
+  previewAsset(id,options){if(!assetPreview)assetPreview=createVeldrenAssetPreview(VeldrenAssets);return assetPreview.render(id,options);},
+  previewDiagnostics:()=>assetPreview?.diagnostics()||null,
+  refreshAssetRegistry:()=>VeldrenAssets.refresh(),
+  onAssetReload:listener=>window.VeldrenAssets?.onReload(listener)||(()=>{}),
   assetGeometry(id){const text=String(id||''),split=text.indexOf(':');if(split<0)return null;const source=text.slice(0,split),key=text.slice(split+1),mesh=source==='mesh'?briarModels?.[key]:source==='creature'?creatureAssets?.[key]?.mesh:source==='preset'?null:B.model(text);return mesh?.p&&mesh?.i?{p:mesh.p,n:mesh.n,c:mesh.c,f:mesh.f,i:mesh.i,uv:mesh.uv,t:mesh.t,bounds:mesh.bounds,atlas:typeof REALM_ATLAS_IMAGE!=='undefined'?REALM_ATLAS_IMAGE:null}:null;},
   gameUiVisible:()=>gameUiVisible,
   setGameUiVisible,
-  beginPlacement(id){const asset=assetById(id);if(!asset)throw Error('Unknown Veldren asset '+id);placementAsset=asset;placementRotation=0;tool='place';ensurePlacementPreview(asset);return {...asset}},
+  beginPlacement(id){const asset=assetById(id);if(!asset)throw Error('Unknown Veldren asset '+id);if(asset.previewOnly)throw Error('This asset is available for inspection; use its stable ID in a compatible Scene component');placementAsset=asset;placementRotation=0;tool='place';ensurePlacementPreview(asset);return {...asset}},
   rotatePlacement,
   cancelPlacement(){placementAsset=null;placementRotation=0;removePlacementPreview();if(tool==='place')tool='select';return true},
   placementState(){return placementAsset?{...placementAsset}:null},
-  savedState:async()=>({...projectMeta}),
+  savedState:async()=>({...projectMeta,sceneDirty:sceneDocumentDirty}),
   save:saveProject,
+  exportWorld:()=>window.VeldrenSceneOwnership?.document?.()||JSON.parse(JSON.stringify(projectWorld)),
   exportEdits:()=>({version:1,revision:projectMeta.revision,updatedAt:new Date().toISOString(),changes:[...changes.values()],terrain:T.serialize()})
  };
 })();

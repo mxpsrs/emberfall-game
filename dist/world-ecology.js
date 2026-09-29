@@ -26,7 +26,7 @@ gradeLand=function(x,y,height){
  return h*(1-best)+roadHeight*best;
 };
 function ecologyTerrain(scene,w){
- const pads=new Map(),roads=new Map();ecologyPads.set(scene,pads);ecologyRoads.set(scene,roads);
+ const pads=new Map();ecologyPads.set(scene,pads);
  const pad=(left,top,right,bottom,height,reason,fade=7)=>{const p={left,top,right,bottom,height,fade,reason};ecoIndex(pads,p,left-fade,top-fade,right+fade,bottom+fade);ecologyReport.pads++;};
  if(scene==='overworld'){
   // Briarhaven keeps a level civic heart and individual foundations while the
@@ -54,6 +54,10 @@ function ecologyTerrain(scene,w){
   if(worldWaterDistance(o.x+.5,o.y+.5)<5)continue;
   pad(o.x+.5-r,o.y+.5-r,o.x+.5+r,o.y+.5+r,h,o.name+' approach',6);
  }
+ ecologyRoadTerrain(scene,pads);
+}
+function ecologyRoadTerrain(scene,pads){
+ const roads=new Map();ecologyRoads.set(scene,roads);
  const source=scene==='overworld'?organicRoads:(worldScenes.tutorial?.roads||[]),nodes=new Map(),edges=[];
  const node=(x,y)=>{const key=Math.round(x*100)+':'+Math.round(y*100);if(nodes.has(key))return nodes.get(key);let height=ecologyGradeBefore(x,y,landBase(x,y));for(const p of pads.get(ecoKey(x,y))||[])if(ecoRectDistance(x,y,p)===0){height=p.height;break;}const n={x,y,height};nodes.set(key,n);return n;};
  for(const seg of source){const len=Math.hypot(seg.b[0]-seg.a[0],seg.b[1]-seg.a[1]),n=Math.max(1,Math.ceil(len/5));let a=node(...seg.a);for(let i=1;i<=n;i++){const b=node(seg.a[0]+(seg.b[0]-seg.a[0])*i/n,seg.a[1]+(seg.b[1]-seg.a[1])*i/n);edges.push({a,b,width:seg.width||1.5});a=b;}}
@@ -86,7 +90,7 @@ function ecologyTreeProblem(ctx,o,x=o.x,y=o.y){
  for(const seg of ctx.roads.get(key)||[])if(roadSegmentDistance(x+.5,y+.5,seg)<seg.width+1.2+r*.65)return 'road corridor';
  if(roadInfluence(x+.5,y+.5)[0]>.08)return 'square or travelled ground';
  if(ctx.scene==='overworld'){
-  for(const b of physicalBridges||[])if(Math.abs(b.eastWest?x-b.x:y-b.z)<b.span/2+2+r&&Math.abs(b.eastWest?y-b.z:x-b.x)<b.width/2+1+r)return 'bridge approach';
+  for(const b of physicalBridges||[])if(b._generatedBridge?globalThis.VeldrenBridgeScene.approach(b,x,y,r):Math.abs(b.eastWest?x-b.x:y-b.z)<b.span/2+2+r&&Math.abs(b.eastWest?y-b.z:x-b.x)<b.width/2+1+r)return 'bridge approach';
   for(const t of SETTLEMENTS){const plan=settlementPlans.get(t.id);if(Math.hypot(x-t.x,y-t.y)<Math.min(20,plan.radius*.38))return 'civic clearing';}
   if(Math.hypot(x-BRIARHAVEN_PLAZA[0],y-BRIARHAVEN_PLAZA[1])<8)return 'arrival clearing';
  }
@@ -138,16 +142,16 @@ const ecologySetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){
  ecologySetupBefore();if(ecologyReady)return;
  const saved={scene:currentScene,x:s.x,y:s.y};
- for(const scene of ['overworld','tutorial']){const w=worldScenes[scene];currentScene=scene;objects.splice(0,objects.length,...w.objects);buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyTerrain(scene,w);}
+ for(const scene of ['overworld','tutorial']){const w=worldScenes[scene];currentScene=scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyTerrain(scene,w);}
  ecologyReady=true;
  for(const [scene,w]of Object.entries(worldScenes)){
   if(!w.objects.some(o=>o.type==='tree')&&!['overworld','tutorial'].includes(scene))continue;
-  currentScene=scene;objects.splice(0,objects.length,...w.objects);buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyPlant(scene,w);
+  currentScene=scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(w.objects):objects.splice(0,objects.length,...w.objects));buildings.splice(0,buildings.length,...w.buildings);resetLandSurface();ecologyPlant(scene,w);
  }
  // Visual footings are finalized only after deterministic object placement
  // and ecology's terrain pass. Their elevation must not change resource IDs,
  // room furnishing or NPCs.
  if(typeof propFinalizeSupportPads==='function')propFinalizeSupportPads();
  propFootingsReady=true;
- currentScene=saved.scene;objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);resetLandSurface();realmNavigation.clear();roadBuckets=null;miniTerrain=null;worldUnderstory.clear();worldObjectRevision++;
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);resetLandSurface();realmNavigation.clear();roadBuckets=null;miniTerrain=null;worldUnderstory.clear();worldObjectRevision++;
 };

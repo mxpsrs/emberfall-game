@@ -7,6 +7,9 @@ for(const [scene,w] of Object.entries(worldScenes)){
  const ids=new Map();for(const o of w.objects){const id=String(o.id);if(ids.has(id))throw new Error('Duplicate world ID '+scene+':'+id+' ('+ids.get(id)+' / '+o.name+')');ids.set(id,o.name);}
 }
 `,ctx);
+
+vm.runInContext(fs.readFileSync(__dirname+'/../dist/prebuilt-world.js','utf8'),ctx);
+fs.writeFileSync(__dirname+'/../dist/world-construction.json',vm.runInContext('JSON.stringify(VeldrenPrebuiltWorld.encode())',ctx)+'\n');
 vm.runInContext(`
 function sharedNavigation(o,scene){
  const world=worldScenes[scene],previous=currentScene;currentScene=scene;

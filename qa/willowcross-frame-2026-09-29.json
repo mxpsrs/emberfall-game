@@ -1,0 +1,66 @@
+{
+  "before": {
+    "revision": "2f7aa2eba68dc46c4c6939f407be17ba4985a510",
+    "mode": "CPU draw preparation only; no GPU or network",
+    "scene": {
+      "scene": "overworld",
+      "name": "Willowcross residence",
+      "x": 197.5,
+      "y": 81,
+      "width": 1112,
+      "height": 512,
+      "zoom": 118
+    },
+    "generationMs": 37640.281918,
+    "migrationMs": 45611.108207000005,
+    "coldFrameMs": 12319.494731000013,
+    "warmFramesMs": [
+      318.1299350000045,
+      278.7464139999938,
+      265.59598999998707,
+      295.94169199999305,
+      304.8983339999977,
+      307.0218529999984,
+      284.32679700000153,
+      303.1048840000003,
+      302.02902300001006,
+      343.04450600000564
+    ],
+    "warmMedianMs": 302.5669535000052
+  },
+  "after": {
+    "revision": "working-tree",
+    "mode": "CPU draw preparation only; no GPU or network",
+    "scene": {
+      "scene": "overworld",
+      "name": "Willowcross residence",
+      "x": 197.5,
+      "y": 81,
+      "width": 1112,
+      "height": 512,
+      "zoom": 118
+    },
+    "generationMs": 36183.252728,
+    "migrationMs": 45660.521219999995,
+    "coldFrameMs": 7990.768855999995,
+    "warmFramesMs": [
+      72.80804399999033,
+      63.33413499999733,
+      63.95993400001316,
+      64.55700200000138,
+      73.262996999998,
+      63.68801600000006,
+      62.47202899999684,
+      65.47884600001271,
+      67.63634700000694,
+      61.08117000000493
+    ],
+    "warmMedianMs": 64.25846800000727
+  },
+  "warmSpeedup": 4.708592702520872,
+  "limits": [
+    "CPU draw preparation only; no GPU, network or simulation timing",
+    "Physical-phone FPS and reload cause unverified",
+    "Full-world generation and migration startup cost remains"
+  ]
+}

@@ -74,7 +74,7 @@ void VeldrenDesktopClient::seed_demo_world(std::uint32_t actors) {
     const float z = std::sin(angle) * ring;
     const std::uint32_t species = id % 11 == 0 ? VELDREN_ACTOR_WOLF : VELDREN_ACTOR_HUMAN;
     states.push_back({id, x, z, -z * 0.82F, x * 0.82F, id % 4 == 0 ? 5.4F : 3.2F,
-                      1.15F, species | (id == 1 ? VELDREN_ACTOR_ALWAYS_ACTIVE : 0U)});
+                      1.15F, species | (id == 1 ? VELDREN_ACTOR_ALWAYS_ACTIVE | VELDREN_ACTOR_PLAYER : 0U)});
     render_states_[id - 1].id = id;
   }
   veldren_actors_upsert(world_, states.data(), states.size());
@@ -124,3 +124,12 @@ std::span<const VeldrenAnimationState> VeldrenDesktopClient::animation_states() 
 }
 
 void* VeldrenDesktopClient::core_world() const { return world_; }
+
+const veldren::Scene& VeldrenDesktopClient::scene() const {
+  const auto required = veldren_world_scene_serialize(world_, nullptr, 0);
+  std::vector<char> json(static_cast<std::size_t>(required) + 1);
+  if (required == 0 || veldren_world_scene_serialize(world_, json.data(), json.size()) != required)
+    throw std::runtime_error("Could not read the C++ runtime scene");
+  scene_cache_ = veldren::Scene::deserialize(json.data());
+  return scene_cache_;
+}

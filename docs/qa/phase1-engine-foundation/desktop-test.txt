@@ -1,0 +1,6 @@
+make: Entering directory '<checkout>/native'
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude src/core.cpp src/scene.cpp src/desktop.cpp tests/desktop_test.cpp -o build/desktop-test
+./build/desktop-test
+PASS: native desktop reuses ABI 19, full local assets, ultra shadows, long draw distance, dense foliage and effect budgets.
+make: Leaving directory '<checkout>/native'

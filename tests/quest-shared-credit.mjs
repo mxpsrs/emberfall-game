@@ -14,7 +14,7 @@ async function client(name){
  const run=code=>vm.runInContext(code,ctx),json=code=>JSON.parse(run('JSON.stringify('+code+')'));
  for(const f of ['multiplayer','shared-world'])run(fs.readFileSync('dist/'+f+'.js','utf8'));
  ctx.NAME=name;
- run(`Date.now=()=>clock();draw=()=>{};drawPortrait=()=>{};s.character={name:NAME,look:0};s.worldScale=3;s.tutorialIslandVersion=2;s.tutorialVersion=7;s.tutorial=38;s.tutorialReward=true;s.mainStoryQuest={stage:4};s.sceneId='overworld';s.x=213;s.y=142;setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();renderUI=renderAction=renderEncounterHud=renderTutorial=save=playGameSound=()=>{};assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;s.equipment.weapon='woodenSword';s.equipment.shield='woodenShield';s.xp.Hitpoints=200000;s.hp=maxhp();const rat=mainStoryObject('lookout');activateScene('overworld',rat.x+1,rat.y);s.spirits={cinder:{state:'set'},zephyr:{state:'standby'}};`);
+ run(`Date.now=()=>clock();draw=()=>{};drawPortrait=()=>{};s.character={name:NAME,look:0};s.worldScale=3;s.tutorialIslandVersion=2;s.tutorialVersion=7;s.tutorial=38;s.tutorialReward=true;s.mainStoryQuest={stage:4};s.sceneId='overworld';s.x=213;s.y=142;setupExpandedWorld();setupTutorialVillage();setupLoot();renderUI=renderAction=renderEncounterHud=renderTutorial=save=playGameSound=()=>{};assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;s.equipment.weapon='ironSword';s.equipment.shield='woodenShield';s.xp.Attack=200000;s.xp.Strength=200000;s.xp.Hitpoints=200000;s.hp=maxhp();const rat=mainStoryObject('lookout');activateScene('overworld',rat.x+1,rat.y);`);
  const registration=await handleAuth(req('/api/auth/register','',{username:name,password:'test-only-9862!'}),env);assert.equal(registration.status,200);const cookie=registration.headers.get('set-cookie').split(';')[0];
  const saved=await handleSave(req('/api/character',cookie,{state:json('s'),revision:0},'PUT'),env);assert.equal(saved.status,200,await saved.text());
  const c={run,json,ctx,cookie,packets:[]};ctx.fetch=async(url,options)=>{const input=JSON.parse(options.body);const response=await handlePlayers(req(url,cookie,input),env);const body=await response.clone().json();assert.equal(response.status,200,JSON.stringify(body));c.packets.push({input,body});return response;};
@@ -23,10 +23,9 @@ async function client(name){
 
 const a=await client('QuestAlpha'),b=await client('QuestBravo');
 for(const c of [a,b]){await c.poll();c.run(`assert(rat._sharedReady);assert.equal(worldIndex().byId.get(String(rat.id)),rat);`);}
-// Real spirit animation -> queued damage -> authoritative receipt -> quest advancement.
-a.run("target=rat;assert(unleashSpirit('cinder'));time+=2;updateSpirits(2);");
-await a.poll();await b.poll();
-for(let i=0;i<60&&a.run('rat.hp>0');i++){clock+=30000;a.run("time+=30;target=rat;assert(unleashSpirit('cinder'));updateSpirits(2);");await a.poll();await b.poll();}
+// Ordinary melee hits travel through the same authoritative receipt path.
+// The observer intentionally has no ownership or kill credit.
+for(let i=0;i<60&&a.run('rat.hp>0');i++){clock+=30000;a.run("time+=30;target=rat;resolveHit(rat,999,'melee');");await a.poll();await b.poll();}
 assert.equal(a.run('mainStoryState().stage'),5,'killer gets story credit');assert.equal(b.run('mainStoryState().stage'),4,'observer gets no story credit');
 assert(a.run('s.groundLoot.some(p=>p._sharedObject)'), 'killer receives loot');assert(!b.run('s.groundLoot.some(p=>p._sharedObject)'), 'private loot stays private');
 assert(a.run("worldScenes.overworld.objects.find(o=>o.name==='Fisher Nessa').dead===0"),'Nessa stays alive');
@@ -39,5 +38,5 @@ clock+=30000;
 const respawn=await b.poll();assert(respawn.world.entities.some(e=>e.entity===b.run('String(rat.id)')&&e.hp>0),'unfinished player sees respawn');
 const completed=await a.poll();assert(!completed.world.entities.some(e=>e.entity===a.run('String(rat.id)')),'completed player receives no quest enemy');
 a.ctx.RESPAWN=respawn;a.run('applySharedWorld(RESPAWN);assert(!worldActors().includes(rat));assert(!performAttack(rat));');
-console.log('PASS: two authenticated clients, animated spirit kill, real server receipt, correct quest credit, no observer credit, Nessa untouched, private loot, receipt replay and durable quest stage.');
+console.log('PASS: two authenticated clients, ordinary melee kill through a real server receipt, correct quest credit, no observer credit, Nessa untouched, private loot, receipt replay and durable quest stage.');
 Date.now=realNow;

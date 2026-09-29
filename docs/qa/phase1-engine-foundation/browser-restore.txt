@@ -1,0 +1,5 @@
+Opening built /editor/
+CONSOLE PHASE1_STAGE [null,null,null,false]
+CONSOLE PHASE1_STAGE ["assets",false,true,true]
+Editor {"ready":true,"failed":false,"context":"editor","services":true,"quarries":true,"membership":true,"worldBytes":15049139}
+PASS: fresh browser reload retains the saved native entity exactly and runs no player controllers.

@@ -95,7 +95,7 @@ building3=function(r,b){
  const m=buildingRotation(b),q={face(points,color,normals,material,colors,uvs){r.face(points.map(p=>briarPoint(p,0,m)),color,normals?.map(n=>[m[0]*n[0]+m[2]*n[2],n[1],m[8]*n[0]+m[10]*n[2]]),material,colors,uvs);}};
  if(r.indexed)q.indexed=(mesh,transform)=>r.indexed(mesh,affineMultiply(m,transform));
  const source={...b,...b.southPlan,service:{...b.service,...b.southPlan.service},_orientationYaw:{east:Math.PI/2,north:Math.PI,west:-Math.PI/2}[b.doorFacing]};
- b.visualHeight=buildingBeforeFacing(q,source);return b.visualHeight;
+ const height=buildingBeforeFacing(q,source);if(!b._generatedBuildingEntity)b.visualHeight=height;return height;
 };
 const propBeforeRoomFacing=prop3;
 prop3=function(r,o,x,z){

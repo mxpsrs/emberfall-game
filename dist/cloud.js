@@ -28,6 +28,11 @@ async function handleConnectionResponse(response){
  if(response.status===400||response.status===403){cloudConflict=true;pauseForServer('Reconnect your character','The server could not accept this character update. Reconnect to load your latest server save.');return true;}
  return false;
 }
+function removeRetiredCompanionFields(state){
+ if(!state||typeof state!=='object'||state.retiredCompanionFieldsVersion===1)return state;
+ for(const key of ['spirits','attunedSpirit','firstSpirit','spiritWardUntil','spiritProgressVersion'])delete state[key];
+ state.retiredCompanionFieldsVersion=1;return state;
+}
 window.addEventListener('online',()=>{if(cloudRecovering){clearTimeout(cloudRecoveryTimer);recoverConnection();}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloudRecovering){clearTimeout(cloudRecoveryTimer);recoverConnection();}});
 
@@ -46,13 +51,13 @@ async function initializeCloud(){
  // The server save is authoritative; never restore pending device progress.
  s=defaults();
  if(restored){const d=defaults();s={...d,...restored,xp:{...d.xp,...restored.xp},bag:{...d.bag,...restored.bag},gear:{...d.gear,...restored.gear},equipment:{...d.equipment,...restored.equipment}};}
- migrateCombatSkills(s,restored||s);normalizeJourney(s,restored||s);normalizeSkillProgression(s,restored||s);normalizeToolBelt(s);normalizeEquipmentSlots(s);normalizeSpiritRemoval(s);s.hp=Math.max(1,Math.min(s.hp,maxhp()));
+ migrateCombatSkills(s,restored||s);normalizeJourney(s,restored||s);normalizeSkillProgression(s,restored||s);normalizeToolBelt(s);normalizeEquipmentSlots(s);removeRetiredCompanionFields(s);s.hp=Math.max(1,Math.min(s.hp,maxhp()));
  if(s.character)s.character.race='human';cloudRevision=record.revision;cloudReady=true;cloudStatus('Account save ready');
 }
 function backupCloudState(pending){try{localStorage.setItem('emberfall-cloud-backup-v1',JSON.stringify({account:cloudAccount,revision:cloudRevision,resetVersion:cloudResetVersion,pending,state:s}));}catch{}}
-function queueCloudSave(){if(typeof editorViewportReady==='function'&&editorViewportReady())return;if(!cloudReady||cloudConflict||cloudDisconnected||!s.character)return;cloudSaveGeneration++;cloudDirty=true;backupCloudState(true);cloudStatus('Saving…');clearTimeout(cloudTimer);cloudTimer=setTimeout(flushCloudSave,700);}
+function queueCloudSave(){if(window.VELDREN_CONTEXT==='editor'||!cloudReady||cloudConflict||cloudDisconnected||!s.character)return;cloudSaveGeneration++;cloudDirty=true;backupCloudState(true);cloudStatus('Saving…');clearTimeout(cloudTimer);cloudTimer=setTimeout(flushCloudSave,700);}
 async function flushCloudSave(){
- if(!cloudReady||cloudBusy||!cloudDirty&&!cloudPendingSave||cloudConflict||cloudDisconnected&&!cloudRecovering)return false;clearTimeout(cloudTimer);cloudBusy=true;cloudDirty=false;
+ if(window.VELDREN_CONTEXT==='editor'||!cloudReady||cloudBusy||!cloudDirty&&!cloudPendingSave||cloudConflict||cloudDisconnected&&!cloudRecovering)return false;clearTimeout(cloudTimer);cloudBusy=true;cloudDirty=false;
  try{
  // Retry precisely the same commit after a lost response. A newer local change
  // gets a separate revision after this snapshot has been acknowledged.

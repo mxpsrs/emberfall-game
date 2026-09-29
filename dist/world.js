@@ -103,14 +103,14 @@ function setupExpandedWorld(){
  for(const [id,kind,title]of [['stoneInn','inn','Stoneford Lodge'],['stoneShop','shop','Stoneford Supplies'],['inn','inn','Wayfarer’s Rest'],['shop','shop','Mara’s General Store'],['forge','forge','Briarhaven Smithy'],['willowInn','inn','Willowcross Inn'],['willowShop','shop','Willowcross Market'],['mine','mine','Pinewatch Mine'],['dungeon','dungeon','Sunken Crypt']])makeInterior(id,kind,title);
  const savedScene=s.sceneId||'overworld',savedX=s.x,savedY=s.y;activateScene(worldScenes[savedScene]?savedScene:'overworld',savedX,savedY,false);
  $('ambientButton').onclick=toggleAmbient;
- canvas.addEventListener('pointerdown',()=>{if(s.sound!==false&&!ambient)startAmbient();},{once:true});
+ if(window.VELDREN_CONTEXT!=='editor')canvas.addEventListener('pointerdown',()=>{if(s.sound!==false&&!ambient)startAmbient();},{once:true});
  $('leaveInterior').onclick=leaveInterior;
  document.addEventListener('visibilitychange',()=>{if(ambient){if(document.hidden)ambient.context.suspend();else if(ambientEnabled)ambient.context.resume();}});
 }
 function activateScene(id,x,y,persist=true){
  if(id!=='lair_veyr')delete s.questRematch;
  const scene=worldScenes[id];if(!scene)return;stop();projectiles=[];meleeImpacts=[];floaters=[];currentScene=id;s.sceneId=id;
- objects.splice(0,objects.length,...scene.objects);buildings.splice(0,buildings.length,...scene.buildings);
+ (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(scene.objects):objects.splice(0,objects.length,...scene.objects));buildings.splice(0,buildings.length,...scene.buildings);
  s.x=x??scene.entry[0];s.y=y??scene.entry[1];if(!land(s.x,s.y)){[s.x,s.y]=scene.entry;}px=s.x;py=s.y;miniTerrain=null;
  $('leaveInterior').hidden=inWorld();renderTutorial();if(persist)save();
 }

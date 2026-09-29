@@ -1,0 +1,2 @@
+WorldDocument bytes: 14861865
+PASS: 235 buildings, 2312 parts, 234 doors plus 259 lair decorations and 4697 road segments and 1282 lights and 259 scene metadata records and {"walls":791,"rooms":34,"floors":16,"gates":9,"surfaces":18,"holes":0} and 770 spawn definitions and 4372 gatherables and 7 bridges and {"quarries":5,"pads":30,"attached":104} and {"services":40,"colliders":40,"supports":0}: Scene ownership, geometry parity, hierarchy propagation, door catalog/state, surfaces and save/unload/load.

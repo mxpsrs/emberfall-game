@@ -1,0 +1,2723 @@
+[
+  {
+    "id": "rebuilt:Balcony_Cross_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Balcony_Cross_Corner.gltf",
+    "sourceHash": "7029b4722a0565f1583c6018c1f0402f485ed56ae21a0a95e2107bb61609719d",
+    "sourceDependencies": {
+      "Balcony_Cross_Corner.bin": "e6cb9a01979aed4e7a688845e5f0b79cf9ce1d7520eec893a0a708583388ee90",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/2e600ad0e53c990ed8dbc2046b6b628936f248c2a7e3d2ee0b0a87d990782a73.json",
+    "derivedHash": "8a97cae6d612ef0a4b4a9335a3a8b9f5b9e2941cf3a03eca561a39b4ce1bb778"
+  },
+  {
+    "id": "rebuilt:Balcony_Cross_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Balcony_Cross_Straight.gltf",
+    "sourceHash": "4a7f10317c672de0309fea51d1911e5df6d61b6c5ab08093389b8588cf8826c9",
+    "sourceDependencies": {
+      "Balcony_Cross_Straight.bin": "82388737bc03af86030ec4e569df62b14ace74c1767c2ee006dc7a1130abf2a3",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/3de9ed45e577b0f44a23902f9cbaab5cb83b41a4f303c6abae903d79b08bad07.json",
+    "derivedHash": "840c3c65dfde052f170e1e77e4c9c6416b5296f85af243781c7cd5c0874ceb40"
+  },
+  {
+    "id": "rebuilt:Balcony_Simple_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Balcony_Simple_Corner.gltf",
+    "sourceHash": "10abdc6beb85b336c22425c829320d228475ebb33bd94936bd6477d4e0d7c2ed",
+    "sourceDependencies": {
+      "Balcony_Simple_Corner.bin": "f13fd88cf5bb6a31a0da4e46423ab0216d699d9e21077cfeffc3141c091bb3cb",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/09fbf0e256ef1b9e5769682b3790f8e6739e3c2553278e938522830f49f5f554.json",
+    "derivedHash": "fb03dd8c5075b866f900a5fbb3025c07eddbeb745750c1be0f269e7d6caa7e3d"
+  },
+  {
+    "id": "rebuilt:Balcony_Simple_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Balcony_Simple_Straight.gltf",
+    "sourceHash": "00b028b35860ca9a8c6af8e4b1946ca39a4b6cac29a8d283164f41f1d27f0360",
+    "sourceDependencies": {
+      "Balcony_Simple_Straight.bin": "1b74ba722dfd97e4511a630cb709e1be73bb08070cd4ad8c5d59c62f55bd51a2",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ad2ae8f5044da6f55a5c5db9690d461a00bfc56d5ac9fa20d5e7937f049c1614.json",
+    "derivedHash": "ae1bb24e9c51d4c3973d564d00492d3085b25b82a03428bd205fe3b08319ca0e"
+  },
+  {
+    "id": "rebuilt:Corner_ExteriorWide_Brick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_ExteriorWide_Brick.gltf",
+    "sourceHash": "7db9618e10db78fc1d8b1bfe0b917a5df3db95ca41b9e2f7225934914d237df3",
+    "sourceDependencies": {
+      "Corner_ExteriorWide_Brick.bin": "d8c48b4d51dd9bc6f1812311f1ae53b758bb7dae7f723911b0cbb0a24bd8d96a",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/3a59a981a90bec3445db04e6fa0bf93a610f2181c7973581cb2df1468457c9ff.json",
+    "derivedHash": "650d6223fe554c90fa6016b3dae14f358e3baa9ecc37157996a12eecc95e8baa"
+  },
+  {
+    "id": "rebuilt:Corner_ExteriorWide_Wood",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_ExteriorWide_Wood.gltf",
+    "sourceHash": "b3304d8f85b7ab4deac439051a56a379b851d613b332264d5e89fc47b31fc108",
+    "sourceDependencies": {
+      "Corner_ExteriorWide_Wood.bin": "bbf1257db408d84f5e304eb2832d39e5b6340153e14bc57dbe14673180ddfaa6",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/0adb117de60fc9db40735ef6a31489ac72bc0dd07b8b4404bb42fef984b07859.json",
+    "derivedHash": "bfce0ba1f542cff8c3b29c5ae1858da47675b2caa0d996159027e2ba0a00a1e2"
+  },
+  {
+    "id": "rebuilt:Corner_Exterior_Brick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Exterior_Brick.gltf",
+    "sourceHash": "5021a098ff1c69eb388b62ed73183d7db4ddfc7cf944e0dc24c48532567cc443",
+    "sourceDependencies": {
+      "Corner_Exterior_Brick.bin": "0800f8ef9585be5632eb1446289bfee125c112ba3c16dbba1cd1c4f19f5db6f8",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/e78fc59e303ac3305edcb718ca185fc268d22128f94c263bbd1a1c552449f629.json",
+    "derivedHash": "726dafafeb8789f1ec66877b01ad4b1ed3f92ae1682bf1413719ef7ae27ebafa"
+  },
+  {
+    "id": "rebuilt:Corner_Exterior_TopDown",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Exterior_TopDown.gltf",
+    "sourceHash": "2eaec44e5d0e0dd9a63690b04192190fc21257543647a5ab539e848c67071f07",
+    "sourceDependencies": {
+      "Corner_Exterior_TopDown.bin": "90be41ed0739f0441a1bc48575c9a90500af37e1bc8b7cd3690a0104224b656e",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/3fa3bb723b2e31905e24bd7de8c5765fd31112fbb3751b17e8f869b53325c16c.json",
+    "derivedHash": "f20590802b2fe0b83f6fa2ef4db56e894d81ca7bccbd1c2c55cdfe0ffcf0f507"
+  },
+  {
+    "id": "rebuilt:Corner_Exterior_TopOnly",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Exterior_TopOnly.gltf",
+    "sourceHash": "ed020e537b10f81be3185e42bc07c208d03c498a1a423ad988a19d4cceb34fd5",
+    "sourceDependencies": {
+      "Corner_Exterior_TopOnly.bin": "38448842d7aeda882ed17566d652306b67b654dbadb510e2138c74c30ced4c78",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/c76211df2338b5dd382c3cab9142a6f9f15bea87d8029c79a43a7e05395cb898.json",
+    "derivedHash": "5640c9fce94c95120b7325edbec8bcf8364aa3f98532a02302dc23f8eb6292f7"
+  },
+  {
+    "id": "rebuilt:Corner_Exterior_Wood",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Exterior_Wood.gltf",
+    "sourceHash": "8f1ad0c8d0cb656601be4b6a48ca1ed5574d182c814ff27508bc91c81d0959a0",
+    "sourceDependencies": {
+      "Corner_Exterior_Wood.bin": "f3eaa2714897338fabee249e32e4be6846bac86081fee4576df0cac8d8ab6bbc",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/49159c0551be5de78120abaf3296fc696a41368e721d61bef9357cfb77272e45.json",
+    "derivedHash": "9092b5e7bdb4e15c0fcd4cae001d917715b0b7a3a5a3a7316f13adadf5026953"
+  },
+  {
+    "id": "rebuilt:Corner_Interior_Big",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Interior_Big.gltf",
+    "sourceHash": "7893bddbfde2a4904b51e799a87dfc3ae342512bc04cc88c417279cba2ea3036",
+    "sourceDependencies": {
+      "Corner_Interior_Big.bin": "8292df9c44d87a75b91ec5a4a1b308ef59a28f6f8280d7b8ede3af46727bcb8d",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/babb4c347ca98a68993e627f45929c87a687072547be4873469bdb12ccbfa2dc.json",
+    "derivedHash": "13b844b12f1b5795810b05ed277be4f12ef4764a6454a5af181c4678be91a4b9"
+  },
+  {
+    "id": "rebuilt:Corner_Interior_Small",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Corner_Interior_Small.gltf",
+    "sourceHash": "d35822d87d61399175d1b04c3e646dd0304c763533b3ee0cc621e8d6003e8c6d",
+    "sourceDependencies": {
+      "Corner_Interior_Small.bin": "6c1c14e9bc8ec8ba98a81bbb82cb3d0a36ccc24ecd62d4cc8e6c65319e84d6d4",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/20be42a0b130be678afbbd3bab451c9a911306e50f64a9c10b9cc11a0b32d5b6.json",
+    "derivedHash": "17e257cada9c17a73514b5599eb23a4a4d668011ef8df6dcb19186a5115b2a59"
+  },
+  {
+    "id": "rebuilt:DoorFrame_Flat_Brick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/DoorFrame_Flat_Brick.gltf",
+    "sourceHash": "494e41138191781ff96a4cc47687b3bb57ae81007d62a13a6303dd9e4cef9c75",
+    "sourceDependencies": {
+      "DoorFrame_Flat_Brick.bin": "83b377e0df1cfb8fd4cda0aec94e9b83ea250b89fa4265dc5ea9cb5301c84337",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/0864517f4c459e7a4a96ca220efae8e28b6853b673a4c8d530ab4cf3cd0ae64d.json",
+    "derivedHash": "2335d4c14dff078a03e7a09348eb75e371a8f215561b1712f94d7e3f89759785"
+  },
+  {
+    "id": "rebuilt:DoorFrame_Flat_WoodDark",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/DoorFrame_Flat_WoodDark.gltf",
+    "sourceHash": "e12b923833fe91ba7c26c3984b0d7860a498bc955f6092b2af9fc0f3012105c6",
+    "sourceDependencies": {
+      "DoorFrame_Flat_WoodDark.bin": "1e59d95393867a3cfa0612bea2086018d5ddcb3252969525679391a52e16f94c",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8fc94e5d7c92fb7a701a34a8ffa7b769873f0b5102fef106e51d46aeadc29eb8.json",
+    "derivedHash": "bada339431d11fdf4ab77cee8e03139af7a2838e6886e48b3dc893e3fa4b499f"
+  },
+  {
+    "id": "rebuilt:DoorFrame_Round_Brick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/DoorFrame_Round_Brick.gltf",
+    "sourceHash": "1fda0a9226529304d1fa188e0c35ceb966927a66f477253e3bff19b674be0158",
+    "sourceDependencies": {
+      "DoorFrame_Round_Brick.bin": "fbc4451caf8f83c6a31df51dfce89220370b92d4a47482289d9bc7db0b6419f1",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/7389300f310cde72d367ea6c954681d1464aa350c6223314467f265683d13354.json",
+    "derivedHash": "e1965a46de1c75c4a5b1797a829c956ae7cb794d4d1974b6618e3c70a4bb0e90"
+  },
+  {
+    "id": "rebuilt:DoorFrame_Round_WoodDark",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/DoorFrame_Round_WoodDark.gltf",
+    "sourceHash": "d96fb7e3b6b7a5cb97339a7667dee3d9e03b5b0a02cbea283bd75a69f58bb4a7",
+    "sourceDependencies": {
+      "DoorFrame_Round_WoodDark.bin": "1899a064497568422c4d2a9246be0f7dba9e1f9fae6483f4dc39fe63c398b824",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/301ccf2512f3892eee423899f6b23db22d34392fecb560179c2f2a4c4608cfed.json",
+    "derivedHash": "b723aa925ce53cb6d1b3c5a77d5480462c1ae772d51c27e554ba097406341ead"
+  },
+  {
+    "id": "rebuilt:Door_1_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_1_Flat.gltf",
+    "sourceHash": "7e69ba9bcaf45238daa22b96461e9af6c80a59f422f9effb6de7f32e1fc677d8",
+    "sourceDependencies": {
+      "Door_1_Flat.bin": "f2235efcb17e3c7c761eba632bba8901f0299e65a27483528b486fbaece29bb5",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/4aeb1e454615a74f94eb71a5b56f79cf59e66fb2fc348d8fa11ea4c235200568.json",
+    "derivedHash": "7911af654dcd72df0af55d969c8a37421406228608d8a8959a7ab40115d64f30"
+  },
+  {
+    "id": "rebuilt:Door_1_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_1_Round.gltf",
+    "sourceHash": "243fe5e3418e2459bcab858055d34e5441b60180a5efaadef440419e25cc27aa",
+    "sourceDependencies": {
+      "Door_1_Round.bin": "783db477a76115724668f8846695651725b955af6b5b23a503f834b206ebc958",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/09a50911e5fb6f88f33ce230a1684cd108a827c61284ca971c1199089efae0f8.json",
+    "derivedHash": "208c792e594355546ef51ee494b58a344d889af64c55bc425b5cf5e5281d75c2"
+  },
+  {
+    "id": "rebuilt:Door_2_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_2_Flat.gltf",
+    "sourceHash": "12799646808b9df25324f242fc7ef21d96e24508dc8b8376935aff055f5dcfb4",
+    "sourceDependencies": {
+      "Door_2_Flat.bin": "8e3bae47e61788d5fe27eb40e13cb7083c421230ae919ca52004e6009db4b4af",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/a0805267a47f8c6edba9bf5ae57fb22f458f81ccdba17f0cde76c8bde8385ad5.json",
+    "derivedHash": "cb951f49785c470332954703bed7c42cf458f7f79acbeec4ec487abaf3d15d17"
+  },
+  {
+    "id": "rebuilt:Door_2_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_2_Round.gltf",
+    "sourceHash": "6f8ae926aabc02bba3d0b6bdaa283edfb61925d475c3eb5e1468cfba9bafc118",
+    "sourceDependencies": {
+      "Door_2_Round.bin": "16d70096f9dd338171d8ca9875d51006e7a0e57a697532792ebd9ec256fa89ec",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8ff274dabebfd32af453fe3bb710608058ee3e6819f01768052aed542496cc53.json",
+    "derivedHash": "4e3e3a664b75666b34a003524eca99ce79644bfa08ed60495142190d6d992a7d"
+  },
+  {
+    "id": "rebuilt:Door_4_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_4_Flat.gltf",
+    "sourceHash": "93227b03b1502cea785e2e5e31492a5d0e3cfc934a3d767e0cad9b28ca192eed",
+    "sourceDependencies": {
+      "Door_4_Flat.bin": "7d7899bc3dc01144ecc19aa301c5605d9bdba7e3b94bd0688783369f72ae3ca0",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/2655303a8b6a004b45a6ff12c0847e5359c2e8e03ae72b6654e0df6e529002ac.json",
+    "derivedHash": "bd9dff3fa31cf6170e51a9dfa43e00b0c5c477d2207dc6cfecbce4edb15021e5"
+  },
+  {
+    "id": "rebuilt:Door_4_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_4_Round.gltf",
+    "sourceHash": "1c97a6b767f8ded473aa1dae86306121634422245524e7eba0e7a524e4950b49",
+    "sourceDependencies": {
+      "Door_4_Round.bin": "3dd8c4b6ea7f30b134ef1ba7733bc0955f958c14d0598fb120e387ff32b5cd9f",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/c7ee290b09023c4557b7a3c206986e9eb3a867cefce38d461a808356fab83a83.json",
+    "derivedHash": "e47d9f262fa7c84826f49347140e4ae0afffa7b72a3953ec8926044ad502ad2d"
+  },
+  {
+    "id": "rebuilt:Door_8_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_8_Flat.gltf",
+    "sourceHash": "6c0a4d774c54b8700a90a267039044b78c693c20641deb8bf97e7716e11bf721",
+    "sourceDependencies": {
+      "Door_8_Flat.bin": "6fa6db243a1dbb02ee6ef7c4a47fe99b0b6855d61afced87e7e8e079d3bea042",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/41982d81a5a16888ff41114eb74549a34a9b1ab1b6c272c07b9b45e302a1062b.json",
+    "derivedHash": "55f82642ffa2b8780b34aaf26b2ad84fa8c992f71bf0fa05b1fc547d94993303"
+  },
+  {
+    "id": "rebuilt:Door_8_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Door_8_Round.gltf",
+    "sourceHash": "4c3680e6e08142269b3c4a9061f79750475c4b4fad0cabd1bd943f642e1d13aa",
+    "sourceDependencies": {
+      "Door_8_Round.bin": "f50580bfc2676edbf788b9ec4a53728e1f01911c80eb661cfa86032340a7d69a",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/0e2fa8848bc0c5fe20d08b9c6e545ae3d84042fa685cf5d2132751e84da2fa83.json",
+    "derivedHash": "1dcb8bde73e21ffe0db28fdea5b5c8360014bcb359e64153fe96aaf267fa589d"
+  },
+  {
+    "id": "rebuilt:Floor_Brick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_Brick.gltf",
+    "sourceHash": "95d965e18f1bfdc78846eb38b30fe04613d6fe4aa6b5b3a1c3d04f40fd47a0ad",
+    "sourceDependencies": {
+      "Floor_Brick.bin": "2205075c87d65d157c735206450b45183dfc24f8185e2e5db706974ac2b5567e",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/efb5c606f06202677c298bdb426e207566c1ce8074eafc4dd3432d8443868071.json",
+    "derivedHash": "aed48a60cfef28fb351a30ffe0178dc5c533759384dc1e4119bec00db2f0f3a5"
+  },
+  {
+    "id": "rebuilt:Floor_RedBrick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_RedBrick.gltf",
+    "sourceHash": "2efd193ffd50ce213d3368db8a304b8f992d7609a72075c81fe800cbf662e3d3",
+    "sourceDependencies": {
+      "Floor_RedBrick.bin": "2205075c87d65d157c735206450b45183dfc24f8185e2e5db706974ac2b5567e",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RedBrick_BaseColor.png": "44c6303a8b9cef8988f02d92d7309482082412ebf0a2e2f99a50a642dcb3b8f9"
+    },
+    "derivedPath": "assets/canonical/models/373d0aa64bd49cfecadcd8be724c3a09e03bd7a8cae6e678879eddc80c503ec1.json",
+    "derivedHash": "bc428a6ebc4c826ed1b1f03d91a5db2bc6554f93594a72e93dd1fa7dc426ea51"
+  },
+  {
+    "id": "rebuilt:Floor_UnevenBrick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_UnevenBrick.gltf",
+    "sourceHash": "8943b3e5a80a56ac7e3670ae90075e40e610f4c6fa6cbaabf643a57ff8a62dce",
+    "sourceDependencies": {
+      "Floor_UnevenBrick.bin": "2205075c87d65d157c735206450b45183dfc24f8185e2e5db706974ac2b5567e",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942"
+    },
+    "derivedPath": "assets/canonical/models/88321037ec86c8065d1d02bfd38a4c13ee567562a527ae00616dfef77542beab.json",
+    "derivedHash": "5a0b5133ad65a425526142acebecc3cee347db36cf6ad626740d5d462bfea235"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark.gltf",
+    "sourceHash": "2ee57724a06289164fee75ad62eb770f7f8cc9cb1b51c041da477c086775cd8d",
+    "sourceDependencies": {
+      "Floor_WoodDark.bin": "cb43341c0969b62d82c11e2759caec854ea97ecba3bcb505d3300d57ebba7b81",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/4c915f900134c7806608f4155d49084fcb1043381f4ef2f13c43f99d8f5b5d17.json",
+    "derivedHash": "010c0f04e6aca5fa73b51e03fad02cd6e88cbaa4f9e5b37185b9cc63826735cc"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark_Half1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark_Half1.gltf",
+    "sourceHash": "4a2d556f7c3bddcac9f175990170ce32f351f4434967a8cdf1640ff8cf42a680",
+    "sourceDependencies": {
+      "Floor_WoodDark_Half1.bin": "eddeef364106ada42fd93caec94799bc115e5ee06b92cce6180f367fac837383",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/cfff3b1be678546e24ee25b15666a3332777539ff5023e223d310b935c45d510.json",
+    "derivedHash": "fe771680043c5b5a7dbdf305dc2428f5d654b2320708317c2e25b29bb4018e7d"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark_Half2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark_Half2.gltf",
+    "sourceHash": "f55ad7fd3b7daaac8239ba166ac7e7627a13d662c105a413db07381700b82665",
+    "sourceDependencies": {
+      "Floor_WoodDark_Half2.bin": "ffb3b5e846fc02bf674978e34714ef313e327c2a0569cdf45c97e1378c9901b4",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/2f31133ac9fe738bf84e77f5d1f070871368077cc3e71dea91255bb5026c5d37.json",
+    "derivedHash": "9d85e2026e1db97e680f642a9734944485ed79070c264a07fabf9b5195bf6071"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark_Half3",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark_Half3.gltf",
+    "sourceHash": "358299b0017ae71a205b51d9bdc44dfba74f0bd1bb2ade4510b66ae871b9e582",
+    "sourceDependencies": {
+      "Floor_WoodDark_Half3.bin": "abbee94d6c8b7a24f4d558ec7f0535ce8c4651953f0143a514940c4cf732ec44",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/a8337ffb5e4276f1988b4f1cc5813c21fe427129cbcd21414c3c92be8322f00c.json",
+    "derivedHash": "47bde78283d9fd40257b562ecd7c0e63b963e7d08f58cc6a088cc9dd093cd7c9"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark_OverhangCorner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark_OverhangCorner.gltf",
+    "sourceHash": "23e43643fcefef8d408f4219ef1f58114dab08d6e27855d3c9ba9c691201590e",
+    "sourceDependencies": {
+      "Floor_WoodDark_OverhangCorner.bin": "b039997fb666056d6c2a04ef9212d8370d285c26e3f2d48124fd11dea3b4279b",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/d12afb49b074ef3f9a8d8d0efff93d5b6cc0f2312798a872381e4aa872a6b516.json",
+    "derivedHash": "7d18f37333134e59b3977055275aedf090bc8539d9129354a97afb6ff6781e6b"
+  },
+  {
+    "id": "rebuilt:Floor_WoodDark_OverhangCorner2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodDark_OverhangCorner2.gltf",
+    "sourceHash": "00664e32c0282f9c6cc3236919787869857dbec0cc728c53f4d4b63b035980d2",
+    "sourceDependencies": {
+      "Floor_WoodDark_OverhangCorner2.bin": "68cd11f650f70b0b2a7eaee78cadb52a84fa360a4c0527b948d9194035dcb00a",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/6538e7296b0750902a2c24370496f19da9c7b36c69f1492fc5b83c48166afb6e.json",
+    "derivedHash": "89830c5b1109bac839bfc2302357deb48c43d825119c324ab85e2785243a5f77"
+  },
+  {
+    "id": "rebuilt:Floor_WoodLight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodLight.gltf",
+    "sourceHash": "8d2e6db247268ec775e758d53e9bc786b64f5d96926dfef8eabd079ca3061447",
+    "sourceDependencies": {
+      "Floor_WoodLight.bin": "7fd18bf3f25e20f04df38cc826a7e89a09f8593e56e6c66501fbcee323195c46",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/b8d59411eff32623e00da9b4f42b3e5b2b35abddb7cb9b3a2bd50b6197b83f1d.json",
+    "derivedHash": "78947f8b22a936452e2ae2a0785e4a3431b1a1294e2ef0d69f5ff11661f67919"
+  },
+  {
+    "id": "rebuilt:Floor_WoodLight_OverhangCorner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodLight_OverhangCorner.gltf",
+    "sourceHash": "50a3db50db0d258a50262b5631b26b02e554179dc616b1758e76f9cdcc3be09d",
+    "sourceDependencies": {
+      "Floor_WoodLight_OverhangCorner.bin": "ae3b02b8e9abf790aa37d830ceec4a247a5404e412a85853e2104e2c20f59cb5",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/abe751a475bb580cb0fa2bc7a276d8b3b9559ba8b6630e5b00a29a08c49afab6.json",
+    "derivedHash": "e0a1247b71b9a4cc73fcda7845342408501eaaecd1e271f20b93bea93b155d49"
+  },
+  {
+    "id": "rebuilt:Floor_WoodLight_OverhangCorner2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Floor_WoodLight_OverhangCorner2.gltf",
+    "sourceHash": "c0d215ee8e170f1b25203f93129d14b1e094905a9dbbfe14ad23057b29a36ad4",
+    "sourceDependencies": {
+      "Floor_WoodLight_OverhangCorner2.bin": "f007e6ea06fd6e3c37533cbf748097385eadbd8d570a3ff9aa8f8a3e90da6d69",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/f3b0f9c58a31551b2065a9ebcfa2bf8b522aecfa614d3bc9f7d4370431cdd2f9.json",
+    "derivedHash": "3033130aadf26dc8d941a1bfeaa386e18b7e87305f9477299d1d0bccb4a90034"
+  },
+  {
+    "id": "rebuilt:HoleCover_90Angle",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/HoleCover_90Angle.gltf",
+    "sourceHash": "60cd986935768788b56aa53f64760ddb85f22a98bda1035e4534a1617b755748",
+    "sourceDependencies": {
+      "HoleCover_90Angle.bin": "eedd874418088a357c601eb94ff78a55e9c81dc2651a9af6bb91a99408ad9b05",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/6d224bb1112ebc7e5b36c8f15cf1457aa32d2d693ed8963cadda725cad61f5c8.json",
+    "derivedHash": "4bd1bafbc56b88efdc1eaccbff67137421fa60e706881b5ef1116e19ec651117"
+  },
+  {
+    "id": "rebuilt:HoleCover_90Half",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/HoleCover_90Half.gltf",
+    "sourceHash": "df5aa97afd8f68a1ecc2d630adf8090975614fb7b579152b7177687383044fdf",
+    "sourceDependencies": {
+      "HoleCover_90Half.bin": "e3e27fed8797b828b3bc74640c0e02bb544b314670e0ff06c87c5de714fdbcdf",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/2c66ba4ee03eeac4670e5ee2ad845b04d9b3b4c4a8336791235fcbb5045900e5.json",
+    "derivedHash": "c4ac07fc6d556c2d1706d32907064d2d3f3d0597473f2bdd82b82ef9133fbf83"
+  },
+  {
+    "id": "rebuilt:HoleCover_90Stairs",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/HoleCover_90Stairs.gltf",
+    "sourceHash": "8dff949a2574191740bbfd9de80cc4a7f54d33e1b327abeeaf792e05127eb7df",
+    "sourceDependencies": {
+      "HoleCover_90Stairs.bin": "6b50c2a2c7db85ed1c87bd60fcd94df81281a678f0ef20006a19bcd350a4d493",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ab0c5c8670899a589d5505eb90f790cd73f57f133b97f06d99bfd2087ec267ea.json",
+    "derivedHash": "5073b890fcf2cf62fd2ee81016c26c9e0b38dd14976fa88085440fd91e277164"
+  },
+  {
+    "id": "rebuilt:HoleCover_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/HoleCover_Straight.gltf",
+    "sourceHash": "b18eef3815082a7c9fad24cb00ea8e7fcc23695339fa253830d39585d5964068",
+    "sourceDependencies": {
+      "HoleCover_Straight.bin": "b3019ff317ee3d5b9c8d3b0f10b875677f6b1db630b9f320c57dd1c2c4a45e1b",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8ed834ca4f9009a0c1a1dcd917de404a908d7e5fc4ec24bd3e67e060c2d721ec.json",
+    "derivedHash": "c2f9dcfc14516e87f8e39cacdfe8f85c2b27167bd4d8ff17627c60c203acfb5b"
+  },
+  {
+    "id": "rebuilt:HoleCover_StraightHalf",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/HoleCover_StraightHalf.gltf",
+    "sourceHash": "cd03e23c66289aa0e720e441a163ba723869ce5604ceba1312f95ad7fc17311e",
+    "sourceDependencies": {
+      "HoleCover_StraightHalf.bin": "3ccff43cb6686c851bd3b3ed82d4ff43e6b2d13c8ed82ab97a29da52452c6db2",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/6c2fd70ca1baf70dd9d42c41e81ec589ef81c6407a8b05603d51bf928bf1ef53.json",
+    "derivedHash": "d35c1018f592e7588465ff652a9750420e6473d27b28143bbb3ef5f987e3f517"
+  },
+  {
+    "id": "rebuilt:Overhang_Plaster_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Plaster_Corner.gltf",
+    "sourceHash": "e3eae7217cdc22382e0e0c060156001eed7d03c842d0d7262e411f7d4a2bab6d",
+    "sourceDependencies": {
+      "Overhang_Plaster_Corner.bin": "d4765bd5cee147b5a6bdbcdf7a7e65b680f0bcd40ed8ab15de97387e0822f7e6",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/97fa293fec920b6ea33bcb8ef3a4de64d9c123fd3d21f4702b8b5cce19fb4bb3.json",
+    "derivedHash": "1b836c7f3a11ded420d73b87db2e496c859199301e6b49b2aaeb785545e4c722"
+  },
+  {
+    "id": "rebuilt:Overhang_Plaster_Corner_Front",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Plaster_Corner_Front.gltf",
+    "sourceHash": "766b0f24f25856ade805e2e9ca3d67430f90f1d88bcd9cb68a5b9db572e8dab5",
+    "sourceDependencies": {
+      "Overhang_Plaster_Corner_Front.bin": "c3a4b1857e9f3ac96cc0bc0284bdc1f188815b6dc60addc3700d96e506d2d9bc",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/4aaf662efeb775de927f1ab9e0378c7d1463eeeb83b5f4a0b6071b49cdfa8963.json",
+    "derivedHash": "5373c84b8e1cc32e37aae6836c1324f3d9699a5b7bdb69dbcf51dd3cdc3ed305"
+  },
+  {
+    "id": "rebuilt:Overhang_Plaster_Long",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Plaster_Long.gltf",
+    "sourceHash": "4c85ead6e6aded5eca5d2fc3455c2f4c00a3e46efdb7ad58a0f61212aeee5e91",
+    "sourceDependencies": {
+      "Overhang_Plaster_Long.bin": "5400c070395a03fdd87406348c6e5817648229049cf4a3ab389b359e6c2ecefe",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/0fbab99465acf88ab25b9223dd25c9e97403d997fccc41ca8ec3e2da097b22a0.json",
+    "derivedHash": "70d48f6d43ff7b3309d4b06161274333cdd82ea88fd4bc44fe83b18beb2f6a0f"
+  },
+  {
+    "id": "rebuilt:Overhang_Plaster_Short",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Plaster_Short.gltf",
+    "sourceHash": "a2016fa4b1dd49415d8b3af12e0edf5db29dbe4fef24efd474e1c7f95fd0f27c",
+    "sourceDependencies": {
+      "Overhang_Plaster_Short.bin": "10132fd4a1da893af67ffe436f839eabfbc92632587a8f1b07f0afb53983744f",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/1abdfe1a784097d604e8058d134e0e78d0344e291ef6149a13fa1bde713287b2.json",
+    "derivedHash": "6f7453a78c8b650c50b90dc0cde43dd8762343e077a8407e8ad6a7cddf481bfd"
+  },
+  {
+    "id": "rebuilt:Overhang_RoofIncline_Plaster",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_RoofIncline_Plaster.gltf",
+    "sourceHash": "04152d111c300e0490ee37797d6162770041889ce81347bb6ab280e79ad76bab",
+    "sourceDependencies": {
+      "Overhang_RoofIncline_Plaster.bin": "0c961d2554f79dae9901c81e7e4cad923b2b0af1f825db5d90368a2652e04676",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/bb698bb921d94442c3942a9a283d445d217beca9645b8640b84a99f78f23ebd1.json",
+    "derivedHash": "8d4bcc7b6a38596f7990984d1041a188fe243ce4246faa83f3e27660a11beb0d"
+  },
+  {
+    "id": "rebuilt:Overhang_RoofIncline_UnevenBricks",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_RoofIncline_UnevenBricks.gltf",
+    "sourceHash": "d1906b8e7e7673444c727bb046eafbcdd2d93bc9ba54bc6d094416a1e1c0e9ff",
+    "sourceDependencies": {
+      "Overhang_RoofIncline_UnevenBricks.bin": "0c961d2554f79dae9901c81e7e4cad923b2b0af1f825db5d90368a2652e04676",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/55a24916ff8570d2553c54927433d98514220fa1bb933949bce9dfbe6b69be73.json",
+    "derivedHash": "0b52cf0501c80095086d95c1c84cfd02876d836a7d1df657043d6837bba92612"
+  },
+  {
+    "id": "rebuilt:Overhang_Roof_Plaster",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Roof_Plaster.gltf",
+    "sourceHash": "bc2a87647e144c1321c7def327ac3fa5f11dc51ed9a7f8bd5deb76e31e30241c",
+    "sourceDependencies": {
+      "Overhang_Roof_Plaster.bin": "d3c77148239e78749351db7bf866d28aabbaa7732acdd9cb84bf78c20391d89b",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ec2d4b49c52535945ca5405210c44ae1d353abee38e91dc7ca5c0fcf32aad511.json",
+    "derivedHash": "f59a0a4a5546791a51b05cdf1eede749a23067ab921e192d9998f924d43b6e7a"
+  },
+  {
+    "id": "rebuilt:Overhang_Roof_UnevenBricks",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Roof_UnevenBricks.gltf",
+    "sourceHash": "937dfb5989b28b833361b8b7d96c1bb43d719a087aaf5d3ea933e154acd18516",
+    "sourceDependencies": {
+      "Overhang_Roof_UnevenBricks.bin": "d3c77148239e78749351db7bf866d28aabbaa7732acdd9cb84bf78c20391d89b",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/9f2e8afc76392f0236d3f243a35b16fdf9edf8cd3ec246e662a3f93321977341.json",
+    "derivedHash": "79d152af826f4f3be8b595654c629ebca9e32a7dce6abc208f50c165f4cff18e"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_Plaster_Long_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_Plaster_Long_L.gltf",
+    "sourceHash": "be4d646261139a2eb688e0cd64359970bb2c5e293ccfd73889d1e6f2b6f52345",
+    "sourceDependencies": {
+      "Overhang_Side_Plaster_Long_L.bin": "b6fc43a00d65764f190a6802367e9809cbadb593b1a02b293d49aa82697955a3",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/df08197de53032caea259a2b6a03c5202b8763ae1cfc74aff3cd4fb5f9690473.json",
+    "derivedHash": "a06bc172eb58e8921ab79d64755a92f61e8e70146e15da7bc0d0a5e7c5b28bea"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_Plaster_Long_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_Plaster_Long_R.gltf",
+    "sourceHash": "1a0736d9c476008e7d2a635d13a0fc2e5730cd0a0dd1a6fa5659c239230e0e81",
+    "sourceDependencies": {
+      "Overhang_Side_Plaster_Long_R.bin": "fb075a818caed6ccdfb56ff702836f97a43e9f62069361c7330b29b4c276625d",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/c8c94213a4b743ae2f17de9752a6251ce1336bcfe4c05d1ef3c38e7ab84e1617.json",
+    "derivedHash": "fdc41ebd39b9d663f1531e3a7e80416b610df444ee1515aa9d8caf1cf5d9523a"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_Plaster_Short_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_Plaster_Short_L.gltf",
+    "sourceHash": "41b7f9c8263ce7f42029c1aee9cfddbd38e77bb6a32a8b182c4669a73ceb8be9",
+    "sourceDependencies": {
+      "Overhang_Side_Plaster_Short_L.bin": "b4e26318d92059aababf69ea7d6c17836cd243061d8c6b185f3141b56a730c3a",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/98d3d50d922a4964c0b977f76c6a6ca3ed3de59ca8da2bb45ab77c40f69a14ed.json",
+    "derivedHash": "9f58ff1db1ea6829d71b57d5efb7b56d68967c4334ddfdb6d8c7328e51420fd8"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_Plaster_Short_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_Plaster_Short_R.gltf",
+    "sourceHash": "d7eb20ffdcdbc2af368bcd2f8fd6d9ecfeb8cc836a23fe87734edf2a60b2ee6c",
+    "sourceDependencies": {
+      "Overhang_Side_Plaster_Short_R.bin": "742396d8e0d03bfbea48d61002c8d21ff3ebf9fbda4497b9347b4c4e4de29a10",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/626408746befe1b267560deffcab4985e818b26b289cfb9678d46c077fed6f79.json",
+    "derivedHash": "1edc7b87d18c46711dd89c8aa5eacf28affd7fe810c8f2a9f3b060edb8d4abe7"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_UnevenBrick_Long_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Long_L.gltf",
+    "sourceHash": "1dd2ca52da0d66bf081e95d2293fd51c1e16f437c4cad2a4937bd2b5fa39fef9",
+    "sourceDependencies": {
+      "Overhang_Side_UnevenBrick_Long_L.bin": "eb13071b8c46f9ef5322a671f0710e7feabd80c164d2d3c0e9ea3e748aeb48a8",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/4cae0e4d3ff9208b9780edbd8b2a88bd0b53b9a612a9266c039efd2a754964a3.json",
+    "derivedHash": "836710ef23abb914e9b5588276ec41e0f5d10ae7656658258ec67a123f889259"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_UnevenBrick_Long_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Long_R.gltf",
+    "sourceHash": "6b9ea6370f80bbd140d052ab280a96e3b69054494c66f6064f0049853df95f01",
+    "sourceDependencies": {
+      "Overhang_Side_UnevenBrick_Long_R.bin": "715be617e129bf8de98de297881241c612aea35331a63363062fa0c2fe63580f",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/f45968296992fa0ba8533124739a0ab25c50c0168de8708d4efebfd35995b7c8.json",
+    "derivedHash": "751d2984d5a5605884200324dc06ea8f79e76e5cc4968168103113dbf4ad7853"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_UnevenBrick_Short_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Short_L.gltf",
+    "sourceHash": "a2ccd1c16465d1387782489b7a2e4ac0e9c7eac1e453f4d2e42afde621a899d5",
+    "sourceDependencies": {
+      "Overhang_Side_UnevenBrick_Short_L.bin": "037960fac916b232367a915b390dda6076e42a1020784f906e088f77123b6b2e",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/9f284b3217a9b96dc3e2c86440d867f27afd3db82be17afb6a33c6480ee8da6d.json",
+    "derivedHash": "98b12686226dbc36df642e311ea371ad9679b0ee01e2859c0fb59db96d7ad23a"
+  },
+  {
+    "id": "rebuilt:Overhang_Side_UnevenBrick_Short_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_Side_UnevenBrick_Short_R.gltf",
+    "sourceHash": "5a46594dd7e5878ce51f05dc9d675973d8460003652e7f1794de1d5aba9fd766",
+    "sourceDependencies": {
+      "Overhang_Side_UnevenBrick_Short_R.bin": "e1cd7a0bc5a982d38d41c97727f2fc5b7ebfd896376ea66ee063fba9f11dfe66",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ee385586d58db20640110417663c79f4084825b4fe600f7f356af5d2235a3149.json",
+    "derivedHash": "ad9af0d2fcc35b6e977c5be08612596ad322ddde85e57a642d99a3630803d9d6"
+  },
+  {
+    "id": "rebuilt:Overhang_UnevenBrick_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_UnevenBrick_Corner.gltf",
+    "sourceHash": "25e78839c6bf96eaef940154b921ce0d0d9f94eb2921dca33fda0ac21e3d292f",
+    "sourceDependencies": {
+      "Overhang_UnevenBrick_Corner.bin": "9eb0c26df09a7fd231b68392f543de12b9d01c7ee6ee9f37548b3e05ccdeca1a",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/2380173dd0023f6459c4b80b1f55d79fe60d3388b24bac8dc56bda32e29b6505.json",
+    "derivedHash": "8a2b06f5377808426cf4c55dd805d04ce056c9d504562d872462672e7a3414d5"
+  },
+  {
+    "id": "rebuilt:Overhang_UnevenBrick_Corner_Front",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_UnevenBrick_Corner_Front.gltf",
+    "sourceHash": "4fd17b6d3133b60166a42f5b578c9779e54b2f8b26dfaa89917884dcc1707af8",
+    "sourceDependencies": {
+      "Overhang_UnevenBrick_Corner_Front.bin": "ce56ae6fdf5c52be3cb3e8de32ed092fe6fc9583e7de9a4511f1669bdae53781",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8ef63158db20926592e38c539970bbd216c7d6829ca5a4ae5ab6f07371b61769.json",
+    "derivedHash": "fd500a7e2f603de104c7f4c0604716dd50c9097ae1d7fc2c97857b1a9adc0e03"
+  },
+  {
+    "id": "rebuilt:Overhang_UnevenBrick_Long",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_UnevenBrick_Long.gltf",
+    "sourceHash": "5b8e2f030a8896ce60da57fa986d57f07281679a7c3b1cae2a493317c928e90d",
+    "sourceDependencies": {
+      "Overhang_UnevenBrick_Long.bin": "c1db0ce46893ed5028f743c202be05c8d6e7a5a6c3c6ffee89af6fabfff5f3b2",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/a9537f1bc1bf9ccfe8e60c3851ca464e374676d3f0baded5a01da123fb70eb03.json",
+    "derivedHash": "fb8bfc689dff0315c4961edc66543be093b01ba298d7964d624c2056272cec82"
+  },
+  {
+    "id": "rebuilt:Overhang_UnevenBrick_Short",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Overhang_UnevenBrick_Short.gltf",
+    "sourceHash": "37061651bb2c1ef5eed781886da12091f381d7ade496946f35755643278f2b95",
+    "sourceDependencies": {
+      "Overhang_UnevenBrick_Short.bin": "3f9f9a47d842dc443a3fe13e1a5d012a8ddcb6b675658e5214493a03e3290715",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/b7bb905022dc52101161e91360080cb230e2a8d3089e8fd3f241ff692c714354.json",
+    "derivedHash": "7dc045ac4900566e1539669cdf7b05f9784b806897636475582cb89b8371fffe"
+  },
+  {
+    "id": "rebuilt:Prop_Brick1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Brick1.gltf",
+    "sourceHash": "7930b8037d1b50c3510eff18bf902417b799fde476f90d3babca9e03cdb83e0b",
+    "sourceDependencies": {
+      "Prop_Brick1.bin": "4ab322158fe5892bf1a5f2fe7f8ffaadf232588db173bfa6dd39a2f7f49783dd",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/7741168e3e2b6d5f1f1a92701350f8d9f05a31db31374a396ccb87b769ccdabe.json",
+    "derivedHash": "f06f440cac36f39e162594051b382185ae864e06c98f5bb32578b664cda74571"
+  },
+  {
+    "id": "rebuilt:Prop_Brick2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Brick2.gltf",
+    "sourceHash": "8b3143dfe27d409f1abeac4e2cfc6d4b9bcb1ae6d8a298ef3623de0885a733a1",
+    "sourceDependencies": {
+      "Prop_Brick2.bin": "cfac44667692361f46b9c73c7faeb421d0c77ba70f1275df88352850018cb8e8",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/83ab1d6e11672d1d3778ff9a1878edbfded80f4b275c5f5d450483463266dc06.json",
+    "derivedHash": "6d019ce96a1ae0a87cc247ba57c3bf03c80b41ab86cac41b0ae9b8d58df86f27"
+  },
+  {
+    "id": "rebuilt:Prop_Brick3",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Brick3.gltf",
+    "sourceHash": "b79e0717cd385d1ad10d27fffe15f9b96baa72442d5fb8f2c5d89940683d7125",
+    "sourceDependencies": {
+      "Prop_Brick3.bin": "86a0b05bc38513a1d381170ee541f2d9ea0bc726f42eb317820f3dbfc2ae1940",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/21606ad55c7787e3375096ac125bde6031e301bc03ec97ea5c55822148074a13.json",
+    "derivedHash": "cfe344508c35ce60198ed910542b5c45cb09070bdb8fae1b857136e5c3100e38"
+  },
+  {
+    "id": "rebuilt:Prop_Brick4",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Brick4.gltf",
+    "sourceHash": "6801f77751b8def76043d0598cafc66d8293852bcbca36a31e0498ca7d0e3026",
+    "sourceDependencies": {
+      "Prop_Brick4.bin": "43b46c5ffe8cdf021ad588ad9e78044c7ee3f2b0ebfda72efea8c165b73bbafb",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/35fcf1ccd971804939b70479913658e3e5e8ea4c53729e73ea0554a0eaff4dec.json",
+    "derivedHash": "76d1c852c13d72f797629c24f60476f000205b9fa47a2196974870c1c8c88343"
+  },
+  {
+    "id": "rebuilt:Prop_Chimney",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Chimney.gltf",
+    "sourceHash": "eeda2bd328baa49ce2260b2df1f0280db4ebc3752fa784371b2da5752697c3ba",
+    "sourceDependencies": {
+      "Prop_Chimney.bin": "d8fb86bae7360511b362240c22431c6a463a38a3519059e0abf7fc343ef920f9",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/de65e0f386c006b1a063b45d7f92fc08deda3c2a776fe5a2f92c87fffba6dd57.json",
+    "derivedHash": "d2ad1480b2d30409049037b1e81d0950cadc4d94d97e3d2a40435c6fefb3fa2f"
+  },
+  {
+    "id": "rebuilt:Prop_Chimney2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Chimney2.gltf",
+    "sourceHash": "45e93dfdacd304864ec90fd8a36392bf743b62a35d3b850ac3a25cb4330dc3c6",
+    "sourceDependencies": {
+      "Prop_Chimney2.bin": "07d34b621ea375292e907a92f9231da9539d44224b7b54ff0aaf8d4cc871dc09",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942"
+    },
+    "derivedPath": "assets/canonical/models/a6426b9ee35e19df28add0095315721e35d4d092d8194a2d00bd81aa4704bdd3.json",
+    "derivedHash": "7037891d6617c0df1d2847dfa9a77b18723186e43db6bb2f86e276aa5f03af0a"
+  },
+  {
+    "id": "rebuilt:Prop_Crate",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Crate.gltf",
+    "sourceHash": "fb1d2ae668cc2761f9177110424e0c5c80a6698ef44f9cac642cb4a766d37883",
+    "sourceDependencies": {
+      "Prop_Crate.bin": "b7dbddf64868c84abd62515caac55ac1a9cd70d897d9bf8a6b9b7191210365c4",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/254d23cac305f28ba9f8e6d726d027471a6272a854271c1e8e84a27ae86c573d.json",
+    "derivedHash": "3f1e828fe4b62fe6158c3b605a9c518612d3db03801165924c3930b510b93a96"
+  },
+  {
+    "id": "rebuilt:Prop_ExteriorBorder_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_ExteriorBorder_Corner.gltf",
+    "sourceHash": "64e35a741c816d4762ef3313427b1427143e37f9e2b7d5d464344fdcef801d38",
+    "sourceDependencies": {
+      "Prop_ExteriorBorder_Corner.bin": "d0a101b7ef778344f3d942c80c61b5bd4b2eb79d92c575842ed97b2b2d2109e1",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/e9b31f114b8af14b64ad7060c3b689383e74269b25105ddaedfb1287fd5251dc.json",
+    "derivedHash": "b96f0ef965a5e1e64c7abb82749984771261855fc62720e198f10854cff14b58"
+  },
+  {
+    "id": "rebuilt:Prop_ExteriorBorder_Straight1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_ExteriorBorder_Straight1.gltf",
+    "sourceHash": "32d565f8338fc0b50a3493bad39e5fc4e2df536ff9e1506443708e92d969f5e4",
+    "sourceDependencies": {
+      "Prop_ExteriorBorder_Straight1.bin": "336d4110e55f663690cd5ef1c1ac2f109f7383ee36f86ca21d3067b0234453f8",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/8018429e5ec045bf7da74b62d4fa0193dcef8e65e77838c8fff2ea5f52b1f40a.json",
+    "derivedHash": "6e19e1761f938cd8f1332150758997dfbd147017cd956d45c6a00ddbe3e6a76f"
+  },
+  {
+    "id": "rebuilt:Prop_ExteriorBorder_Straight2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_ExteriorBorder_Straight2.gltf",
+    "sourceHash": "2e7220f1567ed484f29a840c6120d61f1ab1d134a67b972871b22d82dff7d671",
+    "sourceDependencies": {
+      "Prop_ExteriorBorder_Straight2.bin": "abf2c9055884e708bcbb3a8663e32c851f804312be85ba4f53ba2b9137274dee",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/b477ed099d17a635dd545b39eabb600b0a5e730f0833c6527f88e751cd86ee18.json",
+    "derivedHash": "37e9f8c5a24960d77f0964271955555a8d85ae241487514863301da871c3ada2"
+  },
+  {
+    "id": "rebuilt:Prop_MetalFence_Ornament",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_MetalFence_Ornament.gltf",
+    "sourceHash": "9c5dd021577393ad42179a72014d0d334b750bee70c818fb0efb81da10bd0280",
+    "sourceDependencies": {
+      "Prop_MetalFence_Ornament.bin": "bd79fb612f697dc427c54796615bd16617acc00e92e6201d126297ee66147f68",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874"
+    },
+    "derivedPath": "assets/canonical/models/8df6794900d1b047f1a67e5a13813cad65dbbd3c43489d6065d91b59d4ea2195.json",
+    "derivedHash": "ff5f49203417ecae4892cd3d495ce8eef6c2b1b9a7eced225deea22301cc9e56"
+  },
+  {
+    "id": "rebuilt:Prop_MetalFence_Simple",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_MetalFence_Simple.gltf",
+    "sourceHash": "210c7853fc190af06297927588738b60738af4cbe0fe7373cbfbfa1769ec78d9",
+    "sourceDependencies": {
+      "Prop_MetalFence_Simple.bin": "873887abfb2eee5a82882b7a2372d09153ebc65da0e0895a14fe3d0c6e54abc8",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874"
+    },
+    "derivedPath": "assets/canonical/models/55cb718d0dd1589c53117346da2ae8254f7b45796248dfe40446e545485f802d.json",
+    "derivedHash": "06580a9fc013e16a2d209c394562d0dd5a3379e7ea7e9116eda9cbf507b840ec"
+  },
+  {
+    "id": "rebuilt:Prop_Support",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Support.gltf",
+    "sourceHash": "c7292aa4f0f73a3d83c2ea5d0f9f3c726e17b13156679c9dfa043646a9f08037",
+    "sourceDependencies": {
+      "Prop_Support.bin": "c0aa629b294c52071f66feb89e7bc771480391bfe012f33c60b5cb4aa9881897",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/631406a925a831a532b5fa8ee30822b654db79d34bbf82734d9763317c8775c8.json",
+    "derivedHash": "f88741e21803e42c81c4b7c812c3bb8d62b52a75ebe6a4e371123149bc4fb888"
+  },
+  {
+    "id": "rebuilt:Prop_Vine1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine1.gltf",
+    "sourceHash": "5326ab98fef8a68b3b4d980c066d882b21e1d0489ccbc1228fd4b156d5f21ac1",
+    "sourceDependencies": {
+      "Prop_Vine1.bin": "43970bd08ae75708cfa440706e1b4b6ec2164280ec804da6d92bf9e8ac854ece",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/997ab6d0d1cc39236fce57675471e1f3764804afd79191f861ac2244824bbb72.json",
+    "derivedHash": "1c5689eb3badf31dc51219a108e3b6475ee0b33fd340bfd400013f39d4938253"
+  },
+  {
+    "id": "rebuilt:Prop_Vine2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine2.gltf",
+    "sourceHash": "773e4763b072359d9b563a63de6fd9b6e79271f145b4e1fabceb5d3481ce9e0f",
+    "sourceDependencies": {
+      "Prop_Vine2.bin": "5589815dd2f594054e947fab94a4f120d4769463a795c9de1592f34788b18f2e",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/a381ec464662a60f26c4956b77f4e3a8ea428a1b712914554a2d56367d64e7f8.json",
+    "derivedHash": "1805a67a2662af94c8b914fb55a3a21bd1f58082e8f6a73ca41f43a49500a00c"
+  },
+  {
+    "id": "rebuilt:Prop_Vine4",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine4.gltf",
+    "sourceHash": "6d5f7dee9b28dbbc7c7fc549ba5b5c45a66185e3f76840d6dd7240e81afdafb9",
+    "sourceDependencies": {
+      "Prop_Vine4.bin": "0c0c57c791231ca8d2bf012a1c28556d70a44c94ad994bb44ba4d083e123652a",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/1b7441182e448787bf46450ee2ba7ee34a3a569738d57a3ce9c96e00dc29731e.json",
+    "derivedHash": "b1d89fe7f2227d50c70c7292a7bb9d8b3d71118505c3907fd38bc6c09a96747e"
+  },
+  {
+    "id": "rebuilt:Prop_Vine5",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine5.gltf",
+    "sourceHash": "a6fce6fa6dfddf0cbe51ba831eae73a24bf50389eac6961f5034edc8bd141580",
+    "sourceDependencies": {
+      "Prop_Vine5.bin": "df5fed3c089bc0dbc077d82647e8064919abcdabf24732d8d99f825a1e020a3a",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/8a6c7678b144d45cadf15174b0d17121cb931f6d72513694c6502b27519ed494.json",
+    "derivedHash": "90ab6dcace4d42c7de9d007322cb0295e8ea6220cb3d5908ba74c85baca5cc65"
+  },
+  {
+    "id": "rebuilt:Prop_Vine6",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine6.gltf",
+    "sourceHash": "50cfa774187c2328a0705986d4b0f80f25b08048f9ce42ef9930bc85b24918af",
+    "sourceDependencies": {
+      "Prop_Vine6.bin": "b209ff1eb5570a5eda935ddbefd557276989646d93195511c339a7dd74d770c2",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/98ffd5f99c4ee8692d039fb33ed646241dcd87d91e2ba23f45b939d1ad68d842.json",
+    "derivedHash": "00f2d9cf0a6bdb51961e4d7135be1dad9ca56d7d24a72a0881ce24d7f95aa9a8"
+  },
+  {
+    "id": "rebuilt:Prop_Vine9",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Vine9.gltf",
+    "sourceHash": "543744599f9155567a08fecf512bb01892f9fcbd171d73485c09331d201a34f9",
+    "sourceDependencies": {
+      "Prop_Vine9.bin": "31c501c6171fc2d1ea5007e96ae8f8f5ceb18d77e0eb67674680d65ebdf07038",
+      "T_VineLeaf_png.png": "8c80a9835d29cf7b1360ca46c2a96cedc0bfffee59f09db892f64db6825e3188"
+    },
+    "derivedPath": "assets/canonical/models/e8eb2cffb37c4d9e36ba456e3ae530e22dabccf10c31357705e32b02ef6eb94a.json",
+    "derivedHash": "d694324d7d620ee1461743ed44a720bc68948afa931d4890b2650915020abfd7"
+  },
+  {
+    "id": "rebuilt:Prop_Wagon",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_Wagon.gltf",
+    "sourceHash": "f81bf401710cd59f1325a5cdb36d335c2e5277c8416d79eefffdc646ec3fae83",
+    "sourceDependencies": {
+      "Prop_Wagon.bin": "2b5e35c01572b1447bdd3dcf4246fefe5aa5415d4685451b4747b80048d8f544",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/435cf0110f2860be908dbfd9d084dff06978f9ffb922a9da41e790d2042b99a6.json",
+    "derivedHash": "d3be7762e03972bf304a66c776d9fbc3424c05b55bd13bf81cd60f687b261a35"
+  },
+  {
+    "id": "rebuilt:Prop_WoodenFence_Extension1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_WoodenFence_Extension1.gltf",
+    "sourceHash": "8eccb1f1e52e58e99b649f34fcdf66871a0395d1d8a5d9c0a24e9eca68581178",
+    "sourceDependencies": {
+      "Prop_WoodenFence_Extension1.bin": "a083e95cfcd4e657c6aec87c124845e7c7b957be22920953567fca1ab78721e8",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/94af80999fc85490b9b04a4b23c46b92e6d339ab89c72097c1cbcc7839d37eaa.json",
+    "derivedHash": "bb80da7fb2eaece969b4c8bd8c8adb0ae9734060be3b84b5fa165de4d3d50c45"
+  },
+  {
+    "id": "rebuilt:Prop_WoodenFence_Extension2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_WoodenFence_Extension2.gltf",
+    "sourceHash": "29e1ebbb38f3027e9aff48078b34bee07983d5d1e6657426a61b44165975c004",
+    "sourceDependencies": {
+      "Prop_WoodenFence_Extension2.bin": "60d92d8e63a530f6cf04c07ab9a6a2a17c38e31d5401c453e074e55fde6565dd",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ef9ed0a5c35531e05387b6f38afbd5499b2129796d7b28e2473042b19c3f8750.json",
+    "derivedHash": "386d952dea8c9892d7b9412cceee6456a105da317689c3c4d613cf7c4d1843d3"
+  },
+  {
+    "id": "rebuilt:Prop_WoodenFence_Single",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Prop_WoodenFence_Single.gltf",
+    "sourceHash": "c9f787c03c62dd94268da84bf3e4dacf554b2a5a9beee38314e37ff5d929c407",
+    "sourceDependencies": {
+      "Prop_WoodenFence_Single.bin": "aac37141af8f33e762b330486fd1cbd1c12a96b2978f491be4a58e24f1fe9ec1",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/6346e276c72de18940ee0739bfa1c62b88057d5c9d98f3032b62889b431f46f2.json",
+    "derivedHash": "b18f70e30f2867af4038830ae8700115b4a972c5ef9bbdcb6232b8038b684908"
+  },
+  {
+    "id": "rebuilt:Roof_2x4_RoundTile",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_2x4_RoundTile.gltf",
+    "sourceHash": "519c03acf5162aed3fb49dec59d4176026340e4189c68f60a01b795c6c2ad1df",
+    "sourceDependencies": {
+      "Roof_2x4_RoundTile.bin": "06c3a9df9c107fa3b9febe95643dc381340e1dc0519958216af2d3381a6ec33c",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/59898e09cfdd086378f97eb086a3313030971a9c3319cb755c29e17620476291.json",
+    "derivedHash": "a6af3413a7e65da6c76555fdb8aa3165770f30d7762a48514b1d9797ced5823b"
+  },
+  {
+    "id": "rebuilt:Roof_Dormer_RoundTile",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Dormer_RoundTile.gltf",
+    "sourceHash": "c204215f437c2b231aadb287c45392125afc71e8e4bf80fcefdd31de00223483",
+    "sourceDependencies": {
+      "Roof_Dormer_RoundTile.bin": "0872bb87dde47c9ef7b240bbc7ac328d63626bfe6ad375675ff0fb86b964afb9",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/1cae05fce7de08cbd6b18ebb223a7aeb954dbc89d8ef604faf782a6a68329fc8.json",
+    "derivedHash": "5f162e937f2a91493f56a7dbb030be6ce8a2bfa3248387ea4b7547fdc4f451f6"
+  },
+  {
+    "id": "rebuilt:Roof_FrontSupports",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_FrontSupports.gltf",
+    "sourceHash": "814b678257ff3de1b1079188d6b3fe0a107c5193962b92a31623ce7c6b4ec8ab",
+    "sourceDependencies": {
+      "Roof_FrontSupports.bin": "04b129736947656b1afae5192cdc25efb26f2fca8a9e8c265b360a22fe7bcc89",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/3cb7c56085d66588733a1143058292bedb8bf54c5bf0a9767232dcdb7d8af5bd.json",
+    "derivedHash": "1a498358226fd73a1f31fe73cafce10d6348b3bc439e508e0894a5ee666028ad"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick2.gltf",
+    "sourceHash": "88a44cb9bd2fdcf3bf2dfe2a25cbc33f26e247d858eba418c2983e7e086b1145",
+    "sourceDependencies": {
+      "Roof_Front_Brick2.bin": "51e76b1ff319f913fcefba75d369025538d84d58ba45b1a26eb792e2738fc63c",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8b06db8dcc2c9a8c3bcdc853b5f5eaa0510bf073179a88a30479dc3132dbb0cf.json",
+    "derivedHash": "cf854abedd97b278ec22a364a16f72a5d6c24b78c30a81eeaaf71ef564ce8b6d"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick4",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick4.gltf",
+    "sourceHash": "a231d35e4929f087526a6126a25a2732efa3799be6119d55107c241ca124564f",
+    "sourceDependencies": {
+      "Roof_Front_Brick4.bin": "749472d85fbbe9996b20162c8d58dbb49b7271a7d865b3856e761d0a288cc8e5",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/45abc15e00ca6cce5bb4c348c1ede36ad41418d7913b2ae74e8e01b218381fa7.json",
+    "derivedHash": "72b4a07eb63f026374cc0c7a5a802c7c08befb4d8239d4183a7e722ef8e68433"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick4_Half_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick4_Half_L.gltf",
+    "sourceHash": "034d59e03fe1fc61ac4b985d7a0f3ba3b9ae8d97733e0859b9de8351b6ad7335",
+    "sourceDependencies": {
+      "Roof_Front_Brick4_Half_L.bin": "ca391e5ec2c0c3c05fec8e1178fac1ed7225520df14ea842a9b3ecb3b7177257",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/80fa7b7476fe783edea9f5f64cd5a6c326c6239bd6f9dc46817a8af919eba302.json",
+    "derivedHash": "e31e2e1cb74467a3a9bb5bbf17f8aac5e71bd43728f06572b816d04a0a2eb140"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick4_Half_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick4_Half_R.gltf",
+    "sourceHash": "a0cd7a51a65973e324c55f85601f2bb029b1100f844ff985869d54764fe353d3",
+    "sourceDependencies": {
+      "Roof_Front_Brick4_Half_R.bin": "abaf887b907b4ead25b6e6bd4e776796ed1cf766965181e6e6f988d7f204aa6c",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/92ee5001241eab20310dd90a87699274e16670d97d6d0a31797f7c8d821fe9f8.json",
+    "derivedHash": "5ed5039f38328d86defd47c4547725d80d925e71ce4e744fa5ea71b6313fc29d"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick6",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick6.gltf",
+    "sourceHash": "140784aaedc9eaa2795da24280406c65ee6232ff060a7fc5f2a1d0530a4be0d0",
+    "sourceDependencies": {
+      "Roof_Front_Brick6.bin": "51d3dbf19f03725c918f5c7a3960ed148f7471535e2ab67a97e1c831ac2ede06",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/d1fc5efd908f7f894af671b55c7392e3dcbd0f2345d8c677d70f265c3737fbdc.json",
+    "derivedHash": "9aba8adf3f4cf9b7fd26b21514018ceddcdd1a7a20cb5f45163cbdc0da7331ba"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick6_Half_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick6_Half_L.gltf",
+    "sourceHash": "7a0495a2c9dd6e5c7b9d19a2d2f42f62c3134dc77d7dced2caa4ef0c4111aa5d",
+    "sourceDependencies": {
+      "Roof_Front_Brick6_Half_L.bin": "0acfe677e0a80c4551ffe079d0b4b4e3db1531dc3bcc0cfefc04031a25da28fb",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/0d1e59fdfc22900ca8bcaf21391d83d4dd6cd6d9296d7b411eef339ca22ad235.json",
+    "derivedHash": "e7e6efdbd13448c674abcf3132db54fdc8af400d22a8c28c011815c9a8b965db"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick6_Half_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick6_Half_R.gltf",
+    "sourceHash": "5411145264fb7c19dc01f1db3b6e515259dea95028382e1b1dc6a68c2be108c8",
+    "sourceDependencies": {
+      "Roof_Front_Brick6_Half_R.bin": "c8c2a07d57ec1dea936fbd356a481d9bac460b241b6108a7bcbd92ea88776f5f",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/84d36c6344f196bbf42aa9eede879c05ad28e0537a0b76c1d9630d583f7d7dd2.json",
+    "derivedHash": "ee8026c3ed271c5be48d32a1c414ae4fcd9c3e743fc5581463a8f3aeeab7d566"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick8",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick8.gltf",
+    "sourceHash": "ecd3588791a7b3b5ebf93b2bcd611aae714bf1cd695ec86c32a939a86bce8590",
+    "sourceDependencies": {
+      "Roof_Front_Brick8.bin": "f1c1127fd89f74f9d24593cb75d37f0ce60204d56d3baf7607cc99798194f708",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/38d2d72fd24ac724a7f326af5407db4a67d78e59f9382d01536e792c3a84cf98.json",
+    "derivedHash": "2555dd4b6c9248cba6abb33fe6379460c530c80576b3679063a549405fb15302"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick8_Half_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick8_Half_L.gltf",
+    "sourceHash": "05a95a19d2bc6dea6d572c6c76e492c43305980303c1b7b67296d74fc4fa6fd9",
+    "sourceDependencies": {
+      "Roof_Front_Brick8_Half_L.bin": "5cd60f2a04b4e10c18adf2f4600256a31c21d8fbf3c50a37e928e055f8ba59a5",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8759ebb7e601c4b935fc714de8a6922a272b6dd0e4905d6eeb251cc423aa5ce2.json",
+    "derivedHash": "822a2974330bde2466e4fed7a2043f8cf6e2b7f111ce099ca28a4eadef443c0e"
+  },
+  {
+    "id": "rebuilt:Roof_Front_Brick8_Half_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Front_Brick8_Half_R.gltf",
+    "sourceHash": "7045f92be87410a86f5d8bce96b2bd5b69b0d87c2c00c813d2cd4a8aa0d37120",
+    "sourceDependencies": {
+      "Roof_Front_Brick8_Half_R.bin": "031f212dbe597fa4a9a621fa3a6fe462ac46c3eecf5ad562b26fa0e6d756a6b8",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/5fbdb3a3836f107d3c662ac0542f7bb0a65a42445cadb551caa30754af16ff1c.json",
+    "derivedHash": "04740721fc922a3b485fa0a5d3890e92d9806d5dffec2925869411105a83e831"
+  },
+  {
+    "id": "rebuilt:Roof_Log",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Log.gltf",
+    "sourceHash": "10ef55acbb4cc3c9b4e6e5d8ec5b20d8ec82663ed229f993379aa7040f81536c",
+    "sourceDependencies": {
+      "Roof_Log.bin": "aa78387c070126a4b4b56f289dde263e315eb88b2733dc238d5a8d2a6ca97812",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/8bb946d069d7f8f6ec31c3c44631f54c49dcf1255a658009a1c75fdc863b364b.json",
+    "derivedHash": "ad12bcac7659e11a5a4b46c2ddd61d2d4ce37cbbeba382fbba01323a0da9935e"
+  },
+  {
+    "id": "rebuilt:Roof_Modular_RoundTiles",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Modular_RoundTiles.gltf",
+    "sourceHash": "b49ac4330af1e39dff9dce714bb4d92b165cb6975f3fb19d59fca7761cce49ed",
+    "sourceDependencies": {
+      "Roof_Modular_RoundTiles.bin": "1794e8967d3de91dc90a1d6ddfeafd5d13f63a85e87c83706d1bda1b1d1f7912",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366"
+    },
+    "derivedPath": "assets/canonical/models/9253ed255b0666ee8f0d51869bed317417f8add0b18911639f3394544dda2ebf.json",
+    "derivedHash": "f46c27ebc1f35789fe6fff6b1fa88010aaac3be72993885325bfd6e1dd2048e4"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTile_2x1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTile_2x1.gltf",
+    "sourceHash": "4710ee3a7451f47577771939fafb7fb0ca688713fa8cfb87212dd3409caa2fd6",
+    "sourceDependencies": {
+      "Roof_RoundTile_2x1.bin": "36dd32986d4272d1c802be826f73498f673058d844c382bea3aa7514f7c02360",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/1b9b0e78a5db9f8235e6c7643af6dbfdbd7e0bfd31436f1c0a45c3f4c7437a4d.json",
+    "derivedHash": "b51b1bdadc1fcbca4fc51dcb1444d7363a720d62ddba26f6b193239d124e4490"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTile_2x1_Long",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTile_2x1_Long.gltf",
+    "sourceHash": "a284ae84bd9eb0d9a6b05e42aa64e23d826f773ff8706619c80f4a346a0d279f",
+    "sourceDependencies": {
+      "Roof_RoundTile_2x1_Long.bin": "05e5cae2428acd091fe303bebf03e5ea586866ece05e3bb4efd5ae151eb25089",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/b9d9230d2a7905c90aff64b107716baf9b995a855b8d44fda825ee01ff682eea.json",
+    "derivedHash": "fcd23b7b50209377b6624fdfe80dabfa0432291c68cb7a4049a40a697123f542"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_4x4",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_4x4.gltf",
+    "sourceHash": "c6a7ce0649b897a7746929b44c448f4343f55ccd969ca1e4462f2f18b61676e4",
+    "sourceDependencies": {
+      "Roof_RoundTiles_4x4.bin": "414067398f08e15e7c5c2c56b648770d3d49427489f073b0078ffde81673af67",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/93dcd69c88c69eee747da5f10ac3177ede26ff683b9f6f59a6572589397a45f0.json",
+    "derivedHash": "47d6c9f053985e6cfdf6462b3f8d56e57900c6647cd0d150157ea4b3e27eae6c"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_4x6",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_4x6.gltf",
+    "sourceHash": "4d969026106822eb2106a32a8d596416e069f63e20f53b475839076fb635ed5a",
+    "sourceDependencies": {
+      "Roof_RoundTiles_4x6.bin": "f68f36721d6d1000c1f16d1d1482c33479aa6ea518d2872e9649ce762b01c52c",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ab7610bbd27e967f8e38b5fad3642e39a1ad7ff3833da2224d574ae70ca09446.json",
+    "derivedHash": "6c2d83f7146f4c55e5d4135f44897f2dd92be38018ceb5c394d7229fab837f19"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_4x8",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_4x8.gltf",
+    "sourceHash": "a33d41c743c8ff6b835de3fc3284b3e8ab8cf3c7b1b2c113e16e5fe05a4c7449",
+    "sourceDependencies": {
+      "Roof_RoundTiles_4x8.bin": "7a3d02ddd7c649a157f2d173e2a723ca82facfafb33249da323b5ae8a45240b9",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/303bd1b491f759b7bcd63e143d400c15ec08e92d2712fd57390a3db65e6f6a12.json",
+    "derivedHash": "3aaeef8a57f8bdd47ee1235cf44bd4597e30dc4943687bd0d3d799939ec8b4b6"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x10",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x10.gltf",
+    "sourceHash": "c91658413d74c970c6bdd166aa612d44c5fb1cd8852db76f34714ec1c4336397",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x10.bin": "92b6f11134949c894d8ec4bb7941ceab5d4ef77205878a07412ef136d5cb2201",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/df61110cff7729683a4e02adabae04fbbe6ac7628f354473a6dedd4ef9e26417.json",
+    "derivedHash": "31d6ff286d6bcd7d6de93a9dd5ff0ed3b712ddec9d3753321d08e7be92146fa2"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x12",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x12.gltf",
+    "sourceHash": "e27546e8495dc60f78ece9bcc6bd9ed0f37214e4181e9538200c002978e96a77",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x12.bin": "b19fc078dcb09e2fdc325f0d8b892e99bd33b90333d44b8b6ce836b01832e340",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/c7f53a16144318afc52c02dc25b6a2fe33410998fdc473872f04fa5b274be9f2.json",
+    "derivedHash": "b6ae0828a641a71ac0110a42a7a39f46f0bb3ee35cf9540c880fe1e90adf44b0"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x14",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x14.gltf",
+    "sourceHash": "de3b8400fd6894acfa862f6781d0827148aae92a494a4f99c055b48311b185db",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x14.bin": "ed886a6243346a7a8b1388ecdbc385877a8528b324a4348860befca9495a5d13",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/017f37c291f74cd4fad7d35c1431ba2f0212f0824f42be30af4a7a256694f0c8.json",
+    "derivedHash": "934dd4ebeaaf4b3517541bd06ee4afd6ba1cb724b3be1ed4dcbd6158c2a2ff8b"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x4",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x4.gltf",
+    "sourceHash": "c7a019fb592cd0f00a8b49d8cb45aed0fea084d3dd0abe2da0ce650848999fc4",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x4.bin": "aeb70110fbb656f9c0271c6c314a26314523d190f08e0b95b65462bc718da509",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/3314542a7bfd5734ae69a93f9397863abbd72f065f3af3e8256052df1185c1e4.json",
+    "derivedHash": "cf8fd1b7e6fb810f82b92d12396f5ad70d40919ca0e7e1e33604acdfd945e7cc"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x6",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x6.gltf",
+    "sourceHash": "646a34dc9c8da1f2766b8c338b31e045b536a9c6efcebbd9ee44b84906cd18bb",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x6.bin": "12296c0a8e161c76e910a2d8b39d2a31f5e27d106b3bb14e2c93b8322e000ff0",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/1935c22b6806df1c37d70b32b5f25f346b0e47f92a42af12a58ff610a2fd154a.json",
+    "derivedHash": "27b6472ab131ab76603eb4dcc7e3ba66a8ae9777a1a450f0bc6f7d4549ab2780"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_6x8",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_6x8.gltf",
+    "sourceHash": "ca277d643a9fecdaa4c7268243d160739547727ee9a3bbbb20578a5eceff03df",
+    "sourceDependencies": {
+      "Roof_RoundTiles_6x8.bin": "979bd49b8cf47b6af493c54378a19385797a74011dec7ae11f5c62dd43156148",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/84211cf94399c0ef900c904e0179d3858358545e3a195476f2428c11fa426751.json",
+    "derivedHash": "79e049da29bebf8c740ee40fe24b31430990d15ccce73a8d2f6451e59579a0be"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_8x10",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_8x10.gltf",
+    "sourceHash": "d19ff6699fa5da7d5520f3153d5de445c5ed6242618575a9d69768d225cf3bc6",
+    "sourceDependencies": {
+      "Roof_RoundTiles_8x10.bin": "27c9f4c428b0bf48e2969152c92b8412c30d612c0bf49f3cfb0f239b6d70cfcd",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/89578b42b5c660a9ac43f1900ef26457fbea8b76ea349e8bbf55cf2fc8ff711c.json",
+    "derivedHash": "3c8abcc7b0978c43ea109b21bde07b71c8718ebcc4e2c7e57d6bd5a4134d1db4"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_8x12",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_8x12.gltf",
+    "sourceHash": "48f1c83fe27c8b4dcd42046867d1c64269012f92f454f48eebb891619d77c813",
+    "sourceDependencies": {
+      "Roof_RoundTiles_8x12.bin": "b95d6191e8d11d5e488fdb54c9a6df0204834bb912e5a5e3df331f306af1e5e5",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/bc171a79e01f48cba3aaf1c4f07cc5916b15fe4493ab1455fb5babb6de51c65b.json",
+    "derivedHash": "05b6ac811d844135fdd2b44d4b8b4640ebe0a42aa2dca3286c1a7d9430ad7aa1"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_8x14",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_8x14.gltf",
+    "sourceHash": "aa56907f91b9cba4f502fd360d677e6f09d28cffd4fb6d64c7c4f78b53cc6b68",
+    "sourceDependencies": {
+      "Roof_RoundTiles_8x14.bin": "2a9de46dee87ea46c6b1ff9d4da811817cc48b2c287c15db5edf13f9475591ea",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/ee5da0fcf558a7d5c7a4c4f9a5f9a726d5cc4123fd9e5123d99c6b37d023ee9c.json",
+    "derivedHash": "0f46e2c508cbe6e3d48f0ebee4bd0dee19ef4334f97d6672b8e76901de405f0f"
+  },
+  {
+    "id": "rebuilt:Roof_RoundTiles_8x8",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_RoundTiles_8x8.gltf",
+    "sourceHash": "9c345408d676cc1dd25b17e44f29bb2bd7c64a3ab9ae1659eafbcb529534693f",
+    "sourceDependencies": {
+      "Roof_RoundTiles_8x8.bin": "e294f4c589e799f20bcf3b78f33057be7d47e56a05bd00ba872afe2f11a44c23",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/93e2c77c32310c3754d5feb1ee0911dad8d00da8baab7fdc59bf20ae5fa65b41.json",
+    "derivedHash": "0730b02e9befd8840f24b6dae6fb5437829b58a2ae636423594c776fd1318140"
+  },
+  {
+    "id": "rebuilt:Roof_Support2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Support2.gltf",
+    "sourceHash": "819006c2dd411105ef3d4a8514cab26303844a4ddaa04e58310ccb58167bc2ed",
+    "sourceDependencies": {
+      "Roof_Support2.bin": "7b32d83006209fb62d8bc7868a767ff8eabb5369bb77ccde7b303a313b6262be",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/86172c3d3bc32b1bcbda560cdb345f70252d534d2d7f08a94036f849149cc11a.json",
+    "derivedHash": "8991d86661483a6b4d675eaae9fae590fe2f4d48409cef7af3c1fa86bdc80289"
+  },
+  {
+    "id": "rebuilt:Roof_Tower_RoundTiles",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Tower_RoundTiles.gltf",
+    "sourceHash": "b484ef0275ec4012933f020a6d60d84ec8ed3816c7b97b19565db0e493cbb74e",
+    "sourceDependencies": {
+      "Roof_Tower_RoundTiles.bin": "9b476b9ce73bb9fe17813f03316a674402a4cf9f91589cc2fbacdf2188cfbfef",
+      "T_MetalOrnaments_BaseColor.png": "28603125908bb443ef7ac405d6bf2978dafdd348081c1dfd21630ac09862b668",
+      "T_MetalOrnaments_Roughness.png": "2de0135d6ffc3021e2550860107f531d0e64fdd0b46b3bf06f2f85e30b818874",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8",
+      "T_RoundTiles_BaseColor.png": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997",
+      "T_RoundTiles_Normal.png": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687",
+      "T_RoundTiles_Roughness.png": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/1d3c4e4c396c76b2c2fc96e61d71e001e9e4d82a1053d3a487076d46b95d639b.json",
+    "derivedHash": "382e3946e1eb22d96538d6d435ab4512c1892320afeaceb991b24a579c0d3b9f"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1.gltf",
+    "sourceHash": "8b93dcb9bfa468842f45738f3d900c05ebf96db276a8dbdd78788420372b60c0",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1.bin": "e8f8a04efef5fbae79b450b04f93399429bc1025c7fd4bc0ce4b8634dbe85467",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/5431858a2161dd7b8f215d63e072957bd285f3df076b9b11d6675e6a78f62503.json",
+    "derivedHash": "748fea22a9502e2b7bc2ed64a0a88dabb142ccda526f69d4052adc1db1f723b1"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_Center",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_Center.gltf",
+    "sourceHash": "7eae55e33fd7ae829c75d097a182ecea55673c9d07707a7c503e94dbceefedf9",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_Center.bin": "1cc10d27154a206b2b384cb818b1e5af446ecc24c17faf2977f2ccbe2560fa6e",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/e0696a1bdfe8114572d06b812d5d5ee9e49cf1652f7955cdd39e8b789d4c69a7.json",
+    "derivedHash": "822275a6c047e27b195fd0ebc5595adf9915b9115a3da865d1b685a71a563361"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_Center_Mirror",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_Center_Mirror.gltf",
+    "sourceHash": "a3827f56264e48e096996e27a95b00b7ad4abdd1763ab2cfe846cca74ff2d370",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_Center_Mirror.bin": "726ab05515b4ab8e65af8cbe2f57981860a2caeca882c8455edc11143f2c4e8e",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/493561c967bbdf170eedd750f20c1bd0960fc890e42f8d929e8c44e0ce606f44.json",
+    "derivedHash": "0466551f3fde8f50f7dd9e6e0c6951397ed7bafdfa6100f9eb1b1157c97ac838"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_Corner",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_Corner.gltf",
+    "sourceHash": "1577dd900ac326dc5d202729d3d3f2cee901b6ac17f4ea8d340d32f4b98b1b0e",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_Corner.bin": "0ee476e4a574183b5c12236a159ea09eb9ec6f5b5dec7a00074c6cd7034f3d5f",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/9bc0f2c5cc922d286f42a0836356bd5a843615571dd6c2203b92f347c5b639cf.json",
+    "derivedHash": "bb283c9b39c0c843417d92d8ad745f7364f5e3a4bf89b85c52d89a677151bff6"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_L.gltf",
+    "sourceHash": "7f36fa6b0a007a04ae66ce85cf0855d0a0fc078bc90a8d6777d9aa4abf155102",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_L.bin": "c2489976937747aae13bcc925c05c64b0cc008162f1f43eaa09dac4e7494fb04",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/a0f61adfc917aa49ea7707f58f0529907fa8d4514032af0a620c2e327cad99cc.json",
+    "derivedHash": "3615c61aadea1059d47d3feaaa935c87877d3add8c4071dac1c52a032a68f65b"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_Middle",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_Middle.gltf",
+    "sourceHash": "9f842c2ff1d53db7dcfe3f95b704955e27bff877d3a78791e855d77f0484b81b",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_Middle.bin": "3cfbfa82500b28176ef11d3c51a9bdbb77897800331c5411c3ffa65b91f04985",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/99e7da91cfb3d4f2cd34187bb8e02e16e4703375df7d045807aa27e3a3930787.json",
+    "derivedHash": "771534b12e1b48c9dc74c6683f281387e25c45b01b2a04e984d81c6e69d3520a"
+  },
+  {
+    "id": "rebuilt:Roof_Wooden_2x1_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Roof_Wooden_2x1_R.gltf",
+    "sourceHash": "22f1e20db96548836b4841703f0bf4a9955ae8fdea9ed844b9416c81546a1df5",
+    "sourceDependencies": {
+      "Roof_Wooden_2x1_R.bin": "5a53309c9aa633a24a51099692e2799243fba7f67ba6107b51448f8a0a6b4800",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/6b11f4d93b81e4ac89969a4298db3f65e9aa161391afaafbfa5a4eb40ff6e4e4.json",
+    "derivedHash": "e2b8270c2095065616433e3c24d169e541e356d15a7b85043b97ec3dae0610bd"
+  },
+  {
+    "id": "rebuilt:Stair_Interior_Rails",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stair_Interior_Rails.gltf",
+    "sourceHash": "5b64a488eda31ae05ea805bbf52f5601cd592bfd3f3cbf4088509b1e1bb5cdce",
+    "sourceDependencies": {
+      "Stair_Interior_Rails.bin": "815e20575f9753be0dab7a3df80266ee048e56587d7e75db51f4fa69917a3a81",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/60fda32d1844d23596f04131845a2e92302f79da146771eb02d6624c8e6a6dde.json",
+    "derivedHash": "3ab4e0ff756e8f8fa4e051d2281443569e806183aecd56f2c55c3bfe7487ace4"
+  },
+  {
+    "id": "rebuilt:Stair_Interior_Simple",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stair_Interior_Simple.gltf",
+    "sourceHash": "dae162fb6f92b39714f72a9c7ddbf42a8d4d1b01a0357932144ce4f9f09d3bd4",
+    "sourceDependencies": {
+      "Stair_Interior_Simple.bin": "56746e0b3bf1dc0a36f4b707c95cccf800b5c2fc7c82733ee50b3420e5ed931a",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/666acb2b11c9ffa976d7cf8e9b5414ef158dd10fec328828f6a736df8a650dfb.json",
+    "derivedHash": "e1a28a14bc5ef6ea00cf37611e276748e17af8a24f63ddbf32e435fa66830bae"
+  },
+  {
+    "id": "rebuilt:Stair_Interior_Solid",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stair_Interior_Solid.gltf",
+    "sourceHash": "333bf204c5e3f6df7b856e79c102d02cab281ade76117b6dab69895f56004b94",
+    "sourceDependencies": {
+      "Stair_Interior_Solid.bin": "212ad937eaf473efcdc2abf120f919e9a42f7f0be8b4f8af45027c18e1cd9ea1",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/de325a7fc3798c9aae5252fc65a3d4fb2fb5d772ca1da7f54ecd897056aeb3f2.json",
+    "derivedHash": "f15dd664db85c95ca2f56cce023493f667c3db72b5aef01ab2e1142acb67ab17"
+  },
+  {
+    "id": "rebuilt:Stair_Interior_SolidExtended",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stair_Interior_SolidExtended.gltf",
+    "sourceHash": "ff62d4852ad6e5a3df7748d9d8fdebba17716849de505dd3452a2514d35b7f9d",
+    "sourceDependencies": {
+      "Stair_Interior_SolidExtended.bin": "0564e1bde8be0ee4408ba921e102e4bcd9cae233226fff20f27f2e03694baed8",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+    },
+    "derivedPath": "assets/canonical/models/a47596ee555847df1becd89e266af0dae89277a563641d7b3afb4feb557f417f.json",
+    "derivedHash": "3bde2544bb00001d170ae74f785ad0cd815564eb10cec4103dd2fab6d4749d31"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_NoFirstStep",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_NoFirstStep.gltf",
+    "sourceHash": "1900e1a4f08a1d11df97e227d3ca276ef201bea393fec6c59d60219b8c2cfac3",
+    "sourceDependencies": {
+      "Stairs_Exterior_NoFirstStep.bin": "cb267cf3848c84216efd8c0a8187e1d5bd20699c88ce8e29120d744f1289bc96",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/b56923361dcf9f15b9b72e13cdf7788e1fdc2d9c5b72993e80efdc4e29cdcd75.json",
+    "derivedHash": "a3d29e25065e61a21289140eb8ebe7d6f4be77994a4bc67389dbbaa35471dc06"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Platform",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Platform.gltf",
+    "sourceHash": "6793dfacd6cd556d22b6d698aa47acab9490b51209eff743092518eae579715f",
+    "sourceDependencies": {
+      "Stairs_Exterior_Platform.bin": "13c119f96bec9fa597008b1b267734f69b50c9356eef9297954f9ae78c299903",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/a824e6bd392420aae4a277fcb2dfbc5034b8a738b5eea7728e3566fcc7fac85e.json",
+    "derivedHash": "d2376cbcc2b87c0fc2b898281ed56c89b757b3d2328059f0d9d858f648cfd308"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Platform45",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Platform45.gltf",
+    "sourceHash": "1f4d7a8e7f57fb3d2c694eb8dfdd3e57d3f19b5e4f6caf6fc62cee4212f838b1",
+    "sourceDependencies": {
+      "Stairs_Exterior_Platform45.bin": "9dbd33fc09c89d6db7dc31f1dfdd43517f229225eeaa452daf048a64217dc00e",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/358119310a4f0269531ff56d65fa5f3db8772ca74a4c1e521152ceb104b5f411.json",
+    "derivedHash": "e521436bc878e0c2d607399fa848ef00a2614b5c0588473a28475a045827d402"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Platform45Clean",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Platform45Clean.gltf",
+    "sourceHash": "f6f8d120303b76fdda2b4c2c61dbfec0c4c9fc22e88760f2f25a98e6fcb00174",
+    "sourceDependencies": {
+      "Stairs_Exterior_Platform45Clean.bin": "3a67a3d75d86045376d4cc0af919860904613429387422e6a9adedeafa5b17c2",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/619340299f86d4f9440ba871801aad0b62854bf6068ab791a961a7827c014a51.json",
+    "derivedHash": "9f6856d0c97d44f93fc5a57bde999ded9ea48b21e0eac098c4c405afdefd3414"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_PlatformU",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_PlatformU.gltf",
+    "sourceHash": "fc5344174eedd10f80e1ce0b70aa7ee6af96c87c80db32bf40a5036fb3f61954",
+    "sourceDependencies": {
+      "Stairs_Exterior_PlatformU.bin": "7e56a56a2563ca689416247cbb805387ae38188ea9da227fc45afd76fdae154b",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/ddc1597cab86617218595c60c31637a3d4ae63da8a3e213c6a92b72f58a94cf8.json",
+    "derivedHash": "cd6fa8c9398e7ff5232b52ff8a884b22adaebb40b6586de92cf597cf28930608"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_SidePlatform",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_SidePlatform.gltf",
+    "sourceHash": "8cb77073d5d3e56c5a1e82691bcf7601c3ee3ea803c2a2bbdeab0b6d6be00ce0",
+    "sourceDependencies": {
+      "Stairs_Exterior_SidePlatform.bin": "920a38bf11139d58a6a472c04eba75b56edb1f8f8a2186f977e11af67e0823f2",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/6aa932250c89e499ee52eff091473f89e2be82ba71810ef6ebe0856b9ad1e1c5.json",
+    "derivedHash": "f665410bc09993a81b8f14fbb2ce117a82fc8e8eaaa88e79d32937b2446e00cb"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Sides",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Sides.gltf",
+    "sourceHash": "ad44393192a780705c4aee64eeea7acaa31b01edf842dc7b7ffd846eb75bf73d",
+    "sourceDependencies": {
+      "Stairs_Exterior_Sides.bin": "42117190ccbaec33586b9107078753127cd927cb77a736b917d783da51f007f9",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/691e1c11ce2f3d312c79307e378d33969c501b303303450e15d4b0b57bd67ba1.json",
+    "derivedHash": "efd92225a63d06087066d4d3846db62369e805e93abefb37deb678b8f105b354"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Sides45",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Sides45.gltf",
+    "sourceHash": "c0c94d432cb04056ac766c7344ed5e8e25683f34d390bbabc6f6371e6db7422e",
+    "sourceDependencies": {
+      "Stairs_Exterior_Sides45.bin": "2694cd9065b4a33c83e546002da8811b933c96438907f8a12aaa9a41ee978dc6",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/a7953b3a2e01cf20a109f8dabd2ebf302c30873d284222ad816a552678615078.json",
+    "derivedHash": "6bd4964ecd498fb32049a73402d8e9782ba3f4744a062704650454dddcc8c1bb"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_SidesU",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_SidesU.gltf",
+    "sourceHash": "556c116b288878581a5a46c0fb1cd3a30f2194ffb504cee0109a49444f2a5ee5",
+    "sourceDependencies": {
+      "Stairs_Exterior_SidesU.bin": "2356c782bcf4447c133af93e36c4eb1ad22bfc113dfcc5a2b23b6689f8e79d62",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/f850491c790135c895c67f748255f5caabe2b5790a40f705984e7ad3d0f88f73.json",
+    "derivedHash": "46d4584fbaaa3d6d6f1c0a2ad2bd6b2b311cc07017521eaee83c3a09758dc788"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_SingleSide",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_SingleSide.gltf",
+    "sourceHash": "5c8339d88bb94f966a56596ea2b43b43a791660522de41d808300d8bfa71c89a",
+    "sourceDependencies": {
+      "Stairs_Exterior_SingleSide.bin": "db19ba6ff453f369b2d6fed04a466054ba9cb5223a9c084f41645d9d5922aa44",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/4078739e28a662c840251474817313d347a3c7d416c2a990a1c06d2bc897e6d8.json",
+    "derivedHash": "cdb0987f7ac44779496cb66f664e4ad1f9b0ef6fd0788b39fcd1b01c1f20377f"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_SingleSideThick",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_SingleSideThick.gltf",
+    "sourceHash": "4dd3a0854d33a4b14e8b0f83360c2040fe5c58372c5383b335d63a52c0eb6e94",
+    "sourceDependencies": {
+      "Stairs_Exterior_SingleSideThick.bin": "6b6ae76b4f83f7c80b59361dc1929754c1f2e7682b4d7c92dbf739069883ac32",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716"
+    },
+    "derivedPath": "assets/canonical/models/0736fb931dcdecb9cf8ee446b2b85dbc5db657c922ab077f3d9b01f4eafc8792.json",
+    "derivedHash": "bbae9c86e789c0e91a008de59e2e64ddf358a580675f2d195c0aae9b23e5bd8d"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Straight.gltf",
+    "sourceHash": "6fc0e396d3441eb06d451690bb50244b047f8d73e9d1ff61c429fb5c46e9e3c7",
+    "sourceDependencies": {
+      "Stairs_Exterior_Straight.bin": "2b09708cd0334b8dfcdf66d6121aa1196ef192e7ac40cf56250b99c69f50988a",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/58cd162065d6b06ff2cbf76e2d42ffff8d4a13a49b07ae1b39b27419db359110.json",
+    "derivedHash": "7aaadf8a4753064d56b0ca769fb4c8688d19985f4f6c3efe7e228dc3f3d04f5a"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Straight_Center",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Straight_Center.gltf",
+    "sourceHash": "7987b48577c1efd698ec58d8d288951f316e7ea119717800bd09fe1a2f4d4337",
+    "sourceDependencies": {
+      "Stairs_Exterior_Straight_Center.bin": "868a392618912f239f77ba21cc1cbb303dfbb5e9756e1884a2695863493d47d6",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/0ce4f0dbfed23e8fbdfab427e081ea4ddba6604f95b31e47b7dfecb07e269416.json",
+    "derivedHash": "52b3992ab2852cb52eab7a3b95dd6ab27195efb41edc17253aa5fc0523006dee"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Straight_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Straight_L.gltf",
+    "sourceHash": "47d486cef5fb490e5e72280289aa562d029b2a7818487b33283329c4bb749901",
+    "sourceDependencies": {
+      "Stairs_Exterior_Straight_L.bin": "9898e5d9ea581712c4efdb4e1777b7898143ae266ca7cc3c97cb29b66cc3d007",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/a7601c9196960db406e410b2503992e3afadf3b86553c0e06660e507335df3c6.json",
+    "derivedHash": "0d9115a7418cc1b73e500be8c879c09a8f2c23e12f3a87e4bdc930cb9c0c3283"
+  },
+  {
+    "id": "rebuilt:Stairs_Exterior_Straight_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Stairs_Exterior_Straight_R.gltf",
+    "sourceHash": "9d27bc397cf0618d0720f0f151a717ed888f5575bd45ac55a9360fceedfb1bce",
+    "sourceDependencies": {
+      "Stairs_Exterior_Straight_R.bin": "4b25c951db006caa2e76fe2a39a585e8d0a34fcec04e7b107107383cd3b58a91",
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+    },
+    "derivedPath": "assets/canonical/models/b15dddfbacfeae88b9c81f34190c6cd947aa14876884381af27bef2449b95b1f.json",
+    "derivedHash": "69e7b82e1c362f994d66d832173ddd9ec2bda13771d3b4c312a70699a5759bd4"
+  },
+  {
+    "id": "rebuilt:Wall_Arch",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Arch.gltf",
+    "sourceHash": "4038e91fdd2ddbe2bcd098e34ccf401d5a40e9912fb75239a7a5acb202e476ce",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Arch.bin": "f027b554caecf05952c2a2dc9b103efa5c39ca46be477262ed683c1851d9547b"
+    },
+    "derivedPath": "assets/canonical/models/0a8ccedf7ab98a996bcec8823f5ea7e1411aa136937d1134f638504262358ef6.json",
+    "derivedHash": "e7a210f0f01fdc0484612b75c7c2324963a584998e8edb4d0a5424582bef7f53"
+  },
+  {
+    "id": "rebuilt:Wall_BottomCover",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_BottomCover.gltf",
+    "sourceHash": "193d9d1e6d1f150aba4194a4485d106e78519da269b5022cb55a6bf6b7389c04",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_BottomCover.bin": "41d79aabbf6c00efdd79444c4d1cd4fe684b7775a0e71756d43da0ce72e60254"
+    },
+    "derivedPath": "assets/canonical/models/b89dc1884c22ccaa1388998cf95f7a3bf138d21bb49bca7ce3a80d5f832d2be2.json",
+    "derivedHash": "9898be323e36bcf9ea3866ff01359f80cfff6409d1edfa30a2e8c8c616bacba9"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Door_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Door_Flat.gltf",
+    "sourceHash": "d2bf9bd8bb88068c79ec6c2bcb0915b0dfc94341f02d9612a4d97da9583e75b3",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Door_Flat.bin": "e169b64543f0ef818daac1a5f0a154bcbb665888e8b283979bfde5f758fb5e37"
+    },
+    "derivedPath": "assets/canonical/models/65e79377325212a6d7aa7dbd732fa3807527903c6a0b5fbad0e3f0bbaca9a2bb.json",
+    "derivedHash": "feb2ac8fa3d3caf91b1702fab65f062de51b6d303e93801da60189c447b3c016"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Door_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Door_Round.gltf",
+    "sourceHash": "15514442b52ed9e4bea685faaf83c45ca68a227810d5cec5f66b0f311f5f6fc7",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Door_Round.bin": "0b347db7975bcf39d97b7df77e884e2df8877b024f396b517d0a7cb6bf56332e"
+    },
+    "derivedPath": "assets/canonical/models/1d54e5d7cea0bff58201a42e03631a917a17015915d56a48baa75bd99ae7e35d.json",
+    "derivedHash": "31dce7780a94068b65a00db8b098d923c14fe0fe4d0df6bbef9f26c878bd7b87"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Door_RoundInset",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Door_RoundInset.gltf",
+    "sourceHash": "98e8e183cc17a10532f168156ce35035de08a73248456b551bda38b9a6b3dda6",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_RockTrim_BaseColor.png": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c",
+      "T_RockTrim_Normal.png": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3",
+      "T_RockTrim_ORM.png": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Door_RoundInset.bin": "b3cb5c95fdc2e3873ab1b124ec941aab8c339f2803fd48baad06a35df142b278"
+    },
+    "derivedPath": "assets/canonical/models/83dcfa341c2171f0f4d5adf36f12ef68894a9520fac04b23267cf003200bdb98.json",
+    "derivedHash": "d4ca39639307b001c599c8bbc13b5056022fc264fc3650656449cf1a876fe094"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Straight.gltf",
+    "sourceHash": "3bef920cbba4d124df4ca401439d893e0569f88f56049239e3480a04008fd0ac",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Straight.bin": "986bf171c62e9019eea9aab709d19d07a3bd5021ff76ab749f57563f364858f3"
+    },
+    "derivedPath": "assets/canonical/models/73666951ffc7e5a3721cbf1cf3688e7e6920e7b9e012097de49126bbda1688b7.json",
+    "derivedHash": "1f0c8542c77d0039090877b575e6dfdf5d4341da2a4690e3e1c666579596f8cb"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Straight_Base",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Straight_Base.gltf",
+    "sourceHash": "7a0872134768cceeccb176c223915c53386eb8b563667ae922fa2d534aa5c629",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Straight_Base.bin": "dc92d6b119289637c9ef98180908f7e5398f95b6336f4d1949d86a43d5888449"
+    },
+    "derivedPath": "assets/canonical/models/227c2722a0eb1201f9e4a62e829b7dd98195202dba7d354bf05fb8a5e10d81f4.json",
+    "derivedHash": "8224842ba5573e7b2a917533cea96b6d82e090d5ede8583bcd95e265f5511fbc"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Straight_L",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Straight_L.gltf",
+    "sourceHash": "fc2e8406c3ad8515dd7a316ec653d7164965c5e814ce0384007ad4975a79686a",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Straight_L.bin": "32effda44cc081cc30edd9ba0b1a7c1ba5e1246902f00850e1521c1505f2412a"
+    },
+    "derivedPath": "assets/canonical/models/659acc7a978a0c41187ab3631866b02b1e25a6a9f05bb6d2c863010fd026b2b5.json",
+    "derivedHash": "c3dea707aab0ee8a724c57048d7461479fed586d4e689de59b1bfc093813c3e2"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Straight_R",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Straight_R.gltf",
+    "sourceHash": "7617828da5be6424eae563f2dedb11a447967999fa21bcd60ff5e15547948603",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Straight_R.bin": "eabd16863b458c30ef5a9a013fa5874f11a0b9cc3fae9018c4e3f6b2841c9e0a"
+    },
+    "derivedPath": "assets/canonical/models/c7dd291f4a516c6c51c123142f471af4daa3e429c84f3a5cd33158d4bc88d159.json",
+    "derivedHash": "6a0111d2ab80c1298e51a179079febd6c86e4c849a73f659809e823f03010fa0"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Window_Thin_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Window_Thin_Round.gltf",
+    "sourceHash": "94eedafb4964e5e41098a39387298e122598a1b8dd31193070b4639a76b4e0b2",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Window_Thin_Round.bin": "b52fb0f380f2bfbf3743952e1fddba7c7ccd1fcd6f28f88540d0ccd43bb7c19c"
+    },
+    "derivedPath": "assets/canonical/models/99197baec7be47a42748c8cc32ae93aae84f4f1101b9287ea5e5f9e156f307e6.json",
+    "derivedHash": "29b83217b41f014a8cb64f0e876b48197d33be4263907cfb85237b4bcedbf571"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Window_Wide_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Flat.gltf",
+    "sourceHash": "548aab2c01d593a744a9704511068e5485d84bee6f722c50e071cf866aa2ba62",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Window_Wide_Flat.bin": "45e3b1de7fac151e1192926c6156c6a8c16918d3fa5b0f85e2f56eb0026f0df6"
+    },
+    "derivedPath": "assets/canonical/models/a43449a2a9511112ac8cac7a7b9812ee1b7af5fa4fff9c2d871d798753825493.json",
+    "derivedHash": "e434ab9f8fe8ecfe0bb5be61d717da14e7564a2b751bd50cd356927db4f605b5"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Window_Wide_Flat2",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Flat2.gltf",
+    "sourceHash": "2cc0413cfe7416f3a0885a5e6d87e728506cd9308cdc3f3f43c99ca8f6d1a34d",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Window_Wide_Flat2.bin": "bb965f0a7bbceba17ae221e48fcbf33284849f66608af3d3df42473fe8f39f43"
+    },
+    "derivedPath": "assets/canonical/models/6f2b5b499aeee8b3a9261c6c41d8c9161c9c7cfdc93a8e1cdfe8d6298cb5cf32.json",
+    "derivedHash": "9259dbb6088466a8b87c4c53cd37ad5079b538576fb78aaf65a27b8280fd8753"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_Window_Wide_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_Window_Wide_Round.gltf",
+    "sourceHash": "99400c34093727a7fb82345c1afc9ae151797c1d4452ebf32fdb314ce85ea0aa",
+    "sourceDependencies": {
+      "T_Brick_BaseColor.png": "5515f57e61767838f53f4b9e25aa83b1382ad345ff6b446482718b5140c33813",
+      "T_Brick_Normal.png": "6349f1fb3eed9985e6f969c1de04b9e92490020a12ba19a44b96ea808fb27c1a",
+      "T_Brick_Roughness.png": "981e7a4f8e3119749b2fb3d557e3d0ba0551e75a39b467cff0a3a948a9392716",
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_Window_Wide_Round.bin": "833f44b4d5c60805e081604cebb5f763cd88712fb9aeab321af2c5a2cf5cafcc"
+    },
+    "derivedPath": "assets/canonical/models/450361ba392fb053f4e4dc61b06cc074839bb09d0f44be591456aee40aa3bdee.json",
+    "derivedHash": "e90ed686cbe03b0db9ec923cf7a0de69001869773145501a5034a23d583693c7"
+  },
+  {
+    "id": "rebuilt:Wall_Plaster_WoodGrid",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_Plaster_WoodGrid.gltf",
+    "sourceHash": "63493359c240943f1d70a53ea021fdf9726175642bc765ab5af03967b3b8b0c0",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_Plaster_WoodGrid.bin": "c97643db2a58aed8e5e8b4a9f62afc08a27a23354ce746af5e4a9e626ac8408c"
+    },
+    "derivedPath": "assets/canonical/models/e487a9e2c6fe8c60003fd050a8e0ed6d52a1d7216fe7ce44890c313f4719b468.json",
+    "derivedHash": "7a08f894d63064464f1e71e9174bac6625e41720938bd48915e8422e1abae5d6"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Door_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Door_Flat.gltf",
+    "sourceHash": "51c6364927fbe67bab7dc979bb7e95a98f2444fa59fe72dc3db6e50afce4136c",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Door_Flat.bin": "6cf49baa77c62df4f7f298a049d7d1905338eabd82bc8c7a566cef538483cc15"
+    },
+    "derivedPath": "assets/canonical/models/fb5139645d7f702a5af263e641a55aad641dd5cfb40fbb4872914bc91d18bdec.json",
+    "derivedHash": "9710e57221313352736633e8db979575420ddfa10a34f78a7076bea933bf02ab"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Door_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Door_Round.gltf",
+    "sourceHash": "4bbb83c8ac7799e142dec6783a030d59cc67812751ef9eb36febe15a586caef1",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Door_Round.bin": "525b3f918e81a9b62ca9b22d525b988e2db92debc7f8caebb5db20fd6a30381e"
+    },
+    "derivedPath": "assets/canonical/models/50a3503a13b5d954047e1db0ff707e94383ab1f59465ad811e40c3d1cdecb860.json",
+    "derivedHash": "6b828e4b66816349e0372533db1ceae03ed05f937b3ba79508584a2568f15c79"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Straight",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Straight.gltf",
+    "sourceHash": "3b004772bace43cc43bf76f3c75d47f68dce175510a26690468efe63bfc05f95",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Straight.bin": "4d3b14acd4c5e6fe450e13d930f6c9240f719ed22b959bb2e7674e731225f103"
+    },
+    "derivedPath": "assets/canonical/models/a4174da131429eb49a71621ece208790cacecfdd7a0061a34a430a3ac3abaebc.json",
+    "derivedHash": "4bf4fa7f6b599b4c1295ad99a2ed834ab7132b493573ef1c9c211dbf2d60a30e"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Window_Thin_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Thin_Round.gltf",
+    "sourceHash": "e43cde1412d15cf255d6d5f4eb0b28fdb5b19e34ad0765a8891073f090d13b4d",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Window_Thin_Round.bin": "694702897a0b44a55cd421b1ab02015f825cbfec653ec27806038c110763d4ac"
+    },
+    "derivedPath": "assets/canonical/models/460301964267231f1d17651b751f4b4a68901d73105c844bb358a030be6aba5d.json",
+    "derivedHash": "d47de58e7b5e0e0cc6dceafbe76b4a18723a2a5eca1c1d667700ce11d13076fb"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Window_Wide_Flat",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Wide_Flat.gltf",
+    "sourceHash": "3e50147bd935675187019398ea590466fbecf81b35fa3db3bae870faf2cdda43",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Window_Wide_Flat.bin": "41e0b94bfda9e9739b8e70395aae59cdb4d7a578215ed1e38e928951ec4c923d"
+    },
+    "derivedPath": "assets/canonical/models/f6b952b14a66ebdd375e67e47892a7a4128bed754739829f0db85b6284c3a325.json",
+    "derivedHash": "c5a236759db44900193fc7baefe737c2f3537c6c98695c3424e36cf39ad2e8a9"
+  },
+  {
+    "id": "rebuilt:Wall_UnevenBrick_Window_Wide_Round",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Wall_UnevenBrick_Window_Wide_Round.gltf",
+    "sourceHash": "9ca99d6f1ae1065230355e8098f61dc5ef72a7f2dc095af02480f3906f18e44b",
+    "sourceDependencies": {
+      "T_Plaster_BaseColor.png": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4",
+      "T_Plaster_Normal.png": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4",
+      "T_Plaster_ORM.png": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7",
+      "T_UnevenBrick_BaseColor.png": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc",
+      "T_UnevenBrick_Normal.png": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad",
+      "T_UnevenBrick_Roughness.png": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942",
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Wall_UnevenBrick_Window_Wide_Round.bin": "bac31b035e25cb8ae566bd44ff69e5210bec435dccabc2d6d790d895c58bfc8f"
+    },
+    "derivedPath": "assets/canonical/models/45dc4f92cfd4c3e1b31b3ba0710a0c422b325f09b8b4826b7be6c37f9e4053d0.json",
+    "derivedHash": "5aa3953f3ac62302764c39dae9138ce0e62658ff957b43ae3fa960acd35fdd40"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Thin_Flat_Closed",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Thin_Flat_Closed.gltf",
+    "sourceHash": "7e2b10bc0de0e92543f9ee6962651b0714d53c463e250c9bf1e9126dd64b86a0",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Thin_Flat_Closed.bin": "5e4abb4cff41e1106eaec7302429e43aaa7d5b1f67a8991618344abf6c372943"
+    },
+    "derivedPath": "assets/canonical/models/77023992717cfad2d2ca3f22270875e17f1b91fb2ef7db42be6f376999aa48b1.json",
+    "derivedHash": "e9433fd19e95f6e2a11a9b736dd0909d908a4a2a3ba8942b4f2c3e66e26cae76"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Thin_Flat_Open",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Thin_Flat_Open.gltf",
+    "sourceHash": "998cc67c1cbc7d00aa4215895732caf3254f64a086dce366ea1df0301a85f410",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Thin_Flat_Open.bin": "3cc8ccefb15492c88570e0d88d3bbe0b95e1a201fc3d42fcd2b400448149ec50"
+    },
+    "derivedPath": "assets/canonical/models/886c70faf6441b96e54e23e055cf0112bc6ca96e8dddd71775be016cfc901a32.json",
+    "derivedHash": "4aff673eb469bfc9e890a4a0f926c26883d99ddb9f7ccfda705c4e7e71db20f4"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Thin_Round_Closed",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Thin_Round_Closed.gltf",
+    "sourceHash": "3dbdfbc57aeb708f8dc73314b6c6a407a53316a32d1ddd9d7bc1541480da9bbf",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Thin_Round_Closed.bin": "6d101d20eb3a62628bac43f9c5567bd690ec5942a8bb2c5769a9d600a77841d3"
+    },
+    "derivedPath": "assets/canonical/models/093a5519e3c460ebc9f82f1d6712bcb2e187eae3355667db2658280dbd4985d4.json",
+    "derivedHash": "202c7d863d1715a8ededa39464958a3a1e59be7795d5c466eb4ddc1e8535cfb5"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Thin_Round_Open",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Thin_Round_Open.gltf",
+    "sourceHash": "6aff6c02fc9670f7623849ccc9a1f55f13f624ac8a9521aa2054a2a23520ec6f",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Thin_Round_Open.bin": "dbffd622221dc83a263a72cdb85fbfeb64ba77a789882f40945ebff168058ffd"
+    },
+    "derivedPath": "assets/canonical/models/e66733a7d816df5d6d3eb205c5f75b89afa4df2d68afdc90867ac0591f6f4fc0.json",
+    "derivedHash": "ea6bbd34b8824c097b486709fe8acd2acdcfd7f91590156bcaaf4bf246aa9c5d"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Wide_Flat_Closed",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Wide_Flat_Closed.gltf",
+    "sourceHash": "5b9b105aad29aa567d40788a09f2f824856ba4c4eaf07f28d66bacab56d804a1",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Wide_Flat_Closed.bin": "e215753b0a052a9e168b2ff5274739ab3589ab83e20de302f1ff9deec9270f1c"
+    },
+    "derivedPath": "assets/canonical/models/b6395f2855f8c9ce6941afc25cf336b293e03665f01252831012745b9e3da179.json",
+    "derivedHash": "15d4370a86e4c4176a420c5d34b19279f26663bb87d7f145dbfd0558841dc037"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Wide_Flat_Open",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Wide_Flat_Open.gltf",
+    "sourceHash": "af66b3955894e35a88f63743984d82cf692ba4c0c00166f790ae337f50a1e240",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Wide_Flat_Open.bin": "522cd3f266423912a6f51d6a2b58e92857da9541942415d589157b5beb9828a6"
+    },
+    "derivedPath": "assets/canonical/models/2debb60a97afcacdbaa72c0112d14096e11df7432cc75e465aea6b5bc0993f97.json",
+    "derivedHash": "7bc737c74e2f83d4a9a68e60308eb92fb93f2040f42f55bd53346c74f4a0fd7b"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Wide_Round_Closed",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Wide_Round_Closed.gltf",
+    "sourceHash": "852e2cc26c15c9ecaa8bb57ff1d992b6fc5e64cc677c5e30cf2df79d63714dae",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Wide_Round_Closed.bin": "94911edbbb2c8815c384ddfa2488ba8b1965fadeb2b32f09a48cb974e9d9e71b"
+    },
+    "derivedPath": "assets/canonical/models/896d5e473306239a11cc06e4258c5e2c4e23f2e02256f3014b0edeec403376d2.json",
+    "derivedHash": "ff8c74f5142d486a5e6aabbc11909b0f327b104cdfef550f2192938bdf5595dd"
+  },
+  {
+    "id": "rebuilt:WindowShutters_Wide_Round_Open",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/WindowShutters_Wide_Round_Open.gltf",
+    "sourceHash": "057f7df672397df7de31c809292c9a6dd3a206329b32c8fc469a6c12efe1b8fc",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "WindowShutters_Wide_Round_Open.bin": "e71bfabdac9ff7dae642a9c0835b3f0d0644e78a49b85226273a1da05f1ff10e"
+    },
+    "derivedPath": "assets/canonical/models/449124ad94f923b51cdfe12cc2b29607412668eb870d70d43857912a0543e4d8.json",
+    "derivedHash": "6810b16ab10f0a4e0e438739ad7e0e7270fd8c5b7e30e584c81d9cc835031c87"
+  },
+  {
+    "id": "rebuilt:Window_Roof_Thin",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Roof_Thin.gltf",
+    "sourceHash": "17ee993634742c2cfb3b6b9aa844cfe03e2dec9c8bee48f5a8121e809d543310",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Roof_Thin.bin": "d6822678cb99052b80d8d75e5a7e5102323a7d604f3b3d4159b4243c3a89892d"
+    },
+    "derivedPath": "assets/canonical/models/9cf29f25093eb8422b6d85e1be069e772be8105dfdd7f70fe020dd21d517870d.json",
+    "derivedHash": "730225eb991816399cca781172ed5cf1510088889c3cdff8818de582091ac2c9"
+  },
+  {
+    "id": "rebuilt:Window_Roof_Wide",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Roof_Wide.gltf",
+    "sourceHash": "bc58f2e6f8545c6a9afcb46ffcbc17753ed412da3f29072a0f24bc4de7611a2d",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Roof_Wide.bin": "8196f09d4dc81bd64b5deef823b65d5876a275641dc27243413eb7d701de7569"
+    },
+    "derivedPath": "assets/canonical/models/7c50c0a3356d49bcfda10b74f4715119b1690e0277c953733707c507dc8f448c.json",
+    "derivedHash": "2af684d06f3ab895c20d374188a110ec6ee636e0075eaa544fff662974d597e5"
+  },
+  {
+    "id": "rebuilt:Window_Thin_Flat1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Thin_Flat1.gltf",
+    "sourceHash": "3065d7788d7e844c156f34e1282619acbaa05f433aabdad22b870efec30c5ebf",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Thin_Flat1.bin": "824a3393d73140fde87d37671b24c90a3f098380ef99b3fe77a518715670e51b"
+    },
+    "derivedPath": "assets/canonical/models/2d574571056e629ac0c9f9fd97fa0cffb2fd0f95bad3e06919c22aac4f24868e.json",
+    "derivedHash": "eac79bab4d1b5c2e6aabbfcb11ad67ca38edcd5f5743637f63c8741350d4a239"
+  },
+  {
+    "id": "rebuilt:Window_Thin_Round1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Thin_Round1.gltf",
+    "sourceHash": "02ffe8984b2a7bffda79d6d598e852c39681c23bbdd7486dd8bcec3613286a4d",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Thin_Round1.bin": "757574fbdb5a42da154baa311203ca4a5d0a0fe8693254105171107b0174c184"
+    },
+    "derivedPath": "assets/canonical/models/4f197c3d482b27b2267ee194987f8ece0f2e358c558bd4a37bac95a2befc75db.json",
+    "derivedHash": "c2ef1f36b5b697dd9e620b145d849968c337ffff2f88eaa9d9d6a727b2b49996"
+  },
+  {
+    "id": "rebuilt:Window_Wide_Flat1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Wide_Flat1.gltf",
+    "sourceHash": "28b91e0693bac3763248c72497f234085fccb646f1adee505dc87c62b5ad8403",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Wide_Flat1.bin": "95aabb93aa96572ce4f70934e6a2b4270ef9696fca52756572f30c1ebb3e26a9"
+    },
+    "derivedPath": "assets/canonical/models/c86e9b483bc7f8eab547a1714e94e8f209daa8472541a4aacf01636f50e57219.json",
+    "derivedHash": "55ac6faa0fbd5fb1f3865278d04bee43461a23a3850cc5777eebb2c445fb899b"
+  },
+  {
+    "id": "rebuilt:Window_Wide_Round1",
+    "sourcePath": "sources/quaternius/medieval-village-megakit/glTF/Window_Wide_Round1.gltf",
+    "sourceHash": "031c380ad522cae16c4fdbc8d74b18017e3ad3214f05ff1e8696624fc6329a4e",
+    "sourceDependencies": {
+      "T_WoodTrim_BaseColor.png": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e",
+      "T_WoodTrim_Normal.png": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8",
+      "T_WoodTrim_Roughness.png": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3",
+      "Window_Wide_Round1.bin": "6b595d00be1c585ba1d4656617cfbf8834b6ce63f44b644e688438268a46b309"
+    },
+    "derivedPath": "assets/canonical/models/982fdb5555c90c7c7a75280c8874ca9d3dccd878989a4d1a68524e005647b60f.json",
+    "derivedHash": "0f27d4a734b15897bba3a68b13ad72df0741f127100e710e4f99f7fe94e862b8"
+  },
+  {
+    "id": "avatar:male",
+    "sourcePath": "sources/quaternius/universal-base-characters/Base Characters/Godot - UE/Superhero_Male_FullBody.gltf",
+    "sourceHash": "e7fcea214ecf8855afbf910b50de6f9c7d1decfb71ca28bad8a4481452dafeb4",
+    "sourceDependencies": {
+      "Superhero_Male_FullBody.bin": "459003f9745853ae562a85506a2b94dd56515c1f37728f9fa3d2ce1a3e4cd92f",
+      "T_Eye_Brown.png": "d08e3356a83211bc6ca21fe3a8e39f4b5c1a3b8f85457fc2c0fb57be09935025",
+      "T_Eye_Normal_png.png": "9ed61f7726a54fe346a78b9e5a18905d8e2b88f86235d97f53cd207a26f3f8c7",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal_png.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb",
+      "T_Superhero_Male_Dark.png": "df680cbc1967a61e85998bfafb8f7bc0a36dd604bb3266486c4b06b1a184bb45",
+      "T_Superhero_Male_Normal.png": "9b25cf9200216eb754b79cf4c63b5380c419780788322f3c57cdd2b3e02679a6",
+      "T_Superhero_Male_Roughness.png": "c70dabf48574cda55644d556beae1ee7cf1bdcf68a50d259d20f2f2358f27991"
+    },
+    "derivedPath": "assets/canonical/models/c78a5c629ba71c3b8df722851ef45fadcb2c18514db56802b9cf5d73bdd5a7f7.json",
+    "derivedHash": "71cb477b7b27d6796c4bf776a669925816e8394bc14188d8d501a7b4e65a1153"
+  },
+  {
+    "id": "avatar:female",
+    "sourcePath": "sources/quaternius/universal-base-characters/Base Characters/Godot - UE/Superhero_Female_FullBody.gltf",
+    "sourceHash": "adedf28000a0716f689b009a70314506fc62f827498f77ba852acb5610f3f3f4",
+    "sourceDependencies": {
+      "Superhero_Female_FullBody.bin": "3a8220a485b33d05d879115a50697728b45a151781106033afb8b8c243fca208",
+      "T_Eye_Brown.png": "d08e3356a83211bc6ca21fe3a8e39f4b5c1a3b8f85457fc2c0fb57be09935025",
+      "T_Eye_Normal_png.png": "9ed61f7726a54fe346a78b9e5a18905d8e2b88f86235d97f53cd207a26f3f8c7",
+      "T_Hair_2_BaseColor.png": "f9f4f2fb3eeeefb0b6f0fdef38b0770fd6607640c1c680b8139dd76697e9f9b3",
+      "T_Hair_2_Normal.png": "172f230aae0d4366c3cfc0402b2e6d1811b11f8487344bff28605eeacac1558d",
+      "T_Superhero_Female_Dark_BaseColor.png": "d366843ee7d9e9f37ec87a0e1c98c7f2e45573c08eeb80a51a6d9344e68cf288",
+      "T_Superhero_Female_Normal.png": "cf922460b43ccd31e983e34db05514c9d451dd2f9cdd01a843978e797719f859",
+      "T_Superhero_Female_Roughness.png": "d2beabf2bd0313e32c68dcdbb80dca371a6e994fabf96efa97128bf9f14fa57b"
+    },
+    "derivedPath": "assets/canonical/models/1c87d5ee358f51c975f43c85aebe52b69cc07a79faf7e68495cc5a5a22bb12c5.json",
+    "derivedHash": "f3d47f00d4cfc1dc9c44614c5f017e6c20810caa0cc5cd46a8a79d4e03bc3b78"
+  },
+  {
+    "id": "animation-library:ual1",
+    "sourcePath": "sources/quaternius/universal-animation-library/Unreal-Godot/UAL1_Standard.glb",
+    "sourceHash": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/ed73de17228ea8443a5aa3d89281596585938bbde3528c3a77a2b809e24405cd.json",
+    "derivedHash": "eb5dc34f4831c9dc8034bbbee72a3a9043b07d5b1323e1f7327f943d3b8d0949"
+  },
+  {
+    "id": "kenney:flower_purpleA",
+    "sourcePath": "art/external/kenney-nature/flower_purpleA.glb",
+    "sourceHash": "f6fc34c96a03420a74fe36d4c2d0ec88f15204fcad99cd1416c3c4ecb22e48c4",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/97a539575a27786b84002a9afe1896968662c2a698f3d8c6b53190ca4063f020.json",
+    "derivedHash": "ce180e308cbe5eed81c1380ed3b7ac2848f7d6a19947879a0f7c79aa264367ee"
+  },
+  {
+    "id": "kenney:flower_redA",
+    "sourcePath": "art/external/kenney-nature/flower_redA.glb",
+    "sourceHash": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/9f711e8230141e7b148b5cc2bbc10293d7891ddc16bd21224c04d5d24ce10d58.json",
+    "derivedHash": "042701a30255c38bf13e720643bd0f6a8b4d4eb38f86010ec9a360d7893c3901"
+  },
+  {
+    "id": "kenney:flower_yellowA",
+    "sourcePath": "art/external/kenney-nature/flower_yellowA.glb",
+    "sourceHash": "8a3b08cd2ca411c21f9c581d5bda651d78b13c50cba45ad8fa0389398ead6d1d",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/292972feedd267d0c0939ca05aa46274d6cc04fbceb60817c0d76ec5a272e107.json",
+    "derivedHash": "aee56d37b454accfc052fee1fd53ec51acf9682aa0776146bce31ef929f9fa63"
+  },
+  {
+    "id": "kenney:grass_large",
+    "sourcePath": "art/external/kenney-nature/grass_large.glb",
+    "sourceHash": "af49a595624abca7249824eeefb944d4baf974abeeb5b16110d175da3563d6cd",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/2cb7bc0c9f1eff6dbae469bda7dacdc521073fba8931f5afa9eb906ef80cf88f.json",
+    "derivedHash": "272ad6cf78a552f60a966a0498007e962b51930e6e545e687ce8be025cc48deb"
+  },
+  {
+    "id": "kenney:grass_leafsLarge",
+    "sourcePath": "art/external/kenney-nature/grass_leafsLarge.glb",
+    "sourceHash": "a68b9b3d9639afaeb4ace840d5a8e3f21ffc4e8afc1eab15566500fbb2bee3e3",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/377ce863e3f3eb96fe03dffe9ab54fa3ce65f73172d5831e94975aa294046e95.json",
+    "derivedHash": "d0d616a52e119dfd9757a2b25fe5956caa0eb044d45de68fa852e61ab692758d"
+  },
+  {
+    "id": "kenney:hanging_moss",
+    "sourcePath": "art/external/kenney-nature/hanging_moss.glb",
+    "sourceHash": "2124c2d038054f1ea89d470a6095d35c2fbdb2674916db93400ea6ed5f499cb0",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/9eaa87befe6e6a068956fc773ce55c96f9dc29fdbcd5db1c3ec561725265315a.json",
+    "derivedHash": "6d868c7960d3cd83ca8643f911008f347724c70741a43575eb0663bc0f52673e"
+  },
+  {
+    "id": "kenney:log_stackLarge",
+    "sourcePath": "art/external/kenney-nature/log_stackLarge.glb",
+    "sourceHash": "58dc0ce3321b3b57f7b8c5aea47e1a212a5f462822af57a26f9ba5c4d48e65ab",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/bfcb6b4117918e1c167aaa1322193008d877cc175c0ad870d11c90a3ddc4d9a5.json",
+    "derivedHash": "81cd342204a0d6aed3f530263b20b9ea42a0eecc76ade4282d8b77a1f92f0a54"
+  },
+  {
+    "id": "kenney:mushroom_redGroup",
+    "sourcePath": "art/external/kenney-nature/mushroom_redGroup.glb",
+    "sourceHash": "29f02df0589dd2b09e8d2aff6a4662394dac5cfcf1fec701640dcbd6127e0802",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/f4d63ed0d5238a2e0934194f68db61668f56573e09a88274dfafbedc0e784ba9.json",
+    "derivedHash": "7134cc7856f8168e616df8e3a595bb6e6d455150aedc88bbe747465feeef1e23"
+  },
+  {
+    "id": "kenney:mushroom_tanGroup",
+    "sourcePath": "art/external/kenney-nature/mushroom_tanGroup.glb",
+    "sourceHash": "2dc979485f164d7dce34329096271f44e0c9ea329c104251d94bcfbc8f8fe05e",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/1d4ad795285d0a9f16d470ab359861b3df51be7a174e84c147485f960092b4e0.json",
+    "derivedHash": "1b7b21584e42c9a7627596ae9f9bf96ecbe3aa3e506305bfa05d5c7bb6b5ac9b"
+  },
+  {
+    "id": "kenney:plant_bushDetailed",
+    "sourcePath": "art/external/kenney-nature/plant_bushDetailed.glb",
+    "sourceHash": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/4c3accc6f8e9bf4657b93753ce48d164d1ef18ea22ea0eda384cf11791a65458.json",
+    "derivedHash": "6d2b7971352af399cdf2e09d26926ec569b1291a90c2ad1e2980246533d49fd0"
+  },
+  {
+    "id": "kenney:rock_largeA",
+    "sourcePath": "art/external/kenney-nature/rock_largeA.glb",
+    "sourceHash": "6dd15390fd96501dcd1454765a17ba61dbbd8d47705dfe5149c8dd92b353ce25",
+    "sourceDependencies": {},
+    "derivedPath": "assets/canonical/models/82dadefaec71db6be62ac1ed0d37ff3643a3168d022796e7945521fb19d4d39d.json",
+    "derivedHash": "29d767d4c9900085a9d88f22b474225b27d7edbcb37d8fd07870162357bdfc0d"
+  }
+]

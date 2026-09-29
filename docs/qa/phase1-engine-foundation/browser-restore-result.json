@@ -1,0 +1,16 @@
+{
+  "editor": {
+    "ready": true,
+    "failed": false,
+    "context": "editor",
+    "services": true,
+    "quarries": true,
+    "membership": true,
+    "worldBytes": 15049139
+  },
+  "id": "generated:tutorial:prop:1584ce26cca61b10",
+  "revision": 9,
+  "restored": true,
+  "errors": [],
+  "requests": 139
+}

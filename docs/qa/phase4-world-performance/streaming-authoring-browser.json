@@ -1,0 +1,46 @@
+{
+  "fixture": "/tmp/veldren-phase1-browser-alQkgc",
+  "initial": {
+    "scene": "tutorial",
+    "count": 656
+  },
+  "prefab": {
+    "definition": "entity-1",
+    "copy": "entity-2"
+  },
+  "buildingResult": {
+    "name": "Firstlight Smithy",
+    "part": "part-00002",
+    "history": {
+      "affected": [],
+      "changed": false,
+      "created": [],
+      "dirty": true,
+      "redo": 0,
+      "redoLabel": "",
+      "state": 9,
+      "transaction": false,
+      "undo": 8,
+      "undoLabel": "Edit building part"
+    }
+  },
+  "save": {
+    "revision": 9,
+    "verified": true
+  },
+  "reload": true,
+  "errors": [],
+  "sourceCommit": "06932597af7263fa2d9dff0f4601f93121fd34c8",
+  "environment": "Local disposable Worker/account; Chromium/SwiftShader",
+  "checks": [
+    "populated hierarchy",
+    "Inspector name and numeric transform edits",
+    "undo/redo",
+    "preserve-world reparent",
+    "prefab create/instantiate/update",
+    "grouped modular building edit",
+    "save round trip",
+    "fresh reload",
+    "zero gameplay/account polling in editor"
+  ]
+}

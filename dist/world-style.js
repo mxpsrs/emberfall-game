@@ -289,17 +289,24 @@ function worldUnderstoryPlacements(bx,bz){
  }
  return out;
 }
-function drawWorldUnderstory(r){
- if(!inWorld())return;const cell=8,range=Math.min(46,Math.max(20,screen.w/cameraZoom3()*.57));
- let drawn=0;
+function visibleWorldUnderstoryChunks(){
+ if(!inWorld())return [];const cell=8,range=Math.min(46,Math.max(20,screen.w/cameraZoom3()*.57)),chunks=[];
  for(let bz=Math.floor((py-range)/cell);bz<=Math.floor((py+range)/cell);bz++)for(let bx=Math.floor((px-range)/cell);bx<=Math.floor((px+range)/cell);bx++){
-  const cx=bx*cell+4,cz=bz*cell+4,p=project3(cx,0,cz);if(p.x< -90||p.x>screen.w+90||p.y< -100||p.y>screen.h+90||drawn>=104)continue;
+  const cx=bx*cell+4,cz=bz*cell+4,p=project3(cx,0,cz);if(p.x< -90||p.x>screen.w+90||p.y< -100||p.y>screen.h+90||chunks.length>=104)continue;
+  chunks.push([bx,bz]);
+ }
+ return chunks;
+}
+function prepareWorldUnderstory(){if(globalThis.VeldrenSceneryScene?.enabled)globalThis.VeldrenSceneryScene.prepareChunks(visibleWorldUnderstoryChunks());}
+function drawWorldUnderstory(r){
+ for(const [bx,bz]of visibleWorldUnderstoryChunks()){
   const id=bx+':'+bz;let chunk=worldUnderstory.get(id);
   if(!chunk){chunk={};worldUnderstory.set(id,chunk);if(worldUnderstory.size>240)worldUnderstory.delete(worldUnderstory.keys().next().value);}
   emitMesh3(r,cachedMesh3(chunk,'prop',q=>{
-   for(const plant of worldUnderstoryPlacements(bx,bz))rebuiltPlace(q,plant.name,plant.x,0,plant.z,plant.scale,plant.heading,plant.scale,plant.tint);
+   if(globalThis.VeldrenSceneryScene?.enabled){for(const plant of globalThis.VeldrenSceneryScene.readChunk(bx,bz))globalThis.VeldrenSceneryScene.render(q,plant);}
+   else for(const plant of worldUnderstoryPlacements(bx,bz))rebuiltPlace(q,plant.name,plant.x,0,plant.z,plant.scale,plant.heading,plant.scale,plant.tint);
    return 1;
-  }));drawn++;
+  }));
  }
 }
 
@@ -316,7 +323,7 @@ setupExpandedWorld=function(){
    world.objects.push({id:2800000+count++,type:'tree',x,y,drawX:x,drawY:y,name:'Silverwood tree',sprite:4,race:'elf',realmScenery:true,dead:0});used.add(x+':'+y);
   }
  }
- if(inWorld())objects.splice(0,objects.length,...world.objects);
+ if(inWorld())(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(world.objects):objects.splice(0,objects.length,...world.objects));
  realmNavigation.clear();
 };
 

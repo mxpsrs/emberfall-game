@@ -1,0 +1,11 @@
+Opening built /play
+CONSOLE PHASE1_STAGE ["first-draw",false,true,true]
+Runtime {"ready":true,"failed":false,"stage":"Preparing Briarhaven…","abi":19,"owned":true,"scene":"tutorial","objects":215,"quarries":true,"services":true}
+Opening built /editor/
+CONSOLE PHASE1_STAGE [null,null,null,false]
+CONSOLE PHASE1_STAGE ["assets",false,true,true]
+Editor {"ready":true,"failed":false,"context":"editor","services":true,"quarries":true,"membership":true,"worldBytes":14949706}
+Editor transform, duplicate and delete passed
+Save {"revision":9,"count":11,"path":"production world edits","bytes":11762,"sha256":"534bb2394c71421b9f260aba467b099818f375773cb1dcfa9cefd17a204bee0e","sceneDirty":false}
+CONSOLE PHASE1_STAGE [null,null,null,false]
+CONSOLE PHASE1_STAGE ["assets",false,true,true]

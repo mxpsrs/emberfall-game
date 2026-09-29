@@ -5,10 +5,10 @@ import vm from 'node:vm';
 const root=new URL('../',import.meta.url),wasm=fs.readFileSync(new URL('dist/native/veldren-core.wasm',root));
 const listeners={};
 const window={addEventListener(type,listener){listeners[type]=listener;}};
-const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,Number,Error,Set,WeakMap};
+const context={window,fetch:async url=>({ok:true,status:200,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),realmAssetURL:path=>'/'+path,veldrenAnimationInput:()=>({clip:5,flags:2,idlePhase:.2,phase:.4,blend:.8}),WebAssembly,DataView,TextEncoder,TextDecoder,Number,Error,Set,WeakMap};
 vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('dist/native-runtime.js',root),'utf8'),context,{filename:'native-runtime.js'});
 const native=await window.realmNativeReady;
-assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,11);
+assert.equal(native.kind,'cpp-wasm');assert.equal(native.abi,19);
 const villager={type:'villager',x:10,y:0,drawX:0,drawY:0},wolf={kind:'wolf',x:110,y:0,drawX:100,drawY:0};
 native.stepActors([villager,wolf],.5,0,0,null,1);
 assert(Math.abs(villager.drawX-.375)<.0001,'C++ applies the villager walk speed');
@@ -24,6 +24,9 @@ assert(Math.abs(crowd[1].drawX-101.3125)<.0001,'native core applies the accumula
 assert.equal(native.rules.skillLevel('Attack',83),2);assert.equal(native.rules.skillThreshold('Attack',2),83);
 assert.equal(native.rules.skillLevel('Worship',140),3);assert.equal(native.rules.combatLevel({Hitpoints:10,Attack:1,Strength:1,Defense:1,Worship:1,Magic:1,Ranged:1}),3);
 assert(Math.abs(native.rules.attackRollChance(100,50)-(1-52/202))<.0001);
+assert(Math.abs(native.rules.playerAccuracy(1,1)-.84)<.0001);
+assert(Math.abs(native.rules.enemyAccuracy(99,1)-.94)<.0001);
+assert.equal(native.rules.playerMaxHit(true,10,2,8,3),25);
 assert.equal(native.rules.physicalMaxHit(20,64,1),4);assert.equal(native.rules.magicMaxHit(10,25),12);
 assert(Math.abs(native.rules.gatheringChance(20,15,2,.1)-.595)<.0001);assert(Math.abs(native.rules.firemakingChance(20,15)-.51)<.0001);
 assert(Math.abs(native.rules.cookingBurnChance(15,1,34)-.1842424)<.0001);assert(Math.abs(native.rules.ironSmeltChance(20)-.55)<.0001);
@@ -39,5 +42,49 @@ const move=native.stateMachines.enemyCombatTick(.02,2,0,false,false,.29,2.3);ass
 const attack=native.stateMachines.enemyCombatTick(.1,1,0,false,true,move.enemyClock,move.retaliationClock);assert.equal(attack.events,2);assert(Math.abs(attack.retaliationClock)<.001);
 assert.equal(native.stateMachines.requirementsMet([[5,5],[4,4],[3,3]]),true);assert.equal(native.stateMachines.requirementsMet([[5,5],[3,4]]),false);
 assert.equal(native.stateMachines.worldTimerEvents(1000,999,0,NaN,0),1);assert.equal(native.stateMachines.worldTimerEvents(1000,NaN,9,999,5),2);
+const region={id:'overworld:region:oakwood',name:'Oakwood',parent:null,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{Region:{source:'procedural'}},metadata:{generationKey:'oakwood'}};
+const barrel={id:'overworld:prop:barrel:9e2041',name:'Barrel',parent:region.id,active:true,transform:{position:[1,0,2],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'briar:barrel',visible:true},Collider:{shape:'box'}},metadata:{kind:'prop'}};
+assert.equal(native.scenes.upsert('overworld',region),true);assert.equal(native.scenes.upsert('overworld',barrel),true);assert.equal(native.scenes.revision(),2);
+assert.deepEqual(Array.from(native.scenes.componentIds('overworld','MeshRenderer')),[barrel.id]);
+assert.equal(native.scenes.setTransform('overworld',barrel.id,{position:[4,0,6],rotation:[0,0,0,1],scale:[1,1,1]}),true);
+const generated=native.scenes.read('overworld'),generatedBarrel=generated.entities.find(entity=>entity.id===barrel.id);
+assert.equal(generatedBarrel.parent,region.id);assert.equal(generatedBarrel.transform.position[0],4);assert(generatedBarrel.components.MeshRenderer&&generatedBarrel.components.Collider);
+const savedWorld=native.scenes.serialize();assert.equal(savedWorld.format,'veldren.world');assert.equal(savedWorld.scenes[0].entities.length,2);
+const snapshot=native.scenes.entity('overworld',barrel.id);assert(Object.isFrozen(snapshot.transform.position),'native entity snapshots cannot become a second writable world');
+assert.equal(native.scenes.entity('overworld',barrel.id),snapshot,'unchanged component reads share a revision cache');
+native.scenes.setTransform('overworld',region.id,{position:[10,2,20],rotation:[0,Math.SQRT1_2,0,Math.SQRT1_2],scale:[2,2,2]});
+const worldBarrel=native.scenes.entity('overworld',barrel.id);
+assert(Math.abs(worldBarrel.worldMatrix[12]-22)<1e-9&&Math.abs(worldBarrel.worldMatrix[14]-12)<1e-9,'parent transform propagates through native snapshots');
+assert(native.scenes.setWorldTransform('overworld',barrel.id,{position:[30,2,40],rotation:[0,0,0,1],scale:[1,1,1]}));
+const relocated=native.scenes.entity('overworld',barrel.id);assert(Math.abs(relocated.worldMatrix[12]-30)<1e-9&&Math.abs(relocated.worldMatrix[14]-40)<1e-9,'world-space edits are converted to parent-relative local transforms');
+const affineRecord=JSON.parse(JSON.stringify(relocated));affineRecord.metadata.note='preserve affine';assert(native.scenes.upsert('overworld',affineRecord));
+assert(Math.abs(native.scenes.entity('overworld',barrel.id).worldMatrix[12]-30)<1e-9,'component upsert preserves affine transform');
+const beforeRejected=native.scenes.serialize(),beforeRevision=native.scenes.revision();
+for(const invalid of [
+ {...affineRecord,name:'must not rename',components:{Collider:[]}},
+ {...affineRecord,name:'must not rename',transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[0,1,1]}},
+ {...affineRecord,name:'must not rename',parent:affineRecord.id}
+])assert.equal(native.scenes.upsert('overworld',invalid),false);
+assert.equal(JSON.stringify(native.scenes.serialize()),JSON.stringify(beforeRejected),'rejected upsert is atomic');assert.equal(native.scenes.revision(),beforeRevision);
+assert.equal(native.scenes.remove('overworld',region.id),true);assert.equal(native.scenes.read('overworld').entities.length,0);
+assert.equal(native.scenes.load(savedWorld),true);const reloaded=native.scenes.read('overworld');assert.equal(reloaded.entities.length,2);assert.equal(reloaded.entities.find(entity=>entity.id===barrel.id).transform.position[0],4);
+savedWorld.revision=17;savedWorld.updatedAt='2026-09-26T09:00:00Z';savedWorld.terrain={version:1,patches:[]};assert(native.scenes.load(savedWorld));
+const metadataRoundtrip=native.scenes.serialize();assert.equal(metadataRoundtrip.revision,17);assert.equal(metadataRoundtrip.updatedAt,savedWorld.updatedAt);assert.deepEqual(JSON.parse(JSON.stringify(metadataRoundtrip.terrain)),JSON.parse(JSON.stringify(savedWorld.terrain)));
+// Construction can span paint turns, but reads must still see native writes.
+const changes=[],unsubscribe=native.scenes.subscribe(event=>changes.push(event));
+await native.scenes.batchAsync(async()=>{
+ assert(native.scenes.load(savedWorld));await Promise.resolve();
+ const wide={...barrel,metadata:{text:'world-data-'.repeat(10000)}};
+ assert(native.scenes.upsert('overworld',wide));
+ assert.equal(native.scenes.entity('overworld',barrel.id).metadata.text,wide.metadata.text,'a growing native read retries with sufficient capacity');
+ assert.equal(changes.length,0,'derived projections wait for the construction boundary');
+ assert.equal(native.scenes.serialize().scenes[0].entities.find(e=>e.id===barrel.id).metadata.text,wide.metadata.text);
+});
+assert.equal(changes.length,1);assert.equal(changes[0].kind,'load','one final rebuild covers loads and subsequent writes');
+changes.length=0;
+await assert.rejects(native.scenes.batchAsync(async()=>{native.scenes.load(savedWorld);throw Error('construction failed');}),/construction failed/);
+assert.equal(changes.length,1,'failure releases the notification boundary');
+native.scenes.setTransform('overworld',barrel.id,{position:[7,0,9],rotation:[0,0,0,1],scale:[1,1,1]});
+assert.equal(changes.length,2,'later edits still notify immediately');unsubscribe();
 listeners.pagehide();assert.throws(()=>native.stepActors([],0.1,0,0,null,3),/stopped/);
 console.log('PASS: browser bridge loads the C++ WASM core and delegates actor simulation');

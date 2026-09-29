@@ -25,7 +25,7 @@ setupTutorialVillage=function(){
   }
   const choices=[...candidates.values()];
   for(const o of fish){const ocean=!['trout','salmon'].includes(o.resourceId),spots=choices.filter(p=>(scene!=='overworld'||p.ocean===ocean)&&!used.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<3));spots.sort((a,b)=>Math.hypot(a.x-o.x,a.y-o.y)-Math.hypot(b.x-o.x,b.y-o.y));const p=spots[0];if(!p)throw new Error('No accessible fishing shore: '+scene+' '+o.id);Object.assign(o,{x:p.x,y:p.y,homeX:p.x,homeY:p.y,drawX:p.x,drawY:p.y,fishingHabitat:p.ocean?'sea':'freshwater'});used.push(p);}
- }}finally{currentScene=previous;realmNavigation.clear();if(worldScenes[previous])objects.splice(0,objects.length,...worldScenes[previous].objects);}
+ }}finally{currentScene=previous;realmNavigation.clear();if(worldScenes[previous])(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[previous].objects):objects.splice(0,objects.length,...worldScenes[previous].objects));}
 };
 const fishingPropBefore=prop3;
 prop3=function(p,o,x,z){

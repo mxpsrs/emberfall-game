@@ -2,6 +2,7 @@
 // Human-scale modular architecture and textured, articulated characters.
 function rebuiltMesh(m){const result={bounds:m.bounds,capeCollarMinY:m.capeCollarMinY,capeMaterialSlot:m.capeMaterialSlot};result.p=m.pScale?Float32Array.from(briarDecode(m.p,Int16Array),v=>v*m.pScale):briarDecode(m.p,Float32Array);result.uv=m.uv?briarDecode(m.uv,Float32Array):new Float32Array(result.p.length/3*2);result.n=Float32Array.from(briarDecode(m.n,Int8Array),v=>v/127);result.c=Float32Array.from(briarDecode(m.c,Uint8Array),v=>v/255);result.f=m.f?Float32Array.from(briarDecode(m.f,Uint8Array),v=>v/255):result.c;result.t=m.t?briarDecode(m.t,Uint8Array):new Uint8Array(result.p.length/3).fill(20);if(m.j){result.j=briarDecode(m.j,Uint8Array);result.w=Float32Array.from(briarDecode(m.w,Uint8Array),v=>v/255);for(let i=0;i<result.w.length;i+=4){const sum=result.w[i]+result.w[i+1]+result.w[i+2]+result.w[i+3]||1;for(let j=0;j<4;j++)result.w[i+j]/=sum;}}if(m.skin)result.skin=briarDecode(m.skin,Uint8Array);if(m.dye)result.dye=briarDecode(m.dye,Uint8Array);result.i=briarDecode(m.i,Uint16Array);return result;}
 const rebuiltModels=Object.fromEntries(Object.entries(REALM_MODELS.models).map(([k,m])=>[k,rebuiltMesh(m)]));
+globalThis.VeldrenAssets?.bindLegacy('rebuilt',rebuiltModels);
 // Hidden undersides of overlapping roof tiles confuse painter-order fallback.
 rebuiltModels.Roof_RoundTiles_4x6.softwareCullBackfaces=true;
 const rebuiltAvatars=Object.fromEntries(Object.entries(REALM_MODELS.avatars).map(([k,a])=>[k,{...a,mesh:rebuiltMesh(a.mesh),rig:a.rig?{...a.rig,bind:briarDecode(a.rig.bind,Float32Array)}:null,clips:Object.fromEntries(Object.entries(a.clips).map(([k,c])=>[k,{...c,m:c.m?briarDecode(c.m,Float32Array):null,trs:c.trs?briarDecode(c.trs,Float32Array):null}]))}]));
@@ -385,11 +386,11 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
 }
 building3=function(r,b){
  const kind=b.archetype;
- if(kind==='mine'&&!b.walkIn){b.visualHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'mine',b.race||realmArtRace(b.x,b.y),b.x+b.w/2,b.y+b.h/2,b.w,b.h,4.5);return b.visualHeight;}
- if(!b.walkIn&&/beacon/i.test(b.name)){b.visualHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'watchTower',b.race||'human',b.x+b.w/2,b.y+b.h/2,b.w,b.h,7);return b.visualHeight;}
- if(b.arch||/crypt|ruins/i.test(b.name)){const k=b.w/2;rebuiltPlace(r,'Wall_Arch',b.x+b.w/2,0,b.y+b.h/2,k,0,1.1);b.visualHeight=3.3;return 3.3;}
- if(kind==='castle'){b.visualHeight=worldCastle(r,b);return b.visualHeight;}
- b.visualHeight=rebuiltHouse(r,b,{tower:/beacon/i.test(b.name)});return b.visualHeight;
+ if(kind==='mine'&&!b.walkIn){const renderedHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'mine',b.race||realmArtRace(b.x,b.y),b.x+b.w/2,b.y+b.h/2,b.w,b.h,4.5);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ if(!b.walkIn&&/beacon/i.test(b.name)){const renderedHeight=realmArtFit(groundedPainter(r,b.x+b.w/2,b.y+b.h/2),'watchTower',b.race||'human',b.x+b.w/2,b.y+b.h/2,b.w,b.h,7);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ if(b.arch||/crypt|ruins/i.test(b.name)){const k=b.w/2;rebuiltPlace(r,'Wall_Arch',b.x+b.w/2,0,b.y+b.h/2,k,0,1.1);if(!b._generatedBuildingEntity)b.visualHeight=3.3;return 3.3;}
+ if(kind==='castle'){const renderedHeight=worldCastle(r,b);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;}
+ const renderedHeight=rebuiltHouse(r,b,{tower:/beacon/i.test(b.name)});if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;
 };
 
 const propBeforeRebuild=prop3;
@@ -486,7 +487,7 @@ function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0
  for(let v=0;v<p.length/3;v++){const i=v*3;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*mesh.p[i]+pose[k+1]*mesh.p[i+1]+pose[k+2]*mesh.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*mesh.n[i]+pose[k+1]*mesh.n[i+1]+pose[k+2]*mesh.n[i+2]);}}
  }
- const result={...mesh,p,n,pose,avatar:a,helmet:null};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
+ const result={...mesh,p,n,pose,poseSource:mesh,avatar:a,helmet:null};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
 }
 function avatarGpuPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,frame=Math.max(0,Math.min(a.clips[clip].frames-1,phase*(a.clips[clip].frames-1))),baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
@@ -666,7 +667,7 @@ async function loadRebuiltTextures(){
  // copies in WebKit.  Mobile now decodes the purpose-built 1024px atlas only.
  [REALM_ATLAS_IMAGE,MODULAR_ICON_IMAGE]=await Promise.all([realmLoadImage(atlas),realmLoadImage('assets/realms/armor-icons.png')]);
 }
-function startRebuiltRealm(){boot();}
+function startRebuiltRealm(){if(window.VELDREN_CONTEXT!=='editor')boot();}
 
 const posedCapeCache=new WeakMap(),capeModelCache=new Map();
 function capeModelMesh(sex,id,wind=false){
@@ -676,7 +677,7 @@ function capeModelMesh(sex,id,wind=false){
 }
 function posedCapeMesh(source,pose){
  let poses=posedCapeCache.get(pose);if(!poses){poses=new WeakMap();posedCapeCache.set(pose,poses);}if(poses.has(source))return poses.get(source);
- const p=new Float32Array(source.p.length),n=new Float32Array(source.n.length);for(let v=0;v<p.length/3;v++){const i=v*3;for(let w=0;w<4;w++){const weight=source.w[v*4+w];if(!weight)continue;const bone=source.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*source.p[i]+pose[k+1]*source.p[i+1]+pose[k+2]*source.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*source.n[i]+pose[k+1]*source.n[i+1]+pose[k+2]*source.n[i+2]);}}}const result={...source,p,n};poses.set(source,result);return result;
+ const p=new Float32Array(source.p.length),n=new Float32Array(source.n.length);for(let v=0;v<p.length/3;v++){const i=v*3;for(let w=0;w<4;w++){const weight=source.w[v*4+w];if(!weight)continue;const bone=source.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*source.p[i]+pose[k+1]*source.p[i+1]+pose[k+2]*source.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*source.n[i]+pose[k+1]*source.n[i+1]+pose[k+2]*source.n[i+2]);}}}const result={...source,p,n,poseSource:source};poses.set(source,result);return result;
 }
 function drawArcWearables(r,root,mesh,gear,sex='male',clip='idle'){
  const local=(matrix,offset=[0,0,0],scale=1)=>({face:(points,col)=>r.face(points.map(v=>briarPoint(v.map((n,i)=>n*scale+offset[i]),0,matrix)),col)});

@@ -1,0 +1,3 @@
+editor_storage_failed Injected chunk write failure
+{"result":"PASS","worldBytes":14861865,"chunks":5,"largestRowBytes":262144,"revision":10}
+PASS: full generated world saves and rereads exactly; bounded chunks, atomic current/previous revisions, concurrent CAS, rollback and character isolation.

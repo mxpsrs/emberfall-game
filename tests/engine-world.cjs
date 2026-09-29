@@ -1,6 +1,6 @@
 // Spatial lookup must preserve the original world, pick order and moving actors.
 const fs=require('fs'),vm=require('vm'),{ctx}=require('../scripts/benchmark-desktop.cjs');
-for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','guardian-spirits','game-audio'])vm.runInContext(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'),ctx,{filename:f});
+for(const f of ['trading','world-options','item-models','equipment-interface','item-use','tutorial-island','npc-dialogue','realm-story','lairs','encounters','briarhaven','game-audio'])vm.runInContext(fs.readFileSync(__dirname+'/../dist/'+f+'.js','utf8'),ctx,{filename:f});
 vm.runInContext(`
 renderUI=()=>{};renderTutorial=()=>{};renderAction=()=>{};save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();s.tutorial=tutorialSteps.length;s.tutorialReward=true;
 function verifyBounds(a,b,c,d){const expected=objects.filter(o=>o.x>=a&&o.x<=b&&o.y>=c&&o.y<=d),actual=worldObjectsInBounds(a,b,c,d);assert.deepEqual(actual,expected,'spatial lookup preserves every object and its original pick order');}

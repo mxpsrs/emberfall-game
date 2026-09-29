@@ -4,6 +4,7 @@
 function briarDecode(text,Type){const binary=atob(text),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return new Type(bytes.buffer);}
 function briarMesh(source){return {p:briarDecode(source.p,Float32Array),n:Float32Array.from(briarDecode(source.n,Int8Array),v=>v/127),c:Float32Array.from(briarDecode(source.c,Uint8Array),v=>v/255),i:briarDecode(source.i,Uint16Array),j:source.j?briarDecode(source.j,Uint8Array):null,w:source.w?briarDecode(source.w,Uint8Array):null,bounds:source.bounds};}
 const briarModels=Object.fromEntries(Object.entries(BRIARHAVEN_ASSETS.models).map(([k,m])=>[k,briarMesh(m)]));
+globalThis.VeldrenAssets?.bindLegacy('briar',briarModels);
 const briarRigs=Object.fromEntries(Object.entries(BRIARHAVEN_ASSETS.rigs).map(([k,r])=>[k,{...r,meshes:Object.fromEntries(Object.entries(r.meshes).map(([n,m])=>[n,briarMesh(m)])),clips:Object.fromEntries(Object.entries(r.clips).map(([n,c])=>[n,{...c,m:briarDecode(c.m,Float32Array)}]))}]));
 // Keep the artist's material separation, with slate roofs suited to this world.
 for(const [key,mesh] of Object.entries(briarModels))if(['inn','shop','forge','homeA','homeB','castle','hall','temple','tower','watchTower','towerBase','well','mine','windmill'].includes(key))for(let i=0;i<mesh.c.length;i+=3){const r=mesh.c[i],g=mesh.c[i+1],b=mesh.c[i+2];if(b>r*1.15&&b>g*1.05){mesh.c[i]=r*.7+b*.22;mesh.c[i+1]=g*.78;mesh.c[i+2]=b*.70;}}
@@ -72,7 +73,7 @@ building3=function(r,b){
  if(!inWorld())return buildingBeforeBriar(r,b);
  const race=b.race||realmArtRace(b.x,b.y),key=realmBuildingAsset(b),mesh=briarModels[key],[lo,hi]=mesh.bounds,scale=Math.min((b.w+.12)/(hi[0]-lo[0]),(b.h+.12)/(hi[2]-lo[2]));
  const height=key==='castle'?(race==='elf'?9:race==='dwarf'?7.2:8):key==='gate'?3.5:key==='tower'?6:Math.max(scale*(race==='elf'?1.35:race==='dwarf'?1:1.18)*(hi[1]-lo[1]),race==='dwarf'?3.5:3.9);
- b.visualHeight=realmArtFit(r,key,race,b.x+b.w/2,b.y+b.h/2,b.w+.12,b.h+.12,height);return b.visualHeight;
+ const renderedHeight=realmArtFit(r,key,race,b.x+b.w/2,b.y+b.h/2,b.w+.12,b.h+.12,height);if(!b._generatedBuildingEntity)b.visualHeight=renderedHeight;return renderedHeight;
 };
 const propBeforeBriar=prop3;
 prop3=function(r,o,x,z){
@@ -107,6 +108,7 @@ bridge3=function(r,startY){realmBridge(r,37.5,startY+1.5,3.4,3,true);};
 
 let realmArtCrossings=null;
 function drawRealmCrossings(r){
+ if(globalThis.VeldrenBridgeScene?.enabled)return;
  if(!realmArtCrossings){const crossings=new Map();for(const [ax,ay,bx,by]of realmRoads){
   if(ay===by&&ay<149&&ay>5&&Math.min(ax,bx)<180&&Math.max(ax,bx)>183)crossings.set('east:'+ay,{x:181.5,z:ay,w:4.4,d:3.1});
   if(ax===bx&&ax>45&&ax<365&&Math.min(ay,by)<150&&Math.max(ay,by)>153)crossings.set('south:'+ax,{x:ax,z:151.5,w:3.1,d:4.4});

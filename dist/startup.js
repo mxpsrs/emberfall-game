@@ -1,9 +1,16 @@
 'use strict';
 // Runs before the game scripts so a failed download cannot leave a silent screen.
 const REALM_LOADING_STALL_MS=120000;
-const REALM_DIAGNOSTIC_STAGES={scripts:'SCR','script-download':'SDL','script-runtime':'SRT',auth:'AUT','native-init':'NAT','filament-init':'FIL',character:'SAV',assets:'AST','world-setup':'WRL','world-generation':'WGN','tutorial-generation':'TUT','editor-world':'EDT','hud-init':'HUD','first-draw':'DRW',timeout:'TMO'};
+const REALM_DIAGNOSTIC_STAGES={scripts:'SCR','script-download':'SDL','script-runtime':'SRT',auth:'AUT','native-init':'NAT','filament-init':'FIL',character:'SAV',assets:'AST','scene-ownership':'SCN','world-setup':'WRL','world-generation':'WGN','tutorial-generation':'TUT','editor-world':'EDT','hud-init':'HUD','first-draw':'DRW',timeout:'TMO'};
 window.realmStartup={failed:false,finished:false,paused:false,stage:'Loading the game…',stageCode:'scripts',loaded:0,timer:null,timerGeneration:0,reportedFailure:false};
 function realmSetStartupStage(stage){const state=window.realmStartup;if(!state.failed&&!state.finished&&stage)state.stageCode=stage;}
+async function realmStartupStep(message,progress,stage,task){
+ realmLoadStatus(message,progress,stage);
+ // Promise-only migration chains never yield a browser paint or input turn.
+ await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+ if(window.realmStartup.failed)throw Error('Startup was interrupted');
+ return realmStartupTask(stage,task);
+}
 function realmStartupTask(stage,task){return Promise.resolve().then(task).catch(error=>{realmSetStartupStage(stage);if(error&&typeof error==='object'){try{if(!error.realmStartupStage)error.realmStartupStage=stage;}catch{}throw error;}const wrapped=new Error(typeof error==='string'?error:'Startup task failed');wrapped.realmStartupStage=stage;throw wrapped;});}
 function realmDiagnosticCode(stage=window.realmStartup?.stageCode){return 'VLD-'+(REALM_DIAGNOSTIC_STAGES[stage]||'UNK');}
 function realmDiagnosticText(value,limit){return String(value??'').replace(/([?&](?:password|token|session|key)=)[^&#\s]*/gi,'$1[redacted]').replace(/("(?:password|state)"\s*:\s*")[^"]*/gi,'$1[redacted]').slice(0,limit);}
@@ -54,6 +61,7 @@ function realmAssetURL(path){return window.REALM_ASSET_VERSIONS?.[path]||path;}
 function realmLoadImage(path){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Image unavailable: '+path));img.src=realmAssetURL(path);});}
 realmStartLoadingTimeout();
 document.addEventListener('load',e=>{if(e.target?.tagName==='SCRIPT'){window.realmStartup.loaded++;realmLoadStatus('Loading the game…',Math.min(30,window.realmStartup.loaded));}},true);
+function realmStartupInlineLoaded(){const state=window.realmStartup;if(!state||state.failed||state.finished)return;state.loaded++;realmLoadStatus('Loading the game…',Math.min(30,state.loaded));}
 document.addEventListener('error',e=>{if(e.target?.tagName==='SCRIPT')realmLoadFailure('A game file could not download. Please retry.',new Error('Script unavailable: '+e.target.src),'script-download');},true);
 window.addEventListener('error',e=>{
  const state=window.realmStartup;if(state.finished||state.failed)return;let critical=false;

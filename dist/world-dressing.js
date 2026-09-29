@@ -44,7 +44,7 @@ let worldDressingReady=false;
 const dressingSetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){dressingSetupBefore();if(worldDressingReady)return;worldDressingReady=true;const previous=currentScene;
  for(const scene of ['overworld','tutorial']){currentScene=scene;const world=worldScenes[scene];for(const b of world.buildings.filter(b=>b.walkIn&&b.service))arrangeRoomContents(world,b);}
- currentScene='overworld';dressWorldForests();currentScene=previous;objects.splice(0,objects.length,...worldScenes[currentScene].objects);realmNavigation.clear();resetLandSurface();miniTerrain=null;
+ currentScene='overworld';dressWorldForests();currentScene=previous;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));realmNavigation.clear();resetLandSurface();miniTerrain=null;
  // Recover a save placed inside newly corrected scenery without changing progress.
  if(!land(s.x,s.y)){let point=null;for(let radius=1;radius<=16&&!point;radius++)for(let dy=-radius;dy<=radius&&!point;dy++)for(let dx=-radius;dx<=radius&&!point;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===radius&&land(s.x+dx,s.y+dy))point=[s.x+dx,s.y+dy];if(point){[s.x,s.y]=point;[px,py]=point;path=[];}}
 };

@@ -1,0 +1,19 @@
+{
+  "editor": {
+    "ready": true,
+    "failed": false,
+    "context": "editor",
+    "services": true,
+    "quarries": true,
+    "membership": true,
+    "worldBytes": 14949706
+  },
+  "assets": {
+    "canonicalModels": 190,
+    "visiblePixels": true,
+    "worldColors": 35727,
+    "reloaded": true
+  },
+  "errors": [],
+  "editorPlayerRequests": 0
+}

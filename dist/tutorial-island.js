@@ -108,7 +108,7 @@ function arrangeFirstlight(island){
  island.roads=[];island.layoutVersion=FIRSTLIGHT_LAYOUT_VERSION;
 }
 function buildFirstlightStreets(){
- const island=worldScenes.tutorial;if(currentScene!=='tutorial'||island.roads.length)return;
+ const island=worldScenes.tutorial;if(currentScene!=='tutorial'||island.roads.length||globalThis.VeldrenRoadScene?.enabled)return;
  const front=id=>doorApproach(island.buildings.find(b=>b.service?.destination===id).service,false);
  const town=[43,55],stops=[[27,48],[29,64],[28,91],[42,85],front('realm_briarhaven_3'),front('village_kitchen'),[79,50],front('realm_briarhaven_4'),front('inn')];
  const links=stops.map(p=>[town,p,true]);for(let i=1;i<stops.length;i++)links.push([stops[i-1],stops[i],false]);links.push([town,front('shop'),true]);

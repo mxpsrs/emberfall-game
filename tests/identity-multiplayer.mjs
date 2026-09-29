@@ -14,7 +14,7 @@ async function client(name){
  const run=code=>vm.runInContext(code,ctx),json=code=>JSON.parse(run('JSON.stringify('+code+')'));
  for(const f of ['multiplayer','shared-world'])run(fs.readFileSync('dist/'+f+'.js','utf8'));
  ctx.NAME=name;
- run(`Date.now=()=>clock();draw=()=>{};drawPortrait=()=>{};s.character={name:NAME,look:0};s.worldScale=3;s.tutorialIslandVersion=2;s.tutorialVersion=6;s.tutorial=25;s.sceneId='tutorial';s.x=51;s.y=78;setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();renderUI=renderAction=renderEncounterHud=renderTutorial=save=playGameSound=()=>{};assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;s.spirits=Object.fromEntries(Object.keys(SPIRITS).map(id=>[id,{state:'set',bondXP:0}]));s.attunedSpirit='cinder';s.equipment.weapon='woodenSword';s.equipment.shield='woodenShield';s.xp.Hitpoints=200000;s.hp=maxhp();const rat=objects.find(o=>o.kind==='rat');`);
+ run(`Date.now=()=>clock();draw=()=>{};drawPortrait=()=>{};s.character={name:NAME,look:0};s.worldScale=3;s.tutorialIslandVersion=2;s.tutorialVersion=6;s.tutorial=25;s.sceneId='tutorial';s.x=51;s.y=78;setupExpandedWorld();setupTutorialVillage();setupLoot();renderUI=renderAction=renderEncounterHud=renderTutorial=save=playGameSound=()=>{};assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;s.equipment.weapon='woodenSword';s.equipment.shield='woodenShield';s.xp.Hitpoints=200000;s.hp=maxhp();const rat=objects.find(o=>o.kind==='rat');`);
  const registration=await handleAuth(req('/api/auth/register','',{username:name,password:'test-only-9862!'}),env);assert.equal(registration.status,200);const cookie=registration.headers.get('set-cookie').split(';')[0];
  const saved=await handleSave(req('/api/character',cookie,{state:json('s'),revision:0},'PUT'),env);assert.equal(saved.status,200,await saved.text());
  const c={run,json,ctx,cookie,packets:[]};ctx.fetch=async(url,options)=>{const input=JSON.parse(options.body);const response=await handlePlayers(req(url,cookie,input),env);const body=await response.clone().json();assert.equal(response.status,200,JSON.stringify(body));c.packets.push({input,body});return response;};
@@ -25,24 +25,21 @@ await a.poll();await b.poll();await a.poll();
 for(const c of [a,b])c.run('px=s.x=rat.x+1;py=s.y=rat.y;playerMotion.moving=false;lineOfSight=()=>true;');
 await a.poll();await b.poll();await a.poll();
 // Remove the target from the observer's local world entirely.
-a.run(`const missingId=String(rat.id);objects.splice(objects.indexOf(rat),1);worldIndex().byId.delete(missingId);assert(!worldIndex().byId.has(missingId));var mesh={face:()=>{},indexed:()=>{},skinned:()=>{}};var clips=[];const beforePose=avatarGpuPose;avatarGpuPose=(...args)=>{clips.push(args[1]);return beforePose(...args);};var elementPaints=0;const beforeElement=drawElementalCast;drawElementalCast=(...args)=>{elementPaints++;return beforeElement(...args);};`);
+a.run(`const missingId=String(rat.id);objects.splice(objects.indexOf(rat),1);worldIndex().byId.delete(missingId);assert(!worldIndex().byId.has(missingId));`);
 const writes=[],worldFetch=b.ctx.fetch;b.ctx.EventSource=function(){};b.ctx.fetch=async(url,opts)=>{if(url!=='/api/activity')return worldFetch(url,opts);const task=handleActivity(new Request('https://game.test/api/activity',{method:'POST',headers:{cookie:b.cookie,origin:'https://game.test'},body:opts.body}),env);writes.push(task);return task;};
-for(const id of ['cinder','brook','zephyr','cairn','pyre','rill','gale','flint']){
- clock+=3000;for(const c of [a,b])c.run('time+=3;');await a.poll();await b.poll();b.ctx.SPIRIT=id;
- b.run(`target=rat;s.hp=maxhp()-8;s.runEnergy=10;assert(unleashSpirit(SPIRIT));`);
- const response=await writes.at(-1);assert.equal(response.status,200,'urgent cast '+id);
- const controller=new AbortController(),stream=await handleActivity(new Request('https://game.test/api/activity?scene=tutorial',{headers:{cookie:a.cookie},signal:controller.signal}),env),reader=stream.body.getReader();
- const chunk=await reader.read();const packet=JSON.parse(new TextDecoder().decode(chunk.value).split('data: ')[1].split('\n\n')[0]);controller.abort();await reader.cancel();
- assert(packet.effects.some(e=>e.action?.kind==='spirit'&&e.action.spirits.includes(id)),'observer receives '+id+' independently of world polling');
- a.ctx.PACKET=packet;a.run(`applySharedEffects(PACKET.effects,PACKET.serverTime);clips=[];elementPaints=0;drawOnlinePlayers(mesh,[]);assert(clips.includes('magic'),'cast pose survives absent target');assert(elementPaints>0,'element effect survives absent target');`);
- const before=a.json('[...sharedSpiritActions.values()].map(a=>a.action.started)');a.run('applySharedEffects(PACKET.effects,PACKET.serverTime);');assert.deepEqual(a.json('[...sharedSpiritActions.values()].map(a=>a.action.started)'),before,'duplicate delivery never restarts cast');
-}
-// A concurrent normal swing must not erase the independent Spirit effect.
-a.run(`const peer=[...onlinePeers.values()][0];rememberSharedAction(peer.id,{kind:'combat',style:'ranged',weapon:'shortbow',started:sharedNow(),duration:1600,target:{x:rat.x,y:rat.y}},sharedNow());assert(sharedSpiritActions.has(peer.id));assert(sharedVisualActions.has(peer.id));`);
-// Taking damage is observer-visible even if the attacker NPC is absent.
-a.ctx.STAMP=clock;a.run(`const actor=[...onlinePeers.keys()][0];const before=floaters.length;applySharedEffects([{id:'missing-npc-hit',actor,kind:'enemyHit',entity:missingId,generation:1,damage:2,at:STAMP}],STAMP);assert(floaters.length>before);`);
-// Passive feedback belongs to the actor even when the foe is unavailable.
-a.run(`{const actor=[...onlinePeers.keys()][0];const before=floaters.length;applySharedEffects([{id:'missing-npc-passive',actor,kind:'hit',entity:missingId,generation:1,damage:2,spirit:{id:'cinder',proc:'Kindle'},at:STAMP}],STAMP);assert(floaters.length>before);assert.equal(onlinePeers.get(actor).spiritProc.id,'cinder');elementPaints=0;drawOnlinePlayers(mesh,[]);assert(elementPaints>0);}`);
-clock+=10000;a.run(`assert.equal(Object.keys(sharedPeerGear([...onlinePeers.values()][0])).length,0,'casting expires');`);
+// Publish a normal combat animation while the observer has no local copy of the
+// target. Stable target identity and the combat action must still arrive intact.
+b.run(`publishSharedAction({kind:'combat',style:'magic',started:sharedNow(),duration:1600,target:{entity:String(rat.id),x:rat.x,y:rat.y}});`);
+const actionResponse=await writes.at(-1);assert.equal(actionResponse.status,200,'normal combat activity');
+const controller=new AbortController(),stream=await handleActivity(new Request('https://game.test/api/activity?scene=tutorial',{headers:{cookie:a.cookie},signal:controller.signal}),env),reader=stream.body.getReader();
+const chunk=await reader.read();const packet=JSON.parse(new TextDecoder().decode(chunk.value).split('data: ')[1].split('\n\n')[0]);controller.abort();await reader.cancel();
+const activity=packet.effects.find(e=>e.action?.kind==='combat');assert(activity,'observer receives normal combat activity independently of world polling');
+a.ctx.PACKET=packet;a.run(`applySharedEffects(PACKET.effects,PACKET.serverTime);const actor=[...onlinePeers.keys()][0],action=sharedVisibleAction(onlinePeers.get(actor));assert.equal(action.kind,'combat');assert.equal(action.style,'magic');assert.equal(action.target.entity,missingId);drawOnlinePlayers({face:()=>{},indexed:()=>{},skinned:()=>{}},[]);`);
+const before=a.json('sharedVisualActions.get([...onlinePeers.keys()][0]).action.started');a.run('applySharedEffects(PACKET.effects,PACKET.serverTime);');assert.equal(a.json('sharedVisualActions.get([...onlinePeers.keys()][0]).action.started'),before,'duplicate delivery never restarts the combat action');
+// A concurrent swing remains a separate visual action from the cached activity.
+a.run(`const peer=[...onlinePeers.values()][0];rememberSharedAction(peer.id,{kind:'combat',style:'ranged',weapon:'shortbow',started:sharedNow(),duration:1600,target:{x:rat.x,y:rat.y}},sharedNow());assert.equal(sharedVisibleAction(peer).style,'ranged');`);
+// Taking damage remains observer-visible even when the attacker NPC is absent.
+a.ctx.STAMP=clock;a.run(`{const actor=[...onlinePeers.keys()][0];const before=floaters.length;applySharedEffects([{id:'missing-npc-hit',actor,kind:'enemyHit',entity:missingId,generation:1,damage:2,at:STAMP}],STAMP);assert(floaters.length>before);}`);
+clock+=10000;a.run(`const expirationPeer=[...onlinePeers.values()][0],expiredAction=sharedVisibleAction(expirationPeer);assert(!expiredAction||sharedNow()-expiredAction.started>expiredAction.duration,'expired combat activity is no longer visible');`);
 Date.now=realNow;
-console.log('PASS: two authenticated clients, all eight immediate Unleash actions, distinct elemental rendering, missing local target, concurrent attack channel, duplicate suppression, expiry and independent player damage feedback.');
+console.log('PASS: two authenticated clients, normal combat action synchronization with a missing local target, duplicate suppression, expiry and independent player damage feedback.');

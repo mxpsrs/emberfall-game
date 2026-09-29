@@ -1,0 +1,30 @@
+{
+  "afterTransformPicking": {
+    "medianMs": 0.5700500000002648,
+    "p95Ms": 0.806893000000855
+  },
+  "scope": "Node actual-WASM bridge; excludes renderer and DOM",
+  "scenes": 259,
+  "entities": 20856,
+  "scene": "overworld",
+  "sceneEntities": 15496,
+  "loadMs": 9251.564064999999,
+  "hierarchyColdMs": 1018.8173480000005,
+  "pickingColdMs": 1273.4293529999995,
+  "pickingWarm": {
+    "medianMs": 0.4134329999997135,
+    "p95Ms": 1.4965379999994184
+  },
+  "transform": {
+    "medianMs": 0.03037699999913457,
+    "p95Ms": 0.13108399999873654
+  },
+  "groupedUndo": true,
+  "sourceBase": "3f0deb4daf83a8aec108f5c896af1d47cb0e2542",
+  "fixtureSHA256": "9a0d67a55db11693df86655a31600ca9bad3f59ee2c7af973e545b9ef55ec494",
+  "environment": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "processor": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "runtime": "Node 24.19.0 / actual WASM"
+  }
+}

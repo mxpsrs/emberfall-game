@@ -10,6 +10,7 @@
 <header class="topbar">
   <div class="brand"><strong>VELDREN</strong><span>WORLD EDITOR</span></div>
   <div class="toolbar" aria-label="Editor tools">
+    <button id="undoCommand" type="button" title="Ctrl/Cmd+Z" disabled>Undo</button><button id="redoCommand" type="button" title="Ctrl/Cmd+Shift+Z" disabled>Redo</button>
     <button id="selectTool" class="active" type="button">Select</button>
     <button id="moveTool" type="button">Move</button>
     <button id="rotateTool" type="button">Rotate</button>
@@ -20,8 +21,8 @@
     <button id="terrainTool" type="button">Terrain</button>
     <button id="cameraTool" type="button">Camera</button>
     <span class="divider"></span>
-    <button id="playerView" type="button">Player View</button>
-    <button id="gameUiToggle" type="button" aria-pressed="false">UI Edit</button>
+    <button id="playerView" type="button" hidden disabled>Player View</button>
+    <button id="gameUiToggle" type="button" hidden disabled aria-pressed="false">UI Edit</button>
     <span class="divider"></span>
     <label class="toolbar-field">Grid
       <select id="positionSnap">
@@ -40,6 +41,10 @@
         <option value="90">90°</option>
       </select>
     </label>
+    <label class="toolbar-field">Space <select id="gizmoSpace"><option value="world">World</option><option value="local">Local</option></select></label>
+    <label class="toolbar-field">Pivot <select id="gizmoPivot"><option value="object">Object</option><option value="center">Selection center</option></select></label>
+    <label class="toolbar-field">Scale step <select id="scaleSnap"><option value="0">Off</option><option value="0.1" selected>0.1</option><option value="0.25">0.25</option></select></label>
+    <label class="toolbar-field"><input id="gizmoSnap" type="checkbox" checked> Snap</label>
     <span class="toolbar-spacer"></span>
     <span id="saveState">No unsaved changes</span>
     <button id="saveWorld" class="primary" type="button">Save World</button>
@@ -49,7 +54,7 @@
 <main class="workspace">
   <aside class="hierarchy">
     <div class="pane-title">
-      <div><span class="eyebrow">SCENE</span><strong id="sceneName">World</strong></div>
+      <div><span class="eyebrow">SCENE</span><strong id="sceneName">World</strong><select id="sceneSelect" aria-label="Scene"></select></div>
       <span id="entityCount">0</span>
     </div>
 
@@ -112,6 +117,7 @@
     </section>
 
     <section id="assetBrowser" class="browser-panel" hidden>
+      <button id="reloadAssets" type="button" title="Reload imported asset definitions">Reload assets</button>
       <input id="assetSearch" type="search" placeholder="Search Veldren models…">
       <select id="assetCategory" aria-label="Asset category"><option value="">All categories</option></select>
       <div id="assetHint" class="asset-hint">Select a model to inspect it before placement.</div>
@@ -122,7 +128,7 @@
   </aside>
 
   <section class="stage" id="stage">
-    <iframe id="gameFrame" title="Veldren editor viewport" src="/play?editor=1"></iframe>
+    <iframe id="gameFrame" title="Veldren editor viewport" src="/editor/viewport.html"></iframe>
     <div id="selectionMarker" class="selection-marker" hidden aria-hidden="true"><span></span></div>
     <div class="mode-badge" id="modeBadge">SELECT</div>
     <div class="camera-badge" id="cameraBadge">FREE CAMERA</div>
@@ -153,6 +159,7 @@
       Select any world entity or building, or open <b>Assets</b> to inspect Veldren models before placement.
     </p>
 
+    <section id="componentInspector" aria-label="Canonical component inspector"></section>
     <fieldset id="transformFields" disabled>
       <legend>Transform</legend>
       <label><span>Scene</span><input id="sceneField" type="text" readonly></label>
@@ -179,8 +186,8 @@
 
     <section class="info-card">
       <strong>Free camera</strong>
-      <p><b>WASD</b> moves smoothly · <b>Shift + WASD</b> moves faster · <b>Arrow keys</b> rotate/tilt · left-drag in Camera mode orbits · mouse wheel zooms · Q/E zoom.</p>
-      <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7. <b>Player View</b> switches to the player camera.</p><p><b>Game UI is hidden by default.</b> Use <b>UI Edit</b> when you want the playable HUD visible.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World publishes changes to players.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
+      <p><b>W / E / R</b>: Move / Rotate / Scale · <b>C</b>: Camera mode with WASD and Q/E zoom · <b>Shift + WASD</b>: fast navigation in any tool · <b>Arrows</b>: rotate/tilt · <b>F</b>: focus · mouse wheel: zoom.</p>
+      <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World records changes for the runtime.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
     </section>
   </aside>
 </main>
@@ -194,7 +201,6 @@
   <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"></div>
 </section>
 
-<script src="/editor/editor.js"></script>
+<script src="/editor/panels.js"></script><script src="/editor/editor.js"></script>
 </body>
 </html>
-

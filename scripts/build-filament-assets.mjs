@@ -33,6 +33,7 @@ const mobileGround=createCanvas(512,512);mobileGround.getContext('2d').drawImage
 fs.writeFileSync('dist/assets/realms/ground-surfaces-mobile.png',mobileGround.toBuffer('image/png'));
 execFileSync(tool('matc'),['-p','mobile','-a','opengl','-l','1','-Os','-o','dist/materials/veldren-world.filamat','dist/materials/veldren-world.mat'],{stdio:'inherit'});
 execFileSync(tool('matc'),['-p','mobile','-a','opengl','-l','1','-Os','-o','dist/materials/veldren-terrain.filamat','dist/materials/veldren-terrain.mat'],{stdio:'inherit'});
+execFileSync(tool('matc'),['-p','mobile','-a','opengl','-o','dist/materials/veldren-editor.filamat','dist/materials/veldren-editor.mat'],{stdio:'inherit'});
 execFileSync(tool('basisu'),['-file','dist/assets/realms/atlas.png','-output_file','dist/assets/realms/atlas.ktx2','-ktx2','-etc1s','-quality','255','-effort','5','-mipmap','-mip_srgb','-mip_clamp','-mip_smallest','32'],{stdio:'inherit'});
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'veldren-ground-'));
 const groundSource=path.join(temporary,'ground-surfaces.png');

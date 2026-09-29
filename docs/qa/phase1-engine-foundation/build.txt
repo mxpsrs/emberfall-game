@@ -1,0 +1,8 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> node scripts/build.mjs
+
+Built 72 shared icons from 64 credited selections.
+Exported 4705 shared world entities.
+Built character-save Worker and 212 game assets; 63595 KiB module.

@@ -177,8 +177,8 @@ function realmMeshTopology(mesh){
  }
  const topology={refs:new Uint32Array(refs),indices};variants.set(key,topology);return topology;
 }
-function realmVertexData(mesh,topology,skinned=false){
- const stride=skinned?20:12,data=new Float32Array(topology.refs.length*stride);
+function realmVertexData(mesh,topology,skinned=false,reuse=null){
+ const stride=skinned?20:12,size=topology.refs.length*stride,data=reuse?.length===size?reuse:new Float32Array(size);
  for(let v=0;v<topology.refs.length;v++){const ref=topology.refs[v],id=ref>>>1,p=id*3,j=id*4,o=v*stride,mixed=ref&1,colors=mixed&&mesh.f?mesh.f:mesh.c;
   for(let k=0;k<3;k++){data[o+k]=mesh.p[p+k];data[o+3+k]=mesh.n[p+k];data[o+6+k]=colors[p+k];}
   data[o+9]=mixed?20:mesh.t?.[id]||(mesh.uv?20:12);data[o+10]=mesh.uv?.[id*2]||0;data[o+11]=mesh.uv?.[id*2+1]||0;
@@ -200,6 +200,7 @@ function realmMeshEntry(gpu,mesh){
  if(!entry){entry=!mesh.packed&&realmUploadIndexed(gpu,mesh);if(!entry){let data=mesh.packed;if(!data){data=[];if(typeof packingLocalMesh!=='undefined')packingLocalMesh=true;
   try{realmIndexedData(data,mesh,[1,0,0,0,0,1,0,0,0,0,1,0]);}finally{if(typeof packingLocalMesh!=='undefined')packingLocalMesh=false;}data=new Float32Array(data);}
   entry=gpu.upload(data);entry.bytes=data.byteLength;}gpu.meshBytes=(gpu.meshBytes||0)+entry.bytes;gpu.sharedMeshes.set(mesh,entry);
+  if(gpu.kind==='filament')entry.buffer.retire=()=>{if(gpu.sharedMeshes.get(mesh)!==entry)return;gpu.sharedMeshes.delete(mesh);gpu.meshUse.delete(mesh);gpu.meshBytes-=entry.bytes;if(entry.index&&--entry.index.refs===0){gpu.gl.deleteBuffer(entry.index.buffer);gpu.indexMeshes.delete(entry.index.topology);gpu.meshBytes-=entry.index.bytes;}};
  }
  gpu.meshUse.delete(mesh);gpu.meshUse.set(mesh,entry);entry.used=gpu.frameId||0;return entry;
 }
@@ -357,11 +358,11 @@ function realmTerrainEntries(gpu){
    if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2])),road=roadInfluence(a+k*.5,b+k*.5),painted=window.VeldrenTerrainEdits?.paint(xx,zz);flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),realmTerrainMaterial(road,xx,zz),vertices.map(v=>painted?[0,0,1]:v.color),vertices.map(v=>v.uv));}else realmFaceData(data,points,'#808080',null,type+1,points.map(()=>[0,0,1]),points.map(p=>[p[0],p[2]]));}}
    if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,points.map(p=>[p[0],p[2]]));}
   }
-  Object.assign(c,gpu.upload(new Float32Array(data)));
+  Object.assign(c,gpu.upload(new Float32Array(data)));if(gpu.kind==='filament')c.buffer.retire=()=>{if(chunks.get(c.key)===c)chunks.delete(c.key);};
  }
  const agent=typeof navigator==='undefined'?'':navigator.userAgent||'',mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(agent),terrainBudget=mobile?160:384,resident=[...gpu.terrain.values()].flatMap(scene=>[...scene.values()]).filter(c=>c.buffer);if(resident.length>terrainBudget){resident.sort((a,b)=>a.used-b.used);for(const c of resident.slice(0,resident.length-terrainBudget)){if(c.used===gpu.terrainTick)continue;gpu.gl.deleteBuffer(c.buffer);gpu.terrain.get(c.scene).delete(c.key);}}
  if(!inWorld()&&(currentScene==='mine'||realmSceneInfo.get(currentScene)?.kind==='mine')){
-  if(!gpu.caveBackground){const data=[];flatFaceData(data,[[-128,-.03,-128],[-128,-.03,512],[512,-.03,512],[512,-.03,-128]],'#323b35',null,14);gpu.caveBackground={...gpu.upload(new Float32Array(data)),terrain:true};}
+  if(!gpu.caveBackground){const data=[];flatFaceData(data,[[-128,-.03,-128],[-128,-.03,512],[512,-.03,512],[512,-.03,-128]],'#323b35',null,14);gpu.caveBackground={...gpu.upload(new Float32Array(data)),terrain:true};if(gpu.kind==='filament')gpu.caveBackground.buffer.retire=()=>{gpu.caveBackground=null;};}
   return [gpu.caveBackground,...visible];
  }
  return visible;

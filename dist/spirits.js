@@ -1,6 +1,6 @@
 'use strict';
-// Save compatibility for the retired companion system. Only its own fields are
-// removed; inventory, equipment, skills, quests, position, and account data stay intact.
+// Removed gameplay compatibility surface. This file only removes retired save
+// fields and keeps old test fixtures from manufacturing a spirit feature.
 const SPIRITS={},FIRST_SPIRITS=[],SPIRIT_SKILLS={};
 function normalizeSpiritRemoval(state){
  if(!state||typeof state!=='object'||state.spiritRemovalVersion===1)return state;

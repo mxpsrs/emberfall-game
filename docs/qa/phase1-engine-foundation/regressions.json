@@ -1,0 +1,197 @@
+[
+  {
+    "test": "world-scene-format.cjs",
+    "exit": 0,
+    "seconds": 0.29
+  },
+  {
+    "test": "world-building-components.cjs",
+    "exit": 0,
+    "seconds": 0.23
+  },
+  {
+    "test": "world-lights-scene.cjs",
+    "exit": 0,
+    "seconds": 0.25
+  },
+  {
+    "test": "world-metadata-scene.cjs",
+    "exit": 0,
+    "seconds": 0.27
+  },
+  {
+    "test": "world-structures-scene.cjs",
+    "exit": 0,
+    "seconds": 0.5
+  },
+  {
+    "test": "world-spawns-scene.cjs",
+    "exit": 0,
+    "seconds": 0.28
+  },
+  {
+    "test": "world-gatherables-scene.cjs",
+    "exit": 0,
+    "seconds": 0.56
+  },
+  {
+    "test": "world-bridges-scene.cjs",
+    "exit": 0,
+    "seconds": 0.29
+  },
+  {
+    "test": "world-quarries-scene.cjs",
+    "exit": 0,
+    "seconds": 1.82
+  },
+  {
+    "test": "world-services-scene.cjs",
+    "exit": 0,
+    "seconds": 0.47
+  },
+  {
+    "test": "world-objects-scene.cjs",
+    "exit": 0,
+    "seconds": 0.33
+  },
+  {
+    "test": "world-actor-rendering.cjs",
+    "exit": 0,
+    "seconds": 0.24
+  },
+  {
+    "test": "native-runtime.mjs",
+    "exit": 0,
+    "seconds": 0.19
+  },
+  {
+    "test": "native-editor-runtime.mjs",
+    "exit": 0,
+    "seconds": 0.19
+  },
+  {
+    "test": "editor-context.cjs",
+    "exit": 0,
+    "seconds": 0.16
+  },
+  {
+    "test": "editor-frame.cjs",
+    "exit": 0,
+    "seconds": 1.23
+  },
+  {
+    "test": "editor-camera.cjs",
+    "exit": 0,
+    "seconds": 0.19
+  },
+  {
+    "test": "editor-modular-start.cjs",
+    "exit": 0,
+    "seconds": 0.15
+  },
+  {
+    "test": "editor-production.mjs",
+    "exit": 0,
+    "seconds": 1.41
+  },
+  {
+    "test": "world-scene-production.mjs",
+    "exit": 0,
+    "seconds": 0.36
+  },
+  {
+    "test": "editor-local-persistence.mjs",
+    "exit": 0,
+    "seconds": 0.51
+  },
+  {
+    "test": "scene-handoff.mjs",
+    "exit": 0,
+    "seconds": 0.2
+  },
+  {
+    "test": "world-scene-runtime.cjs",
+    "exit": 0,
+    "seconds": 0.16
+  },
+  {
+    "test": "world-scene-runtime-binding.cjs",
+    "exit": 0,
+    "seconds": 0.22
+  },
+  {
+    "test": "filament-static-transforms.cjs",
+    "exit": 0,
+    "seconds": 0.82
+  },
+  {
+    "test": "filament-character-parity.cjs",
+    "exit": 0,
+    "seconds": 1.87
+  },
+  {
+    "test": "filament-runtime.cjs",
+    "exit": 0,
+    "seconds": 0.48
+  },
+  {
+    "test": "renderer-filament.cjs",
+    "exit": 0,
+    "seconds": 0.28
+  },
+  {
+    "test": "creature-renderer.cjs",
+    "exit": 0,
+    "seconds": 12.93
+  },
+  {
+    "test": "building-assembly.cjs",
+    "exit": 0,
+    "seconds": 86.96
+  },
+  {
+    "test": "building-entry.cjs",
+    "exit": 0,
+    "seconds": 79.87
+  },
+  {
+    "test": "building-layout.cjs",
+    "exit": 0,
+    "seconds": 11.87
+  },
+  {
+    "test": "terrain-travel.cjs",
+    "exit": 0,
+    "seconds": 8.04
+  },
+  {
+    "test": "quarry-maps.cjs",
+    "exit": 0,
+    "seconds": 85.7
+  },
+  {
+    "test": "terrain-editor.cjs",
+    "exit": 0,
+    "seconds": 1.86
+  },
+  {
+    "test": "training-pen.cjs",
+    "exit": 0,
+    "seconds": 23.84
+  },
+  {
+    "test": "shared-client.cjs",
+    "exit": 0,
+    "seconds": 70.01
+  },
+  {
+    "test": "loot-interaction.cjs",
+    "exit": 0,
+    "seconds": 0.23
+  },
+  {
+    "test": "combat-claims.mjs",
+    "exit": 0,
+    "seconds": 0.23
+  }
+]

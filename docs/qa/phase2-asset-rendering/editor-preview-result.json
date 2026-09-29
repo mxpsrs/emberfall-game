@@ -1,0 +1,96 @@
+{
+  "backend": "Chromium WebGL SwiftShader",
+  "results": [
+    {
+      "id": "rebuilt:Wall_Plaster_Straight",
+      "colors": 4256,
+      "mainPixel": [
+        87,
+        88,
+        90,
+        255
+      ],
+      "resources": {
+        "models": {
+          "models": 0,
+          "geometry": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "textures": {
+          "textures": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "draws": {
+          "models": 0,
+          "instances": 0,
+          "loading": 0,
+          "failures": []
+        }
+      }
+    },
+    {
+      "id": "rebuilt:Roof_RoundTiles_4x6",
+      "colors": 7244,
+      "mainPixel": [
+        86,
+        87,
+        89,
+        255
+      ],
+      "resources": {
+        "models": {
+          "models": 0,
+          "geometry": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "textures": {
+          "textures": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "draws": {
+          "models": 0,
+          "instances": 0,
+          "loading": 0,
+          "failures": []
+        }
+      }
+    },
+    {
+      "id": "avatar:male",
+      "colors": 2364,
+      "mainPixel": [
+        87,
+        88,
+        89,
+        255
+      ],
+      "resources": {
+        "models": {
+          "models": 0,
+          "geometry": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "textures": {
+          "textures": 0,
+          "leases": 0,
+          "gpuBytes": 0
+        },
+        "draws": {
+          "models": 0,
+          "instances": 0,
+          "loading": 0,
+          "failures": []
+        }
+      }
+    }
+  ],
+  "native": "cpp-wasm",
+  "reimportCancelled": true,
+  "multipleCanvases": true,
+  "pageErrors": []
+}

@@ -1,5 +1,8 @@
 'use strict';
 (() => {
+ function historyAction(redo=false){try{if(redo)bridge?.redo();else bridge?.undo();}catch(error){log(error.message,'error');}}
+ document.addEventListener('keydown',event=>{if(event.target.closest?.('input,textarea,select,[contenteditable="true"]'))return;if((event.ctrlKey||event.metaKey)&&['z','y'].includes(event.key.toLowerCase())){event.preventDefault();event.stopImmediatePropagation();historyAction(event.shiftKey||event.key.toLowerCase()==='y');}},true);
+ window.addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='veldren-editor-history')return;const state=event.data;$('undoCommand').disabled=!state.undo||state.transaction;$('redoCommand').disabled=!state.redo||state.transaction;markDirty(state.dirty);});
  const $=id=>document.getElementById(id);
  const frame=$('gameFrame'),stage=$('stage'),marker=$('selectionMarker');
  const status=$('connectionStatus'),cameraState=$('cameraState'),modeBadge=$('modeBadge'),cameraBadge=$('cameraBadge');
@@ -22,7 +25,7 @@
  const thumbnailObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){thumbnailObserver.unobserve(entry.target);queueThumbnail(entry.target)}},{rootMargin:'180px'}):{observe:queueThumbnail,unobserve(){}};let thumbnailQueue=[],thumbnailWorkPending=false,previewOrbit={yaw:.68,tilt:.52,zoom:1},watchedAtlas=null;
 
  let building=null,partAssets=[],selectedPartAssetId=null;
- function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty();}catch(error){log(error.message,'error');}}
+ function buildingAction(fn){try{const state=fn();renderBuilding(state===true?null:state);markDirty(bridge.historyState().dirty);}catch(error){log(error.message,'error');}}
  function renderBuilding(state){
   building=state;$('buildingPanel').hidden=!state;worldBrowser.hidden=!!state||tool==='terrain';assetBrowser.hidden=true;terrainPanel.hidden=!!state||tool!=='terrain';
   $('buildingEditTool').classList.toggle('active',!!state);if(!state){renderHierarchy();return;}
@@ -105,7 +108,7 @@
  assetBrowserTab.onclick=()=>{if(tool==='terrain')setTool('select');showBrowser('assets')};
 
  const canvasFactory=(width,height)=>{const c=document.createElement('canvas');c.width=width;c.height=height;return c};
- function drawMeshPreview(canvas,asset,yaw=.68,tilt=.52,zoom=1,thumbnail=false){
+ function drawLegacyMeshPreview(canvas,asset,yaw=.68,tilt=.52,zoom=1,thumbnail=false){
   const ctx=canvas.getContext('2d');if(!ctx)return false;const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#111a1f';ctx.fillRect(0,0,w,h);
   const mesh=bridge?.assetGeometry?.(asset.id);if(!mesh?.p?.length||!mesh?.i?.length){ctx.fillStyle='#a6b7bf';ctx.font='13px system-ui';ctx.textAlign='center';ctx.fillText('No mesh preview available',w/2,h/2);return false;}
   let atlas=mesh.atlas;if(thumbnail&&atlas?.complete&&atlas.width>0){if(thumbnailAtlasSource!==atlas){thumbnailAtlasSource=atlas;thumbnailAtlas=canvasFactory(512,512);thumbnailAtlas.getContext('2d')?.drawImage(atlas,0,0,512,512);}atlas=thumbnailAtlas;}
@@ -123,13 +126,20 @@
   for(const f of faces){ctx.beginPath();ctx.moveTo(ox+f.a[0]*scale,oy-f.a[1]*scale);ctx.lineTo(ox+f.b[0]*scale,oy-f.b[1]*scale);ctx.lineTo(ox+f.d[0]*scale,oy-f.d[1]*scale);ctx.closePath();if(f.uv&&f.atlas){const src=f.uv,pts=[f.a,f.b,f.d].map(v=>[ox+v[0]*scale,oy-v[1]*scale]),[x1,y1]=src[0],[x2,y2]=src[1],[x3,y3]=src[2],det=x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2);if(Math.abs(det)>.001){const solve=(q1,q2,q3)=>[(q1*(y2-y3)+q2*(y3-y1)+q3*(y1-y2))/det,(q1*(x3-x2)+q2*(x1-x3)+q3*(x2-x1))/det,(q1*(x2*y3-x3*y2)+q2*(x3*y1-x1*y3)+q3*(x1*y2-x2*y1))/det],[ta,tb,te]=solve(pts[0][0],pts[1][0],pts[2][0]),[tc,td,tf]=solve(pts[0][1],pts[1][1],pts[2][1]);ctx.save();ctx.clip();ctx.setTransform(ta,tc,tb,td,te,tf);ctx.drawImage(f.atlas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.globalCompositeOperation='multiply';ctx.fillStyle=`rgba(0,0,0,${Math.max(0,1-f.shade)})`;ctx.fill();ctx.restore();}else{ctx.fillStyle=f.color;ctx.fill();}}else{ctx.fillStyle=f.color;ctx.fill();}ctx.strokeStyle='rgba(4,9,11,.24)';ctx.stroke();}
   return true;
  }
+ async function drawMeshPreview(canvas,asset,yaw,tilt,zoom,thumbnail){
+  if(!asset?.canonicalId||!bridge?.previewAsset)return drawLegacyMeshPreview(canvas,asset,yaw,tilt,zoom,thumbnail);
+  const token=(canvas._previewToken||0)+1;canvas._previewToken=token;
+  try{const image=await bridge.previewAsset(asset.canonicalId,{yaw,tilt,zoom,key:thumbnail?'thumbnail': 'inspector'});
+   if(image&&canvas._previewToken===token){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);const scale=Math.min(canvas.width/image.width,canvas.height/image.height),w=image.width*scale,h=image.height*scale;ctx.drawImage(image,(canvas.width-w)/2,(canvas.height-h)/2,w,h);canvas.dataset.previewRenderer='filament';}return !!image;
+  }catch(error){if(error.name!=='AbortError')log('Asset preview: '+error.message,'error');return false;}
+ }
  function queueThumbnail(canvas){if(thumbnailCache.has(canvas.dataset.assetId)){canvas.getContext('2d')?.drawImage(thumbnailCache.get(canvas.dataset.assetId),0,0,canvas.width,canvas.height);return;}if(!thumbnailQueue.includes(canvas))thumbnailQueue.push(canvas);if(thumbnailWorkPending)return;thumbnailWorkPending=true;
-  const run=deadline=>{if(assetBrowser.hidden&&!building){thumbnailWorkPending=false;return;}let count=0;while(thumbnailQueue.length&&count<1&&(deadline?.timeRemaining?.()>5||count===0)){const target=thumbnailQueue.shift(),asset=assetById.get(target.dataset.assetId);if(!asset||!target.isConnected)continue;let cached=thumbnailCache.get(asset.id);if(!cached){cached=canvasFactory(144,96);drawMeshPreview(cached,asset,.68,.52,1,true);thumbnailCache.set(asset.id,cached);if(thumbnailCache.size>180)thumbnailCache.delete(thumbnailCache.keys().next().value);}target.getContext('2d')?.drawImage(cached,0,0,target.width,target.height);count++;}if(thumbnailQueue.length){(window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});}else thumbnailWorkPending=false;};
+  const run=async deadline=>{if(assetBrowser.hidden&&!building){thumbnailWorkPending=false;return;}let count=0;while(thumbnailQueue.length&&count<1&&(deadline?.timeRemaining?.()>5||count===0)){const target=thumbnailQueue.shift(),asset=assetById.get(target.dataset.assetId);if(!asset||!target.isConnected)continue;let cached=thumbnailCache.get(asset.id);if(!cached){cached=canvasFactory(144,96);const drawn=await drawMeshPreview(cached,asset,.68,.52,1,true);if(asset.canonicalId&&(!drawn||assetById.get(asset.id)?.generation!==asset.generation)){count++;continue;}thumbnailCache.set(asset.id,cached);if(thumbnailCache.size>180)thumbnailCache.delete(thumbnailCache.keys().next().value);}target.getContext('2d')?.drawImage(cached,0,0,target.width,target.height);count++;}if(thumbnailQueue.length){(window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});}else thumbnailWorkPending=false;};
   (window.requestIdleCallback||((fn)=>setTimeout(()=>fn(null),20)))(run,{timeout:250});
  }
- function inspectPartAsset(asset){inspectedAsset=asset;$('placePart').disabled=false;modelPreview.hidden=false;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=asset.id;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';previewPlaceButton.textContent='Place selected building part';previewPlaceButton.disabled=false;previewOrbit={yaw:.68,tilt:.52,zoom:1};drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);}
- function inspectAsset(asset,row){inspectedAsset=asset;for(const card of assetList.children)if(String(card.className||'').includes(' selected'))card.className=card.className.replace(' selected','');if(row)row.className+=' selected';previewOrbit={yaw:.68,tilt:.52,zoom:1};modelPreview.hidden=!asset;if(!asset)return;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=`${asset.source}:${asset.key}`;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';previewPlaceButton.textContent=asset.buildingPart?'Enter Building Edit to place':'Choose for placement';previewPlaceButton.disabled=!!asset.buildingPart&&!building;beginAssetPlacement.disabled=!!asset.buildingPart;drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);}
- function armAssetPlacement(){if(!inspectedAsset||!bridge)return;if(building&&inspectedAsset.buildingPart){selectedPartAssetId=inspectedAsset.id;$('partAsset').value=inspectedAsset.id;const state=bridge.beginPartPlacement(inspectedAsset.id);setTool('place');renderBuilding(state);$('cancelPartPlacement').disabled=false;$('buildingHint').textContent='Move in the viewport. Green means a valid snap; R rotates; click to place; Escape cancels.';return;}if(inspectedAsset.buildingPart){log('Start Building Edit to place modular building parts.','warn');return;}activeAsset=bridge.beginPlacement(inspectedAsset.id);setTool('place');showBrowser('assets');cancelPlacement.disabled=false;assetHint.textContent=`PLACING: ${inspectedAsset.name} · move over the viewport to preview · click to place · R rotates · Esc cancels`;renderAssets();log(`Placement armed · ${inspectedAsset.name} · ${inspectedAsset.source}:${inspectedAsset.key}.`,'ok');}
+ function inspectPartAsset(asset){inspectedAsset=asset;$('placePart').disabled=false;modelPreview.hidden=false;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=asset.canonicalId?`${asset.canonicalId} · generation ${asset.generation} · ${asset.validation?.state||'valid'} · ${asset.sourcePath}`:asset.id;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';previewPlaceButton.textContent='Place selected building part';previewPlaceButton.disabled=false;previewOrbit={yaw:.68,tilt:.52,zoom:1};drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);}
+ function inspectAsset(asset,row){inspectedAsset=asset;for(const card of assetList.children)if(String(card.className||'').includes(' selected'))card.className=card.className.replace(' selected','');if(row)row.className+=' selected';previewOrbit={yaw:.68,tilt:.52,zoom:1};modelPreview.hidden=!asset;if(!asset)return;modelPreviewName.textContent=asset.name;modelPreviewCategory.textContent=asset.category;modelPreviewPath.textContent=asset.canonicalId?`${asset.canonicalId} · generation ${asset.generation} · ${asset.dependencies} dependencies · ${asset.validation?.state||'valid'} · ${asset.sourcePath}`:`${asset.source}:${asset.key}`;modelPreviewBounds.textContent=asset.size?.map(v=>Number(v).toFixed(2)).join(' × ')||'Unavailable';previewPlaceButton.textContent=asset.previewOnly?'Preview only':asset.buildingPart?'Enter Building Edit to place':'Choose for placement';previewPlaceButton.disabled=!!asset.previewOnly||!!asset.buildingPart&&!building;beginAssetPlacement.disabled=!!asset.previewOnly||!!asset.buildingPart;drawMeshPreview(modelPreviewCanvas,asset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);}
+ function armAssetPlacement(){if(!inspectedAsset||!bridge||inspectedAsset.previewOnly)return;if(building&&inspectedAsset.buildingPart){selectedPartAssetId=inspectedAsset.id;$('partAsset').value=inspectedAsset.id;const state=bridge.beginPartPlacement(inspectedAsset.id);setTool('place');renderBuilding(state);$('cancelPartPlacement').disabled=false;$('buildingHint').textContent='Move in the viewport. Green means a valid snap; R rotates; click to place; Escape cancels.';return;}if(inspectedAsset.buildingPart){log('Start Building Edit to place modular building parts.','warn');return;}activeAsset=bridge.beginPlacement(inspectedAsset.id);setTool('place');showBrowser('assets');cancelPlacement.disabled=false;assetHint.textContent=`PLACING: ${inspectedAsset.name} · move over the viewport to preview · click to place · R rotates · Esc cancels`;renderAssets();log(`Placement armed · ${inspectedAsset.name} · ${inspectedAsset.source}:${inspectedAsset.key}.`,'ok');}
  beginAssetPlacement.onclick=previewPlaceButton.onclick=armAssetPlacement;
  const ASSET_PAGE_SIZE=60;
  function appendAssetCards(filtered,start,end){
@@ -149,15 +159,19 @@
  modelPreviewCanvas.addEventListener('pointermove',e=>{if(!modelPreviewCanvas._orbitPoint||!inspectedAsset)return;const [x,y]=modelPreviewCanvas._orbitPoint;previewOrbit.yaw+=(e.clientX-x)*.012;previewOrbit.tilt=Math.max(-1.1,Math.min(1.1,previewOrbit.tilt+(e.clientY-y)*.008));modelPreviewCanvas._orbitPoint=[e.clientX,e.clientY];drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);});
  modelPreviewCanvas.addEventListener('pointerup',()=>{modelPreviewCanvas._orbitPoint=null;});modelPreviewCanvas.addEventListener('pointercancel',()=>{modelPreviewCanvas._orbitPoint=null;});
  modelPreviewCanvas.addEventListener('wheel',e=>{e.preventDefault();previewOrbit.zoom=Math.max(.6,Math.min(2.8,previewOrbit.zoom*Math.exp(-e.deltaY*.001)));if(inspectedAsset)drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);},{passive:false});
+ $('undoCommand').onclick=()=>historyAction();$('redoCommand').onclick=()=>historyAction(true);
+ $('reloadAssets').onclick=async()=>{const button=$('reloadAssets');button.disabled=true;try{await bridge.refreshAssetRegistry();assetHint.textContent='Asset definitions refreshed.';}catch(error){log('Asset reload: '+error.message,'error');}finally{button.disabled=false;}};
  assetSearch.oninput=renderAssets;assetCategory.onchange=renderAssets;
  cancelPlacement.onclick=()=>{
   bridge?.cancelPlacement();activeAsset=null;cancelPlacement.disabled=true;assetHint.textContent='Select a model to inspect it before placement.';
   if(tool==='place')setTool('select');renderAssets();log('Asset placement cancelled.','info');
  };
 
+ let assetReloadSubscribed=false,prefabCatalogKey=null;
  async function refreshAssets(){
   if(!bridge)return;
-  assets=bridge.listAssets();assetById=new Map(assets.map(asset=>[asset.id,asset]));
+  if(!assetReloadSubscribed&&bridge.onAssetReload){assetReloadSubscribed=true;bridge.onAssetReload(()=>{thumbnailCache.clear();thumbnailQueue=[];refreshAssets();if(inspectedAsset){const asset=bridge.listAssets().find(a=>a.id===inspectedAsset.id);if(asset)inspectAsset(asset);}});}
+  prefabCatalogKey=bridge.prefabCatalogKey?.()||'';assets=bridge.listAssets();assetById=new Map(assets.map(asset=>[asset.id,asset]));
   const sample=assets.find(a=>a.source==='briar'||a.source==='creature'),atlas=sample&&bridge.assetGeometry?.(sample.id)?.atlas;if(atlas&&!atlas.complete&&atlas!==watchedAtlas){watchedAtlas=atlas;atlas.addEventListener?.('load',()=>{thumbnailCache.clear();renderAssets();if(inspectedAsset)drawMeshPreview(modelPreviewCanvas,inspectedAsset,previewOrbit.yaw,previewOrbit.tilt,previewOrbit.zoom);},{once:true});}
   const categories=[...new Set(assets.map(a=>a.category))].sort();
   const previous=assetCategory.value;assetCategory.replaceChildren(new Option('All categories',''));
@@ -187,6 +201,7 @@
   bridge?.setSnap(config);bridge?.setBuildingSnap({grid:config.position,rotation:config.rotation});log(`Snap · position ${config.position||'off'} · rotation ${config.rotation?config.rotation+'°':'off'}.`,'info');
  }
  positionSnap.onchange=rotationSnap.onchange=updateSnap;
+ for(const id of ["gizmoSpace","gizmoPivot","scaleSnap","gizmoSnap"])if($(id))$(id).onchange=()=>bridge?.configureGizmo({orientation:$("gizmoSpace").value,pivot:$("gizmoPivot").value,scale:Number($("scaleSnap").value),snapping:$("gizmoSnap").checked});
 
  playerView.onclick=()=>{
   if(!bridge)return;
@@ -205,13 +220,14 @@
   log(gameUiVisible?'Game UI revealed for UI editing.':'Game UI hidden · clean world viewport restored.','ok');
  };
 
+ let canonicalPanels=null;
  function renderSelection(info){
   selection=info||null;const on=!!selection;fields.disabled=!on;
   for(const b of [focusButton,duplicateButton,revertButton,deleteButton])b.disabled=!on;
   marker.hidden=!on;protectedNote.hidden=!selection?.protected;
   if(!on){
    objectName.textContent='Nothing selected';objectType.textContent='—';sceneField.value=idField.value=xField.value=yField.value=rotationField.value=scaleField.value='';
-   hint.textContent='Select any entity or building from the viewport or hierarchy.';return;
+   hint.textContent='Select any entity or building from the viewport or hierarchy.';canonicalPanels?.inspect();renderHierarchy();return;
   }
   objectName.textContent=selection.name||'Unnamed';objectType.textContent=selection.kind||selection.type||'entity';
   sceneField.value=selection.scene||'';idField.value=selection.id||'';
@@ -220,6 +236,11 @@
   renderHierarchy();
  }
  function renderHierarchy(){
+  if(bridge?.sceneHierarchy&&bridge.canonicalSelection?.()&&window.createVeldrenScenePanels){
+   if(!canonicalPanels){canonicalPanels=createVeldrenScenePanels({bridge,list:entityList,inspector:$('componentInspector'),count:entityCount,log});fields.hidden=true;}
+   canonicalPanels.render(search.value);canonicalPanels.inspect();return;
+  }
+
   const q=search.value.trim().toLowerCase(),showO=showObjects.checked,showB=showBuildings.checked;
   const filtered=entities.filter(e=>(e.kind==='building'?showB:showO)&&(!q||[e.name,e.type,e.subtype,e.id].some(v=>String(v||'').toLowerCase().includes(q))));
   entityCount.textContent=`${filtered.length} / ${entities.length}`;entityList.replaceChildren();
@@ -234,7 +255,7 @@
 
  async function refreshEntities(){
   if(!bridge)return;
-  entities=bridge.listEntities();sceneName.textContent=bridge.currentSceneName();renderHierarchy();
+  entities=bridge.sceneHierarchy&&bridge.canonicalSelection?.()?[]:bridge.listEntities();sceneName.textContent=bridge.currentSceneName();renderHierarchy();
  }
 
  function updateFromFields(){
@@ -274,6 +295,7 @@
  function injectBridge(){
   try{
    const win=frame.contentWindow,doc=frame.contentDocument;if(!win||!doc)return;
+   if(doc.readyState==='loading'||!win.VeldrenAssembly||!win.VeldrenBuildings){setTimeout(injectBridge,100);return;}
    if(win.VeldrenEditorBridge){connect(win.VeldrenEditorBridge);return;}
    if(doc.getElementById('veldrenEditorRuntime'))return;
    const script=doc.createElement('script');script.id='veldrenEditorRuntime';script.src='/editor/editor-runtime.js';
@@ -290,6 +312,7 @@
  }
  async function connect(candidate){
   bridge=candidate;bridge.setTool(tool);updateSnap();updateTerrainBrush();terrainState();status.textContent='Connected to Veldren world';terminalState.textContent='Connected';
+  if(bridge.listScenes){$('sceneSelect').replaceChildren(...bridge.listScenes().map(scene=>new Option(scene.name,scene.id)));$('sceneSelect').value=bridge.sceneName();$('sceneSelect').onchange=()=>{try{bridge.selectScene($('sceneSelect').value);setTool('select');refreshEntities();refreshAssets();}catch(error){$('sceneSelect').value=bridge.sceneName();log(error.message,'error');}};}
   gameUiVisible=!!bridge.gameUiVisible?.();
   if(gameUiVisible)bridge.setGameUiVisible(false);
   gameUiVisible=false;gameUiToggle.classList.remove('active');gameUiToggle.setAttribute('aria-pressed','false');gameUiToggle.textContent='UI Edit';
@@ -320,18 +343,20 @@
   if(event.origin!==location.origin||event.source!==frame.contentWindow)return;
   const m=event.data;
   if(m?.type==='veldren-editor-ready'){const candidate=frame.contentWindow?.VeldrenEditorBridge;if(candidate)connect(candidate);}
+  if(m?.type==='veldren-editor-tool')setTool(m.tool);
   if(m?.type==='veldren-editor-selection'){renderSelection(m.selection);if(m.selection)log(`Selected ${m.selection.kind} · ${m.selection.name} · id ${m.selection.id}.`,'info');}
-  if(m?.type==='veldren-editor-change'){renderSelection(m.selection);markDirty();refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
-  if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty();log('Terrain stroke recorded. Save World to publish the change.','ok');}}
+  if(m?.type==='veldren-editor-change'){if((bridge.prefabCatalogKey?.()||'')!==prefabCatalogKey)refreshAssets();renderSelection(m.selection);markDirty(m.dirty??true);refreshEntities();if(m.placed)log(`PLACED · ${m.selection?.name||'asset'} · ${m.selection?.id||''}.`,'ok');}
+  if(m?.type==='veldren-editor-terrain'){terrainState(m.state);if(m.changed){markDirty(m.dirty??true);log('Terrain history updated.','ok');}}
   if(m?.type==='veldren-editor-log')log(m.message,m.level||'info');
   if(m?.type==='veldren-editor-scene'){refreshEntities();}
  });
 
  window.addEventListener('keydown',event=>{
   const editing=!!event.target?.closest?.('input,textarea,select,[contenteditable]')||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+  if(!editing&&tool!=='place'&&bridge?.shortcut?.(event)){event.preventDefault();return;}
   // Toolbar and hierarchy controls keep focus in this outer document. Forward
   // navigation to the renderer iframe so a selected tool cannot steal WASD.
-  if(!editing&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&bridge?.setCameraKey?.(event.key,true)){
+  if(!editing&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&(tool==='camera'||event.shiftKey||event.key.toLowerCase().startsWith('arrow'))&&bridge?.setCameraKey?.(event.key,true)){
    event.preventDefault();return;
   }
   if(!editing&&activeAsset&&event.key.toLowerCase()==='r'){event.preventDefault();const angle=bridge?.rotatePlacement?.(15)||0;assetHint.textContent=`PLACING: ${activeAsset.name} · ${Math.round(angle)}° · move over the viewport · click to place · R rotates · Esc cancels`;return;}
@@ -351,4 +376,3 @@
 
  log('Veldren editor v5 starting.','info');setTimeout(injectBridge,300);
 })();
-

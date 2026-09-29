@@ -29,7 +29,7 @@ function drawGameIcon(g,name,x,y,size){
  g.drawImage(bitmap,x,y,size,size);
 }
 function initGameIcons(){
- for(const [id,name,label]of [['togglePanels','close','Close panel'],['spiritButton','followers','Elemental Spirits'],['mapBtn','map','World map'],['journal','help','Adventurer’s handbook'],['waveButton','wave','Wave to nearby players'],['stop','stop','Stop action'],['cameraReset','compass','Reset camera'],['zoomIn','zoomIn','Zoom in'],['zoomOut','zoomOut','Zoom out'],['leaveInterior','exit','Leave interior'],['prevPage','previous','Previous page'],['nextPage','next','Next page']])setHudButton(id,label,name);
+ for(const [id,name,label]of [['togglePanels','close','Close panel'],['mapBtn','map','World map'],['journal','help','Adventurer’s handbook'],['waveButton','wave','Wave to nearby players'],['stop','stop','Stop action'],['cameraReset','compass','Reset camera'],['zoomIn','zoomIn','Zoom in'],['zoomOut','zoomOut','Zoom out'],['leaveInterior','exit','Leave interior'],['prevPage','previous','Previous page'],['nextPage','next','Next page']])setHudButton(id,label,name);
  const tabs={bag:['bag','Bag'],skills:['skills','Skills'],gear:['gear','Equipment'],quests:['quests','Quests'],spells:['spells','Spells'],hunts:['hunting','Hunting journal']};
  document.querySelectorAll('[data-tab]').forEach(b=>{const [icon,label]=tabs[b.dataset.tab]||[CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[1]||'help',CLASSIC_TABS.find(t=>t[0]===b.dataset.tab)?.[2]||b.dataset.tab];setHudButton(b,label,icon);b.setAttribute('aria-controls','gameDock');});
  document.querySelectorAll('[data-style]').forEach(b=>setHudButton(b,b.dataset.style[0].toUpperCase()+b.dataset.style.slice(1)+' combat',b.dataset.style));

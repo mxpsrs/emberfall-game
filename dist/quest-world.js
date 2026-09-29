@@ -91,7 +91,7 @@ function setupQuestWorld(){
   const farmer=worldScenes.overworld.objects.find(o=>o.name==='Farmer Tessa');if(farmer){questSite('Riverbend Farms',farmer.x+5,farmer.y,9,12);questScenery('Riverbend harvest cart',farmer.x-3,farmer.y+3,{questModel:'cart'});}
   const keeper=worldScenes.overworld.objects.find(o=>o.name==='Keeper Orin');if(keeper)questSite('Coastal beacon',keeper.x,keeper.y,8,7);
   roadBuckets=null;realmNavigation.clear();resetLandSurface();miniTerrain=null;mapServicesCache=null;
-  objects.splice(0,objects.length,...worldScenes[previous].objects);
+  (globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[previous].objects):objects.splice(0,objects.length,...worldScenes[previous].objects));
  }finally{currentScene=previous;}
 }
 const questWorldSetupBefore=setupTutorialVillage;
@@ -181,7 +181,7 @@ building3=function(r,b){
  profile3(p,x,7.8,z,w*.75,.7,w*.75,[[-.5,.85],[.5,1]],'#999d92',v=>v,8);
  profile3(p,x,8.4,z,w*.5,.7,w*.5,[[-.5,.65],[.5,1]],'#514638',v=>v,8);
  for(const side of [-1,1])for(const y of [3,5.5])box3(p,x+side*w*.3,y,z,.04,.7,.35,'#293331');
- b.visualHeight=10;return 10;
+ if(!b._generatedBuildingEntity)b.visualHeight=10;return 10;
 };
 
 function sideQuestObjective(frontier,index){

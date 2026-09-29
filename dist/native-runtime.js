@@ -4,14 +4,208 @@
  const ready=(async()=>{
   const response=await fetch(realmAssetURL('native/veldren-core.wasm'),{credentials:'same-origin'});
   if(!response.ok)throw new Error('Native world core unavailable ('+response.status+')');
-  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{proc_exit(code){throw new Error('Native world core exited ('+code+')');}}};
-  const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports),api=instance.exports;
+  let api;
+  const wasiMemory=()=>api?.memory?new DataView(api.memory.buffer):null;
+  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{
+   proc_exit(code){throw new Error('Native world core exited ('+code+')');},
+   environ_sizes_get(countPointer,sizePointer){const memory=wasiMemory();if(!memory)return 21;memory.setUint32(countPointer,0,true);memory.setUint32(sizePointer,0,true);return 0;},
+   environ_get(){return 0;}
+  }};
+  const {instance}=await WebAssembly.instantiate(await response.arrayBuffer(),imports);api=instance.exports;
   api._initialize();
-  if(api.veldren_core_abi_version()!==11)throw new Error('Native world core ABI mismatch');
-  const world=api.veldren_world_create(512);let capacity=512,scratch=api.malloc(capacity*32),dataView=null;
-  if(!world||!scratch)throw new Error('Native world core could not allocate its actor state');
-  const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);
+  if(globalThis.VeldrenAssets)await globalThis.VeldrenAssets.initialize(api);
+  if(api.veldren_core_abi_version()!==19)throw new Error('Native world core ABI mismatch');
+  const editor=window.VELDREN_CONTEXT==='editor',world=api.veldren_world_create(editor?0:512);let capacity=editor?0:512,scratch=editor?0:api.malloc(capacity*32),dataView=null;
+  if(!world||!editor&&!scratch)throw new Error('Native world core could not allocate its state');
+  if(!editor){const seed=new Uint32Array(2);if(globalThis.crypto?.getRandomValues)globalThis.crypto.getRandomValues(seed);else{const clock=Date.now();seed[0]=clock>>>0;seed[1]=Math.floor(clock/0x100000000)>>>0;}api.veldren_world_seed(world,seed[0],seed[1]);}
   const handles=new WeakMap(),liveHandles=new Set();let nextHandle=1,destroyed=false,routeCells=0,routeIds=0,routeCapacity=0,animationScratch=0,animationCapacity=0;
+  function withCString(value,fn){const bytes=new TextEncoder().encode(String(value)),pointer=api.malloc(bytes.length+1);if(!pointer)throw new Error('Native scene string allocation failed');const target=new Uint8Array(api.memory.buffer,pointer,bytes.length+1);target.set(bytes);target[bytes.length]=0;try{return fn(pointer)}finally{api.free(pointer)}}
+  const textSizes=new Map(),textDecoder=new TextDecoder();
+  function readNativeText(call,kind='record'){
+   // The native copy API returns the required size even when the supplied
+   // buffer is too small. Usually one call can both serialize and copy.
+   let capacity=textSizes.get(kind)||4096,pointer=api.malloc(capacity);
+   if(!pointer)throw new Error('Native scene read allocation failed');
+   try{
+    let length=call(pointer,capacity);if(!length)return null;
+    if(length>=capacity){api.free(pointer);pointer=0;capacity=length+1;pointer=api.malloc(capacity);if(!pointer)throw new Error('Native scene read allocation failed');if(call(pointer,capacity)!==length)throw new Error('Native scene read changed while copying');}
+    textSizes.set(kind,Math.max(4096,Math.ceil((length+1)*1.25)));
+    return textDecoder.decode(new Uint8Array(api.memory.buffer,pointer,length));
+   }finally{if(pointer)api.free(pointer);}
+  }
+  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0,readDepth=0,readRevision=-1;
+  const sceneRevision=()=>readDepth?readRevision:api.veldren_world_scene_revision(world);
+  const refreshReadRevision=()=>{if(readDepth)readRevision=api.veldren_world_scene_revision(world);};
+  function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+  function changed(ok,kind,scene=null,id=null){refreshReadRevision();if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  function finishBatch(){if(--batchDepth!==0)return;const names=[...batchedScenes];batchedScenes.clear();if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}
+  let commandWriter=null,performanceHandle=0;
+  // Startup mappers still author temporary import documents; the native Scene
+  // remains the only live owner. Avoid cloning/reloading the entire native world
+  // for every category. This scope ends before gameplay/editor commands start.
+  let construction=null;
+  const header=(value,excluded)=>Object.fromEntries(Object.entries(value).filter(([key])=>key!==excluded));
+  const encodedHeader=(value,excluded)=>JSON.stringify(header(value,excluded));
+  const fullRead=()=>{const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity),'document');return json?JSON.parse(json):null;};
+  const fullLoad=document=>withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1);
+  function rememberConstruction(document){
+   if(!construction)return;
+   construction.metadata=header(document,'scenes');construction.names=document.scenes.map(s=>s.scene).sort();construction.snapshot=null;
+  }
+  function constructionRead(){
+   const document={...construction.metadata,scenes:construction.names.map(name=>scenes.read(name))};
+   const records=new Map();for(const scene of document.scenes)records.set(scene.scene,{header:header(scene,'entities'),entities:new Map(scene.entities.map(node=>[node.id,JSON.stringify(node)]))});
+   construction.snapshot={revision:scenes.revision(),metadata:header(document,'scenes'),records};return document;
+  }
+  function constructionLoad(document){
+   const before=construction.snapshot;
+   const fallback=()=>{const ok=fullLoad(document);if(ok)rememberConstruction(document);return ok;};
+   if(!before||before.revision!==scenes.revision()||!Array.isArray(document?.scenes)||encodedHeader(document,'scenes')!==JSON.stringify(before.metadata))return fallback();
+   const names=new Set(),plans=[];
+   for(const scene of document.scenes){
+    if(!scene||typeof scene.scene!=='string'||!scene.scene||names.has(scene.scene)||scene.format!=='veldren.scene'||scene.version!==2||!Array.isArray(scene.entities))return fallback();names.add(scene.scene);
+    const old=before.records.get(scene.scene);
+    if(old&&encodedHeader(scene,'entities')!==JSON.stringify(old.header)||!old&&(!scene.entities.length||scene.nextEntityId!==undefined&&String(scene.nextEntityId)!=='1'))return fallback();
+    const nodes=new Map(),depth=new Map(),changedNodes=[];
+    for(const node of scene.entities){if(!node?.id||nodes.has(node.id))return fallback();nodes.set(node.id,node);}
+    // Resolve parents iteratively, preserving authored order at each depth.
+    // Invalid/missing/cyclic graphs go through the atomic native full loader.
+    for(const node of scene.entities){let id=node.id;const chain=[],seen=new Set();while(id&&!depth.has(id)){if(!nodes.has(id)||seen.has(id))return fallback();seen.add(id);chain.push(id);id=nodes.get(id).parent;}let d=id?depth.get(id)+1:0;for(let i=chain.length-1;i>=0;i--)depth.set(chain[i],d++);}
+    for(const node of scene.entities)if(old?.entities.get(node.id)!==JSON.stringify(node))changedNodes.push(node);
+    changedNodes.sort((a,b)=>depth.get(a.id)-depth.get(b.id));
+    const removed=old?[...old.entities.keys()].filter(id=>!nodes.has(id)):[];
+    // Existing siblings must keep their relative order. Bootstrap categories
+    // append/reparent new definitions; arbitrary reordering remains a full load.
+    const expected=new Map(),actual=new Map();
+    for(const node of scene.entities){const key=node.parent||'';if(!expected.has(key))expected.set(key,[]);expected.get(key).push(node.id);}
+    if(old)for(const [id,json]of old.entities){const node=nodes.get(id),was=JSON.parse(json);if(node&&node.parent===was.parent){const key=node.parent||'';if(!actual.has(key))actual.set(key,[]);actual.get(key).push(id);}}
+    for(const node of changedNodes){const was=old?.entities.get(node.id),prior=was&&JSON.parse(was);if(!prior||prior.parent!==node.parent){const key=node.parent||'';if(!actual.has(key))actual.set(key,[]);actual.get(key).push(node.id);}}
+    for(const [key,ids]of expected)if(JSON.stringify(ids)!==JSON.stringify(actual.get(key)||[]))return fallback();
+    plans.push({scene:scene.scene,changedNodes,removed});
+   }
+   if([...before.records.keys()].some(name=>!names.has(name)))return fallback();
+   let ok=true;
+   try{
+    for(const plan of plans){
+     for(const node of plan.changedNodes){ok=withCString(plan.scene,s=>withCString(JSON.stringify(node),n=>api.veldren_world_scene_entity_upsert(world,s,n)===1));if(!ok)break;}
+     if(!ok)break;
+     // Reparent retained children before removing obsolete import definitions.
+     for(const id of plan.removed)withCString(plan.scene,s=>withCString(id,n=>api.veldren_world_scene_entity_remove(world,s,n)));
+    }
+   }catch{ok=false;}
+   if(!ok){
+    // Handle valid transformations that require a different intermediate graph,
+    // or restore the previous canonical state if the incoming document is bad.
+    if(fallback())return true;
+    const rollback={...before.metadata,scenes:[...before.records.values()].map(record=>({...record.header,entities:[...record.entities.values()].map(json=>JSON.parse(json))}))};
+    if(!fullLoad(rollback))throw Error('Cannot restore rejected construction import');rememberConstruction(rollback);return false;
+   }
+   rememberConstruction(document);return true;
+  }
+  const scenes={
+   performance(scene,request){
+    if(destroyed)throw Error('Native world destroyed');
+    if(!performanceHandle){performanceHandle=api.veldren_performance_create(world,globalThis.VeldrenAssets?.nativeHandle||0);if(!performanceHandle)throw Error('World performance owner unavailable');}
+    withCString(JSON.stringify({...request,scene}),p=>api.veldren_performance_command(performanceHandle,p));
+    const result=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(performanceHandle,out,size)));
+    if(!result.ok)throw Error(result.error);return result.value;
+   },
+   setCommandWriter(writer){if(!editor)throw Error('Command writer requires editor context');commandWriter=writer;},
+   command(scene,request){
+    if(!editor)throw Error('Editor commands require the editor context');
+    // References are resolved by the accepted native registry, never a second
+    // editor catalog. Existing procedural bindings remain readable unchanged.
+    const validate=(key,id)=>{const type=key==='asset'?'model':key==='material'?'material':key==='texture'?'texture':null;if(!type||!id)return;if(typeof id!=='string'||!globalThis.VeldrenAssets?.has(id)||VeldrenAssets.record(id).type!==type)throw Error('Unknown or incompatible '+type+' reference: '+id);};
+    if(request.operations)request={...request,operations:request.operations.flatMap(op=>{
+     const asset=op.op==='asset'?op.value:op.component==='MeshRenderer'?(op.field==='asset'?op.value:op.fields?.asset):op.op==='create'?op.entity?.components?.MeshRenderer?.asset:null;
+     if(!asset||!globalThis.VeldrenAssets?.has(asset)||VeldrenAssets.record(asset).importSettings?.importer!=='veldren-gltf-1')return [op];
+     if(op.op==='create'&&op.entity?.components?.BuildingPart)return [op];
+     if(op.op==='create')return [{...op,entity:{...op.entity,components:{...op.entity.components,MeshRenderer:{...op.entity.components.MeshRenderer,renderPath:'canonical'}}}}];
+     return [op,{op:'field',id:op.id,component:'MeshRenderer',field:'renderPath',value:'canonical'}];
+    })};
+    for(const op of request.operations||[]){
+     if(op.op==='asset'||op.op==='material')validate(op.op,op.value);
+     if(op.op==='field')validate(op.field,op.value);
+     if(op.op==='setComponent'||op.op==='addComponent')for(const [key,id]of Object.entries(op.fields||{}))validate(key,id);
+     if(op.op==='create'||op.op==='replace'){
+      const previous=op.op==='replace'?scenes.entity(scene,op.entity.id):null;
+      for(const [type,fields]of Object.entries(op.entity?.components||{}))for(const [key,id]of Object.entries(fields)){
+       if(previous?.components?.[type]?.[key]===id)continue;
+       if(type==='MeshRenderer'&&key==='asset'&&typeof id==='string'&&(id.startsWith('captured:')&&op.entity.components.MeshGeometry||id.startsWith('linked:')&&op.entity.components.BuildingPart&&scenes.entity(scene,id.slice(7))))continue;
+       validate(key,id);
+      }
+     }
+    }
+    withCString(scene,s=>withCString(JSON.stringify(request),r=>api.veldren_editor_command(world,s,r)));refreshReadRevision();
+    const result=JSON.parse(readNativeText((out,size)=>api.veldren_editor_response(world,out,size)));
+    if(!result.ok){changed(true,'load');throw Error(result.error);}
+    const value=result.value;
+    if(value.changed){const transforms=request.action!=='undo'&&request.action!=='redo'&&(request.operations||[]).length&&(request.operations||[]).every(op=>['transform','translate','rotate','scale'].includes(op.op));scenes.batch(()=>{for(const id of new Set(value.affected))changed(true,transforms?'transform':scenes.entity(scene,id)?'upsert':'remove',scene,id);});}
+    return freeze(value);
+   },
+   batch(callback){batchDepth++;try{return callback();}finally{finishBatch();}},
+   async batchAsync(callback){batchDepth++;try{return await callback();}finally{finishBatch();}},
+   async construct(callback){
+    if(construction)throw Error('World construction is already active');
+    construction={metadata:null,names:[],snapshot:null};rememberConstruction(fullRead());
+    try{return await scenes.batchAsync(callback);}finally{construction=null;entityCache.clear();cacheRevision=-1;}
+   },
+   subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
+   // A synchronous draw shares one revision read. Scene writes refresh it before
+   // any getter or subscriber can observe the change, even inside a batch.
+   withReadScope(callback){
+    if(readDepth===0)readRevision=api.veldren_world_scene_revision(world);readDepth++;
+    try{return callback();}finally{readDepth--;if(!readDepth)readRevision=-1;}
+   },
+   entity(scene,id){
+    const revision=sceneRevision();if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
+    let entries=entityCache.get(scene);if(!entries){entries=new Map();entityCache.set(scene,entries);}if(entries.has(id))return entries.get(id);
+    const json=withCString(scene,scenePtr=>withCString(id,idPtr=>readNativeText((out,capacity)=>api.veldren_world_scene_entity_read(world,scenePtr,idPtr,out,capacity))));
+    const result=json?freeze(JSON.parse(json)):null;entries.set(id,result);return result;
+   },
+   upsert(scene,entity){if(commandWriter){commandWriter(scene,{op:'replace',entity});return true;}return changed(withCString(scene,scenePtr=>withCString(JSON.stringify(entity),entityPtr=>api.veldren_world_scene_entity_upsert(world,scenePtr,entityPtr)===1)),'upsert',scene,entity.id);},
+   materializeUnderstory(scene,group,children){
+    // Construction-only streaming into the canonical Scene. Never replace an
+    // existing authored entity or turn camera navigation into an editor command.
+    if(scene!=='overworld'||!group?.components?.GeneratedChunk||group.parent!=='generated:overworld:root:understory'||!group.id?.startsWith('generated:overworld:understory-chunk:')||!Array.isArray(children)||children.some(node=>node.parent!==group.id||node.components?.GeneratedDecoration?.category!=='understory'||!node.id?.startsWith('generated:overworld:understory:')))throw Error('Invalid understory construction');
+    if(scenes.entity(scene,group.id))return false;
+    if(editor&&commandWriter&&scenes.command(scene,{action:'status'}).transaction)throw Error('Finish the editor gesture before streaming scenery');
+    const inserted=[];
+    return scenes.batch(()=>{try{
+     for(const node of [group,...children]){
+      if(scenes.entity(scene,node.id))continue;
+      const ok=withCString(scene,s=>withCString(JSON.stringify(node),n=>api.veldren_world_scene_entity_upsert(world,s,n)===1));
+      if(!ok)throw Error('Cannot construct understory entity');
+      inserted.push(node.id);changed(true,'upsert',scene,node.id);
+     }
+     return true;
+    }catch(error){for(const id of inserted.reverse())changed(withCString(scene,s=>withCString(id,n=>api.veldren_world_scene_entity_remove(world,s,n)===1)),'remove',scene,id);throw error;}});
+   },
+   remove(scene,id){if(commandWriter){commandWriter(scene,{op:'delete',id});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>api.veldren_world_scene_entity_remove(world,scenePtr,idPtr)===1)),'remove',scene,id);},
+   setTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   setWorldTransform(scene,id,transform){if(commandWriter){commandWriter(scene,{op:'transform',id,transform,space:'world'});return true;}return changed(withCString(scene,scenePtr=>withCString(id,idPtr=>withCString(JSON.stringify(transform),transformPtr=>api.veldren_world_scene_entity_set_world_transform(world,scenePtr,idPtr,transformPtr)===1))),'transform',scene,id);},
+   read(scene){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_read(world,scenePtr,out,capacity),'scene'));return json?JSON.parse(json):null;},
+   componentIds(scene,component){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_component_ids(world,scenePtr,typePtr,out,capacity))));return json?JSON.parse(json):[];},
+   footprintsAt(scene,component,x,z){const json=withCString(scene,scenePtr=>withCString(component,typePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_footprints_at(world,scenePtr,typePtr,x,z,out,capacity))));return json?JSON.parse(json):[];},
+   quarrySample(scene,x,z,pad=0,id=''){const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_world_scene_quarry_sample(world,s,e,x,z,pad,out,capacity))));return json?JSON.parse(json):null;},
+   quarryRampAt(scene,x,z){return withCString(scene,s=>api.veldren_world_scene_quarry_ramp_at(world,s,x,z)===1);},
+   terrainPadHeight(scene,x,z,height,footing=false){return withCString(scene,s=>api.veldren_world_scene_terrain_pad_height(world,s,x,z,height,Number(footing)));},
+   lights(scene,night=1){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_lights_read(world,scenePtr,night,out,capacity)));return json?JSON.parse(json):[];},
+   names(){return construction?construction.names.slice():fullRead().scenes.map(scene=>scene.scene);},
+   serialize(){return construction?constructionRead():fullRead();},
+   load(document){const ok=construction?constructionLoad(document):fullLoad(document);return changed(ok,'load');},
+   revision(){return sceneRevision();}
+  };
+  // The editor has the same canonical C++ Scene, with no actor transfer buffer,
+  // simulation stepping, gameplay rules, inventory or combat capability.
+  if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:19,scenes,destroy});}
+  const resourceCache=new Map();scenes.subscribe(()=>resourceCache.clear());
+  const resources=Object.freeze({
+   read(scene,id){const key=JSON.stringify([scene,id]);if(resourceCache.has(key))return resourceCache.get(key);const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_resource_state_read(world,s,e,out,capacity))));const state=json?freeze(JSON.parse(json)):null;resourceCache.set(key,state);return state;},
+   patch(scene,id,patch){const ok=withCString(scene,s=>withCString(id,e=>withCString(JSON.stringify(patch),p=>api.veldren_resource_state_patch(world,s,e,p)===1)));if(ok)resourceCache.delete(JSON.stringify([scene,id]));return ok;},
+   tick(now,gameTime){const count=api.veldren_resources_tick(world,now,gameTime);if(count)resourceCache.clear();return count;},
+   phase(scene,id,now,gameTime,flags=0){return withCString(scene,s=>withCString(id,e=>api.veldren_resource_phase(world,s,e,now,gameTime,flags)));}
+  });
   function actorFlags(actor,selected,now){
    let flags=0;
    if(actor.type==='man'||actor.type==='villager')flags|=1;
@@ -46,6 +240,7 @@
     const id=actorHandle(actor);current.add(id);writeActor(actor,id,index,selected,now);
    }
    if(api.veldren_actors_upsert(world,scratch,actors.length)!==actors.length)throw new Error('Native world core rejected actor state');
+   for(const actor of actors)if(actor._generatedSpawn&&(!liveHandles.has(actorHandle(actor))||!actor._creatureMotion)){const node=scenes.entity(actor._generatedSceneName,actor._sceneEntityId);if(node)api.veldren_actor_set_heading(world,actorHandle(actor),Math.atan2(node.worldMatrix[8],node.worldMatrix[10]));}
    for(const id of liveHandles)if(!current.has(id))api.veldren_actor_remove(world,id);
    liveHandles.clear();for(const id of current)liveHandles.add(id);
    api.veldren_world_step_live(world,seconds,playerX,playerZ);
@@ -75,7 +270,7 @@
    if(!active.length)return;if(api.veldren_animation_states_resolve(world,animationScratch,active.length)!==active.length)throw new Error('Native world core lost actor animation state');
    const clips=['idle','walk','run','death','hit','attack','attack2','attack3','cast','cast2','throw'];for(let index=0;index<active.length;index++){const offset=animationScratch+index*48;active[index]._nativeAnimation={clip:clips[memory.getUint32(offset+4,true)]||'idle',baseClip:clips[memory.getUint32(offset+12,true)]||'idle',phase:memory.getFloat32(offset+20,true),blend:memory.getFloat32(offset+24,true),basePhase:memory.getFloat32(offset+44,true)};}
   }
-  function destroy(){if(destroyed)return;destroyed=true;api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
+  function destroy(){if(destroyed)return;destroyed=true;if(performanceHandle)api.veldren_performance_destroy(performanceHandle);globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
   window.addEventListener('pagehide',destroy,{once:true});
   const rules={
    chance:probability=>api.veldren_random_chance(world,probability)===1,
@@ -85,6 +280,9 @@
    skillThreshold:(skill,level)=>api.veldren_skill_threshold(skill==='Worship'?1:0,level),
    combatLevel:levels=>api.veldren_combat_level(levels.Hitpoints,levels.Attack,levels.Strength,levels.Defense,levels.Worship,levels.Magic,levels.Ranged),
    attackRollChance:(attack,defense)=>api.veldren_attack_roll_chance(attack,defense),
+   playerAccuracy:(level,targetLevel)=>api.veldren_player_accuracy(Math.max(1,level|0),Math.max(1,targetLevel|0)),
+   enemyAccuracy:(enemyLevel,defenseLevel)=>api.veldren_enemy_accuracy(Math.max(1,enemyLevel|0),Math.max(1,defenseLevel|0)),
+   playerMaxHit:(magic,level,weaponPower,spellPower=0,magicBonus=0)=>api.veldren_player_max_hit(magic?1:0,Math.max(1,level|0),weaponPower|0,spellPower|0,magicBonus|0),
    physicalMaxHit:(effectiveLevel,strengthBonus,minimumHit)=>api.veldren_physical_max_hit(effectiveLevel,strengthBonus,minimumHit),
    magicMaxHit:(power,bonusPercent)=>api.veldren_magic_max_hit(power,bonusPercent),
    combatRewards:(damage,style,focus)=>{const styles={melee:0,ranged:1,magic:2,worship:3},focuses={accurate:0,aggressive:1,defensive:2,balanced:3,focused:4};if(api.veldren_combat_rewards(damage,styles[style],focuses[focus]??4,scratch)!==1)return {};const memory=view(),names=['Hitpoints','Attack','Strength','Defense','Worship','Magic','Ranged'],rewards={};for(let i=0;i<7;i++){const xp=memory.getFloat32(scratch+i*4,true);if(xp)rewards[names[i]]=xp;}return rewards;},
@@ -105,7 +303,7 @@
    requirementsMet:pairs=>{const memory=view(),count=pairs.length,required=scratch+count*4;for(let index=0;index<count;index++){memory.setInt32(scratch+index*4,Math.trunc(pairs[index][0]),true);memory.setInt32(required+index*4,Math.trunc(pairs[index][1]),true);}return api.veldren_requirements_met(scratch,required,count)===1;},
    worldTimerEvents:(now,expiresAt,deadUntil,respawnAt,gameTime)=>api.veldren_world_timer_events(now,expiresAt,deadUntil,respawnAt,gameTime)
   };
-  return window.realmNative={kind:'cpp-wasm',abi:11,stepActors,animateActors,pathfind,rules,transactions,stateMachines,destroy};
+  return window.realmNative={kind:'cpp-wasm',abi:19,stepActors,animateActors,pathfind,rules,transactions,stateMachines,scenes,resources,destroy};
  })();
  ready.catch(()=>{});window.realmNativeReady=ready;
 })();

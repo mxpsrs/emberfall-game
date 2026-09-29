@@ -166,7 +166,7 @@ function buildKingdoms(){
 const setupBorderWorld=setupExpandedWorld;
 setupExpandedWorld=function(){const id=s.sceneId,x=s.x,y=s.y;setupBorderWorld();buildKingdoms();if(id&&worldScenes[id])activateScene(id,x,y,false);};
 const oldRegionInfo=regionInfo;
-regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===info.building.kingdom).name];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+(t.settlementClass||t.kind)];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [typeof forestAt==='function'&&forestAt(s.x,s.y)?.name||'Badlands',k.name+' · '+k.description];};
+regionInfo=function(){if(!inWorld()){const info=realmSceneInfo.get(currentScene);if(info)return [info.title,KINGDOMS.find(k=>k.id===(info.kingdom??info.building?.kingdom))?.name||''];return oldRegionInfo();}const t=settlementAt(s.x,s.y);if(t)return [t.name,KINGDOMS.find(k=>k.id===t.kingdom).name+' · '+(t.settlementClass||t.kind)];if(s.x<96&&s.y<84)return oldRegionInfo();const k=kingdomAt(s.x,s.y);return [typeof forestAt==='function'&&forestAt(s.x,s.y)?.name||'Badlands',k.name+' · '+k.description];};
 expandedMap=function(page=0){
  if(!inWorld()){dialog(worldScenes[currentScene].title,'<p>You are inside. Leave to return to the roads between kingdoms.</p>',[['Leave building',()=>{close();leaveInterior();}]]);return;}
  const k=KINGDOMS[page%3],places=SETTLEMENTS.filter(t=>t.kingdom===k.id);
@@ -180,10 +180,10 @@ function realmNav(){
  // village should not evaluate water and walls across the entire continent.
  cells.fill(2);
  for(const b of buildings){const bounds=b.assembly&&window.VeldrenBuildings?window.VeldrenBuildings.worldBounds(b):{x:b.x,y:b.y,w:b.w,h:b.h};for(let y=Math.floor(bounds.y);y<bounds.y+bounds.h;y++)for(let x=Math.floor(bounds.x);x<bounds.x+bounds.w;x++)if(inBuilding(b,x,y)&&x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;}
- for(const o of objects){if(fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){if(!o.propKind)cells[o.y*w+o.x]=1;if(o.propKind&&typeof propCollisionTiles==='function')for(const [x,y]of propCollisionTiles(o))if(x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
+ for(const o of objects){if(o._generatedGatherable||o._generatedService||fighter(o)||o.collected||o.walkThrough)continue;if(o.type==='villager'||o.type==='spirit'){moving.push(o);continue;}if(o.x>=0&&o.y>=0&&o.x<w&&o.y<h){if(!o.propKind)cells[o.y*w+o.x]=1;if(o.propKind&&typeof propCollisionTiles==='function')for(const [x,y]of propCollisionTiles(o))if(x>=0&&y>=0&&x<w&&y<h)cells[y*w+x]=1;if(o.collisionRadius)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.hypot(dx,dy)<o.collisionRadius+.3&&o.x+dx>=0&&o.y+dy>=0&&o.x+dx<w&&o.y+dy<h)cells[(o.y+dy)*w+o.x+dx]=1;}}
  nav={w,h,cells,moving};realmNavigation.set(currentScene,nav);return nav;
 }
-function realmCellBlocked(nav,id){let value=nav.cells[id];if(value===2){const x=id%nav.w,y=Math.floor(id/nav.w);value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)));nav.cells[id]=value;}return value;}
+function realmCellBlocked(nav,id){let value=nav.cells[id];if(value===2){const x=id%nav.w,y=Math.floor(id/nav.w);value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)||globalThis.VeldrenGatherableScene?.blocked(currentScene,x,y)||globalThis.VeldrenServiceScene?.blocked(currentScene,x,y)));nav.cells[id]=value;}return value;}
 const beforeRealmBlocked=blocked;
 blocked=function(x,y){if(!kingdomsReady)return beforeRealmBlocked(x,y);const n=realmNav();return x<0||y<0||x>=n.w||y>=n.h||realmCellBlocked(n,y*n.w+x)||trainingGateClosedAt(x,y)||n.moving.some(o=>!o.collected&&o.x===x&&o.y===y);};
 const borderRoute=route;

@@ -1,10 +1,13 @@
 import {authenticatedPlayer} from './auth.js';
-import {sanitize,confirmation} from './editor-document.js';
-import seed from '../editor-data/world-edits.json' with {type:'json'};
+import {MAX_WORLD_BYTES,decodeWorld,saveWorld} from './editor-storage.js';
+import {sanitize,sanitizeTerrain,confirmation} from './editor-document.js';
+import '../dist/world-scene-format.js';
+import seed from '../editor-data/world-scene.json' with {type:'json'};
+const {fromLegacy,toLegacy,mergeLegacy,validateWorld}=globalThis.VeldrenSceneFormat;
 
 // Verified existing owner account. Never grant editor access by a reusable name.
 const OWNER='2db1d2ba-75e2-4c27-bcdf-94e742f95c86';
-const MAX_BYTES=8*1024*1024;
+const MAX_BYTES=MAX_WORLD_BYTES;
 const headers={'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
 async function owner(request,env){return (await authenticatedPlayer(request,env))?.id===OWNER;}
@@ -14,20 +17,25 @@ export async function editorAccess(request,env){
  catch{return reply({error:'Editor authorization unavailable. Please retry.'},503);}
 }
 async function metadata(data){
- const text=JSON.stringify(data,null,2)+'\n',bytes=new TextEncoder().encode(text);
- const digest=await crypto.subtle.digest('SHA-256',bytes);
- const sha256=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
- return {ok:true,path:'production world edits',runtimePath:'/api/editor/edits',revision:data.revision,count:data.changes.length,bytes:bytes.length,sha256,runtimeSha256:sha256,updatedAt:data.updatedAt,edits:data};
+ const edits=toLegacy(data),text=JSON.stringify(edits,null,2)+'\n',worldText=JSON.stringify(data,null,2)+'\n';
+ const [digest,worldDigest]=await Promise.all([
+  crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)),
+  crypto.subtle.digest('SHA-256',new TextEncoder().encode(worldText))
+ ]);
+ const hex=value=>Array.from(new Uint8Array(value),b=>b.toString(16).padStart(2,'0')).join('');
+ const sha256=hex(digest),worldSha256=hex(worldDigest);
+ return {ok:true,path:'production world edits',runtimePath:'/api/editor/edits',revision:data.revision,count:edits.changes.length,bytes:new TextEncoder().encode(text).length,sha256,runtimeSha256:sha256,worldSha256,updatedAt:data.updatedAt,world:data,edits};
 }
 async function read(env){
  const row=await env.DB.prepare('SELECT document FROM editor_world WHERE id=?').bind(1).first();
- return row?JSON.parse(row.document):seed;
+ const document=row?await decodeWorld(row.document,env.DB):seed;
+ return document?.format==='veldren.world'?document:fromLegacy(document);
 }
 async function readBody(request){
- if(Number(request.headers.get('content-length'))>MAX_BYTES)throw Object.assign(Error('Editor save exceeds 8 MB'),{status:413});
+ if(Number(request.headers.get('content-length'))>MAX_BYTES)throw Object.assign(Error('Editor save exceeds 32 MB'),{status:413});
  const reader=request.body?.getReader();if(!reader)throw Object.assign(Error('Missing world edits'),{status:400});
  const chunks=[];let length=0;
- while(true){const {done,value}=await reader.read();if(done)break;length+=value.length;if(length>MAX_BYTES){await reader.cancel();throw Object.assign(Error('Editor save exceeds 8 MB'),{status:413});}chunks.push(value);}
+ while(true){const {done,value}=await reader.read();if(done)break;length+=value.length;if(length>MAX_BYTES){await reader.cancel();throw Object.assign(Error('Editor save exceeds 32 MB'),{status:413});}chunks.push(value);}
  const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
  try{return JSON.parse(new TextDecoder().decode(bytes));}catch{throw Object.assign(Error('Invalid world edit document'),{status:400});}
 }
@@ -39,13 +47,20 @@ export async function handleEditorEdits(request,env){
   if(!await owner(request,env))return reply({error:'Only the owner can save world edits.'},403);
   const input=await readBody(request);
   if(!Number.isSafeInteger(input?.expectedRevision)||input.expectedRevision<0)return reply({error:'A valid expectedRevision is required.'},400);
-  const current=await read(env);let data;
-  try{data=sanitize(input,current);}catch(error){return reply({error:error.message},error.status||400);}
-  const document=JSON.stringify(data),previous=JSON.stringify(current);
-  if(new TextEncoder().encode(document).length>MAX_BYTES)return reply({error:'Editor save exceeds 8 MB'},413);
-  // Compare-and-swap in one statement. Retain the previous document atomically.
-  const saved=await env.DB.prepare(`INSERT INTO editor_world (id,revision,document,previous_document,updated_by) VALUES (1,?,?,?,?) ON CONFLICT(id) DO UPDATE SET revision=excluded.revision,document=excluded.document,previous_document=editor_world.document,updated_by=excluded.updated_by WHERE editor_world.revision=?`).bind(data.revision,document,previous,OWNER,input.expectedRevision).run();
+  const current=await read(env);
+  if(input.expectedRevision!==current.revision)return reply({error:'The world was saved in another tab. Reload before saving.'},409);
+  let data;
+  try{
+   if(input?.format==='veldren.world'){
+    data=structuredClone(input);delete data.expectedRevision;
+    data.revision=current.revision+1;data.updatedAt=new Date().toISOString();
+    if(data.terrain!==undefined)data.terrain=sanitizeTerrain(data.terrain);
+    else if(current.terrain!==undefined)data.terrain=current.terrain;
+    validateWorld(data);toLegacy(data);
+   }else data=mergeLegacy(current,sanitize(input,toLegacy(current)));
+  }catch(error){return reply({error:error.message},error.status||400);}
+  const saved=await saveWorld(env.DB,data,current,OWNER,input.expectedRevision);
   if(!saved.meta.changes)return reply({error:'The world was saved in another tab. Reload before saving.'},409);
-  return reply({...await metadata(data),confirmed:data.changes.map(confirmation)});
+  return reply({...await metadata(data),confirmed:toLegacy(data).changes.map(confirmation)});
  }catch(error){console.error('editor_storage_failed',error?.message);return reply({error:error.status?error.message:'World edit storage is unavailable. Your changes have not been confirmed.'},error.status||503);}
 }

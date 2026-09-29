@@ -1,6 +1,6 @@
 'use strict';
 // Authored architecture and industry. Object IDs and scene IDs remain stable across saves.
-const CIVILIZATION_VERSION=4, civilFloors=new Map(), civilWalls=new Map(), surfaceQuarries=[],civilStairWells=new Map(),civilWalkableStructures=[],civilGatehouses=[],civilLegacyReturns=new Map();
+const CIVILIZATION_VERSION=4, civilFloors=new Map(), civilWalls=new Map(), civilStairWells=new Map(),civilLegacyReturns=new Map();let surfaceQuarries=[],civilWalkableStructures=[],civilGatehouses=[];
 const CIVIL_ARCHITECTURE_SCALE=Object.freeze({castleGateWidth:5.5,castleGateHeight:8.25,castleGateTowerFootprint:7,castleGateTowerHeight:9.2,cityGateWidth:9,cityGateHeight:9,cityGateTowerFootprint:11,cityGateTowerDepth:13,cityGateTowerHeight:8.8,cityGateDoorWidth:2.4,cityGateDoorHeight:3.2,cityGateRampartHeight:5.4,cityWallTowerFootprint:10,cityWallTowerHeight:11});
 let civilizationReady=false,civilSerial=7400000;
 function civilMove(o,x,y){Object.assign(o,{x,y,homeX:x,homeY:y,drawX:x,drawY:y});}
@@ -163,7 +163,8 @@ function civilCityWalls(world){
 }
 function civilWalkableArchitectureAt(x,z){
  if(currentScene!=='overworld')return null;
- for(const structure of civilWalkableStructures){const {ramp,decks,rise}=structure,base=structure.base||0;
+ const candidates=globalThis.VeldrenBuildingScene?.surfaceCandidates?.(civilWalkableStructures,x,z)||civilWalkableStructures;
+ for(const structure of candidates){if(structure._sceneEntityId){const found=globalThis.VeldrenBuildingScene.surfaceAt(structure,x,z);if(found)return found;continue;}const {ramp,decks,rise}=structure,base=structure.base||0;
   if(structure.rampLine){const line=structure.rampLine,dx=line.bx-line.ax,dz=line.bz-line.az,length=Math.hypot(dx,dz),ux=dx/length,uz=dz/length,rx=x-line.ax,rz=z-line.az,t=(rx*ux+rz*uz)/length,cross=Math.abs(rx*uz-rz*ux);if(t>=0&&t<=1&&cross<=line.width/2)return {height:base+rise*t,kind:'ramp',structure};}
   if(ramp&&x>=ramp.x&&x<ramp.x+ramp.w&&z>=ramp.y&&z<ramp.y+ramp.h){const t=Math.max(0,Math.min(1,(ramp.y+ramp.h-z)/(ramp.h-1)));return {height:base+rise*t,kind:'ramp',structure};}
   // Editor stairs share the original deck's structure identity. The player
@@ -180,7 +181,7 @@ function withCivilGrounding3(o,draw){const before=civilGroundingObject3;civilGro
 function civilObjectGroundHeight3(x,z){return currentScene==='overworld'&&civilGroundingObject3?.interiorBuilding&&!civilGroundingObject3.civilUpper?civilWalkHeightBefore(x,z):walkSurfaceHeight(x,z);}
 function civilPickSurfaceHeight(x,z){const playerStructure=civilWalkableArchitectureAt(px+.5,py+.5)?.structure,target=civilWalkableArchitectureAt(x,z);return civilWalkHeightBefore(x,z)+(playerStructure&&target?.structure===playerStructure?target.height:0);}
 const civilCellBlockedBefore=realmCellBlocked;
-realmCellBlocked=function(nav,id){const x=id%nav.w,y=Math.floor(id/nav.w),architecture=civilWalkableArchitectureAt(x+.5,y+.5);if(architecture?.kind==='ramp'){const value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)));nav.cells[id]=value;return value;}return civilCellBlockedBefore(nav,id);};
+realmCellBlocked=function(nav,id){const x=id%nav.w,y=Math.floor(id/nav.w),architecture=civilWalkableArchitectureAt(x+.5,y+.5);if(architecture?.kind==='ramp'){const value=Number(!!(worldWall(x,y)||water(x,y)||terrainCellBlocked(x,y)||globalThis.VeldrenGatherableScene?.blocked(currentScene,x,y)||globalThis.VeldrenServiceScene?.blocked(currentScene,x,y)));nav.cells[id]=value;return value;}return civilCellBlockedBefore(nav,id);};
 function setupSurfaceQuarries(world){
  const defs=[
  {id:'ironhollow',name:'Ironhollow Crown Quarry',x:858,y:129,rx:27,ry:27,levels:3,type:'industrial',town:'ironhollow',ores:['copper','tin','iron','iron','coal']},
@@ -192,7 +193,7 @@ function setupSurfaceQuarries(world){
  for(const q of defs){q.level=Math.max(3.2,landBase(q.x,q.y));surfaceQuarries.push(q);settlementPlans.get(q.town).quarries.push(q.id);
   world.objects=world.objects.filter(o=>o.mainStoryKey||o.mountainKey||o.type==='door'||o.interiorBuilding||Math.abs(o.x-q.x)>q.rx+3||Math.abs(o.y-q.y)>q.ry+3);
   const bottom=q.y+q.ry+5,town=SETTLEMENTS.find(t=>t.id===q.town),gate=settlementPlans.get(q.town).entrances[1];
-  const workRoad=[[q.x+.5,bottom],[q.x-q.rx-6,bottom],[q.x-q.rx-6,town.y+.5],gate];for(let i=1;i<workRoad.length;i++)plannedRoad(workRoad[i-1],workRoad[i],1.8,false);plannedRoad([q.x+.5,bottom],[q.x+.5,q.y-8],1.6,false);
+  const roadStart=organicRoads.length,workRoad=[[q.x+.5,bottom],[q.x-q.rx-6,bottom],[q.x-q.rx-6,town.y+.5],gate];for(let i=1;i<workRoad.length;i++)plannedRoad(workRoad[i-1],workRoad[i],1.8,false);plannedRoad([q.x+.5,bottom],[q.x+.5,q.y-8],1.6,false);for(const road of organicRoads.slice(roadStart))road.quarry=q.id;
   for(let i=0;i<q.ores.length;i++){const inset=7+Math.min(q.levels-1,i)*5,x=q.x-q.rx+inset+2,y=q.y+(i%2?7:-7);civilPut(world,'ore',ORE_RESOURCES[q.ores[i]].name,x,y,{resourceId:q.ores[i],quarry:q.id});}
   const abandoned=q.type==='abandoned';
   const shed=addCivilHouse(world,town,100+surfaceQuarries.length,q.x+14,bottom+10,'hall',abandoned?'Abandoned quarry office':'Quarry records and stores');shed.quarry=q.id;
@@ -209,11 +210,11 @@ function quarryDepth(q,x,y){const edge=quarryShapeEdge(q,x,y);if(edge<=0)return 
 }
 function quarryCliff(q,x,y){if(Math.abs(x+.5-q.x)<3&&y+.5>=q.y-9)return false;const edge=quarryShapeEdge(q,x+.5,y+.5);return Array.from({length:q.levels},(_,i)=>(i+1)*5-.5).some(d=>Math.abs(edge-d)<.65);}
 const civilGradeBefore=gradeLand;
-gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;let result=before;const q=quarryAt(x,y,14);if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;}
+gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;let result=before;const q=quarryAt(x,y,14);if(q&&globalThis.VeldrenQuarryScene?.enabled){const sample=VeldrenQuarryScene.sample(x,y,0,q);result=before*(1-sample.blend)+sample.height*sample.blend;}else if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;}
  else for(const plan of settlementPlans.values()){if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;const t=SETTLEMENTS.find(t=>t.id===plan.id),d=Math.hypot(x-t.x,y-t.y),r=plan.radius+8;if(d>r+20)continue;const k=Math.max(0,Math.min(1,(r+20-d)/20));result=before*(1-k)+plan.grade*k;break;}
  return gradeRoadLand(x,y,result);};
 const civilWallBefore=worldWall;
-worldWall=function(x,y){if(civilWalkableArchitectureAt(x+.5,y+.5))return false;if(civilStairWells.get(currentScene)?.some(h=>x===h.tx&&Math.abs(y-h.ty)===1))return true;if(civilWalls.get(currentScene)?.has(x+':'+y))return true;if(currentScene==='overworld'){const q=quarryAt(x+.5,y+.5);if(q&&quarryCliff(q,x,y))return true;}return civilWallBefore(x,y);};
+worldWall=function(x,y){if(civilWalkableArchitectureAt(x+.5,y+.5))return false;if(globalThis.VeldrenStructureScene?.enabled?VeldrenStructureScene.borderAt(currentScene,x+.5,y+.5):civilStairWells.get(currentScene)?.some(h=>x===h.tx&&Math.abs(y-h.ty)===1))return true;if(globalThis.VeldrenStructureScene?.enabled?VeldrenStructureScene.blocked(currentScene,x+.5,y+.5):civilWalls.get(currentScene)?.has(x+':'+y))return true;if(currentScene==='overworld'){const q=quarryAt(x+.5,y+.5);if(q&&quarryCliff(q,x,y))return true;}return civilWallBefore(x,y);};
 const civilBuildingBefore=inBuilding;
 inBuilding=function(b,x,y){if(!b.civilWallTiles)return civilBuildingBefore(b,x,y);if(b.civilWallTiles.has(x+':'+y))return true;const [dx,dy]=doorThreshold(b.service),half=b.civilGateHalfWidth||0;return y===dy&&Math.abs(x-dx)<=half&&b.service.openedAt===undefined;};
 const civilInteractionBefore=handleWorldInteraction;
@@ -221,7 +222,7 @@ handleWorldInteraction=function(o){if(!o.civilStair)return civilInteractionBefor
 const civilLeaveBefore=leaveInterior;
 leaveInterior=function(){const room=worldScenes[currentScene];if(!room?.civilFloor)return civilLeaveBefore();const stair=room.objects.find(o=>o.civilStair);if(stair)engage(stair);};
 const civilRegionBefore=regionInfo;
-regionInfo=function(){const q=currentScene==='overworld'&&quarryAt(s.x,s.y,8);if(q)return [q.name,q.type==='abandoned'?'Abandoned workings · Weathered terraces':q.type+' quarry · Surface Mining'];const floor=civilFloors.get(currentScene);if(floor){const room=floor.rooms.find(r=>s.x>r.x&&s.x<r.x+r.w-1&&s.y>r.y&&s.y<r.y+r.h-1);return [worldScenes[currentScene].title,room?.name||'Stair hall and connecting passage'];}if(currentScene==='overworld'){const b=buildings.find(b=>withinWalkIn(b,s.x,s.y));if(b){const upper=b.civilUpperRooms?.find(r=>s.x>=r.x&&s.x<r.x+r.w&&s.y>=r.y&&s.y<r.y+r.h),r=b.civilRooms?.find(r=>s.x>r.x&&s.x<r.x+r.w-1&&s.y>r.y&&s.y<r.y+r.h-1);return [b.name,upper?.name||r?.name||'Courtyard · Great hall ahead'];}}return civilRegionBefore();};
+regionInfo=function(){const q=currentScene==='overworld'&&quarryAt(s.x,s.y,8);if(q)return [q.name,q.type==='abandoned'?'Abandoned workings · Weathered terraces':q.type+' quarry · Surface Mining'];const floor=civilFloors.get(currentScene);if(floor){const room=globalThis.VeldrenStructureScene?.enabled?VeldrenStructureScene.roomAt(currentScene,s.x,s.y):floor.rooms.find(r=>s.x>r.x&&s.x<r.x+r.w-1&&s.y>r.y&&s.y<r.y+r.h-1);return [worldScenes[currentScene].title,room?.name||'Stair hall and connecting passage'];}if(currentScene==='overworld'){const b=buildings.find(b=>withinWalkIn(b,s.x,s.y));if(b){const upper=b.civilUpperRooms?.find(r=>s.x>=r.x&&s.x<r.x+r.w&&s.y>=r.y&&s.y<r.y+r.h),r=b.civilRooms?.find(r=>s.x>r.x&&s.x<r.x+r.w-1&&s.y>r.y&&s.y<r.y+r.h-1);return [b.name,upper?.name||r?.name||'Courtyard · Great hall ahead'];}}return civilRegionBefore();};
 function civilClearRoutes(world){
  const protectedObject=o=>o.civilization||o.raiderCamp||(o.briarhavenDetail&&o.type!=='tree')||o.mainStoryKey||o.mountainKey||o.interiorBuilding||o.type==='door'||o.quarry||o.civilDecor==='gate'||o.civilDecor==='tower';
  const bad=(x,y)=>civilWalls.get('overworld')?.has(x+':'+y)||world.buildings.some(b=>inBuilding(b,x,y))||expandedWater(x,y);
@@ -261,12 +262,12 @@ setupTutorialVillage=function(){civilizationSetupBefore();if(civilizationReady)r
  for(const q of surfaceQuarries){const p=settlementPlans.get(q.town);p.resourcePurpose=q.name+' supplies '+SETTLEMENTS.find(t=>t.id===q.town).name;}
  roadBuckets=null;civilClearRoutes(world);roadBuckets=null;realmNavigation.clear();resetLandSurface();miniTerrain=null;worldAtlasTerrain=null;mapServicesCache=null;
  if(civilLegacyReturns.has(saved.scene)){const returnPoint=civilLegacyReturns.get(saved.scene);saved.scene='overworld';[saved.x,saved.y]=returnPoint;s.sceneId='overworld';s.x=saved.x;s.y=saved.y;px=s.x;py=s.y;}
- currentScene=saved.scene;objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
+ currentScene=saved.scene;(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(worldScenes[currentScene].objects):objects.splice(0,objects.length,...worldScenes[currentScene].objects));buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
  if(!land(saved.x,saved.y)){let point=null;for(let r=1;r<40&&!point;r++)for(let dy=-r;dy<=r&&!point;dy++)for(let dx=-r;dx<=r&&!point;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r&&land(saved.x+dx,saved.y+dy))point=[saved.x+dx,saved.y+dy];if(point)activateScene(currentScene,...point,false);}
  s.civilizationVersion=CIVILIZATION_VERSION;
 };
 
-function civilStairWellAt(x,y){return civilStairWells.get(currentScene)?.some(h=>x>=h.x&&x<h.x+h.w&&y>=h.y&&y<h.y+h.h);}
+function civilStairWellAt(x,y){if(globalThis.VeldrenStructureScene?.enabled)return VeldrenStructureScene.holeAt(currentScene,x,y);return civilStairWells.get(currentScene)?.some(h=>x>=h.x&&x<h.x+h.w&&y>=h.y&&y<h.y+h.h);}
 function civilPaintFloor(r,x,y,w,h,color,material,height=.04,cutouts=[]){let rects=[[x,y,w,h]];for(const hole of [...(civilStairWells.get(currentScene)||[]),...cutouts]){const next=[];for(const [a,b,c,d]of rects){const left=Math.max(a,hole.x),right=Math.min(a+c,hole.x+hole.w),top=Math.max(b,hole.y),bottom=Math.min(b+d,hole.y+hole.h);if(left>=right||top>=bottom){next.push([a,b,c,d]);continue;}if(top>b)next.push([a,b,c,top-b]);if(bottom<b+d)next.push([a,bottom,c,b+d-bottom]);if(left>a)next.push([a,top,left-a,bottom-top]);if(right<a+c)next.push([right,top,a+c-right,bottom-top]);}rects=next;}
  // Small floor faces sort correctly around actors in the Canvas fallback.
  // A whole castle-sized polygon can otherwise paint over a character above it.
@@ -341,7 +342,7 @@ function civilNativeWallCourse3(r,length,fixed,y,heading,model,skipCenter=0){
 }
 function civilGateTower3(r,gate,tower){
  const race=gate.race||'human',p=worldStyle[race]||worldStyle.human,w=CIVIL_ARCHITECTURE_SCALE.cityGateTowerFootprint,d=CIVIL_ARCHITECTURE_SCALE.cityGateTowerDepth,h=CIVIL_ARCHITECTURE_SCALE.cityGateTowerHeight,doorW=CIVIL_ARCHITECTURE_SCALE.cityGateDoorWidth,doorH=CIVIL_ARCHITECTURE_SCALE.cityGateDoorHeight,rise=CIVIL_ARCHITECTURE_SCALE.cityGateRampartHeight;
- const q=worldLocal(r,tower.x,0,tower.z,gate.turn),stone=materialRealm(q,18),[u,v]=civilGatehouseLocal(gate,px+.5,py+.5),inside=Math.abs(u-tower.side*w)<w/2-1&&Math.abs(v)<d/2-1;
+ const q=worldLocal(r,tower.x,0,tower.z,gate.turn),stone=materialRealm(q,18),[u,v]=civilGatehouseLocal(gate,px+.5,py+.5),inside=tower._sceneEntityId?VeldrenStructureScene.towerContains(tower,px+.5,py+.5):Math.abs(u-tower.side*w)<w/2-1&&Math.abs(v)<d/2-1;
  civilPaintFloor(q,-w/2+.7,-d/2+.7,w-1.4,d-1.4,'#777b75',18,.055);
  if(inside){for(const side of [-1,1])box3(stone,side*w/2,.58,0,.42,1.16,d,p.stone);for(const face of [-1,1]){box3(stone,-(doorW/2+(w-doorW)/4),.58,face*d/2,(w-doorW)/2,1.16,.42,p.stone);box3(stone,doorW/2+(w-doorW)/4,.58,face*d/2,(w-doorW)/2,1.16,.42,p.stone);}}
  else for(let floor=0,y=0;y<h-.3;floor++,y+=3){
@@ -397,7 +398,7 @@ building3=function(r,b){
   civilAuthoredStair3(q,b.civilRampart);
   for(const side of [-1,1])beamArt(stone,[ramp.x+(side>0?ramp.w:0),.55,ramp.y+ramp.h],[ramp.x+(side>0?ramp.w:0),rise+.55,ramp.y],.09,p.stone,8);
  }
- return b.visualHeight=12;
+ if(!b._generatedBuildingEntity)b.visualHeight=12;return 12;
 };
 const civilPropBefore=prop3;
 prop3=function(r,o,x,z){
@@ -438,9 +439,9 @@ prop3=function(r,o,x,z){
  return civilPropBefore(r,o,x,z);
 };
 const civilWallArtBefore=drawRealmWall;
-drawRealmWall=function(r,x,y){const floor=civilFloors.get(currentScene);if(!floor)return civilWallArtBefore(r,x,y);const tile=floor.walls.get(x+':'+y);if(tile)civilWallGeometry(r,tile);};
+drawRealmWall=function(r,x,y){if(globalThis.VeldrenStructureScene?.enabled&&civilFloors.has(currentScene))return;const floor=civilFloors.get(currentScene);if(!floor)return civilWallArtBefore(r,x,y);const tile=floor.walls.get(x+':'+y);if(tile)civilWallGeometry(r,tile);};
 const civilCrossingsBefore=drawRealmCrossings;
-drawRealmCrossings=function(r){civilCrossingsBefore(r);
+drawRealmCrossings=function(r){civilCrossingsBefore(r);if(globalThis.VeldrenStructureScene?.enabled)return;
  if(currentScene==='overworld'){const walls=civilWalls.get('overworld');if(walls)civilDrawWallRuns(r,walls,'human',true);}
  else if(civilFloors.has(currentScene)){for(const room of civilFloors.get(currentScene).rooms)civilPaintFloor(r,room.x+.5,room.y+.5,room.w-1,room.h-1,['library','study','bedroom','guest'].includes(room.usage)?'#a38a68':'#95988b',5);}
 };
@@ -452,6 +453,6 @@ function civilizationReviewPoint(name){
  const points={briarhaven:town('briarhaven'),ironhollow:town('ironhollow'),'small-village':town('fernwatch'),'large-village':town('copperdelve'),town:town('willowcross'),capital:town('crownreach'),goblins:['overworld',95,99],dwarven:town('deepforge'),elven:town('aelindor'),
  'city-gate-exterior':gatePoint(0,22),'city-gate-interior':gatePoint(-CIVIL_ARCHITECTURE_SCALE.cityGateTowerFootprint,3),'city-gate-upper':gatePoint(-CIVIL_ARCHITECTURE_SCALE.cityGateTowerFootprint,-4),
  'citadel-exterior':['overworld',castle.x+24,castle.y+castle.h+12],'citadel-courtyard':['overworld',castle.x+24,castle.y+28],'citadel-hall':['overworld',castle.x+24,castle.y+12],'citadel-library':['overworld',castle.x+8,castle.y+7],'citadel-upper':['overworld',castle.x+32,castle.y+22],'citadel-lower':[castle.service.destination+'_lower',24,12]};
- for(const [key,id]of [['ironhollow-quarry','ironhollow'],['active-quarry','deepforge'],['abandoned-quarry','stoneford']]){const q=surfaceQuarries.find(q=>q.id===id);points[key]=['overworld',q.x,q.y+8];}
+ for(const [key,id]of [['ironhollow-quarry','ironhollow'],['active-quarry','deepforge'],['abandoned-quarry','stoneford']]){const q=surfaceQuarries.find(q=>q.id===id);if(q){const p=globalThis.VeldrenQuarryScene?.enabled?VeldrenQuarryScene.point(q,0,8):[q.x,0,q.y+8];points[key]=['overworld',p[0],p[2]];}}
  return points[name];
 }

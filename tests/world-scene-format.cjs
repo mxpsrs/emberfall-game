@@ -1,0 +1,79 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const context={};vm.createContext(context);
+vm.runInContext(fs.readFileSync(path.join(root,'dist/world-scene-format.js'),'utf8'),context);
+const {fromLegacy,toLegacy,mergeLegacy,validateWorld,renderables}=context.VeldrenSceneFormat;
+const original=JSON.parse(fs.readFileSync(path.join(root,'editor-data/world-edits.json'),'utf8'));
+const world=fromLegacy(original),saved=JSON.parse(fs.readFileSync(path.join(root,'dist/world-scene.json'),'utf8'));
+assert.equal(world.format,'veldren.world');assert.equal(world.version,2);
+assert.equal(world.scenes[0].scene,'tutorial');assert.equal(world.scenes[0].entities.length,29);
+assert.deepEqual(JSON.parse(JSON.stringify(world)),saved,'checked-in runtime mirror matches the migrated source');
+const restored=JSON.parse(JSON.stringify(toLegacy(world)));
+assert.deepEqual(restored,original,'legacy mirror remains byte-value stable after canonical conversion');
+for(let i=0;i<original.changes.length;i++){
+ const before=original.changes[i],after=restored.changes[i];
+ assert.equal(after.id,before.id);assert.equal(after.kind,before.kind);assert.equal(after.scene,before.scene);
+ assert.equal(after.created,before.created);assert.equal(after.deleted,before.deleted);
+ assert.deepEqual(after.data,before.data);assert.deepEqual(after.assembly,before.assembly);
+ if(!before.deleted){assert(Math.abs(after.x-before.x)<1e-9);assert(Math.abs(after.y-before.y)<1e-9);assert(Math.abs(after.rotation-before.rotation)<1e-9);assert.equal(after.scale,before.scale);}
+}
+const edited=structuredClone(world);
+edited.scenes[0].entities[0].transform.position[0]=19.25;
+assert.equal(toLegacy(edited).changes[0].x,19.25,'runtime compatibility view reads scene transforms');
+assert.throws(()=>fromLegacy({...original,changes:[...original.changes,original.changes[0]]}),/Duplicate/);
+assert.throws(()=>toLegacy({...world,scenes:[...world.scenes,world.scenes[0]]}),/duplicate/i);
+const layered=structuredClone(world),tutorial=layered.scenes[0];
+tutorial.entities.unshift({id:'tutorial:arch',name:'Arch',parent:null,active:true,
+ transform:{position:[10,0,2],rotation:[0,Math.SQRT1_2,0,Math.SQRT1_2],scale:[2,2,2]},components:{Collider:{shape:'box'}},metadata:{layer:'structures'}});
+const child=tutorial.entities[1];child.parent='tutorial:arch';
+child.components.Interactable={action:'read'};
+const before=toLegacy(layered).changes[0];
+const inactive=structuredClone(layered);inactive.scenes[0].entities[0].active=false;
+assert.equal(toLegacy(inactive,{forRender:true}).changes[0].deleted,true,'inactive parent hides descendants');
+assert.equal(toLegacy(inactive).changes[0].deleted,before.deleted,'editor view retains authored state');
+inactive.scenes[0].entities[1].components.MeshRenderer={asset:'briar:lantern'};
+delete inactive.scenes[0].entities[1].components.LegacyWorldEdit;
+assert.equal(renderables(inactive).length,0,'inactive parent hides scene-authored renderer components');
+const unchanged=mergeLegacy(layered,{...toLegacy(layered),revision:layered.revision+1,changes:toLegacy(layered).changes});
+assert.deepEqual(JSON.parse(JSON.stringify(unchanged.scenes[0].entities[1].transform)),child.transform);
+assert.equal(unchanged.scenes[0].entities[1].parent,'tutorial:arch');
+assert.equal(unchanged.scenes[0].entities[1].components.Interactable.action,'read');
+assert.equal(unchanged.scenes[0].entities[0].components.Collider.shape,'box');
+const change=structuredClone(toLegacy(layered));change.revision++;change.changes[0].x+=4;
+const merged=mergeLegacy(layered,change),moved=toLegacy(merged).changes[0];
+assert(Math.abs(moved.x-before.x-4)<1e-8);
+assert.equal(merged.scenes[0].entities[1].parent,'tutorial:arch');
+assert(merged.scenes[0].entities[1].transform.affine);
+assert.throws(()=>validateWorld({...layered,scenes:[{...tutorial,entities:[...tutorial.entities,{...child,id:'duplicate-child',parent:'duplicate-child',components:{}}]}]}),/cycle/i);
+const sceneApi=context.VeldrenSceneFormat,authoring={format:'veldren.world',version:2,revision:0,updatedAt:null,scenes:[{format:'veldren.scene',version:2,scene:'tutorial',entities:[]}]};
+authoring.scenes[0].entities.push({id:'tutorial:group:lights',name:'Lights',parent:null,active:true,
+ transform:{position:[8,0,12],rotation:[0,Math.sin(Math.PI/8),0,Math.cos(Math.PI/8)],scale:[2,1,2]},components:{},metadata:{folder:'lighting'}});
+authoring.scenes[0].entities.push({id:'tutorial:lamp:parent',name:'Lantern post',parent:'tutorial:group:lights',active:true,
+ transform:{position:[2,0,3],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'briar:lantern',visible:true}},metadata:{}});
+authoring.scenes[0].entities.push({id:'tutorial:lamp:child',name:'Lantern glass',parent:'tutorial:lamp:parent',active:true,
+ transform:{position:[0,1,0],rotation:[0,0,0,1],scale:[.5,.5,.5]},components:{MeshRenderer:{asset:'briar:lantern',visible:true}},metadata:{}});
+const originalLocal=structuredClone(authoring.scenes[0].entities[1].transform);
+const originalWorld=sceneApi.readWorldTransform(authoring,'tutorial','tutorial:lamp:parent');
+sceneApi.setWorldTransform(authoring,'tutorial','tutorial:lamp:parent',{x:30,y:40,rotation:55,scale:2});
+const sceneMoved=sceneApi.readWorldTransform(authoring,'tutorial','tutorial:lamp:parent');
+assert(Math.abs(sceneMoved.x-30)<1e-8&&Math.abs(sceneMoved.y-40)<1e-8,'scene transform editor writes world position under a transformed parent');
+assert(Math.abs(sceneMoved.rotation-55)<1e-8&&Math.abs(sceneMoved.scale-2)<1e-8,'scene transform editor writes world yaw and scale');
+assert(authoring.scenes[0].entities[1].transform.affine,'parent-relative affine transform preserves world placement exactly');
+assert(Math.abs(renderables(authoring).find(item=>item.id==='tutorial:lamp:parent').x-30)<1e-8,'renderer bridge reads the edited canonical transform');
+validateWorld(authoring);
+sceneApi.setLocalTransform(authoring,'tutorial','tutorial:lamp:parent',originalLocal);
+const restoredTransform=sceneApi.readWorldTransform(authoring,'tutorial','tutorial:lamp:parent');
+assert(Math.abs(restoredTransform.x-originalWorld.x)<1e-8&&Math.abs(restoredTransform.y-originalWorld.y)<1e-8,'reverting restores the original local transform');
+const cloned=sceneApi.duplicateSubtree(authoring,'tutorial','tutorial:lamp:parent',(_,i)=>`tutorial:lamp:copy:${i}`);
+assert.equal(authoring.scenes[0].entities.find(item=>item.id===cloned.id).parent,'tutorial:group:lights','duplicated root keeps its original parent');
+assert.equal(authoring.scenes[0].entities.find(item=>item.id==='tutorial:lamp:copy:1').parent,cloned.id,'duplicated descendants are reparented to duplicated ancestors');
+assert.equal(renderables(authoring).filter(item=>item.id.startsWith('tutorial:lamp:copy:')).length,2,'duplicate copies the renderer subtree');
+assert.equal(sceneApi.deleteSubtree(authoring,'tutorial',cloned.id).length,2,'delete removes the subtree without leaving orphan components');
+validateWorld(authoring);
+const preserveId=layered.scenes[0].entities.find(item=>item.components.LegacyWorldEdit).id;
+const preserved=mergeLegacy(layered,{...toLegacy(layered),revision:layered.revision+1,changes:[]},{preserveIds:[preserveId]});
+assert(preserved.scenes[0].entities.some(item=>item.id===preserveId),'quarantined legacy edits remain available when the editor saves other changes');
+console.log('PASS: legacy world edits migrate to the shared scene document, survive round-trip, and drive runtime transform compatibility.');

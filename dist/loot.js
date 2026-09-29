@@ -56,9 +56,10 @@ function expireGroundLoot(now=Date.now()){
 let nextWorldTimerCheck=0;
 function updateWorldTimers(now=Date.now()){
  if(now<nextWorldTimerCheck)return;nextWorldTimerCheck=now+250;
- const seen=new Set(),expiredObjects=new Set();for(const [sceneId,scene]of Object.entries(worldScenes))for(const o of scene.objects){
+ globalThis.VeldrenGatherableScene?.tick(now,time);
+ const seen=new Set(),expiredObjects=new Set();for(const [sceneId,scene]of (globalThis.VeldrenWorldObjects?.enabled?VeldrenWorldObjects.timerScenes():Object.entries(worldScenes)))for(const o of scene.objects){
  if(seen.has(o))continue;seen.add(o);
- if(o._sharedReady||o._sharedObject)continue;
+ if(o._generatedGatherable||o._sharedReady||o._sharedObject)continue;
   const timerEvents=window.realmNative?.stateMachines?.worldTimerEvents(now,o.expiresAt,o.dead,o.respawnAt,time)??((Number.isFinite(o.expiresAt)&&o.expiresAt<=now?1:0)|(o.dead&&Number.isFinite(o.dead)&&(Number.isFinite(o.respawnAt)?now>=o.respawnAt:o.dead<=time)?2:0));
   if(timerEvents&1){
    o.collected=true;o.dead=Infinity;expiredObjects.add(o);if(target===o)stop();
@@ -70,7 +71,7 @@ function updateWorldTimers(now=Date.now()){
   o.x=Number.isFinite(o.homeX)?o.homeX:o.x;o.y=Number.isFinite(o.homeY)?o.homeY:o.y;o.drawX=o.x;o.drawY=o.y;delete o._creatureMotion;delete o.enraged;delete o.attackRecovery;delete o.attackWindup;delete o.attackMove;
   projectiles=projectiles.filter(p=>p.o!==o);meleeImpacts=meleeImpacts.filter(p=>p.o!==o);
  }
- if(expiredObjects.size){for(const scene of Object.values(worldScenes))scene.objects=scene.objects.filter(o=>!expiredObjects.has(o));const active=objects.filter(o=>!expiredObjects.has(o));objects.splice(0,objects.length,...active);}
+ if(expiredObjects.size&&globalThis.VeldrenWorldObjects?.enabled){for(const o of expiredObjects)VeldrenWorldObjects.removeSession(o);}else if(expiredObjects.size){for(const scene of Object.values(worldScenes))scene.objects=scene.objects.filter(o=>!expiredObjects.has(o));const active=objects.filter(o=>!expiredObjects.has(o));(globalThis.VeldrenWorldObjects?.enabled?globalThis.VeldrenWorldObjects.select(active):objects.splice(0,objects.length,...active));}
  if(expireGroundLoot(now)||expiredObjects.size)save();
 }
 function setupLoot(){
