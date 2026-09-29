@@ -23,13 +23,24 @@
  }
  function view(name,id){
   const key=name+'|'+id;if(views.has(key))return views.get(key);
-  const node=()=>native().entity(name,id),point=(m,p)=>Object.freeze([m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]]);
+  // Road coordinates are derived from the canonical Scene. Reuse their immutable
+  // projection until its revision changes instead of allocating on every terrain
+  // sample. Checking the revision also observes writes inside a native batch.
+  let revision=-1,owner=null,projection=null;
+  const point=(m,p)=>Object.freeze([m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]]);
+  const read=()=>{
+   const current=native(),next=current.revision();if(owner===current&&revision===next)return projection;
+   const n=current.entity(name,id),m=n.worldMatrix,road=n.components.RoadSegment,e=road.endpoint,len=Math.hypot(e[0],e[2]),x=-e[2]/len,z=e[0]/len;
+   const value={a:point(m,[0,0,0]),b:point(m,e),width:road.width*Math.hypot(m[0]*x+m[8]*z,m[2]*x+m[10]*z),paved:road.paved,settlement:road.settlement,role:road.role};
+   for(const key of ['na','nb']){const v=road[key];if(!v)continue;const x=m[0]*v[0]+m[8]*v[2],z=m[2]*v[0]+m[10]*v[2],length=Math.hypot(x,z)||1;value[key]=Object.freeze([x/length,z/length]);}
+   owner=current;revision=next;projection=Object.freeze(value);return projection;
+  };
   const result={};Object.defineProperties(result,{
-   _sceneEntityId:{value:id},a:{enumerable:true,get:()=>point(node().worldMatrix,[0,0,0])},b:{enumerable:true,get:()=>point(node().worldMatrix,node().components.RoadSegment.endpoint)},
-   width:{enumerable:true,get:()=>{const n=node(),e=n.components.RoadSegment.endpoint,len=Math.hypot(e[0],e[2]),m=n.worldMatrix,x=-e[2]/len,z=e[0]/len;return n.components.RoadSegment.width*Math.hypot(m[0]*x+m[8]*z,m[2]*x+m[10]*z);}},
-   paved:{enumerable:true,get:()=>node().components.RoadSegment.paved},settlement:{enumerable:true,get:()=>node().components.RoadSegment.settlement},role:{enumerable:true,get:()=>node().components.RoadSegment.role}
+   _sceneEntityId:{value:id},a:{enumerable:true,get:()=>read().a},b:{enumerable:true,get:()=>read().b},
+   width:{enumerable:true,get:()=>read().width},
+   paved:{enumerable:true,get:()=>read().paved},settlement:{enumerable:true,get:()=>read().settlement},role:{enumerable:true,get:()=>read().role}
   });
-  for(const key of ['na','nb'])Object.defineProperty(result,key,{enumerable:true,get:()=>{const n=node(),v=n.components.RoadSegment[key];if(!v)return undefined;const m=n.worldMatrix,x=m[0]*v[0]+m[8]*v[2],z=m[2]*v[0]+m[10]*v[2],len=Math.hypot(x,z)||1;return Object.freeze([x/len,z/len]);}});
+  for(const key of ['na','nb'])Object.defineProperty(result,key,{enumerable:true,get:()=>read()[key]});
   views.set(key,Object.freeze(result));return result;
  }
  function project(name){

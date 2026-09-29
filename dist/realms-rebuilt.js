@@ -487,7 +487,7 @@ function avatarPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0
  for(let v=0;v<p.length/3;v++){const i=v*3;
   for(let w=0;w<4;w++){const weight=mesh.w[v*4+w];if(!weight)continue;const bone=mesh.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*mesh.p[i]+pose[k+1]*mesh.p[i+1]+pose[k+2]*mesh.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*mesh.n[i]+pose[k+1]*mesh.n[i+1]+pose[k+2]*mesh.n[i+2]);}}
  }
- const result={...mesh,p,n,pose,avatar:a,helmet:null};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
+ const result={...mesh,p,n,pose,poseSource:mesh,avatar:a,helmet:null};rebuiltPoses.set(key,result);if(rebuiltPoses.size>128)rebuiltPoses.delete(rebuiltPoses.keys().next().value);return result;
 }
 function avatarGpuPose(sex,clip,phase,gear,look,blend=1,baseClip='idle',basePhase=0){
  const a=rebuiltAvatars[sex]||rebuiltAvatars.male,frame=Math.max(0,Math.min(a.clips[clip].frames-1,phase*(a.clips[clip].frames-1))),baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
@@ -677,7 +677,7 @@ function capeModelMesh(sex,id,wind=false){
 }
 function posedCapeMesh(source,pose){
  let poses=posedCapeCache.get(pose);if(!poses){poses=new WeakMap();posedCapeCache.set(pose,poses);}if(poses.has(source))return poses.get(source);
- const p=new Float32Array(source.p.length),n=new Float32Array(source.n.length);for(let v=0;v<p.length/3;v++){const i=v*3;for(let w=0;w<4;w++){const weight=source.w[v*4+w];if(!weight)continue;const bone=source.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*source.p[i]+pose[k+1]*source.p[i+1]+pose[k+2]*source.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*source.n[i]+pose[k+1]*source.n[i+1]+pose[k+2]*source.n[i+2]);}}}const result={...source,p,n};poses.set(source,result);return result;
+ const p=new Float32Array(source.p.length),n=new Float32Array(source.n.length);for(let v=0;v<p.length/3;v++){const i=v*3;for(let w=0;w<4;w++){const weight=source.w[v*4+w];if(!weight)continue;const bone=source.j[v*4+w]*12;for(let axis=0;axis<3;axis++){const k=bone+axis*4;p[i+axis]+=weight*(pose[k]*source.p[i]+pose[k+1]*source.p[i+1]+pose[k+2]*source.p[i+2]+pose[k+3]);n[i+axis]+=weight*(pose[k]*source.n[i]+pose[k+1]*source.n[i+1]+pose[k+2]*source.n[i+2]);}}}const result={...source,p,n,poseSource:source};poses.set(source,result);return result;
 }
 function drawArcWearables(r,root,mesh,gear,sex='male',clip='idle'){
  const local=(matrix,offset=[0,0,0],scale=1)=>({face:(points,col)=>r.face(points.map(v=>briarPoint(v.map((n,i)=>n*scale+offset[i]),0,matrix)),col)});

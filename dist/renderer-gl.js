@@ -177,8 +177,8 @@ function realmMeshTopology(mesh){
  }
  const topology={refs:new Uint32Array(refs),indices};variants.set(key,topology);return topology;
 }
-function realmVertexData(mesh,topology,skinned=false){
- const stride=skinned?20:12,data=new Float32Array(topology.refs.length*stride);
+function realmVertexData(mesh,topology,skinned=false,reuse=null){
+ const stride=skinned?20:12,size=topology.refs.length*stride,data=reuse?.length===size?reuse:new Float32Array(size);
  for(let v=0;v<topology.refs.length;v++){const ref=topology.refs[v],id=ref>>>1,p=id*3,j=id*4,o=v*stride,mixed=ref&1,colors=mixed&&mesh.f?mesh.f:mesh.c;
   for(let k=0;k<3;k++){data[o+k]=mesh.p[p+k];data[o+3+k]=mesh.n[p+k];data[o+6+k]=colors[p+k];}
   data[o+9]=mixed?20:mesh.t?.[id]||(mesh.uv?20:12);data[o+10]=mesh.uv?.[id*2]||0;data[o+11]=mesh.uv?.[id*2+1]||0;

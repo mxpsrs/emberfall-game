@@ -97,6 +97,44 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   parts[7].matrix[3]+=3;drawBuilding();assert.equal(submitted.length,1,'moving a part updates only that part');
   parts.pop();drawBuilding();assert.equal(buildingGpu.scene.getRenderableCount(),99,'removed/cutaway parts leave the rendered scene');
   F.TransformManager.prototype.setTransform=setTransform;
+  // Animated CPU poses retain separate simultaneous shapes, but recycle their
+  // native geometry allocation across frames rather than retaining every pose.
+  const poseA={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)},poseB={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)};
+  poseB.p[0]=-3;poseB.p[7]=4;
+  const model=[1,0,0,0,0,1,0,0,0,0,1,0];buildingGpu.frameId++;
+  const a=buildingGpu.canonicalEntry(poseA,model),b=buildingGpu.canonicalEntry(poseB,model);
+  assert.notEqual(a.buffer,b.buffer,'two different simultaneous poses have separate geometry');
+  assert.equal(buildingGpu.canonicalEntry(poseA,model).buffer,a.buffer,'identical poses share geometry within a frame');
+  buildingGpu.render([a,b],[],null);const vertexBuffer=a.resource.vb,indexBuffer=a.resource.ib,staging=a.buffer.data;
+  assert(staging,'mutable pose staging stays resident for updates');
+  const resourceCount=buildingGpu.diagnostics().legacy.meshes;
+  let updated;
+  for(let frame=0;frame<40;frame++){
+   buildingGpu.frameId++;
+   const pose={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p),n:new Float32Array(partMesh.n)};
+   pose.p[0]=-(frame+1);pose.p[7]=frame+2;pose.n[0]=.2;pose.n[1]=.8;
+   updated=buildingGpu.canonicalEntry(pose,model);buildingGpu.render([updated],[],null);
+   assert.equal(updated.resource.vb,vertexBuffer);assert.equal(updated.resource.ib,indexBuffer);assert.equal(updated.buffer.data,staging);
+   const expected=context.realmFilamentArrays(context.realmVertexData(pose,context.realmMeshTopology(pose)));
+   for(const name of ['positions','normals','colors','uvs'])assert.deepEqual(Array.from(updated.resource.dynamicArrays[name]),Array.from(expected[name]),'pooled '+name+' matches a fresh pose upload');
+   assert.deepEqual(JSON.parse(JSON.stringify(updated.resource.bounds)),JSON.parse(JSON.stringify(expected.bounds)),'animated bounds follow the deformed geometry');
+   assert.equal(buildingGpu.diagnostics().legacy.meshes,resourceCount,'advancing animation does not allocate another mesh');
+  }
+  buildingGpu.frameId++;
+  const recolored={...poseA,c:new Float32Array(poseA.c).fill(.25),f:new Float32Array(poseA.c).fill(.25)};
+  const recoloredEntry=buildingGpu.canonicalEntry(recolored,model);buildingGpu.render([recoloredEntry],[],null);
+  assert.equal(recoloredEntry.resource.dynamicArrays.colors[0],.25,'an appearance change updates the retained color stream');
+  buildingGpu.frameId++;
+  const body=buildingGpu.canonicalEntry(poseA,model),subset=buildingGpu.canonicalEntry({...poseA,i:new Uint16Array([0,1,2])},model);
+  assert.notEqual(body.buffer,subset.buffer,'equipment subsets sharing a pose source retain their own topology');
+  buildingGpu.render([body,subset],[],null);assert.equal(buildingGpu.scene.getRenderableCount(),2);
+  buildingGpu.render([updated],[],null);assert.equal(buildingGpu.scene.getRenderableCount(),1);
+  const renderables=F.Engine.prototype.getRenderableManager.call(buildingGpu.engine);
+  for(const pool of updated.resource.pools.values())for(const entity of pool.entities){const instance=renderables.getInstance(entity);try{const box=renderables.getAxisAlignedBoundingBox(instance);for(const field of ['center','halfExtent'])for(let i=0;i<3;i++)assert(Math.abs(box[field][i]-updated.resource.bounds[field][i])<1e-5,'native Filament bounds follow the animated pose');}finally{instance.delete();}}
+  for(let i=0;i<122;i++)buildingGpu.render([],[],null);
+  assert.equal(buildingGpu.diagnostics().legacy.meshes,0,'idle pose buffers retire through native residency');assert.equal(a.resource.dynamicArrays,null,'retired pose staging is released');assert.equal(buildingGpu.meshBytes,0,'retirement balances shared index accounting');
+  buildingGpu.frameId++;const rebuilt=buildingGpu.canonicalEntry(poseA,model);assert.notEqual(rebuilt.buffer,a.buffer);buildingGpu.render([rebuilt],[],null);
+  assert.equal(buildingGpu.scene.getRenderableCount(),1,'a retired pose reconstructs correctly');
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}

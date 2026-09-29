@@ -51,13 +51,19 @@ function realmFilamentNative(stage,task){
 }
 function realmFilamentArrays(raw,stride=12){
  const count=Math.floor(raw.length/stride),positions=new Float32Array(count*3),normals=new Float32Array(count*3),colors=new Float32Array(count*4),uvs=new Float32Array(count*2);
+ let minX=Infinity,minY=Infinity,minZ=Infinity,maxX=-Infinity,maxY=-Infinity,maxZ=-Infinity;
  for(let i=0;i<count;i++){
   const source=i*stride,p=i*3,u=i*2,c=i*4;
-  positions.set(raw.subarray(source,source+3),p);normals.set(raw.subarray(source+3,source+6),p);
+  // Avoid two short-lived typed-array views per vertex and a second bounds pass.
+  positions[p]=raw[source];positions[p+1]=raw[source+1];positions[p+2]=raw[source+2];
+  normals[p]=raw[source+3];normals[p+1]=raw[source+4];normals[p+2]=raw[source+5];
+  const x=positions[p],y=positions[p+1],z=positions[p+2];
+  minX=Math.min(minX,x);minY=Math.min(minY,y);minZ=Math.min(minZ,z);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);maxZ=Math.max(maxZ,z);
   colors[c]=Number.isFinite(raw[source+6])?Math.max(0,raw[source+6]):0;colors[c+1]=Number.isFinite(raw[source+7])?Math.max(0,raw[source+7]):0;colors[c+2]=Number.isFinite(raw[source+8])?Math.max(0,raw[source+8]):0;colors[c+3]=Number.isFinite(raw[source+9])?raw[source+9]:0;
   uvs[u]=raw[source+10]||0;uvs[u+1]=raw[source+11]||0;
  }
- return {count,positions,normals,colors,uvs};
+ const bounds=Number.isFinite(minX)?{center:[(minX+maxX)*.5,(minY+maxY)*.5,(minZ+maxZ)*.5],halfExtent:[Math.max(.001,(maxX-minX)*.5),Math.max(.001,(maxY-minY)*.5),Math.max(.001,(maxZ-minZ)*.5)]}:{center:[0,0,0],halfExtent:[1,1,1]};
+ return {count,positions,normals,colors,uvs,bounds};
 }
 function createRealmFilamentGPU(){
  if(typeof Filament==='undefined'||!window.VELDREN_FILAMENT_ASSETS)throw new Error('Filament assets are not ready');
@@ -88,6 +94,7 @@ function createRealmFilamentGPU(){
  const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming)):null;
  const canonicalEligibility=new Map();
  function canonicalEntry(mesh,model,style={}){
+  if(mesh.poseSource)return {...poseEntry(mesh),model,...style};
   const id=mesh.canonicalAsset;if(!id||style.dissolve||style.boss)return {...realmMeshEntry(backend,mesh),model,...style};
   if(!canonicalEligibility.has(id))canonicalEligibility.set(id,VeldrenAssets.has(id)&&VeldrenAssets.record(id).importSettings?.importer==='veldren-gltf-1');
   return canonicalEligibility.get(id)?{canonicalAsset:id,mesh,model,...style}:{...realmMeshEntry(backend,mesh),model,...style};
@@ -96,7 +103,7 @@ function createRealmFilamentGPU(){
  const sampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);sampler.setAnisotropy(quality.anisotropy);
  const groundSampler=new Filament.TextureSampler(minFilter,Filament.MagFilter.LINEAR,Filament.WrapMode.CLAMP_TO_EDGE);groundSampler.setAnisotropy(quality.anisotropy);
  const materialInstances=new Map(),terrainMaterialInstances=new Set(),worldMaterialInstances=new Set(),resources=new Set(),resourceByBuffer=new WeakMap(),activeEntities=new Set(),nextEntities=new Set(),activePools=new Set();
- const sharedMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map();
+ const sharedMeshes=new WeakMap(),poseMeshes=new WeakMap(),cache=new WeakMap(),terrain=new Map();
  const transformManager=engine.getTransformManager(),lightManager=engine.getLightManager(),matrixScratch=new Float32Array(16);
  const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null,previousSkyBackground='',frameMetrics=null,firstRenderMs=null,renderFrame=0,resourceSerial=0,residencyStats=null;
  const styleInstance=style=>{
@@ -120,8 +127,38 @@ function createRealmFilamentGPU(){
   vb.setBufferAt(engine,0,arrays.positions);vb.setBufferAt(engine,1,tangents);vb.setBufferAt(engine,2,arrays.colors);vb.setBufferAt(engine,3,arrays.uvs);
   let ib=null;const indices=entry.index?.buffer?.data;
   if(indices){ib=Filament.IndexBuffer.Builder().indexCount(indices.length).bufferType(Filament.IndexBuffer$IndexType.USHORT).build(engine);ib.setBuffer(engine,indices);}
-  const resource={buffer:entry.buffer,indexStaging:entry.index,vb,ib,bounds:entry.bounds||realmFilamentBounds(arrays.positions),gpuBytes:arrays.count*44+(indices?.byteLength||0),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral,residencyId:"legacy:"+(++resourceSerial),lastFrame:renderFrame};
-  resources.add(resource);if(!ephemeral)resourceByBuffer.set(entry.buffer,resource);return resource;
+  const resource={buffer:entry.buffer,indexStaging:entry.index,vb,ib,bounds:entry.bounds||arrays.bounds,gpuBytes:arrays.count*44+(indices?.byteLength||0),count:indices?.length||arrays.count,terrain:!!entry.terrain,pools:new Map(),ephemeral,residencyId:"legacy:"+(++resourceSerial),lastFrame:renderFrame};
+  resources.add(resource);if(!ephemeral)resourceByBuffer.set(entry.buffer,resource);if(entry.poseBuffer){resource.capacity=arrays.count;resource.dynamicArrays=arrays;resource.dynamicTangents=tangents;}return resource;
+ }
+ // Keep one mutable geometry allocation per simultaneously visible pose. The
+ // CPU animation result is unchanged; only its presentation buffers are reused.
+ function poseEntry(mesh){
+  const topology=realmMeshTopology(mesh);if(!topology)return realmMeshEntry(backend,mesh);
+  let variants=poseMeshes.get(mesh.poseSource);if(!variants){variants=new WeakMap();poseMeshes.set(mesh.poseSource,variants);}
+  let pool=variants.get(topology);if(!pool){pool={frame:-1,used:0,entries:[],seen:new WeakMap()};variants.set(topology,pool);}
+  if(pool.frame!==backend.frameId){pool.frame=backend.frameId;pool.used=0;pool.seen=new WeakMap();}
+  if(pool.seen.has(mesh))return pool.seen.get(mesh);
+  const slot=pool.used++;let entry=pool.entries[slot];
+  if(!entry){
+   entry=realmUploadIndexed(backend,mesh);entry.poseBuffer=true;pool.entries[slot]=entry;
+   entry.resource=makeResource(entry);entry.resource.capacity=topology.refs.length;entry.resource.pose=true;
+   entry.buffer.retire=()=>{if(pool.entries[slot]===entry)pool.entries[slot]=null;pool.seen.delete(entry.pose);entry.pose=null;entry.resource.dynamicArrays=null;entry.resource.dynamicTangents=null;if(--entry.index.refs===0){backend.gl.deleteBuffer(entry.index.buffer);backend.indexMeshes.delete(entry.index.topology);backend.meshBytes-=entry.index.bytes;}};
+  }else if(entry.pose!==mesh){
+   // Positions/normals change with the pose; appearance and UVs normally do not.
+   // Update those two streams directly instead of repacking every attribute.
+   const resource=entry.resource,arrays=resource.dynamicArrays,raw=entry.buffer.data;
+   const appearanceChanged=entry.pose.c!==mesh.c||entry.pose.f!==mesh.f||entry.pose.t!==mesh.t||entry.pose.uv!==mesh.uv;
+   if(appearanceChanged){realmVertexData(mesh,topology,false,raw);updateDynamicResource(resource,raw);}
+   else{
+    let changedNormals=false;
+    for(let v=0;v<topology.refs.length;v++){const p=(topology.refs[v]>>>1)*3,q=v*3,o=v*12;for(let k=0;k<3;k++){const normal=mesh.n[p+k];if(arrays.normals[q+k]!==normal)changedNormals=true;arrays.positions[q+k]=raw[o+k]=mesh.p[p+k];arrays.normals[q+k]=raw[o+3+k]=normal;}}
+    resource.vb.setBufferAt(engine,0,arrays.positions);
+    if(changedNormals){const builder=new Filament.SurfaceOrientation$Builder().vertexCount(resource.capacity);builder.normals(arrays.normals,12);const orientation=builder.build();try{resource.dynamicTangents=orientation.getQuats(resource.capacity);}finally{orientation.delete();}resource.vb.setBufferAt(engine,1,resource.dynamicTangents);}
+   }
+   entry.resource.bounds=realmFilamentBounds(arrays.positions);
+   const manager=engine.getRenderableManager();for(const stylePool of entry.resource.pools.values())for(const entity of stylePool.entities){const instance=manager.getInstance(entity);try{manager.setAxisAlignedBoundingBox(instance,entry.resource.bounds);}finally{instance.delete();}}
+  }
+  entry.pose=mesh;pool.seen.set(mesh,entry);return entry;
  }
  function dynamicCapacity(count){return Math.max(768,Math.ceil(count/768)*768);}
  function dynamicPacket(data,capacity){
@@ -251,7 +288,7 @@ function createRealmFilamentGPU(){
    // existing handles and releases the returned IDs through their owners.
    if(globalThis.realmNative?.scenes?.performance){
     const inventory=[...resources],reservedGpu=modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes;
-    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0)+(r.dynamicTangents?.byteLength||0),r.lastFrame===renderFrame,r.buffer?.retire&&!r.ephemeral?(r.buffer.data?.byteLength||0):0])});
+    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0)+(r.dynamicTangents?.byteLength||0),r.lastFrame===renderFrame,r.buffer?.retire&&!r.ephemeral&&!r.pose?(r.buffer.data?.byteLength||0):0])});
     residencyStats=result.stats;const retire=new Set(result.evict),discard=new Set(result.discardStaging);
     for(const resource of inventory)if(discard.has(resource.residencyId))resource.buffer.data=null;
     for(const resource of inventory)if(retire.has(resource.residencyId)){

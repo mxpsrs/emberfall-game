@@ -16,6 +16,8 @@ const arrays=context.realmFilamentArrays(new Float32Array([
 ]));
 assert.deepEqual(Array.from(arrays.positions),[1,2,3,-1,-2,-3]);
 assert.deepEqual(Array.from(arrays.normals),[0,1,0,1,0,0]);
+assert.deepEqual(JSON.parse(JSON.stringify(arrays.bounds)),JSON.parse(JSON.stringify(context.realmFilamentBounds(arrays.positions))),'fused bounds match the original geometry bounds');
+assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentArrays(new Float32Array()).bounds)),{center:[0,0,0],halfExtent:[1,1,1]});
 assert.match(source,/SurfaceOrientation\$Builder\(\)\.vertexCount\(arrays\.count\)/,'terrain and world normals are converted into Filament tangent frames for lit shading');
 assert.deepEqual(Array.from(arrays.colors),Array.from(new Float32Array([.2,.4,.6,23,1,0,.5,4])));
 assert.deepEqual(Array.from(arrays.uvs),[.25,.75,0,1]);
