@@ -126,21 +126,26 @@
   const id=initial.id,generationKey=initial.components.GeneratedProp?.generationKey||initial.components.GeneratedBuilding?.generationKey||id,target={};
   const current=()=>{const entity=root.realmNative.scenes.entity(sceneName,id);if(!entity)throw Error('Scene entity was deleted: '+id);return entity;};
   const mutate=fn=>{const next=localJson(current());delete next.worldMatrix;delete next.activeInHierarchy;fn(next);writeEntity(sceneName,next);};
-  const pathGet=path=>path.reduce((value,key)=>value?.[key],current());
+  const pathGet=path=>{let value=current();for(const key of path)value=value?.[key];return value;};
+  const nestedViews=new Map();let poseEntity=null,poseValue=null;
   const pathSet=(path,value,remove=false)=>{if((remove&&pathGet(path)===undefined)||!remove&&Object.is(pathGet(path),value))return;mutate(entity=>{let valueAt=entity;for(let i=0;i<path.length-1;i++)valueAt=valueAt[path[i]]??=(typeof path[i+1]==='number'?[]:{});if(remove)delete valueAt[path.at(-1)];else valueAt[path.at(-1)]=safe(value);});};
   // Nested component views resolve by path on every access. Mutations commit a
   // new record to C++ before any subsequent getter can observe it.
   const view=path=>{
    const value=pathGet(path);if(!value||typeof value!=='object')return value;
-   return new Proxy(Array.isArray(value)?[]:{},{
+   const cacheKey=JSON.stringify(path),array=Array.isArray(value),cached=nestedViews.get(cacheKey);if(cached?.array===array)return cached.proxy;
+   const proxy=new Proxy(array?[]:{},{
     get(_target,key){if(key===Symbol.iterator&&Array.isArray(pathGet(path)))return function*(){for(let i=0;i<pathGet(path).length;i++)yield view(path.concat(i));};const next=pathGet(path)?.[key];return next&&typeof next==='object'?view(path.concat(key)):next;},
     set(_target,key,next){pathSet(path.concat(key),next);return true;},deleteProperty(_target,key){pathSet(path.concat(key),undefined,true);return true;},
     ownKeys(){return Reflect.ownKeys(pathGet(path)||{});},
     has(_target,key){return key in (pathGet(path)||{});},
     getOwnPropertyDescriptor(_target,key){if(Array.isArray(pathGet(path))&&key==='length')return {value:pathGet(path).length,writable:true,enumerable:false,configurable:false};return Object.hasOwn(pathGet(path)||{},key)?{enumerable:true,configurable:true}:undefined;}
    });
+   nestedViews.set(cacheKey,{array,proxy});return proxy;
   };
-  const pose=()=>{const m=current().worldMatrix;return {x:m[12],height:m[13],y:m[14],rotation:Math.atan2(m[8],m[0])*180/Math.PI,scale:Math.hypot(m[0],m[1],m[2])};};
+  // Native entity records are immutable and revision-scoped, including writes
+  // inside a batch. Reuse derived coordinates only while that record is current.
+  const pose=(entity=current())=>{if(entity!==poseEntity){const m=entity.worldMatrix;poseEntity=entity;poseValue=Object.freeze({x:m[12],height:m[13],y:m[14],rotation:Math.atan2(m[8],m[0])*180/Math.PI,scale:Math.hypot(m[0],m[1],m[2])});}return poseValue;};
   const setPose=patch=>{
    const before=pose(),next={...before};for(const [key,value] of Object.entries(patch))if(value!==undefined)next[key]=Number(value);
    if(!Object.values(next).every(Number.isFinite)||next.scale<=0)throw Error('Invalid generated prop transform');
@@ -166,20 +171,21 @@
    if(key==='type')return options.type||'prop';if(key==='name')return current().name;
    if(key==='_generatedSceneEntity')return true;if(key==='_generatedSceneName')return sceneName;
    if(key==='_generatedSceneKey')return generationKey;if(key==='_generatedLegacyId')return legacyId;
-   if(key==='_generatedEntity')return current();
-   if(key in transforms)return pose()[transforms[key]];
-   if(key==='editorAsset'&&!current().metadata.editorAsset){const asset=current().components.MeshRenderer?.asset,match=asset?.match(/^(briar|creature):(.+)$/);if(match)return Object.freeze({source:match[1],key:match[2]});}
-   if(key==='heading')return pose().rotation*Math.PI/180;
+   const entity=current();
+   if(key==='_generatedEntity')return entity;
+   if(key in transforms)return pose(entity)[transforms[key]];
+   if(key==='editorAsset'&&!entity.metadata.editorAsset){const asset=entity.components.MeshRenderer?.asset,match=asset?.match(/^(briar|creature):(.+)$/);if(match)return Object.freeze({source:match[1],key:match[2]});}
+   if(key==='heading')return pose(entity).rotation*Math.PI/180;
    if(key==='editorTransform')return editorTransform;
-   if(key==='walkThrough')return !current().components.Collider?.solid;
-   if(key==='dead')return current().activeInHierarchy===false?Infinity:Number(current().metadata.dead)||0;
+   if(key==='walkThrough')return !entity.components.Collider?.solid;
+   if(key==='dead')return entity.activeInHierarchy===false?Infinity:Number(entity.metadata.dead)||0;
    if(key==='placement'){
-    if(!current().components.Placement)return undefined;
+    if(!entity.components.Placement)return undefined;
     const data=view(fields.placement);
     return new Proxy(data,{get(value,field){return field==='yaw'?pose().rotation*Math.PI/180:Reflect.get(value,field);},set(value,field,next){if(field==='yaw'){setPose({rotation:Number(next)*180/Math.PI});return true;}return Reflect.set(value,field,next);}});
    }
-   if(current().components.StructuralLinks?.[key])return root.VeldrenStructureScene?.getView(sceneName,current().components.StructuralLinks[key]);
-   if(current().components.SpatialLinks?.[key])return root.VeldrenBuildingScene?.getView(sceneName,current().components.SpatialLinks[key]);
+   if(entity.components.StructuralLinks?.[key])return root.VeldrenStructureScene?.getView(sceneName,entity.components.StructuralLinks[key]);
+   if(entity.components.SpatialLinks?.[key])return root.VeldrenBuildingScene?.getView(sceneName,entity.components.SpatialLinks[key]);
    return view(fields[key]||['metadata',key]);
   };
   const write=(key,value)=>{

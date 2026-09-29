@@ -401,8 +401,12 @@ async function boot(){
       realmStartupTask('assets',()=>fetch(realmAssetURL('assets/bounds.json')).then(async response=>{if(!response.ok)throw new Error('Item artwork unavailable');art.bounds=await response.json();update();}))
     ]);
     if(window.realmStartup?.failed)return;
-    await realmStartupStep('Preparing Briarhaven…',76,'world-generation',()=>setupExpandedWorld());
-    await realmStartupStep('Preparing the landscape…',77,'tutorial-generation',()=>{setupTutorialVillage();setupLoot();});
+    const prebuilt=await realmStartupStep('Loading the world…',76,'world-generation',()=>globalThis.VeldrenPrebuiltWorld.load());
+    if(!prebuilt){
+     await realmStartupStep('Preparing Briarhaven…',76,'world-generation',()=>setupExpandedWorld());
+     await realmStartupStep('Preparing the landscape…',77,'tutorial-generation',()=>setupTutorialVillage());
+    }
+    setupLoot();
     window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();window.VeldrenQuarryScene?.capture();window.VeldrenServiceScene?.capture();
     realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
     await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);

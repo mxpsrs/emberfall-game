@@ -47,7 +47,7 @@ for(const page of ['/landing.html','/donate.html']){
 }
 // Return already-compressed assets with encodeBody: manual, preventing double
 // compression. Clients without Brotli receive a streaming decoded response.
-const bundled=await build({entryPoints:['worker/api.js'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022',external:['node:crypto','node:zlib'],plugins:[compressedCatalogPlugin()]});const api=bundled.outputFiles[0].text;
+const bundled=await build({entryPoints:['worker/api.js'],bundle:true,write:false,minifyWhitespace:true,minifySyntax:true,format:'esm',platform:'browser',target:'es2022',external:['node:crypto','node:zlib'],plugins:[compressedCatalogPlugin()]});const api=bundled.outputFiles[0].text;
 // Store large text assets in the content-addressed Brotli cache. Native zlib
 // returns ordinary bytes; the hosting runtime still owns HTTP compression.
 // Versions and lengths above describe the original response bytes.

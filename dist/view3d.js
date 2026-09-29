@@ -189,7 +189,8 @@ function drawRoadDetails3(minx,maxx,minz,maxz){
  }road.flush();
 }
 let realmViewCorners=null;const basicBridgeKeys3=[{},{}];
-function draw3d(){meshFrame3++;meshDetail3=realmGeometryDetail3();const w=screen.w,h=screen.h,visibility=realmVisibilityBudget3();ctx.clearRect(0,0,w,h);const r=painter3(ctx,project3);if(!realmGPU?.presented){ctx.fillStyle='#243b40';ctx.fillRect(0,0,w,h);}const corners=[boundedViewPoint3(0,0),boundedViewPoint3(w,0),boundedViewPoint3(w,h),boundedViewPoint3(0,h)],[mw,mh]=sceneSize();
+function draw3d(){const scenes=window.realmNative?.scenes;return scenes?.withReadScope?scenes.withReadScope(drawScene3d):drawScene3d();}
+function drawScene3d(){meshFrame3++;meshDetail3=realmGeometryDetail3();const w=screen.w,h=screen.h,visibility=realmVisibilityBudget3();ctx.clearRect(0,0,w,h);const r=painter3(ctx,project3);if(!realmGPU?.presented){ctx.fillStyle='#243b40';ctx.fillRect(0,0,w,h);}const corners=[boundedViewPoint3(0,0),boundedViewPoint3(w,0),boundedViewPoint3(w,h),boundedViewPoint3(0,h)],[mw,mh]=sceneSize();
  realmViewCorners=corners;
  const minx=Math.max(0,Math.floor(Math.min(corners[0].x,corners[1].x,corners[2].x,corners[3].x))-visibility.tiles),maxx=Math.min(mw-1,Math.ceil(Math.max(corners[0].x,corners[1].x,corners[2].x,corners[3].x))+visibility.tiles),minz=Math.max(0,Math.floor(Math.min(corners[0].z,corners[1].z,corners[2].z,corners[3].z))-visibility.tiles),maxz=Math.min(mh-1,Math.ceil(Math.max(corners[0].z,corners[1].z,corners[2].z,corners[3].z))+visibility.tiles);
  const partitionView=globalThis.VeldrenWorldPerformance?.prepare(currentScene,objects,buildings,minx-3,maxx+3,minz-3,maxz+3),viewObjects=partitionView?.objects||worldObjectsInBounds(minx-3,maxx+3,minz-3,maxz+3);

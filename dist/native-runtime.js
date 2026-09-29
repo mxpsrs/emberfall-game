@@ -33,9 +33,11 @@
     return textDecoder.decode(new Uint8Array(api.memory.buffer,pointer,length));
    }finally{if(pointer)api.free(pointer);}
   }
-  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
+  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0,readDepth=0,readRevision=-1;
+  const sceneRevision=()=>readDepth?readRevision:api.veldren_world_scene_revision(world);
+  const refreshReadRevision=()=>{if(readDepth)readRevision=api.veldren_world_scene_revision(world);};
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
-  function changed(ok,kind,scene=null,id=null){if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  function changed(ok,kind,scene=null,id=null){refreshReadRevision();if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
   function finishBatch(){if(--batchDepth!==0)return;const names=[...batchedScenes];batchedScenes.clear();if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}
   let commandWriter=null,performanceHandle=0;
   // Startup mappers still author temporary import documents; the native Scene
@@ -134,7 +136,7 @@
       }
      }
     }
-    withCString(scene,s=>withCString(JSON.stringify(request),r=>api.veldren_editor_command(world,s,r)));
+    withCString(scene,s=>withCString(JSON.stringify(request),r=>api.veldren_editor_command(world,s,r)));refreshReadRevision();
     const result=JSON.parse(readNativeText((out,size)=>api.veldren_editor_response(world,out,size)));
     if(!result.ok){changed(true,'load');throw Error(result.error);}
     const value=result.value;
@@ -149,8 +151,14 @@
     try{return await scenes.batchAsync(callback);}finally{construction=null;entityCache.clear();cacheRevision=-1;}
    },
    subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
+   // A synchronous draw shares one revision read. Scene writes refresh it before
+   // any getter or subscriber can observe the change, even inside a batch.
+   withReadScope(callback){
+    if(readDepth===0)readRevision=api.veldren_world_scene_revision(world);readDepth++;
+    try{return callback();}finally{readDepth--;if(!readDepth)readRevision=-1;}
+   },
    entity(scene,id){
-    const revision=api.veldren_world_scene_revision(world);if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
+    const revision=sceneRevision();if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
     let entries=entityCache.get(scene);if(!entries){entries=new Map();entityCache.set(scene,entries);}if(entries.has(id))return entries.get(id);
     const json=withCString(scene,scenePtr=>withCString(id,idPtr=>readNativeText((out,capacity)=>api.veldren_world_scene_entity_read(world,scenePtr,idPtr,out,capacity))));
     const result=json?freeze(JSON.parse(json)):null;entries.set(id,result);return result;
@@ -186,7 +194,7 @@
    names(){return construction?construction.names.slice():fullRead().scenes.map(scene=>scene.scene);},
    serialize(){return construction?constructionRead():fullRead();},
    load(document){const ok=construction?constructionLoad(document):fullLoad(document);return changed(ok,'load');},
-   revision(){return api.veldren_world_scene_revision(world);}
+   revision(){return sceneRevision();}
   };
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
   // simulation stepping, gameplay rules, inventory or combat capability.

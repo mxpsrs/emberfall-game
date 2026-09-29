@@ -30,7 +30,7 @@ assert.equal(releaseResponse.status,200);assert.equal(releaseResponse.headers.ge
 assert.deepEqual(JSON.parse((await body(releaseResponse)).toString()),{release},'open tabs can detect content-only publications');
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
-for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png'])urls.push(versions[path]);
+for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','world-construction.json','prebuilt-world.js'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert.deepEqual(await body(nativeCore),readFileSync(new URL('../dist/native/veldren-core.wasm',import.meta.url)),'The current native core ships byte for byte');
 for(const file of ['editor/editor.js','editor/editor-runtime.js','editor/asset-preview.js','editor/index.html','editor/viewport.html']){
  const version=createHash('sha256').update('identity-v1\0').update(readFileSync(new URL('../dist/'+file,import.meta.url))).digest('hex').slice(0,16);
