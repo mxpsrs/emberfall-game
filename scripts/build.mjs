@@ -26,9 +26,13 @@ await walk('dist');
 // Versioned assets can be reused across visits. The document and account API
 // remain fresh, so new publications never depend on clearing a phone's cache.
 const versions={};
-// Change the cache namespace so browsers cannot reuse the broken compressed
-// responses from the previous publication under their immutable asset URLs.
-for(const [url,asset]of Object.entries(assets)){asset.version=createHash('sha256').update('identity-v1\0').update(Buffer.from(asset.data,'base64')).digest('hex').slice(0,16);if(url!=='/index.html')versions[url.slice(1)]=url.slice(1)+'?v='+asset.version;}
+// Give plain runtime scripts a new URL namespace so clients cannot reuse a
+// previously cached Brotli response after the delivery policy changes.
+for(const [url,asset]of Object.entries(assets)){
+ const namespace=url.endsWith('.js')&&asset.length<=512*1024?'plain-runtime-js-v1\0':'identity-v1\0';
+ asset.version=createHash('sha256').update(namespace).update(Buffer.from(asset.data,'base64')).digest('hex').slice(0,16);
+ if(url!=='/index.html')versions[url.slice(1)]=url.slice(1)+'?v='+asset.version;
+}
 const release='realm-'+createHash('sha256').update(Object.entries(assets).filter(([url])=>url!=='/index.html').sort(([a],[b])=>a.localeCompare(b)).map(([url,asset])=>url+':'+asset.version).join('\n')).digest('hex').slice(0,16);
 let html=Buffer.from(assets['/index.html'].data,'base64').toString('utf8');
 if(!html.includes('world-edits-runtime.js'))html=html.replace('<script src="character-creation.js"','<script src="world-edits-runtime.js"></script><script src="character-creation.js"');
@@ -53,9 +57,10 @@ const bundled=await build({entryPoints:['worker/api.js'],bundle:true,write:false
 // returns ordinary bytes; the hosting runtime still owns HTTP compression.
 // Versions and lengths above describe the original response bytes.
 for(const [url,asset]of Object.entries(assets)){
- // Keep the browser's critical building-scene script on the plain response
- // path; Safari and desktop reports both failed while loading this resource.
- if(url==='/world-building-scene.js'||!/\.(js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
+ // Keep runtime-sized JavaScript files as their original bytes. Safari and
+ // desktop reports have failed while downloading precompressed renderer code.
+ // Large generated model/creature catalogs remain compressed to fit the Worker.
+ if((url.endsWith('.js')&&asset.length<=512*1024)||!/\.(js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
  const raw=Buffer.from(asset.data,'base64'),compressed=compressAsset(raw);
  if(compressed.length<raw.length*.90){asset.data=compressed.toString('base64');asset.storageEncoding='brotli';}
 }

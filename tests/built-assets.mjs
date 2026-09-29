@@ -5,7 +5,7 @@ import {Script} from 'node:vm';
 import {brotliDecompressSync} from 'node:zlib';
 import worker from '../dist/server/index.js';
 import {sourceOnlyAssets} from '../scripts/asset-delivery.mjs';
-const request=path=>worker.fetch(new Request('https://veldren.test'+path,{headers:{'Accept-Encoding':'gzip, br'}}),{});
+const request=(path,headers={'Accept-Encoding':'gzip, br'})=>worker.fetch(new Request('https://veldren.test'+path,{headers}),{});
 async function body(response){
  const bytes=Buffer.from(await response.arrayBuffer()),encoding=response.headers.get('Content-Encoding');
  assert([null,'br'].includes(encoding));
@@ -13,10 +13,10 @@ async function body(response){
 }
 assert.match(readFileSync(new URL('../dist/server/index.js',import.meta.url),'utf8'),/encodeBody:passThrough\?'manual':'automatic'/,'Compressed responses must disable automatic recompression');
 for(const encoding of ['identity','gzip','br;q=0, gzip']){
- const response=await worker.fetch(new Request('https://veldren.test/game-icons.js',{headers:{'Accept-Encoding':encoding}}),{});
+ const response=await worker.fetch(new Request('https://veldren.test/assets/realms/models.js',{headers:{'Accept-Encoding':encoding}}),{});
  assert.equal(response.headers.get('Content-Encoding'),null);
  assert.equal(response.headers.get('Vary'),'Accept-Encoding');
- assert.deepEqual(await body(response),readFileSync(new URL('../dist/game-icons.js',import.meta.url)),'Identity fallback streams exact bytes');
+ assert.deepEqual(await body(response),readFileSync(new URL('../dist/assets/realms/models.js',import.meta.url)),'Identity fallback streams exact bytes');
 }
 const page=await request('/play');assert.equal(page.status,200);assert.equal(page.headers.get('Cache-Control'),'no-cache');
 const html=(await body(page)).toString();assert.match(html,/^<!doctype html>/i,'Home screen launch must receive HTML, never compressed bytes');
@@ -30,11 +30,22 @@ assert.equal(releaseResponse.status,200);assert.equal(releaseResponse.headers.ge
 assert.deepEqual(JSON.parse((await body(releaseResponse)).toString()),{release},'open tabs can detect content-only publications');
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
-const sceneScript=await request('/'+versions['world-building-scene.js']);assert.equal(sceneScript.status,200);assert.equal(sceneScript.headers.get('Content-Encoding'),null,'Critical scene scripts under 64 KiB stay uncompressed for browser script loading');assert.deepEqual(await body(sceneScript),readFileSync(new URL('../dist/world-building-scene.js',import.meta.url)));
+const startupScripts=['world-building-scene.js','view3d.js','world-depth.js'];
+const browserProfiles=[['iPhone Safari','Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 Version/27.0 Mobile/15E148 Safari/604.1'],['desktop Chrome','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36']];
+for(const file of startupScripts)for(const [profile,userAgent]of browserProfiles){
+ const source=readFileSync(new URL('../dist/'+file,import.meta.url));
+ const oldVersion=createHash('sha256').update('identity-v1\0').update(source).digest('hex').slice(0,16);
+ assert.notEqual(versions[file],file+'?v='+oldVersion,file+' must bypass the prior immutable Brotli URL');
+ const response=await request('/'+versions[file],{'Accept-Encoding':'gzip, br','User-Agent':userAgent});
+ assert.equal(response.status,200,file+' downloads on '+profile);
+ assert.equal(response.headers.get('Content-Encoding'),null,file+' remains uncompressed on '+profile+' to prevent VLD-SDL');
+ assert.deepEqual(await body(response),source,file+' response bytes match source on '+profile);
+}
 for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','world-construction.json','world-native.json','prebuilt-world.js'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert.deepEqual(await body(nativeCore),readFileSync(new URL('../dist/native/veldren-core.wasm',import.meta.url)),'The current native core ships byte for byte');
 for(const file of ['editor/editor.js','editor/editor-runtime.js','editor/asset-preview.js','editor/index.html','editor/viewport.html']){
- const version=createHash('sha256').update('identity-v1\0').update(readFileSync(new URL('../dist/'+file,import.meta.url))).digest('hex').slice(0,16);
+ const source=readFileSync(new URL('../dist/'+file,import.meta.url)),namespace=file.endsWith('.js')&&source.length<=512*1024?'plain-runtime-js-v1\0':'identity-v1\0';
+ const version=createHash('sha256').update(namespace).update(source).digest('hex').slice(0,16);
  assert.equal(versions[file],file+'?v='+version,'Built editor source is current: '+file);
 }
 for(const shading of ['lit','unlit'])for(const alpha of ['opaque','mask','blend']){
@@ -61,6 +72,15 @@ for(const record of registry.records)if(record.type==='model'&&record.importSett
 let totalBytes=0;
 for(const url of urls){
  const response=await request('/'+url);assert.equal(response.status,200,url);assert(response.headers.get('Cache-Control').includes('immutable'),url);
+ const sourcePath=url.split('?')[0];
+ if(sourcePath.endsWith('.js')){
+  const source=readFileSync(new URL('../dist/'+sourcePath,import.meta.url));
+  if(source.length<=512*1024){
+   assert.equal(response.headers.get('Content-Encoding'),null,sourcePath+' runtime JavaScript is delivered as original bytes');
+   const oldVersion=createHash('sha256').update('identity-v1\0').update(source).digest('hex').slice(0,16);
+   assert.notEqual(versions[sourcePath],sourcePath+'?v='+oldVersion,sourcePath+' gets a fresh URL when changing from Brotli delivery');
+  }
+ }
  const content=await body(response);totalBytes+=content.length;assert(content.length>0,url);
  if(url.split('?')[0].endsWith('.js'))new Script(content.toString(),{filename:url});
  if(/\.(js|json|css|txt)\?/.test(url))assert.deepEqual(content,readFileSync(new URL('../dist/'+url.split('?')[0],import.meta.url)),'Stored compression must preserve every response byte: '+url);
