@@ -76,8 +76,10 @@
   for(const scene of Object.keys(registry()))project(scene);
   for(const {scene,id,object}of sources.values()){const view=getView(scene,id);if(!view)continue;for(const k of new Set([...Object.keys(object),...Reflect.ownKeys(view),'_sceneEntityId','_generatedService','_generatedSceneEntity','_generatedSceneName'])){
    if(String(k).startsWith('_')&&!['_sceneEntityId','_generatedService','_generatedSceneEntity','_generatedSceneName'].includes(k))continue;
-   Object.defineProperty(object,k,{configurable:true,enumerable:!String(k).startsWith('_'),get:()=>view[k],set:v=>{view[k]=v;}});
+   root.VeldrenSceneOwnership.bindLegacyField(object,view,k);
   }}
+  // Construction sources are no longer owners; held legacy references still forward.
+  sources.clear();
   if(!enabled)native().subscribe(event=>{if(event.kind==='load'){for(const r of views.values())r.reset();for(const scene of Object.keys(registry()))project(scene);}else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
   enabled=true;installRendering();invalidate();return {services:count,colliders,supports};
  }

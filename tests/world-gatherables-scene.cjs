@@ -14,6 +14,8 @@ async function fixture(editor=false,saved=null,reverse=false){
 }
 async function main(){
  const f=await fixture(),{n,run,resources}=f,oak=f.list().find(o=>o.id===101),ore=f.list().find(o=>o.id===102),id=oak._sceneEntityId,R=f.ctx.realmNative.resources;
+ assert(run("Object.getOwnPropertyDescriptor(oakRef,'name').get===Object.getOwnPropertyDescriptor(oreRef,'name').get"),'legacy fields share their forwarding getter');
+ assert(run("Object.getOwnPropertyDescriptor(oakRef,'name').set===Object.getOwnPropertyDescriptor(oreRef,'name').set"),'legacy fields share their forwarding setter');
  assert.equal(f.report.gatherables,4);assert.equal(n.entity('overworld',id).parent,'inn');assert.equal(oak.resourceId,'oak');assert.equal(f.list().find(o=>o.id===103).resourceId,undefined,'absent catalog subtype is not filled in');assert(resources.ownsLegacy('overworld',101));assert.equal(run('resourceDefinition(oakRef).item'),'oakLogs');assert.equal(run('resourceDefinition(cropRef)'),null);
  assert.deepEqual(plain(n.entity('overworld',ore._sceneEntityId).components.Placement),{anchor:'ground',offset:[0.2,-0.1],room:null});assert(Math.abs(ore.placement.yaw-Math.PI/2)<1e-8);assert.deepEqual(plain(ore.placement.offset),[0.2,-0.1]);
  const original=JSON.stringify(n.serialize()),farm=run('JSON.stringify(s.farmPlots)');

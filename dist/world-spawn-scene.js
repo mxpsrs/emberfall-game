@@ -123,9 +123,11 @@
    const view=getView(scene,id);if(!view)continue;
    for(const field of new Set([...Object.keys(object),...Reflect.ownKeys(view),'_sceneEntityId','_generatedSpawn','_generatedSceneEntity','_generatedSceneName','_stationary'])){
     if(String(field).startsWith('_')&&!['_sceneEntityId','_generatedSpawn','_generatedSceneEntity','_generatedSceneName','_stationary'].includes(field))continue;
-    Object.defineProperty(object,field,{configurable:true,enumerable:!String(field).startsWith('_'),get:()=>view[field],set:value=>{view[field]=value;}});
+    root.VeldrenSceneOwnership.bindLegacyField(object,view,field);
    }
   }
+  // Construction sources are no longer owners; held legacy references still forward.
+  sources.clear();
   if(!enabled)native().subscribe(event=>{
    for(const record of views.values())if(event.kind==='load')record.reset();else if(record.scene===event.scene)record.sync();
    if(event.kind==='load')for(const scene of Object.keys(registry()))project(scene);

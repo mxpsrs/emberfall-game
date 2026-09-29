@@ -204,6 +204,15 @@
    getOwnPropertyDescriptor(object,key){return Object.getOwnPropertyDescriptor(object,key)||(keys.has(key)||Object.hasOwn(current().metadata,key)?{enumerable:true,configurable:true}:undefined);}
   });
  }
+ // Reuse forwarding descriptors across legacy construction objects. These
+ // objects may still be referenced by tutorial/gameplay code; a WeakMap keeps
+ // those references live without retaining a closure for every object field.
+ const legacyViews=new WeakMap(),legacyFields=new Map();
+ function bindLegacyField(object,view,key){
+  legacyViews.set(object,view);let descriptor=legacyFields.get(key);
+  if(!descriptor){descriptor={configurable:true,enumerable:!String(key).startsWith('_'),get(){return legacyViews.get(this)[key];},set(value){legacyViews.get(this)[key]=value;}};legacyFields.set(key,descriptor);}
+  Object.defineProperty(object,key,descriptor);
+ }
  function arrayReplace(array,values){if(root.VeldrenWorldObjects?.enabled)root.VeldrenWorldObjects.activate();else Array.prototype.splice.call(array,0,array.length,...values);}
  function authoredMesh(entity){const c=entity.components||{};return !Object.keys(c).some(k=>k.startsWith('Generated')||['LegacyWorldEdit','RuntimeBinding','BuildingPart','Light','ServiceDefinition','SpawnPoint'].includes(k))&&/^(briar|creature):/.test(c.MeshRenderer?.asset||'');}
  function projectNativeScene(sceneName,sceneDocument,rawObjects){
@@ -240,7 +249,7 @@
   // Keep all writes in the native Scene. Defer derived-view notifications
   // until construction is complete, instead of rebuilding the whole world
   // after each category is added. Each mapper installs its own new views.
-  await root.realmNative.scenes.batchAsync(async()=>{
+  await root.realmNative.scenes.construct(async()=>{
    const stages=[['Props',()=>migrateStaticProps()],...['Building','Scenery','Road','Light','Metadata','Structure','Spawn','Gatherable','Bridge','Quarry','Service'].map(name=>[name,()=>root['Veldren'+name+'Scene'].migrate()])];
    for(let i=0;i<stages.length;i++){const [name,task]=stages[i];reports[name]=await step('Preparing world · '+(i+1)+' of '+stages.length,80+i,'scene-ownership',task);}
    await step('Connecting the world…',93,'scene-ownership',()=>{});
@@ -297,5 +306,5 @@
   writeEntity(scene,entity);return scenesByName.get(scene)?.byId.get(id);
  }
  function status(){return {captured:generationCaptured,migrated:generatedCount,scenes:scenesByName.size,savedCatalogAuthoritative:authoritative};}
- root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},captureGenerationIdentity,migrateStaticProps,migrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
+ root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},bindLegacyField,captureGenerationIdentity,migrateStaticProps,migrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
 })(globalThis);

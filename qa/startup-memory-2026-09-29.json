@@ -1,0 +1,441 @@
+{
+  "scope": "Local Node VM, real generated world and native WASM; excludes GPU, network and simulation. Memory is sampled, not a continuous peak. No forced GC. Not phone FPS or reload-cause evidence.",
+  "before": {
+    "revision": "8bda7d4b4b01f12c43596d9e3956519e0b2a8802",
+    "mode": "CPU draw preparation only; no GPU or network",
+    "scene": {
+      "scene": "overworld",
+      "name": "Willowcross residence",
+      "x": 197.5,
+      "y": 81,
+      "width": 1112,
+      "height": 512,
+      "zoom": 118
+    },
+    "generationMs": 35953.690876,
+    "migrationMs": 46571.379849,
+    "coldFrameMs": 8087.985860000001,
+    "warmFramesMs": [
+      73.21461499998986,
+      64.3975519999949,
+      67.77592600000207,
+      71.479708999992,
+      76.83688499999698,
+      67.3926599999977,
+      67.5111179999949,
+      63.53925200000231,
+      71.03129600000102,
+      60.068299999999
+    ],
+    "warmMedianMs": 67.64352199999848,
+    "canonicalScenesSha256": "15834d81f2d3e51671ab3e17025cbff30d1e8c7df882b7d0d4fad419c4beff66",
+    "memorySamplesMiB": [
+      {
+        "stage": "generated",
+        "rss": 449,
+        "heapTotal": 300,
+        "heapUsed": 186,
+        "external": 86,
+        "arrayBuffers": 48,
+        "wasmMiB": [
+          34.375
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 1 of 12 996ms",
+        "rss": 412,
+        "heapTotal": 212,
+        "heapUsed": 118,
+        "external": 125,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          77.125
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 2 of 12 1715ms",
+        "rss": 486,
+        "heapTotal": 232,
+        "heapUsed": 134,
+        "external": 159,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          117.125
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 3 of 12 1356ms",
+        "rss": 538,
+        "heapTotal": 243,
+        "heapUsed": 127,
+        "external": 183,
+        "arrayBuffers": 44,
+        "wasmMiB": [
+          124.125
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 4 of 12 3984ms",
+        "rss": 567,
+        "heapTotal": 260,
+        "heapUsed": 135,
+        "external": 207,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          166.0625
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 5 of 12 3948ms",
+        "rss": 624,
+        "heapTotal": 287,
+        "heapUsed": 203,
+        "external": 227,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          185.25
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 6 of 12 2106ms",
+        "rss": 651,
+        "heapTotal": 287,
+        "heapUsed": 192,
+        "external": 268,
+        "arrayBuffers": 47,
+        "wasmMiB": [
+          199.5
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 7 of 12 2260ms",
+        "rss": 671,
+        "heapTotal": 286,
+        "heapUsed": 208,
+        "external": 275,
+        "arrayBuffers": 48,
+        "wasmMiB": [
+          204.9375
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 8 of 12 3011ms",
+        "rss": 690,
+        "heapTotal": 298,
+        "heapUsed": 192,
+        "external": 273,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          212.625
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 9 of 12 6723ms",
+        "rss": 864,
+        "heapTotal": 389,
+        "heapUsed": 311,
+        "external": 337,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          296
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 10 of 12 5595ms",
+        "rss": 940,
+        "heapTotal": 419,
+        "heapUsed": 304,
+        "external": 383,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          313.625
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 11 of 12 4299ms",
+        "rss": 946,
+        "heapTotal": 429,
+        "heapUsed": 294,
+        "external": 355,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          313.9375
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 12 of 12 4561ms",
+        "rss": 981,
+        "heapTotal": 446,
+        "heapUsed": 349,
+        "external": 357,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          315.25
+        ]
+      },
+      {
+        "stage": "Connecting the world\u2026 0ms",
+        "rss": 981,
+        "heapTotal": 446,
+        "heapUsed": 349,
+        "external": 357,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          315.25
+        ]
+      },
+      {
+        "stage": "migrated-digest",
+        "rss": 1042,
+        "heapTotal": 469,
+        "heapUsed": 327,
+        "external": 379,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          315.25
+        ]
+      },
+      {
+        "stage": "first-draw",
+        "rss": 1056,
+        "heapTotal": 501,
+        "heapUsed": 385,
+        "external": 390,
+        "arrayBuffers": 49,
+        "wasmMiB": [
+          315.25
+        ]
+      },
+      {
+        "stage": "finished",
+        "rss": 1061,
+        "heapTotal": 504,
+        "heapUsed": 423,
+        "external": 390,
+        "arrayBuffers": 49,
+        "wasmMiB": [
+          315.25
+        ]
+      }
+    ]
+  },
+  "after": {
+    "revision": "startup-import-fix",
+    "mode": "CPU draw preparation only; no GPU or network",
+    "scene": {
+      "scene": "overworld",
+      "name": "Willowcross residence",
+      "x": 197.5,
+      "y": 81,
+      "width": 1112,
+      "height": 512,
+      "zoom": 118
+    },
+    "generationMs": 37312.747425,
+    "migrationMs": 28643.972246999998,
+    "coldFrameMs": 8497.155056999996,
+    "warmFramesMs": [
+      86.44182300000102,
+      76.84989500000665,
+      78.54529199999524,
+      79.18851800000994,
+      85.75766500001191,
+      76.94475700000476,
+      108.61034199999995,
+      70.24880099999427,
+      75.9366139999911,
+      71.42064100000425
+    ],
+    "warmMedianMs": 77.7450245,
+    "canonicalScenesSha256": "15834d81f2d3e51671ab3e17025cbff30d1e8c7df882b7d0d4fad419c4beff66",
+    "memorySamplesMiB": [
+      {
+        "stage": "generated",
+        "rss": 447,
+        "heapTotal": 299,
+        "heapUsed": 200,
+        "external": 85,
+        "arrayBuffers": 47,
+        "wasmMiB": [
+          34.375
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 1 of 12 994ms",
+        "rss": 411,
+        "heapTotal": 212,
+        "heapUsed": 117,
+        "external": 124,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          77.125
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 2 of 12 1130ms",
+        "rss": 497,
+        "heapTotal": 251,
+        "heapUsed": 135,
+        "external": 131,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          77.125
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 3 of 12 481ms",
+        "rss": 509,
+        "heapTotal": 246,
+        "heapUsed": 149,
+        "external": 140,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          89.6875
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 4 of 12 3353ms",
+        "rss": 527,
+        "heapTotal": 266,
+        "heapUsed": 162,
+        "external": 143,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          92.6875
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 5 of 12 2053ms",
+        "rss": 569,
+        "heapTotal": 280,
+        "heapUsed": 175,
+        "external": 174,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          119.25
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 6 of 12 1238ms",
+        "rss": 582,
+        "heapTotal": 276,
+        "heapUsed": 157,
+        "external": 181,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          126.0625
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 7 of 12 1244ms",
+        "rss": 599,
+        "heapTotal": 280,
+        "heapUsed": 175,
+        "external": 183,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          127.5
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 8 of 12 1784ms",
+        "rss": 629,
+        "heapTotal": 306,
+        "heapUsed": 186,
+        "external": 187,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          132
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 9 of 12 4586ms",
+        "rss": 824,
+        "heapTotal": 493,
+        "heapUsed": 420,
+        "external": 195,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          139.0625
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 10 of 12 1356ms",
+        "rss": 872,
+        "heapTotal": 371,
+        "heapUsed": 260,
+        "external": 273,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          209.875
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 11 of 12 2161ms",
+        "rss": 874,
+        "heapTotal": 376,
+        "heapUsed": 305,
+        "external": 273,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          209.9375
+        ]
+      },
+      {
+        "stage": "Preparing world \u00b7 12 of 12 2860ms",
+        "rss": 872,
+        "heapTotal": 381,
+        "heapUsed": 278,
+        "external": 274,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          210.25
+        ]
+      },
+      {
+        "stage": "Connecting the world\u2026 0ms",
+        "rss": 872,
+        "heapTotal": 381,
+        "heapUsed": 278,
+        "external": 274,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          210.25
+        ]
+      },
+      {
+        "stage": "migrated-digest",
+        "rss": 944,
+        "heapTotal": 393,
+        "heapUsed": 303,
+        "external": 297,
+        "arrayBuffers": 38,
+        "wasmMiB": [
+          211.125
+        ]
+      },
+      {
+        "stage": "first-draw",
+        "rss": 929,
+        "heapTotal": 436,
+        "heapUsed": 367,
+        "external": 308,
+        "arrayBuffers": 49,
+        "wasmMiB": [
+          211.125
+        ]
+      },
+      {
+        "stage": "finished",
+        "rss": 933,
+        "heapTotal": 439,
+        "heapUsed": 369,
+        "external": 308,
+        "arrayBuffers": 49,
+        "wasmMiB": [
+          211.125
+        ]
+      }
+    ]
+  }
+}

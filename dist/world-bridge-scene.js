@@ -14,7 +14,7 @@
   const view=root.VeldrenSceneOwnership.createView(scene,n,'',{type:'bridge',fields,properties});views.set(key,view);return view;
  }
  function project(scene=null){
-  if(scene===null){lists.clear();for(const s of native().serialize().scenes)project(s.scene);}
+  if(scene===null){lists.clear();for(const name of native().names())project(name);}
   else lists.set(scene,Object.freeze(native().componentIds(scene,'Bridge').map(id=>getView(scene,id))));
   if(typeof physicalBridges!=='undefined')physicalBridges=list('overworld',true);
  }

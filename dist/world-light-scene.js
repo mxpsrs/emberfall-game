@@ -92,7 +92,7 @@
   // and persistent writes now forward to the canonical entity.
   for(const {name,id,source}of bindings){const view=getView(name,id);for(const key of new Set([...Object.keys(source),...Reflect.ownKeys(view),'_sceneEntityId','_generatedFixture','_generatedSceneEntity','_generatedSceneName'])){
    if(String(key).startsWith('_')&&!['_sceneEntityId','_generatedFixture','_generatedSceneEntity','_generatedSceneName'].includes(key))continue;
-   Object.defineProperty(source,key,{configurable:true,enumerable:!String(key).startsWith('_'),get:()=>view[key],set:value=>{view[key]=value;}});
+   root.VeldrenSceneOwnership.bindLegacyField(source,view,key);
   }}
   if(!enabled)native().subscribe(event=>{
    if(event.kind==='load'){for(const name of Object.keys(registry()))project(name);}

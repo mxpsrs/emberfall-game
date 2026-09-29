@@ -35,9 +35,71 @@
   }
   const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0;
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
-  function changed(ok,kind,scene=null,id=null){if(ok){if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
+  function changed(ok,kind,scene=null,id=null){if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
   function finishBatch(){if(--batchDepth!==0)return;const names=[...batchedScenes];batchedScenes.clear();if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}
   let commandWriter=null,performanceHandle=0;
+  // Startup mappers still author temporary import documents; the native Scene
+  // remains the only live owner. Avoid cloning/reloading the entire native world
+  // for every category. This scope ends before gameplay/editor commands start.
+  let construction=null;
+  const header=(value,excluded)=>Object.fromEntries(Object.entries(value).filter(([key])=>key!==excluded));
+  const encodedHeader=(value,excluded)=>JSON.stringify(header(value,excluded));
+  const fullRead=()=>{const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity),'document');return json?JSON.parse(json):null;};
+  const fullLoad=document=>withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1);
+  function rememberConstruction(document){
+   if(!construction)return;
+   construction.metadata=header(document,'scenes');construction.names=document.scenes.map(s=>s.scene).sort();construction.snapshot=null;
+  }
+  function constructionRead(){
+   const document={...construction.metadata,scenes:construction.names.map(name=>scenes.read(name))};
+   const records=new Map();for(const scene of document.scenes)records.set(scene.scene,{header:header(scene,'entities'),entities:new Map(scene.entities.map(node=>[node.id,JSON.stringify(node)]))});
+   construction.snapshot={revision:scenes.revision(),metadata:header(document,'scenes'),records};return document;
+  }
+  function constructionLoad(document){
+   const before=construction.snapshot;
+   const fallback=()=>{const ok=fullLoad(document);if(ok)rememberConstruction(document);return ok;};
+   if(!before||before.revision!==scenes.revision()||!Array.isArray(document?.scenes)||encodedHeader(document,'scenes')!==JSON.stringify(before.metadata))return fallback();
+   const names=new Set(),plans=[];
+   for(const scene of document.scenes){
+    if(!scene||typeof scene.scene!=='string'||!scene.scene||names.has(scene.scene)||scene.format!=='veldren.scene'||scene.version!==2||!Array.isArray(scene.entities))return fallback();names.add(scene.scene);
+    const old=before.records.get(scene.scene);
+    if(old&&encodedHeader(scene,'entities')!==JSON.stringify(old.header)||!old&&(!scene.entities.length||scene.nextEntityId!==undefined&&String(scene.nextEntityId)!=='1'))return fallback();
+    const nodes=new Map(),depth=new Map(),changedNodes=[];
+    for(const node of scene.entities){if(!node?.id||nodes.has(node.id))return fallback();nodes.set(node.id,node);}
+    // Resolve parents iteratively, preserving authored order at each depth.
+    // Invalid/missing/cyclic graphs go through the atomic native full loader.
+    for(const node of scene.entities){let id=node.id;const chain=[],seen=new Set();while(id&&!depth.has(id)){if(!nodes.has(id)||seen.has(id))return fallback();seen.add(id);chain.push(id);id=nodes.get(id).parent;}let d=id?depth.get(id)+1:0;for(let i=chain.length-1;i>=0;i--)depth.set(chain[i],d++);}
+    for(const node of scene.entities)if(old?.entities.get(node.id)!==JSON.stringify(node))changedNodes.push(node);
+    changedNodes.sort((a,b)=>depth.get(a.id)-depth.get(b.id));
+    const removed=old?[...old.entities.keys()].filter(id=>!nodes.has(id)):[];
+    // Existing siblings must keep their relative order. Bootstrap categories
+    // append/reparent new definitions; arbitrary reordering remains a full load.
+    const expected=new Map(),actual=new Map();
+    for(const node of scene.entities){const key=node.parent||'';if(!expected.has(key))expected.set(key,[]);expected.get(key).push(node.id);}
+    if(old)for(const [id,json]of old.entities){const node=nodes.get(id),was=JSON.parse(json);if(node&&node.parent===was.parent){const key=node.parent||'';if(!actual.has(key))actual.set(key,[]);actual.get(key).push(id);}}
+    for(const node of changedNodes){const was=old?.entities.get(node.id),prior=was&&JSON.parse(was);if(!prior||prior.parent!==node.parent){const key=node.parent||'';if(!actual.has(key))actual.set(key,[]);actual.get(key).push(node.id);}}
+    for(const [key,ids]of expected)if(JSON.stringify(ids)!==JSON.stringify(actual.get(key)||[]))return fallback();
+    plans.push({scene:scene.scene,changedNodes,removed});
+   }
+   if([...before.records.keys()].some(name=>!names.has(name)))return fallback();
+   let ok=true;
+   try{
+    for(const plan of plans){
+     for(const node of plan.changedNodes){ok=withCString(plan.scene,s=>withCString(JSON.stringify(node),n=>api.veldren_world_scene_entity_upsert(world,s,n)===1));if(!ok)break;}
+     if(!ok)break;
+     // Reparent retained children before removing obsolete import definitions.
+     for(const id of plan.removed)withCString(plan.scene,s=>withCString(id,n=>api.veldren_world_scene_entity_remove(world,s,n)));
+    }
+   }catch{ok=false;}
+   if(!ok){
+    // Handle valid transformations that require a different intermediate graph,
+    // or restore the previous canonical state if the incoming document is bad.
+    if(fallback())return true;
+    const rollback={...before.metadata,scenes:[...before.records.values()].map(record=>({...record.header,entities:[...record.entities.values()].map(json=>JSON.parse(json))}))};
+    if(!fullLoad(rollback))throw Error('Cannot restore rejected construction import');rememberConstruction(rollback);return false;
+   }
+   rememberConstruction(document);return true;
+  }
   const scenes={
    performance(scene,request){
     if(destroyed)throw Error('Native world destroyed');
@@ -81,6 +143,11 @@
    },
    batch(callback){batchDepth++;try{return callback();}finally{finishBatch();}},
    async batchAsync(callback){batchDepth++;try{return await callback();}finally{finishBatch();}},
+   async construct(callback){
+    if(construction)throw Error('World construction is already active');
+    construction={metadata:null,names:[],snapshot:null};rememberConstruction(fullRead());
+    try{return await scenes.batchAsync(callback);}finally{construction=null;entityCache.clear();cacheRevision=-1;}
+   },
    subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
    entity(scene,id){
     const revision=api.veldren_world_scene_revision(world);if(cacheRevision!==revision){entityCache.clear();cacheRevision=revision;}
@@ -116,8 +183,9 @@
    quarryRampAt(scene,x,z){return withCString(scene,s=>api.veldren_world_scene_quarry_ramp_at(world,s,x,z)===1);},
    terrainPadHeight(scene,x,z,height,footing=false){return withCString(scene,s=>api.veldren_world_scene_terrain_pad_height(world,s,x,z,height,Number(footing)));},
    lights(scene,night=1){const json=withCString(scene,scenePtr=>readNativeText((out,capacity)=>api.veldren_world_scene_lights_read(world,scenePtr,night,out,capacity)));return json?JSON.parse(json):[];},
-   serialize(){const json=readNativeText((out,capacity)=>api.veldren_world_document_serialize(world,out,capacity),'document');return json?JSON.parse(json):null;},
-   load(document){return changed(withCString(JSON.stringify(document),ptr=>api.veldren_world_document_load(world,ptr)===1),'load');},
+   names(){return construction?construction.names.slice():fullRead().scenes.map(scene=>scene.scene);},
+   serialize(){return construction?constructionRead():fullRead();},
+   load(document){const ok=construction?constructionLoad(document):fullLoad(document);return changed(ok,'load');},
    revision(){return api.veldren_world_scene_revision(world);}
   };
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
