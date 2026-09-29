@@ -33,6 +33,8 @@ assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*102
 const delivery=JSON.parse(readFileSync(new URL('../.qa/asset-delivery.json',import.meta.url)));
 assert(delivery.inlineScripts.length>=100,'Small game scripts are embedded in the launch document');
 assert.equal(new Set(delivery.inlineScripts).size,delivery.inlineScripts.length,'Inline script manifest has unique paths');
+assert(!delivery.inlineScripts.includes('vendor/filament/filament.js'),'Filament stays external so it can locate its wasm beside its script');
+assert(html.includes('<script src="'+versions['vendor/filament/filament.js']+'"></script>'),'Filament keeps its versioned /vendor/filament/ script URL');
 assert.equal((html.match(/<script>realmStartupInlineLoaded\(\);<\/script>/g)||[]).length,delivery.inlineScripts.length,'Every inline script advances startup progress');
 assert(html.indexOf('window.REALM_ASSET_VERSIONS=')<html.indexOf('sourceURL=startup.js?'),'Asset metadata loads before startup.js');
 for(const file of delivery.inlineScripts){
@@ -40,12 +42,29 @@ for(const file of delivery.inlineScripts){
  assert(html.includes(source),'Inline source matches the built script: '+file);
  assert(html.includes('//# sourceURL='+versions[file]),'Inline source keeps a versioned diagnostic URL: '+file);
  new Script(source,{filename:file});
- assert(!delivery.assets.some(asset=>asset.path==='/'+file),'Inline script is removed from Worker assets: '+file);
+ assert(delivery.assets.some(asset=>asset.path==='/'+file),'Cached-page compatibility route is retained for inline script: '+file);
 }
 const externalScripts=[...html.matchAll(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g)].map(match=>match[1].replace(/^\/+/,''));
 assert(externalScripts.length>0,'Large catalogs remain separate scripts');
-for(const file of externalScripts)assert(statSync(new URL('../dist/'+file,import.meta.url)).size>512*1024,'Only large scripts remain external: '+file);
-for(const file of ['startup.js','native-runtime.js','world-building-scene.js','prebuilt-world.js'])assert.equal((await request('/'+versions[file])).status,404,'Worker no longer serves inlined script: '+file);
+assert(externalScripts.includes('vendor/filament/filament.js'),'Filament remains a separately loaded runtime script');
+for(const file of externalScripts)assert(statSync(new URL('../dist/'+file,import.meta.url)).size>512*1024||file.startsWith('vendor/'),'Only large catalogs and path-dependent vendor scripts remain external: '+file);
+const filamentSource=readFileSync(new URL('../dist/vendor/filament/filament.js',import.meta.url),'utf8');
+assert(filamentSource.includes('globalThis.document?.currentScript?.src'),'Filament resolves its wasm base from the external script URL');
+const filamentWasm=await request('/'+versions['vendor/filament/filament.wasm']);
+assert.equal(filamentWasm.status,200,'Filament wasm is served beside its runtime');
+assert.equal(filamentWasm.headers.get('Content-Type'),'application/wasm');
+assert.deepEqual(await body(filamentWasm),readFileSync(new URL('../dist/vendor/filament/filament.wasm',import.meta.url)),'Filament receives the exact wasm payload from /vendor/filament/');
+for(const file of delivery.inlineScripts){
+ const source=readFileSync(new URL('../dist/'+file,import.meta.url));
+ const current=await request('/'+versions[file]);assert.equal(current.status,200,'Current inline script route remains available: '+file);
+ assert.equal(current.headers.get('Content-Encoding'),null,'Legacy script responses remain uncompressed for browser compatibility: '+file);
+ assert.deepEqual(await body(current),source,'Current inline script route returns exact source: '+file);
+ const stale=await request('/'+file+'?v=previous-release');assert.equal(stale.status,200,'Cached HTML can still load an earlier script URL: '+file);
+ assert.equal(stale.headers.get('Cache-Control'),'no-cache','Stale script responses cannot be cached as immutable: '+file);
+ assert.deepEqual(await body(stale),source,'Stale script requests receive the compatible current source: '+file);
+}
+for(const file of ['startup.js','native-runtime.js','world-building-scene.js','prebuilt-world.js'])assert.equal((await request('/'+file+'?v=old')).status,200,'Older game documents retain their script routes: '+file);
+assert.equal((await request('/not-a-game-script.js')).status,404,'Unknown scripts still return not found');
 for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','world-construction.json','world-native.json'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert.deepEqual(await body(nativeCore),readFileSync(new URL('../dist/native/veldren-core.wasm',import.meta.url)),'The current native core ships byte for byte');
 for(const file of ['editor/editor.js','editor/editor-runtime.js','editor/asset-preview.js','editor/index.html','editor/viewport.html']){

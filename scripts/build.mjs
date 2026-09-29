@@ -43,15 +43,19 @@ html=html.replace('<script src="startup.js','<script>window.REALM_RELEASE='+JSON
 const inlinedScripts=[];
 html=html.replace(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g,(tag,sourcePath)=>{
  const file=sourcePath.replace(/^\/+/,''),asset=assets['/'+file];
- if(!asset||asset.length>512*1024)return tag;
+ // Filament derives its wasm directory from document.currentScript.src.
+ // Keep vendor scripts external so that URL remains available at evaluation.
+ if(!asset||asset.length>512*1024||file.startsWith('vendor/'))return tag;
  const source=Buffer.from(asset.data,'base64').toString('utf8');
  if(/<\/script/i.test(source))throw new Error('Cannot safely inline script containing a closing script tag: '+file);
  inlinedScripts.push(file);
  return '<script>'+source+'\n//# sourceURL='+file+'?v='+asset.version+'\n</script><script>realmStartupInlineLoaded();</script>';
 });
-for(const file of inlinedScripts)delete assets['/'+file];
+// Keep the source assets available for clients holding a previous HTML document.
+// Fresh documents use the inline copy; older cached documents still need these routes.
+
 assets['/index.html'].data=Buffer.from(html).toString('base64');
-assets['/index.html'].version=createHash('sha256').update(html).digest('hex').slice(0,16);
+assets['/index.html'].version=createHash('sha256').update(html).digest('hex').slice(0,16);assets['/index.html'].length=Buffer.byteLength(html);
 // Inline the small landing dependencies to avoid three serial asset requests.
 for(const page of ['/landing.html','/donate.html']){
  if(!assets[page])continue;
@@ -72,12 +76,25 @@ for(const [url,asset]of Object.entries(assets)){
  // Keep runtime-sized JavaScript files as their original bytes. Safari and
  // desktop reports have failed while downloading precompressed renderer code.
  // Large generated model/creature catalogs remain compressed to fit the Worker.
- if((url.endsWith('.js')&&asset.length<=512*1024)||!/\.(js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
+ if((url.endsWith('.js')&&asset.length<=512*1024)||!/\.(html|js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
  const raw=Buffer.from(asset.data,'base64'),compressed=compressAsset(raw);
  if(compressed.length<raw.length*.90){asset.data=compressed.toString('base64');asset.storageEncoding='brotli';}
 }
 for(const asset of Object.values(assets)){const bytes=Buffer.from(asset.data,'base64');asset.storageLength=bytes.length;asset.data=encodeAsset(bytes);if(!Buffer.from(decodeAsset(asset.data,bytes.length)).equals(bytes))throw Error('Embedded asset roundtrip failed');}
 const server="import {createBrotliDecompress} from 'node:zlib';\nimport {Readable} from 'node:stream';\n"+api+'\n'+acceptsBrotli.toString()+'\n'+decodeAsset.toString()+'\nconst assets='+JSON.stringify(assets)+';\n'+`const release=${JSON.stringify(release)};export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==='/api/editor/edits')return handleEditorEdits(request,env);if(url.pathname==='/api/editor/access')return editorAccess(request,env);if(url.pathname==='/api/release')return Response.json({release},{headers:{'Cache-Control':'no-store'}});if(url.pathname==='/api/maintenance'||url.pathname==='/api/admin/maintenance')return handleMaintenance(request,env);if(url.pathname==='/api/admin/global-reset')return handleGlobalReset(request,env);if(url.pathname==='/api/admin/grant-capes')return handleCapeGrant(request,env);if(url.pathname==='/api/status')return handleStatus(request,env);if(url.pathname==='/api/client-error')return handleClientError(request,env);if(url.pathname.startsWith('/api/')){const paused=await maintenanceGate(request,env);if(paused)return paused;}if(url.pathname.startsWith('/api/auth/'))return handleAuth(request,env);if(url.pathname==='/api/social')return handleSocial(request,env);if(url.pathname==='/api/activity')return handleActivity(request,env);if(url.pathname==='/api/players')return handlePlayers(request,env);if(url.pathname==='/api/character')return handleSave(request,env);if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});const editorPage=['/editor','/editor/','/editor/index.html'].includes(url.pathname);const editorViewport=url.pathname==='/editor/viewport.html';let editorAllowed=false;if(editorPage||editorViewport||['/editor/editor.js','/editor/editor-runtime.js','/editor/editor-startup.js','/editor/editor-entry.js'].includes(url.pathname)){const access=await editorAccess(request,env);editorAllowed=access.status===200;if(!editorPage&&!editorAllowed)return access;}const asset=assets[editorPage?(editorAllowed?'/editor/index.html':'/editor/login.html'):editorViewport?(editorAllowed?'/editor/viewport.html':'/editor/login.html'):url.pathname==='/'?'/landing.html':['/donate','/donate/'].includes(url.pathname)?'/donate.html':['/play','/play/'].includes(url.pathname)?'/index.html':url.pathname];if(!asset)return new Response('Not found',{status:404});const version=url.searchParams.get('v');if(version&&version!==asset.version)return new Response('Game updated. Reload to continue.',{status:409,headers:{'Cache-Control':'no-store'}});const headers={'Content-Type':asset.mime,'Cache-Control':url.pathname.startsWith('/editor')?'private, no-store':version?'public, max-age=31536000, immutable':'no-cache','ETag':'"'+asset.version+'"','X-Content-Type-Options':'nosniff'};const compressed=asset.storageEncoding==='brotli',passThrough=compressed&&acceptsBrotli(request);if(compressed)headers.Vary='Accept-Encoding';if(passThrough)headers['Content-Encoding']='br';if(request.headers.get('If-None-Match')===headers.ETag)return new Response(null,{status:304,headers});let data=null;if(request.method!=='HEAD'){data=decodeAsset(asset.data,asset.storageLength);if(compressed&&!passThrough)data=Readable.toWeb(Readable.from([data]).pipe(createBrotliDecompress()));}let status=200;if(asset.mime==='audio/mpeg'){headers['Accept-Ranges']='bytes';const range=request.headers.get('Range');if(range){const match=range.match(/^bytes=(\\d*)-(\\d*)$/);if(!match||!match[1]&&!match[2])return new Response(null,{status:416,headers:{...headers,'Content-Range':'bytes */'+asset.length}});let start=match[1]?Number(match[1]):Math.max(0,asset.length-Number(match[2])),end=match[1]&&match[2]?Number(match[2]):asset.length-1;end=Math.min(end,asset.length-1);if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start>end||start>=asset.length)return new Response(null,{status:416,headers:{...headers,'Content-Range':'bytes */'+asset.length}});if(data)data=data.slice(start,end+1);status=206;headers['Content-Range']='bytes '+start+'-'+end+'/'+asset.length;headers['Content-Length']=String(end-start+1);}}return new Response(data,{status,headers,encodeBody:passThrough?'manual':'automatic'});}};`;
-fs.mkdirSync('.qa',{recursive:true});fs.writeFileSync('.qa/asset-delivery.json',JSON.stringify({moduleBytes:Buffer.byteLength(server),apiBytes:Buffer.byteLength(api),assetCount:Object.keys(assets).length,inlineScripts:inlinedScripts,assets:Object.entries(assets).map(([path,asset])=>({path,bytes:asset.data.length,decoded:asset.length})).sort((a,b)=>b.bytes-a.bytes)},null,2)+'\n');
-if(Buffer.byteLength(server)>64*1024*1024)throw new Error('The built Worker is '+Math.round(Buffer.byteLength(server)/1024/1024)+' MiB and exceeds the 64 MiB hosting limit. Reduce embedded asset data before publication.');
-fs.mkdirSync('dist/server',{recursive:true});fs.writeFileSync('dist/server/index.js',server);fs.mkdirSync('dist/.openai',{recursive:true});fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');fs.rmSync('dist/.openai/drizzle',{recursive:true,force:true});fs.cpSync('drizzle','dist/.openai/drizzle',{recursive:true});console.log('Built character-save Worker and '+Object.keys(assets).length+' game assets; '+Math.round(server.length/1024)+' KiB module.');
+let finalServer=server;
+finalServer=finalServer.replace(
+ `const release=${JSON.stringify(release)};export default`,
+ `const legacyInlineScriptPaths=new Set(${JSON.stringify(inlinedScripts.map(file=>'/'+file))});const release=${JSON.stringify(release)};export default`
+);
+const oldVersionGuard="const version=url.searchParams.get('v');if(version&&version!==asset.version)return new Response('Game updated. Reload to continue.',{status:409,headers:{'Cache-Control':'no-store'}});const headers=";
+const newVersionGuard="const version=url.searchParams.get('v'),inlineScript=legacyInlineScriptPaths.has(url.pathname);if(version&&version!==asset.version&&!inlineScript)return new Response('Game updated. Reload to continue.',{status:409,headers:{'Cache-Control':'no-store'}});const headers=";
+if(!finalServer.includes(oldVersionGuard))throw new Error('Could not install stale inline-script compatibility');
+finalServer=finalServer.replace(oldVersionGuard,newVersionGuard);
+const oldInlineCache="'Cache-Control':url.pathname.startsWith('/editor')?'private, no-store':version?'public, max-age=31536000, immutable':'no-cache'";
+const newInlineCache="'Cache-Control':url.pathname.startsWith('/editor')?'private, no-store':inlineScript&&version&&version!==asset.version?'no-cache':version?'public, max-age=31536000, immutable':'no-cache'";
+if(!finalServer.includes(oldInlineCache))throw new Error('Could not install stale inline-script cache policy');
+finalServer=finalServer.replace(oldInlineCache,newInlineCache);
+fs.mkdirSync('.qa',{recursive:true});fs.writeFileSync('.qa/asset-delivery.json',JSON.stringify({moduleBytes:Buffer.byteLength(finalServer),apiBytes:Buffer.byteLength(api),assetCount:Object.keys(assets).length,inlineScripts:inlinedScripts,assets:Object.entries(assets).map(([path,asset])=>({path,bytes:asset.data.length,decoded:asset.length})).sort((a,b)=>b.bytes-a.bytes)},null,2)+'\n');
+if(Buffer.byteLength(finalServer)>64*1024*1024)throw new Error('The built Worker is '+Math.round(Buffer.byteLength(finalServer)/1024/1024)+' MiB and exceeds the 64 MiB hosting limit. Reduce embedded asset data before publication.');
+fs.mkdirSync('dist/server',{recursive:true});fs.writeFileSync('dist/server/index.js',finalServer);fs.mkdirSync('dist/.openai',{recursive:true});fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');fs.rmSync('dist/.openai/drizzle',{recursive:true,force:true});fs.cpSync('drizzle','dist/.openai/drizzle',{recursive:true});console.log('Built character-save Worker and '+Object.keys(assets).length+' game assets; '+Math.round(finalServer.length/1024)+' KiB module.');
