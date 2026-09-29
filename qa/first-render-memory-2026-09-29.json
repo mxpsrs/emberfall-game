@@ -1,0 +1,1792 @@
+{
+  "date": "2026-09-29",
+  "baselineSitesCommit": "fe4346e648f420008dc5da47070d3ee2e2506b83",
+  "baselineGithubCommit": "f82db8a48fc21f6a644048385d6445d39640dd12",
+  "fixture": {
+    "location": "Willowcross residence",
+    "x": 197.5,
+    "y": 81,
+    "viewport": [
+      1112,
+      512
+    ],
+    "zoom": 118,
+    "quality": "mobile",
+    "terrainChunks": 197,
+    "renderer": "bundled Filament 1.77 native NOOP",
+    "assetBindings": "production briar/rebuilt bindings; canonical models loaded from local production files"
+  },
+  "limits": [
+    "No GPU rasterization, browser, phone OS, network or authenticated players. Not an iPhone FPS or 39-player capacity test.",
+    "The old profile-room fixture omitted terrain preparation and actual Filament resource creation.",
+    "These are single runs; the baseline overlapped a world-scene test. CPU timing and process RSS are diagnostic, not controlled performance claims.",
+    "Warm CPU frame times did not improve; the confirmed change is reduced geometry duplication and memory.",
+    "The video shows repeated startup resets; a phone memory kill is plausible but has not been established."
+  ],
+  "checks": {
+    "filament-static-transforms": "passed: 100 building parts share 188-byte indexed geometry, preserve transforms, update one changed part, remove cutaway parts",
+    "renderer-filament": "passed",
+    "filament-runtime": "passed",
+    "filament-character-parity": "passed",
+    "world-buildings-scene": "passed: 235 buildings, native ownership, geometry parity, hierarchy, doors, surfaces and save/load",
+    "git diff --check": "passed"
+  },
+  "runs": {
+    "before": {
+      "revision": "fe4346e648f420008dc5da47070d3ee2e2506b83",
+      "backend": "real Filament NOOP; no GPU driver or rasterization",
+      "generationMs": 37659.590431,
+      "migrationMs": 27936.529942999994,
+      "frames": [
+        28094.192563999997,
+        116.2065419999999,
+        120.0158730000112,
+        181.3221290000074,
+        116.53117000000202,
+        121.60156900000584,
+        100.73046199999226,
+        199.9462829999975
+      ],
+      "samples": [
+        {
+          "label": "Filament initialized",
+          "rss": 235,
+          "heapTotal": 137,
+          "heapUsed": 109,
+          "external": 60,
+          "arrayBuffers": 38,
+          "filamentHeapMiB": 18
+        },
+        {
+          "label": "world ready",
+          "rss": 885,
+          "heapTotal": 366,
+          "heapUsed": 273,
+          "external": 295,
+          "arrayBuffers": 40,
+          "filamentHeapMiB": 18
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1049,
+          "heapTotal": 435,
+          "heapUsed": 303,
+          "external": 425,
+          "arrayBuffers": 180,
+          "filamentHeapMiB": 31.25
+        },
+        {
+          "label": "draw 0",
+          "rss": 1180,
+          "heapTotal": 419,
+          "heapUsed": 336,
+          "external": 536,
+          "arrayBuffers": 187,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1184,
+          "heapTotal": 420,
+          "heapUsed": 300,
+          "external": 536,
+          "arrayBuffers": 187,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 1",
+          "rss": 1184,
+          "heapTotal": 420,
+          "heapUsed": 304,
+          "external": 537,
+          "arrayBuffers": 188,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1185,
+          "heapTotal": 421,
+          "heapUsed": 314,
+          "external": 538,
+          "arrayBuffers": 189,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 2",
+          "rss": 1185,
+          "heapTotal": 421,
+          "heapUsed": 320,
+          "external": 539,
+          "arrayBuffers": 190,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1192,
+          "heapTotal": 421,
+          "heapUsed": 330,
+          "external": 543,
+          "arrayBuffers": 193,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 3",
+          "rss": 1193,
+          "heapTotal": 422,
+          "heapUsed": 338,
+          "external": 546,
+          "arrayBuffers": 197,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1193,
+          "heapTotal": 422,
+          "heapUsed": 348,
+          "external": 547,
+          "arrayBuffers": 197,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 4",
+          "rss": 1193,
+          "heapTotal": 422,
+          "heapUsed": 351,
+          "external": 548,
+          "arrayBuffers": 198,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1192,
+          "heapTotal": 423,
+          "heapUsed": 301,
+          "external": 538,
+          "arrayBuffers": 189,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 5",
+          "rss": 1193,
+          "heapTotal": 423,
+          "heapUsed": 305,
+          "external": 539,
+          "arrayBuffers": 190,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1193,
+          "heapTotal": 423,
+          "heapUsed": 314,
+          "external": 540,
+          "arrayBuffers": 191,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 6",
+          "rss": 1193,
+          "heapTotal": 423,
+          "heapUsed": 317,
+          "external": 541,
+          "arrayBuffers": 191,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 1193,
+          "heapTotal": 423,
+          "heapUsed": 327,
+          "external": 544,
+          "arrayBuffers": 195,
+          "filamentHeapMiB": 134.5
+        },
+        {
+          "label": "draw 7",
+          "rss": 1193,
+          "heapTotal": 423,
+          "heapUsed": 336,
+          "external": 547,
+          "arrayBuffers": 198,
+          "filamentHeapMiB": 134.5
+        }
+      ],
+      "renderers": [
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 0,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 318,
+            "cpuBudget": 67108864,
+            "cpuBytes": 774474,
+            "discardedStagingBytes": 133059840,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 129730354,
+            "overBudget": false,
+            "pinnedCpuBytes": 774474,
+            "pinnedGpuBytes": 129730354,
+            "resident": 318,
+            "tracked": 318
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 488,
+            "synchronizationMs": 6679.237255,
+            "renderMs": 6688.334337999986
+          },
+          "legacy": {
+            "meshes": 318,
+            "materials": 2,
+            "renderables": 488,
+            "gpuBytes": 122739850,
+            "stagingBytes": 73728,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 0,
+            "leases": 2,
+            "gpuBytes": 0
+          },
+          "materials": {
+            "materials": 0,
+            "shaders": 0,
+            "leases": 0
+          },
+          "textures": {
+            "textures": 2,
+            "leases": 2,
+            "gpuBytes": 6990504
+          },
+          "draws": {
+            "models": 0,
+            "activeRenderables": 0,
+            "submissions": 0,
+            "instances": 0,
+            "loading": 2,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 318,
+            "cpuBudget": 67108864,
+            "cpuBytes": 904494,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 133399554,
+            "overBudget": false,
+            "pinnedCpuBytes": 774474,
+            "pinnedGpuBytes": 132967194,
+            "resident": 320,
+            "tracked": 320
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 32.69523100000515,
+            "renderMs": 33.74698999999964
+          },
+          "legacy": {
+            "meshes": 320,
+            "materials": 2,
+            "renderables": 488,
+            "gpuBytes": 123172210,
+            "stagingBytes": 147456,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 0,
+            "submissions": 0,
+            "instances": 0,
+            "loading": 2,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1034514,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 133831914,
+            "overBudget": false,
+            "pinnedCpuBytes": 771318,
+            "pinnedGpuBytes": 132926726,
+            "resident": 322,
+            "tracked": 322
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 37.29493799999182,
+            "renderMs": 38.8208389999927
+          },
+          "legacy": {
+            "meshes": 322,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123604570,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 987354,
+            "discardedStagingBytes": 1363200,
+            "evicting": 6,
+            "evictions": 6,
+            "gpuBudget": 134217728,
+            "gpuBytes": 133359086,
+            "overBudget": false,
+            "pinnedCpuBytes": 857334,
+            "pinnedGpuBytes": 132926726,
+            "resident": 318,
+            "tracked": 324
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 74.90583000000333,
+            "renderMs": 75.55544499999087
+          },
+          "legacy": {
+            "meshes": 318,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123131742,
+            "stagingBytes": 147456,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1117374,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 6,
+            "gpuBudget": 134217728,
+            "gpuBytes": 133791446,
+            "overBudget": false,
+            "pinnedCpuBytes": 771318,
+            "pinnedGpuBytes": 132926726,
+            "resident": 320,
+            "tracked": 320
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 33.46433999999135,
+            "renderMs": 34.20077599999786
+          },
+          "legacy": {
+            "meshes": 320,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123564102,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1259682,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 6,
+            "gpuBudget": 134217728,
+            "gpuBytes": 134156222,
+            "overBudget": false,
+            "pinnedCpuBytes": 857334,
+            "pinnedGpuBytes": 132926726,
+            "resident": 321,
+            "tracked": 321
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2,
+            "synchronizationMs": 45.5222480000084,
+            "renderMs": 46.47483900000225
+          },
+          "legacy": {
+            "meshes": 321,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123928878,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1259682,
+            "discardedStagingBytes": 336528,
+            "evicting": 1,
+            "evictions": 7,
+            "gpuBudget": 134217728,
+            "gpuBytes": 134156222,
+            "overBudget": false,
+            "pinnedCpuBytes": 857334,
+            "pinnedGpuBytes": 132926726,
+            "resident": 321,
+            "tracked": 322
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2,
+            "synchronizationMs": 29.23543499999505,
+            "renderMs": 29.853622999988147
+          },
+          "legacy": {
+            "meshes": 321,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123928878,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 93283.987301,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": true,
+            "queued": 0,
+            "required": 2,
+            "resident": 2,
+            "tracked": 2,
+            "leases": 2,
+            "cellCount": 48
+          },
+          "residency": {
+            "active": 316,
+            "cpuBudget": 67108864,
+            "cpuBytes": 913626,
+            "discardedStagingBytes": 1363200,
+            "evicting": 6,
+            "evictions": 13,
+            "gpuBudget": 134217728,
+            "gpuBytes": 133291502,
+            "overBudget": false,
+            "pinnedCpuBytes": 857334,
+            "pinnedGpuBytes": 132926726,
+            "resident": 317,
+            "tracked": 323
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 108,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 108,
+              "tracked": 108,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 487,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 89.23523400000704,
+            "renderMs": 90.03276100000949
+          },
+          "legacy": {
+            "meshes": 317,
+            "materials": 2,
+            "renderables": 380,
+            "gpuBytes": 123064158,
+            "stagingBytes": 73728,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 5,
+            "leases": 4,
+            "gpuBytes": 91112
+          },
+          "materials": {
+            "materials": 4,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 14,
+            "leases": 22,
+            "gpuBytes": 10136232
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 274,
+            "submissions": 274,
+            "instances": 108,
+            "loading": 0,
+            "failures": []
+          }
+        }
+      ]
+    },
+    "after": {
+      "revision": "working-tree",
+      "backend": "real Filament NOOP; no GPU driver or rasterization",
+      "generationMs": 37113.739598,
+      "migrationMs": 27880.365837000005,
+      "frames": [
+        20113.339151999986,
+        144.05466300000262,
+        147.35947500000475,
+        192.4222460000019,
+        147.98800899999333,
+        128.05177299999923,
+        135.26039400001173,
+        212.441187000004
+      ],
+      "samples": [
+        {
+          "label": "Filament initialized",
+          "rss": 235,
+          "heapTotal": 137,
+          "heapUsed": 109,
+          "external": 59,
+          "arrayBuffers": 38,
+          "filamentHeapMiB": 18
+        },
+        {
+          "label": "world ready",
+          "rss": 885,
+          "heapTotal": 364,
+          "heapUsed": 273,
+          "external": 294,
+          "arrayBuffers": 39,
+          "filamentHeapMiB": 18
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 918,
+          "heapTotal": 433,
+          "heapUsed": 310,
+          "external": 329,
+          "arrayBuffers": 83,
+          "filamentHeapMiB": 31.25
+        },
+        {
+          "label": "draw 0",
+          "rss": 961,
+          "heapTotal": 425,
+          "heapUsed": 303,
+          "external": 347,
+          "arrayBuffers": 87,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 970,
+          "heapTotal": 433,
+          "heapUsed": 340,
+          "external": 351,
+          "arrayBuffers": 91,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 1",
+          "rss": 970,
+          "heapTotal": 433,
+          "heapUsed": 347,
+          "external": 352,
+          "arrayBuffers": 92,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 963,
+          "heapTotal": 425,
+          "heapUsed": 305,
+          "external": 348,
+          "arrayBuffers": 88,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 2",
+          "rss": 963,
+          "heapTotal": 426,
+          "heapUsed": 315,
+          "external": 349,
+          "arrayBuffers": 89,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 964,
+          "heapTotal": 426,
+          "heapUsed": 330,
+          "external": 352,
+          "arrayBuffers": 93,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 3",
+          "rss": 964,
+          "heapTotal": 427,
+          "heapUsed": 344,
+          "external": 356,
+          "arrayBuffers": 96,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 972,
+          "heapTotal": 437,
+          "heapUsed": 328,
+          "external": 356,
+          "arrayBuffers": 97,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 4",
+          "rss": 972,
+          "heapTotal": 437,
+          "heapUsed": 344,
+          "external": 358,
+          "arrayBuffers": 98,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 973,
+          "heapTotal": 438,
+          "heapUsed": 359,
+          "external": 363,
+          "arrayBuffers": 104,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 5",
+          "rss": 973,
+          "heapTotal": 438,
+          "heapUsed": 366,
+          "external": 365,
+          "arrayBuffers": 105,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 984,
+          "heapTotal": 451,
+          "heapUsed": 359,
+          "external": 350,
+          "arrayBuffers": 91,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 6",
+          "rss": 984,
+          "heapTotal": 451,
+          "heapUsed": 369,
+          "external": 351,
+          "arrayBuffers": 92,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "terrain prepared",
+          "rss": 971,
+          "heapTotal": 439,
+          "heapUsed": 322,
+          "external": 352,
+          "arrayBuffers": 93,
+          "filamentHeapMiB": 45
+        },
+        {
+          "label": "draw 7",
+          "rss": 971,
+          "heapTotal": 439,
+          "heapUsed": 337,
+          "external": 355,
+          "arrayBuffers": 96,
+          "filamentHeapMiB": 45
+        }
+      ],
+      "renderers": [
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 12,
+            "required": 14,
+            "resident": 0,
+            "tracked": 14,
+            "leases": 2,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 341,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1091028,
+            "discardedStagingBytes": 32429040,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 37802008,
+            "overBudget": false,
+            "pinnedCpuBytes": 1091028,
+            "pinnedGpuBytes": 37802008,
+            "resident": 341,
+            "tracked": 341
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2355,
+            "synchronizationMs": 1879.322469000006,
+            "renderMs": 1890.7802920000104
+          },
+          "legacy": {
+            "meshes": 341,
+            "materials": 2,
+            "renderables": 2355,
+            "gpuBytes": 30811504,
+            "stagingBytes": 73728,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 2,
+            "geometry": 0,
+            "leases": 2,
+            "gpuBytes": 0
+          },
+          "materials": {
+            "materials": 0,
+            "shaders": 0,
+            "leases": 0
+          },
+          "textures": {
+            "textures": 2,
+            "leases": 2,
+            "gpuBytes": 6990504
+          },
+          "draws": {
+            "models": 0,
+            "activeRenderables": 0,
+            "submissions": 0,
+            "instances": 0,
+            "loading": 14,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 10,
+            "required": 14,
+            "resident": 2,
+            "tracked": 14,
+            "leases": 4,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 341,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1221048,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 39545900,
+            "overBudget": false,
+            "pinnedCpuBytes": 1091028,
+            "pinnedGpuBytes": 39113540,
+            "resident": 343,
+            "tracked": 343
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 64.17064299999038,
+            "renderMs": 65.93686699999671
+          },
+          "legacy": {
+            "meshes": 343,
+            "materials": 2,
+            "renderables": 2355,
+            "gpuBytes": 31243864,
+            "stagingBytes": 147456,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 4,
+            "geometry": 2,
+            "leases": 6,
+            "gpuBytes": 262952
+          },
+          "materials": {
+            "materials": 1,
+            "shaders": 1,
+            "leases": 2
+          },
+          "textures": {
+            "textures": 7,
+            "leases": 7,
+            "gpuBytes": 8039084
+          },
+          "draws": {
+            "models": 2,
+            "activeRenderables": 0,
+            "submissions": 0,
+            "instances": 0,
+            "loading": 14,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 8,
+            "required": 14,
+            "resident": 4,
+            "tracked": 14,
+            "leases": 6,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 339,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1351068,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 40101344,
+            "overBudget": false,
+            "pinnedCpuBytes": 1082052,
+            "pinnedGpuBytes": 39119848,
+            "resident": 345,
+            "tracked": 345
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 68.96425699999963,
+            "renderMs": 70.7612369999988
+          },
+          "legacy": {
+            "meshes": 345,
+            "materials": 2,
+            "renderables": 2188,
+            "gpuBytes": 31676224,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 6,
+            "geometry": 5,
+            "leases": 10,
+            "gpuBytes": 386032
+          },
+          "materials": {
+            "materials": 2,
+            "shaders": 2,
+            "leases": 5
+          },
+          "textures": {
+            "textures": 8,
+            "leases": 12,
+            "gpuBytes": 8039088
+          },
+          "draws": {
+            "models": 4,
+            "activeRenderables": 167,
+            "submissions": 167,
+            "instances": 167,
+            "loading": 12,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 6,
+            "required": 14,
+            "resident": 6,
+            "tracked": 14,
+            "leases": 8,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 337,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1634100,
+            "discardedStagingBytes": 1363200,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 41588364,
+            "overBudget": false,
+            "pinnedCpuBytes": 1163328,
+            "pinnedGpuBytes": 39105528,
+            "resident": 347,
+            "tracked": 347
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 110.42380399999092,
+            "renderMs": 112.11775999999372
+          },
+          "legacy": {
+            "meshes": 347,
+            "materials": 2,
+            "renderables": 2113,
+            "gpuBytes": 33122840,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 8,
+            "geometry": 8,
+            "leases": 14,
+            "gpuBytes": 426436
+          },
+          "materials": {
+            "materials": 2,
+            "shaders": 2,
+            "leases": 8
+          },
+          "textures": {
+            "textures": 8,
+            "leases": 12,
+            "gpuBytes": 8039088
+          },
+          "draws": {
+            "models": 6,
+            "activeRenderables": 292,
+            "submissions": 292,
+            "instances": 242,
+            "loading": 10,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 4,
+            "required": 14,
+            "resident": 8,
+            "tracked": 14,
+            "leases": 10,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 335,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1776408,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 45542664,
+            "overBudget": false,
+            "pinnedCpuBytes": 1162176,
+            "pinnedGpuBytes": 42677136,
+            "resident": 348,
+            "tracked": 348
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2,
+            "synchronizationMs": 75.65726399999403,
+            "renderMs": 77.4597519999952
+          },
+          "legacy": {
+            "meshes": 348,
+            "materials": 2,
+            "renderables": 1616,
+            "gpuBytes": 33487616,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 10,
+            "geometry": 12,
+            "leases": 18,
+            "gpuBytes": 870244
+          },
+          "materials": {
+            "materials": 5,
+            "shaders": 2,
+            "leases": 12
+          },
+          "textures": {
+            "textures": 17,
+            "leases": 27,
+            "gpuBytes": 11184804
+          },
+          "draws": {
+            "models": 8,
+            "activeRenderables": 1223,
+            "submissions": 1223,
+            "instances": 739,
+            "loading": 8,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 2,
+            "required": 14,
+            "resident": 10,
+            "tracked": 14,
+            "leases": 12,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 333,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1918716,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 48041208,
+            "overBudget": false,
+            "pinnedCpuBytes": 1139772,
+            "pinnedGpuBytes": 44612940,
+            "resident": 349,
+            "tracked": 349
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2,
+            "synchronizationMs": 57.71126799999911,
+            "renderMs": 59.532193999999436
+          },
+          "legacy": {
+            "meshes": 349,
+            "materials": 2,
+            "renderables": 1587,
+            "gpuBytes": 33852392,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 12,
+            "geometry": 16,
+            "leases": 22,
+            "gpuBytes": 906868
+          },
+          "materials": {
+            "materials": 7,
+            "shaders": 2,
+            "leases": 16
+          },
+          "textures": {
+            "textures": 23,
+            "leases": 37,
+            "gpuBytes": 13281948
+          },
+          "draws": {
+            "models": 10,
+            "activeRenderables": 1281,
+            "submissions": 1281,
+            "instances": 768,
+            "loading": 6,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 2,
+            "memoryPressure": false,
+            "queued": 0,
+            "required": 14,
+            "resident": 12,
+            "tracked": 14,
+            "leases": 14,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 331,
+            "cpuBudget": 67108864,
+            "cpuBytes": 1975008,
+            "discardedStagingBytes": 336528,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 48976664,
+            "overBudget": false,
+            "pinnedCpuBytes": 1138260,
+            "pinnedGpuBytes": 45167324,
+            "resident": 350,
+            "tracked": 350
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 2,
+            "synchronizationMs": 62.53144099999918,
+            "renderMs": 64.35447999999451
+          },
+          "legacy": {
+            "meshes": 350,
+            "materials": 2,
+            "renderables": 1480,
+            "gpuBytes": 34217168,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 14,
+            "geometry": 21,
+            "leases": 26,
+            "gpuBytes": 1477548
+          },
+          "materials": {
+            "materials": 7,
+            "shaders": 2,
+            "leases": 21
+          },
+          "textures": {
+            "textures": 23,
+            "leases": 37,
+            "gpuBytes": 13281948
+          },
+          "draws": {
+            "models": 12,
+            "activeRenderables": 1600,
+            "submissions": 1600,
+            "instances": 875,
+            "loading": 4,
+            "failures": []
+          }
+        },
+        {
+          "firstRenderMs": 84874.768012,
+          "streaming": {
+            "concurrency": 2,
+            "failed": 0,
+            "loading": 0,
+            "memoryPressure": false,
+            "queued": 0,
+            "required": 14,
+            "resident": 14,
+            "tracked": 14,
+            "leases": 14,
+            "cellCount": 64
+          },
+          "residency": {
+            "active": 329,
+            "cpuBudget": 67108864,
+            "cpuBytes": 2172024,
+            "discardedStagingBytes": 1363200,
+            "evicting": 0,
+            "evictions": 0,
+            "gpuBudget": 134217728,
+            "gpuBytes": 50741168,
+            "overBudget": false,
+            "pinnedCpuBytes": 1109220,
+            "pinnedGpuBytes": 45230628,
+            "resident": 352,
+            "tracked": 352
+          },
+          "lod": {
+            "compatibility": {
+              "lod0": 997,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 997,
+              "tracked": 997,
+              "transitions": 0
+            },
+            "canonical": {
+              "lod0": 0,
+              "lod1": 0,
+              "lod2": 0,
+              "missingLods": 0,
+              "tracked": 0,
+              "transitions": 0
+            }
+          },
+          "frame": {
+            "submittedPackets": 2354,
+            "dynamicVertices": 828,
+            "transformSubmissions": 3,
+            "synchronizationMs": 111.65966099999787,
+            "renderMs": 113.73892499999783
+          },
+          "legacy": {
+            "meshes": 352,
+            "materials": 2,
+            "renderables": 1389,
+            "gpuBytes": 35663784,
+            "stagingBytes": 221184,
+            "cachedGlbBytes": 0
+          },
+          "models": {
+            "models": 14,
+            "geometry": 24,
+            "leases": 28,
+            "gpuBytes": 1795436
+          },
+          "materials": {
+            "materials": 7,
+            "shaders": 2,
+            "leases": 24
+          },
+          "textures": {
+            "textures": 23,
+            "leases": 37,
+            "gpuBytes": 13281948
+          },
+          "draws": {
+            "models": 14,
+            "activeRenderables": 1866,
+            "submissions": 1866,
+            "instances": 966,
+            "loading": 2,
+            "failures": []
+          }
+        }
+      ]
+    }
+  }
+}

@@ -76,6 +76,27 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const secondEntry=context.realmMeshEntry(gpu,mesh);assert.notEqual(secondEntry,firstEntry);
   assert.deepEqual(Array.from(secondEntry.buffer.data),Array.from(beforeRetirement));gpu.render([{...secondEntry,model:models[0]}],[],null);
   assert.equal(gpu.scene.getRenderableCount(),1);
+  // The production cached-building painter must keep repeated parts indexed
+  // and shared, including their authored terrain-relative transforms.
+  context.VELDREN_FILAMENT_ASSETS.atlasBytes=textures;context.VELDREN_FILAMENT_ASSETS.groundSurfacesBytes=textures;
+  const buildingGpu=context.createRealmFilamentGPU();context.buildingGpu=buildingGpu;vm.runInContext('realmGPU=buildingGpu;',context);
+  context.realmTerrainEntries=()=>[];context.trimRealmMeshes=()=>{};
+  context.realmIndexedData=()=>{throw Error('Building unexpectedly expanded its indexed geometry');};
+  const partMesh={p:new Float32Array([0,0,0,1,0,0,1,0,1,0,0,1]),n:new Float32Array([0,1,0,0,1,0,0,1,0,0,1,0]),c:new Float32Array(12).fill(.5),i:new Uint16Array([0,1,2,0,2,3]),t:new Uint8Array([12,12,12,12])};
+  const parts=Array.from({length:100},(_,i)=>({mesh:partMesh,matrix:[2,0,.25,i*3,0,3,0,1,0,0,4,i%7]}));
+  const building={kind:'building',instances:parts,faces:[],height:4};
+  const submitted=[];const setTransform=F.TransformManager.prototype.setTransform;
+  F.TransformManager.prototype.setTransform=function(instance,matrix){submitted.push(Array.from(matrix));return setTransform.call(this,instance,matrix);};
+  const drawBuilding=()=>{const painter=context.painter3(null,context.project3);assert.equal(painter.cached(building),4);painter.flush();};
+  drawBuilding();
+  assert.equal(buildingGpu.diagnostics().legacy.meshes,1,'all building parts share one vertex/index allocation');
+  assert.equal(buildingGpu.diagnostics().legacy.renderables,100,'every authored part remains present');
+  assert.equal(buildingGpu.diagnostics().legacy.gpuBytes,4*44+6*2,'index topology is preserved instead of expanding triangles per building');
+  assert.equal(submitted.length,100);parts.forEach((part,i)=>assert.deepEqual(submitted[i],Array.from(context.realmFilamentMatrix(part.matrix)),'scale, shear, position and ground height reach Filament unchanged'));
+  submitted.length=0;drawBuilding();assert.equal(submitted.length,0,'repeated building draws reuse native transforms');
+  parts[7].matrix[3]+=3;drawBuilding();assert.equal(submitted.length,1,'moving a part updates only that part');
+  parts.pop();drawBuilding();assert.equal(buildingGpu.scene.getRenderableCount(),99,'removed/cutaway parts leave the rendered scene');
+  F.TransformManager.prototype.setTransform=setTransform;
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}
