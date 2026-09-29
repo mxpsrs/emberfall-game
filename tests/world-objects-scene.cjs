@@ -10,7 +10,7 @@ async function main(){for(const editor of [false,true]){
  const actor=run('worldScenes.one.objects.find(o=>o.id===2)'),rock=run('worldScenes.one.objects.find(o=>o.type===\'prop\')');ctx.actor=actor;
  for(const source of ['objects.push({})','objects[0]={}','objects.length=0','delete objects[0]','Object.defineProperty(objects,0,{value:{}})','Array.prototype.splice.call(objects,0,1)','objects.splice(0,objects.length)','worldScenes.one.objects=[]','worldScenes.one.objects.push({})','worldScenes.one.objects[0]={}'])assert.throws(()=>run(`'use strict';${source}`),source);
  assert(Object.isFrozen(run('worldScenes.one.objects')));const saved=JSON.stringify(n.serialize());
- run(`const fire={id:'fire:1',type:'camp',x:3,y:3,expiresAt:Date.now()+10000};VeldrenWorldObjects.addSession('one',fire,'fire');`);assert.equal(run('objects.length'),3);assert.throws(()=>api.addSession('one',actor,'fire'));
+ run(`const fire={id:'fire:1',type:'camp',x:3,y:3,expiresAt:Date.now()+10000};VeldrenWorldObjects.addSession('one',fire,'fire');`);assert.equal(run('objects.length'),3);assert.deepEqual([...api.sessionObjects('one')],[run('fire')]);assert.equal([...api.sessionObjects('two')].length,0);assert.throws(()=>api.addSession('one',actor,'fire'));
  api.moveActor(actor,'two');assert.equal(run('objects.length'),2);assert(run('worldScenes.two.objects.includes(actor)'));assert.equal(JSON.stringify(n.serialize()),saved,'session placement is not a permanent spawn edit');
  assert(n.setTransform('one',rock._sceneEntityId,{position:[8,0,9],rotation:[0,0,0,1],scale:[1,1,1]}));assert.equal(run('objects[0].x'),8);assert(run('objects.includes(fire)'));
  run(`currentScene='two';VeldrenWorldObjects.select(worldScenes.two.objects)`);assert.equal(run('objects[0]'),actor);
@@ -18,7 +18,7 @@ async function main(){for(const editor of [false,true]){
  n.upsert('one',{id:'extra',name:'New stone',parent:null,active:true,transform:{position:[4,0,4],rotation:[0,0,0,1],scale:[1,1,1]},components:{GeneratedProp:{generationKey:'extra'},MeshRenderer:{asset:'procedural:prop/12'}},metadata:{}});
  assert(run('worldScenes.two.objects.includes(actor)'));assert(run('worldScenes.one.objects.includes(fire)'));assert.equal(run('objects.length'),1);
  api.moveActor(actor,'one');assert.equal(run('objects.length'),0);run(`currentScene='one';VeldrenWorldObjects.activate()`);assert.equal(run('objects.length'),4);
- api.removeSession(run('fire'));assert.equal(run('objects.length'),3);
+ api.removeSession(run('fire'));assert.equal([...api.sessionObjects('one')].length,0);assert.equal(run('objects.length'),3);
  if(editor){run(`const preview={id:'preview',type:'prop',_editorPreview:true};VeldrenWorldObjects.addSession('one',preview,'preview')`);assert.equal(run('objects.length'),4);api.removeSession(run('preview'));}
  run(`const authored=VeldrenSceneOwnership.createProp('one',{id:'authored',type:'prop',name:'Authored lamp',x:4,y:5,editorAsset:{source:'briar',key:'Lamp'},editorTransform:{rotation:30,scale:2},walkThrough:true})`);
  n.upsert('one',{id:'direct-mesh',name:'Direct mesh',parent:null,active:true,transform:{position:[3,0,4],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'briar:Lamp'}},metadata:{}});

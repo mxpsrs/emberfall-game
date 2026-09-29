@@ -120,8 +120,8 @@
   }
   // Player-created fires have a transient gameplay lifetime, never a saved
   // procedural fixture. Keep their established expiry and location semantics.
-  const candidates=typeof currentScene!=='undefined'&&scene===currentScene&&typeof worldObjectsInBounds==='function'?worldObjectsInBounds(px-70,px+70,py-70,py+70):w?.objects||[];
-  for(const o of candidates)if(o.type==='camp'&&Number.isFinite(o.expiresAt)&&o.expiresAt>Date.now()&&!o.collected&&!(o.dead>(typeof time==='undefined'?0:time))&&!o.interiorBuilding&&!inside(o.x+.5,o.y+.5))result.push({x:o.x+.5,y:.65+(typeof landHeight==='function'?landHeight(o.x+.5,o.y+.5):0),z:o.y+.5,radius:13,color:[1,.65,.32],intensity:1.8});
+  const candidates=root.VeldrenWorldObjects?.enabled?root.VeldrenWorldObjects.sessionObjects(scene):typeof currentScene!=='undefined'&&scene===currentScene&&typeof worldObjectsInBounds==='function'?worldObjectsInBounds(px-70,px+70,py-70,py+70):w?.objects||[];
+  for(const o of candidates)if(o.type==='camp'&&(typeof currentScene==='undefined'||scene!==currentScene||Math.abs(o.x-px)<=70&&Math.abs(o.y-py)<=70)&&Number.isFinite(o.expiresAt)&&o.expiresAt>Date.now()&&!o.collected&&!(o.dead>(typeof time==='undefined'?0:time))&&!o.interiorBuilding&&!inside(o.x+.5,o.y+.5))result.push({x:o.x+.5,y:.65+(typeof landHeight==='function'?landHeight(o.x+.5,o.y+.5):0),z:o.y+.5,radius:13,color:[1,.65,.32],intensity:1.8});
   return result;
  }
  function painter(r,m,origin){

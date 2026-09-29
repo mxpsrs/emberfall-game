@@ -214,14 +214,68 @@
   invalidate(event.scene,event.id);
   const node=event.id&&entity(event.scene,event.id);if(event.kind==='batch'||event.kind==='remove'||event.kind==='upsert'&&(node?.components.GeneratedBuilding||node?.components.Entrance)&&!table.ids.has(event.id)&&!table.doorIds.has(event.id))project(event.scene);
  }
+ // Read-only collision projection. A native revision invalidates parent/child
+ // transforms, footprint edits, removal and world reload together. Picking must
+ // not invert every distant deck's matrix at every step of every camera ray.
+ let surfaceRevision=-1,surfaceOwner=null,surfaceQueries=new WeakMap();
+ function surfaceQuery(surface){
+  const owner=native(),revision=owner.revision();
+  if(owner!==surfaceOwner||revision!==surfaceRevision){surfaceOwner=owner;surfaceRevision=revision;surfaceQueries=new WeakMap();}
+  if(surfaceQueries.has(surface))return surfaceQueries.get(surface);
+  const scene=surface._generatedSceneName,node=entity(scene,surface._sceneEntityId);
+  if(!node?.components.WalkSurface){surfaceQueries.set(surface,null);return null;}
+  const A=root.VeldrenAssembly,shape=node.components.WalkSurface,m=node.worldMatrix,vertical=Math.hypot(m[4],m[5],m[6]);
+  const query={base:m[13],rise:(shape.rise||0)*vertical,minx:Infinity,minz:Infinity,maxx:-Infinity,maxz:-Infinity,ramp:null,decks:[],line:null};
+  const include=(x,z)=>{query.minx=Math.min(query.minx,x);query.maxx=Math.max(query.maxx,x);query.minz=Math.min(query.minz,z);query.maxz=Math.max(query.maxz,z);};
+  const rect=id=>{
+   const child=entity(scene,id),size=child?.components.Footprint;if(!size)return null;
+   const inverse=A.inverse(matrices.row(child.worldMatrix)),y=child.worldMatrix[13],u=inverse[1]*y+inverse[3],v=inverse[9]*y+inverse[11],det=inverse[0]*inverse[10]-inverse[2]*inverse[8];
+   // Match surfaceAt's horizontal world-plane test even under pitched/scaled
+   // ancestors. A degenerate projection remains on the exact-query fallback.
+   if(Math.abs(det)<1e-10){query.minx=query.minz=-Infinity;query.maxx=query.maxz=Infinity;}
+   else for(const x of [0,size.w])for(const z of [0,size.h])include((inverse[10]*(x-u)-inverse[2]*(z-v))/det,(inverse[0]*(z-v)-inverse[8]*(x-u))/det);
+   return {inverse,y,w:size.w,h:size.h};
+  };
+  if(shape.rampLine){
+   const line=shape.rampLine,a=entity(scene,line.start),b=entity(scene,line.end);
+   if(a&&b){const ax=a.worldMatrix[12],az=a.worldMatrix[14],dx=b.worldMatrix[12]-ax,dz=b.worldMatrix[14]-az,len=Math.hypot(dx,dz),radius=(line.width||0)*vertical/2;
+    if(len>=.001){query.line={ax,az,dx,dz,len,radius};include(Math.min(ax,ax+dx)-radius,Math.min(az,az+dz)-radius);include(Math.max(ax,ax+dx)+radius,Math.max(az,az+dz)+radius);}
+   }
+  }
+  if(shape.ramp)query.ramp=rect(shape.ramp);
+  for(const id of shape.decks||[]){const deck=rect(id);if(deck)query.decks.push(deck);}
+  surfaceQueries.set(surface,query);return query;
+ }
+ // Buckets contain references to canonical surfaces, in original priority
+ // order. No alternate geometry or scene ownership is introduced.
+ let surfaceIndex=null;const noSurfaces=Object.freeze([]);
+ function surfaceCandidates(surfaces,x,z){
+  const owner=native(),revision=owner.revision();
+  if(surfaceIndex?.owner!==owner||surfaceIndex.revision!==revision||surfaceIndex.surfaces!==surfaces||surfaceIndex.length!==surfaces.length){
+   const buckets=new Map();let fallback=false;
+   for(const surface of surfaces){
+    if(!surface._sceneEntityId){fallback=true;break;}
+    const q=surfaceQuery(surface);if(!q)continue;
+    const x0=Math.floor((q.minx-1e-7)/16),x1=Math.floor((q.maxx+1e-7)/16),z0=Math.floor((q.minz-1e-7)/16),z1=Math.floor((q.maxz+1e-7)/16);
+    if(!Number.isFinite(x0+x1+z0+z1)||(x1-x0+1)*(z1-z0+1)>256){fallback=true;break;}
+    for(let bz=z0;bz<=z1;bz++)for(let bx=x0;bx<=x1;bx++){const key=bx+':'+bz;let values=buckets.get(key);if(!values)buckets.set(key,values=[]);values.push(surface);}
+   }
+   surfaceIndex={owner,revision,surfaces,length:surfaces.length,buckets,fallback};
+  }
+  return surfaceIndex.fallback?surfaces:surfaceIndex.buckets.get(Math.floor(x/16)+':'+Math.floor(z/16))||noSurfaces;
+ }
+ function surfaceRectZ(rect,x,z){
+  const m=rect.inverse,u=m[0]*x+m[1]*rect.y+m[2]*z+m[3],v=m[8]*x+m[9]*rect.y+m[10]*z+m[11];
+  return u>=0&&u<rect.w&&v>=0&&v<rect.h?v:null;
+ }
  function surfaceAt(surface,x,z){
-  const scene=surface._generatedSceneName,id=surface._sceneEntityId,node=entity(scene,id);if(!node)return null;
-  const A=root.VeldrenAssembly,shape=node.components.WalkSurface,base=node.worldMatrix[13],vertical=Math.hypot(...node.worldMatrix.slice(4,7)),rise=(shape.rise||0)*vertical;
-  const inside=part=>{const child=entity(scene,part);if(!child)return null;const p=A.point(A.inverse(matrices.row(child.worldMatrix)),[x,child.worldMatrix[13],z]),size=child.components.Footprint;return p[0]>=0&&p[0]<size.w&&p[2]>=0&&p[2]<size.h?{p,size}:null;};
-  const lineAt=line=>{const a=entity(scene,line.start),b=entity(scene,line.end);if(!a||!b)return null;const ax=a.worldMatrix[12],az=a.worldMatrix[14],dx=b.worldMatrix[12]-ax,dz=b.worldMatrix[14]-az,len=Math.hypot(dx,dz);if(len<.001)return null;const rx=x-ax,rz=z-az,t=(rx*dx+rz*dz)/(len*len),cross=Math.abs(rx*dz-rz*dx)/len;return t>=0&&t<=1&&cross<=(line.width||0)*vertical/2?t:null;};
-  if(shape.rampLine){const t=lineAt(shape.rampLine);if(t!==null)return {height:base+rise*t,kind:'ramp',structure:surface};}
-  const ramp=shape.ramp&&inside(shape.ramp);if(ramp)return {height:base+rise*Math.max(0,Math.min(1,(ramp.size.h-ramp.p[2])/(ramp.size.h-1))),kind:'ramp',structure:surface};
-  if((shape.decks||[]).some(inside))return {height:base+rise,kind:'rampart',structure:surface};return null;
+  const q=surfaceQuery(surface);
+  if(!q||x<q.minx-1e-7||x>q.maxx+1e-7||z<q.minz-1e-7||z>q.maxz+1e-7)return null;
+  if(q.line){const l=q.line,rx=x-l.ax,rz=z-l.az,t=(rx*l.dx+rz*l.dz)/(l.len*l.len),cross=Math.abs(rx*l.dz-rz*l.dx)/l.len;if(t>=0&&t<=1&&cross<=l.radius)return {height:q.base+q.rise*t,kind:'ramp',structure:surface};}
+  const ramp=q.ramp?surfaceRectZ(q.ramp,x,z):null;
+  if(ramp!==null)return {height:q.base+q.rise*Math.max(0,Math.min(1,(q.ramp.h-ramp)/(q.ramp.h-1))),kind:'ramp',structure:surface};
+  for(const deck of q.decks)if(surfaceRectZ(deck,x,z)!==null)return {height:q.base+q.rise,kind:'rampart',structure:surface};
+  return null;
  }
  function installConsumers(){
   if(installed)return;installed=true;const A=root.VeldrenAssembly;
@@ -357,5 +411,5 @@
  }
 
 
- root.VeldrenBuildingScene={capture,populate,migrate,fieldGroups,matrices,getView,surfaceAt,createBuilding,ensureAssembly,renderAssembly,setAssembly};
+ root.VeldrenBuildingScene={capture,populate,migrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,renderAssembly,setAssembly};
 })(globalThis);

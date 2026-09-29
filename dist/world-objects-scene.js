@@ -40,6 +40,7 @@
   const previous=sessions.get(o);sessions.set(o,{scene,kind});if(previous&&previous.scene!==scene)refresh(previous.scene);refresh(scene);return o;
  }
  function removeSession(o){const entry=sessions.get(o);if(!entry)return false;sessions.delete(o);refresh(entry.scene);return true;}
+ function* sessionObjects(scene){for(const [o,entry]of sessions)if(entry.scene===String(scene))yield o;}
  function moveActor(o,scene){
   scene=String(scene);if(!enabled||!base.has(scene)||!o._generatedSpawn||!native().entity(o._generatedSceneName,key(o))?.components.SpawnPoint)throw Error('Only live native actors can change session scene');
   const previous=placements.get(o)||o._generatedSceneName;if(scene===o._generatedSceneName)placements.delete(o);else placements.set(o,scene);
@@ -76,5 +77,5 @@
    }
   });
  }
- root.VeldrenWorldObjects={install,project,timerScenes,timed:name=>timers.get(String(name))||[],activate,addSession,removeSession,moveActor,select,get enabled(){return enabled;}};
+ root.VeldrenWorldObjects={install,project,timerScenes,sessionObjects,timed:name=>timers.get(String(name))||[],activate,addSession,removeSession,moveActor,select,get enabled(){return enabled;}};
 })(globalThis);

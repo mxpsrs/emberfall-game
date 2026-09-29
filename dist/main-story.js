@@ -46,7 +46,17 @@ const MAIN_STORY_STONES={
 };
 CREATURE_LAIRS.story_mine={title:'Ironhollow Freight Mine',subtitle:'The Last Shift · Sabotaged workings and miners’ refuges',quest:true,theme:'ork',size:[50,92],entry:[25,86],arena:[25,25],entrance:[842,187],floor:'#514d46',trim:'#99866b',glow:'#d7b77d',fog:[.14,.13,.12],ambient:[.94,.9,.82],light:[.2,.15,.07],rooms:[['rect',4,5,18,19],['rect',17,12,15,9],['rect',20,72,11,17],['ellipse',25,69,13,12],['rect',9,47,8,25],['rect',10,44,30,8],['rect',32,24,8,26],['ellipse',25,22,16,15]]};
 CREATURE_LAIRS.story_shrine={title:'Hollow Shrine',subtitle:'Whispers at Hollow Shrine · The buried pilgrim halls',quest:true,theme:'arcane',size:[62,112],entry:[30,105],arena:[30,18],entrance:[677,363],floor:'#414c49',trim:'#8f9b89',glow:'#92cabb',fog:[.10,.15,.15],ambient:[.82,.94,.91],light:[.08,.15,.15],rooms:[['rect',26,88,9,20],['ellipse',30,86,12,12],['rect',10,78,22,8],['rect',9,58,9,25],['ellipse',16,56,12,12],['rect',15,47,35,9],['rect',42,27,9,26],['ellipse',45,27,12,12],['rect',27,18,22,9],['ellipse',29,18,14,13]]};
-function mainStoryFound(key){for(const [scene,w]of Object.entries(worldScenes)){const o=w.objects.find(o=>o.mainStoryKey===key);if(o)return {scene,o};}return null;}
+let mainStoryLookup=null;
+function mainStoryFound(key){
+ const native=globalThis.VeldrenWorldObjects?.enabled&&globalThis.realmNative?.scenes;
+ if(native){
+  const revision=native.revision();
+  if(!mainStoryLookup||mainStoryLookup.revision!==revision||mainStoryLookup.membership!==worldObjectRevision||mainStoryLookup.world!==worldScenes)mainStoryLookup={revision,membership:worldObjectRevision,world:worldScenes,entries:new Map()};
+  if(mainStoryLookup.entries.has(key))return mainStoryLookup.entries.get(key);
+ }
+ let found=null;for(const [scene,w]of Object.entries(worldScenes)){const o=w.objects.find(o=>o.mainStoryKey===key);if(o){found={scene,o};break;}}
+ if(native)mainStoryLookup.entries.set(key,found);return found;
+}
 function mainStoryState(){
  let q=s.mainStoryQuest;if(!q||typeof q!=='object'||Array.isArray(q))q=s.mainStoryQuest={};
  const legacy=q.version!==3&&q.stage>0;q.version=3;q.stage=Number.isInteger(q.stage)?Math.max(0,Math.min(25,q.stage)):0;

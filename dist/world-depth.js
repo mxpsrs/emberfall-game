@@ -8,7 +8,7 @@ function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}
 function gradeLand(x,z,height){return height;}
 function shoreHeight(x,z){return Math.max(0,Math.min(gradeLand(x,z,landBase(x,z)),shoreDistance(x,z)*.33));}
-function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);let level=Infinity;for(let z=Math.floor(b.y-.7);z<=Math.ceil(b.y+b.h+.7);z++)for(let x=Math.floor(b.x-.7);x<=Math.ceil(b.x+b.w+.7);x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
+function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);const x0=Math.floor(b.x-.7),x1=Math.ceil(b.x+b.w+.7),z0=Math.floor(b.y-.7),z1=Math.ceil(b.y+b.h+.7);let level=Infinity;for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
  if(!inWorld())return 0;const key=x+z*8192;if(landHeights.has(key))return landHeights.get(key);
  const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}

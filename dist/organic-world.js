@@ -101,6 +101,7 @@ function roadSegmentDistance(x,z,seg){const dx=seg.b[0]-seg.a[0],dz=seg.b[1]-seg
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
 drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
  for(const b of buildings){
+  if(b._sceneEntityId&&globalThis.VeldrenWorldPerformance?.visible(currentScene,b._sceneEntityId)===false)continue;
   if(!b.service||b.service.passageKind||b.arch)continue;
   const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);
   const m=typeof buildingDoorTransform==='function'?buildingDoorTransform(b):briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85),q=project3(m[3],1.2,m[11]);
