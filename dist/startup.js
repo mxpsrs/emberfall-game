@@ -61,6 +61,7 @@ function realmAssetURL(path){return window.REALM_ASSET_VERSIONS?.[path]||path;}
 function realmLoadImage(path){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Image unavailable: '+path));img.src=realmAssetURL(path);});}
 realmStartLoadingTimeout();
 document.addEventListener('load',e=>{if(e.target?.tagName==='SCRIPT'){window.realmStartup.loaded++;realmLoadStatus('Loading the game…',Math.min(30,window.realmStartup.loaded));}},true);
+function realmStartupInlineLoaded(){const state=window.realmStartup;if(!state||state.failed||state.finished)return;state.loaded++;realmLoadStatus('Loading the game…',Math.min(30,state.loaded));}
 document.addEventListener('error',e=>{if(e.target?.tagName==='SCRIPT')realmLoadFailure('A game file could not download. Please retry.',new Error('Script unavailable: '+e.target.src),'script-download');},true);
 window.addEventListener('error',e=>{
  const state=window.realmStartup;if(state.finished||state.failed)return;let critical=false;

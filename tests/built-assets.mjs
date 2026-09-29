@@ -21,8 +21,8 @@ for(const encoding of ['identity','gzip','br;q=0, gzip']){
 const page=await request('/play');assert.equal(page.status,200);assert.equal(page.headers.get('Cache-Control'),'no-cache');
 const html=(await body(page)).toString();assert.match(html,/^<!doctype html>/i,'Home screen launch must receive HTML, never compressed bytes');
 const urls=[...html.matchAll(/(?:src|href)="([^"?#]+\?v=[a-f0-9]+)"/g)].map(m=>m[1]);
-assert(urls.some(url=>url.startsWith('startup.js?')));assert(html.indexOf('window.REALM_ASSET_VERSIONS=')<html.indexOf('src="startup.js?'));
-assert(urls.some(url=>url.startsWith('native-runtime.js?')),'production document versions the native loader');
+assert(!html.includes('src="startup.js?'),'startup runs inline in the initial document');
+assert(!html.includes('src="native-runtime.js?'),'native initialization runs inline in the initial document');
 const release=html.match(/window\.REALM_RELEASE="(realm-[a-f0-9]{16})"/)?.[1];
 assert(release,'client error reports and update checks carry a manifest-wide immutable release fingerprint');
 const releaseResponse=await request('/api/release');
@@ -30,18 +30,23 @@ assert.equal(releaseResponse.status,200);assert.equal(releaseResponse.headers.ge
 assert.deepEqual(JSON.parse((await body(releaseResponse)).toString()),{release},'open tabs can detect content-only publications');
 const versions=JSON.parse(html.match(/window.REALM_ASSET_VERSIONS=(.+?);<\/script>/)[1]);
 assert(statSync(new URL('../dist/server/index.js',import.meta.url)).size<=64*1024*1024,'Worker must fit the hosting module limit');
-const startupScripts=['world-building-scene.js','view3d.js','world-depth.js'];
-const browserProfiles=[['iPhone Safari','Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 Version/27.0 Mobile/15E148 Safari/604.1'],['desktop Chrome','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36']];
-for(const file of startupScripts)for(const [profile,userAgent]of browserProfiles){
- const source=readFileSync(new URL('../dist/'+file,import.meta.url));
- const oldVersion=createHash('sha256').update('identity-v1\0').update(source).digest('hex').slice(0,16);
- assert.notEqual(versions[file],file+'?v='+oldVersion,file+' must bypass the prior immutable Brotli URL');
- const response=await request('/'+versions[file],{'Accept-Encoding':'gzip, br','User-Agent':userAgent});
- assert.equal(response.status,200,file+' downloads on '+profile);
- assert.equal(response.headers.get('Content-Encoding'),null,file+' remains uncompressed on '+profile+' to prevent VLD-SDL');
- assert.deepEqual(await body(response),source,file+' response bytes match source on '+profile);
+const delivery=JSON.parse(readFileSync(new URL('../.qa/asset-delivery.json',import.meta.url)));
+assert(delivery.inlineScripts.length>=100,'Small game scripts are embedded in the launch document');
+assert.equal(new Set(delivery.inlineScripts).size,delivery.inlineScripts.length,'Inline script manifest has unique paths');
+assert.equal((html.match(/<script>realmStartupInlineLoaded\(\);<\/script>/g)||[]).length,delivery.inlineScripts.length,'Every inline script advances startup progress');
+assert(html.indexOf('window.REALM_ASSET_VERSIONS=')<html.indexOf('sourceURL=startup.js?'),'Asset metadata loads before startup.js');
+for(const file of delivery.inlineScripts){
+ const source=readFileSync(new URL('../dist/'+file,import.meta.url),'utf8');
+ assert(html.includes(source),'Inline source matches the built script: '+file);
+ assert(html.includes('//# sourceURL='+versions[file]),'Inline source keeps a versioned diagnostic URL: '+file);
+ new Script(source,{filename:file});
+ assert(!delivery.assets.some(asset=>asset.path==='/'+file),'Inline script is removed from Worker assets: '+file);
 }
-for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','world-construction.json','world-native.json','prebuilt-world.js'])urls.push(versions[path]);
+const externalScripts=[...html.matchAll(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g)].map(match=>match[1].replace(/^\/+/,''));
+assert(externalScripts.length>0,'Large catalogs remain separate scripts');
+for(const file of externalScripts)assert(statSync(new URL('../dist/'+file,import.meta.url)).size>512*1024,'Only large scripts remain external: '+file);
+for(const file of ['startup.js','native-runtime.js','world-building-scene.js','prebuilt-world.js'])assert.equal((await request('/'+versions[file])).status,404,'Worker no longer serves inlined script: '+file);
+for(const path of ['assets/realms/atlas.png','assets/realms/atlas-filament.png','assets/bounds.json','assets/items.png','assets/environment.png','world-construction.json','world-native.json'])urls.push(versions[path]);
 const nativeCore=await request('/'+versions['native/veldren-core.wasm']);assert.equal(nativeCore.status,200);assert.equal(nativeCore.headers.get('Content-Type'),'application/wasm');assert.deepEqual(await body(nativeCore),readFileSync(new URL('../dist/native/veldren-core.wasm',import.meta.url)),'The current native core ships byte for byte');
 for(const file of ['editor/editor.js','editor/editor-runtime.js','editor/asset-preview.js','editor/index.html','editor/viewport.html']){
  const source=readFileSync(new URL('../dist/'+file,import.meta.url)),namespace=file.endsWith('.js')&&source.length<=512*1024?'plain-runtime-js-v1\0':'identity-v1\0';
@@ -58,11 +63,11 @@ for(const name of Object.keys(versions).filter(name=>/^assets\/canonical\/(image
  const bytes=await body(response);assert.deepEqual(bytes,readFileSync(new URL('../dist/'+name,import.meta.url)));
  assert.equal(createHash('sha256').update(bytes).digest('hex'),name.split('/').pop().split('.')[0]);
 }
-const delivery=JSON.parse(readFileSync(new URL('../art/derived/browser-assets.json',import.meta.url)));
+const browserDelivery=JSON.parse(readFileSync(new URL('../art/derived/browser-assets.json',import.meta.url)));
 const shipped=new Set(Object.keys(versions).filter(name=>/^assets\/canonical\/(images|variants)\//.test(name)));
-assert.deepEqual(shipped,new Set(delivery.canonicalImages),'Every declared browser texture ships, with no desktop-only payloads');
+assert.deepEqual(shipped,new Set(browserDelivery.canonicalImages),'Every declared browser texture ships, with no desktop-only payloads');
 const registry=JSON.parse(readFileSync(new URL('../dist/assets/asset-registry.json',import.meta.url)));
-for(const record of registry.records)for(const profile of delivery.profiles)for(const variant of record.variants?.[profile]||[])assert(shipped.has(variant.derivedPath));
+for(const record of registry.records)for(const profile of browserDelivery.profiles)for(const variant of record.variants?.[profile]||[])assert(shipped.has(variant.derivedPath));
 for(const [file,reason] of sourceOnlyAssets){assert.equal(versions[file],undefined,reason);assert.equal((await request('/'+file)).status,404);}
 for(const record of registry.records)if(record.type==='model'&&record.importSettings?.importer==='veldren-gltf-1'){
  assert(versions[record.derivedPath],'Canonical model ships: '+record.id);
@@ -108,8 +113,8 @@ for(const header of ['Content-Type','Cache-Control','ETag','Content-Encoding'])a
 const legacyVersion=createHash('sha256').update(readFileSync(new URL('../dist/creatures.js',import.meta.url))).digest('hex').slice(0,16);
 assert.notEqual(versions['creatures.js'],'creatures.js?v='+legacyVersion,'Fresh URLs must bypass any incorrectly cached compressed assets');
 const launch=await worker.fetch(new Request('https://veldren.test/',{headers:{'Accept-Encoding':'gzip, deflate, br'}}),{});assert.match((await body(launch)).toString(),/^<!doctype html>/i);
-assert.equal((await request('/creatures.js?v=outdated')).status,409,'mismatched publications cannot silently mix code');
-assert.equal((await request('/creatures.js')).headers.get('Cache-Control'),'no-cache');
+assert.equal((await request('/world-native.json?v=outdated')).status,409,'mismatched publications cannot silently mix code');
+assert.equal((await request('/world-native.json')).headers.get('Cache-Control'),'no-cache');
 const musicSources=JSON.parse(readFileSync(new URL('../docs/music-sources.json',import.meta.url)));
 for(const track of musicSources.tracks){
  assert(['CC0-1.0','Pixabay Content License'].includes(track.license));assert.equal(track.commercial_use,true);assert.equal(track.attribution_required,false);
