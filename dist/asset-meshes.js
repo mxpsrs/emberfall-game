@@ -1,7 +1,21 @@
 'use strict';
 // Filament handle marshalling. C++ validates and assembles all geometry packets.
+const veldrenFrameBuildQueues=new WeakMap();
+function getVeldrenFrameBuildQueue(engine){
+ let queue=veldrenFrameBuildQueues.get(engine);if(queue)return queue;
+ const tasks=[];let scheduled=false,frames=0,lastCount=0,maxCount=0,total=0,mobileTasks=0;
+ const now=()=>globalThis.performance?.now?.()??Date.now();
+ function schedulePump(){if(scheduled||!tasks.length)return;scheduled=true;const run=()=>{scheduled=false;const start=now(),mobile=mobileTasks>0,max=mobile?3:6,budget=mobile?4:6;let count=0;
+   while(tasks.length&&count<max){const task=tasks.shift();if(task.profile==='browser-mobile')mobileTasks--;if(task.cancelled)continue;try{task.resolve(task.work());}catch(error){task.reject(error);}count++;if(count&&now()-start>=budget)break;}
+   frames++;lastCount=count;maxCount=Math.max(maxCount,count);total+=count;if(tasks.length)schedulePump();
+  };
+   if(typeof requestAnimationFrame==='function')requestAnimationFrame(run);else if(typeof setTimeout==='function')setTimeout(run,0);else Promise.resolve().then(run);
+ }
+ queue=Object.freeze({schedule(work,profile='browser'){return new Promise((resolve,reject)=>{tasks.push({work,profile,resolve,reject,cancelled:false});if(profile==='browser-mobile')mobileTasks++;schedulePump();});},diagnostics:()=>({queued:tasks.length,frames,lastCount,maxCount,total})});
+ veldrenFrameBuildQueues.set(engine,queue);return queue;
+}
 function createVeldrenModelResources(engine,assets,materials,filament=Filament){
- const geometry=new Map(),models=new Map(),leases=new Set();let disposed=false;
+ const geometry=new Map(),models=new Map(),leases=new Set(),buildQueue=getVeldrenFrameBuildQueue(engine);let disposed=false;
  const unsubscribe=assets.onDispose(destroy),abort=()=>Object.assign(Error('Model resource retired'),{name:'AbortError'});
  const decode=(value,Type)=>{const bytes=Uint8Array.from(atob(value),c=>c.charCodeAt(0));return new Type(bytes.buffer);};
  function geometryLease(packet){
@@ -36,9 +50,9 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
   const check=()=>{if(disposed||entry.retired)throw abort();};
   try{
    const model=await entry.model.ready;check();const plan=assets.renderPlan(model);entry.plan=plan;
-   const meshes=new Map();for(const packet of plan.geometry){check();const lease=geometryLease(packet);entry.geometry.push(lease);meshes.set(packet.key,lease.resource);}
+   const meshes=new Map();for(const packet of plan.geometry){check();const lease=await buildQueue.schedule(()=>{check();return geometryLease(packet)},entry.profile);check();entry.geometry.push(lease);meshes.set(packet.key,lease.resource);}
    const bound=new Map();
-   for(const draw of plan.draws){const material=entry.materialOverride||draw.material;if(bound.has(material))continue;check();const lease=materials.acquire(material,entry.profile);entry.materials.push(lease);bound.set(material,await lease.ready);}
+   for(const draw of plan.draws){const material=entry.materialOverride||draw.material;if(bound.has(material))continue;check();const lease=await buildQueue.schedule(()=>{check();return materials.acquire(material,entry.profile)},entry.profile);check();entry.materials.push(lease);bound.set(material,await lease.ready);}
    check();return Object.freeze({plan,draws:plan.draws.map(draw=>Object.freeze({...draw,resource:meshes.get(draw.geometry),materialInstance:bound.get(entry.materialOverride||draw.material)}))});
   }catch(error){clean(entry);throw error;}
  }
@@ -54,5 +68,5 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
   return Object.freeze({id,generation,ready:entry.ready.then(value=>{if(lease.closed||disposed)throw abort();return value;}).catch(error=>{release(lease);throw error;}),release:()=>release(lease)});
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const lease of [...leases])release(lease);}
- return Object.freeze({acquire,destroy,diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes:[...geometry.values()].reduce((n,e)=>n+e.bytes,0)})});
+ return Object.freeze({acquire,destroy,scheduleBuild:(work,profile='browser')=>buildQueue.schedule(work,profile),diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes:[...geometry.values()].reduce((n,e)=>n+e.bytes,0),buildQueue:buildQueue.diagnostics()})});
 }

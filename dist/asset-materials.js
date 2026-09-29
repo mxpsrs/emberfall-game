@@ -6,18 +6,19 @@ function createVeldrenMaterialResources(engine,assets,textures,filament=Filament
  if(!response.ok)throw Error('Material resource unavailable: '+path);
  return new Uint8Array(await response.arrayBuffer());
 }){
- const entries=new Map(),shaders=new Map(),leases=new Set();let disposed=false;
+ const entries=new Map(),shaders=new Map(),leases=new Set(),buildQueue=typeof getVeldrenFrameBuildQueue==='function'?getVeldrenFrameBuildQueue(engine):null;let disposed=false;
  const unsubscribe=assets.onDispose(destroy);
  const aborted=()=>Object.assign(Error('Material request retired'),{name:'AbortError'});
- function shader(path){
+ const schedule=(work,profile)=>buildQueue?buildQueue.schedule(work,profile):Promise.resolve().then(work);
+ function shader(path,profile){
   let entry=shaders.get(path);
   if(!entry){
    entry={users:0,controller:new AbortController(),material:null};shaders.set(path,entry);
    const current=entry;
-   current.ready=Promise.resolve().then(()=>loadBytes(path,current.controller.signal)).then(bytes=>{
+   current.ready=Promise.resolve().then(()=>loadBytes(path,current.controller.signal)).then(bytes=>schedule(()=>{
     if(disposed||current.controller.signal.aborted)throw aborted();
     return current.material=engine.createMaterial(bytes);
-   });
+   },profile));
   }
   entry.users++;let closed=false;
   return {ready:entry.ready,release(){
@@ -34,28 +35,30 @@ function createVeldrenMaterialResources(engine,assets,textures,filament=Filament
  async function build(entry){
   const signal=entry.controller.signal,check=()=>{if(disposed||signal.aborted)throw aborted();};
   try{
-   check();entry.shader=shader(entry.plan.shader);const material=await entry.shader.ready;check();
+   check();entry.shader=shader(entry.plan.shader,entry.profile);const material=await entry.shader.ready;check();
    for(const binding of entry.plan.textures){
     const bytes=binding.encoded?Uint8Array.from(atob(binding.encoded),c=>c.charCodeAt(0)):await loadBytes(binding.path,signal);check();
-    entry.textures.push(textures.acquire(bytes,binding.processing));
+    entry.textures.push(await schedule(()=>{check();return textures.acquire(bytes,binding.processing);},entry.profile));
    }
-   check();const instance=entry.instance=material.createInstance();
-   for(const [key,value] of Object.entries(entry.plan.floats))instance.setFloatParameter(key,value);
-   for(const [key,value] of Object.entries(entry.plan.float3))instance.setFloat3Parameter(key,value);
-   for(const [key,value] of Object.entries(entry.plan.float4))instance.setFloat4Parameter(key,value);
-   for(const [key,value] of Object.entries(entry.plan.mat3))instance.setMat3Parameter(key,value);
-   instance.setDoubleSided(entry.plan.doubleSided);
-   instance.setCullingMode(entry.plan.doubleSided?filament.CullingMode.NONE:filament.CullingMode.BACK);
-   if(entry.plan.alphaMode==='MASK')instance.setMaskThreshold(entry.plan.alphaCutoff);
-   for(let i=0;i<entry.plan.textures.length;i++){
-    const binding=entry.plan.textures[i],s=binding.sampler;
-    if(s.wrapS!==s.wrapT)throw Error('Filament 1.77 JS binding cannot represent independent texture wrap modes');
-    const sampler=new filament.TextureSampler(filament.MinFilter[s.min],filament.MagFilter[s.mag],filament.WrapMode[s.wrapS]);
+   check();const instance=entry.instance=await schedule(()=>{
+    check();const value=material.createInstance();
     try{
-     sampler.setAnisotropy(s.anisotropy);
-     instance.setTextureParameter(binding.uniform,entry.textures[i].texture,sampler);
-    }finally{sampler.delete();}
-   }
+     for(const [key,item] of Object.entries(entry.plan.floats))value.setFloatParameter(key,item);
+     for(const [key,item] of Object.entries(entry.plan.float3))value.setFloat3Parameter(key,item);
+     for(const [key,item] of Object.entries(entry.plan.float4))value.setFloat4Parameter(key,item);
+     for(const [key,item] of Object.entries(entry.plan.mat3))value.setMat3Parameter(key,item);
+     value.setDoubleSided(entry.plan.doubleSided);
+     value.setCullingMode(entry.plan.doubleSided?filament.CullingMode.NONE:filament.CullingMode.BACK);
+     if(entry.plan.alphaMode==='MASK')value.setMaskThreshold(entry.plan.alphaCutoff);
+     for(let i=0;i<entry.plan.textures.length;i++){
+      const binding=entry.plan.textures[i],s=binding.sampler;
+      if(s.wrapS!==s.wrapT)throw Error('Filament 1.77 JS binding cannot represent independent texture wrap modes');
+      const sampler=new filament.TextureSampler(filament.MinFilter[s.min],filament.MagFilter[s.mag],filament.WrapMode[s.wrapS]);
+      try{sampler.setAnisotropy(s.anisotropy);value.setTextureParameter(binding.uniform,entry.textures[i].texture,sampler);}finally{sampler.delete();}
+     }
+     return value;
+    }catch(error){engine.destroyMaterialInstance(value);throw error;}
+   },entry.profile);
    return instance;
   }catch(error){cleanup(entry);throw error;}
  }

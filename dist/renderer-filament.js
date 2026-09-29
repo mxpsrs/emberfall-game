@@ -10,6 +10,9 @@ function realmFilamentMatrixInto(model,out){
  out[12]=model[3];out[13]=model[7]+ground;out[14]=model[11];out[15]=1;
  return out;
 }
+function realmFilamentGroundRevision(){return (typeof currentScene==='string'?currentScene:'')+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(window.VeldrenTerrainEdits?.revision??0);}
+function realmFilamentSourceMatches(source,model){if(!source)return false;const values=model||realmIdentityModel;for(let i=0;i<12;i++)if(source[i]!==values[i])return false;return true;}
+function realmFilamentRememberSource(source,model){const values=model||realmIdentityModel;for(let i=0;i<12;i++)source[i]=values[i];}
 function realmFilamentMatrix(model){return realmFilamentMatrixInto(model,new Float32Array(16));}
 function realmFilamentCameraCenter(x,y,z,yaw,pitch,zoom,dpr){
  const c=Math.cos(yaw),s=Math.sin(yaw),st=Math.sin(pitch),ct=Math.cos(pitch),depth=x*s*ct+y*st+z*c*ct;
@@ -89,9 +92,9 @@ function createRealmFilamentGPU(){
  catch(error){textureResources.destroy();throw error;}
  assets.atlasBytes=null;assets.groundSurfacesBytes=null;
  const materialResources=createVeldrenMaterialResources(engine,VeldrenAssets,textureResources),modelResources=createVeldrenModelResources(engine,VeldrenAssets,materialResources);
- const resourceProfile=realmMobileFilament()?'browser-mobile':'browser',streaming=typeof createVeldrenWorldStreaming==='function'?createVeldrenWorldStreaming(realmNative.scenes,VeldrenAssets,modelResources,resourceProfile):null;
- const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming);
- const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming)):null;
+ const resourceProfile=realmMobileFilament()?'browser-mobile':'browser',streaming=typeof createVeldrenWorldStreaming==='function'?createVeldrenWorldStreaming(realmNative.scenes,VeldrenAssets,modelResources,resourceProfile):null,constructionBudget=createVeldrenRenderableBudget(resourceProfile);
+ const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget);
+ const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget)):null;
  const canonicalEligibility=new Map();
  function canonicalEntry(mesh,model,style={}){
   if(mesh.poseSource)return {...poseEntry(mesh),model,...style};
@@ -191,7 +194,7 @@ function createRealmFilamentGPU(){
   const tangents=resource.dynamicTangents;
   resource.vb.setBufferAt(engine,0,arrays.positions);resource.vb.setBufferAt(engine,1,tangents);resource.vb.setBufferAt(engine,2,arrays.colors);resource.vb.setBufferAt(engine,3,arrays.uvs);
  }
- function poolFor(resource,style){let pool=resource.pools.get(style.key);if(pool)return pool;pool={entities:[],transforms:[],used:0,material:styleInstance(style)};resource.pools.set(style.key,pool);return pool;}
+ function poolFor(resource,style){let pool=resource.pools.get(style.key);if(pool)return pool;pool={entities:[],transforms:[],sources:[],revisions:[],used:0,material:styleInstance(style)};resource.pools.set(style.key,pool);return pool;}
  function createRenderable(resource,pool){
   const entity=Filament.EntityManager.get().create(),builder=Filament.RenderableManager.Builder(1).boundingBox(resource.bounds).material(0,pool.material).castShadows(!resource.terrain).receiveShadows(!resource.terrain);
   if(resource.ib)builder.geometry(0,Filament.RenderableManager$PrimitiveType.TRIANGLES,resource.vb,resource.ib);else builder.geometryNoIndices(0,Filament.RenderableManager$PrimitiveType.TRIANGLES,resource.vb);
@@ -201,27 +204,29 @@ function createRealmFilamentGPU(){
   if(!resource||!resources.has(resource))return;for(const pool of resource.pools.values()){activePools.delete(pool);for(const entity of pool.entities){if(activeEntities.has(entity)){scene.remove(entity);activeEntities.delete(entity);}nextEntities.delete(entity);engine.destroyEntity(entity);Filament.EntityManager.get().destroy(entity);entity.delete();}}
   engine.destroyVertexBuffer(resource.vb);if(resource.ib)engine.destroyIndexBuffer(resource.ib);resources.delete(resource);if(resource.buffer)resourceByBuffer.delete(resource.buffer);
  }
- function updateRenderableTransform(pool,slot,entity,model){
-  // Camera motion leaves world transforms unchanged. Avoid repeating three
-  // Filament/WASM calls per stationary entity while still checking live ground
-  // height and any model edits every frame.
+ function updateRenderableTransform(pool,slot,entity,model,groundRevision){
+  // Static geometry keeps the same source transform and ground until the
+  // terrain revision changes. Skip both heightfield sampling and the WASM
+  // transform comparison on that common path.
+  let source=pool.sources[slot];if(pool.revisions[slot]===groundRevision&&realmFilamentSourceMatches(source,model))return;
   const matrix=realmFilamentMatrixInto(model,matrixScratch),previous=pool.transforms[slot];
   let changed=!previous;
   for(let i=0;!changed&&i<16;i++)if(previous[i]!==matrix[i])changed=true;
+  if(!source)source=pool.sources[slot]=new Float64Array(12);realmFilamentRememberSource(source,model);pool.revisions[slot]=groundRevision;
   if(!changed)return;
   if(frameMetrics)frameMetrics.transformSubmissions++;
   const instance=transformManager.getInstance(entity);transformManager.setTransform(instance,matrix);instance.delete();
   if(previous)previous.set(matrix);else pool.transforms[slot]=new Float32Array(matrix);
  }
- function acquire(entry,next){
+ function acquire(entry,next,groundRevision){
   let resource=resourceByBuffer.get(entry.buffer);if(!resource)resource=makeResource(entry);
   resource.lastFrame=renderFrame;const pool=poolFor(resource,realmFilamentStyle(entry));activePools.add(pool);
   const slot=pool.used++,entity=pool.entities[slot]||createRenderable(resource,pool);
-  updateRenderableTransform(pool,slot,entity,entry.model);next.add(entity);
+  updateRenderableTransform(pool,slot,entity,entry.model,groundRevision);next.add(entity);
  }
  const sun=Filament.EntityManager.get().create();
  Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.94,.83]).intensity(65000).direction([.55,-1,-.38]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
- const pointLights=[],canonicalMatrices=[],lodRowPool=[],lodRows=[];
+ const pointLights=[],canonicalMatrices=[],canonicalSources=[],canonicalRevisions=[],lodRowPool=[],lodRows=[];
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
   manager.setIntensity(sunInstance,5500+day*52000);manager.setColor(sunInstance,[.72+.28*day,.76+.18*day,.92-.10*day]);sunInstance.delete();
@@ -256,17 +261,17 @@ function createRealmFilamentGPU(){
    renderFrame++;const measured=window.VELDREN_PERFORMANCE===true,start=measured?performance.now():0;
    frameMetrics=measured?{submittedPackets:entries.length,dynamicVertices:dynamic.length/12,transformSubmissions:0,synchronizationMs:0,renderMs:0}:null;
    if(engine.hasUnrecoverableFailure())throw new Error('Filament reported an unrecoverable renderer failure');
-   const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
+   const groundRevision=realmFilamentGroundRevision(),dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
-   const next=nextEntities;streaming?.begin(String(currentScene));assetDraws.begin(currentScene);
+   const next=nextEntities;constructionBudget.beginFrame();streaming?.begin(String(currentScene));assetDraws.begin(currentScene);
    const cameraForLod=realmFilamentCameraState(dpr);let canonicalCount=0;lodRows.length=0;
    for(const entry of entries)if(entry.canonicalAsset){
-    const i=canonicalCount++,matrix=canonicalMatrices[i]||(canonicalMatrices[i]=new Float32Array(16));realmFilamentMatrixInto(entry.model,matrix);
+    const i=canonicalCount++,matrix=canonicalMatrices[i]||(canonicalMatrices[i]=new Float32Array(16));let source=canonicalSources[i];if(canonicalRevisions[i]!==groundRevision||!realmFilamentSourceMatches(source,entry.model)){realmFilamentMatrixInto(entry.model,matrix);if(!source)source=canonicalSources[i]=new Float64Array(12);realmFilamentRememberSource(source,entry.model);canonicalRevisions[i]=groundRevision;}
     const row=lodRowPool[i]||(lodRowPool[i]=['','',0]);row[0]=entry.instanceId||'unbound:'+entry.canonicalAsset+':'+(entry.model||[]).join(',')+':'+i;row[1]=entry.canonicalAsset;row[2]=Math.hypot(matrix[12]-cameraForLod.eye[0],matrix[13]-cameraForLod.eye[1],matrix[14]-cameraForLod.eye[2]);lodRows.push(row);
    }
    let lodResult=null;if(canonicalCount&&realmNative.scenes.performance)lodResult=realmNative.scenes.performance(currentScene,{op:'lod-batch',entries:lodRows});
    this.lodDiagnostics=lodResult?.stats||null;let canonicalIndex=0;
-   try{for(const entry of entries){if(entry.canonicalAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],0,null,entry.instanceId,!!selected))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next);}else acquire(entry,next);}}finally{assetDraws.end();}
+   try{for(const entry of entries){if(entry.canonicalAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],lodRows[index]?.[2]||0,null,entry.instanceId,!!selected))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next,groundRevision);}else acquire(entry,next,groundRevision);}}finally{assetDraws.end();}
    if(dynamic.length){
     const count=Math.floor(dynamic.length/12),capacity=dynamicCapacity(count);dynamicResourceIndex=(dynamicResourceIndex+1)%dynamicResources.length;let resource=dynamicResources[dynamicResourceIndex];
     if(!resource||resource.capacity<capacity){
@@ -276,13 +281,13 @@ function createRealmFilamentGPU(){
     }else updateDynamicResource(resource,dynamic);
     resource.lastFrame=renderFrame;const entry={buffer:resource.buffer,count:resource.count},pool=poolFor(resource,realmFilamentStyle(entry));activePools.add(pool);
     const slot=pool.used++,entity=pool.entities[slot]||createRenderable(resource,pool);
-    updateRenderableTransform(pool,slot,entity);next.add(entity);
+    updateRenderableTransform(pool,slot,entity,null,groundRevision);next.add(entity);
    }
    const remove=[],add=[];for(const entity of activeEntities)if(!next.has(entity))remove.push(entity);for(const entity of next)if(!activeEntities.has(entity))add.push(entity);
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
    const cameraState=cameraForLod,{eye,center,near,far,left,right,bottom,top}=cameraState;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
-   authoredDraws?.render(String(currentScene),eye);
+   authoredDraws?.render(String(currentScene),eye);constructionBudget.drain();
    streaming?.end(cameraState.center,[...resources].reduce((n,r)=>n+r.gpuBytes,0)+modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes);
    // Native policy owns the budget/LRU decision; this layer only inventories
    // existing handles and releases the returned IDs through their owners.
