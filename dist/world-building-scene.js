@@ -292,11 +292,21 @@
  async function migrate(){
   const result=populate(native().serialize(),registry());
   if(!native().load(result.document))throw Error('Native Scene rejected building hierarchy');
+  hydrate(result);return result.counts;
+ }
+ function hydrate(result=null){
+  if(!result){
+   const bindings=new Map(),sourceReferences=new WeakMap();
+   for(const [scene,w]of Object.entries(registry())){
+    const rows=[];for(const b of w.buildings||[]){const id=b._generatedBuildingId;if(!id||!entity(scene,id))continue;rows.push({source:b,id});sourceReferences.set(b,{scene,id});}bindings.set(scene,rows);
+   }
+   result={bindings,sourceReferences};
+  }
   for(const name of result.bindings.keys())project(name);
   for(const [name,bindings]of result.bindings)for(const binding of bindings)if(binding.source.assembly&&!entity(name,binding.id)?.components.ModularBuilding)setAssembly(name,binding.id,binding.source.assembly,binding.source);
   refreshReferences(result.sourceReferences);installConsumers();
   if(!subscribed){native().subscribe(onChange);subscribed=true;}
-  return result.counts;
+  return {loaded:true};
  }
  function createBuilding(scene,input){
   const id=String(input.id);if(!id||entity(scene,id))throw Error('Duplicate authored building ID');
@@ -411,5 +421,5 @@
  }
 
 
- root.VeldrenBuildingScene={capture,populate,migrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,renderAssembly,setAssembly};
+ root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,renderAssembly,setAssembly};
 })(globalThis);

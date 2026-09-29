@@ -127,12 +127,43 @@
   document.addEventListener('visibilitychange',()=>{if(ambient){if(document.hidden)ambient.context.suspend();else if(ambientEnabled)ambient.context.resume();}});
   renderTutorial();
  }
+ let pendingNative=null;
+ const fingerprint=value=>root.VeldrenSceneOwnership.stableHash(JSON.stringify(value??null));
+ function complete(document,required){
+  if(document?.format!=='veldren.world'||document.version!==2||!Array.isArray(document.scenes))return false;
+  const scenes=new Map(document.scenes.map(scene=>[scene.scene,scene]));
+  return Object.entries(required).every(([name,flags])=>{const world=scenes.get(name)?.entities?.find(n=>n.components?.WorldGeneration)?.components.WorldGeneration;return world&&Object.entries(flags).every(([key,value])=>world[key]===value);});
+ }
+ function chooseNative(cooked,construction,editorWorld){
+  if(cooked?.format!=='veldren.cooked-world'||cooked.version!==1||!cooked.required||cooked.constructionKey!==fingerprint(construction)||!complete(cooked.document,cooked.required))return null;
+  // A newer fully authored Scene wins, including deleted entities. Never merge
+  // baseline entities back into an authoritative edited world.
+  if(complete(editorWorld,cooked.required))return editorWorld;
+  return cooked.sourceKey===fingerprint(editorWorld)?cooked.document:null;
+ }
  async function load(){
   if(!eligible())return false;
-  let data;
-  try{const response=await fetch(realmAssetURL('world-construction.json'));if(!response.ok)throw Error('Prebuilt world unavailable');data=await response.json();}
-  catch(error){console.warn('Using world generation:',error.message);return false;}
-  decode(data);data=null;resume();return true;
+  let data,cooked;
+  try{
+   [data,cooked]=await Promise.all([fetch(realmAssetURL('world-construction.json')).then(response=>{if(!response.ok)throw Error('Prebuilt world unavailable');return response.json();}),fetch(realmAssetURL('world-native.json')).then(response=>response.ok?response.json():null).catch(()=>null)]);
+  }catch(error){console.warn('Using world generation:',error.message);return false;}
+  await root.window?.VELDREN_WORLD_EDITS_READY;
+  pendingNative=chooseNative(cooked,data,root.VeldrenWorldEdits?.state?.world||root.window?.VeldrenWorldEdits?.state?.world);
+  decode(data);data=null;cooked=null;
+  if(pendingNative){
+   // Populate the construction aliases without applying character quest state
+   // to permanent definitions. Session restoration follows native hydration.
+   currentScene=worldScenes[s.sceneId]?s.sceneId:!tutorialComplete(s)?TUTORIAL_SCENE:'overworld';
+   objects.splice(0,objects.length,...worldScenes[currentScene].objects);buildings.splice(0,buildings.length,...worldScenes[currentScene].buildings);
+  }else resume();
+  return true;
  }
- root.VeldrenPrebuiltWorld={encode,decode,eligible,resume,load};
+ async function activateNative(step){
+  if(!pendingNative)return false;
+  const document=pendingNative;pendingNative=null;
+  await root.VeldrenWorldEdits?.prepareNativeWorld();
+  await root.VeldrenSceneOwnership.hydrateWorld(document,step);
+  resume();setupLoot();return true;
+ }
+ root.VeldrenPrebuiltWorld={encode,decode,eligible,resume,load,fingerprint,complete,chooseNative,activateNative,get nativeReady(){return !!pendingNative;}};
 })(globalThis);

@@ -113,10 +113,13 @@
    world.components.WorldGeneration.metadataComplete=true;scenes++;
   }
   if(!native().load(document))throw Error('Native Scene rejected metadata');
+  hydrate();return {scenes,entries,exits};
+ }
+ function hydrate(){
   const map=realm();if(!enabled&&map){Map.prototype.clear.call(map);for(const method of ['set','delete','clear'])Object.defineProperty(map,method,{value(){throw Error('Edit scene association entities through the Scene');}});}
   for(const name of Object.keys(registry()))project(name);
   if(!enabled)native().subscribe(event=>{if(event.kind==='load')for(const name of Object.keys(registry()))project(name);else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
-  enabled=true;installRendering();invalidate();return {scenes,entries,exits};
+  enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function installRendering(){
   if(renderInstalled||typeof prop3!=='function')return;renderInstalled=true;const before=prop3;
@@ -125,5 +128,5 @@
    return before(root.VeldrenLightScene.painter(r,m,[m[3],m[11]]),logical,x,z);
   };
  }
- root.VeldrenMetadataScene={capture,migrate,ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
+ root.VeldrenMetadataScene={capture,migrate,hydrate,ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
 })(globalThis);

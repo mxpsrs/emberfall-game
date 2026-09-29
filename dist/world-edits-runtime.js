@@ -251,6 +251,10 @@
   synchronizeSceneRenderables(world||state.world,sceneName??null);
   if(sceneName!=null&&typeof currentScene!=='undefined'&&currentScene===String(sceneName))syncCurrentScene();
   return true;
+ },async prepareNativeWorld(){
+  await ready;installRenderTransforms();window.VeldrenBuildings?.install();
+  const terrain=window.VeldrenTerrainEdits?.applyDocument(state.terrain);if(terrain?.error)throw Error('Invalid terrain edits: '+terrain.error);
+  window.VeldrenRuntimeWorld=state.world;
  },async applyFinishedWorld(){
   await ready;installRenderTransforms();window.VeldrenBuildings?.install();
   synchronizeSceneRenderables();

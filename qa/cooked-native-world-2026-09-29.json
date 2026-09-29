@@ -1,0 +1,41 @@
+{
+  "scope": "Local real Filament NOOP: excludes network and GPU; candidate ran concurrently with integration tests, timing is indicative only",
+  "baseline": {
+    "constructionMs": 948.3234880000001,
+    "nativeSetupMs": 26353.225851000003,
+    "firstDrawMs": 15105.334948999996,
+    "startupSubtotalMs": 42406.884288,
+    "subsequentDrawMedianMs": 121.26577700000053,
+    "rssMiB": 932
+  },
+  "candidate": {
+    "constructionMs": 4043.9000220000007,
+    "nativeSetupMs": 8979.748931,
+    "firstDrawMs": 14950.779927,
+    "startupSubtotalMs": 27974.42888,
+    "subsequentDrawMedianMs": 142.04478499999823,
+    "rssMiB": 1013
+  },
+  "integration": {
+    "pass": true,
+    "startupMs": 12819.729018000002,
+    "scenes": 259,
+    "entities": 20665,
+    "checks": [
+      "single native load without migration or serialization",
+      "tutorial entry",
+      "door state and cyclic bindings",
+      "transient actor state",
+      "saved player progress",
+      "partial edit fallback",
+      "canonical edit precedence",
+      "deleted entity stays deleted",
+      "editor transform and save reload"
+    ]
+  },
+  "limitations": [
+    "No physical iPhone measurement",
+    "No hosted 39-player certification",
+    "First-frame and sustained CPU drawing remain expensive"
+  ]
+}

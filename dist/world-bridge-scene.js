@@ -62,6 +62,9 @@
    world.components.WorldGeneration.bridgesComplete=true;
   }
   if(!native().load(doc))throw Error('Native Scene rejected bridges');
+  hydrate();return {bridges:count};
+ }
+ function hydrate(){
   if(!enabled){
    const before=bridgesInRealm;bridgesInRealm=function(){return enabled?list(currentScene,true):before();};
    const beforeAt=bridgeAt;bridgeAt=function(x,z){return enabled?at(currentScene,x,z):beforeAt(x,z);};
@@ -70,7 +73,7 @@
    const reset=resetLandSurface;resetLandSurface=function(){meshes.clear();return reset();};
    native().subscribe(event=>{project(event.scene);invalidate();});
   }
-  enabled=true;project();invalidate();return {bridges:count};
+  enabled=true;project();invalidate();return {loaded:true};
  }
- root.VeldrenBridgeScene={capture,migrate,getView,list,at,approach,height,point,outline,bounds,render,draw,mesh,selectables:list,get enabled(){return enabled;}};
+ root.VeldrenBridgeScene={capture,migrate,hydrate,getView,list,at,approach,height,point,outline,bounds,render,draw,mesh,selectables:list,get enabled(){return enabled;}};
 })(globalThis);

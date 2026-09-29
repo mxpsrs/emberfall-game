@@ -95,6 +95,9 @@
    world.components.WorldGeneration.gatherablesComplete=true;
   }
   if(!native().load(document))throw Error('Native Scene rejected gatherable definitions');
+  hydrate();return {gatherables:count};
+ }
+ function hydrate(){
   for(const scene of Object.keys(registry()))project(scene);
   for(const {scene,id,object}of sources.values()){
    const view=getView(scene,id);if(!view)continue;
@@ -111,7 +114,7 @@
    for(const {view}of views.values()){if(typeof staticMeshes3!=='undefined')staticMeshes3.delete(view);if(typeof staticMeshQueues3!=='undefined')staticMeshQueues3.prop.delete(view);}
    invalidate();
   });
-  enabled=true;installRendering();invalidate();return {gatherables:count};
+  enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function blocked(scene,x,z){return enabled&&native().footprintsAt(scene,'Gatherable',x+.5,z+.5).some(id=>node(scene,id)?.components.Collider?.solid&&!getView(scene,id).collected);}
  function installRendering(){
@@ -129,5 +132,5 @@
  }
  function definition(o){return node(o._generatedSceneName,o._sceneEntityId)?.components.Gatherable.harvest??null;}
  if(typeof resourceDefinition==='function')resourceDefinition=o=>o._generatedGatherable?definition(o):legacyDefinition(o);
- root.VeldrenGatherableScene={capture,migrate,getView,definition,blocked,tick:(now,time)=>enabled&&!editor()?root.realmNative.resources.tick(now,time):0,phase:(o,now,time,flags)=>['inactive','alive','stump','regrowing','syncing','regrown','chopping'][editor()?1:root.realmNative.resources.phase(o._generatedSceneName,o._sceneEntityId,now,time,flags)],ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,get enabled(){return enabled;}};
+ root.VeldrenGatherableScene={capture,migrate,hydrate,getView,definition,blocked,tick:(now,time)=>enabled&&!editor()?root.realmNative.resources.tick(now,time):0,phase:(o,now,time,flags)=>['inactive','alive','stump','regrowing','syncing','regrown','chopping'][editor()?1:root.realmNative.resources.phase(o._generatedSceneName,o._sceneEntityId,now,time,flags)],ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,get enabled(){return enabled;}};
 })(globalThis);

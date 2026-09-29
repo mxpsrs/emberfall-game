@@ -80,8 +80,11 @@
    world.components.WorldGeneration.roadsComplete=true;
   }
   if(!native().load(document))throw Error('Native Scene rejected road network');
-  for(const name of names)project(name);invalidate(names);
-  if(!enabled)native().subscribe(changed);enabled=true;return {roads:count,scenes:names.length};
+  hydrate(names);return {roads:count,scenes:names.length};
  }
- root.VeldrenRoadScene={migrate,segments:name=>lists.get(name)||Object.freeze([]),get enabled(){return enabled;}};
+ function hydrate(names=Object.keys(registry()).filter(name=>name==='overworld'||Object.hasOwn(registry()[name],'roads'))){
+  for(const name of names)project(name);invalidate(names);
+  if(!enabled)native().subscribe(changed);enabled=true;return {loaded:true};
+ }
+ root.VeldrenRoadScene={migrate,hydrate,segments:name=>lists.get(name)||Object.freeze([]),get enabled(){return enabled;}};
 })(globalThis);

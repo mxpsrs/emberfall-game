@@ -76,8 +76,11 @@
    world.components.WorldGeneration.structuresComplete=true;
   }
   if(!native().load(doc))throw Error('Native Scene rejected standalone architecture');
+  hydrate();return report;
+ }
+ function hydrate(){
   if(!enabled){for(const map of [typeof civilWalls!=='undefined'&&civilWalls,typeof civilFloors!=='undefined'&&civilFloors,typeof civilStairWells!=='undefined'&&civilStairWells])if(map)readonly(map);native().subscribe(()=>{invalidate();project();});installRendering();}
-  enabled=true;invalidate();project();return report;
+  enabled=true;invalidate();project();return {loaded:true};
  }
  function paint(r,scene,id){const m=matrix(scene,id);return root.VeldrenLightScene.painter(r,m,[m[3],m[11]]);}
  function drawWalls(r,scene,cull=false,only=null){
@@ -100,5 +103,5 @@
    return arch&&entity(scene,arch).activeInHierarchy?before(paint(r,scene,arch),logical,a[3],a[11]):0;
   };
  }
- root.VeldrenStructureScene={capture,migrate,getView,blocked,holeAt,borderAt,roomAt,draw,drawWalls,renderEntity,towerContains,refreshSurfaces,selectables:scene=>ids(scene,'StructureWall').concat(ids(scene,'StructureRoom'),ids(scene,'StairWell')).map(id=>getView(scene,id)),get enabled(){return enabled;}};
+ root.VeldrenStructureScene={capture,migrate,hydrate,getView,blocked,holeAt,borderAt,roomAt,draw,drawWalls,renderEntity,towerContains,refreshSurfaces,selectables:scene=>ids(scene,'StructureWall').concat(ids(scene,'StructureRoom'),ids(scene,'StairWell')).map(id=>getView(scene,id)),get enabled(){return enabled;}};
 })(globalThis);

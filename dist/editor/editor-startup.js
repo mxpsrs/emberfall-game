@@ -19,10 +19,12 @@ async function bootEditor(){
    await realmStartupStep('Preparing Briarhaven…',76,'world-generation',()=>setupExpandedWorld());
    await realmStartupStep('Preparing the landscape…',77,'tutorial-generation',()=>setupTutorialVillage());
   }
-  setupLoot();
+  if(!globalThis.VeldrenPrebuiltWorld.nativeReady)setupLoot();
   window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();window.VeldrenQuarryScene?.capture();window.VeldrenServiceScene?.capture();
-  await window.VeldrenWorldEdits.applyFinishedWorld();
-  await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
+  if(!await globalThis.VeldrenPrebuiltWorld.activateNative(realmStartupStep)){
+   await window.VeldrenWorldEdits.applyFinishedWorld();
+   await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
+  }
   // These viewport coordinates are editor state, never a player spawn or save.
   px=55;py=50;target=null;resize();assetsReady=true;last=performance.now();
   realmLoadComplete();await window.VeldrenEditorBridge?.initialize?.();

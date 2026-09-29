@@ -3,6 +3,7 @@ import {execFileSync} from 'node:child_process';
 execFileSync('python3',['scripts/build-texture-variants.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-asset-registry.py'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/cook-native-world.cjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
 import {build} from 'esbuild';
 import path from 'node:path';
@@ -52,7 +53,7 @@ const bundled=await build({entryPoints:['worker/api.js'],bundle:true,write:false
 // returns ordinary bytes; the hosting runtime still owns HTTP compression.
 // Versions and lengths above describe the original response bytes.
 for(const [url,asset]of Object.entries(assets)){
- if(!/\.(js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<65536)continue;
+ if(!/\.(js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
  const raw=Buffer.from(asset.data,'base64'),compressed=compressAsset(raw);
  if(compressed.length<raw.length*.90){asset.data=compressed.toString('base64');asset.storageEncoding='brotli';}
 }

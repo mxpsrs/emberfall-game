@@ -406,10 +406,13 @@ async function boot(){
      await realmStartupStep('Preparing Briarhaven…',76,'world-generation',()=>setupExpandedWorld());
      await realmStartupStep('Preparing the landscape…',77,'tutorial-generation',()=>setupTutorialVillage());
     }
-    setupLoot();
+    if(!globalThis.VeldrenPrebuiltWorld.nativeReady)setupLoot();
     window.VeldrenSceneOwnership?.captureGenerationIdentity();window.VeldrenBuildingScene?.capture(worldScenes);window.VeldrenLightScene?.capture();window.VeldrenMetadataScene?.capture();window.VeldrenStructureScene?.capture();window.VeldrenSpawnScene?.capture();window.VeldrenGatherableScene?.capture();window.VeldrenBridgeScene?.capture();window.VeldrenQuarryScene?.capture();window.VeldrenServiceScene?.capture();
-    realmSetStartupStage('editor-world');await window.VeldrenWorldEdits?.applyFinishedWorld();
-    await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
+    realmSetStartupStage('editor-world');
+    if(!await globalThis.VeldrenPrebuiltWorld.activateNative(realmStartupStep)){
+     await window.VeldrenWorldEdits?.applyFinishedWorld();
+     await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
+    }
     await realmStartupStep('Preparing your view…',96,'hud-init',()=>{initHud();resize();renderUI();renderAction();});
     await realmStartupStep('Entering the realm…',98,'first-draw',()=>{assetsReady=true;renderUI();renderTutorial();if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();draw();});
     if(!s.character?.name?.trim())openCreator(false);else if(typeof maybeShowStoryOpening==='function')maybeShowStoryOpening();

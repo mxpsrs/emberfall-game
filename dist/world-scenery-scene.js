@@ -65,9 +65,12 @@
    if(name==='overworld'&&!scene.entities.some(e=>e.components.UnderstoryGenerator))scene.entities.push({id:rootId+':understory',name:'Understory',parent:rootId,active:true,transform:identity(),components:{UnderstoryGenerator:{version:1,cellSize:8,algorithm:'worldUnderstoryPlacements-v1',persistence:'materialized-chunks-authoritative'}},metadata:{}});
   }
   if(!native().load(document))throw Error('Scene rejected world decorations');
+  hydrate();return {decorations:count};
+ }
+ function hydrate(){
   for(const name of Object.keys(registry()))project(name);
   if(!enabled)native().subscribe(changed);
-  enabled=true;return {decorations:count};
+  enabled=true;return {loaded:true};
  }
  function chunk(bx,bz){
   const scene='overworld',parent='generated:'+scene+':root:understory',id=idFor(scene,'understory-chunk',[bx,bz]);
@@ -108,5 +111,5 @@
   const radius=kind==='plinth'&&!allowPlinth?k:kind==='pillar'?.8*k:kind==='crystal'?.85*k:kind==='egg'?1.35*k:kind==='hearth'?k+.2:kind==='orrery'?1.3*k:kind==='runeBasin'?.8*k:0;
   return radius>0&&Math.hypot(p[0],p[2])<radius;
  }
- root.VeldrenSceneryScene={migrate,chunk,readChunk,prepareChunks,render,blocked,getView,selectables(scene){return byScene.get(scene)||[];},get enabled(){return enabled;}};
+ root.VeldrenSceneryScene={migrate,hydrate,chunk,readChunk,prepareChunks,render,blocked,getView,selectables(scene){return byScene.get(scene)||[];},get enabled(){return enabled;}};
 })(globalThis);

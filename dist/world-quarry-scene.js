@@ -64,11 +64,14 @@
    world.components.WorldGeneration.quarriesComplete=true;
   }
   if(!native().load(doc))throw Error('Native Scene rejected quarry terrain');
+  hydrate();return {quarries:count,pads:padCount,attached};
+ }
+ function hydrate(){
   if(!enabled){
    quarryAt=at;quarryShapeEdge=(q,x,z)=>sample(x,z,0,q)?.edge??0;quarryDepth=(q,x,z)=>sample(x,z,0,q)?.depth??0;quarryCliff=(q,x,z)=>sample(x+.5,z+.5,0,q)?.cliff??false;
    native().subscribe(event=>{if(event.scene!==null&&event.scene!==scene)return;project();invalidate();});
   }
-  enabled=true;project();invalidate();return {quarries:count,pads:padCount,attached};
+  enabled=true;project();invalidate();return {loaded:true};
  }
- root.VeldrenQuarryScene={capture,migrate,getView,at,sample,point,outline,rampAt:(x,z)=>native().quarryRampAt(scene,x,z),padHeight:(x,z,height,footing=false)=>native().terrainPadHeight(scene,x,z,height,footing),selectables:name=>name===scene?Object.freeze([...quarries,...workPads]):Object.freeze([]),get enabled(){return enabled;}};
+ root.VeldrenQuarryScene={capture,migrate,hydrate,getView,at,sample,point,outline,rampAt:(x,z)=>native().quarryRampAt(scene,x,z),padHeight:(x,z,height,footing=false)=>native().terrainPadHeight(scene,x,z,height,footing),selectables:name=>name===scene?Object.freeze([...quarries,...workPads]):Object.freeze([]),get enabled(){return enabled;}};
 })(globalThis);

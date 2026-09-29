@@ -73,6 +73,9 @@
    world.components.WorldGeneration.servicesComplete=true;
   }
   if(!native().load(document))throw Error('Native Scene rejected world services');
+  hydrate();return {services:count,colliders,supports};
+ }
+ function hydrate(){
   for(const scene of Object.keys(registry()))project(scene);
   for(const {scene,id,object}of sources.values()){const view=getView(scene,id);if(!view)continue;for(const k of new Set([...Object.keys(object),...Reflect.ownKeys(view),'_sceneEntityId','_generatedService','_generatedSceneEntity','_generatedSceneName'])){
    if(String(k).startsWith('_')&&!['_sceneEntityId','_generatedService','_generatedSceneEntity','_generatedSceneName'].includes(k))continue;
@@ -81,7 +84,7 @@
   // Construction sources are no longer owners; held legacy references still forward.
   sources.clear();
   if(!enabled)native().subscribe(event=>{if(event.kind==='load'){for(const r of views.values())r.reset();for(const scene of Object.keys(registry()))project(scene);}else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
-  enabled=true;installRendering();invalidate();return {services:count,colliders,supports};
+  enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function at(scene,x,z){return enabled?Object.freeze([...new Set(native().footprintsAt(scene,'ServiceCollider',x+.5,z+.5).map(id=>node(scene,id).components.ServiceCollider.owner))].filter(id=>node(scene,id)?.components.ServiceDefinition).map(id=>getView(scene,id))):Object.freeze([]);}
  function blocked(scene,x,z){return at(scene,x,z).some(o=>!o.walkThrough&&!o.collected);}
@@ -92,5 +95,5 @@
    const height=before(root.VeldrenLightScene.painter(r,m,[x,z]),logical,x,z);return (height||0)*Math.hypot(m[1],m[5],m[9])+m[7];
   };
  }
- root.VeldrenServiceScene={capture,migrate,getView,at,blocked,contains,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'ServiceDefinition').map(id=>node(scene,id))),get enabled(){return enabled;}};
+ root.VeldrenServiceScene={capture,migrate,hydrate,getView,at,blocked,contains,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'ServiceDefinition').map(id=>node(scene,id))),get enabled(){return enabled;}};
 })(globalThis);

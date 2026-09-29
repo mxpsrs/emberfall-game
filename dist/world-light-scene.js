@@ -87,6 +87,13 @@
    world.components.WorldGeneration.lightsComplete=true;
   }
   if(!native().load(document))throw Error('Native Scene rejected permanent lights');
+  hydrate(bindings);return {lights:count,fixtures,torches};
+ }
+ function hydrate(bindings=null){
+  if(!bindings){bindings=[];for(const [name,w]of Object.entries(registry())){
+   const catalog=new Map(native().componentIds(name,'GeneratedFixture').map(id=>[String(native().entity(name,id).components.CatalogIdentity.id),id]));
+   for(const source of w.objects||[])if(fixture(source)&&!source._generatedFixture){const id=catalog.get(String(source.id));if(id)bindings.push({name,id,source});}
+  }}
   for(const name of Object.keys(registry()))project(name);
   // Existing gameplay references retain their identity, but their data reads
   // and persistent writes now forward to the canonical entity.
@@ -100,7 +107,7 @@
    for(const view of views.values()){if(typeof staticMeshes3!=='undefined')staticMeshes3.delete(view);if(typeof staticMeshQueues3!=='undefined')staticMeshQueues3.prop.delete(view);}
    if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation.clear();
   });
-  enabled=true;installRendering();return {lights:count,fixtures,torches};
+  enabled=true;installRendering();return {loaded:true};
  }
  function sources(scene,night){
   const w=registry()[scene],inside=(x,z)=>w?.buildings.some(b=>b.walkIn&&(typeof withinWalkIn==='function'?withinWalkIn(b,x,z):x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h)),result=[];
@@ -147,5 +154,5 @@
    return before(painter(r,m,[m[3],m[11]]),logical,x,z);
   };}
  }
- root.VeldrenLightScene={capture,migrate,sources,renderTorch,painter,selectables:name=>torchLists.get(name)||[],ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
+ root.VeldrenLightScene={capture,migrate,hydrate,sources,renderTorch,painter,selectables:name=>torchLists.get(name)||[],ownsLegacy:(name,id)=>aliases.get(name)?.has(String(id))||false,get enabled(){return enabled;}};
 })(globalThis);

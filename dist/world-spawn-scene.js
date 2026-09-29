@@ -116,6 +116,9 @@
    world.components.WorldGeneration.spawnsComplete=true;
   }
   if(!native().load(document))throw Error('Native Scene rejected permanent spawn definitions');
+  hydrate();return {spawns:count};
+ }
+ function hydrate(){
   for(const scene of Object.keys(registry()))project(scene);
   // Legacy lexical references now forward to the same live view. They no
   // longer retain a second set of health, movement or definition fields.
@@ -134,7 +137,7 @@
    else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);
    invalidate();
   });
-  enabled=true;installRendering();invalidate();return {spawns:count};
+  enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function installRendering(){
   if(renderInstalled||typeof creature3!=='function')return;renderInstalled=true;const before=creature3;
@@ -157,5 +160,5 @@
    return (height||0)*Math.hypot(matrix[1],matrix[5],matrix[9])+matrix[7];
   };
  }
- root.VeldrenSpawnScene={installRendering,capture,migrate,getView,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'SpawnPoint').map(id=>node(scene,id))),get enabled(){return enabled;}};
+ root.VeldrenSpawnScene={installRendering,capture,migrate,hydrate,getView,ownsLegacy:(scene,id)=>aliases.get(scene)?.has(String(id))||false,definitions:scene=>Object.freeze(native().componentIds(scene,'SpawnPoint').map(id=>node(scene,id))),get enabled(){return enabled;}};
 })(globalThis);

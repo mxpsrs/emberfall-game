@@ -244,7 +244,10 @@
  async function migrateStaticProps(){
   captureGenerationIdentity();await (root.realmNativeReady||Promise.reject(Error('Native Scene core is unavailable')));
   const document=convertAll();if(!root.realmNative.scenes.load(document))throw Error('Native Scene rejected the generated world document');
-  const captured=capturedByScene(),output=[];for(const [sceneName] of Object.entries(worldRegistry())){const scene=root.realmNative.scenes.read(sceneName);if(scene)output.push(projectNativeScene(sceneName,scene,captured.get(sceneName)||[]));}
+  return hydrateStaticProps();
+ }
+ function hydrateStaticProps(document=null){
+  const captured=capturedByScene(),output=[];for(const [sceneName] of Object.entries(worldRegistry())){const scene=document?.scenes.find(s=>s.scene===sceneName)||root.realmNative.scenes.read(sceneName);if(scene)output.push(projectNativeScene(sceneName,scene,captured.get(sceneName)||[]));}
   const changed=output.reduce((sum,item)=>sum+item.count,0);generatedCount=changed;
   if(!unsubscribe)unsubscribe=root.realmNative.scenes.subscribe(onSceneChange);
   try{invalidateWorld();}catch{}
@@ -260,6 +263,15 @@
    for(let i=0;i<stages.length;i++){const [name,task]=stages[i];reports[name]=await step('Preparing world · '+(i+1)+' of '+stages.length,80+i,'scene-ownership',task);}
    await step('Connecting the world…',93,'scene-ownership',()=>{});
   });
+  root.VeldrenWorldObjects.install();return reports;
+ }
+ async function hydrateWorld(document,step=(_message,_progress,_stage,task)=>task()){
+  await (root.realmNativeReady||Promise.reject(Error('Native Scene core is unavailable')));
+  if(!root.realmNative.scenes.load(document))throw Error('Native Scene rejected cooked world');
+  authoritative=true;
+  const reports={},stages=[['Props',()=>hydrateStaticProps(document)],...['Building','Scenery','Road','Light','Metadata','Structure','Spawn','Gatherable','Bridge','Quarry','Service'].map(name=>[name,()=>root['Veldren'+name+'Scene'].hydrate()])];
+  // These steps only connect views and consumers; no world conversion or reload.
+  for(let i=0;i<stages.length;i++){const [name,task]=stages[i];reports[name]=await step('Connecting the world…',80+i,'scene-ownership',task);}
   root.VeldrenWorldObjects.install();return reports;
  }
  function onSceneChange(event){
@@ -312,5 +324,5 @@
   writeEntity(scene,entity);return scenesByName.get(scene)?.byId.get(id);
  }
  function status(){return {captured:generationCaptured,migrated:generatedCount,scenes:scenesByName.size,savedCatalogAuthoritative:authoritative};}
- root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},bindLegacyField,captureGenerationIdentity,migrateStaticProps,migrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
+ root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},bindLegacyField,captureGenerationIdentity,migrateStaticProps,migrateWorld,hydrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
 })(globalThis);
