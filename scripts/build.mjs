@@ -35,6 +35,16 @@ html=html.replace(/(src|href)="([^"?]+)"/g,(all,attribute,url)=>versions[url]?at
 html=html.replace('<script src="startup.js','<script>window.REALM_RELEASE='+JSON.stringify(release)+';window.REALM_ASSET_VERSIONS='+JSON.stringify(versions)+';</script><script src="startup.js');
 assets['/index.html'].data=Buffer.from(html).toString('base64');
 assets['/index.html'].version=createHash('sha256').update(html).digest('hex').slice(0,16);
+// Inline the small landing dependencies to avoid three serial asset requests.
+for(const page of ['/landing.html','/donate.html']){
+ if(!assets[page])continue;
+ let document=Buffer.from(assets[page].data,'base64').toString('utf8');const scripts=[];
+ document=document.replace(/<link rel="stylesheet" href="\/landing\.css">/g,()=>'<style>'+Buffer.from(assets['/landing.css'].data,'base64').toString('utf8')+'</style>');
+ document=document.replace(/<script src="\/(landing-(?:motion|status)\.js)" defer><\/script>/g,(_all,name)=>{scripts.push(Buffer.from(assets['/'+name].data,'base64').toString('utf8'));return '';});
+ document=document.replace(/(src|href)="\/?([^"?]+)"/g,(all,attribute,url)=>versions[url]?attribute+'="/'+versions[url]+'"':all);
+ if(scripts.length)document=document.replace('</body>','<script>'+scripts.join('\n;\n')+'</script></body>');
+ assets[page].data=Buffer.from(document).toString('base64');assets[page].length=Buffer.byteLength(document);assets[page].version=createHash('sha256').update(document).digest('hex').slice(0,16);
+}
 // Return already-compressed assets with encodeBody: manual, preventing double
 // compression. Clients without Brotli receive a streaming decoded response.
 const bundled=await build({entryPoints:['worker/api.js'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022',external:['node:crypto','node:zlib'],plugins:[compressedCatalogPlugin()]});const api=bundled.outputFiles[0].text;

@@ -3,17 +3,19 @@
 // never serialized: fires, editor previews, and travelling quest actors.
 (function(root){
  const registry=()=>typeof worldScenes!=='undefined'?worldScenes:root.worldScenes;
- const native=()=>root.realmNative.scenes,base=new Map(),lists=new Map(),sessions=new Map(),placements=new Map();
+ const native=()=>root.realmNative.scenes,base=new Map(),lists=new Map(),sessions=new Map(),placements=new Map(),timers=new Map();
  let enabled=false,renderInstalled=false;
  const key=o=>o._sceneEntityId;
  function invalidate(){if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;}
  function activate(){if(!enabled)return;objects=lists.get(String(currentScene))||Object.freeze([]);invalidate();}
  function select(values){const canonical=lists.get(String(currentScene))||[];if(values.length!==canonical.length||values.some((o,i)=>o!==canonical[i]))throw Error('Active world membership is a Scene projection');activate();}
+ function indexTimers(name,values){timers.set(name,Object.freeze(values.filter(o=>!o._generatedGatherable&&(o._generatedSpawn||!o._generatedSceneEntity||Number.isFinite(o.expiresAt)||Number.isFinite(o.respawnAt)||Number.isFinite(o.expires)))));}
+ function* timerScenes(){for(const [name,objects]of timers)if(objects.length)yield [name,{objects}];}
  function refresh(name){
   const next=(base.get(name)||[]).filter(o=>!placements.has(o)||placements.get(o)===name);
   for(const [o,destination]of placements)if(destination===name&&o._generatedSceneName!==name)next.push(o);
   for(const [o,entry]of sessions)if(entry.scene===name)next.push(o);
-  lists.set(name,Object.freeze(next));if(typeof currentScene!=='undefined'&&String(currentScene)===name)activate();invalidate();
+  lists.set(name,Object.freeze(next));indexTimers(name,next);if(typeof currentScene!=='undefined'&&String(currentScene)===name)activate();invalidate();
  }
  function project(name,values){
   name=String(name);if(!enabled){registry()[name].objects=values;return;}
@@ -62,7 +64,7 @@
  function install(){
   if(enabled)return;for(const [name,w]of Object.entries(registry())){
    for(const o of w.objects||[])if(!key(o)||!native().entity(o._generatedSceneName||name,key(o)))throw Error('Unowned world object at membership transfer: '+name+' '+o.id);
-   base.set(name,[...w.objects]);lists.set(name,Object.freeze([...w.objects]));
+   base.set(name,[...w.objects]);lists.set(name,Object.freeze([...w.objects]));indexTimers(name,w.objects);
    Object.defineProperty(w,'objects',{enumerable:true,configurable:false,get:()=>lists.get(name),set(){throw Error('Scene membership is read-only');}});
   }
   enabled=true;installRendering();if(typeof worldObjectArrayObserved!=='undefined')worldObjectArrayObserved=true;activate();
@@ -74,5 +76,5 @@
    }
   });
  }
- root.VeldrenWorldObjects={install,project,activate,addSession,removeSession,moveActor,select,get enabled(){return enabled;}};
+ root.VeldrenWorldObjects={install,project,timerScenes,timed:name=>timers.get(String(name))||[],activate,addSession,removeSession,moveActor,select,get enabled(){return enabled;}};
 })(globalThis);

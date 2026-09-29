@@ -57,7 +57,7 @@ let nextWorldTimerCheck=0;
 function updateWorldTimers(now=Date.now()){
  if(now<nextWorldTimerCheck)return;nextWorldTimerCheck=now+250;
  globalThis.VeldrenGatherableScene?.tick(now,time);
- const seen=new Set(),expiredObjects=new Set();for(const [sceneId,scene]of Object.entries(worldScenes))for(const o of scene.objects){
+ const seen=new Set(),expiredObjects=new Set();for(const [sceneId,scene]of (globalThis.VeldrenWorldObjects?.enabled?VeldrenWorldObjects.timerScenes():Object.entries(worldScenes)))for(const o of scene.objects){
  if(seen.has(o))continue;seen.add(o);
  if(o._generatedGatherable||o._sharedReady||o._sharedObject)continue;
   const timerEvents=window.realmNative?.stateMachines?.worldTimerEvents(now,o.expiresAt,o.dead,o.respawnAt,time)??((Number.isFinite(o.expiresAt)&&o.expiresAt<=now?1:0)|(o.dead&&Number.isFinite(o.dead)&&(Number.isFinite(o.respawnAt)?now>=o.respawnAt:o.dead<=time)?2:0));

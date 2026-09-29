@@ -16,7 +16,7 @@
   if(dynamic.length)native.performance(scene,{op:'dynamic',changes:dynamic.map(o=>[o._sceneEntityId,o.drawX??o.x,0,o.drawY??o.y])});
   const camera=typeof realmFilamentCameraState==='function'?realmFilamentCameraState():null;
   const result=native.performance(scene,camera?{op:'visible',camera,profile:typeof realmMobileFilament==='function'&&realmMobileFilament()?'browser-mobile':'browser'}:{op:'query',min:[minx-128,-100000,minz-128],max:[maxx+128,100000,maxz+128]}),visibleObjects=[],visibleBuildings=[];
-  currentFrame={scene,...result};
+  currentFrame={scene,...result,visibleIds:new Set(result.ids)};
   for(const id of result.ids){const object=objectMap.get(id);if(object)visibleObjects.push(object);const building=buildingMap.get(id);if(building)visibleBuildings.push(building);}
   // Session fires/previews and relocated live actors have explicit lifetime
   // owners, independent of permanent Scene definitions. Never serialize them.
@@ -24,7 +24,7 @@
   lastStats={...result.stats,objects:visibleObjects.length,buildings:visibleBuildings.length};
   return {objects:visibleObjects,buildings:visibleBuildings,ids:result.ids};
  }
- root.VeldrenWorldPerformance={prepare,frame:name=>currentFrame?.scene===name?currentFrame:null,diagnostics:()=>lastStats,reset(){currentFrame=null;sceneName=objectList=buildingList=null;objectMap.clear();buildingMap.clear();dynamic=[];session=[];}};
+ root.VeldrenWorldPerformance={prepare,visible:(name,id)=>currentFrame?.scene!==name||currentFrame.visibleIds.has(id),frame:name=>currentFrame?.scene===name?currentFrame:null,diagnostics:()=>lastStats,reset(){currentFrame=null;sceneName=objectList=buildingList=null;objectMap.clear();buildingMap.clear();dynamic=[];session=[];}};
 })(globalThis);
 
 // IO and handle marshalling for the native cell scheduler. The existing Phase 2

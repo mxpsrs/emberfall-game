@@ -362,7 +362,7 @@ function frame(now){
     }
     updatePlayerAction();updateTrainingGate();updateCombat(dt);}
     livingWorld(dt);if(typeof updateDoorThreshold==='function')updateDoorThreshold();
-    if(time>=expiryScanAt){expiryScanAt=time+.25;for(const o of objects)if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}}
+    if(time>=expiryScanAt){expiryScanAt=time+.25;for(const o of (globalThis.VeldrenWorldObjects?.enabled?VeldrenWorldObjects.timed(currentScene):objects))if(o.expires&&o.expires<=time){o.collected=true;o.dead=Infinity;}}
     advanceWorldActors(dt);
     for(const f of floaters)f.life-=dt;floaters=floaters.filter(f=>f.life>0);
     

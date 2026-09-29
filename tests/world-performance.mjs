@@ -15,6 +15,7 @@ assert.deepEqual(Array.from(q().ids),['near']);assert.equal(q().stats.updated,0)
 n.command('test',{operations:[{op:'transform',id:'near',transform:{position:[100,0,0]}}]});assert.equal(q().ids.length,0);n.command('test',{action:'undo'});assert.deepEqual(Array.from(q().ids),['near']);assert.deepEqual(n.serialize(),original);
 const objects=[{_sceneEntityId:'near',x:0,y:0},{_sceneEntityId:'far',x:2000,y:0},{_editorPreview:true,x:0,y:0}];
 const projected=context.VeldrenWorldPerformance.prepare('test',objects,[],-4,4,-4,4);assert.equal(projected.objects.length,2);assert.equal(projected.objects[0],objects[0]);
+assert.equal(context.VeldrenWorldPerformance.visible('test','near'),true);assert.equal(context.VeldrenWorldPerformance.visible('test','far'),false);assert.equal(context.VeldrenWorldPerformance.visible('other','far'),true);
 n.load(original);assert.deepEqual(Array.from(q().ids),['near']);
 if(process.argv[2]){
  const document=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));n.load(document);const before=n.serialize(),start=performance.now();

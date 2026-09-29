@@ -101,3 +101,7 @@ for(const track of musicSources.tracks){
 for(const file of ['teller-of-the-tales.mp3','lord-of-the-land.mp3','drums-of-the-deep.mp3','CREDITS.txt'])assert.equal((await request('/assets/audio/'+file)).status,404,'old music must not ship');
 const sounds=JSON.parse(readFileSync(new URL('../docs/sound-sources.json',import.meta.url)));assert.equal(sounds.license,'CC0-1.0');for(const sample of sounds.samples){const path='assets/audio/sfx/'+sample.file,r=await request('/'+versions[path]);assert.equal(r.status,200);assert.equal(r.headers.get('Content-Type'),'audio/mpeg');assert.equal(createHash('sha256').update(await body(r)).digest('hex'),sample.asset_sha256);}console.log('PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.');
 console.log(`PASS: readable home page, all ${urls.length} startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. ${(totalBytes/1048576).toFixed(2)} MiB before hosting compression.`);
+
+const landing=(await body(await request('/'))).toString();
+assert(!landing.includes('src="/landing-status.js"')&&!landing.includes('href="/landing.css"'),'landing dependencies are inline');
+assert.match(landing,/<style>/);assert.match(landing,/\?v=[a-f0-9]{16}/,'landing images are versioned');

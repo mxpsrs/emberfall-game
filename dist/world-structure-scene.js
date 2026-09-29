@@ -82,13 +82,13 @@
  function paint(r,scene,id){const m=matrix(scene,id);return root.VeldrenLightScene.painter(r,m,[m[3],m[11]]);}
  function drawWalls(r,scene,cull=false,only=null){
   const limit=cull&&typeof realmWideWorldLimit3==='function'?Math.max(0,realmWideWorldLimit3()-12):Infinity;
-  for(const id of only?[only]:ids(scene,'StructureWall')){const n=entity(scene,id);if(!n.activeInHierarchy||n.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(id))continue;const m=M().row(n.worldMatrix),f=n.components.Footprint,c=n.components.Collider;
+  for(const id of only?[only]:ids(scene,'StructureWall')){if(!only&&root.VeldrenWorldPerformance?.visible(scene,id)===false)continue;const n=entity(scene,id);if(!n.activeInHierarchy||n.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(id))continue;const m=M().row(n.worldMatrix),f=n.components.Footprint,c=n.components.Collider;
    if(Math.abs(m[3]-px)>limit+Math.max(f.w,f.h)||Math.abs(m[11]-py)>limit+Math.max(f.w,f.h))continue;
    const axis=c.axis==='y',mesh=c.height>=4.5?realmArtMesh('curtainWall','human'):rebuiltModels.Wall_UnevenBrick_Straight;
    environmentModule3(paint(r,scene,id),mesh,m[3]+f.w/2,0,m[11]+f.h/2,axis?f.h:f.w,c.height,axis?f.w:f.h,axis?Math.PI/2:0);
   }
  }
- function drawRooms(r,scene,only=null){for(const id of only?[only]:ids(scene,'StructureRoom')){const n=entity(scene,id);if(!n.activeInHierarchy||root.VeldrenEditorSelection?.hidden(id))continue;const m=M().row(n.worldMatrix),f=n.components.Footprint,usage=n.components.Room.usage;civilPaintFloor(paint(r,scene,id),m[3]+.5,m[11]+.5,f.w-1,f.h-1,['library','study','bedroom','guest'].includes(usage)?'#a38a68':'#95988b',5);}}
+ function drawRooms(r,scene,only=null){for(const id of only?[only]:ids(scene,'StructureRoom')){if(!only&&root.VeldrenWorldPerformance?.visible(scene,id)===false)continue;const n=entity(scene,id);if(!n.activeInHierarchy||root.VeldrenEditorSelection?.hidden(id))continue;const m=M().row(n.worldMatrix),f=n.components.Footprint,usage=n.components.Room.usage;civilPaintFloor(paint(r,scene,id),m[3]+.5,m[11]+.5,f.w-1,f.h-1,['library','study','bedroom','guest'].includes(usage)?'#a38a68':'#95988b',5);}}
  function draw(r,scene){drawWalls(r,scene,scene==='overworld');drawRooms(r,scene);}
  function renderEntity(r,o){const n=entity(o._generatedSceneName,o._sceneEntityId);if(n?.components.StructureWall)return drawWalls(r,o._generatedSceneName,false,n.id);if(n?.components.StructureRoom)return drawRooms(r,o._generatedSceneName,n.id);}
  function towerContains(tower,x,z){const n=entity(tower._generatedSceneName,tower._sceneEntityId);if(!n?.activeInHierarchy)return false;const f=n.components.Footprint,p=A().point(A().inverse(M().row(n.worldMatrix)),[x,n.worldMatrix[13],z]);return p[0]>f.x+1&&p[0]<f.x+f.w-1&&p[2]>f.z+1&&p[2]<f.z+f.h-1;}
