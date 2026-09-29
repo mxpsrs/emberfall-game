@@ -43,7 +43,7 @@ async function syncOnlineWorldOnce(){
  const present=new Set(),received=performance.now();for(const peer of data.players){present.add(peer.id);acceptPeerSnapshot(peer,received,data.serverTime,received-started);}for(const id of onlinePeers.keys())if(!present.has(id))onlinePeers.delete(id);
  window.VELDREN_ONLINE_COUNT=onlinePeers.size+1;
  }catch{if(requestedScene!==currentScene){scheduleOnlineSync(0);return;}window.VELDREN_ONLINE_COUNT=null;transientConnectionFailure();return;}
- scheduleOnlineSync(Math.max(100,500-(performance.now()-started)));
+ const roundTrip=performance.now()-started,pace=roundTrip>1500?2000:roundTrip>800?1000:500;scheduleOnlineSync(Math.max(100,pace-roundTrip)+Math.random()*60);
 }
 function acceptPeerSnapshot(peer,received,serverTime,roundTrip=0){
  if(typeof rememberSharedAction==='function')rememberSharedAction(peer.id,peer.action,serverTime);
