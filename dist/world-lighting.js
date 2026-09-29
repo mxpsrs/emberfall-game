@@ -39,12 +39,24 @@ function worldLightSources(scene=currentScene){
  return sources;
 }
 function houseLanternPosition(b){return {x:b.x+1.1,y:1.85,z:b.y+1.1};}
+// Keep only the bounded nearest set; score each candidate once, with stable ties.
+function realmNearestLighting(values,limit,score){
+ const selected=[],scores=[];
+ for(const value of values){const distance=score(value);if(!Number.isFinite(distance))continue;
+  let i=scores.length;while(i>0&&distance<scores[i-1])i--;
+  if(i>=limit)continue;selected.splice(i,0,value);scores.splice(i,0,distance);
+  if(selected.length>limit){selected.pop();scores.pop();}
+ }
+ return selected;
+}
 function realmLightingState(){
  const night=worldNightFactor();
  const cave=!!cavePassageKind(currentScene),house=!inWorld()&&!cave;
- const lights=worldLightSources().filter(o=>Math.hypot(o.x-px,o.z-py)<o.radius+50).sort((a,b)=>Math.hypot(a.x-px,a.z-py)/a.radius-Math.hypot(b.x-px,b.z-py)/b.radius).slice(0,WORLD_LIGHT_LIMIT);
- const rooms=(worldScenes[currentScene]?.buildings||[]).filter(b=>b.walkIn).sort((a,b)=>Math.hypot(a.x+a.w/2-px,a.y+a.h/2-py)-Math.hypot(b.x+b.w/2-px,b.y+b.h/2-py)).slice(0,WORLD_LIT_ROOM_LIMIT).map(b=>[b.x+.6,b.y+.6,b.x+b.w-.6,b.y+b.h-.6]);
- return {lights,rooms,roomCeilings:rooms.map(b=>landHeight((b[0]+b[2])/2,(b[1]+b[3])/2)+2.5),cave:cave&&!CREATURE_LAIRS[currentScene]?.openAir?1:0,house:house?1:0,night:house?0:night};
+ const lights=realmNearestLighting(worldLightSources(),WORLD_LIGHT_LIMIT,o=>{const dx=o.x-px,dz=o.z-py,d=dx*dx+dz*dz;return d<(o.radius+50)**2?d/(o.radius*o.radius):Infinity;});
+ const buildings=worldScenes[currentScene]?.buildings||[];
+ const nearest=realmNearestLighting(buildings,WORLD_LIT_ROOM_LIMIT,b=>{if(!b.walkIn)return Infinity;const dx=b.x+b.w/2-px,dz=b.y+b.h/2-py;return dx*dx+dz*dz;}),rooms=[],roomCeilings=[];
+ for(const b of nearest){rooms.push([b.x+.6,b.y+.6,b.x+b.w-.6,b.y+b.h-.6]);roomCeilings.push(landHeight(b.x+b.w/2,b.y+b.h/2)+2.5);}
+ return {lights,rooms,roomCeilings,cave:cave&&!CREATURE_LAIRS[currentScene]?.openAir?1:0,house:house?1:0,night:house?0:night};
 }
 function drawWallTorch3(r,o){
  const p=groundedPainter(r,o.x,o.z),iron='#45423b',wood='#765333';

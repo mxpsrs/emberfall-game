@@ -13,8 +13,11 @@
  const groundSurfacesType=mobile?'mobile-png':'png',groundSurfaces=realmAssetURL('assets/realms/ground-surfaces'+(mobile?'-mobile.png':'.png'));
  window.filamentReady=new Promise((resolve,reject)=>{
   if(typeof Filament==='undefined'){reject(new Error('Filament runtime did not load'));return;}
+  // Download independent textures while Filament compiles and initializes.
+  // Attach a rejection handler immediately, even if initialization fails first.
+  const imageReady=Promise.all([encodedImage(atlas),encodedImage(groundSurfaces),window.realmNativeReady]);imageReady.catch(()=>{});
   let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Filament renderer initialization timed out'));}},120000);
-  try{realmLoadStatus('Starting the Filament renderer…',32,'filament-init');Filament.init([material,terrainMaterial],async()=>{if(settled)return;try{const [atlasBytes,groundSurfacesBytes]=await Promise.all([encodedImage(atlas),encodedImage(groundSurfaces),window.realmNativeReady]);if(settled)return;settled=true;clearTimeout(timer);window.VELDREN_FILAMENT_ASSETS={material,terrainMaterial,atlas,groundSurfaces,groundSurfacesType,atlasBytes,groundSurfacesBytes};resolve(Filament);}catch(error){if(settled)return;settled=true;clearTimeout(timer);reject(error);}});}
+  try{realmLoadStatus('Starting the Filament renderer…',32,'filament-init');Filament.init([material,terrainMaterial],async()=>{if(settled)return;try{const [atlasBytes,groundSurfacesBytes]=await imageReady;if(settled)return;settled=true;clearTimeout(timer);window.VELDREN_FILAMENT_ASSETS={material,terrainMaterial,atlas,groundSurfaces,groundSurfacesType,atlasBytes,groundSurfacesBytes};resolve(Filament);}catch(error){if(settled)return;settled=true;clearTimeout(timer);reject(error);}});}
   catch(error){settled=true;clearTimeout(timer);reject(error);}
  });
  window.filamentReady.catch(error=>realmLoadFailure('The Filament renderer could not start. Please retry; your character is safe.',error,'filament-init'));

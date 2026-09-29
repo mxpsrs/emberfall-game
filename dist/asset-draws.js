@@ -59,7 +59,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
    for(const instance of pool.instances)if(instance.seen!==frame&&instance.active){scene.removeEntities(instance.entities);instance.active=false;}
    // The small grace interval avoids allocating again on a culling boundary;
    // changing Scene clears immediately, and excess instance slots are removed.
-   let idle=0;pool.instances=pool.instances.filter(instance=>{if(instance.seen===frame||++idle<=8)return true;removeInstance(instance);pool.identities.delete(instance.identity);return false;});
+   let idle=0,kept=0;for(const instance of pool.instances){if(instance.seen===frame||++idle<=8)pool.instances[kept++]=instance;else{removeInstance(instance);pool.identities.delete(instance.identity);}}pool.instances.length=kept;
    if(frame-pool.lastUsed>30){removePool(pool);pools.delete(id);}
   }
  }

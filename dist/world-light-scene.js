@@ -106,6 +106,8 @@
   const w=registry()[scene],inside=(x,z)=>w?.buildings.some(b=>b.walkIn&&(typeof withinWalkIn==='function'?withinWalkIn(b,x,z):x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h)),result=[];
   const nearbyLights=root.VeldrenWorldPerformance?.frame(scene)&&typeof px==='number'?native().performance(scene,{op:'lights',night,min:[px-70,-100000,py-70],max:[px+70,100000,py+70]}):native().lights(scene,night);
   for(const light of nearbyLights){
+   // Native visibility bounds include each emitter's radius and offset.
+   if(root.VeldrenWorldPerformance?.visible(scene,light.id)===false)continue;
    if(root.VeldrenEditorSelection?.hidden(light.id))continue;
    const node=native().entity(scene,light.id),meta=node.metadata;
    if(light.scope==='object'){

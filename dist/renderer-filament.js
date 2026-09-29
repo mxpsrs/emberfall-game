@@ -141,17 +141,17 @@ function createRealmFilamentGPU(){
   };
  }
  function updateDynamicResource(resource,data){
-  const arrays=ensureDynamicArrays(resource),count=Math.floor(data.length/12),fallback=count?0:-1;
+  const arrays=ensureDynamicArrays(resource),count=Math.floor(data.length/12),fallback=count?0:-1;let normalsChanged=!resource.dynamicTangents;
   for(let i=0;i<resource.capacity;i++){
    const src=(i<count?i:fallback)*12,p=i*3,c=i*4,u=i*2;
-   if(src<0){arrays.positions[p]=arrays.positions[p+1]=arrays.positions[p+2]=0;arrays.normals[p]=0;arrays.normals[p+1]=1;arrays.normals[p+2]=0;arrays.colors[c]=arrays.colors[c+1]=arrays.colors[c+2]=arrays.colors[c+3]=0;arrays.uvs[u]=arrays.uvs[u+1]=0;continue;}
+   if(src<0){if(arrays.normals[p]!==0||arrays.normals[p+1]!==1||arrays.normals[p+2]!==0)normalsChanged=true;arrays.positions[p]=arrays.positions[p+1]=arrays.positions[p+2]=0;arrays.normals[p]=0;arrays.normals[p+1]=1;arrays.normals[p+2]=0;arrays.colors[c]=arrays.colors[c+1]=arrays.colors[c+2]=arrays.colors[c+3]=0;arrays.uvs[u]=arrays.uvs[u+1]=0;continue;}
    arrays.positions[p]=data[src]||0;arrays.positions[p+1]=data[src+1]||0;arrays.positions[p+2]=data[src+2]||0;
-   arrays.normals[p]=data[src+3]||0;arrays.normals[p+1]=Number.isFinite(data[src+4])?data[src+4]:1;arrays.normals[p+2]=data[src+5]||0;
+   const nx=data[src+3]||0,ny=Number.isFinite(data[src+4])?data[src+4]:1,nz=data[src+5]||0;if(arrays.normals[p]!==nx||arrays.normals[p+1]!==ny||arrays.normals[p+2]!==nz)normalsChanged=true;arrays.normals[p]=nx;arrays.normals[p+1]=ny;arrays.normals[p+2]=nz;
    arrays.colors[c]=Number.isFinite(data[src+6])?Math.max(0,data[src+6]):0;arrays.colors[c+1]=Number.isFinite(data[src+7])?Math.max(0,data[src+7]):0;arrays.colors[c+2]=Number.isFinite(data[src+8])?Math.max(0,data[src+8]):0;arrays.colors[c+3]=Number.isFinite(data[src+9])?data[src+9]:0;
    arrays.uvs[u]=data[src+10]||0;arrays.uvs[u+1]=data[src+11]||0;
   }
-  const orientationBuilder=new Filament.SurfaceOrientation$Builder().vertexCount(resource.capacity);orientationBuilder.normals(arrays.normals,12);
-  const orientation=orientationBuilder.build(),tangents=orientation.getQuats(resource.capacity);orientation.delete();
+  if(normalsChanged){const orientationBuilder=new Filament.SurfaceOrientation$Builder().vertexCount(resource.capacity);orientationBuilder.normals(arrays.normals,12);const orientation=orientationBuilder.build();resource.dynamicTangents=orientation.getQuats(resource.capacity);orientation.delete();}
+  const tangents=resource.dynamicTangents;
   resource.vb.setBufferAt(engine,0,arrays.positions);resource.vb.setBufferAt(engine,1,tangents);resource.vb.setBufferAt(engine,2,arrays.colors);resource.vb.setBufferAt(engine,3,arrays.uvs);
  }
  function poolFor(resource,style){let pool=resource.pools.get(style.key);if(pool)return pool;pool={entities:[],transforms:[],used:0,material:styleInstance(style)};resource.pools.set(style.key,pool);return pool;}
@@ -184,12 +184,12 @@ function createRealmFilamentGPU(){
  }
  const sun=Filament.EntityManager.get().create();
  Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.94,.83]).intensity(65000).direction([.55,-1,-.38]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
- const pointLights=[];
+ const pointLights=[],canonicalMatrices=[],lodRowPool=[],lodRows=[];
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
   manager.setIntensity(sunInstance,5500+day*52000);manager.setColor(sunInstance,[.72+.28*day,.76+.18*day,.92-.10*day]);sunInstance.delete();
   indirectLight.setIntensity(6500+day*12500);camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
-  const limit=quality.lightLimit,lights=lighting.lights.slice(0,limit);
+  const limit=quality.lightLimit,lights=lighting.lights;
   for(let i=0;i<limit;i++){
    let record=pointLights[i];const source=lights[i];
    if(source&&!record){const entity=Filament.EntityManager.get().create();Filament.LightManager.Builder(Filament.LightManager$Type.POINT).falloff(source.radius).intensity(900).build(engine,entity);record=pointLights[i]={entity,active:false};}
@@ -222,8 +222,12 @@ function createRealmFilamentGPU(){
    const dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
    const next=nextEntities;streaming?.begin(String(currentScene));assetDraws.begin(currentScene);
-   const canonical=entries.filter(e=>e.canonicalAsset),canonicalMatrices=canonical.map(e=>realmFilamentMatrix(e.model)),cameraForLod=realmFilamentCameraState(dpr);
-   let lodResult=null;if(canonical.length&&realmNative.scenes.performance)lodResult=realmNative.scenes.performance(currentScene,{op:'lod-batch',entries:canonical.map((e,i)=>[e.instanceId||'unbound:'+e.canonicalAsset+':'+(e.model||[]).join(',')+':'+i,e.canonicalAsset,Math.hypot(canonicalMatrices[i][12]-cameraForLod.eye[0],canonicalMatrices[i][13]-cameraForLod.eye[1],canonicalMatrices[i][14]-cameraForLod.eye[2])])});
+   const cameraForLod=realmFilamentCameraState(dpr);let canonicalCount=0;lodRows.length=0;
+   for(const entry of entries)if(entry.canonicalAsset){
+    const i=canonicalCount++,matrix=canonicalMatrices[i]||(canonicalMatrices[i]=new Float32Array(16));realmFilamentMatrixInto(entry.model,matrix);
+    const row=lodRowPool[i]||(lodRowPool[i]=['','',0]);row[0]=entry.instanceId||'unbound:'+entry.canonicalAsset+':'+(entry.model||[]).join(',')+':'+i;row[1]=entry.canonicalAsset;row[2]=Math.hypot(matrix[12]-cameraForLod.eye[0],matrix[13]-cameraForLod.eye[1],matrix[14]-cameraForLod.eye[2]);lodRows.push(row);
+   }
+   let lodResult=null;if(canonicalCount&&realmNative.scenes.performance)lodResult=realmNative.scenes.performance(currentScene,{op:'lod-batch',entries:lodRows});
    this.lodDiagnostics=lodResult?.stats||null;let canonicalIndex=0;
    try{for(const entry of entries){if(entry.canonicalAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],0,null,entry.instanceId,!!selected))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next);}else acquire(entry,next);}}finally{assetDraws.end();}
    if(dynamic.length){
@@ -239,7 +243,7 @@ function createRealmFilamentGPU(){
    }
    const remove=[],add=[];for(const entity of activeEntities)if(!next.has(entity))remove.push(entity);for(const entity of next)if(!activeEntities.has(entity))add.push(entity);
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
-   const cameraState=realmFilamentCameraState(dpr),{eye,center,near,far,left,right,bottom,top}=cameraState;
+   const cameraState=cameraForLod,{eye,center,near,far,left,right,bottom,top}=cameraState;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
    authoredDraws?.render(String(currentScene),eye);
    streaming?.end(cameraState.center,[...resources].reduce((n,r)=>n+r.gpuBytes,0)+modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes);
@@ -247,7 +251,7 @@ function createRealmFilamentGPU(){
    // existing handles and releases the returned IDs through their owners.
    if(globalThis.realmNative?.scenes?.performance){
     const inventory=[...resources],reservedGpu=modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes;
-    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0),r.lastFrame===renderFrame,r.buffer?.retire&&!r.ephemeral?(r.buffer.data?.byteLength||0):0])});
+    const result=realmNative.scenes.performance(String(currentScene),{op:'residency',profile:realmMobileFilament()?'browser-mobile':'browser',reservedGpu,resources:inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0)+(r.dynamicTangents?.byteLength||0),r.lastFrame===renderFrame,r.buffer?.retire&&!r.ephemeral?(r.buffer.data?.byteLength||0):0])});
     residencyStats=result.stats;const retire=new Set(result.evict),discard=new Set(result.discardStaging);
     for(const resource of inventory)if(discard.has(resource.residencyId))resource.buffer.data=null;
     for(const resource of inventory)if(retire.has(resource.residencyId)){
