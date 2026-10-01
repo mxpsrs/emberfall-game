@@ -1,12 +1,23 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-function setup(){
+function setup(beforeBody=false){
  const elements=new Map(),timers=[],listeners={},reports=[];
+ let mounted=!beforeBody;
  const element=()=>({children:[],hidden:false,removed:false,classList:{add(){}},replaceChildren(){this.children=[];},appendChild(el){this.children.push(el);},setAttribute(name,value){this[name]=value;},remove(){this.removed=true;}});
  for(const id of ['loading','loadingStatus','loadingProgress','cloudStatus','onlineStatus'])elements.set(id,element());
- const ctx={console:{error(){},warn(){}},URL,Blob:class{constructor(parts,options){this.value=parts.join('');this.type=options?.type;}},navigator:{userAgent:'startup-test',sendBeacon(url,body){reports.push({url,payload:JSON.parse(body.value)});return true;}},location:{href:'https://game.test/play',origin:'https://game.test',reload(){ctx.reloads++;}},reloads:0,Image:class{},setTimeout(fn,delay){fn.delay=delay;timers.push(fn);return timers.length;},clearTimeout(){},setInterval(){return 1;},document:{getElementById:id=>elements.get(id),createElement:element,addEventListener(type,fn){listeners['document:'+type]=fn;}},window:{REALM_RELEASE:'assets-test',innerWidth:932,innerHeight:430,devicePixelRatio:3,addEventListener(type,fn){listeners[type]=fn;}}};
+ const ctx={console:{error(){},warn(){}},URL,Blob:class{constructor(parts,options){this.value=parts.join('');this.type=options?.type;}},navigator:{userAgent:'startup-test',sendBeacon(url,body){reports.push({url,payload:JSON.parse(body.value)});return true;}},location:{href:'https://game.test/play',origin:'https://game.test',reload(){ctx.reloads++;}},reloads:0,Image:class{},setTimeout(fn,delay){fn.delay=delay;timers.push(fn);return timers.length;},clearTimeout(){},setInterval(){return 1;},document:{getElementById:id=>mounted?elements.get(id):null,createElement:element,addEventListener(type,fn){listeners['document:'+type]=fn;}},window:{REALM_RELEASE:'assets-test',innerWidth:932,innerHeight:430,devicePixelRatio:3,addEventListener(type,fn){listeners[type]=fn;}}};
  vm.createContext(ctx);vm.runInContext(fs.readFileSync(__dirname+'/../dist/startup.js','utf8'),ctx);
- return {ctx,elements,timers,listeners,reports};
+ return {ctx,elements,timers,listeners,reports,mount(){mounted=true;listeners['document:DOMContentLoaded']();}};
 }
+// Production failure: asset-materials.js fails while the head is still parsing.
+const early=setup(true);
+early.listeners['document:error']({target:{tagName:'SCRIPT',src:'https://game.test/asset-materials.js?v=74ddb71b36caee73'}});
+assert(early.ctx.window.realmStartup.failed);assert.equal(early.elements.get('loading').children.length,0);
+early.mount();assert.equal(early.elements.get('loading').children.at(-1).textContent,'Retry loading');
+assert.match(early.elements.get('loading').children.at(-2).textContent,/VLD-SDL/);
+assert.equal(early.reports.length,1);const count=early.elements.get('loading').children.length;
+early.mount();assert.equal(early.elements.get('loading').children.length,count);assert.equal(early.reports.length,1);
+const headProgress=setup(true);vm.runInContext("realmLoadStatus('Starting the Filament renderer…',32,'filament-init')",headProgress.ctx);
+headProgress.mount();assert.equal(headProgress.elements.get('loadingStatus').textContent,'Starting the Filament renderer…');assert.equal(headProgress.elements.get('loadingProgress').value,32);
 for(const failure of ['download','runtime','timeout']){
  const {ctx,elements,timers,listeners,reports}=setup();
  if(failure==='download')listeners['document:error']({target:{tagName:'SCRIPT',src:'creatures.js'}});

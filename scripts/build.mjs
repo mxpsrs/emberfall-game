@@ -67,7 +67,7 @@ assets['/index.html'].version=createHash('sha256').update(html).digest('hex').sl
 // The authenticated viewport owns its controls at parse time. Deliver startup
 // and control scripts in the document instead of racing parent-frame injection
 // against separate mobile downloads. Keep Filament's vendor URL external.
-const editorInline=new Set(['startup.js','native-runtime.js','filament-bootstrap.js','editor/editor-startup.js','editor/commands.js','editor/geometry.js','editor/gizmo-renderer.js','editor/transform-tools.js','editor/selection.js','editor/editor-runtime.js','editor/editor-entry.js']);
+const editorInline=new Set(['startup.js','asset-runtime.js','asset-textures.js','asset-materials.js','asset-meshes.js','asset-draws.js','scene-renderer.js','editor/asset-preview.js','native-runtime.js','world-performance.js','filament-bootstrap.js','editor/editor-startup.js','editor/commands.js','editor/geometry.js','editor/gizmo-renderer.js','editor/transform-tools.js','editor/selection.js','editor/editor-runtime.js','editor/editor-entry.js']);
 let editorHtml=Buffer.from(assets['/editor/viewport.html'].data,'base64').toString('utf8');
 editorHtml=editorHtml.replace(/(src|href)="([^"?]+)"/g,(all,attribute,url)=>versions[url]?attribute+'="'+versions[url]+'"':all);
 editorHtml=editorHtml.replace('<script src="startup.js','<script>window.REALM_RELEASE='+JSON.stringify(release)+';window.REALM_ASSET_VERSIONS='+JSON.stringify(versions)+';</script><script src="startup.js');

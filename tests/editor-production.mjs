@@ -48,6 +48,10 @@ const viewport=await worker.fetch(req('/editor/viewport.html','GET',null,token),
 assert.equal(viewport.status,200);const editorHtml=await viewport.text();
 assert.match(editorHtml,/window.REALM_ASSET_VERSIONS=/);
 assert.match(editorHtml,/sourceURL=editor\/editor-runtime.js\?v=/,'controls are delivered with the viewport');
+for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws','scene-renderer','world-performance']){
+ assert(editorHtml.includes('sourceURL='+file+'.js?v='),file+' is delivered in the viewport');
+ assert(!editorHtml.includes('<script src="'+file+'.js'),file+' requires no separate script download');
+}
 assert(editorHtml.indexOf('sourceURL=editor/editor-runtime.js')<editorHtml.indexOf('sourceURL=editor/editor-entry.js'));
 for(const match of editorHtml.matchAll(/<script[^>]+src="([^"]+)"/g)){
  const path='/'+match[1].replace(/^\//,'');assert.equal((await worker.fetch(req(path,'GET',null,token),env)).status,200,path);

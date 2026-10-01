@@ -39,15 +39,24 @@ function realmLoadStatus(message,progress,stage){
  const changed=progress>previous||message!==state.stage;
  state.stage=message;state.progress=progress;if(stage)state.stageCode=stage;
  if(changed)realmRefreshLoadingTimeout();
- const box=document.getElementById('loading');if(!box)return;
- const title=document.getElementById('loadingStatus');if(title)title.textContent=message;
- const bar=document.getElementById('loadingProgress');if(bar){bar.value=progress;bar.setAttribute('aria-valuetext',message);}
+ realmRenderStartupUI();
 }
 function realmLoadFailure(message,error,stage){
  const state=window.realmStartup;if(state.finished||state.failed)return;if(stage)state.stageCode=stage;else if(error?.realmStartupStage)state.stageCode=error.realmStartupStage;state.failed=true;state.timerGeneration++;clearTimeout(state.timer);
  const code=realmDiagnosticCode(state.stageCode);realmReportStartupFailure(error,code);
  if(error)console.error('Realm startup failed:',error);
- const box=document.getElementById('loading');if(!box)return;box.hidden=false;box.classList.add('loading-failed');
+ state.failure={message,code};realmRenderStartupUI();
+}
+function realmRenderStartupUI(){
+ const state=window.realmStartup,box=document.getElementById('loading');if(!box)return;
+ if(state.finished){box.hidden=true;return;}
+ if(!state.failed){
+  const title=document.getElementById('loadingStatus');if(title)title.textContent=state.stage;
+  const bar=document.getElementById('loadingProgress');if(bar){bar.value=state.progress||0;bar.setAttribute('aria-valuetext',state.stage);}
+  return;
+ }
+ if(state.failureRendered)return;state.failureRendered=true;
+ const {message,code}=state.failure;box.hidden=false;box.classList.add('loading-failed');
  const status=document.getElementById('loadingStatus');if(status)status.remove();
  const progress=document.getElementById('loadingProgress');if(progress)progress.remove();
  const title=document.createElement('strong');title.textContent='The realm could not start';box.appendChild(title);
@@ -56,10 +65,13 @@ function realmLoadFailure(message,error,stage){
  const cloud=document.getElementById('cloudStatus');if(cloud)cloud.textContent='Character paused';
  const online=document.getElementById('onlineStatus');if(online)online.textContent='Not connected';
 }
-function realmLoadComplete(){const state=window.realmStartup;if(state.failed)return;state.finished=true;state.timerGeneration++;clearTimeout(state.timer);document.getElementById('loading').hidden=true;}
+function realmLoadComplete(){const state=window.realmStartup;if(state.failed)return;state.finished=true;state.timerGeneration++;clearTimeout(state.timer);realmRenderStartupUI();}
 function realmAssetURL(path){return window.REALM_ASSET_VERSIONS?.[path]||path;}
 function realmLoadImage(path){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Image unavailable: '+path));img.src=realmAssetURL(path);});}
 realmStartLoadingTimeout();
+// Head scripts can finish or fail before the loading elements are parsed.
+// Replay their retained state instead of leaving the HTML placeholder visible.
+document.addEventListener('DOMContentLoaded',realmRenderStartupUI,{once:true});
 document.addEventListener('load',e=>{if(e.target?.tagName==='SCRIPT'){window.realmStartup.loaded++;realmLoadStatus('Loading the game…',Math.min(30,window.realmStartup.loaded));}},true);
 function realmStartupInlineLoaded(){const state=window.realmStartup;if(!state||state.failed||state.finished)return;state.loaded++;realmLoadStatus('Loading the game…',Math.min(30,state.loaded));}
 document.addEventListener('error',e=>{if(e.target?.tagName==='SCRIPT')realmLoadFailure('A game file could not download. Please retry.',new Error('Script unavailable: '+e.target.src),'script-download');},true);
