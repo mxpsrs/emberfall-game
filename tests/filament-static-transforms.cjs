@@ -43,7 +43,11 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const models=Array.from({length:256},(_,i)=>[1,0,0,(i%16)*3,0,1,0,0,0,0,1,Math.floor(i/16)*3]);
   const entries=models.map(model=>({buffer,stride:48,model}));
   const render=()=>gpu.render(entries,[],null);
-  render();const initialTransforms=transforms,initialHeightReads=heightReads;
+  render();assert(gpu.scene.getRenderableCount()<256,'first-frame static construction is bounded');
+  for(let i=0;i<80&&gpu.scene.getRenderableCount()<256;i++)render();
+  assert.equal(gpu.scene.getRenderableCount(),256,'all deferred static entities eventually become resident');
+  assert(gpu.performanceSnapshot().construction.maxUsed<=16,'legacy and canonical construction share the desktop quota');
+  const initialTransforms=transforms,initialHeightReads=heightReads;
   const start=performance.now();for(let i=0;i<30;i++)render();const steadyMs=performance.now()-start;
   const steadyTransforms=transforms-initialTransforms,steadyHeightReads=heightReads-initialHeightReads;
   const beforeMoveHeightReads=heightReads;models[7][3]+=1;render();const movementTransforms=transforms-initialTransforms-steadyTransforms,movementHeightReads=heightReads-beforeMoveHeightReads;
@@ -92,7 +96,8 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const submitted=[];const setTransform=F.TransformManager.prototype.setTransform;
   F.TransformManager.prototype.setTransform=function(instance,matrix){submitted.push(Array.from(matrix));return setTransform.call(this,instance,matrix);};
   const drawBuilding=()=>{const painter=context.painter3(null,context.project3);assert.equal(painter.cached(building),4);painter.flush();};
-  drawBuilding();
+  drawBuilding();for(let i=0;i<80&&buildingGpu.scene.getRenderableCount()<100;i++)drawBuilding();
+  assert.equal(buildingGpu.scene.getRenderableCount(),100);
   assert.equal(buildingGpu.diagnostics().legacy.meshes,1,'all building parts share one vertex/index allocation');
   assert.equal(buildingGpu.diagnostics().legacy.renderables,100,'every authored part remains present');
   assert.equal(buildingGpu.diagnostics().legacy.gpuBytes,4*44+6*2,'index topology is preserved instead of expanding triangles per building');
@@ -101,6 +106,16 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   parts[7].matrix[3]+=3;drawBuilding();assert.equal(submitted.length,1,'moving a part updates only that part');
   parts.pop();drawBuilding();assert.equal(buildingGpu.scene.getRenderableCount(),99,'removed/cutaway parts leave the rendered scene');
   F.TransformManager.prototype.setTransform=setTransform;
+  // Assembly faces used to rebuild into the dynamic stream on every frame.
+  context.briarPoint=(p,_unused,m)=>[m[0]*p[0]+m[1]*p[1]+m[2]*p[2]+m[3],m[4]*p[0]+m[5]*p[1]+m[6]*p[2]+m[7],m[8]*p[0]+m[9]*p[1]+m[10]*p[2]+m[11]];
+  const assembly={kind:'assembly',height:2,model:[1,0,0,0,0,1,0,0,0,0,1,0],instances:[],faces:[{points:[[0,0,0],[1,0,0],[0,0,1]],color:'#808080'}]};
+  context.VELDREN_PERFORMANCE=true;
+  const drawAssembly=()=>{const painter=context.painter3(null,context.project3);painter.cached(assembly);painter.flush();};
+  drawAssembly();const assemblyEntry=buildingGpu.cache.get(assembly);drawAssembly();
+  assert.equal(buildingGpu.cache.get(assembly),assemblyEntry,'unchanged assembly faces retain their GPU packet');assert.equal(buildingGpu.diagnostics().frame.dynamicVertices,0);
+  assembly.model[3]=7;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),assemblyEntry,'moving the native assembly rebuilds its baked surface once');
+  const movedAssembly=buildingGpu.cache.get(assembly);context.landSurfaceRevision++;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),movedAssembly,'terrain edits refresh assembly grounding');
+  context.VELDREN_PERFORMANCE=false;
   // Animated CPU poses retain separate simultaneous shapes, but recycle their
   // native geometry allocation across frames rather than retaining every pose.
   const poseA={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)},poseB={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)};

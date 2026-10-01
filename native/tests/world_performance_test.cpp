@@ -16,6 +16,12 @@ int main(int argc,char** argv){
  const auto saved=scene.serialize();WorldPartition partition;partition.synchronize(scene,assets);
  assert(partition.statistics().records==1000&&partition.statistics().dynamic_records==1);
  assert(scene.serialize()==saved);partition.synchronize(scene,assets);assert(partition.statistics().updated==0);
+ assert(partition.record("p0")->render_transform.v==scene.world_transform("p0").v);
+ scene.add_component("p0","MeshRenderer",{{"asset","test:box"},{"renderPath","canonical"},{"material","test:stone"},{"castShadows",false},{"receiveShadows",false}});
+ partition.synchronize(scene,assets);assert(partition.statistics().updated==1);
+ assert(partition.record("p0")->material=="test:stone"&&!partition.record("p0")->cast_shadows&&!partition.record("p0")->receive_shadows);
+ partition.synchronize(scene,assets);assert(partition.statistics().updated==0);
+ scene.add_component("p0","MeshRenderer",{{"asset","test:box"},{"renderPath","canonical"}});partition.synchronize(scene,assets);
  const WorldBounds origin{{0,-2,0},{32,2,32}};assert(partition.query(origin)==std::vector<EntityId>{"p0"});assert(partition.statistics().considered==1);
  EditorHistory history;
  auto call=[&](const char* request){history.command(scene,parse_json(request));partition.synchronize(scene,assets);};

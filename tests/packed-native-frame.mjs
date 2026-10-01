@@ -34,7 +34,11 @@ n.command('frame',{operations:[{op:'transform',id:'draw:3',transform:{position:[
 assert.throws(()=>n.frame('frame',{...camera,near:NaN}),/camera/);assert.throws(()=>n.frame('missing',camera),/owner/);compare();
 const submissions=[];context.VeldrenWorldPerformance={frame:()=>n.frame('frame',camera)};
 const renderer=context.createVeldrenSceneRenderer(n,context.VeldrenAssets,{begin(){},end(){},submit(...args){submissions.push(args);},destroy(){}});
-renderer.render('frame',camera.eye);assert.equal(submissions.length,n.frame('frame',camera).drawCount);assert(submissions.every(s=>s[3].castShadows===false));renderer.destroy();
+renderer.render('frame',camera.eye);assert.equal(submissions.length,n.frame('frame',camera).drawCount);assert(submissions.every(s=>s[3].castShadows===false));
+const retainedRecords=new Map(submissions.map(s=>[s[4],{matrix:s[1],options:s[3]}]));submissions.length=0;renderer.render('frame',camera.eye);
+assert(submissions.every(s=>s[1]===retainedRecords.get(s[4]).matrix&&s[3]===retainedRecords.get(s[4]).options),'unchanged native draws keep their matrix and material descriptors');
+n.upsert('frame',{...entity('draw:3',2,0,'parent'),components:{MeshRenderer:{asset:model,renderPath:'canonical',material:'material:changed',castShadows:true,receiveShadows:false},Collider:{bounds:[[-1,-1,-1],[1,1,1]]}}});compare();submissions.length=0;renderer.render('frame',camera.eye);
+const changedDraw=submissions.find(s=>s[4]==='draw:3');if(changedDraw){assert.equal(changedDraw[3].material,'material:changed');assert.equal(changedDraw[3].castShadows,true);assert.equal(changedDraw[3].receiveShadows,false);}renderer.destroy();
 const times=fn=>{for(let i=0;i<10;i++)fn();const values=[];for(let i=0;i<60;i++){const start=performance.now();fn();values.push(performance.now()-start);}return values.sort((a,b)=>a-b)[30];};
 const jsonMs=times(()=>n.performance('frame',{op:'visible',camera})),packedMs=times(()=>n.frame('frame',camera));
 for(const distance of [0,36,34,40,35,90,79,0]){

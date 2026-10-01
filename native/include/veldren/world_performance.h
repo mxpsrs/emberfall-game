@@ -16,7 +16,11 @@ struct WorldSpatialRecord {
   EntityId id;
   WorldBounds bounds;
   Vec3 anchor;
-  std::string asset, category, render_path;
+  std::string asset, category, render_path, material;
+  // Disposable render projection, refreshed by Scene's existing change feed.
+  // The frame builder never needs to copy an unchanged entity's payload.
+  Mat4 render_transform;
+  bool cast_shadows=true, receive_shadows=true;
   bool renderable=false, dynamic=false, terrain_relative=false, uncertain_bounds=false, light=false;
   std::vector<WorldCellKey> cells;
 };

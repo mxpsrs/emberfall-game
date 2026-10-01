@@ -64,5 +64,5 @@ function createVeldrenWorldStreaming(native,assets,models,profile){
    try{entry.lease=models.acquire(request.asset,profile,request.material?{material:request.material}:{});entry.lease.ready.then(()=>{if(disposed||entries.get(request.key)!==entry)return;entry.state='ready';receipts.push([request.key,'ready']);},failed);}catch(error){failed(error);}
   }
  }
- return Object.freeze({begin,want,end,destroy,pending:()=>status?(status.stats.queued+status.stats.loading):0,stats:()=>status?.stats||null,diagnostics:()=>status?{...status.stats,cells:status.cells,leases:entries.size}:null});
+ return Object.freeze({begin,want,end,destroy,retains:(id,material='')=>byAsset.has(pair(id,material)),pending:()=>status?(status.stats.queued+status.stats.loading):0,stats:()=>status?.stats||null,diagnostics:()=>status?{...status.stats,cells:status.cells,leases:entries.size}:null});
 }

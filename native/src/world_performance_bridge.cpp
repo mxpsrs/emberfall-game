@@ -44,7 +44,7 @@ veldren::Scene* prepare_scene(PerformanceHandle& h,const char* name){
 void visible_frame(PerformanceHandle& h,const char* name,const double* values,std::uint32_t profile){
  if(!name||!values||profile>2)throw std::invalid_argument("Invalid frame input");
  for(int i=0;i<13;++i)if(!std::isfinite(values[i]))throw std::invalid_argument("Non-finite camera");
- auto* scene=prepare_scene(h,name);auto* assets=veldren::asset_registry_for_performance(h.assets);
+ prepare_scene(h,name);auto* assets=veldren::asset_registry_for_performance(h.assets);
  veldren::WorldCamera camera;camera.eye={values[0],values[1],values[2]};camera.center={values[3],values[4],values[5]};
  camera.near_plane=values[6];camera.far_plane=values[7];camera.left=values[8];camera.right=values[9];camera.bottom=values[10];camera.top=values[11];camera.viewport_height=values[12];
  const char* profiles[]={"browser","browser-mobile","native-desktop"};
@@ -54,14 +54,13 @@ void visible_frame(PerformanceHandle& h,const char* name,const double* values,st
   const auto symbol=frame.intern(id);frame.ids.push_back(symbol);const auto* record=h.partition.record(id);
   if(record->light)frame.lights.push_back(symbol);
   if(record->render_path!="canonical")continue;
-  const auto node=scene->inspect(id);const auto found=node.components.find("MeshRenderer");if(found==node.components.end())continue;const auto& mesh=found->second;
-  const auto active=mesh.find("visible");if(active!=mesh.end()&&!active->second.bool_or(true))continue;
-  const auto material=mesh.find("material"),cast=mesh.find("castShadows"),receive=mesh.find("receiveShadows");
-  const double distance=std::hypot(node.world.v[12]-camera.eye.x,node.world.v[13]-camera.eye.y,node.world.v[14]-camera.eye.z);
+  if(!record->renderable)continue;
+  const auto& matrix=record->render_transform.v;
+  const double distance=std::hypot(matrix[12]-camera.eye.x,matrix[13]-camera.eye.y,matrix[14]-camera.eye.z);
   const auto lod=h.canonical_lods.select(*assets,id,record->asset,distance);
-  PackedDraw draw{};draw.id=symbol;draw.asset=frame.intern(lod.find("asset")->string_or());draw.material=frame.intern(material==mesh.end()?"":material->second.string_or());
-  draw.flags=(cast==mesh.end()||cast->second.bool_or(true)?1u:0u)|(receive==mesh.end()||receive->second.bool_or(true)?2u:0u);
-  for(int i=0;i<16;++i)draw.matrix[i]=static_cast<float>(node.world.v[i]);
+  PackedDraw draw{};draw.id=symbol;draw.asset=frame.intern(lod.find("asset")->string_or());draw.material=frame.intern(record->material);
+  draw.flags=(record->cast_shadows?1u:0u)|(record->receive_shadows?2u:0u);
+  for(int i=0;i<16;++i)draw.matrix[i]=static_cast<float>(matrix[i]);
   draw.distance=static_cast<float>(distance);frame.draws.push_back(draw);
  }
  constexpr std::size_t header_size=132;const auto ids_offset=header_size,draws_offset=ids_offset+frame.ids.size()*4,lights_offset=draws_offset+frame.draws.size()*sizeof(PackedDraw),size=lights_offset+frame.lights.size()*4;

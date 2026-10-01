@@ -46,15 +46,16 @@
   try{realmNavigation?.delete?.(scene)}catch{}
   try{miniTerrain=null}catch{}
   try{worldAtlasTerrain=null}catch{}
-  // Terrain chunks are native GPU resources. Drop only those touched by this
-  // brush, including the neighboring normals; Filament releases their pools.
+  // Keep the current surface visible while only the touched chunks rebuild.
+  // Geometry, normals and paint are atomically replaced by the frame scheduler.
   try{
    const gpu=typeof realmGPU==='undefined'?null:realmGPU,chunks=gpu?.terrain?.get(scene);
    if(chunks)for(const [key,chunk] of chunks){
     const cell=Number(key.split(':',1)[0])||8,left=chunk.x-cell/2,top=chunk.z-cell/2;
     if(bounds&&!(left<=bounds.maxX+2&&left+cell>=bounds.minX-2&&top<=bounds.maxZ+2&&top+cell>=bounds.minZ-2))continue;
-    if(chunk.buffer)gpu.gl.deleteBuffer(chunk.buffer);chunks.delete(key);
+    chunk.complete=false;chunk.noGeometry=false;chunk.build=null;chunk.fallbackBuild=null;chunk.fallbackAttempted=false;chunk.queued=false;
    }
+   if(gpu)gpu.terrainQueueKey=null;
   }catch(e){console.warn('Terrain GPU refresh failed',e)}
  }
  function applyDocument(raw){
