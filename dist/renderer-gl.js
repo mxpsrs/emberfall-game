@@ -344,7 +344,7 @@ function realmTerrainMaterial(road,x,z){
  return road[2]>.18?3:road[1]>.18?2:road[0]>.18?5:1;
 }
 function realmTerrainUpload(gpu,c,data){
- const previous=c.buffer,entry=gpu.upload(new Float32Array(data));c.buffer=entry.buffer;c.count=entry.count;
+ const previous=c.buffer,entry=gpu.upload(data instanceof Float32Array?data:new Float32Array(data));c.buffer=entry.buffer;c.count=entry.count;
  if(gpu.kind==='filament')c.buffer.retire=()=>{if(gpu.terrain.get(c.scene)?.get(c.key)===c)gpu.terrain.get(c.scene).delete(c.key);};
  if(previous&&previous!==c.buffer)gpu.gl.deleteBuffer(previous);
 }
@@ -396,7 +396,10 @@ function realmTerrainEntries(gpu){
   gpu.terrainQueueKey=null;
  }gpu.terrainSurfaceRevision=surfaceRevision;
  const agent=typeof navigator==='undefined'?'':navigator.userAgent||'',mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(agent);
- const wide=inWorld()&&view3d.zoom<24,cell=wide?16:8,detail=inWorld()&&!wide&&!mobile?2:1;
+ const wide=inWorld()&&view3d.zoom<24;
+ if(gpu.terrainStream===undefined)gpu.terrainStream=window.VeldrenTerrainStreaming?.create(gpu,mobile)||null;
+ const streamed=inWorld()&&gpu.terrainStream,cell=streamed?16:wide?16:8,detail=inWorld()&&!wide&&!mobile?2:1;
+ if(!inWorld())gpu.terrainStream?.frame([],surfaceRevision);
  const corners=realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p)),edge=inWorld()?128:0;
  const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/cell)*cell),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/cell)*cell),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/cell)*cell),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/cell)*cell),visible=[],margin=cameraZoom3()*cell*3.5;
  // A low camera can put a near chunk's center well outside the viewport while
@@ -404,9 +407,24 @@ function realmTerrainEntries(gpu){
  // The height-aware projection samples elevation for every candidate chunk.
  // These corner-derived bounds already include a 16-unit edge band, so keep
  // the wide screen margin and use flat projection to avoid those samples.
- for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=flatProject3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+detail+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
+ for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=flatProject3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+(streamed?'stream':detail)+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
  gpu.terrainTick=(gpu.terrainTick||0)+1;
  for(const c of visible){c.used=gpu.terrainTick;}
+ if(streamed){
+  for(const c of visible){const distance=Math.hypot(c.x-px,c.z-py),limits=mobile?[32,80,160]:[32,64,128],steps=mobile?[1,2,4,4]:[.5,1,2,4];
+   let level=distance<limits[0]?0:distance<limits[1]?1:distance<limits[2]?2:3;
+   if(c.lodLevel!==undefined&&level!==c.lodLevel){const boundary=limits[Math.min(level,c.lodLevel)];if(boundary&&Math.abs(distance-boundary)<boundary*.12)level=c.lodLevel;}
+   c.lodLevel=level;c.targetStep=steps[level];
+  }
+  if(gpu.terrainStream.frame(visible,surfaceRevision)){
+   const ready=gpu.terrainReady||(gpu.terrainReady=[]);ready.length=0;for(const c of visible)if(c.buffer)ready.push(c);
+   const cap=mobile?160:384;
+   // Evict stale scheduler records too, including cells abandoned before upload.
+   if(gpu.terrainTick%16===0)for(const map of gpu.terrain.values())for(const [key,c]of map)if(c.used!==gpu.terrainTick&&(gpu.terrainTick-c.used>32||map.size>cap)){if(c.buffer)gpu.gl.deleteBuffer(c.buffer);map.delete(key);}
+   return ready;
+  }
+  gpu.terrainStream=null;
+ }
  const terrainStart=performance.now(),terrainMs=mobile?3:6;let fallbackSlices=0;
  if(mobile&&inWorld()){
   const fallbackCandidates=visible.filter(c=>!c.buffer&&!c.complete&&!c.noGeometry&&!c.fallbackAttempted);

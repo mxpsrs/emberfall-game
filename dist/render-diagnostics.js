@@ -10,7 +10,7 @@ function recordPerformanceFrame(ms){
  const elapsed=performance.now()-renderRecording.started;
  // The first interval can include opening Settings before recording began.
  if(renderRecording.skip){renderRecording.skip=false;return;}
- const detail=realmGPU?.performanceSnapshot?.();
+ const snapshot=realmGPU?.performanceSnapshot?.(),detail=snapshot?{...snapshot,terrain:realmGPU?.terrainWork?{...realmGPU.terrainWork}:null}:null;
  renderRecording.samples.push({ms,zoomOut:Math.round((view3d.max-view3d.zoom)/(view3d.max-view3d.min)*100),moving:!!playerMotion.moving,scene:currentScene,scale:realmResolution.scale,...(globalThis.VeldrenFrameTiming||{}),renderer:detail});
  if(elapsed<60000&&renderRecording.samples.length<14400)return;
  const samples=renderRecording.samples,gpu=realmGPU?.surface,previousMeasurement=renderRecording.previousMeasurement;

@@ -1,0 +1,17 @@
+# Terrain workers, cell loading and LOD
+
+Terrain mesh assembly previously ran in slices on the render thread. The overworld now builds meshes in a dedicated worker and transfers the completed vertex buffer to the renderer. A new cell first receives a coarse mesh, then its selected detail level. Uploads are limited to one per mobile frame or two per desktop frame, with a shared time deadline; Filament's existing allocation budget still applies. Old surfaces remain visible until replacements are complete.
+
+The build cooks the actual authored heightfield, roads, water coverage, materials and stair masks into 1,408 independent 32-unit terrain pages. Four pages share each of 352 nearby delivery groups. The worker fetches groups as visible cells need them, keeps at most 12 pages on mobile or 24 on desktop, and discards stale results after travel, edits or scene changes. Predictive height encoding reduces delivery size; cooked heights differ from authoritative collision by at most about 0.000051 world units in the sampled QA trace.
+
+Terrain selects half-unit, one-unit, two-unit or four-unit geometry with distance hysteresis. Neighboring cells share half-unit boundary vertices and normals at every LOD combination. Roads, shorelines, paint and stair holes retain finer topology. Water remains at its existing plane and UVs remain in world coordinates.
+
+Native Scene remains authoritative for collision, gameplay and saves. Terrain pages are disposable render inputs. Live terrain edits and changed foundations use bounded idle snapshots of the current authoritative heightfield; triangle assembly still runs in the worker. Dirty regions remain recorded when offscreen, preventing a later visit from restoring obsolete baked terrain. Browsers without usable workers and indoor terrain retain the existing bounded renderer path.
+
+This implements terrain-data cell streaming. The full canonical gameplay Scene and construction aliases still load at startup to preserve distant quest references and existing synchronous gameplay consumers. It does not claim deferred loading of all gameplay entity definitions or eliminate that startup download.
+
+Validation covers all 32 horizontal/vertical neighboring LOD combinations, paint, holes and water; a real background worker with transferable buffers; nearby-only page requests; coarse/fine replacement; unchanged buffer reuse; cancellation; 40 travel cells; bounded page memory; live edit snapshots and scene switches. Authored-world parity checks cover 5,632 height/normal samples across all pages, finite mesh attributes and unchanged native world serialization. Existing native prebuilt-world tests verify tutorial entry, doors, transient actors, character progress, deleted entities, editor transforms and save/reload.
+
+Settings' performance recordings include terrain worker, queue, page-cache and upload measurements for device testing. Local worker timings, native tests and Filament's NOOP backend do not establish physical iPhone or PC GPU frame rates, equivalent-quality FPS improvements or sustained authenticated hosted capacity for 39 playtesters. Browser visual QA is unavailable in this environment. No server API, schema, shared-world protocol, account or character-save change is included, so publication keeps the game open.
+
+PR #1 remains untouched; PR #4 is not merged. The obsolete Phase 1 draft PR #3 was closed in the preceding cleanup.

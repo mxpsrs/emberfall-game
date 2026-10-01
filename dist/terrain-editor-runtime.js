@@ -37,6 +37,7 @@
  function invalidate(bounds=null,scene='overworld'){
   if(scene!=='overworld')return;
   revision++;
+  window.VeldrenTerrainStreaming?.invalidate(bounds);
   try{
    if(typeof landHeights!=='undefined'){
     if(!bounds||Math.abs((bounds.maxX-bounds.minX)*(bounds.maxZ-bounds.minZ))>30000)landHeights.clear();

@@ -6,6 +6,7 @@ execFileSync('python3',['scripts/build-scenery-lods.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-asset-registry.py'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/cook-native-world.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/cook-terrain-cells.cjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
 import {build,transform} from 'esbuild';
 import path from 'node:path';
