@@ -13,7 +13,7 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
 
 for(const mode of ['runtime','editor']){
  let api,handler=async()=>response(structuredClone(model)),manifestHandler=async()=>response(manifest),fetches=0,commands=0,destroys=0;
- const {instance}=await WebAssembly.instantiate(wasm,{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{
+ const {instance}=await WebAssembly.instantiate(wasm,{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},
   proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,
   environ_sizes_get:(a,b)=>{const memory=new DataView(api.memory.buffer);memory.setUint32(a,0,true);memory.setUint32(b,0,true);return 0;}
  }});

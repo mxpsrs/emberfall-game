@@ -35,8 +35,8 @@ for(const sample of [[10.123,2.4,20.456,-.55,.8,34,3],[-42.73,8.1,611.29,1.2,.55
 assert.equal(context.realmFilamentStyle({bossColor:2,dissolve:.126}).key,'t0:b20:d3');
 assert.equal(context.realmFilamentStyle({terrain:true}).key,'t1:b0:d0');
 assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:16,glbBytes:96*1024*1024,ao:false,dithering:false,lightLimit:12});
-assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:2,stable:true,normalBias:.8,constantBias:.001,maxShadowDistance:95},'desktop retains the established two-cascade shadow profile');
-context.window.matchMedia=()=>({matches:true});assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:1,stable:true,normalBias:.8,constantBias:.001,maxShadowDistance:80},'coarse-pointer devices use the mobile-safe shadow allocation');assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:8,glbBytes:32*1024*1024,ao:false,dithering:false,lightLimit:8});delete context.window.matchMedia;
+assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:2048,shadowCascades:2,stable:true,normalBias:.6,constantBias:.001,maxShadowDistance:95},'desktop uses sharper two-cascade shadows');
+context.window.matchMedia=()=>({matches:true});assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:1,stable:true,normalBias:.6,constantBias:.001,maxShadowDistance:80},'coarse-pointer devices use the mobile-safe shadow allocation');assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:8,glbBytes:32*1024*1024,ao:false,dithering:false,lightLimit:8});delete context.window.matchMedia;
 
 const html=fs.readFileSync(path.join(root,'dist/index.html'),'utf8');
 for(const file of ['startup.js','vendor/filament/filament.js','filament-bootstrap.js','renderer-gl.js','renderer-filament.js'])assert.ok(html.includes('src="'+file+'"'),'Missing '+file);
@@ -97,7 +97,7 @@ assert.match(materialSource,/color = mix\(color, cutRock, quarryMask\)/,'quarry 
 assert.match(materialSource,/mix\(ambient, terrainAmbient, materialParams\.terrainSurface\)/,'terrain remains readable at night without changing other materials');
 
 const terrainSource=fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.mat'),'utf8');
-assert.match(terrainSource,/shadingModel : unlit/,'the dedicated terrain material retains its established unlit surface path');
+assert.match(terrainSource,/shadingModel : lit/,'terrain normals receive actual sun and sky lighting');
 assert.equal((terrainSource.match(/type : sampler2d/g)||[]).length,1,'terrain material has exactly one sampler');
 assert.match(terrainSource,/textureGrad\(materialParams_groundSurfaces/,'ground textures use an explicit stable mip footprint');
 assert.match(terrainSource,/vec2 p = getUV0\(\)/,'terrain samples stable mesh-authored world coordinates');

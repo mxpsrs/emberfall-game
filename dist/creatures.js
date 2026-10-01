@@ -32,18 +32,17 @@ function creatureSkinBatches(asset){
 }
 function creatureSize(o){if(o.size)return o.size;return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
 function creatureAsset(o){return creatureAssets[o.creatureLook||creatureKinds[o.kind]];}
-function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
+function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0,animation=null){
  const a=creatureAssets[kind],motion=a.clips[clip],frame=Math.max(0,Math.min(motion.frames-1,phase*(motion.frames-1)));
  const baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
- const key=[kind,clip,frame.toFixed(3),blend.toFixed(3),blend<1?baseClip:'',blend<1?baseFrame.toFixed(3):''].join(':');
- if(creatureRigPoses.has(key))return creatureRigPoses.get(key);
- const global=[],palette=new Float32Array(a.rig.deforms.length*12),v=new Float32Array(10),b=new Float32Array(10);
+ const key=[kind,clip,frame,blend,blend<1?baseClip:'',blend<1?baseFrame:'',animation?.transition?.key||''].join(':');
+ if(creatureRigPoses.has(key)){const cached=creatureRigPoses.get(key);if(animation?.animationState)animation.animationState.pose=cached.localTrs;return cached;}
+ const global=[],palette=new Float32Array(a.rig.deforms.length*12),v=new Float32Array(10),b=new Float32Array(10),localTrs=new Float32Array(a.joints*10),transition=animation?.transition;
  for(let i=0;i<a.joints;i++){
   sampleRealmJoint(motion,frame,i,a.joints,v);
-  if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,i,a.joints,b);const sign=v[3]*b[3]+v[4]*b[4]+v[5]*b[5]+v[6]*b[6]<0?-1:1;
-   for(let j=0;j<10;j++)v[j]=b[j]*(1-blend)+v[j]*blend*(j>=3&&j<=6?sign:1);
-   const length=Math.hypot(v[3],v[4],v[5],v[6]);for(let j=3;j<7;j++)v[j]/=length;
-  }
+  if(blend<1){sampleRealmJoint(a.clips[baseClip],baseFrame,i,a.joints,b);blendRealmJoint(v,b,v,blend);}
+  if(transition&&transition.fromPose.length===localTrs.length)blendRealmJoint(v,transition.fromPose,v,transition.weight,i*10);
+  localTrs.set(v,i*10);
   const local=realmJointMatrix(v),parent=a.rig.parents[i],world=parent<0?local:affineMultiply(global[parent],local);global.push(world);
  }
  for(let i=0;i<a.rig.deforms.length;i++)palette.set(affineMultiply(global[a.rig.deforms[i]],a.rig.bind.subarray(i*12,i*12+12)),i*12);
@@ -54,12 +53,12 @@ function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
   for(let j=0;j<4;j++){const weight=mesh.w[i*4+j];if(!weight)continue;const t=mesh.j[i*4+j]*12+4;y+=weight*(palette[t]*mesh.p[k]+palette[t+1]*mesh.p[k+1]+palette[t+2]*mesh.p[k+2]+palette[t+3]);}
   floorY=Math.min(floorY,y);
  }
- const pose={key,palette,floorY};creatureRigPoses.set(key,pose);
+ const pose={key,palette,floorY,localTrs};creatureRigPoses.set(key,pose);if(animation?.animationState)animation.animationState.pose=localTrs;
  if(creatureRigPoses.size>80)creatureRigPoses.delete(creatureRigPoses.keys().next().value);
  return pose;
 }
-function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0){
- const rig=creatureRigPose(kind,clip,phase,blend,baseClip,basePhase);
+function creaturePose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0,animation=null){
+ const rig=creatureRigPose(kind,clip,phase,blend,baseClip,basePhase,animation);
  if(creaturePoses.has(rig.key))return creaturePoses.get(rig.key);
  const mesh=creatureAssets[kind].mesh,p=new Float32Array(mesh.p.length),n=new Float32Array(mesh.n.length),m=rig.palette;
  for(let i=0;i<mesh.p.length/3;i++){
@@ -82,14 +81,14 @@ function creatureMotion(o,x,z){
  const dt=Math.min(.1,Math.max(0,time-state.time)),dx=x-state.x,dz=z-state.z,distance=Math.hypot(dx,dz);
  if(dt>0){
   const walking=distance>.0003&&distance<2;
-  state.speed+=(walking?distance/dt-state.speed:-state.speed)*Math.min(1,dt*8);
-  state.blend+=(walking?1-state.blend:-state.blend)*Math.min(1,dt*12);
+  state.speed+=(walking?distance/dt-state.speed:-state.speed)*(1-Math.exp(-dt*8));
+  state.blend+=(walking?1-state.blend:-state.blend)*(1-Math.exp(-dt*12));
   if(walking)state.phase=(state.phase+distance/(creatureAsset(o)?.gaitDistance||((o.creatureLook||creatureKinds[o.kind])==='rat'?.52*creatureSize(o):(o.creatureLook||creatureKinds[o.kind])==='wolf'?1.6:1.15)))%1;
   let desired=walking?Math.atan2(dx,dz):state.heading;
   if(!walking&&(target===o||o._inCombat)&&Math.hypot(px+.5-x,py+.5-z)<12)desired=Math.atan2(px+.5-x,py+.5-z);
   if(o._sharedReady&&typeof sharedActor!=='undefined'&&o._sharedOwner!==sharedActor&&o._sharedTarget&&Number.isFinite(o.attackHeading))desired=o.attackHeading;
   if(o.lockAttackHeading&&Number.isFinite(o.attackHeading)&&time<(o.attackAt||0)+(o.attackWindup||0)+(o.attackRecovery||0))desired=o.attackHeading;
-  const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*Math.min(1,dt*15);
+  const delta=Math.atan2(Math.sin(desired-state.heading),Math.cos(desired-state.heading));state.heading+=delta*(1-Math.exp(-dt*15));
   state.time=time;state.x=x;state.z=z;
  }
  return state;
@@ -98,7 +97,7 @@ function creatureDying(o){const a=creatureAsset(o);return !!a&&o.dead>time&&Numb
 const VELDREN_CLIPS={idle:0,walk:1,run:2,death:3,hit:4,attack:5,attack2:6,attack3:7,cast:8,cast2:9,throw:10};
 function veldrenAnimationInput(o,now=time){
  const a=creatureAsset(o);if(!a||o.civilianModel||(!o.tutor&&!o.appearanceRole&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type))))return null;
- const x=(o.drawX??o.x)+.5,z=(o.drawY??o.y)+.5,large=cameraZoom3()*a.height*creatureSize(o)>65,near=Math.hypot(x-px-.5,z-py-.5)<8,idlePhase=near?((Math.floor(now*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0;
+ const idlePhase=((now+(o.id||0)*.371)/a.clips.idle.duration)%1;
  const attackAge=now-(o.attackAt??-100),hitAge=now-(o.hitAt??-100),attack=creatureAttackAnimation(o,a,attackAge),dying=creatureDying(o),hit=!!(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration);let flags=0;if(dying)flags|=1;if(attack)flags|=2;if(hit)flags|=4;
  return {clip:VELDREN_CLIPS[attack?.clip]||0,flags,idlePhase,phase:attack?.phase||0,blend:attack?.blend??1,hitPhase:hit?hitAge/a.clips.hit.duration:0,hitBlend:hit?Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10):0,deathPhase:dying?Math.min(1,(now-o.deathAt)/a.clips.death.duration):0,deathBlend:dying?Math.min(1,(now-o.deathAt)/.12):0};
 }
@@ -106,17 +105,17 @@ window.veldrenAnimationInput=veldrenAnimationInput;
 const creatureBeforeImports=creature3;
 creature3=function(r,o,x,z){
  if(o.civilianModel||(!o.tutor&&!o.appearanceRole&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type)))){
-  const state=creatureMotion(o,x,z),gear=npcEquipment(o);gear._attackAt=o.attackAt;
+  const state=creatureMotion(o,x,z),gear=npcEquipment(o);gear._attackAt=o.attackAt;gear._animationActor=o;
   humanoid3(r,x,z,npcLook(o),gear,state.heading,state.blend>.015?state.phase*7.5:0);return gear._race==='dwarf'?1.8:2;
  }
  const kind=o.creatureLook||creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);
- const variant=creatureSize(o),dying=creatureDying(o),state=creatureMotion(o,x,z),large=cameraZoom3()*a.height*variant>65,native=o._nativeAnimation;let clip,phase,blend,baseClip,basePhase;
+ const variant=creatureSize(o),dying=creatureDying(o),state=creatureMotion(o,x,z),native=o._nativeAnimation,attackAge=time-(o.attackAt??-100),attack=creatureAttackAnimation(o,a,attackAge);let clip,phase,blend,baseClip,basePhase;
  if(native){({clip,phase,blend,baseClip,basePhase}=native);}
- else{const near=Math.hypot(x-px-.5,z-py-.5)<8,idlePhase=near?((Math.floor(time*(large?16:8))/(large?16:8)+(o.id||0)*.371)/a.clips.idle.duration)%1:0,gait=state.speed>3.2?'run':'walk',attackAge=time-(o.attackAt??-100),hitAge=time-(o.hitAt??-100),attack=creatureAttackAnimation(o,a,attackAge);clip='idle';phase=idlePhase;blend=1;baseClip='idle';basePhase=idlePhase;if(dying){clip='death';phase=Math.min(1,(time-o.deathAt)/a.clips.death.duration);blend=Math.min(1,(time-o.deathAt)/.12);baseClip=state.lastClip||'idle';basePhase=state.lastPhase||0;}else if(attack){({clip,phase,blend}=attack);}else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}if(!dying&&['attack','attack2','attack3','cast','cast2','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}}
- const steps=r.skinned?Math.ceil(a.clips[clip].duration*60):large?48:24,blendSteps=r.skinned?64:16;
- phase=Math.round(phase*steps)/steps;blend=Math.round(Math.max(0,blend)*blendSteps)/blendSteps;
+ else{const idlePhase=((time+(o.id||0)*.371)/a.clips.idle.duration)%1,gait=state.speed>3.2?'run':'walk',hitAge=time-(o.hitAt??-100);clip='idle';phase=idlePhase;blend=1;baseClip='idle';basePhase=idlePhase;if(dying){clip='death';phase=Math.min(1,(time-o.deathAt)/a.clips.death.duration);blend=Math.min(1,(time-o.deathAt)/.12);baseClip=state.lastClip||'idle';basePhase=state.lastPhase||0;}else if(attack){({clip,phase,blend}=attack);}else if(a.clips.hit&&hitAge>=0&&hitAge<a.clips.hit.duration){clip='hit';phase=hitAge/a.clips.hit.duration;blend=Math.min(1,hitAge/.065,(a.clips.hit.duration-hitAge)/.10);}else if(state.blend>.015){clip=gait;phase=state.phase;blend=state.blend;}if(!dying&&['attack','attack2','attack3','cast','cast2','throw','hit'].includes(clip)&&state.blend>.5){baseClip=gait;basePhase=state.phase;}}
+ const animation=realmAnimationTransition(o,clip,phase,Math.max(0,Math.min(1,blend)),baseClip,basePhase,a.clips,dying?.08:.14);
+ ({clip,phase,blend,baseClip,basePhase}=animation);
  if(!dying&&!native){state.lastClip=clip;state.lastPhase=phase;}
- const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase):creaturePose(kind,clip,phase,blend,baseClip,basePhase),k=a.scale*variant;
+ const mesh=r.skinned?creatureRigPose(kind,clip,phase,blend,baseClip,basePhase,animation):creaturePose(kind,clip,phase,blend,baseClip,basePhase,animation),k=a.scale*variant;
  const crystal=kind==='boss_colossus',dissolve=crystal&&dying?Math.min(1,(time-o.deathAt)/a.clips.death.duration):0;
  const sink=dying?(crystal?dissolve*dissolve*1.2:Math.max(0,time-o.deathAt-a.clips.death.duration)*.3):0;
  // Imported motion can dip below the original bind-pose floor. Keep the
@@ -125,7 +124,7 @@ creature3=function(r,o,x,z){
  const hop=o.attackMove==='pounce'&&attack?Math.sin(Math.PI*Math.max(0,Math.min(1,(attackAge/(o.attackWindup||1.8)-.6)/.4)))*.55:0;
  const painter=groundedPainter(r,x,z),transform=briarTransform(x,-floor*k-sink+hop,z,k,state.heading);
  if(a.sockets){
-  const palette=r.skinned?mesh.palette:creatureRigPose(kind,clip,phase,blend,baseClip,basePhase).palette,c=Math.cos(state.heading),s=Math.sin(state.heading);
+  const palette=r.skinned?mesh.palette:creatureRigPose(kind,clip,phase,blend,baseClip,basePhase,animation).palette,c=Math.cos(state.heading),s=Math.sin(state.heading);
   o._creatureSockets??={};
   for(const [name,socket]of Object.entries(a.sockets)){
    const p=socket.point,b=socket.joint*12,q=[0,0,0];

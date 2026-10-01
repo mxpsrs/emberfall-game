@@ -26,7 +26,7 @@ void validate_variants(const Json& definition){
       const auto path=text(entry,"derivedPath");
       if(!path.starts_with("assets/canonical/")||path.find("..")!=std::string::npos||path.find('\\')!=std::string::npos||!hash_valid(text(entry,"derivedHash"))||text(entry,"sourceHash")!=text(definition,"sourceHash"))throw std::invalid_argument("Invalid/stale texture variant source");
       if(!width||!height||width->number_or(-1)<1||height->number_or(-1)<1||width->number_or()>policy.max_texture_dimension||height->number_or()>policy.max_texture_dimension||std::floor(width->number_or())!=width->number_or()||std::floor(height->number_or())!=height->number_or())throw std::invalid_argument("Texture variant exceeds profile dimensions");
-      if(!std::set<std::string>{"baseColor","emissive","normal","metallicRoughness","occlusion","data"}.contains(role)||(color!="srgb"&&color!="linear")||(role=="normal"&&color!="linear")||!std::isfinite(cutoff)||cutoff<0||cutoff>1)throw std::invalid_argument("Invalid texture variant usage");
+      if(!std::set<std::string>{"baseColor","emissive","normal","metallicRoughness","occlusion","data","appearanceMask"}.contains(role)||(color!="srgb"&&color!="linear")||(role=="normal"&&color!="linear")||!std::isfinite(cutoff)||cutoff<0||cutoff>1)throw std::invalid_argument("Invalid texture variant usage");
       if(!usages.insert(write_json(Json::Array{role,color,cutoff})).second)throw std::invalid_argument("Duplicate texture variant usage");
     }
   }

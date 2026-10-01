@@ -2605,7 +2605,7 @@
       "T_Superhero_Male_Roughness.png": "c70dabf48574cda55644d556beae1ee7cf1bdcf68a50d259d20f2f2358f27991"
     },
     "derivedPath": "assets/canonical/models/c78a5c629ba71c3b8df722851ef45fadcb2c18514db56802b9cf5d73bdd5a7f7.json",
-    "derivedHash": "71cb477b7b27d6796c4bf776a669925816e8394bc14188d8d501a7b4e65a1153"
+    "derivedHash": "2fc38a570ded7d76614f57c22539e5c8d7e4eade60eb061761914dbe1d13d135"
   },
   {
     "id": "avatar:female",
@@ -2622,7 +2622,7 @@
       "T_Superhero_Female_Roughness.png": "d2beabf2bd0313e32c68dcdbb80dca371a6e994fabf96efa97128bf9f14fa57b"
     },
     "derivedPath": "assets/canonical/models/1c87d5ee358f51c975f43c85aebe52b69cc07a79faf7e68495cc5a5a22bb12c5.json",
-    "derivedHash": "f3d47f00d4cfc1dc9c44614c5f017e6c20810caa0cc5cd46a8a79d4e03bc3b78"
+    "derivedHash": "239eb1f187267247543a38e554e5364ded8baec383115ef1228e837954ab7ab4"
   },
   {
     "id": "animation-library:ual1",
@@ -2719,5 +2719,101 @@
     "sourceDependencies": {},
     "derivedPath": "assets/canonical/models/82dadefaec71db6be62ac1ed0d37ff3643a3168d022796e7945521fb19d4d39d.json",
     "derivedHash": "29d767d4c9900085a9d88f22b474225b27d7edbcb37d8fd07870162357bdfc0d"
+  },
+  {
+    "id": "rebuilt:Eyebrows_Female",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Eyebrows_Female.gltf",
+    "sourceHash": "9d24b43ac63197c3c242349d54d599d7d8dd5bdee6e7ce37847224f3ff1fb14d",
+    "sourceDependencies": {
+      "Eyebrows_Female.bin": "f2efdf2b9d44137630ff4df01cfd9068fe3c3f8c2896c009860404ea17989dbf",
+      "T_Hair_2_BaseColor.png": "f9f4f2fb3eeeefb0b6f0fdef38b0770fd6607640c1c680b8139dd76697e9f9b3",
+      "T_Hair_2_Normal.png": "172f230aae0d4366c3cfc0402b2e6d1811b11f8487344bff28605eeacac1558d"
+    },
+    "derivedPath": "assets/canonical/models/d32248de45483c508be0256014b2cb1842716f74f94ef66987164cb7242f2702.json",
+    "derivedHash": "1843ae6330c3c5a8a9c146d41b0addc23c3fdcb30c1e760858450598375e62b9"
+  },
+  {
+    "id": "rebuilt:Eyebrows_Regular",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Eyebrows_Regular.gltf",
+    "sourceHash": "a91059d18fad4bd3af7546a4226976d8a2139eb82c3fe0790a1c5287c6ac6ed8",
+    "sourceDependencies": {
+      "Eyebrows_Regular.bin": "434c62e704037b5d2a12a0c7237513617806fc6cf53d67608f120b0908dd3396",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb"
+    },
+    "derivedPath": "assets/canonical/models/0b92011105a5f5941335065f3e3dc875fbef2f5707ee917f7ab9eb6757df7120.json",
+    "derivedHash": "025c62d6e68e97bd953dcb5b1a0bd637e3739d2bc99596f643647affe56cc009"
+  },
+  {
+    "id": "rebuilt:Hair_Beard",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Beard.gltf",
+    "sourceHash": "c91ef54606aad25a9d1191deaba90cb411c0067d8cef262b2f4819f242e5b365",
+    "sourceDependencies": {
+      "Hair_Beard.bin": "781cf9b719d75a9f8d73881d2ca0713fe580d774edc96adaded392aad37a72b7",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb"
+    },
+    "derivedPath": "assets/canonical/models/9d1dc4b99668c0510a35ba3f1a51d973c7da4a1398240353c20bc238b2d080d0.json",
+    "derivedHash": "0b23c9d05b89151078c9b835f3a5b0660bf5201ff0083dc48902073d381d8ee8"
+  },
+  {
+    "id": "rebuilt:Hair_Buns",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Buns.gltf",
+    "sourceHash": "2bb3593575e21c9af39a53e48c42c1314b0a894e9577f3f14abffcb145cd56c5",
+    "sourceDependencies": {
+      "Hair_Buns.bin": "4f6d4c010201278483da8d6d46ec40e3beb8d9e679ec2139bed216c561bccd38",
+      "T_Hair_2_BaseColor.png": "f9f4f2fb3eeeefb0b6f0fdef38b0770fd6607640c1c680b8139dd76697e9f9b3",
+      "T_Hair_2_Normal.png": "172f230aae0d4366c3cfc0402b2e6d1811b11f8487344bff28605eeacac1558d"
+    },
+    "derivedPath": "assets/canonical/models/a31eb31986e5c72b8bf449b0998feb07797f53b15f1952053e2d195b6e61e744.json",
+    "derivedHash": "c115e17a331cd486637f778f923a09d41c9ea1bde167b096d628e3e273264c7b"
+  },
+  {
+    "id": "rebuilt:Hair_Buzzed",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Buzzed.gltf",
+    "sourceHash": "43752a4c8f2464eb2494a8ab179bf7ad237638a3d47fb3de0a38361db40e1451",
+    "sourceDependencies": {
+      "Hair_Buzzed.bin": "89992fc7a5319df6f2908e44a3b694329fac4b500629a573224702e5fdd16f77",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb"
+    },
+    "derivedPath": "assets/canonical/models/7a6abd03f7a2fd7be6b24dd41353a22f13f92cd5f2ffea6499fb28b862c23c79.json",
+    "derivedHash": "a45274abda292fc960f562e0c8da295c5e694fb5f18b40030e7a0e0d57ae610a"
+  },
+  {
+    "id": "rebuilt:Hair_BuzzedFemale",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_BuzzedFemale.gltf",
+    "sourceHash": "3f30e5a7b0fc6d04d2980a4e937cc5e4b03ca923c9247869168ef13e1b40b747",
+    "sourceDependencies": {
+      "Hair_BuzzedFemale.bin": "6f1ab9bc997b01311dc0635ee165edfe27bd9715222718bc4cf4265e10b933af",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb"
+    },
+    "derivedPath": "assets/canonical/models/94794e1d70551cee7de7ea25ba24bbf6ad1ecd7578b01f3f2cf95643e71aaa0f.json",
+    "derivedHash": "0da5ef71675dcbe0529e8bea8309579345ef89fe0916a3817a677cf9967f4eb4"
+  },
+  {
+    "id": "rebuilt:Hair_Long",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_Long.gltf",
+    "sourceHash": "94500e2e37e09efc8b8b920b8c6437ef1c76ca35863992b82d0d5de6e77122e9",
+    "sourceDependencies": {
+      "Hair_Long.bin": "13996da35c7afbf8cb5097da37207ee5b7c2e2904d4ab9e2ace9843030fff8d5",
+      "T_Hair_2_BaseColor.png": "f9f4f2fb3eeeefb0b6f0fdef38b0770fd6607640c1c680b8139dd76697e9f9b3",
+      "T_Hair_2_Normal.png": "172f230aae0d4366c3cfc0402b2e6d1811b11f8487344bff28605eeacac1558d"
+    },
+    "derivedPath": "assets/canonical/models/f28c485e16abf2d1a8cb3e14a12884ca181b6bd5a9ac596626f6b4a16a59ae5d.json",
+    "derivedHash": "be0bdb0e50610003ebefd27f7de0ae95c9d3d82885dcf89e3a8fc5d5ba97c55b"
+  },
+  {
+    "id": "rebuilt:Hair_SimpleParted",
+    "sourcePath": "sources/quaternius/universal-base-characters/Hairstyles/Origin at 0/glTF (Godot)/Hair_SimpleParted.gltf",
+    "sourceHash": "ce6c666d00bcca2baa0c58d0442505f90f8feff952592effc4697a2341e9e56d",
+    "sourceDependencies": {
+      "Hair_SimpleParted.bin": "57c6359703a37e346ee38a9c7ba55c8dee761c0a02da99847d06f5a91728f3cc",
+      "T_Hair_1_BaseColor.png": "bc7aa863bd22ab0a995cd838cceb4d3a5186ee54ee2fb0108fad85d20c057e6e",
+      "T_Hair_1_Normal.png": "57fd0ad8c96a4d01b38769637e066cecaa285b456f6e48ce00863754a457affb"
+    },
+    "derivedPath": "assets/canonical/models/0682f58f0ac4e39de58b366821ce24ff0b5551f294f26fafc75450b4b9898b1c.json",
+    "derivedHash": "2f695ec95fbe6ff2feee78aadc160fdca1f534bc9715c4895d11eb9eef5013fa"
   }
 ]

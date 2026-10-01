@@ -210,9 +210,28 @@ function quarryDepth(q,x,y){const edge=quarryShapeEdge(q,x,y);if(edge<=0)return 
 }
 function quarryCliff(q,x,y){if(Math.abs(x+.5-q.x)<3&&y+.5>=q.y-9)return false;const edge=quarryShapeEdge(q,x+.5,y+.5);return Array.from({length:q.levels},(_,i)=>(i+1)*5-.5).some(d=>Math.abs(edge-d)<.65);}
 const civilGradeBefore=gradeLand;
-gradeLand=function(x,y,height){const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;let result=before;const q=quarryAt(x,y,14);if(q&&globalThis.VeldrenQuarryScene?.enabled){const sample=VeldrenQuarryScene.sample(x,y,0,q);result=before*(1-sample.blend)+sample.height*sample.blend;}else if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;}
- else for(const plan of settlementPlans.values()){if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;const t=SETTLEMENTS.find(t=>t.id===plan.id),d=Math.hypot(x-t.x,y-t.y),r=plan.radius+8;if(d>r+20)continue;const k=Math.max(0,Math.min(1,(r+20-d)/20));result=before*(1-k)+plan.grade*k;break;}
- return gradeRoadLand(x,y,result);};
+const civilGradeBuckets=new Map();let civilGradeBucketsReady=false;
+function buildCivilGradeBuckets(){
+ civilGradeBuckets.clear();for(const plan of settlementPlans.values()){
+  if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;const town=SETTLEMENTS.find(t=>t.id===plan.id);if(!town||!Number.isFinite(plan.radius))continue;
+  const outer=plan.radius+28,entry={plan,town,radius:plan.radius+8};
+  for(let by=Math.floor((town.y-outer)/16);by<=Math.floor((town.y+outer)/16);by++)for(let bx=Math.floor((town.x-outer)/16);bx<=Math.floor((town.x+outer)/16);bx++){const key=bx+':'+by;if(!civilGradeBuckets.has(key))civilGradeBuckets.set(key,[]);civilGradeBuckets.get(key).push(entry);}
+ }civilGradeBucketsReady=true;
+}
+gradeLand=function(x,y,height){
+ const before=civilGradeBefore(x,y,height);if(currentScene!=='overworld')return before;
+ let result=before,adjusted=false;const q=quarryAt(x,y,14);
+ if(q&&globalThis.VeldrenQuarryScene?.enabled){const sample=VeldrenQuarryScene.sample(x,y,0,q);result=before*(1-sample.blend)+sample.height*sample.blend;adjusted=true;}
+ else if(q){const dx=Math.max(Math.abs(x-q.x)-q.rx,0),dy=Math.max(Math.abs(y-q.y)-q.ry,0),d=Math.hypot(dx,dy),t=Math.max(0,Math.min(1,d/14)),blend=1-t*t*(3-2*t),cut=Math.max(.15,q.level-quarryDepth(q,x,y));result=before*(1-blend)+cut*blend;adjusted=true;}
+ else for(const candidate of civilGradeBucketsReady?(civilGradeBuckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[]):settlementPlans.values()){
+  const plan=civilGradeBucketsReady?candidate.plan:candidate;if(plan.id==='briarhaven'||!Number.isFinite(plan.grade))continue;
+  const town=civilGradeBucketsReady?candidate.town:SETTLEMENTS.find(t=>t.id===plan.id),d=Math.hypot(x-town.x,y-town.y),r=civilGradeBucketsReady?candidate.radius:plan.radius+8;if(d>r+20)continue;
+  const k=Math.max(0,Math.min(1,(r+20-d)/20));result=before*(1-k)+plan.grade*k;adjusted=true;break;
+ }
+ // The inherited terrain grade already applied road shaping. Apply it again
+ // only when this wrapper changed the height for a quarry or settlement.
+ return adjusted?gradeRoadLand(x,y,result):before;
+};
 const civilWallBefore=worldWall;
 worldWall=function(x,y){if(civilWalkableArchitectureAt(x+.5,y+.5))return false;if(globalThis.VeldrenStructureScene?.enabled?VeldrenStructureScene.borderAt(currentScene,x+.5,y+.5):civilStairWells.get(currentScene)?.some(h=>x===h.tx&&Math.abs(y-h.ty)===1))return true;if(globalThis.VeldrenStructureScene?.enabled?VeldrenStructureScene.blocked(currentScene,x+.5,y+.5):civilWalls.get(currentScene)?.has(x+':'+y))return true;if(currentScene==='overworld'){const q=quarryAt(x+.5,y+.5);if(q&&quarryCliff(q,x,y))return true;}return civilWallBefore(x,y);};
 const civilBuildingBefore=inBuilding;
@@ -248,7 +267,7 @@ function reinforceGoblinVillage(world){
 const civilizationSetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){civilizationSetupBefore();if(civilizationReady)return;civilizationReady=true;
  const saved={scene:currentScene,x:s.x,y:s.y},world=worldScenes.overworld;currentScene='overworld';
- for(const p of settlementPlans.values()){const t=SETTLEMENTS.find(t=>t.id===p.id);p.grade=p.id==='briarhaven'?.75:Math.max(1.5,landBase(t.x,t.y));}
+ for(const p of settlementPlans.values()){const t=SETTLEMENTS.find(t=>t.id===p.id);p.grade=p.id==='briarhaven'?.75:Math.max(1.5,landBase(t.x,t.y));}buildCivilGradeBuckets();
  const workbench=world.objects.find(o=>o.mountainKey==='workbench');if(workbench)civilMove(workbench,780,123);
  expandLegacyNeighborhoods(world);for(const b of world.buildings.filter(b=>b.archetype==='castle'))buildCastle(world,b);
  addSettlementIdentity(world);buildHabitableFloors(world);buildBeaconLevels(world);reinforceGoblinVillage(world);setupSurfaceQuarries(world);civilCityWalls(world);civilClearUpperRoutes(world);
@@ -293,13 +312,24 @@ function civilWallRuns(map){
   for(let i=0;i<length;i++)unused.delete((tile.x+(axis==='x'?i:0))+':'+(tile.y+(axis==='y'?i:0)));
   runs.push({x:tile.x,y:tile.y,height:tile.height,length,axis});
  }
+ const spatial={size:32,maxHeight:0,buckets:new Map()};
+ for(const run of runs){const horizontal=run.axis==='x',x=run.x+(horizontal?run.length/2:.5),z=run.y+(horizontal?.5:run.length/2),key=Math.floor(x/spatial.size)+':'+Math.floor(z/spatial.size);let bucket=spatial.buckets.get(key);if(!bucket){bucket=[];spatial.buckets.set(key,bucket);}bucket.push(run);spatial.maxHeight=Math.max(spatial.maxHeight,run.height);}
+ Object.defineProperty(runs,'spatial',{value:spatial});
  civilWallRunsCache.set(map,runs);return runs;
+}
+function civilWallCandidates(runs,bounds,pitch){
+ const index=runs.spatial;if(!index||!bounds?.valid)return runs;
+ const pad=(index.maxHeight+1.5)/Math.max(.05,Math.tan(pitch))+12,size=index.size,x0=Math.floor((bounds.minx-pad)/size),x1=Math.floor((bounds.maxx+pad)/size),z0=Math.floor((bounds.minz-pad)/size),z1=Math.floor((bounds.maxz+pad)/size),bucketCount=(x1-x0+1)*(z1-z0+1);
+ if(bucketCount>index.buckets.size*2)return runs;
+ const candidates=[];for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++){const bucket=index.buckets.get(x+':'+z);if(bucket)candidates.push(...bucket);}return candidates;
 }
 function civilDrawWallRuns(r,map,race='human',cull=false){
  const limit=cull&&typeof realmWideWorldLimit3==='function'?Math.max(0,realmWideWorldLimit3()-12):cull?Math.hypot(screen.w,screen.h)/cameraZoom3()+12:Infinity;
- for(const run of civilWallRuns(map)){
+ const bounds=globalThis.realmViewBounds3,runs=civilWallRuns(map),candidates=cull?civilWallCandidates(runs,bounds,cameraPitch3()):runs;
+ for(const run of candidates){
   const horizontal=run.axis==='x',x=run.x+(horizontal?run.length/2:.5),z=run.y+(horizontal?.5:run.length/2);
   if(Math.abs(x-px)>limit||Math.abs(z-py)>limit)continue;
+  if(cull&&bounds?.valid){const pad=(run.height+1.5)/Math.max(.05,Math.tan(cameraPitch3()))+8,halfX=horizontal?run.length/2:.5,halfZ=horizontal?.5:run.length/2;if(x+halfX<bounds.minx-pad||x-halfX>bounds.maxx+pad||z+halfZ<bounds.minz-pad||z-halfZ>bounds.maxz+pad)continue;}
   const mesh=run.height>=4.5?realmArtMesh('curtainWall',race):rebuiltModels.Wall_UnevenBrick_Straight;
   environmentModule3(r,mesh,x,0,z,run.length,run.height,1,horizontal?0:Math.PI/2);
  }

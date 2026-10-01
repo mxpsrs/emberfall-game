@@ -19,6 +19,7 @@ def mesh(id,m,source,rig=None):
  record(id+'/collision','collision',id+' collision bounds',source,m['bounds'],[id+'/mesh'],bounds=m['bounds'],shape='aabb')
  return [id+'/mesh',id+'/collision']
 def model(id,m,source,**extra):
+ if m.get('lods'):extra['lods']=m['lods']
  deps=mesh(id,m,source);record(id,'model',id.split(':',1)[1].replace('_',' '),source,m,deps,bounds=m['bounds'],**extra)
 def rigged(id,a,source,meshkey='mesh'):
  rig=id+'/skeleton';definition=a.get('rig',{'joints':a.get('joints')});record(rig,'skeleton',id+' skeleton',source,definition)

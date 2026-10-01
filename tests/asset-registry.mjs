@@ -10,6 +10,11 @@ for(const mode of ['runtime','editor']){
  context.window=context;vm.createContext(context);
  for(const name of ['asset-runtime','native-runtime'])vm.runInContext(fs.readFileSync('dist/'+name+'.js','utf8'),context,{filename:name});
  const native=await context.realmNativeReady,assets=context.VeldrenAssets;assert(assets.ready);assert.equal(assets.diagnostics().records,manifest.records.length);
+ for(const source of Object.entries(packed.models).filter(([,m])=>m.lods?.length>1)){
+  const [name,near]=source,id='rebuilt:'+name;assert.equal(assets.lod(id,0).asset,id);
+  let triangles=Buffer.from(near.i,'base64').length/6;
+  for(const level of near.lods.slice(1)){const selected=assets.lod(id,level.threshold).asset;assert.equal(selected,level.asset);const mesh=packed.models[selected.slice(8)],count=Buffer.from(mesh.i,'base64').length/6;assert(count>0&&count<triangles,'distance detail reduces actual triangles');triangles=count;assert.deepEqual(mesh.bounds,near.bounds,'LOD keeps conservative culling and collision bounds');const bytes=Buffer.from(mesh.p,'base64'),positions=mesh.pScale?Float32Array.from(new Int16Array(bytes.buffer,bytes.byteOffset,bytes.length/2),v=>v*mesh.pScale):new Float32Array(bytes.buffer,bytes.byteOffset,bytes.length/4);assert(positions.every(Number.isFinite));}
+ }
  // Every registered profile must resolve through the actual native command.
  let variants=0;
  for(const record of manifest.records)for(const [profile,entries] of Object.entries(record.variants||{}))for(const entry of entries){
@@ -19,7 +24,7 @@ for(const mode of ['runtime','editor']){
   assert.equal(variant.processing.maxDimension,profile==='desktop'?8192:profile==='browser'?512:256);
   assert(Object.isFrozen(variant.processing));variants++;
  }
- assert.equal(variants,845*3);
+ assert.equal(variants,865*3,'all original textures and four appearance-mask records resolve in all profiles');
  const canonical=manifest.records.find(r=>r.variants);
  assert.throws(()=>assets.textureVariant(canonical.id,'unknown',{role:'baseColor',colorSpace:'srgb'}));
  assert.throws(()=>assets.textureVariant(canonical.id,'browser',{role:'missing',colorSpace:'srgb'}));

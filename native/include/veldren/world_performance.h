@@ -63,4 +63,17 @@ std::uint32_t veldren_performance_create(void* world,std::uint32_t assets);
 void veldren_performance_destroy(std::uint32_t handle);
 int veldren_performance_command(std::uint32_t handle,const char* request);
 std::uint32_t veldren_performance_response(std::uint32_t handle,char* out,std::uint32_t capacity);
+// Borrowed, versioned frame buffers. Callers copy before another frame or heap
+// growth; no saved entity, GPU resource or authoritative state lives here.
+int veldren_performance_visible_frame(std::uint32_t handle,const char* scene,const double* camera,std::uint32_t profile);
+const std::uint8_t* veldren_performance_frame_data(std::uint32_t handle);
+std::uint32_t veldren_performance_frame_size(std::uint32_t handle);
+std::uint32_t veldren_performance_frame_strings(std::uint32_t handle,char* out,std::uint32_t capacity);
+std::uint32_t veldren_performance_intern(std::uint32_t handle,const char* value);
+int veldren_performance_lod_frame(std::uint32_t handle,const char* scene,const std::uint32_t* pairs,const double* distances,std::uint32_t count);
+const std::uint8_t* veldren_performance_lod_data(std::uint32_t handle);
+std::uint32_t veldren_performance_lod_size(std::uint32_t handle);
+// Five borrowed uint32 counters: pages, archive bytes, compacted, restored,
+// scanned. A zero pointer reports an error through the response API.
+const std::uint32_t* veldren_performance_page_payloads(std::uint32_t handle,const char* scene,double x,double z,double radius,std::uint32_t budget);
 }

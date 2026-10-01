@@ -257,16 +257,31 @@ function worldFire(r,o,x,z){
 // A chunk is generated once and streamed with the camera; details never grow
 // with the full continent size or change position while the player is moving.
 const worldUnderstory=new Map();
-function worldUnderstoryPlacements(bx,bz){
+const worldUnderstoryBuildingBuckets=new Map();let worldUnderstoryBuildingSource=null,worldUnderstoryBuildingRevision=-1;
+function worldUnderstoryNearBuilding(x,z){
+ const revision=typeof worldObjectRevision==='number'?worldObjectRevision:0;
+ if(worldUnderstoryBuildingSource!==buildings||worldUnderstoryBuildingRevision!==revision){
+  worldUnderstoryBuildingSource=buildings;worldUnderstoryBuildingRevision=revision;worldUnderstoryBuildingBuckets.clear();
+  for(const building of buildings){const size=16,minX=Math.floor((building.x-.8)/size),maxX=Math.floor((building.x+building.w+.8)/size),minZ=Math.floor((building.y-.8)/size),maxZ=Math.floor((building.y+building.h+.8)/size);
+   for(let bz=minZ;bz<=maxZ;bz++)for(let bx=minX;bx<=maxX;bx++){const key=bx+':'+bz;if(!worldUnderstoryBuildingBuckets.has(key))worldUnderstoryBuildingBuckets.set(key,[]);worldUnderstoryBuildingBuckets.get(key).push(building);}
+  }
+ }
+ const candidates=worldUnderstoryBuildingBuckets.get(Math.floor(x/16)+':'+Math.floor(z/16))||[];
+ return candidates.some(b=>x>b.x-.8&&x<b.x+b.w+.8&&z>b.y-.8&&z<b.y+b.h+.8);
+}
+function worldUnderstoryPartIndex(bx,bz,x,z){return (x>=bx*8+4?1:0)|(z>=bz*8+4?2:0);}
+function worldUnderstoryPlacements(bx,bz,onlyPart=-1){
  const cell=8,cx=bx*cell+4,cz=bz*cell+4,race=kingdomAt(cx,cz).race,cluster=worldRand(bx*5,bz+3),nearBriar=currentScene==='overworld'&&Math.hypot(cx-55,cz-61)<72,out=[];
  if(cluster<(nearBriar?.025:race==='elf'?.09:race==='dwarf'?.30:.15))return out;
  const count=nearBriar?36:race==='elf'?26:race==='dwarf'?12:20;
  for(let i=0;i<count;i++){
   const patch=i%2,ax=bx*cell+1.2+worldRand(bx*19+patch*41,bz+patch*7)*5.6,az=bz*cell+1.2+worldRand(bz*17+patch*37,bx+8+patch)*5.6;
   const x=ax+(worldRand(bx*3+i,bz+i*7)-.5)*2.8,z=az+(worldRand(bz*3+i,bx+i*11)-.5)*2.8;
-  const road=roadInfluence(x,z)[0];
-  if(x<2||z<2||worldWaterDistance(x,z)<.55||road>.23||buildings.some(b=>x>b.x-.8&&x<b.x+b.w+.8&&z>b.y-.8&&z<b.y+b.h+.8))continue;
-  const seed=worldRand(x,z),waterEdge=worldWaterDistance(x,z)<3.2;let name,scale,tint;
+  const parentPart=worldUnderstoryPartIndex(bx,bz,x,z),nearSplit=Math.abs(x-(bx*cell+4))<.65||Math.abs(z-(bz*cell+4))<.65;
+  if(onlyPart>=0&&parentPart!==onlyPart&&!nearSplit)continue;
+  const road=roadInfluence(x,z)[0],water=worldWaterDistance(x,z);
+  if(x<2||z<2||water<.55||road>.23||worldUnderstoryNearBuilding(x,z))continue;
+  const seed=worldRand(x,z),waterEdge=water<3.2;let name,scale,tint;
   if(race==='dwarf'&&seed<.40){name='Pebble_'+(i%2?'Round_':'Square_')+(1+i%5);scale=.42+seed*.34;}
   else if(nearBriar&&!waterEdge&&seed<.055){name='Kenney_MushroomRed';scale=.86+worldRand(z,x)*.22;}
   else if(nearBriar&&!waterEdge&&seed<.11){name='Kenney_BushDetailed';scale=.92+worldRand(z,x)*.24;}
@@ -280,24 +295,50 @@ function worldUnderstoryPlacements(bx,bz){
   else if(nearBriar&&!waterEdge&&seed>.74&&i<24){name=['Kenney_FlowerPurple','Kenney_FlowerRed','Kenney_FlowerYellow'][i%3];scale=.95+worldRand(x+4,z)*.28;}
   else if(!waterEdge&&seed>(nearBriar?.79:.84)&&i<(nearBriar?18:9)){name=i%2?'Flower_3_Group':'Flower_4_Group';scale=.36+worldRand(x+4,z)*.23;tint=race==='elf'?[.82,.92,.80]:[.91,.83,.64];}
   else{name=['Grass_Common_Short','Grass_Common_Tall','Grass_Wispy_Short','Grass_Wispy_Tall'][i%4];scale=.48+worldRand(z,x+6)*.34;tint=waterEdge?[.62,.82,.64]:[.65,.80,.54];}
-  out.push({name,x,z,scale,heading:seed*6.28,tint});
+  if(onlyPart<0||parentPart===onlyPart)out.push({name,x,z,scale,heading:seed*6.28,tint});
   const companions=/Grass/.test(name)?2:/Bush|Plant/.test(name)?1:0;
   for(let companion=0;companion<companions;companion++){
    const angle=seed*9.7+companion*2.4,distance=.34+companion*.22,gx=x+Math.cos(angle)*distance,gz=z+Math.sin(angle)*distance;
-   if(worldWaterDistance(gx,gz)>=.55&&roadInfluence(gx,gz)[0]<=.23&&!buildings.some(b=>gx>b.x-.8&&gx<b.x+b.w+.8&&gz>b.y-.8&&gz<b.y+b.h+.8))out.push({name:companion?'Grass_Common_Short':'Grass_Wispy_Short',x:gx,z:gz,scale:scale*(.68+companion*.13),heading:angle+1.2,tint:waterEdge?[.60,.80,.63]:[.63,.78,.52]});
+   if((onlyPart<0||worldUnderstoryPartIndex(bx,bz,gx,gz)===onlyPart)&&worldWaterDistance(gx,gz)>=.55&&roadInfluence(gx,gz)[0]<=.23&&!worldUnderstoryNearBuilding(gx,gz))out.push({name:companion?'Grass_Common_Short':'Grass_Wispy_Short',x:gx,z:gz,scale:scale*(.68+companion*.13),heading:angle+1.2,tint:waterEdge?[.60,.80,.63]:[.63,.78,.52]});
   }
  }
  return out;
 }
+function worldUnderstoryCameraKey(){return [currentScene,Math.floor(px/8),Math.floor(py/8),screen.w,screen.h,Math.round(cameraZoom3()*2),Math.round(view3d.yaw*8),Math.round(cameraPitch3()*8),typeof worldObjectRevision==='number'?worldObjectRevision:0,window.VeldrenTerrainEdits?.revision??0].join(':');}
+let worldUnderstoryVisibleKey='',worldUnderstoryVisible=[];
 function visibleWorldUnderstoryChunks(){
- if(!inWorld())return [];const cell=8,range=Math.min(46,Math.max(20,screen.w/cameraZoom3()*.57)),chunks=[];
+ if(!inWorld())return [];const key=worldUnderstoryCameraKey();if(key===worldUnderstoryVisibleKey)return worldUnderstoryVisible;
+ const cell=8,range=Math.min(46,Math.max(20,screen.w/cameraZoom3()*.57)),chunks=[],project=typeof flatProject3==='function'?flatProject3:project3;
  for(let bz=Math.floor((py-range)/cell);bz<=Math.floor((py+range)/cell);bz++)for(let bx=Math.floor((px-range)/cell);bx<=Math.floor((px+range)/cell);bx++){
-  const cx=bx*cell+4,cz=bz*cell+4,p=project3(cx,0,cz);if(p.x< -90||p.x>screen.w+90||p.y< -100||p.y>screen.h+90||chunks.length>=104)continue;
+  const cx=bx*cell+4,cz=bz*cell+4,p=project(cx,0,cz);if(p.x< -90||p.x>screen.w+90||p.y< -220||p.y>screen.h+220||chunks.length>=104)continue;
   chunks.push([bx,bz]);
  }
- return chunks;
+ worldUnderstoryVisibleKey=key;worldUnderstoryVisible=chunks;return chunks;
 }
-function prepareWorldUnderstory(){if(globalThis.VeldrenSceneryScene?.enabled)globalThis.VeldrenSceneryScene.prepareChunks(visibleWorldUnderstoryChunks());}
+let worldUnderstoryPrepared=new Set(),worldUnderstoryPending=new Map(),worldUnderstoryQueue=[],worldUnderstoryQueueIndex=0,worldUnderstoryViewKey='';
+function worldUnderstoryPlacementParts(bx,bz){
+ return new Array(4);
+}
+function prepareWorldUnderstory(){
+ const scenery=globalThis.VeldrenSceneryScene;if(!scenery?.enabled)return;
+ const viewKey=worldUnderstoryCameraKey();
+ if(viewKey!==worldUnderstoryViewKey){
+  worldUnderstoryQueue=visibleWorldUnderstoryChunks().slice();worldUnderstoryQueueIndex=0;const visible=new Set(worldUnderstoryQueue.map(([x,z])=>x+':'+z));for(const key of worldUnderstoryPending.keys())if(!visible.has(key))worldUnderstoryPending.delete(key);
+  worldUnderstoryQueue.sort((a,b)=>{const ax=a[0]*8+4-px,az=a[1]*8+4-py,bx=b[0]*8+4-px,bz=b[1]*8+4-py;return ax*ax+az*az-(bx*bx+bz*bz);});worldUnderstoryViewKey=viewKey;
+ }
+ let checks=0;
+ while(worldUnderstoryQueueIndex<worldUnderstoryQueue.length&&checks<4){const chunk=worldUnderstoryQueue[worldUnderstoryQueueIndex],key=chunk[0]+':'+chunk[1];if(worldUnderstoryPrepared.has(key)){worldUnderstoryQueueIndex++;continue;}checks++;if(scenery.hasChunk?.(...chunk)){worldUnderstoryPrepared.add(key);worldUnderstoryPending.delete(key);worldUnderstoryQueueIndex++;continue;}
+  if(typeof scenery.prepareChunkPart!=='function'){scenery.prepareChunks([chunk]);worldUnderstoryPrepared.add(key);worldUnderstoryQueueIndex++;return;}
+  let parts=worldUnderstoryPending.get(key);if(!parts){parts=worldUnderstoryPlacementParts(chunk[0],chunk[1]);worldUnderstoryPending.set(key,parts);}
+  let part=-1;for(let i=0;i<parts.length;i++)if(!scenery.hasChunkPart?.(chunk[0],chunk[1],i)){part=i;break;}
+  if(part<0){worldUnderstoryPrepared.add(key);worldUnderstoryPending.delete(key);worldUnderstoryQueueIndex++;continue;}
+  if(parts[part]===undefined)parts[part]=worldUnderstoryPlacements(chunk[0],chunk[1],part);
+  scenery.prepareChunkPart(chunk[0],chunk[1],part,parts[part]);
+  let complete=true;for(let i=0;i<4;i++)if(!scenery.hasChunkPart?.(chunk[0],chunk[1],i)){complete=false;break;}
+  if(complete){worldUnderstoryPrepared.add(key);worldUnderstoryPending.delete(key);worldUnderstoryQueueIndex++;}
+  return;
+ }
+}
 function drawWorldUnderstory(r){
  for(const [bx,bz]of visibleWorldUnderstoryChunks()){
   const id=bx+':'+bz;let chunk=worldUnderstory.get(id);

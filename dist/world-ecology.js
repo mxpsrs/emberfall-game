@@ -22,7 +22,7 @@ gradeLand=function(x,y,height){
  for(const p of pads){const d=ecoRectDistance(x,y,p);if(d>p.fade)continue;const blend=1-ecoSmooth(d/p.fade);if(d===0)return p.height;const w=blend/Math.max(.25,d*d);weight+=w;total+=w*p.height;strength=Math.max(strength,blend);}
  if(weight)h=h*(1-strength)+total/weight*strength;
  let best=0,roadHeight=h;
- for(const seg of ecologyRoads.get(currentScene)?.get(ecoKey(x,y))||[]){const d=roadSegmentDistance(x,y,seg),blend=1-ecoSmooth((d-seg.width)/7);if(blend<=best)continue;const dx=seg.b[0]-seg.a[0],dy=seg.b[1]-seg.a[1],t=Math.max(0,Math.min(1,((x-seg.a[0])*dx+(y-seg.a[1])*dy)/(dx*dx+dy*dy)));best=blend;roadHeight=seg.ha*(1-t)+seg.hb*t;}
+ for(const seg of ecologyRoads.get(currentScene)?.get(ecoKey(x,y))||[]){const a=seg.a,b=seg.b,dx=b[0]-a[0],dy=b[1]-a[1],length=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/length)),rx=x-a[0]-dx*t,ry=y-a[1]-dy*t,distanceSquared=rx*rx+ry*ry,radius=seg.width+7;if(distanceSquared>=radius*radius)continue;const blend=1-ecoSmooth((Math.sqrt(distanceSquared)-seg.width)/7);if(blend<=best)continue;best=blend;roadHeight=seg.ha*(1-t)+seg.hb*t;}
  return h*(1-best)+roadHeight*best;
 };
 function ecologyTerrain(scene,w){

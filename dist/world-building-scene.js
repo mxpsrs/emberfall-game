@@ -208,6 +208,7 @@
   if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof realmNavigation!=='undefined')realmNavigation.clear();
  }
  function onChange(event){
+  if(native().isUnderstoryBatch?.(event))return;
   if(event.kind==='load'){for(const name of tables.keys())project(name);wallMaps.clear();return;}
   const table=tables.get(event.scene);if(!table)return;
   if(event.kind==='batch'&&event.changes?.every(change=>{const node=entity(event.scene,change.id);return !table.ids.has(change.id)&&!table.doorIds.has(change.id)&&!node?.components.BuildingPart&&!node?.components.GeneratedBuilding;}))return;

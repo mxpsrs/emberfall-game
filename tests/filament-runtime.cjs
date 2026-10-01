@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
 const vm=require('node:vm');
+const {transformSync}=require('esbuild');
 
 const root=path.join(__dirname,'..'),temporary=fs.mkdtempSync(path.join(os.tmpdir(),'veldren-filament-'));
 const runtimeSource=fs.readFileSync(path.join(root,'dist/vendor/filament/filament.js'),'utf8')
@@ -30,7 +31,9 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
    VELDREN_FILAMENT_ASSETS:{material:'material',terrainMaterial:'terrainMaterial',atlas:'atlas',groundSurfaces:'ground-surfaces',groundSurfacesType:'png',atlasBytes:new Uint8Array(fs.readFileSync(path.join(root,'dist/assets/realms/atlas-filament-mobile.png'))),groundSurfacesBytes:new Uint8Array(fs.readFileSync(path.join(root,'dist/assets/realms/ground-surfaces-mobile.png')))},realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmGroundedMatrix:model=>model,realmPixelScale:()=>2,
    screen:{w:932,h:430},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},canvasPainterRealm(){return{};},navigator:{userAgent:'iPhone WebKit test'},
    realmLightingState:()=>({night:0,cave:0,house:0,lights:[{x:10,y:2,z:20,radius:8,intensity:1,color:[1,.5,.2]}]})};
-  context.window=context;context.matchMedia=q=>({matches:q==='(pointer: coarse)'});vm.createContext(context);await require('./helpers/native-assets.cjs')(context,root);vm.runInContext(fs.readFileSync(path.join(root,'dist/renderer-filament.js'),'utf8'),context,{filename:'renderer-filament.js'});
+  context.window=context;context.matchMedia=q=>({matches:q==='(pointer: coarse)'});vm.createContext(context);await require('./helpers/native-assets.cjs')(context,root);
+  const rendererSource=transformSync(fs.readFileSync(path.join(root,'dist/renderer-filament.js'),'utf8'),{minifyWhitespace:true,legalComments:'none',target:'es2022'}).code;
+  vm.runInContext(rendererSource,context,{filename:'renderer-filament.js'});
   let orientationBuilds=0;const buildOrientation=F.SurfaceOrientation$Builder.prototype.build;F.SurfaceOrientation$Builder.prototype.build=function(){orientationBuilds++;return buildOrientation.call(this);};
   const gpu=context.createRealmFilamentGPU(),raw=new Float32Array([
    0,0,0,0,1,0,1,0,0,1,0,0,
@@ -38,8 +41,38 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
    0,0,1,0,1,0,0,0,1,1,0,1
   ]),buffer={data:raw},index={buffer:{data:new Uint16Array([0,1,2])}};
   const terrainBuffer={data:new Float32Array(raw)};
+  // Exercise the live GPU skin path with actual Filament bindings. Palette
+  // uploads must preserve row-major source transforms in column-major mat4s.
+  const skinnedRaw=new Float32Array(60);
+  for(let v=0;v<3;v++){skinnedRaw.set(raw.subarray(v*12,v*12+12),v*20);skinnedRaw[v*20+12]=v%2;skinnedRaw[v*20+16]=1;}
+  const palette=new Float32Array([1,0,0,2,0,1,0,3,0,0,1,4,0,-1,0,5,1,0,0,6,0,0,1,7]),skinBuffer={data:skinnedRaw};
+  let uploadedBones=null,boneCalls=0;const setBones=F.RenderableManager.prototype.setBonesFromMatrices;
+  F.RenderableManager.prototype.setBonesFromMatrices=function(instance,bones,offset){uploadedBones=bones.map(m=>Array.from(m));boneCalls++;return setBones.call(this,instance,bones,offset);};
+  const skinEntry={buffer:skinBuffer,index,stride:80,model:context.realmIdentityModel,palette};
+  gpu.render([skinEntry],[],null);
+  assert.equal(boneCalls,1);assert.deepEqual(uploadedBones[1],[0,1,0,0,-1,0,0,0,0,0,1,0,5,6,7,1]);
+  gpu.render([skinEntry],[],null);assert.equal(boneCalls,1,'unchanged palettes skip another upload');
+  gpu.render([{...skinEntry,palette:new Float32Array(palette)}],[],null);assert.equal(boneCalls,2,'a new animation pose uploads bones');
+  assert.equal(gpu.skinning,true);assert.equal(gpu.engine.hasUnrecoverableFailure(),false);
+  F.RenderableManager.prototype.setBonesFromMatrices=setBones;
+  // Actual authored bodies/hair bind separate textured primitives on one rig.
+  const characterContext=require('../scripts/benchmark-desktop.cjs').ctx;
+  vm.runInContext(fs.readFileSync(path.join(root,'dist/renderer-gl.js'),'utf8').slice(fs.readFileSync(path.join(root,'dist/renderer-gl.js'),'utf8').indexOf('const realmTopologies='),fs.readFileSync(path.join(root,'dist/renderer-gl.js'),'utf8').indexOf('function realmAllowsGpuSkinning')),context);
+  for(const sex of ['male','female']){
+   const character=vm.runInContext(`avatarGpuPose('${sex}','walk',.35,{_appearance:{frame:'${sex}',skin:2,eyeColor:3,hair:5,hairColor:4,topStyle:6,bottomStyle:5}},0)`,characterContext),mesh=character.gpuMesh;
+   const entry={...context.realmSkinnedEntry(gpu,mesh),palette:character.pose,model:context.realmIdentityModel,characterMesh:mesh};gpu.frameId++;
+   try{gpu.render([entry],[],null);}catch(error){throw new Error('Character preparation '+sex+': '+error);}
+   const waitLeases=mesh.materialParts.filter(part=>part.material).map(part=>gpu.materialResources.acquire(part.material,'browser-mobile',part.tint));
+   await Promise.all(waitLeases.map(lease=>lease.ready));
+   // The render resource also joins these shared leases through async part
+   // callbacks and Promise.all; drain that finite chain before the next frame.
+   for(let i=0;i<4;i++)await Promise.resolve();
+   for(const lease of waitLeases)lease.release();try{gpu.render([entry],[],null);}catch(error){throw new Error('Textured character render '+sex+': '+error);}
+   assert.equal(gpu.scene.getRenderableCount(),1,'textured '+sex+' character is a complete renderable');assert.equal(gpu.engine.hasUnrecoverableFailure(),false);
+   entry.buffer.retire();gpu.releaseBuffer(entry.buffer);assert.equal(gpu.materialResources.diagnostics().leases,0,'character retirement releases every material');
+  }
   gpu.render([{buffer,index,stride:48,model:context.realmIdentityModel,bossColor:2,dissolve:.1},{buffer:terrainBuffer,index,stride:48,model:context.realmIdentityModel,terrain:true}],Array.from(raw),null);
-  assert.equal(gpu.kind,'filament');assert.equal(parent.node.dataset.renderer,'filament');assert.deepEqual([gpu.width,gpu.height],[1864,860]);assert.deepEqual(shadowOptions,{mapSize:1024,shadowCascades:1,stable:true,normalBias:.8,constantBias:.001,maxShadowDistance:80});
+  assert.equal(gpu.kind,'filament');assert.equal(parent.node.dataset.renderer,'filament');assert.deepEqual([gpu.width,gpu.height],[1864,860]);assert.deepEqual(shadowOptions,{mapSize:1024,shadowCascades:1,stable:true,normalBias:.6,constantBias:.001,maxShadowDistance:80});
   for(let i=0;i<8;i++)gpu.render([],Array.from(raw),null);const before=orientationBuilds;
   for(let i=0;i<12;i++)gpu.render([],Array.from(raw),null);assert.equal(orientationBuilds,before,'steady dynamic normals reuse tangent staging across all three buffers');
   const changed=Array.from(raw);changed[3]=1;changed[4]=0;gpu.render([],changed,null);assert.equal(orientationBuilds,before+1,'changed normals rebuild tangent staging');

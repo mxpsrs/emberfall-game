@@ -102,6 +102,7 @@
    root.VeldrenSceneOwnership.bindLegacyField(source,view,key);
   }}
   if(!enabled)native().subscribe(event=>{
+   if(native().isUnderstoryBatch?.(event))return;
    if(event.kind==='load'){for(const name of Object.keys(registry()))project(name);}
    else if(event.kind==='remove'||event.kind==='upsert'||event.kind==='batch')project(event.scene);
    for(const view of views.values()){if(typeof staticMeshes3!=='undefined')staticMeshes3.delete(view);if(typeof staticMeshQueues3!=='undefined')staticMeshQueues3.prop.delete(view);}

@@ -109,6 +109,7 @@
   // Construction sources are no longer owners; held legacy references still forward.
   sources.clear();
   if(!enabled)native().subscribe(event=>{
+   if(native().isUnderstoryBatch?.(event))return;
    if(event.kind==='load'){previews.clear();for(const record of views.values())record.reset();for(const scene of Object.keys(registry()))project(scene);}
    else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);
    for(const {view}of views.values()){if(typeof staticMeshes3!=='undefined')staticMeshes3.delete(view);if(typeof staticMeshQueues3!=='undefined')staticMeshQueues3.prop.delete(view);}

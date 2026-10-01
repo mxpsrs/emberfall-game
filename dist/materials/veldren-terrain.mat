@@ -6,13 +6,14 @@
 material {
     name : VeldrenTerrain,
     requires : [ color, uv0 ],
-    shadingModel : unlit,
+    shadingModel : lit,
     blending : opaque,
     culling : none,
     doubleSided : true,
     parameters : [
         { type : sampler2d, name : groundSurfaces },
-        { type : float, name : night }
+        { type : float, name : night },
+        { type : float, name : time }
     ]
 }
 
@@ -107,10 +108,23 @@ fragment {
             color = terrainSrgbToLinear(masks.rgb);
         }
 
-        // Stable day/night exposure replaces per-triangle direct lighting.
-        // Terrain shape stays readable through the broad authored color zones.
-        color *= mix(0.92, 0.62, materialParams.night);
+        // Absolute mesh UVs keep the water phase fixed while the camera moves.
+        // Filter waves once they become smaller than a pixel.
+        float water = step(3.5, id) * (1.0 - step(4.5, id));
+        vec2 waveUV = p * 0.28;
+        float waveVisibility = 1.0 - smoothstep(0.35, 1.25,
+                max(length(dFdx(waveUV)), length(dFdy(waveUV))));
+        float phase = materialParams.time * 0.45;
+        vec2 slope = vec2(cos(dot(p, vec2(0.28, 0.13)) + phase),
+                          sin(dot(p, vec2(-0.11, 0.24)) - phase * 0.7));
+        material.normal = normalize(vec3(slope * 0.055 * water * waveVisibility, 1.0));
         prepareMaterial(material);
         material.baseColor = vec4(color, 1.0);
+        material.roughness = mix(1.0, 0.24, water);
+        material.reflectance = water * 0.35;
+        material.metallic = 0.0;
+        // A small fill keeps authored roads readable at night; actual normals
+        // and the shared sun/sky illuminate hills and water during the day.
+        material.emissive = vec4(color * mix(0.08, 0.24, materialParams.night), 0.0);
     }
 }

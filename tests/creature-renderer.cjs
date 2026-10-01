@@ -9,6 +9,8 @@ gl.uniform4fv=(name,data)=>{if(name==='uBones[0]'){if(!data.every(Number.isFinit
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};save=()=>{};
 setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assetsReady=true;
+// Count actor uploads independently of terrain that streams across frames.
+realmTerrainEntries=()=>[];
 activateScene('mine',10,12);screen={w:1112,h:512};view3d.zoom=90;
 const monsters=Object.keys(creatureAssets).map((kind,id)=>({type:'enemy',kind,creatureLook:kind,id,x:10+id%2,y:12+Math.floor(id/2),dead:0,attackAt:-100,hitAt:-100}));
 const frameCosts=[];let uploaded;

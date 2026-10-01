@@ -45,7 +45,7 @@ def build(path):
              for part in ['Headgear','Shoulder','Chestplate','Gauntlets','Legguards','Boots','Belt']]
     parts += [f'HeadAttach.{i:03}' for i in range(1,6)] + ['BeltAttch.001','BeltAttch.002']
     parts += ['Default_Male_'+p+'_Medium' for p in ['Head','Arms','Feet','Legs','Torso']]
-    parts += ['Male_Shirt.002','Male_Pants.002','Beard.007','Hair.007']
+    parts += ['Male_Shirt.002','Male_Pants.002']
     # Weapons retain the source mesh, with a new handle-centered socket transform.
     rigid = [k+'_Sword' for k in ['B','I','G','M','DS']] + ['B_Shield','I_Shield','G__Shield','M_Shield','DS_Shield']
     result = {}

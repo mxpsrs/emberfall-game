@@ -49,7 +49,7 @@
   for(const id of ids){let n=native().entity(name,id);if(n.activeInHierarchy)roads.push(view(name,id));while(n&&!deps.has(n.id)){deps.add(n.id);n=n.parent&&native().entity(name,n.parent);}}
   dependencies.set(name,deps);lists.set(name,Object.freeze(roads));
   if(!Object.getOwnPropertyDescriptor(w,'roads')?.get)Object.defineProperty(w,'roads',{enumerable:true,configurable:false,get:()=>lists.get(name)});
-  if(name==='overworld'){if(typeof organicRoads!=='undefined')organicRoads=lists.get(name);else root.organicRoads=lists.get(name);if(typeof roadBuckets!=='undefined')roadBuckets=null;}
+  if(name==='overworld'){if(typeof organicRoads!=='undefined')organicRoads=lists.get(name);else root.organicRoads=lists.get(name);if(typeof roadBuckets!=='undefined')roadBuckets=null;if(typeof roadCoarseBuckets!=='undefined')roadCoarseBuckets=null;if(typeof roadBucketSource!=='undefined')roadBucketSource=null;if(typeof roadBucketCount!=='undefined')roadBucketCount=-1;}
   // Firstlight uses this derived index directly when shading its streets.
   const buckets=new Map();for(const road of roads){const a=road.a,b=road.b,pad=road.width+3.2;for(let z=Math.floor((Math.min(a[1],b[1])-pad)/8);z<=Math.floor((Math.max(a[1],b[1])+pad)/8);z++)for(let x=Math.floor((Math.min(a[0],b[0])-pad)/8);x<=Math.floor((Math.max(a[0],b[0])+pad)/8);x++){const key=x+':'+z;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(road);}}
   w.roadBuckets=buckets;
@@ -61,6 +61,7 @@
   if(typeof worldUnderstory!=='undefined')worldUnderstory.clear();
  }
  function changed(event){
+  if(native().isUnderstoryBatch?.(event))return;
   const names=event.kind==='load'?[...lists.keys()]:[event.scene];
   const affected=names.filter(name=>event.kind==='load'||(event.changes||[{id:event.id}]).some(change=>dependencies.get(name)?.has(change.id)||native().entity(name,change.id)?.components.RoadSegment));
   for(const name of affected)project(name);if(affected.length)invalidate(affected);

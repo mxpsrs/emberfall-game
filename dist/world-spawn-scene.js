@@ -132,6 +132,7 @@
   // Construction sources are no longer owners; held legacy references still forward.
   sources.clear();
   if(!enabled)native().subscribe(event=>{
+   if(native().isUnderstoryBatch?.(event))return;
    for(const record of views.values())if(event.kind==='load')record.reset();else if(record.scene===event.scene)record.sync();
    if(event.kind==='load')for(const scene of Object.keys(registry()))project(scene);
    else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);

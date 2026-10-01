@@ -275,6 +275,7 @@
   root.VeldrenWorldObjects.install();return reports;
  }
  function onSceneChange(event){
+  if(root.realmNative?.scenes.isUnderstoryBatch?.(event))return;
   const names=event.kind==='load'?Object.keys(worldRegistry()):[event.scene];
   for(const name of names){
    const table=scenesByName.get(name);if(!table)continue;

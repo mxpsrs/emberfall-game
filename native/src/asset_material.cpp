@@ -47,7 +47,8 @@ constexpr Slot slots[]{
   {"normalTexture","normalMap","normalUv","normal","linear"},
   {"metallicRoughnessTexture","metalRough","metalUv","metallicRoughness","linear"},
   {"occlusionTexture","occlusion","occlusionUv","occlusion","linear"},
-  {"emissiveTexture","emission","emissionUv","emissive","srgb"}};
+  {"emissiveTexture","emission","emissionUv","emissive","srgb"},
+  {"appearanceMaskTexture","appearanceMask","appearanceUv","appearanceMask","linear"}};
 constexpr auto white="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mP4DwQACfsD/Wj6HMwAAAAASUVORK5CYII=";
 constexpr auto normal="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNoaPj/HwAGggL/bOBDIwAAAABJRU5ErkJggg==";
 }
@@ -59,15 +60,21 @@ Json AssetRegistry::material_plan(const std::string& id,const std::string& profi
   if(alpha!="OPAQUE"&&alpha!="MASK"&&alpha!="BLEND")throw std::invalid_argument("Invalid material alpha mode");
   const auto cutoff=number(field(material,"alphaCutoff"),0,1);
   const auto unlit=field(material,"unlit").bool_or();
+  const auto* appearance=material.find("appearanceKind");
+  const auto kind=appearance?appearance->string_or():std::string();
+  if(!kind.empty()&&kind!="skin"&&kind!="eyes"&&kind!="hair")throw std::invalid_argument("Invalid appearance material kind");
   auto alpha_lower=alpha;std::transform(alpha_lower.begin(),alpha_lower.end(),alpha_lower.begin(),[](char c){return char(c-'A'+'a');});
   Json::Object floats{{"metallic",number(field(material,"metallic"),0,1)},
     {"roughness",number(field(material,"roughness"),0,1)},{"normalScale",0},{"occlusionStrength",1},{"transparent",alpha=="BLEND"?1:0}};
   Json::Object matrices;Json::Array textures,channels;
   for(const auto& slot:slots){
+    if(std::string(slot.role)=="appearanceMask"&&kind.empty())continue;
     auto* binding=material.find(slot.field);if(binding&&std::holds_alternative<std::nullptr_t>(binding->value))binding=nullptr;
     const double channel=binding?number(field(*binding,"texCoord"),0,7):0;
     if(channel!=std::floor(channel))throw std::invalid_argument("Noninteger material UV channel");
-    channels.emplace_back(channel);matrices[slot.uv]=uv_matrix(binding);
+    if(std::string(slot.role)!="appearanceMask")channels.emplace_back(channel);
+    else if(channel!=0)throw std::invalid_argument("Character appearance mask requires UV0");
+    matrices[slot.uv]=uv_matrix(binding);
     Json::Object texture{{"uniform",slot.uniform},{"sampler",sampler(binding,policy.anisotropy)}};
     const Json::Object usage{{"role",slot.role},{"colorSpace",slot.color},{"alphaCutoff",alpha=="MASK"&&std::string(slot.role)=="baseColor"?cutoff:0}};
     if(binding){
@@ -92,6 +99,13 @@ Json AssetRegistry::material_plan(const std::string& id,const std::string& profi
     {"floats",floats},{"float3",Json::Object{{"emissiveFactor",emissive}}},
     {"float4",Json::Object{{"baseFactor",vector(field(material,"baseColorFactor"),4,0,1)},{"uvChannels",channels}}},
     {"mat3",matrices},{"textures",textures}};
+  if(!kind.empty()){
+    if(unlit||alpha!="OPAQUE")throw std::invalid_argument("Unsupported appearance material shading");
+    plan["shader"]="materials/veldren-character.filamat";
+    auto& f=std::get<Json::Object>(plan.at("floats").value);
+    f["appearanceKind"]=kind=="skin"?1:kind=="eyes"?2:3;f["appearanceAmount"]=0;
+    std::get<Json::Object>(plan.at("float3").value)["appearanceTint"]=Json::Array{1,1,1};
+  }
   const auto encoded=write_json(plan);plan["key"]=asset_sha256(std::span(reinterpret_cast<const std::uint8_t*>(encoded.data()),encoded.size()));
   plan["asset"]=id;plan["generation"]=double(entry.generation);return plan;
 }

@@ -22,5 +22,6 @@ const innRoom=buildings.find(b=>b.service?.destination==='inn');const heights=[]
 assert(worldWaterSurface(-50,20));assert(landHeight(-50,20)<0,'off-map ocean replaces empty background');
 assert(organicRoads.every(seg=>roadInfluence((seg.a[0]+seg.b[0])/2,(seg.a[1]+seg.b[1])/2)[0]>.95),'roads have continuous terrain coverage');
 let inherited;const anchored=groundedPainter({indexed(mesh,m){inherited=m[7]+landHeight(m[3],m[11]);}},119,61);anchored.indexed({},briarTransform(120,1.2,62,1));assert(Math.abs(inherited-1.2-walkSurfaceHeight(119,61))<1e-6,'attachments inherit character root height on slopes');
+const measureWaterDistance=worldWaterDistance;let waterDistanceCalls=0;worldWaterDistance=(x,z)=>{waterDistanceCalls++;return measureWaterDistance(x,z);};resetLandSurface();const sampled=landNode(701,502);worldWaterDistance=measureWaterDistance;assert(Number.isFinite(sampled));assert.equal(waterDistanceCalls,1,'a new terrain node samples water distance once');
 console.log('PASS: run across bridge, matching deck picking, continuous banks, level room floors, coastline and terrain road coverage.');
 `,ctx);

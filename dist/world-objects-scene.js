@@ -70,6 +70,7 @@
   }
   enabled=true;installRendering();if(typeof worldObjectArrayObserved!=='undefined')worldObjectArrayObserved=true;activate();
   native().subscribe(event=>{
+   if(native().isUnderstoryBatch?.(event))return;
    if(event.kind==='load'){sessions.clear();placements.clear();for(const name of base.keys())refresh(name);}
    else if(event.kind==='remove'||event.kind==='batch'){
     const affected=new Set();for(const [o,destination]of placements)if(!native().entity(o._generatedSceneName,key(o))){placements.delete(o);affected.add(destination);}

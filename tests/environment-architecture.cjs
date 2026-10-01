@@ -43,6 +43,7 @@ view3d.zoom=view3d.min;window.matchMedia=()=>({matches:true});assert(realmGeomet
 view3d.zoom=118;assert.equal(realmGeometryDetail3(),1,'near desktop view retains full geometry detail');
 view3d.zoom=14;screen={w:1280,h:720};assert(realmWideWorldLimit3()<90,'wide overview omits remote settlements whose terrain is outside the view');
 assert(/p\.y<40\|\|p\.y>screen\.h\+90/.test(crossingsBeforeRebuild.toString()),'distant crossing meshes cannot appear before their terrain horizon');
+assert(crossingsBeforeRebuild.toString().includes('bounds?.valid&&(b.x+b.w/2<bounds.minx'),'offscreen realm crossings are rejected before projection');
 // Movement and door actions must never alter the chosen camera angle.
 activateScene('overworld',55,61,false);screen={w:844,h:390};view3d.tilt=.6;
 for(const [x,z]of [[55,61],[57,64],[54,62]]){const p=project3(x,0,z),back=unproject3(p.x,p.y);assert(Math.hypot(back.x-x,back.z-z)<.03,'manual-pitch terrain picking');}
@@ -50,6 +51,23 @@ for(const b of sample){for(const inside of [false,true]){activateScene('overworl
 activateScene('fairy_between',20,49,false);realmViewCorners=null;
 assert.equal(roadInfluence(25,47).length,3,'Fairy Lands road data includes every vertex color channel');
 let uploaded=0;const terrainGPU={terrain:new Map(),upload(data){assert.equal(data.length%12,0,'terrain vertex stride');assert(data.every(Number.isFinite),'finite terrain data');uploaded++;return {buffer:{},count:data.length/12};},gl:{deleteBuffer(){}}};
-realmTerrainEntries(terrainGPU);assert(uploaded>0);
+for(let frame=0;frame<32&&uploaded===0;frame++)realmTerrainEntries(terrainGPU);assert(uploaded>0,'terrain streams across bounded frames until a complete visible chunk is ready');
+const chunkSizes=sceneSize(),sliceProbe={x:60,z:64,key:'slice-probe',scene:currentScene},sliceProbeGPU={terrain:new Map(),upload(){throw Error('partial terrain slice must not upload geometry');},gl:{deleteBuffer(){}}};
+assert.equal(realmTerrainChunkRow(sliceProbeGPU,sliceProbe,8,1,chunkSizes[0],chunkSizes[1],2),false,'one terrain step leaves a full chunk unfinished');assert.equal(sliceProbe.build.row,0);assert.equal(sliceProbe.build.column,2,'terrain generation yields after its bounded tile slice');
+let mobileSlices=0;const buildTerrainRow=realmTerrainChunkRow;realmTerrainChunkRow=(...args)=>{mobileSlices++;return buildTerrainRow(...args);};
+activateScene('overworld',55,61,false);px=52;py=58;view3d.zoom=118;realmViewCorners=[{x:48,z:54},{x:66,z:54},{x:66,z:72},{x:48,z:72}];
+window.matchMedia=()=>({matches:true});const mobileTerrainGPU={frameId:0,terrain:new Map(),upload(data){assert.equal(data.length%12,0);return {buffer:{},count:data.length/12};},gl:{deleteBuffer(){}}};
+realmTerrainEntries(mobileTerrainGPU);realmTerrainChunkRow=buildTerrainRow;window.matchMedia=originalMatchMedia;
+assert(mobileSlices>1&&mobileSlices<=16,'mobile terrain generation uses multiple bounded slices per frame');
+const mobileChunks=mobileTerrainGPU.terrain.get(currentScene);assert(mobileChunks.size>0&&[...mobileChunks.keys()].every(key=>/^8:1:/.test(key)),'mobile uses one exact heightfield quad per terrain tile');
+const mobileFallbacks=[...mobileChunks.values()].filter(c=>c.buffer&&!c.complete),fallbackBuffers=new Map(mobileFallbacks.map(c=>[c,c.buffer]));assert(mobileFallbacks.length>0,'mobile renders coarse terrain while precise chunk rows are still streaming');
+window.matchMedia=()=>({matches:true});for(let frame=0;frame<40&&!mobileFallbacks.some(c=>c.complete);frame++)realmTerrainEntries(mobileTerrainGPU);window.matchMedia=originalMatchMedia;
+assert(mobileFallbacks.some(c=>c.complete&&c.buffer&&c.buffer!==fallbackBuffers.get(c)),'completed terrain replaces its coarse fallback with the precise chunk mesh');
+const viewCorners=realmViewCorners,originalChunkRow=realmTerrainChunkRow,originalLandHeight=landHeight;let visibilityHeightSamples=0;
+realmViewCorners=[{x:48,z:54},{x:66,z:54},{x:66,z:72},{x:48,z:72}];landHeight=(...args)=>{visibilityHeightSamples++;return originalLandHeight(...args);};realmTerrainChunkRow=()=>true;
+const visibilityGPU={terrain:new Map(),upload(){throw Error('visibility-only terrain setup must not upload geometry');},gl:{deleteBuffer(){}}};realmTerrainEntries(visibilityGPU);
+realmViewCorners=viewCorners;realmTerrainChunkRow=originalChunkRow;landHeight=originalLandHeight;
+assert(visibilityGPU.terrainQueue.length>0,'terrain visibility finds candidates in the conservative camera bounds');
+assert.equal(visibilityHeightSamples,0,'terrain visibility never samples the heightfield once per candidate chunk');
 console.log('PASS: 20 buildings × 10 roof cycles; all 3 castles keep walls and towers during orbit/entry; wall coverage matches collision; occupied-only roof/upper-floor removal, fixed manual camera and mobile picking.');
 `,ctx);

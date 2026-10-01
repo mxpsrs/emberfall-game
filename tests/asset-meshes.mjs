@@ -11,7 +11,7 @@ fs.writeFileSync(path.join(temporary,'filament.cjs'),source);fs.copyFileSync('di
 try{
  const factory=createRequire(import.meta.url)(path.join(temporary,'filament.cjs'));await new Promise(resolve=>factory.init([],resolve));const F=global.__VELDREN_TEST_FILAMENT__;
  for(const mode of ['runtime','editor']){
-  let api;const {instance}=await WebAssembly.instantiate(fs.readFileSync('dist/native/veldren-core.wasm'),{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,environ_sizes_get:(a,b)=>{const m=new DataView(api.memory.buffer);m.setUint32(a,0,true);m.setUint32(b,0,true);return 0;}}});api=instance.exports;api._initialize();
+  let api;const {instance}=await WebAssembly.instantiate(fs.readFileSync('dist/native/veldren-core.wasm'),{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,environ_sizes_get:(a,b)=>{const m=new DataView(api.memory.buffer);m.setUint32(a,0,true);m.setUint32(b,0,true);return 0;}}});api=instance.exports;api._initialize();
   const context={TextEncoder,TextDecoder,Uint8Array,Uint16Array,Uint32Array,Float32Array,AbortController,atob,Filament:F,realmAssetURL:p=>p,fetch:async p=>({ok:true,json:async()=>JSON.parse(fs.readFileSync('dist/'+p,'utf8'))})};vm.createContext(context);
   for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync('dist/'+file+'.js','utf8'),context);
   const assets=context.VeldrenAssets;await assets.initialize(api);const engine=F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig()),scene=engine.createScene();

@@ -4,9 +4,21 @@
  let registryHandle=0,command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
  const payloads=new Map(),models=new Map(),leases=new Set(),legacyLeases=new Map();
  const textureLeases=new Set(),disposeListeners=new Set(),reloadListeners=new Set();
+ const planLeases=new Set(),dependencyClosures=new Map();let planWorker=null,planRequest=0,workerMs=0,workerCompleted=0;
+ const planRequests=new Map();
  const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
  function request(value){if(!command)throw Error('Native asset registry is not ready');return command(value);}
  function record(id){if(!records.has(id))records.set(id,freeze(request({op:'record',id})));return records.get(id);}
+ function dependencies(id){if(!dependencyClosures.has(id))dependencyClosures.set(id,Object.freeze(request({op:'dependencies',id})));return dependencyClosures.get(id);}
+ function expireLeaseRecords(id){records.delete(id);for(const key of dependencies(id))records.delete(key);}
+ function stopPlanWorker(){planWorker?.terminate();planWorker=null;for(const job of planRequests.values())job.reject(cancelled('Asset preparation retired'));planRequests.clear();}
+ function prepareInWorker(definition){
+  const base=new URL('.',globalThis.document?.baseURI||globalThis.location.href).href;
+  if(!planWorker){planWorker=new Worker(new URL(realmAssetURL('asset-prepare-worker.js'),base).href);planWorker.onmessage=({data})=>{const job=planRequests.get(data.request);if(!job)return;planRequests.delete(data.request);if(data.error)job.reject(Error(data.error));else{workerMs+=data.prepareMs||0;workerCompleted++;job.resolve(data.plan);}};planWorker.onerror=stopPlanWorker;}
+  const id=++planRequest;let reject;const ready=new Promise((resolve,no)=>{reject=no;planRequests.set(id,{resolve,reject:no});});
+  planWorker.postMessage({op:'prepare',request:id,id:definition.id,sourceHash:definition.sourceHash,url:new URL(realmAssetURL(definition.derivedPath),base).href,base,versions:globalThis.REALM_ASSET_VERSIONS||{}});
+  return {ready,cancel(){if(!planRequests.has(id))return;planRequests.delete(id);planWorker?.postMessage({op:'cancel',request:id});reject(cancelled('Asset preparation cancelled'));}};
+ }
  function cancelled(message){const error=Error(message);error.name='AbortError';return error;}
  function retire(entry){
   if(models.get(entry.id)===entry)models.delete(entry.id);
@@ -85,7 +97,7 @@
   reload(manifest){
    // Native load is transactional and preserves stable root leases. A rejected
    // import leaves every live definition and cached generation intact.
-   const result=request({op:'load',manifest});records.clear();catalogs.clear();ids=null;
+   const result=request({op:'load',manifest});records.clear();catalogs.clear();dependencyClosures.clear();ids=null;stopPlanWorker();
    for(const entry of [...models.values()])if(!assets.has(entry.id)||record(entry.id).generation!==entry.generation)retire(entry);
    for(const listener of [...reloadListeners])listener();return result;
   },
@@ -93,19 +105,27 @@
   textureVariant(id,profile,usage){return freeze(request({op:'texture-variant',id,profile,usage}));},
   has(id){if(!ids)ids=new Set(request({op:'list'}));return ids.has(id);},
   list(type=''){if(!catalogs.has(type))catalogs.set(type,Object.freeze(request({op:'list',type})));return catalogs.get(type);},
-  dependencies:id=>request({op:'dependencies',id}),dependents:id=>request({op:'dependents',id}),
-  acquire(id){const result=request({op:'acquire',id});records.clear();return result;},
-  release(id){const result=request({op:'release',id});records.clear();return result;},
+  dependencies,dependents:id=>request({op:'dependents',id}),
+  acquire(id){const result=request({op:'acquire',id});expireLeaseRecords(id);return result;},
+  release(id){const result=request({op:'release',id});expireLeaseRecords(id);return result;},
   state(id,state){const result=request({op:'state',id,state});records.delete(id);return result;},
   invalidate(id){const affected=request({op:'invalidate',id});for(const key of affected){records.delete(key);const entry=models.get(key);if(entry)retire(entry);}return affected;},
   diagnostics:()=>request({op:'diagnostics'}),
   // Explicit handles let renderer/editor consumers release the exact generation.
   leaseModel(id){const lease=leaseModel(id);return Object.freeze({id,ready:lease.ready,release:()=>releaseLease(lease)});},
+  leaseRenderPlan(id){
+   if(typeof Worker!=='function'||!globalThis.location){const lease=assets.leaseModel(id);return Object.freeze({id,ready:lease.ready.then(model=>assets.renderPlan(model)),release:lease.release});}
+   const definition=record(id),session=epoch;assets.acquire(id);let task,closed=false;
+   const release=()=>{if(closed)return;closed=true;planLeases.delete(release);task?.cancel();if(session===epoch&&command){assets.release(id);unloadUnused(id);}};planLeases.add(release);
+   try{task=prepareInWorker(definition);}catch(error){release();throw error;}
+   const ready=task.ready.then(plan=>{if(closed||session!==epoch||record(id).generation!==definition.generation)throw cancelled('Stale asset preparation');for(const key of [id,...dependencies(id)]){const child=record(key);if(child.type!=='texture'&&child.loadState==='loading')assets.state(key,'loaded');}return plan;}).catch(error=>{release();throw error;});
+   return Object.freeze({id,ready,release});
+  },
   async loadModel(id){const lease=leaseModel(id);let queue=legacyLeases.get(id);if(!queue)legacyLeases.set(id,queue=[]);queue.push(lease);return lease.ready;},
   releaseModel(id){
    const lease=legacyLeases.get(id)?.[0];if(!lease)throw Error('Model has no lease: '+id);releaseLease(lease);
   },
-  ioDiagnostics:()=>({models:models.size,leases:leases.size}),
+  ioDiagnostics:()=>({models:models.size,leases:leases.size,preparation:{pending:planRequests.size,leases:planLeases.size,completed:workerCompleted,workerMs}}),
   onDispose(listener){disposeListeners.add(listener);return ()=>disposeListeners.delete(listener);},
   onReload(listener){reloadListeners.add(listener);return ()=>reloadListeners.delete(listener);},
   processTexture(bytes,options={}){
@@ -139,6 +159,7 @@
   mesh(id){if(!assets.has(id))return null;const definition=record(id);if(definition.type!=='model'&&definition.type!=='mesh')throw Error('Asset is not geometry: '+id);return payloads.get(id)||null;},
   destroy(){
    ++epoch;initializing?.abort();initializing=null;
+   stopPlanWorker();for(const release of [...planLeases])release();dependencyClosures.clear();
    for(const listener of [...disposeListeners].reverse())listener();disposeListeners.clear();reloadListeners.clear();
    for(const release of [...textureLeases])release();textureApi=null;
    for(const lease of leases){lease.closed=true;retire(lease.entry);}leases.clear();legacyLeases.clear();

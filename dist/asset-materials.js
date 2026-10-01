@@ -72,12 +72,17 @@ function createVeldrenMaterialResources(engine,assets,textures,filament=Filament
   assets.release(lease.id);
   for(const id of [lease.id,...assets.dependencies(lease.id)])if(assets.record(id).loadState==='pending release')assets.state(id,'unloaded');
  }
- function acquire(id,profile){
+ function acquire(id,profile,appearance=null){
   if(disposed)throw Error('Material resource owner destroyed');
-  const plan=assets.materialPlan(id,profile);assets.acquire(id);
+  let plan=assets.materialPlan(id,profile);
+  if(appearance){
+   if(!Object.hasOwn(plan.floats,'appearanceAmount')||appearance.length!==3||appearance.some(v=>!Number.isFinite(v)||v<0||v>4))throw Error('Invalid character material appearance');
+   plan={...plan,key:plan.key+':appearance:'+appearance.join(','),floats:{...plan.floats,appearanceAmount:1},float3:{...plan.float3,appearanceTint:Array.from(appearance)}};
+  }
+  assets.acquire(id);
   let entry=entries.get(plan.key);
   if(!entry){
-   entry={plan,users:0,textures:[],shader:null,instance:null,cleaned:false,controller:new AbortController()};entries.set(plan.key,entry);
+   entry={plan,profile,users:0,textures:[],shader:null,instance:null,cleaned:false,controller:new AbortController()};entries.set(plan.key,entry);
    const signal=entry.controller.signal;let onAbort;
    const cancelled=new Promise((resolve,reject)=>{onAbort=()=>reject(aborted());signal.addEventListener('abort',onAbort,{once:true});});
    entry.ready=Promise.race([Promise.resolve().then(()=>build(entry)),cancelled]).finally(()=>signal.removeEventListener('abort',onAbort));

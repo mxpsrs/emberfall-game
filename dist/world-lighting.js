@@ -40,8 +40,8 @@ function worldLightSources(scene=currentScene){
 }
 function houseLanternPosition(b){return {x:b.x+1.1,y:1.85,z:b.y+1.1};}
 // Keep only the bounded nearest set; score each candidate once, with stable ties.
-function realmNearestLighting(values,limit,score){
- const selected=[],scores=[];
+function realmNearestLighting(values,limit,score,selected=[],scores=[]){
+ selected.length=0;scores.length=0;
  for(const value of values){const distance=score(value);if(!Number.isFinite(distance))continue;
   let i=scores.length;while(i>0&&distance<scores[i-1])i--;
   if(i>=limit)continue;selected.splice(i,0,value);scores.splice(i,0,distance);
@@ -49,14 +49,17 @@ function realmNearestLighting(values,limit,score){
  }
  return selected;
 }
+const realmLightingFrame={lights:[],rooms:[],roomCeilings:[],cave:0,house:0,night:0},realmLightingLightScores=[],realmLightingRoomScores=[],realmLightingRoomCandidates=[],realmLightingRoomRects=Array.from({length:WORLD_LIT_ROOM_LIMIT},()=>[0,0,0,0]);
 function realmLightingState(){
  const night=worldNightFactor();
  const cave=!!cavePassageKind(currentScene),house=!inWorld()&&!cave;
- const lights=realmNearestLighting(worldLightSources(),WORLD_LIGHT_LIMIT,o=>{const dx=o.x-px,dz=o.z-py,d=dx*dx+dz*dz;return d<(o.radius+50)**2?d/(o.radius*o.radius):Infinity;});
+ realmNearestLighting(worldLightSources(),WORLD_LIGHT_LIMIT,o=>{const dx=o.x-px,dz=o.z-py,d=dx*dx+dz*dz;return d<(o.radius+50)**2?d/(o.radius*o.radius):Infinity;},realmLightingFrame.lights,realmLightingLightScores);
  const buildings=worldScenes[currentScene]?.buildings||[];
- const nearest=realmNearestLighting(buildings,WORLD_LIT_ROOM_LIMIT,b=>{if(!b.walkIn)return Infinity;const dx=b.x+b.w/2-px,dz=b.y+b.h/2-py;return dx*dx+dz*dz;}),rooms=[],roomCeilings=[];
- for(const b of nearest){rooms.push([b.x+.6,b.y+.6,b.x+b.w-.6,b.y+b.h-.6]);roomCeilings.push(landHeight(b.x+b.w/2,b.y+b.h/2)+2.5);}
- return {lights,rooms,roomCeilings,cave:cave&&!CREATURE_LAIRS[currentScene]?.openAir?1:0,house:house?1:0,night:house?0:night};
+ const nearest=realmNearestLighting(buildings,WORLD_LIT_ROOM_LIMIT,b=>{if(!b.walkIn)return Infinity;const dx=b.x+b.w/2-px,dz=b.y+b.h/2-py;return dx*dx+dz*dz;},realmLightingRoomCandidates,realmLightingRoomScores),rooms=realmLightingFrame.rooms,roomCeilings=realmLightingFrame.roomCeilings;
+ rooms.length=0;roomCeilings.length=0;
+ for(let i=0;i<nearest.length;i++){const b=nearest[i],rect=realmLightingRoomRects[i];rect[0]=b.x+.6;rect[1]=b.y+.6;rect[2]=b.x+b.w-.6;rect[3]=b.y+b.h-.6;rooms.push(rect);roomCeilings.push(landHeight(b.x+b.w/2,b.y+b.h/2)+2.5);}
+ realmLightingFrame.cave=cave&&!CREATURE_LAIRS[currentScene]?.openAir?1:0;realmLightingFrame.house=house?1:0;realmLightingFrame.night=house?0:night;
+ return realmLightingFrame;
 }
 function drawWallTorch3(r,o){
  const p=groundedPainter(r,o.x,o.z),iron='#45423b',wood='#765333';

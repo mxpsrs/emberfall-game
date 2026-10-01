@@ -98,11 +98,13 @@ setupExpandedWorld=function(){const resume={scene:s.sceneId,x:s.x,y:s.y,scale:s.
 };
 function clearStreetObstacles(world){for(const o of world.objects){if(!['tree','ore','prop'].includes(o.type))continue;const conflicts=(x,z)=>worldWaterDistance(x+.5,z+.5)<1.5||world.buildings.some(b=>x>=b.x-1&&x<b.x+b.w+1&&z>=b.y-1&&z<b.y+b.h+1)||organicRoads.some(seg=>Math.abs((seg.a[0]+seg.b[0])/2-x)<3&&Math.abs((seg.a[1]+seg.b[1])/2-z)<3&&roadSegmentDistance(x+.5,z+.5,seg)<seg.width+.45);if(!conflicts(o.x,o.y))continue;let found=false;for(let radius=2;radius<=12&&!found;radius+=2)for(let i=0;i<16&&!found;i++){const x=Math.round(o.x+Math.cos(i*Math.PI/8)*radius),z=Math.round(o.y+Math.sin(i*Math.PI/8)*radius);if(!expandedWater(x,z)&&!conflicts(x,z)&&!world.objects.some(p=>p!==o&&p.x===x&&p.y===z)){Object.assign(o,{x,y:z,homeX:x,homeY:z,drawX:x,drawY:z});found=true;}}}}
 function roadSegmentDistance(x,z,seg){const a=seg.a,b=seg.b,dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);}
+function roadSegmentDistanceSquared(x,z,seg){const a=seg.a,b=seg.b,dx=b[0]-a[0],dz=b[1]-a[1],length=dx*dx+dz*dz,t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/length)),rx=x-a[0]-dx*t,rz=z-a[1]-dz*t;return rx*rx+rz*rz;}
 const realmCrossingsBeforeOrganic=drawRealmCrossings;
 drawRealmCrossings=function(r){realmCrossingsBeforeOrganic(r);
- for(const b of buildings){
+ const bounds=globalThis.realmViewBounds3;for(const b of buildings){
   if(b._sceneEntityId&&globalThis.VeldrenWorldPerformance?.visible(currentScene,b._sceneEntityId)===false)continue;
   if(!b.service||b.service.passageKind||b.arch)continue;
+  if(bounds?.valid&&(b.x+b.w<bounds.minx-8||b.x>bounds.maxx+8||b.y+b.h<bounds.minz-8||b.y>bounds.maxz+8))continue;
   const seg=Math.max(1,Math.round(b.w/2)),scale=b.w/seg/2,xx=b.x+(Math.floor(seg/2)+.5)*b.w/seg,open=typeof doorOpenFraction==='function'?doorOpenFraction(b.service):(b.service.openedAt===undefined?0:1);
   const m=typeof buildingDoorTransform==='function'?buildingDoorTransform(b):briarTransform(xx-.53*scale,0,b.y+b.h+.04,scale,-open*Math.PI*.52,scale*.85),q=project3(m[3],1.2,m[11]);
   // Cull the door itself, not a distant building corner. Castle gates use the
@@ -133,15 +135,20 @@ function plantSettlementGroves(world){let id=2400000;const occupied=new Set(worl
 }
 
 // Road coverage is shaded on the terrain itself: no floating strips or depth fighting.
-let roadBuckets=null;
+let roadBuckets=null,roadCoarseBuckets=null,roadBucketSource=null,roadBucketCount=-1;
+function roadBucketFor(x,z){
+ if(roadBucketSource!==organicRoads||roadBucketCount!==organicRoads.length){roadBucketSource=organicRoads;roadBucketCount=organicRoads.length;roadBuckets=new Map();roadCoarseBuckets=new Map();for(const seg of organicRoads){const pad=seg.width+3.2,record={seg,minX:Math.floor((Math.min(seg.a[0],seg.b[0])-pad)/8),maxX:Math.floor((Math.max(seg.a[0],seg.b[0])+pad)/8),minZ:Math.floor((Math.min(seg.a[1],seg.b[1])-pad)/8),maxZ:Math.floor((Math.max(seg.a[1],seg.b[1])+pad)/8)};for(let cz=Math.floor(record.minZ/4);cz<=Math.floor(record.maxZ/4);cz++)for(let cx=Math.floor(record.minX/4);cx<=Math.floor(record.maxX/4);cx++){const key=cx+':'+cz;if(!roadCoarseBuckets.has(key))roadCoarseBuckets.set(key,[]);roadCoarseBuckets.get(key).push(record);}}}
+ if(!roadBuckets)roadBuckets=new Map();
+ const bx=Math.floor(x/8),bz=Math.floor(z/8),key=bx+':'+bz;if(roadBuckets.has(key))return roadBuckets.get(key);
+ const coarse=roadCoarseBuckets.get(Math.floor(bx/4)+':'+Math.floor(bz/4))||[],bucket=[];for(const record of coarse)if(bx>=record.minX&&bx<=record.maxX&&bz>=record.minZ&&bz<=record.maxZ)bucket.push(record.seg);roadBuckets.set(key,bucket);return bucket;
+}
 function roadInfluence(x,z){
  if(!inWorld())return [0,0,0];
- if(!roadBuckets){roadBuckets=new Map();for(const seg of organicRoads){const pad=seg.width+3.2;for(let b=Math.floor((Math.min(seg.a[1],seg.b[1])-pad)/8);b<=Math.floor((Math.max(seg.a[1],seg.b[1])+pad)/8);b++)for(let a=Math.floor((Math.min(seg.a[0],seg.b[0])-pad)/8);a<=Math.floor((Math.max(seg.a[0],seg.b[0])+pad)/8);a++){const key=a+':'+b;if(!roadBuckets.has(key))roadBuckets.set(key,[]);roadBuckets.get(key).push(seg);}}}
- let amount=0,paved=0;for(const seg of roadBuckets.get(Math.floor(x/8)+':'+Math.floor(z/8))||[]){const edge=seg.width*(1+.06*Math.sin(x*2.3+z*1.7))-roadSegmentDistance(x,z,seg),t=Math.max(0,Math.min(1,(edge+.55)/1.1)),blend=t*t*(3-2*t);amount=Math.max(amount,blend);if(seg.paved)paved=Math.max(paved,blend);}
+ let amount=0,paved=0;const widthFactor=1+.06*Math.sin(x*2.3+z*1.7);for(const seg of roadBucketFor(x,z)){const maxDistance=seg.width*1.06+.55,distanceSquared=roadSegmentDistanceSquared(x,z,seg);if(distanceSquared>=maxDistance*maxDistance)continue;const edge=seg.width*widthFactor-Math.sqrt(distanceSquared),t=Math.max(0,Math.min(1,(edge+.55)/1.1)),blend=t*t*(3-2*t);amount=Math.max(amount,blend);if(seg.paved)paved=Math.max(paved,blend);}
  for(const town of SETTLEMENTS){if(Math.abs(x-town.x)>5||Math.abs(z-town.y)>5)continue;const d=Math.hypot((x-town.x)/4.0,(z-town.y)/3.4),t=Math.max(0,Math.min(1,(1.1-d)/.25));amount=Math.max(amount,t);paved=Math.max(paved,t);}
  return [amount,paved,0];
 }
-function gradeRoadLand(x,z,height){if(!physicalWorldReady||!organicRoads.length)return height;if(!roadBuckets)roadInfluence(x,z);let best=0,target=height;for(const seg of roadBuckets.get(Math.floor(x/8)+':'+Math.floor(z/8))||[]){const a=seg.a,b=seg.b,dx=b[0]-a[0],dz=b[1]-a[1],length=dx*dx+dz*dz,t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/length)),distance=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t),amount=Math.max(0,Math.min(1,(seg.width+3.2-distance)/3.2)),blend=amount*amount*(3-2*amount);if(blend>best){best=blend;target=landBase(a[0],a[1])*(1-t)+landBase(b[0],b[1])*t;}}return height*(1-best*.94)+target*best*.94;}
+function gradeRoadLand(x,z,height){if(!physicalWorldReady||!organicRoads.length)return height;let best=0,target=height;for(const seg of roadBucketFor(x,z)){const a=seg.a,b=seg.b,dx=b[0]-a[0],dz=b[1]-a[1],length=dx*dx+dz*dz,t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/length)),rx=x-a[0]-dx*t,rz=z-a[1]-dz*t,distanceSquared=rx*rx+rz*rz,maxDistance=seg.width+3.2;if(distanceSquared>=maxDistance*maxDistance)continue;const amount=Math.max(0,Math.min(1,(maxDistance-Math.sqrt(distanceSquared))/3.2)),blend=amount*amount*(3-2*amount);if(blend>best){best=blend;target=landBase(a[0],a[1])*(1-t)+landBase(b[0],b[1])*t;}}return height*(1-best*.94)+target*best*.94;}
 const organicGradeBefore=gradeLand;
 gradeLand=function(x,z,height){return gradeRoadLand(x,z,organicGradeBefore(x,z,height));};
 
