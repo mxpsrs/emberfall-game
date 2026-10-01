@@ -64,6 +64,20 @@ html=html.replace(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g,(tag,s
 
 assets['/index.html'].data=Buffer.from(html).toString('base64');
 assets['/index.html'].version=createHash('sha256').update(html).digest('hex').slice(0,16);assets['/index.html'].length=Buffer.byteLength(html);
+// The authenticated viewport owns its controls at parse time. Deliver startup
+// and control scripts in the document instead of racing parent-frame injection
+// against separate mobile downloads. Keep Filament's vendor URL external.
+const editorInline=new Set(['startup.js','native-runtime.js','filament-bootstrap.js','editor/editor-startup.js','editor/commands.js','editor/geometry.js','editor/gizmo-renderer.js','editor/transform-tools.js','editor/selection.js','editor/editor-runtime.js','editor/editor-entry.js']);
+let editorHtml=Buffer.from(assets['/editor/viewport.html'].data,'base64').toString('utf8');
+editorHtml=editorHtml.replace(/(src|href)="([^"?]+)"/g,(all,attribute,url)=>versions[url]?attribute+'="'+versions[url]+'"':all);
+editorHtml=editorHtml.replace('<script src="startup.js','<script>window.REALM_RELEASE='+JSON.stringify(release)+';window.REALM_ASSET_VERSIONS='+JSON.stringify(versions)+';</script><script src="startup.js');
+editorHtml=editorHtml.replace(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g,(tag,file)=>{
+ if(!editorInline.has(file))return tag;
+ const asset=assets['/'+file],source=Buffer.from(asset.data,'base64').toString('utf8');
+ if(/<\/script/i.test(source))throw Error('Unsafe editor inline script: '+file);
+ return '<script>'+source+'\n//# sourceURL='+file+'?v='+asset.version+'\n</script><script>realmStartupInlineLoaded();</script>';
+});
+assets['/editor/viewport.html'].data=Buffer.from(editorHtml).toString('base64');assets['/editor/viewport.html'].length=Buffer.byteLength(editorHtml);assets['/editor/viewport.html'].version=createHash('sha256').update(editorHtml).digest('hex').slice(0,16);
 // Inline the small landing dependencies to avoid three serial asset requests.
 for(const page of ['/landing.html','/donate.html']){
  if(!assets[page])continue;
