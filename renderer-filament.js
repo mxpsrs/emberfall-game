@@ -92,8 +92,8 @@ function createRealmFilamentGPU(){
  const cameraEntity=Filament.EntityManager.get().create(),camera3d=engine.createCamera(cameraEntity);
  const quality=realmFilamentQualityProfile();
  view.setCamera(camera3d);view.setScene(scene);view.setViewport([0,0,initialWidth,initialHeight]);view.setPostProcessingEnabled(true);view.setShadowingEnabled(true);view.setAntiAliasing(Filament.View$AntiAliasing.FXAA);view.setAmbientOcclusion(Filament.View$AmbientOcclusion.NONE);view.setDithering(Filament.View$Dithering.NONE);
- const colorGrading=Filament.ColorGrading.Builder().quality(Filament.ColorGrading$QualityLevel.MEDIUM).toneMapping(Filament.ColorGrading$ToneMapping.ACES).exposure(.2).contrast(1.04).saturation(1.03).vibrance(1.08).gamutMapping(true).build(engine);view.setColorGrading(colorGrading);
- const skySh=new Float32Array([.52,.60,.72,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+ const colorGrading=Filament.ColorGrading.Builder().quality(Filament.ColorGrading$QualityLevel.MEDIUM).toneMapping(Filament.ColorGrading$ToneMapping.ACES).exposure(.28).contrast(1.045).saturation(1.07).vibrance(1.12).gamutMapping(true).build(engine);view.setColorGrading(colorGrading);
+ const skySh=new Float32Array([.58,.64,.72,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
  const indirectLight=Filament.IndirectLight.Builder().irradianceSh(3,skySh).intensity(18000).build(engine);scene.setIndirectLight(indirectLight);
  const assets=window.VELDREN_FILAMENT_ASSETS,material=engine.createMaterial(assets.material),terrainMaterial=engine.createMaterial(assets.terrainMaterial),atlas=realmFilamentTextureFromPixels(engine,assets.atlasPixels,'atlas-browser'),groundSurfaces=realmFilamentTextureFromPixels(engine,assets.groundSurfacesPixels,'terrain-browser');
  assets.atlasPixels=null;assets.groundSurfacesPixels=null;
@@ -187,7 +187,7 @@ function createRealmFilamentGPU(){
   transformManager.setTransform(instance,realmFilamentMatrixInto(entry.model,matrixScratch));instance.delete();next.add(entity);
  }
  const sun=Filament.EntityManager.get().create();
- Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.94,.83]).intensity(65000).direction([.55,-1,-.38]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
+ Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.955,.86]).intensity(65000).direction([.48,-1,-.34]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
  const pointLights=[];
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
@@ -233,7 +233,7 @@ function createRealmFilamentGPU(){
    }
    const remove=[],add=[];for(const entity of activeEntities)if(!next.has(entity))remove.push(entity);for(const entity of next)if(!activeEntities.has(entity))add.push(entity);
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
-   const dprNow=dpr,landCamera=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0,pitch=cameraPitch3(),yaw=view3d.yaw,zoom=cameraZoom3(),anchor=typeof cameraAnchor3==='number'?cameraAnchor3:.82,fov=typeof cameraFov3==='number'?cameraFov3:54,distance=typeof cameraDistance3==='function'?cameraDistance3():screen.h/(2*Math.tan(fov*Math.PI/360))/zoom,center=realmFilamentCameraCenter(px+.5,landCamera,py+.5,yaw,pitch,zoom,dprNow),eye=[center[0]+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,center[2]+Math.cos(yaw)*Math.cos(pitch)*distance],near=.25,half=near*Math.tan(fov*Math.PI/360),aspect=screen.w/screen.h;
+   const dprNow=dpr,landCamera=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0,pitch=cameraPitch3(),yaw=view3d.yaw,zoom=cameraZoom3(),anchor=typeof cameraAnchor3==='number'?Math.min(cameraAnchor3,.78):.78,fov=typeof cameraFov3==='number'?Math.min(cameraFov3,50):50,distance=(typeof cameraDistance3==='function'?cameraDistance3():screen.h/(2*Math.tan(fov*Math.PI/360))/zoom)*.9,center=realmFilamentCameraCenter(px+.5,landCamera,py+.5,yaw,pitch,zoom,dprNow),eye=[center[0]+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,center[2]+Math.cos(yaw)*Math.cos(pitch)*distance],near=.25,half=near*Math.tan(fov*Math.PI/360),aspect=screen.w/screen.h;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,-half*aspect,half*aspect,-2*(1-anchor)*half,2*anchor*half,near,320);
    const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,lighting=typeof realmLightingState==='function'?realmLightingState():{lights:[],cave:0,house:0,night:0},day=1-lighting.night,sky=lair?.fog||[.055+.35*day,.075+.58*day,.14+.69*day];if(surface.style&&!lair){const top=`rgb(${Math.round(13+70*day)},${Math.round(25+145*day)},${Math.round(55+178*day)})`,haze=`rgb(${Math.round(30+150*day)},${Math.round(43+181*day)},${Math.round(67+176*day)})`;surface.style.background=`radial-gradient(ellipse at 22% 15%,rgba(255,255,255,${(.28*day).toFixed(2)}) 0,rgba(255,255,255,0) 20%),radial-gradient(ellipse at 68% 22%,rgba(244,251,255,${(.22*day).toFixed(2)}) 0,rgba(244,251,255,0) 25%),linear-gradient(${top},${haze} 70%,rgb(166,205,190))`;}
    updateLights(lighting);updateMaterials(lighting,lair);renderer.setClearOptions({clearColor:[...sky,lair?1:0],clear:true,discard:true});renderer.render(swapChain,view);
