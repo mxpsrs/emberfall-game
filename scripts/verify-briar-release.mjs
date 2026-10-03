@@ -43,6 +43,7 @@ for(const view of rendered.results){
  for(const input of ['yaw','tilt','zoom'])assert.equal(view.view[input],before.view[input],'matching camera input '+view.name+' '+input);
  verifyView(view,release.evidenceLabel);
 }
+if(release.openStreetEvidence){const receipt=read(directory+'/'+release.evidenceLabel+'/open-main-street.json.gz');assert.equal(receipt.workerSha256,release.workerSha256);assert.deepEqual(receipt.errors,[]);assert.equal(receipt.hour,11);assert.equal(receipt.view.frames.length,30);assert(receipt.view.camera.distance>3);assert(fs.statSync(directory+'/'+release.evidenceLabel+'/open-main-street.jpg').size>10000);for(const f of receipt.view.frames){assert.equal(f.terrain.pending,0);assert.equal(f.terrain.baseValid,true);assert.equal(f.terrain.bakedSourceMatched,true);assert.equal(f.renderer.draws.loading,0);assert.equal(f.renderer.draws.pendingVisibleInstances,0);assert.equal(f.renderer.draws.construction.queued,0);assert.deepEqual(f.renderer.draws.failures,[]);}}
 const landmark=read(directory+'/'+release.landmarkEvidenceLabel+'/result.json.gz');
 assert.equal(landmark.workerSha256,release.workerSha256);assert.deepEqual(landmark.errors,[]);assert.deepEqual(landmark.editorBindingErrors,[]);
 assert.equal(landmark.results.length,1);assert.equal(landmark.results[0].name,'school-facade');

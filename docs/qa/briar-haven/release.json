@@ -1,8 +1,8 @@
 {
-  "workerSha256": "30d2e7a6e6e307c4e3d9961a54ff34e01dca4cac5c01adc98e1887bfeab9d07e",
-  "runtimeSourceLocalCommit": "c706c0bff202265c8b33059ca5ecea00e05523f1",
-  "runtimeSourceRemoteCommit": "cb7aba41589db97198bb7f49d4fad46322473658",
-  "runtimeTree": "ef981867e0c261d45e3074c9bfc79ee8a5742b01",
+  "workerSha256": "b96444e79b7aef50a19f83a7ff87c67e9b8b3e3e4d5a5d39c406cf60a34dee76",
+  "runtimeSourceLocalCommit": "352e274e9f3f2f007a942a84b0cfc37a9d1f2156",
+  "runtimeSourceRemoteCommit": "c9325701edefd941d39d65b43c1f00981caafebb",
+  "runtimeTree": "50a181c996bd5cdc13b17b38f8b5fac4e924b073",
   "files": {
     ".openai/hosting.json": "9eebf38abe3261e21481688d1694f77310a5eed6a80d7c3d0982d240c0cc8fbc",
     "art/derived/browser-assets.json": "5d368ddde52244381eefca6f701d862de906033e81367e6fdbb6fed765b4d539",
@@ -587,7 +587,7 @@
     "dist/world-service-scene.js": "52005860796f803d3f4c7248b1bc5b15cb07900d6d376dc7b7f5cc9908968778",
     "dist/world-spawn-scene.js": "0c4ef61adeca88c32221b1acab97ad2f0795bbe254e0496ea63b7aa130a56285",
     "dist/world-structure-scene.js": "fe3b2cf9b980e70964cd7e9f5551853087a1f637ddfa92c394e387ddf25ea10d",
-    "dist/world-style.js": "a3c3dafcb95efc2887a45a91f467ba3b768f6126ae09e3de338f107eadc13ada",
+    "dist/world-style.js": "7a87d04e085a18a360fc1967b69922e34b35e1cb9c7f1300c4a812bd9bcf9207",
     "dist/world.js": "22a2acaf581de8b6f9868a09f08d18e426c1ce0ca8e04606ca40214f2adababf",
     "drizzle/0000_amazing_black_bolt.sql": "e30f91998ce9e642388c3818d207d9de9f87f1aa05c6405247a40c6874b3b0a4",
     "drizzle/0001_overjoyed_warbird.sql": "8d3f9aad394c740de7c2ba0e43bf4bc8af04bfdfb79528bcffc31070fce2a8c1",
@@ -663,12 +663,13 @@
     "worker/tree-state.js": "9045b1bde88832bc7974ebe3bba50e374ec9fc6ff7803286d68c7688943cce9b",
     "worker/world-snapshot.js": "3835bc897a0978b315a997c08d9aac1b03119e2309fa7d6f2435060200c08bfd"
   },
-  "buildLog": "checks/build-restored-release.txt",
-  "evidenceLabel": "after-live-final",
+  "buildLog": "checks/build-clearance-final.txt",
+  "evidenceLabel": "after-clearance-final",
   "liveWorldSnapshotSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
   "liveWorldSnapshotRevision": 26,
   "worldDataWritten": false,
   "physicalDeviceTargetsVerified": false,
-  "releasePreparedAt": "2026-10-03T17:30:05.005Z",
-  "landmarkEvidenceLabel": "school-live-final"
+  "releasePreparedAt": "2026-10-03T23:05:49.438Z",
+  "landmarkEvidenceLabel": "school-clearance-final",
+  "openStreetEvidence": true
 }

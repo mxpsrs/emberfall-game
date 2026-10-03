@@ -110,6 +110,13 @@ try{
   results.push(result);const progress={complete:false,label,workerSha256,editorBindingErrors,startupMs,...(resumed?{resume:{retainedViews:resumed.results.map(r=>r.name),resumedStartupMs}}:{}),resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors};writeFileSync(join(output,'partial.json'),JSON.stringify(progress,null,2));writeFileSync(join(output,'capture-progress.json.gz'),gzipSync(JSON.stringify(progress),{level:9}));console.log('READY',name,Math.round(settleMs),'ms');
  }
  if(process.env.VELDREN_QA_VIEW==='terrain-first')results.sort((a,b)=>matchedRoutes.findIndex(r=>r[0]===a.name)-matchedRoutes.findIndex(r=>r[0]===b.name));
+ if(process.env.VELDREN_QA_HERO==='1'){
+  captureName='open-main-street';await page.evaluate(()=>{stop();activateScene('overworld',55,56,false);view3d.yaw=0;view3d.tilt=.28;view3d.zoom=102;__qaFrames.length=0;__qaPreviousFrame=0;});
+  await page.waitForFunction(()=>{const d=realmGPU?.diagnostics();return __qaFrames.length>=60&&d?.frame&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0&&(realmGPU.terrainWork?.pending??0)===0;},{},{timeout:600000});
+  await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});await page.waitForFunction(()=>__qaFrames.length>=30,{},{timeout:300000});
+  const view=await page.evaluate(()=>({name:'open-main-street',scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-30)}));assert(view.camera.distance>3,'inspect normal street framing beyond the inn porch obstruction');
+  await page.screenshot({path:join(output,'open-main-street.jpg'),type:'jpeg',quality:90,timeout:120000});writeFileSync(join(output,'open-main-street.json.gz'),gzipSync(JSON.stringify({workerSha256,hour:11,resolution:[1920,1080],deviceScaleFactor:1,view,errors}),{level:9}));console.log('READY open-main-street');
+ }
  if(process.env.VELDREN_QA_VIEW==='school-facade'){
   const profiler=await context.newCDPSession(page);await profiler.send('Profiler.enable');await profiler.send('Profiler.start');
   await page.evaluate(()=>{__qaFrames.length=0;});await page.waitForFunction(()=>__qaFrames.length>=30,{},{timeout:300000});
