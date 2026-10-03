@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import {createServer} from 'node:http';
 import {Readable} from 'node:stream';
 import {createHash,randomBytes} from 'node:crypto';
-import {mkdtempSync,mkdirSync,writeFileSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -12,6 +12,7 @@ import {acquireBriarBrowserLock} from './briar-browser-lock.mjs';
 const root=resolve(process.env.VELDREN_QA_ROOT||'.'),label=process.env.VELDREN_QA_LABEL||'after';
 assert.match(label,/^[a-z0-9-]+$/);
 const releaseGraphics=await acquireBriarBrowserLock();
+const workerSha256=createHash('sha256').update(readFileSync(join(root,'dist/server/index.js'))).digest('hex');
 const {openLocalStorage}=await import(pathToFileURL(join(root,'scripts/local-storage.mjs')).href);
 const {default:worker}=await import(pathToFileURL(join(root,'dist/server/index.js')).href);
 const {chromium}=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
@@ -51,7 +52,7 @@ try{
   await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
   await page.screenshot({path:join(output,name+'.png'),timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));console.log('READY',name,Math.round(settleMs),'ms');
  }
- assert.deepEqual(errors,[]);const result={label,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
+ assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
  const state=await qaPage?.evaluate(()=>({startup:globalThis.realmStartup,frames:globalThis.__qaFrames?.length||0,renderer:typeof realmGPU==='undefined'?null:realmGPU?.diagnostics?.(),recentFrames:globalThis.__qaFrames?.slice(-3),edits:globalThis.VELDREN_WORLD_EDITS_STATUS})).catch(()=>null);
  writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),state,errors},null,2));
