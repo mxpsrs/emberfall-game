@@ -400,8 +400,22 @@ function realmTerrainEntries(gpu){
  if(gpu.terrainStream===undefined)gpu.terrainStream=window.VeldrenTerrainStreaming?.create(gpu,mobile)||null;
  const streamed=inWorld()&&gpu.terrainStream,cell=streamed?16:wide?16:8,detail=inWorld()&&!wide&&!mobile?2:1;
  if(!inWorld())gpu.terrainStream?.frame([],surfaceRevision);
- const eye=typeof cameraPose3==='function'?cameraPose3().eye:[px,0,py];
+ const pose=typeof cameraPose3==='function'?cameraPose3():null,eye=pose?.eye||[px,0,py];
  const corners=[...(realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p))),{x:eye[0],z:eye[2]}],edge=inWorld()?128:0;
+ // Sky-facing rays hit the ground behind a low follow camera. Cover the
+ // existing camera far plane instead, keeping native scenery and terrain
+ // together without increasing draw distance or changing streaming budgets.
+ let footprint=null;
+ if(pose&&Number.isFinite(pose.far)&&typeof cameraRay3==='function'){
+  for(const [sx,sy] of [[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]]){
+   const {dir}=cameraRay3(sx,sy),ground=Number.isFinite(pose.ground)?pose.ground:0,t=dir[1]<-1e-6?(ground-eye[1])/dir[1]:Infinity,distance=t>0?Math.min(t,pose.far):pose.far;
+   corners.push({x:eye[0]+dir[0]*distance,z:eye[2]+dir[2]*distance});
+  }
+  // A projected convex footprint keeps far-plane coverage bounded instead of
+  // streaming every cell in its much larger, rotated enclosing rectangle.
+  const sorted=corners.slice().sort((a,b)=>a.x-b.x||a.z-b.z),cross=(a,b,c)=>(b.x-a.x)*(c.z-a.z)-(b.z-a.z)*(c.x-a.x),half=points=>{const h=[];for(const p of points){while(h.length>1&&cross(h.at(-2),h.at(-1),p)<=0)h.pop();h.push(p);}h.pop();return h;},hull=[...half(sorted),...half(sorted.slice().reverse())];
+  if(hull.length>=3)footprint=hull.map((p,i)=>{const q=hull[(i+1)%hull.length],nx=p.z-q.z,nz=q.x-p.x;return {nx,nz,d:nx*p.x+nz*p.z,pad:cell*Math.hypot(nx,nz)};});
+ }
  const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/cell)*cell),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/cell)*cell),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/cell)*cell),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/cell)*cell),visible=[],margin=cameraZoom3()*cell*3.5;
  // A low camera can put a near chunk's center well outside the viewport while
  // one of its corners still fills the foreground, so retain a wider edge band.
@@ -413,6 +427,7 @@ function realmTerrainEntries(gpu){
   // center projects behind the eye. Keep this bounded near-camera ring instead
   // of rejecting it by that center; streaming and upload budgets still apply.
   const dx=Math.max(x-eye[0],0,eye[0]-x-cell),dz=Math.max(z-eye[2],0,eye[2]-z-cell),near=dx*dx+dz*dz<=cell*cell;
+  if(!near&&footprint?.some(e=>e.nx*(e.nx>=0?x+cell:x)+e.nz*(e.nz>=0?z+cell:z)<e.d-e.pad))continue;
   const p=flatProject3(x+cell/2,0,z+cell/2);if(!near&&(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin))continue;
   const key=cell+':'+(streamed?'stream':detail)+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);
  }

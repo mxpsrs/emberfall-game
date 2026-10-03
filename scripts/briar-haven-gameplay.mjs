@@ -31,7 +31,9 @@ async function travelThroughDoor(building,inside){
   const frame=await page.evaluate(({building,goal})=>{if(!walkTo(...goal))throw Error(building.name+' door travel has no route');return meshFrame3;},{building,goal});
   await page.waitForFunction(({building,goal,inside,frame})=>{
    const reached=!path.length&&Math.hypot(px-goal[0],py-goal[1])<.05&&(inside?s.insideBuilding===building.destination:!s.insideBuilding);
-   return reached||cloudDisconnected||cloudConflict||meshFrame3>frame+2&&!path.length;
+   // Logical tiles advance before the final rendered step reaches its endpoint.
+   // Keep waiting at the target tile; an early stop elsewhere still fails.
+   return reached||cloudDisconnected||cloudConflict||meshFrame3>frame+2&&!path.length&&(s.x!==goal[0]||s.y!==goal[1]);
   },{building,goal,inside,frame},{timeout:180000});
   const state=await page.evaluate(({building,goal,inside})=>({reached:!path.length&&Math.hypot(px-goal[0],py-goal[1])<.05&&(inside?s.insideBuilding===building.destination:!s.insideBuilding),position:[px,py],disconnected:cloudDisconnected,conflict:cloudConflict}),{building,goal,inside});
   if(state.reached)return;

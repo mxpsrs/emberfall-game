@@ -20,6 +20,15 @@ assert(retainedNear.length>0&&retainedNear.length<=16,'extra near-camera retenti
 const previousPose=cameraPose3();cameraPose3=()=>({...previousPose,eye:[160,4,160]});realmTerrainEntries(gpu);
 assert(visible.some(c=>c.x===168&&c.z===168),'camera movement retains its new foreground terrain');
 assert(!visible.some(c=>c.x===72&&c.z===40),'old foreground is released after leaving it');
+// Reproduce the final town-edge view with its existing canonical far plane.
+px=64;py=115;
+const edgePose={eye:[60.324,5.021,113.354],yaw:-2.05,pitch:.29,distance:4.883,target:1.12,anchor:.64,height:1080,width:1920,ground:2.5,far:192};
+cameraPose3=()=>edgePose;realmViewCorners=[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p));
+realmTerrainEntries(gpu);
+assert(visible.some(c=>c.x===136&&c.z===152),'keep the ground under distant houses in the actual town-edge direction');
+assert(visible.some(c=>c.x===200&&c.z===184),'cover the existing far frustum continuously');
+assert(visible.length<=384,'convex footprint retains the existing desktop terrain residency budget');
+assert.equal(cameraPose3().far,192,'coverage does not increase draw distance');
 cameraPose3=originalPose;realmTerrainChunkRow=originalRow;
 `,ctx);
 console.log('PASS: perspective near-plane terrain coverage, bounded local retention, remote culling and moved-camera coverage.');
