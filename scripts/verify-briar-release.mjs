@@ -48,6 +48,7 @@ assert.equal(landmark.workerSha256,release.workerSha256);assert.deepEqual(landma
 assert.equal(landmark.results.length,1);assert.equal(landmark.results[0].name,'school-facade');
 assert(Math.abs(landmark.results[0].camera.yaw-Math.PI)<.001,'inspect the north-facing School entrance');
 verifyView(landmark.results[0],release.landmarkEvidenceLabel);
+if(landmark.results[0].recovery){const original=landmark.results[0],recaptured=original.recovery.recaptured;assert.equal(recaptured.frames.length,30);for(const key of ['name','scene','player','view'])assert.deepEqual(recaptured[key],original[key]);const f=recaptured.frames.at(-1);assert.equal(f.terrain.pending,0);assert.equal(f.terrain.snapshotMs,0);assert.equal(f.renderer.draws.loading,0);assert.equal(f.renderer.draws.pendingVisibleInstances,0);assert.equal(f.renderer.draws.construction.queued,0);assert.deepEqual(f.renderer.draws.failures,[]);}
 const night=read(directory+'/'+release.landmarkEvidenceLabel+'/night.json.gz');
 assert.equal(night.workerSha256,release.workerSha256);assert.deepEqual(night.errors,[]);
 assert.equal(night.night.hour,21);assert.equal(night.night.frames.length,30);

@@ -27,7 +27,17 @@ db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,
 const server=createServer(async(req,res)=>{try{const chunks=[];for await(const c of req)chunks.push(c);const body=Buffer.concat(chunks);requests.push(req.url);const response=await worker.fetch(new Request('http://'+req.headers.host+req.url,{method:req.method,headers:req.headers,...(body.length?{body}:{})}),env);res.statusCode=response.status;response.headers.forEach((v,k)=>res.setHeader(k,v));if(response.body)Readable.fromWeb(response.body).pipe(res);else res.end();}catch(e){errors.push(String(e));res.statusCode=500;res.end(String(e));}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
 const output=resolve('docs/qa/briar-haven',label);mkdirSync(output,{recursive:true});let browser,qaPage,captureName='startup';
-let resumed;
+let resumed,recoveredSchool;
+if(process.env.VELDREN_QA_RECOVER_SCHOOL==='1'){
+ assert.equal(process.env.VELDREN_QA_VIEW,'school-facade');assert.notEqual(process.env.VELDREN_QA_RESUME,'1');
+ recoveredSchool=JSON.parse(gunzipSync(readFileSync(join(output,'result.json.gz'))));
+ assert.equal(recoveredSchool.workerSha256,workerSha256,'retain School samples only for identical production bytes');assert.deepEqual(recoveredSchool.errors,[]);assert.deepEqual(recoveredSchool.editorBindingErrors,[]);
+ assert.deepEqual(recoveredSchool.resolution,[1920,1080]);assert.equal(recoveredSchool.deviceScaleFactor,1);assert.equal(recoveredSchool.hour,11);
+ assert.equal(recoveredSchool.results.length,1);const v=recoveredSchool.results[0];assert.equal(v.name,'school-facade');assert.equal(v.frames.length,120);
+ const f=v.frames.at(-1),d=f.renderer,t=f.terrain;assert.deepEqual(d.draws.failures,[]);assert.equal(d.draws.loading,0);assert.equal(d.draws.pendingVisibleInstances,0);assert.equal(d.draws.construction.queued,0);assert.equal(d.models.buildQueue.queued,0);assert.equal(d.frame.deferredResources,0);assert.equal(d.frame.deferredRenderables,0);assert.equal(d.residency.overBudget,false);
+ assert.equal(t.mode,'worker');assert.equal(t.pending,0);assert.equal(t.failures,0);assert.equal(t.baseValid,true);assert.equal(t.bakedSourceMatched,true);assert.equal(t.snapshotMs,0);
+ console.log('RECOVER School: retain 120 verified samples and recapture the lost image after loading settles');
+}
 if(process.env.VELDREN_QA_RESUME==='1'){
  assert.notEqual(process.env.VELDREN_QA_VIEW,'school-facade','resume the matched route only');
  resumed=JSON.parse(gunzipSync(readFileSync(join(output,'capture-progress.json.gz'))));
@@ -94,8 +104,10 @@ try{
   },{},{timeout:600000});
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
   await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});
-  await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
-  await page.screenshot({path:join(output,name+'.png'),timeout:120000});await page.screenshot({path:join(output,name+'.jpg'),type:'jpeg',quality:90,timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);const progress={complete:false,label,workerSha256,editorBindingErrors,startupMs,...(resumed?{resume:{retainedViews:resumed.results.map(r=>r.name),resumedStartupMs}}:{}),resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors};writeFileSync(join(output,'partial.json'),JSON.stringify(progress,null,2));writeFileSync(join(output,'capture-progress.json.gz'),gzipSync(JSON.stringify(progress),{level:9}));console.log('READY',name,Math.round(settleMs),'ms');
+  await page.waitForFunction(count=>__qaFrames.length>=count,recoveredSchool?30:120,{timeout:300000});
+  await page.screenshot({path:join(output,name+'.png'),timeout:120000});await page.screenshot({path:join(output,name+'.jpg'),type:'jpeg',quality:90,timeout:120000});let result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;
+  if(recoveredSchool){const retained=recoveredSchool.results[0];for(const key of ['name','scene','player','view'])assert.deepEqual(result[key],retained[key],'recaptured School matches original '+key);for(const key of ['eye','center'])for(let i=0;i<3;i++)assert(Math.abs(result.camera[key][i]-retained.camera[key][i])<.001,'recaptured School matches original camera');result={...retained,recovery:{reason:'Workspace cleanup removed the image; original exact-Worker 120-frame receipt survived.',recaptured:result}};}
+  results.push(result);const progress={complete:false,label,workerSha256,editorBindingErrors,startupMs,...(resumed?{resume:{retainedViews:resumed.results.map(r=>r.name),resumedStartupMs}}:{}),resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors};writeFileSync(join(output,'partial.json'),JSON.stringify(progress,null,2));writeFileSync(join(output,'capture-progress.json.gz'),gzipSync(JSON.stringify(progress),{level:9}));console.log('READY',name,Math.round(settleMs),'ms');
  }
  if(process.env.VELDREN_QA_VIEW==='terrain-first')results.sort((a,b)=>matchedRoutes.findIndex(r=>r[0]===a.name)-matchedRoutes.findIndex(r=>r[0]===b.name));
  if(process.env.VELDREN_QA_VIEW==='school-facade'){
@@ -113,6 +125,9 @@ try{
   const dayLuminance=await surfaceLuminance(join(output,'school-facade.jpg')),nightLuminance=await surfaceLuminance(join(output,'night-school.jpg'));assert(nightLuminance.mean<dayLuminance.mean*.9,'actual night surfaces must remain visibly darker than matching daylight');
   const landmark=await page.evaluate(()=>{const b=buildings.find(b=>b.briarDesign?.school);if(!b)throw Error('Missing canonical Magic School');if(Math.hypot(s.x-b.service.x,s.y-b.service.y)>8)throw Error('School facade view missed the actual entrance');return {buildingId:b._sceneEntityId,name:b.name,destination:b.service.destination,door:[b.service.x,b.service.y]};});
   writeFileSync(join(output,'night.json.gz'),gzipSync(JSON.stringify({workerSha256,backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,night,landmark,surfaceLuminance:{day:dayLuminance,night:nightLuminance},errors}),{level:9}));console.log('READY night-school',JSON.stringify({landmark,surfaceLuminance:{day:dayLuminance.mean,night:nightLuminance.mean}}));
+  if(recoveredSchool){
+   const previous=JSON.parse(gunzipSync(readFileSync(join(output,'smithy.json.gz')))),v=previous.smithy,f=v.frames.at(-1),d=f.renderer,t=f.terrain;assert.equal(previous.workerSha256,workerSha256);assert.equal(previous.hour,11);assert.deepEqual(previous.errors,[]);assert.equal(v.frames.length,120);assert.equal(d.draws.loading,0);assert.equal(d.draws.pendingVisibleInstances,0);assert.equal(d.draws.construction.queued,0);assert.deepEqual(d.draws.failures,[]);assert.equal(d.models.buildQueue.queued,0);assert.equal(d.frame.deferredResources,0);assert.equal(d.frame.deferredRenderables,0);assert.equal(d.residency.overBudget,false);assert.equal(t.pending,0);assert.equal(t.baseValid,true);assert.equal(t.bakedSourceMatched,true);assert.equal(t.snapshotMs,0);assert(readFileSync(join(output,'smithy-facade.jpg')).length>10000);console.log('RETAIN exact-Worker smithy: original settled 120-frame receipt and inspected image');
+  }else{
   // The matched services baseline faces the rear yard. Inspect the actual
   // west-facing smithy work bay as well, without changing that baseline route.
   await page.evaluate(()=>{worldHour=()=>11;stop();activateScene('overworld',74,40,false);view3d.yaw=-Math.PI/2;view3d.tilt=.27;view3d.zoom=102;__qaFrames.length=0;__qaPreviousFrame=0;});
@@ -121,6 +136,7 @@ try{
   const smithy=await page.evaluate(()=>({name:'smithy-facade',scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}));
   await page.screenshot({path:join(output,'smithy-facade.jpg'),type:'jpeg',quality:90,timeout:120000});
   writeFileSync(join(output,'smithy.json.gz'),gzipSync(JSON.stringify({workerSha256,hour:11,resolution:[1920,1080],deviceScaleFactor:1,smithy,errors}),{level:9}));console.log('READY smithy-facade');
+  }
  }
  assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,...(resumed?{resume:{retainedViews:resumed.results.map(r=>r.name),resumedStartupMs}}:{}),browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));writeFileSync(join(output,'result.json.gz'),gzipSync(JSON.stringify(result),{level:9}));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
