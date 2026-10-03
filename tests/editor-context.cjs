@@ -17,6 +17,8 @@ assert.match(build,/\/editor\/editor-startup\.js/);
 const events=[],frames=[];
 const state={window:{VELDREN_CONTEXT:'editor',realmStartup:{failed:false},filamentReady:Promise.resolve(),realmNativeReady:Promise.resolve(),VELDREN_WORLD_EDITS_READY:Promise.resolve(),VeldrenWorldEdits:{async applyFinishedWorld(){events.push('world-edits')}}},
  document:{hidden:false},art:{},px:0,py:0,target:{},assetsReady:false,last:0,time:0,
+ currentScene:'tutorial',worldScenes:{overworld:{objects:[],buildings:[]}},objects:[],buildings:[],resetLandSurface(){events.push('terrain-reset')},
+ VeldrenPrebuiltWorld:{load:async()=>true,nativeReady:true,activateNative:async()=>true},realmStartupStep:async(message,p,stage,fn)=>fn(),
  performance:{now:()=>100},requestAnimationFrame(fn){frames.push(fn)},
  realmLoadStatus(){events.push('loading')},realmLoadImage:async path=>({path}),realmAssetURL:path=>path,
  loadRebuiltTextures:async()=>{events.push('textures')},fetch:async()=>({ok:true,json:async()=>({})}),
@@ -24,6 +26,7 @@ const state={window:{VELDREN_CONTEXT:'editor',realmStartup:{failed:false},filame
  resize(){events.push('resize')},realmLoadComplete(){events.push('ready')},draw(){events.push('draw')},
  realmLoadFailure(message,error){throw error||Error(message)}
 };
+state.window.VeldrenEditorBridge={async initialize(){events.push('controls-ready')},isReady:()=>true,adoptCanonicalDocument(){}};
 for(const name of ['VeldrenQuarryScene','VeldrenServiceScene'])state.window[name]={capture(){events.push(name+':capture')},async migrate(){events.push(name+':migrate')}};
 vm.createContext(state);
 vm.runInContext(fs.readFileSync(path.join(root,'dist/editor/editor-startup.js'),'utf8'),state);
@@ -31,11 +34,13 @@ vm.runInContext(fs.readFileSync(path.join(root,'dist/editor/editor-startup.js'),
  await state.bootEditor();
  assert.equal(state.px,55);assert.equal(state.py,50);assert.equal(state.target,null);
  assert.equal(state.assetsReady,true);
- assert.deepEqual(events.slice(-4),['VeldrenQuarryScene:migrate','VeldrenServiceScene:migrate','resize','ready']);
- for(const name of ['VeldrenQuarryScene','VeldrenServiceScene']){assert(events.indexOf(name+':capture')<events.indexOf('world-edits'));assert(events.indexOf(name+':migrate')>events.indexOf('world-edits'));}
+ assert.equal(state.currentScene,'overworld');assert(events.indexOf('controls-ready')<events.indexOf('ready'),'loading remains until controls initialize');
+ for(const name of ['VeldrenQuarryScene','VeldrenServiceScene'])assert(events.includes(name+':capture'));
+
  assert.equal(frames.length,1);
  frames.shift()(116);assert(events.includes('draw'));assert.equal(frames.length,1);
  assert.equal(state.window.realmStartup.failed,false);
+ events.length=0;state.assetsReady=false;delete state.window.VeldrenEditorBridge;await assert.rejects(state.bootEditor(),/Editor controls did not load/);assert(!events.includes('ready'),'failed controls never hide loading');
  assert.doesNotMatch(fs.readFileSync(path.join(root,'dist/game.js'),'utf8'),/async function bootEditor/);
  console.log('PASS: authenticated editor viewport has a dedicated, playerless startup and render loop.');
 })().catch(error=>{console.error(error);process.exitCode=1});

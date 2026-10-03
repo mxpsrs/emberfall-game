@@ -33,7 +33,7 @@
   b.assembly=a;b.editorTransform={rotation:0,scale:1};invalidate(b);return a;
  }
  function create(b,assembly,scene){A.validate(assembly);const origin=A.transform(Number(b.x)||0,0,Number(b.y)||0);cache.set(b,{full:[],faces:[],height:0,origin,original:{x:b.x,y:b.y,w:b.w,h:b.h},linked:new Map(),render:null});b.assembly=A.serialize(assembly);b.editorTransform={rotation:0,scale:1};sync(b);invalidate(b);return b.assembly;}
- function attach(b,assembly,scene){A.validate(assembly);if(b._generatedBuildingEntity)return globalThis.VeldrenBuildingScene.setAssembly(b._generatedSceneName,b._sceneEntityId,assembly);if(!cache.has(b)){if(b.editorCreated){const origin=A.transform(Number(b.x)||0,0,Number(b.y)||0);cache.set(b,{full:[],faces:[],height:0,origin,original:{x:b.x,y:b.y,w:b.w,h:b.h},linked:new Map(),render:null});b.assembly??={version:1,buildingId:b._editorId||b.id||b.name||'editor-building',parent:origin,modules:[],layout:[]};}else ensure(b,scene);}const runtime=cache.get(b),before=runtime.navBounds||worldBounds(b);
+ function attach(b,assembly,scene){assembly=repairLegacyAssembly(b,assembly);A.validate(assembly);if(b._generatedBuildingEntity)return globalThis.VeldrenBuildingScene.setAssembly(b._generatedSceneName,b._sceneEntityId,assembly);if(!cache.has(b)){if(b.editorCreated){const origin=A.transform(Number(b.x)||0,0,Number(b.y)||0);cache.set(b,{full:[],faces:[],height:0,origin,original:{x:b.x,y:b.y,w:b.w,h:b.h},linked:new Map(),render:null});b.assembly??={version:1,buildingId:b._editorId||b.id||b.name||'editor-building',parent:origin,modules:[],layout:[]};}else ensure(b,scene);}const runtime=cache.get(b),before=runtime.navBounds||worldBounds(b);
   // Validate all assets before replacing a usable assembly.
   for(const m of assembly.modules)if(!m.model.startsWith('captured:')&&!m.model.startsWith('linked:')&&!model(m.model))throw Error('Missing local module '+m.model);
   b.assembly=A.serialize(assembly);for(const o of scene.objects||[])runtime.linked.set(String(o.id),o);sync(b);invalidate(b);invalidateAttachedNavigation(b,scene,before);return b.assembly;
@@ -119,6 +119,29 @@
   m.local=A.transform(c[0],hc[0][1],c[2],angle,scale);m.local[3]-=.53*scale*Math.cos(angle);m.local[11]+=.53*scale*Math.sin(angle);
   const normal=[Math.sin(angle),0,Math.cos(angle)];m.opening={service:[c[0]-.5+normal[0]*.5,0,c[2]-.5+normal[2]*.5],normal,width:1};sync(b);
  }
+ // Repair the pre-module-floor generated shell format while retaining authored
+ // walls, furniture, parent placement and stable object links.
+ function repairLegacyAssembly(b,input){
+  const modules=input?.modules||[],oldRoofs=modules.filter(m=>/^rebuilt:Roof_RoundTiles_/.test(m.model)&&Number.isInteger(m.baseline));
+  if(oldRoofs.length<2||modules.some(m=>m.role==='floor'&&m.floor===0))return input;
+  const walls=modules.filter(m=>/^rebuilt:Wall_/.test(m.model));if(!walls.length)return input;
+  const a=A.clone(input),points=walls.filter(m=>m.floor===0).flatMap(m=>[-1,1].map(x=>A.point(m.local,[x,0,0])));
+  if(!points.length)return input;
+  const minX=Math.min(...points.map(p=>p[0])),maxX=Math.max(...points.map(p=>p[0])),minZ=Math.min(...points.map(p=>p[2])),maxZ=Math.max(...points.map(p=>p[2]));
+  const w=maxX-minX,d=maxZ-minZ,y=Math.max(...walls.map(m=>m.local[7]+3.02))-.04;
+  a.modules=a.modules.filter(m=>!oldRoofs.some(old=>old.id===m.id));
+  const add=(mesh,matrix,role,id)=>{const name=Object.keys(rebuiltModels).find(key=>rebuiltModels[key]===mesh||rebuiltModels[key].p===mesh.p);if(!name)throw Error('Missing repaired building asset');a.modules.push({id,model:'rebuilt:'+name,role,floor:role==='floor'?0:Math.floor(y/3.02),local:matrix,bounds:A.clone(mesh.bounds)});};
+  let index=0;environmentRoofBays3({indexed(mesh,matrix){add(mesh,matrix,'roof','repair-roof-'+index++);},face(){}},b.race||'human',(minX+maxX)/2,y,(minZ+maxZ)/2,w+.45,d+.45,b.variant||0);
+  const floor=model('rebuilt:Floor_UnevenBrick');
+  for(let z=minZ;z<maxZ;z+=2)for(let x=minX;x<maxX;x+=2){const fw=Math.min(2,maxX-x),fd=Math.min(2,maxZ-z);add(floor,[fw/2,0,0,x+fw/2,0,1,0,.045,0,0,fd/2,z+fd/2],'floor','repair-floor-'+index++);}
+  for(const leaf of a.modules.filter(m=>m.role==='entrance')){
+   const host=a.modules.find(m=>m.id===leaf.host);if(!host)continue;
+   leaf.local=A.multiply(host.local,A.transform(-.514,0,.04));
+   const normal=[host.local[2],0,host.local[10]],length=Math.hypot(normal[0],normal[2]);normal[0]/=length;normal[2]/=length;
+   leaf.opening={...leaf.opening,service:[host.local[3]-.5+normal[0]*.5,0,host.local[11]-.5+normal[2]*.5],normal,width:1};
+  }
+  return a;
+ }
  function contains(m,p){const q=A.point(A.inverse(m.local),p),lo=m.bounds[0],hi=m.bounds[1];return q[0]>=lo[0]-.12&&q[0]<=hi[0]+.12&&q[2]>=lo[2]-.12&&q[2]<=hi[2]+.12;}
  function install(){if(installed)return;installed=true;originalRender=building3;
   const oldCached=cachedMesh3;cachedMesh3=function(key,kind,build){if(kind==='building'&&key.assembly&&(key._generatedBuildingEntity||cache.has(key))){return rendered(key)}return oldCached(key,kind,build)};
@@ -129,6 +152,6 @@
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};
  }
- window.VeldrenBuildings={ensure,create,attach,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
+ window.VeldrenBuildings={ensure,create,attach,repairLegacyAssembly,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
 })();
 

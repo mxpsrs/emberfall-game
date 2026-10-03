@@ -2,11 +2,12 @@
 // Scene transforms arrive from the native Scene; Filament owns the corresponding
 // render-only hierarchy. No draw handle or load status is serialized.
 function createVeldrenRenderableBudget(profile){
- const limit=profile==='browser-mobile'?8:16,budgetMs=profile==='browser-mobile'?3:5,owners=[];let remaining=limit,used=0,started=0,maxUsed=0,frame=0,nextOwner=0;
+ const limit=profile==='browser-mobile'?8:16,budgetMs=profile==='browser-mobile'?3:5,owners=[];let remaining=limit,used=0,started=null,maxUsed=0,frame=0,nextOwner=0;
  const now=()=>globalThis.performance?.now?.()??Date.now();
- return Object.freeze({registerOwner(){const owner={items:[],cursor:0};owners.push(owner);return owner;},beginFrame(){frame++;for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=0;started=0;},enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){started=now();for(const owner of owners)owner.items.sort((a,b)=>(a.priority||0)-(b.priority||0));let ownerIndex=nextOwner;
+ function consume(){if(remaining<=0||(used&&now()-started>=budgetMs))return false;if(started===null)started=now();remaining--;used++;maxUsed=Math.max(maxUsed,used);return true;}
+ return Object.freeze({registerOwner(){const owner={items:[],cursor:0};owners.push(owner);return owner;},beginFrame(){frame++;for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=0;started=null;},consume,enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){for(const owner of owners)owner.items.sort((a,b)=>(a.priority||0)-(b.priority||0));let ownerIndex=nextOwner;
    while(remaining>0&&(!used||now()-started<budgetMs)){let chosen=-1,best=Infinity;for(let offset=0;offset<owners.length;offset++){const index=(ownerIndex+offset)%owners.length,owner=owners[index],instance=owner?.items[owner.cursor];if(!instance)continue;const priority=Number.isFinite(instance.priority)?instance.priority:0;if(priority<best){best=priority;chosen=index;}}
-    if(chosen<0)break;const owner=owners[chosen],instance=owner.items[owner.cursor++];ownerIndex=(chosen+1)%owners.length;instance.queuedFrame=0;if(!instance.pending||typeof instance.advance!=='function')continue;remaining--;used++;maxUsed=Math.max(maxUsed,used);instance.advance();}
+    if(chosen<0)break;const owner=owners[chosen],instance=owner.items[owner.cursor++];ownerIndex=(chosen+1)%owners.length;instance.queuedFrame=0;if(!instance.pending||typeof instance.advance!=='function')continue;if(!consume())break;instance.advance();}
    nextOwner=ownerIndex;return used;
   },diagnostics:()=>({limit,budgetMs,remaining,used,maxUsed,queued:owners.reduce((n,owner)=>n+owner.items.length-owner.cursor,0)})});
 }
@@ -63,7 +64,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){
-   const lease=resources.acquire(id,profile,options||{});pool={lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
+   const lease=resources.acquire(id,profile,options||{});pool={asset:id,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
    const current=pool;lease.ready.then(model=>{current.model=model;},error=>{current.error=error;});
   }
   pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return false;
@@ -84,11 +85,15 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
    for(const pool of pools.values())for(const instance of pool.instances)if(instance.pending&&instance.seen===frame)constructionBudget.enqueue(constructionOwner,instance);
   }
   for(const [id,pool] of pools){
+   if(!pool.used&&streaming?.retains&&!streaming.retains(pool.asset,pool.material)){removePool(pool);pools.delete(id);continue;}
    for(const instance of pool.instances)if(instance.seen!==frame&&instance.active){scene.removeEntities(instance.entities);instance.active=false;}
    // The small grace interval avoids allocating again on a culling boundary;
    // changing Scene clears immediately, and excess instance slots are removed.
-   let idle=0,kept=0;for(const instance of pool.instances){if(instance.seen===frame||++idle<=8)pool.instances[kept++]=instance;else{removeInstance(instance);pool.identities.delete(instance.identity);}}pool.instances.length=kept;
-   if(frame-pool.lastUsed>30){removePool(pool);pools.delete(id);}
+   // Keep recently culled identities through a short boundary crossing. The
+   // previous eight-slot rule destroyed large buildings after a single miss.
+   const idleLimit=profile==='browser-mobile'?32:64;let idle=0,kept=0;
+   for(const instance of pool.instances){if(instance.seen===frame||(frame-instance.seen<=120&&++idle<=idleLimit))pool.instances[kept++]=instance;else{removeInstance(instance);pool.identities.delete(instance.identity);}}pool.instances.length=kept;
+   if(frame-pool.lastUsed>120){removePool(pool);pools.delete(id);}
   }
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();}

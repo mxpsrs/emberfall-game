@@ -20,3 +20,6 @@ native/build/
 /dist/world-construction.json
 
 /dist/world-native.json
+
+/.terrain-cache/
+/dist/terrain-cells/

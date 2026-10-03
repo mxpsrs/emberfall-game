@@ -245,6 +245,40 @@ Vec3 transform_point(const Mat4& m, Vec3 p) { return {m.v[0]*p.x+m.v[4]*p.y+m.v[
 
 Scene::Node& Scene::require(const EntityId& id) { auto it=nodes_.find(id); if (it==nodes_.end()) throw std::out_of_range("Scene entity not found: "+id); return it->second; }
 const Scene::Node& Scene::require(const EntityId& id) const { auto it=nodes_.find(id); if (it==nodes_.end()) throw std::out_of_range("Scene entity not found: "+id); return it->second; }
+void Scene::restore_payload(const Node& node) const {
+  if(node.payload_page.empty())return;
+  const auto value=parse_json(node.payload_page);
+  auto metadata=value.find("metadata")->object();
+  std::map<std::string,Json::Object> components;
+  for(const auto& [type,fields]:value.find("components")->object())components.emplace(type,fields.object());
+  node.metadata=std::move(metadata);node.components=std::move(components);
+  --payload_stats_.paged;payload_stats_.bytes-=node.payload_page.size();++payload_stats_.restored;
+  std::string{}.swap(node.payload_page);
+}
+PayloadPagingStats Scene::page_payloads(Vec3 center,double radius,const std::vector<EntityId>& visible,std::size_t budget) {
+  if(!std::isfinite(center.x)||!std::isfinite(center.z)||!std::isfinite(radius)||radius<=0||budget>4096)invalid("Invalid payload paging budget or region");
+  if(!std::is_sorted(visible.begin(),visible.end()))invalid("Payload paging visibility IDs must be sorted");
+  payload_stats_.compacted=payload_stats_.restored=payload_stats_.scanned=0;
+  if(payload_candidates_dirty_){payload_candidates_=traverse();payload_cursor_=payload_candidates_.empty()?0:payload_cursor_%payload_candidates_.size();payload_candidates_dirty_=false;}
+  // Cell-sized hysteresis avoids repeated decoding around the resident edge.
+  constexpr double cell=32;
+  const double cx=std::floor(center.x/cell),cz=std::floor(center.z/cell),near=std::ceil(radius/cell),far=near+2;
+  const auto count=std::min(budget,payload_candidates_.size());
+  for(std::size_t i=0;i<count;++i){
+    const auto& id=payload_candidates_[payload_cursor_++];if(payload_cursor_==payload_candidates_.size())payload_cursor_=0;
+    const auto& node=require(id);const auto world=world_transform(id);
+    const double dx=std::floor(world.v[12]/cell)-cx,dz=std::floor(world.v[14]/cell)-cz,distance=std::max(std::abs(dx),std::abs(dz));
+    const bool pinned=std::binary_search(visible.begin(),visible.end(),id);++payload_stats_.scanned;
+    if(pinned||distance<=near){restore_payload(node);continue;}
+    if(distance<=far||!node.payload_page.empty()||(node.components.empty()&&node.metadata.empty()))continue;
+    Json::Object components;for(const auto& [type,fields]:node.components)components[type]=fields;
+    auto page=write_json(Json::Object{{"components",std::move(components)},{"metadata",node.metadata}});
+    if(page.size()<128)continue;
+    node.payload_page=std::move(page);payload_stats_.bytes+=node.payload_page.size();++payload_stats_.paged;++payload_stats_.compacted;
+    node.components.clear();node.metadata.clear();
+  }
+  return payload_stats_;
+}
 bool Scene::contains(const EntityId& id) const { return nodes_.contains(id); }
 EntityId Scene::create(std::string name, EntityId parent, EntityId id) {
   if (!parent.empty()) require(parent);
@@ -263,6 +297,7 @@ EntityId Scene::create(std::string name, EntityId parent, EntityId id) {
   }
   Node node; node.id=id; node.parent=parent; node.name=std::move(name);
   nodes_.emplace(id,std::move(node));
+  if(!payload_candidates_dirty_)payload_candidates_.push_back(id);
   if (parent.empty()) roots_.push_back(id); else require(parent).children.push_back(id);
   record_spatial_change(id);return id;
 }
@@ -291,7 +326,7 @@ Mat4 Scene::world_transform(const EntityId& id) const {
 Vec3 Scene::local_to_world(const EntityId& id,Vec3 p) const { return transform_point(world_transform(id),p); }
 Vec3 Scene::world_to_local(const EntityId& id,Vec3 p) const { world_transform(id);return transform_point(require(id).inverse,p); }
 EntitySnapshot Scene::inspect(const EntityId& id) const {
-  const auto& n=require(id); EntitySnapshot s{n.id,n.name,n.parent,n.children,n.local,world_transform(id),n.active,n.active,n.metadata,n.components};
+  const auto& n=require(id);restore_payload(n); EntitySnapshot s{n.id,n.name,n.parent,n.children,n.local,world_transform(id),n.active,n.active,n.metadata,n.components};
   for (auto parent=n.parent; !parent.empty(); parent=require(parent).parent) if (!require(parent).active) s.active_in_hierarchy=false;
   return s;
 }
@@ -329,7 +364,7 @@ void Scene::remove(const EntityId& id,ChildDisposition children) {
   std::vector<EntityId> ids{id};
   if(children==ChildDisposition::Destroy)for(std::size_t i=0;i<ids.size();++i){const auto& n=require(ids[i]);ids.insert(ids.end(),n.children.begin(),n.children.end());}
   detach(id);
-  for(const auto& removed:ids){for(const auto& [type,fields]:require(removed).components){(void)fields;auto at=component_index_.find(type);at->second.erase(removed);if(at->second.empty())component_index_.erase(at);}nodes_.erase(removed);record_spatial_change(removed);}
+  for(const auto& removed:ids){restore_payload(require(removed));for(const auto& [type,fields]:require(removed).components){(void)fields;auto at=component_index_.find(type);at->second.erase(removed);if(at->second.empty())component_index_.erase(at);}nodes_.erase(removed);record_spatial_change(removed);}payload_candidates_dirty_=true;
 }
 EntityId Scene::duplicate(const EntityId& id,EntityId parent,bool subtree) {
   require(id);if(!parent.empty())require(parent);
@@ -339,10 +374,10 @@ EntityId Scene::duplicate(const EntityId& id,EntityId parent,bool subtree) {
   for(const auto& original:source){const auto copy=inspect(original);const auto target=create(copy.name,original==id?parent:mapped.at(copy.parent));mapped.emplace(original,target);set_local(target,copy.local);set_active(target,copy.active);set_metadata(target,copy.metadata);for(const auto& [type,fields]:copy.components)add_component(target,type,fields);}
   return mapped.at(id);
 }
-void Scene::set_metadata(const EntityId& id,Json::Object metadata){require(id).metadata=std::move(metadata);}
-void Scene::add_component(const EntityId& id,std::string type,Json::Object fields){if(type.empty())invalid("Component type cannot be empty");require(id).components[type]=std::move(fields);component_index_[type].insert(id);record_spatial_change(id);}
-bool Scene::remove_component(const EntityId& id,std::string_view type){const auto key=std::string(type);if(!require(id).components.erase(key))return false;auto it=component_index_.find(key);it->second.erase(id);if(it->second.empty())component_index_.erase(it);record_spatial_change(id);return true;}
-std::optional<Json::Object> Scene::component(const EntityId& id,std::string_view type) const {const auto& c=require(id).components;auto it=c.find(std::string(type));if(it==c.end())return std::nullopt;return it->second;}
+void Scene::set_metadata(const EntityId& id,Json::Object metadata){auto& node=require(id);restore_payload(node);node.metadata=std::move(metadata);}
+void Scene::add_component(const EntityId& id,std::string type,Json::Object fields){if(type.empty())invalid("Component type cannot be empty");auto& node=require(id);restore_payload(node);node.components[type]=std::move(fields);component_index_[type].insert(id);record_spatial_change(id);}
+bool Scene::remove_component(const EntityId& id,std::string_view type){const auto key=std::string(type);auto& node=require(id);restore_payload(node);if(!node.components.erase(key))return false;auto it=component_index_.find(key);it->second.erase(id);if(it->second.empty())component_index_.erase(it);record_spatial_change(id);return true;}
+std::optional<Json::Object> Scene::component(const EntityId& id,std::string_view type) const {const auto& node=require(id);restore_payload(node);const auto& c=node.components;auto it=c.find(std::string(type));if(it==c.end())return std::nullopt;return it->second;}
 void Scene::set_world(const EntityId& id, Transform world) {
   const auto& parent = require(id).parent;
   const auto local = parent.empty() ? compose(world) : multiply(inverse_affine(world_transform(parent)), compose(world));
@@ -352,9 +387,11 @@ Json Scene::entity_json(const EntityId& id, bool include_derived) const {
   const auto& n=require(id);
   Json::Object local{{"position",vec(n.local.position)},{"rotation",quat(n.local.rotation)},{"scale",vec(n.local.scale)}};
   if(n.local.affine)local["affine"]=matrix(*n.local.affine);
-  Json::Object components;for(const auto& [type,fields]:n.components)components[type]=fields;
-  Json::Object result{{"id",n.id},{"name",n.name},{"parent",n.parent.empty()?Json(nullptr):Json(n.parent)},{"active",n.active},{"transform",std::move(local)},{"components",std::move(components)},{"metadata",n.metadata}};
-  if(include_derived){result["worldMatrix"]=matrix(world_transform(id));result["activeInHierarchy"]=inspect(id).active_in_hierarchy;}
+  Json::Object components,metadata;
+  if(n.payload_page.empty()){for(const auto& [type,fields]:n.components)components[type]=fields;metadata=n.metadata;}
+  else{const auto page=parse_json(n.payload_page);components=page.find("components")->object();metadata=page.find("metadata")->object();}
+  Json::Object result{{"id",n.id},{"name",n.name},{"parent",n.parent.empty()?Json(nullptr):Json(n.parent)},{"active",n.active},{"transform",std::move(local)},{"components",std::move(components)},{"metadata",std::move(metadata)}};
+  if(include_derived){result["worldMatrix"]=matrix(world_transform(id));bool active=n.active;for(auto p=n.parent;!p.empty();p=require(p).parent)active=active&&require(p).active;result["activeInHierarchy"]=active;}
   return result;
 }
 std::string Scene::serialize() const {

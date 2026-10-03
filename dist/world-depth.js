@@ -1,8 +1,8 @@
 'use strict';
 // Continuous heightfield: geometry, camera, picking and characters share one surface.
 const landHeights=new Map();
-let foundationLevels=new WeakMap(),foundationBuckets=null;
-function resetLandSurface(){worldObjectRevision++;worldObjectIndex=null;landHeights.clear();foundationLevels=new WeakMap();foundationBuckets=null;}
+let foundationLevels=new WeakMap(),foundationBuckets=null,landSurfaceRevision=0;
+function resetLandSurface(){landSurfaceRevision++;worldObjectRevision++;worldObjectIndex=null;landHeights.clear();foundationLevels=new WeakMap();foundationBuckets=null;}
 function shoreDistance(x,z){return Math.max(0,worldWaterDistance(x,z));}
 function cachedLandWater(x,z){return worldWaterSurface(x,z);}
 function landBase(x,z){const ridge=Math.exp(-Math.pow((x-185)/27,2))*7*(.65+.35*Math.cos(z*.045));return 2.4+1.5*Math.sin(x*.052)*Math.cos(z*.061)+1.1*Math.sin(z*.026+x*.019)+ridge;}
@@ -11,8 +11,9 @@ function shoreHeight(x,z){return Math.max(0,Math.min(gradeLand(x,z,landBase(x,z)
 function foundationLevel(b){if(foundationLevels.has(b))return foundationLevels.get(b);const x0=Math.floor(b.x-.7),x1=Math.ceil(b.x+b.w+.7),z0=Math.floor(b.y-.7),z1=Math.ceil(b.y+b.h+.7);let level=Infinity;for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++)level=Math.min(level,shoreHeight(x,z));level=Math.max(.03,level);foundationLevels.set(b,level);return level;}
 function landNode(x,z){
  if(!inWorld())return 0;const key=x+z*8192;if(landHeights.has(key))return landHeights.get(key);
- const water=shoreDistance(x,z);if(!water){const floor=Math.max(-1.2,worldWaterDistance(x,z)*.33);landHeights.set(key,floor);return floor;}
- let h=shoreHeight(x,z),weight=0,total=0,strength=0,onFoundation=false;
+ const signedWaterDistance=worldWaterDistance(x,z),water=Math.max(0,signedWaterDistance);if(signedWaterDistance<=0){const floor=Math.max(-1.2,signedWaterDistance*.33);landHeights.set(key,floor);return floor;}
+ // shoreHeight used to repeat worldWaterDistance after the cache miss above.
+ let h=Math.max(0,Math.min(gradeLand(x,z,landBase(x,z)),water*.33)),weight=0,total=0,strength=0,onFoundation=false;
  const excavation=currentScene==='overworld'&&typeof quarryAt==='function'&&quarryAt(x,z,8);
  if(!foundationBuckets){foundationBuckets=new Map();for(const b of buildings)for(let bz=Math.floor((b.y-13)/16);bz<=Math.floor((b.y+b.h+13)/16);bz++)for(let bx=Math.floor((b.x-13)/16);bx<=Math.floor((b.x+b.w+13)/16);bx++){const key=bx+bz*128;if(!foundationBuckets.has(key))foundationBuckets.set(key,[]);foundationBuckets.get(key).push(b);}}
  for(const b of foundationBuckets.get(Math.floor(x/16)+Math.floor(z/16)*128)||[]){const dx=Math.max(b.x-.7-x,0,x-b.x-b.w-.7),dz=Math.max(b.y-.7-z,0,z-b.y-b.h-.7),d=Math.hypot(dx,dz);if(d>=12||excavation&&d>0)continue;

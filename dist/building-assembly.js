@@ -20,6 +20,12 @@
  function category(key){if(/Roof/i.test(key))return /Corner/i.test(key)?'Roof corner':/End/i.test(key)?'Roof end':/Intersection|Cross/i.test(key)?'Roof intersection':'Roof straight';if(/Wall.*Door/i.test(key))return 'Door frames';if(/Wall.*Window|Window/i.test(key))return 'Windows';if(/Door/i.test(key))return 'Doors';if(/Wall.*Corner/i.test(key))return 'Wall corners';if(/Wall/i.test(key))return 'Walls';if(/Stair/i.test(key))return 'Stairs';if(/Floor/i.test(key))return 'Floors';if(/Balcony|Railing|Rail_/i.test(key))return 'Railings';if(/Column|Pillar/i.test(key))return 'Columns';if(/Foundation/i.test(key))return 'Foundations';return /Bed|Table|Chair|Shelf|Counter|Furnace|Anvil|Book|Chest|Throne/i.test(key)?'Interior props':'Exterior props';}
  function role(key){const c=category(key);return /Roof/.test(c)?'roof':/Door frames/.test(c)?'wall':c==='Doors'?'door':c==='Windows'?'window':/Wall/.test(c)?'wall':c==='Floors'?'floor':c==='Stairs'?'stairs':'prop';}
  function bounds(m){const pts=[];for(const x of [m.bounds[0][0],m.bounds[1][0]])for(const y of [m.bounds[0][1],m.bounds[1][1]])for(const z of [m.bounds[0][2],m.bounds[1][2]])pts.push(point(m.local,[x,y,z]));return [0,1].map(k=>[0,1,2].map(i=>Math[k?'max':'min'](...pts.map(p=>p[i]))));}
+ function jointBounds(m){
+  // The kit joins on the wall centre plane. Trim and frames must not push
+  // neighbouring structural modules apart when snapping their endpoints.
+  if(/Wall_(Plaster|UnevenBrick)_/.test(m.model)&&Math.abs(m.bounds[0][0]+1)<.01&&Math.abs(m.bounds[1][0]-1)<.01)return bounds({...m,bounds:[[-1,0,0],[1,3.02,0]]});
+  return bounds(m);
+ }
  function snap(a,candidate,config={}){
   const m=clone(candidate),grid=config.grid??.25,vertical=config.vertical??3,mode=config.mode||'edge',threshold=config.threshold??.65;
   if(grid>0){m.local[3]=Math.round(m.local[3]/grid)*grid;m.local[11]=Math.round(m.local[11]/grid)*grid;}
@@ -29,7 +35,7 @@
    if((m.role==='door'||m.role==='window')&&other.role!=='wall'&&other.role!=='window')continue;
    if(mode==='roof-edge'&&!['wall','roof'].includes(other.role))continue;
    if(mode==='stair-to-floor'&&other.role!=='floor')continue;
-   const aa=bounds(m),bb=bounds(other),ac=aa[0].map((v,i)=>(v+aa[1][i])/2),bc=bb[0].map((v,i)=>(v+bb[1][i])/2);
+   const aa=jointBounds(m),bb=jointBounds(other),ac=aa[0].map((v,i)=>(v+aa[1][i])/2),bc=bb[0].map((v,i)=>(v+bb[1][i])/2);
    if(m.role==='door'||m.role==='window'){const d=Math.hypot(ac[0]-bc[0],ac[2]-bc[2]);if(d<best){best=d;match={host:other.id,delta:[bc[0]-ac[0],0,bc[2]-ac[2]]};}continue;}
    const candidates=[];
    for(const axis of [0,2])for(const side of [0,1]){const delta=[0,0,0];delta[axis]=bb[1-side][axis]-aa[side][axis];const cross=axis===0?2:0;if(mode==='endpoint'||mode==='corner')delta[cross]=bb[0][cross]-aa[0][cross];else if(Math.abs(ac[cross]-bc[cross])<threshold)delta[cross]=bc[cross]-ac[cross];else if(aa[1][cross]<bb[0][cross]||aa[0][cross]>bb[1][cross])continue;candidates.push(delta);}

@@ -1,0 +1,1219 @@
+{
+  "method": "material/UV-aware vertex clustering",
+  "models": [
+    {
+      "model": "CommonTree_1",
+      "triangles": [
+        6265,
+        5192,
+        3653
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:CommonTree_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:CommonTree_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:CommonTree_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "CommonTree_4",
+      "triangles": [
+        4066,
+        3157,
+        2106
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:CommonTree_4"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:CommonTree_4_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:CommonTree_4_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "TwistedTree_1",
+      "triangles": [
+        9564,
+        8011,
+        5804
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:TwistedTree_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:TwistedTree_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:TwistedTree_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Pine_1",
+      "triangles": [
+        3947,
+        3210,
+        2138
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Pine_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Pine_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:Pine_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Pine_3",
+      "triangles": [
+        4964,
+        3991,
+        2455
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Pine_3"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Pine_3_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:Pine_3_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Rock_Medium_1",
+      "triangles": [
+        342,
+        272
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Rock_Medium_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Rock_Medium_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Rock_Medium_3",
+      "triangles": [
+        522,
+        476,
+        333
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Rock_Medium_3"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Rock_Medium_3_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:Rock_Medium_3_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Bush_Common",
+      "triangles": [
+        900
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Bush_Common"
+        }
+      ]
+    },
+    {
+      "model": "World_Anvil_Log",
+      "triangles": [
+        3808,
+        1458,
+        658
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Anvil_Log"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Anvil_Log_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Anvil_Log_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Barrel",
+      "triangles": [
+        824,
+        690,
+        320
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Barrel"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Barrel_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Barrel_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bed_Twin1",
+      "triangles": [
+        1600,
+        928,
+        478
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bed_Twin1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bed_Twin1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bed_Twin1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bed_Twin2",
+      "triangles": [
+        1584,
+        912,
+        478
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bed_Twin2"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bed_Twin2_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bed_Twin2_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bench",
+      "triangles": [
+        404,
+        218,
+        114
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bench"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bench_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bench_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bookcase_2",
+      "triangles": [
+        2148,
+        732,
+        514
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bookcase_2"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bookcase_2_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bookcase_2_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_BookGroup_Medium_1",
+      "triangles": [
+        416,
+        218,
+        137
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_BookGroup_Medium_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_BookGroup_Medium_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_BookGroup_Medium_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_BookStand",
+      "triangles": [
+        1526,
+        695,
+        146
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_BookStand"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_BookStand_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_BookStand_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bucket_Wooden_1",
+      "triangles": [
+        976,
+        773,
+        527
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bucket_Wooden_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bucket_Wooden_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bucket_Wooden_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_CandleStick",
+      "triangles": [
+        730,
+        592,
+        364
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_CandleStick"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_CandleStick_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_CandleStick_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Chair_1",
+      "triangles": [
+        496,
+        425,
+        146
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Chair_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Chair_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Chair_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Chest_Wood",
+      "triangles": [
+        2546,
+        1681,
+        797
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Chest_Wood"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Chest_Wood_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Chest_Wood_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Crate_Wooden",
+      "triangles": [
+        1576,
+        856,
+        522
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Crate_Wooden"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Crate_Wooden_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Crate_Wooden_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_FarmCrate_Apple",
+      "triangles": [
+        4028,
+        3013,
+        1412
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_FarmCrate_Apple"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_FarmCrate_Apple_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_FarmCrate_Apple_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Lantern_Wall",
+      "triangles": [
+        2822,
+        1380,
+        704
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Lantern_Wall"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Lantern_Wall_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Lantern_Wall_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Pickaxe_Bronze",
+      "triangles": [
+        776,
+        395,
+        127
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Pickaxe_Bronze"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Pickaxe_Bronze_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Pickaxe_Bronze_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Potion_1",
+      "triangles": [
+        440,
+        373
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Potion_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Potion_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Pouch_Large",
+      "triangles": [
+        730,
+        508,
+        358
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Pouch_Large"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Pouch_Large_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Pouch_Large_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Stall_Cart_Empty",
+      "triangles": [
+        3936,
+        1449,
+        553
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Stall_Cart_Empty"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Stall_Cart_Empty_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Stall_Cart_Empty_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Table_Large",
+      "triangles": [
+        986,
+        372,
+        217
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Table_Large"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Table_Large_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Table_Large_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_WeaponStand",
+      "triangles": [
+        2084,
+        960,
+        426
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_WeaponStand"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_WeaponStand_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_WeaponStand_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Workbench",
+      "triangles": [
+        1368,
+        478,
+        216
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Workbench"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Workbench_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Workbench_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_normal",
+      "triangles": [
+        804,
+        645,
+        541
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_normal"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_normal_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:ResourceTree_normal_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_oak",
+      "triangles": [
+        1856,
+        1469,
+        1254
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_oak"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_oak_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:ResourceTree_oak_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_willow",
+      "triangles": [
+        1276,
+        1035,
+        892
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_willow"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_willow_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:ResourceTree_willow_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_maple",
+      "triangles": [
+        2490,
+        1908,
+        1441
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_maple"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_maple_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:ResourceTree_maple_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_yew",
+      "triangles": [
+        532,
+        453
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_yew"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_yew_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "ResourceTree_magic",
+      "triangles": [
+        1212,
+        981,
+        816
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:ResourceTree_magic"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:ResourceTree_magic_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:ResourceTree_magic_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Bush_Common_Flowers",
+      "triangles": [
+        1368,
+        1148
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Bush_Common_Flowers"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Bush_Common_Flowers_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Mushroom_Common",
+      "triangles": [
+        880,
+        725,
+        505
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Mushroom_Common"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Mushroom_Common_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:Mushroom_Common_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "Mushroom_Laetiporus",
+      "triangles": [
+        3216,
+        2456,
+        1161
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:Mushroom_Laetiporus"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:Mushroom_Laetiporus_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:Mushroom_Laetiporus_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bag",
+      "triangles": [
+        858,
+        711,
+        467
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bag"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bag_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bag_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Bottle_1",
+      "triangles": [
+        312,
+        283,
+        131
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Bottle_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Bottle_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Bottle_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Cabinet",
+      "triangles": [
+        2388,
+        678,
+        318
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Cabinet"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Cabinet_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Cabinet_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Cauldron",
+      "triangles": [
+        2020,
+        1571,
+        902
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Cauldron"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Cauldron_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Cauldron_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Chandelier",
+      "triangles": [
+        5680,
+        2019,
+        856
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Chandelier"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Chandelier_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Chandelier_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_FarmCrate_Empty",
+      "triangles": [
+        1928,
+        926,
+        404
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_FarmCrate_Empty"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_FarmCrate_Empty_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_FarmCrate_Empty_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Peg_Rack",
+      "triangles": [
+        712,
+        258,
+        131
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Peg_Rack"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Peg_Rack_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Peg_Rack_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Pot_1",
+      "triangles": [
+        1068,
+        850,
+        522
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Pot_1"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Pot_1_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Pot_1_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Shelf_Arch",
+      "triangles": [
+        1286,
+        344,
+        151
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Shelf_Arch"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Shelf_Arch_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Shelf_Arch_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Shelf_Simple",
+      "triangles": [
+        480,
+        214,
+        68
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Shelf_Simple"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Shelf_Simple_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Shelf_Simple_LOD2"
+        }
+      ]
+    },
+    {
+      "model": "World_Workbench_Drawers",
+      "triangles": [
+        364,
+        228,
+        67
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "threshold": 0,
+          "asset": "rebuilt:World_Workbench_Drawers"
+        },
+        {
+          "level": 1,
+          "threshold": 35,
+          "asset": "rebuilt:World_Workbench_Drawers_LOD1"
+        },
+        {
+          "level": 2,
+          "threshold": 80.5,
+          "asset": "rebuilt:World_Workbench_Drawers_LOD2"
+        }
+      ]
+    }
+  ]
+}

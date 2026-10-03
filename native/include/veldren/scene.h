@@ -99,6 +99,10 @@ struct EntitySnapshot {
 enum class ChildDisposition { Destroy, ReparentToRoot };
 enum class Context { Runtime, Editor };
 
+struct PayloadPagingStats {
+  std::size_t paged = 0, bytes = 0, compacted = 0, restored = 0, scanned = 0;
+};
+
 class Scene {
   friend class EditorHistory;
  public:
@@ -138,6 +142,13 @@ class Scene {
   static Scene deserialize(std::string_view text);
   // Version 1 editor overlays are imported without changing the legacy file.
   static Scene migrate_legacy_edits(std::string_view text, std::string scene);
+  // The Scene remains the sole owner. Only component/metadata maps are paged;
+  // transforms, hierarchy, IDs and component indices remain queryable. Reads
+  // and edits fault data back in, and serialization includes every page.
+  PayloadPagingStats page_payloads(Vec3 center, double radius,
+                                  const std::vector<EntityId>& visible,
+                                  std::size_t budget = 64);
+  PayloadPagingStats payload_paging() const { return payload_stats_; }
 
  private:
   struct Node {
@@ -148,8 +159,9 @@ class Scene {
     mutable Mat4 world, inverse;
     mutable bool dirty = true;
     bool active = true;
-    Json::Object metadata;
-    std::map<std::string, Json::Object> components;
+    mutable Json::Object metadata;
+    mutable std::map<std::string, Json::Object> components;
+    mutable std::string payload_page;
   };
   std::string name_;
   std::unordered_map<EntityId, Node> nodes_;
@@ -159,6 +171,11 @@ class Scene {
   bool spatial_tracking_=false;
   std::uint64_t spatial_revision_=0;
   std::deque<std::pair<std::uint64_t,EntityId>> spatial_changes_;
+  std::vector<EntityId> payload_candidates_;
+  std::size_t payload_cursor_ = 0;
+  bool payload_candidates_dirty_ = true;
+  mutable PayloadPagingStats payload_stats_;
+  void restore_payload(const Node& node) const;
   void record_spatial_change(const EntityId& id);
   Node& require(const EntityId& id);
   const Node& require(const EntityId& id) const;

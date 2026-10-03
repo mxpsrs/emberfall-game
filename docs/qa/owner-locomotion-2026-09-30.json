@@ -1,0 +1,76 @@
+{
+  "animationSha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+  "comparisons": [
+    {
+      "frame": "male",
+      "clip": "walk",
+      "source": "Walk_Loop",
+      "samples": 41,
+      "joints": 65,
+      "maxError": {
+        "rotationComponents": 2.8442608457357466e-07,
+        "nonRootTranslation": 2.8621058634215046e-08,
+        "scale": 2.5347810050924124e-07
+      }
+    },
+    {
+      "frame": "male",
+      "clip": "run",
+      "source": "Jog_Fwd_Loop",
+      "samples": 29,
+      "joints": 65,
+      "maxError": {
+        "rotationComponents": 3.1307843340044883e-07,
+        "nonRootTranslation": 1.28025587242675e-07,
+        "scale": 2.6081549808765203e-07
+      }
+    },
+    {
+      "frame": "female",
+      "clip": "walk",
+      "source": "Walk_Loop",
+      "samples": 41,
+      "joints": 65,
+      "maxError": {
+        "rotationComponents": 2.8289174991424915e-07,
+        "nonRootTranslation": 2.9480159091654912e-08,
+        "scale": 2.7239360655961775e-07
+      }
+    },
+    {
+      "frame": "female",
+      "clip": "run",
+      "source": "Jog_Fwd_Loop",
+      "samples": 29,
+      "joints": 65,
+      "maxError": {
+        "rotationComponents": 3.188064809367397e-07,
+        "nonRootTranslation": 1.4090961775181654e-07,
+        "scale": 2.6554113219390274e-07
+      }
+    }
+  ],
+  "passed": true,
+  "unchangedRigGeometryAppearanceAndOtherClips": true,
+  "realBrowserWebGL": {
+    "passed": true,
+    "renderedCharacters": 4,
+    "clips": [
+      "Walk_Loop",
+      "Jog_Fwd_Loop"
+    ],
+    "frames": [
+      "male",
+      "female"
+    ],
+    "pageErrors": 0
+  },
+  "regressionsPassed": [
+    "owner-character-reset",
+    "authored-motion",
+    "animation-smoothing",
+    "movement-loop",
+    "filament-character-parity",
+    "built-worker-source-and-migration"
+  ]
+}

@@ -11,7 +11,7 @@ fs.writeFileSync(path.join(temporary,'filament.cjs'),source);fs.copyFileSync('di
 try{
  const factory=createRequire(import.meta.url)(path.join(temporary,'filament.cjs'));await new Promise(resolve=>factory.init([],resolve));const F=global.__VELDREN_TEST_FILAMENT__;
  for(const mode of ['runtime','editor']){
-  let api;const {instance}=await WebAssembly.instantiate(fs.readFileSync('dist/native/veldren-core.wasm'),{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,environ_sizes_get:(a,b)=>{const m=new DataView(api.memory.buffer);m.setUint32(a,0,true);m.setUint32(b,0,true);return 0;}}});api=instance.exports;api._initialize();
+  let api;const {instance}=await WebAssembly.instantiate(fs.readFileSync('dist/native/veldren-core.wasm'),{env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,environ_sizes_get:(a,b)=>{const m=new DataView(api.memory.buffer);m.setUint32(a,0,true);m.setUint32(b,0,true);return 0;}}});api=instance.exports;api._initialize();
   const context={TextEncoder,TextDecoder,Uint8Array,Uint16Array,Uint32Array,Float32Array,AbortController,atob,Filament:F,realmAssetURL:p=>p,fetch:async p=>({ok:true,json:async()=>JSON.parse(fs.readFileSync('dist/'+p,'utf8'))})};vm.createContext(context);
   for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync('dist/'+file+'.js','utf8'),context);
   const assets=context.VeldrenAssets;await assets.initialize(api);const engine=F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig()),scene=engine.createScene();
@@ -32,7 +32,9 @@ try{
   let nearPriorityVerified=false;
   while((completedBudgetDraws<expectedBudgetDraws||completedBudgetDraws2<expectedBudgetDraws2)&&budgetFrames<200){buildBudget.beginFrame();budgetDraws.begin('budget');for(let i=0;i<100;i++)assert(budgetDraws.submit(id,matrix,1000,null,'budget:'+i));budgetDraws.end();budgetDraws2.begin('budget');for(let i=0;i<20;i++)assert(budgetDraws2.submit(id,matrix,1,null,'near:'+i));budgetDraws2.end();buildBudget.drain();assert(buildBudget.diagnostics().used<=buildBudget.diagnostics().limit);completedBudgetDraws=budgetDraws.diagnostics().activeRenderables;completedBudgetDraws2=budgetDraws2.diagnostics().activeRenderables;if(completedBudgetDraws2&&!nearPriorityVerified){assert.equal(completedBudgetDraws,0,'near-camera instances are materialized before distant work across draw owners');nearPriorityVerified=true;}budgetFrames++;}
   assert(nearPriorityVerified);assert(budgetFrames>1);assert.equal(completedBudgetDraws,expectedBudgetDraws);assert.equal(completedBudgetDraws2,expectedBudgetDraws2);assert.equal(budgetDraws.diagnostics().pendingInstances,0);assert.equal(budgetDraws2.diagnostics().pendingInstances,0);budgetDraws.destroy();budgetDraws2.destroy();engine.destroyScene(budgetScene);engine.destroyScene(budgetScene2);
-  draws.begin('one');draws.submit(id,[...matrix.slice(0,12),5,2,4,1]);draws.end();assert.equal(draws.diagnostics().instances,9);assert(scene.getRenderableCount()<10);
+  draws.begin('one');draws.submit(id,[...matrix.slice(0,12),5,2,4,1]);draws.end();assert.equal(draws.diagnostics().instances,33,'mobile retains a bounded set of recently culled identities');assert(scene.getRenderableCount()<10);
+  for(let i=0;i<121;i++){draws.begin('one');draws.submit(id,matrix);draws.end();}
+  assert.equal(draws.diagnostics().instances,1,'unused identities retire after the boundary grace interval');
   // Stable Scene identities preserve transforms when visibility changes order.
   const originalTransform=F.TransformManager.prototype.setTransform;let submissions=0;
   F.TransformManager.prototype.setTransform=function(...args){submissions++;return originalTransform.apply(this,args);};

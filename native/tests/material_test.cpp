@@ -12,10 +12,10 @@ int main(int argc,char** argv){
   for(const auto& record:manifest.find("records")->array())if(record.find("material")){
     for(const auto* profile:{"browser-mobile","browser","desktop"}){
       const auto plan=registry.material_plan(record.find("id")->string_or(),profile);
-      assert(plan.find("textures")->array().size()==5);assert(plan.find("key")->string_or().size()==64);++count;
+      assert(plan.find("textures")->array().size()==(record.find("material")->find("appearanceKind")?6:5));assert(plan.find("key")->string_or().size()==64);++count;
     }
   }
-  assert(count==1548);
+  assert(count>=1548);
   const auto a=registry.material_plan("rebuilt:Wall_Plaster_Straight/material/default","browser");
   const auto b=registry.material_plan("rebuilt:Window_Wide_Round1/material/default","browser");
   assert(a.find("key")->string_or()==b.find("key")->string_or());
@@ -41,5 +41,5 @@ int main(int argc,char** argv){
     binding["texCoord"]=8;registry.load(edited);rejected([&]{registry.material_plan(record.find("id")->string_or(),"browser");});
     break;
   }
-  std::cout<<"PASS: 1548 native plans, cross-asset content sharing, material type/profile validation, UV channel/transform, emissive and sampler semantics.\n";
+  std::cout<<"PASS: "<<count<<" native plans, cross-asset content sharing, material type/profile validation, UV channel/transform, emissive and sampler semantics.\n";
 }

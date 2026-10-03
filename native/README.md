@@ -16,6 +16,14 @@ cooking, firemaking, smelting probabilities, inventory capacity, crafting-capaci
 checks, bank transfer quantities, and coin debits run here. `dist/native-runtime.js`
 loads the module and marshals browser state across the ABI.
 
+Browser builds are verified with Emscripten 4.0.10. The browser and asset worker
+provide the standalone module's WASI environment hooks and `fd_close` returning
+BADF (no filesystem descriptors). ABI 19 also offers reusable packed visible-draw
+and LOD transfer buffers and bounded native Scene payload paging. See
+`docs/RENDERER-ENGINE-UPGRADE-2026-09-30.md` for formats, preservation guarantees,
+test results and performance limits. `make world-payload-test` verifies paging
+with serialization, editor history, collision and hierarchy queries.
+
 ABI 16 adds indexed, hierarchy-aware footprint queries for transformed structural
 collision and room/stair-opening queries. It also resolves permanent point lights from native Scene components,
 including hierarchy activation, world transforms, scaled radii and day/night

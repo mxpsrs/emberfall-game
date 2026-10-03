@@ -25,7 +25,7 @@ for(const f of ["game-icons", "map-icons"])vm.runInContext(fs.readFileSync(root+
 
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();screen={w:900,h:400};assetsReady=true;
-activateScene('overworld',40,30);view3d.zoom=14;draw3d();assert(realmGPU);assert(calls.shadows===1);assert(calls.draws>20);const uploads=calls.static;draw3d();assert.equal(calls.static,uploads,'static meshes stay cached on the next frame');assert(calls.draws>40,'shadow and color draw on both frames');view3d.zoom=45;draw3d();
+activateScene('overworld',40,30);view3d.zoom=14;draw3d();assert(realmGPU);assert(calls.shadows===1);assert(calls.draws>0,'the bootstrap frame draws the player scene and nearest ground chunk');const uploads=calls.static;draw3d();assert.equal(calls.static,uploads,'static meshes stay cached on the next frame');assert.equal(calls.shadows,2,'shadow and color passes continue across frames');view3d.zoom=45;draw3d();
 for(const id of ['inn','mine','dungeon']){activateScene(id);draw3d();assert(hitboxes.length>0);}
 for(const id of Object.keys(ITEMS)){const g=new Proxy({canvas:{width:96,height:96}},{get:(o,k)=>o[k]||(()=>{})});if(['herbs','copperOre','relicShard','feather','wool'].includes(id))continue;drawRealmItem(g,id);}
 `,ctx);

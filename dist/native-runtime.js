@@ -6,7 +6,7 @@
   if(!response.ok)throw new Error('Native world core unavailable ('+response.status+')');
   let api;
   const wasiMemory=()=>api?.memory?new DataView(api.memory.buffer):null;
-  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{
+  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},
    proc_exit(code){throw new Error('Native world core exited ('+code+')');},
    environ_sizes_get(countPointer,sizePointer){const memory=wasiMemory();if(!memory)return 21;memory.setUint32(countPointer,0,true);memory.setUint32(sizePointer,0,true);return 0;},
    environ_get(){return 0;}
@@ -33,13 +33,93 @@
     return textDecoder.decode(new Uint8Array(api.memory.buffer,pointer,length));
    }finally{if(pointer)api.free(pointer);}
   }
-  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map();let cacheRevision=-1,batchDepth=0,readDepth=0,readRevision=-1;
+  const sceneListeners=new Set(),entityCache=new Map(),batchedScenes=new Map(),understoryBatchIds=new Set();let cacheRevision=-1,batchDepth=0,readDepth=0,readRevision=-1,batchCacheMode='clear';
+  const isUnderstoryBatch=event=>event?.kind==='batch'&&event.understory===true&&event.scene==='overworld'&&Array.isArray(event.changes)&&event.changes.length>0&&event.changes.every(change=>change?.kind==='upsert'&&typeof change.id==='string'&&change.id.startsWith('generated:overworld:understory'));
   const sceneRevision=()=>readDepth?readRevision:api.veldren_world_scene_revision(world);
   const refreshReadRevision=()=>{if(readDepth)readRevision=api.veldren_world_scene_revision(world);};
   function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
-  function changed(ok,kind,scene=null,id=null){refreshReadRevision();if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);}else for(const listener of sceneListeners)listener({kind,scene,id});}return ok;}
-  function finishBatch(){if(--batchDepth!==0)return;const names=[...batchedScenes];batchedScenes.clear();if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}for(const [scene,entries]of names)for(const listener of sceneListeners)listener({kind:'batch',scene,changes:[...entries].map(([id,kind])=>({id,kind}))});}
-  let commandWriter=null,performanceHandle=0;
+  function changed(ok,kind,scene=null,id=null){refreshReadRevision();if(ok){if(construction&&scene!==null&&!construction.names.includes(scene)){construction.names.push(scene);construction.names.sort();}if(batchDepth){
+    const revision=api.veldren_world_scene_revision(world),understoryUpsert=kind==='upsert'&&scene==='overworld'&&typeof id==='string'&&id.startsWith('generated:overworld:understory');
+    // Streaming only appends new foliage records. Keep cached snapshots for all
+    // existing entities while the batch is known to contain only those inserts.
+    // Every other write invalidates the cache, including mixed batches.
+    if(understoryUpsert&&batchCacheMode!=='clear'){entityCache.get(scene)?.delete(id);cacheRevision=revision;batchCacheMode='preserve';}
+    else{entityCache.clear();cacheRevision=revision;batchCacheMode='clear';}
+    if(!batchedScenes.has(scene))batchedScenes.set(scene,new Map());batchedScenes.get(scene).set(id,kind);
+   }else{entityCache.clear();cacheRevision=api.veldren_world_scene_revision(world);for(const listener of sceneListeners)listener({kind,scene,id});}}return ok;}
+  function finishBatch(){
+   if(--batchDepth!==0)return;
+   const names=[...batchedScenes];batchedScenes.clear();
+   try{
+    if(names.some(([scene])=>scene===null)){for(const listener of sceneListeners)listener({kind:'load',scene:null,id:null});return;}
+    for(const [scene,entries]of names){
+     const changes=[...entries].map(([id,kind])=>({id,kind})),understory=scene==='overworld'&&changes.length>0&&changes.every(change=>change.kind==='upsert'&&understoryBatchIds.has(scene+'\0'+change.id));
+     for(const change of changes)understoryBatchIds.delete(scene+'\0'+change.id);
+     const event={kind:'batch',scene,changes,...(understory?{understory:true}:{})};
+     if(!(understory&&batchCacheMode==='preserve'&&cacheRevision===api.veldren_world_scene_revision(world))){entityCache.clear();cacheRevision=api.veldren_world_scene_revision(world);}
+     for(const listener of sceneListeners)listener(event);
+    }
+   }finally{understoryBatchIds.clear();batchCacheMode='clear';}
+  }
+  let commandWriter=null,performanceHandle=0,frameCamera=0,frameStringsRevision=-1,frameStrings=[];
+  let frameBytes=new Uint8Array(0),frameWords=null,frameFloats=null,frameMatrices=[],frameMatrixOffset=-1;
+  const frameResult={ids:[],lights:[],stats:{},lod:{},drawCount:0,drawBuffer:true,strings:null,words:null,floats:null,matrixAt:index=>frameMatrices[index]};
+  const frameStatKeys=['records','cells','staticRecords','dynamicRecords','largeRecords','updated','rebuilds','queriedCells','consideredSpatialRecords','visibleSpatialRecords','consideredRenderables','visibleRenderables','frustumCulled','distanceCulled','projectedCulled','visibleLights'];
+  const frameLodKeys=['lod0','lod1','lod2','missingLods','transitions','tracked'];
+  const frameSymbols=new Map(),lodRowPool=[],lodResult={selections:[],stats:{}};
+  const payloadPaging={paged:0,bytes:0,compacted:0,restored:0,scanned:0};
+  function pagePayloads(scene,center,radius=128,budget=64){
+   const handle=performanceOwner(),pointer=withCString(scene,p=>api.veldren_performance_page_payloads(handle,p,center[0],center[2],radius,budget));
+   if(!pointer){const error=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(handle,out,size)));throw Error(error.error||'Payload paging failed');}
+   const words=new Uint32Array(api.memory.buffer,pointer,5);payloadPaging.paged=words[0];payloadPaging.bytes=words[1];payloadPaging.compacted=words[2];payloadPaging.restored=words[3];payloadPaging.scanned=words[4];return payloadPaging;
+  }
+  let lodScratch=0,lodCapacity=0,lodBytes=new Uint8Array(0),lodSymbols=new Uint32Array(0);
+  function refreshFrameStrings(revision){if(frameStringsRevision===revision)return;frameStrings=JSON.parse(readNativeText((out,size)=>api.veldren_performance_frame_strings(performanceHandle,out,size),'frame-strings'));frameStringsRevision=revision;for(let i=0;i<frameStrings.length;i++)frameSymbols.set(frameStrings[i],i);}
+  function frameSymbol(value){if(frameSymbols.has(value))return frameSymbols.get(value);const encoded=withCString(value,p=>api.veldren_performance_intern(performanceHandle,p));if(!encoded)throw Error('Frame symbol rejected');const index=encoded-1;frameSymbols.set(value,index);return index;}
+  function performanceOwner(){
+   if(destroyed)throw Error('Native world destroyed');
+   if(!performanceHandle){performanceHandle=api.veldren_performance_create(world,globalThis.VeldrenAssets?.nativeHandle||0);if(!performanceHandle)throw Error('World performance owner unavailable');}
+   return performanceHandle;
+  }
+  function visibleFrame(scene,camera,profile='browser'){
+   const handle=performanceOwner();
+   if(!api.veldren_performance_visible_frame)throw Error('Native frame ABI unavailable');
+   if(!frameCamera){frameCamera=api.malloc(13*8);if(!frameCamera)throw Error('Native frame camera allocation failed');}
+   let values=new Float64Array(api.memory.buffer,frameCamera,13);
+   for(let i=0;i<3;i++){values[i]=camera.eye[i];values[i+3]=camera.center[i];}
+   values[6]=camera.near;values[7]=camera.far;values[8]=camera.left;values[9]=camera.right;values[10]=camera.bottom;values[11]=camera.top;values[12]=camera.height;
+   const profileId=profile==='browser-mobile'?1:profile==='native-desktop'?2:profile==='browser'?0:-1;
+   const ok=withCString(scene,p=>api.veldren_performance_visible_frame(handle,p,frameCamera,profileId));
+   if(!ok){const error=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(handle,out,size)));throw Error(error.error||'Native frame rejected');}
+   const length=api.veldren_performance_frame_size(handle),pointer=api.veldren_performance_frame_data(handle);
+   if(length<132||length>64*1024*1024||!pointer)throw Error('Invalid native frame size');
+   if(length>frameBytes.length){let size=Math.max(4096,frameBytes.length);while(size<length)size*=2;frameBytes=new Uint8Array(size);frameWords=new Uint32Array(frameBytes.buffer);frameFloats=new Float32Array(frameBytes.buffer);frameMatrixOffset=-1;}
+   frameBytes.set(new Uint8Array(api.memory.buffer,pointer,length));const h=frameWords;
+   if(h[0]!==0x5646524d||h[1]!==1||h[2]!==length||h[7]!==132||h[8]!==132+h[4]*4||h[9]!==h[8]+h[5]*84||h[9]+h[6]*4!==length)throw Error('Invalid native frame layout');
+   refreshFrameStrings(h[3]);
+   const symbol=index=>{const value=frameStrings[index];if(typeof value!=='string')throw Error('Invalid frame symbol');return value;};
+   frameResult.ids.length=h[4];for(let i=0;i<h[4];i++)frameResult.ids[i]=symbol(h[h[7]/4+i]);
+   frameResult.lights.length=h[6];for(let i=0;i<h[6];i++)frameResult.lights[i]=symbol(h[h[9]/4+i]);
+   for(let i=0;i<16;i++)frameResult.stats[frameStatKeys[i]]=h[10+i];frameResult.stats.considered=h[32];
+   for(let i=0;i<6;i++)frameResult.lod[frameLodKeys[i]]=h[26+i];
+   if(frameMatrixOffset!==h[8]){frameMatrices=[];frameMatrixOffset=h[8];}
+   for(let i=frameMatrices.length;i<h[5];i++)frameMatrices.push(new Float32Array(frameBytes.buffer,h[8]+i*84+16,16));
+   frameResult.drawCount=h[5];frameResult.drawOffset=h[8]/4;frameResult.strings=frameStrings;frameResult.words=frameWords;frameResult.floats=frameFloats;
+   return frameResult;
+  }
+  function lodFrame(scene,entries){
+   const handle=performanceOwner(),count=entries.length;if(count>100000)throw Error('LOD frame exceeds limit');
+   if(count>lodCapacity){let capacity=Math.max(64,lodCapacity);while(capacity<count)capacity*=2;const pointer=api.malloc(capacity*16);if(!pointer)throw Error('LOD transfer allocation failed');if(lodScratch)api.free(lodScratch);lodScratch=pointer;lodCapacity=capacity;lodSymbols=new Uint32Array(capacity*2);}
+   // Interning can grow the WASM heap, so create the views after symbol lookup.
+   for(let i=0;i<count;i++){lodSymbols[i*2]=frameSymbol(entries[i][0]);lodSymbols[i*2+1]=frameSymbol(entries[i][1]);}
+   const symbols=new Uint32Array(api.memory.buffer,lodScratch,count*2),distances=new Float64Array(api.memory.buffer,lodScratch+lodCapacity*8,count);for(let i=0;i<count*2;i++)symbols[i]=lodSymbols[i];for(let i=0;i<count;i++)distances[i]=entries[i][2];
+   const ok=withCString(scene,p=>api.veldren_performance_lod_frame(handle,p,lodScratch,lodScratch+lodCapacity*8,count));if(!ok){const result=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(handle,out,size)));throw Error(result.error||'LOD frame rejected');}
+   const length=api.veldren_performance_lod_size(handle),pointer=api.veldren_performance_lod_data(handle);if(length!==48+count*16||!pointer)throw Error('Invalid LOD transfer');
+   if(length>lodBytes.length){let size=Math.max(4096,lodBytes.length);while(size<length)size*=2;lodBytes=new Uint8Array(size);}lodBytes.set(new Uint8Array(api.memory.buffer,pointer,length));const words=new Uint32Array(lodBytes.buffer),floats=new Float32Array(lodBytes.buffer);
+   if(words[0]!==0x564c4f44||words[1]!==1||words[2]!==length||words[4]!==count||words[11]!==16)throw Error('Invalid LOD frame layout');refreshFrameStrings(words[3]);
+   lodResult.selections.length=count;for(let i=0;i<count;i++){const row=lodRowPool[i]||(lodRowPool[i]=['',0,0,0]),o=12+i*4;row[0]=frameStrings[words[o]];row[1]=words[o+1];row[2]=words[o+2];row[3]=floats[o+3];lodResult.selections[i]=row;}
+   for(let i=0;i<6;i++)lodResult.stats[frameLodKeys[i]]=words[5+i];return lodResult;
+  }
   // Startup mappers still author temporary import documents; the native Scene
   // remains the only live owner. Avoid cloning/reloading the entire native world
   // for every category. This scope ends before gameplay/editor commands start.
@@ -102,10 +182,13 @@
    }
    rememberConstruction(document);return true;
   }
+  function beginBatch(){if(batchDepth===0)batchCacheMode=cacheRevision===api.veldren_world_scene_revision(world)||entityCache.size===0?'candidate':'clear';batchDepth++;}
   const scenes={
+   frame:visibleFrame,
+   lodFrame,
+   pagePayloads,
    performance(scene,request){
-    if(destroyed)throw Error('Native world destroyed');
-    if(!performanceHandle){performanceHandle=api.veldren_performance_create(world,globalThis.VeldrenAssets?.nativeHandle||0);if(!performanceHandle)throw Error('World performance owner unavailable');}
+    performanceOwner();
     withCString(JSON.stringify({...request,scene}),p=>api.veldren_performance_command(performanceHandle,p));
     const result=JSON.parse(readNativeText((out,size)=>api.veldren_performance_response(performanceHandle,out,size)));
     if(!result.ok)throw Error(result.error);return result.value;
@@ -143,14 +226,15 @@
     if(value.changed){const transforms=request.action!=='undo'&&request.action!=='redo'&&(request.operations||[]).length&&(request.operations||[]).every(op=>['transform','translate','rotate','scale'].includes(op.op));scenes.batch(()=>{for(const id of new Set(value.affected))changed(true,transforms?'transform':scenes.entity(scene,id)?'upsert':'remove',scene,id);});}
     return freeze(value);
    },
-   batch(callback){batchDepth++;try{return callback();}finally{finishBatch();}},
-   async batchAsync(callback){batchDepth++;try{return await callback();}finally{finishBatch();}},
+   batch(callback){beginBatch();try{return callback();}finally{finishBatch();}},
+   async batchAsync(callback){beginBatch();try{return await callback();}finally{finishBatch();}},
    async construct(callback){
     if(construction)throw Error('World construction is already active');
     construction={metadata:null,names:[],snapshot:null};rememberConstruction(fullRead());
     try{return await scenes.batchAsync(callback);}finally{construction=null;entityCache.clear();cacheRevision=-1;}
    },
    subscribe(listener){sceneListeners.add(listener);return ()=>sceneListeners.delete(listener);},
+   isUnderstoryBatch,
    // A synchronous draw shares one revision read. Scene writes refresh it before
    // any getter or subscriber can observe the change, even inside a batch.
    withReadScope(callback){
@@ -176,7 +260,7 @@
       if(scenes.entity(scene,node.id))continue;
       const ok=withCString(scene,s=>withCString(JSON.stringify(node),n=>api.veldren_world_scene_entity_upsert(world,s,n)===1));
       if(!ok)throw Error('Cannot construct understory entity');
-      inserted.push(node.id);changed(true,'upsert',scene,node.id);
+      inserted.push(node.id);understoryBatchIds.add(scene+'\0'+node.id);changed(true,'upsert',scene,node.id);
      }
      return true;
     }catch(error){for(const id of inserted.reverse())changed(withCString(scene,s=>withCString(id,n=>api.veldren_world_scene_entity_remove(world,s,n)===1)),'remove',scene,id);throw error;}});
@@ -199,7 +283,7 @@
   // The editor has the same canonical C++ Scene, with no actor transfer buffer,
   // simulation stepping, gameplay rules, inventory or combat capability.
   if(editor){window.addEventListener('pagehide',destroy,{once:true});return window.realmNative=Object.freeze({kind:'cpp-wasm',context:'editor',abi:19,scenes,destroy});}
-  const resourceCache=new Map();scenes.subscribe(()=>resourceCache.clear());
+  const resourceCache=new Map();scenes.subscribe(event=>{if(!scenes.isUnderstoryBatch(event))resourceCache.clear();});
   const resources=Object.freeze({
    read(scene,id){const key=JSON.stringify([scene,id]);if(resourceCache.has(key))return resourceCache.get(key);const json=withCString(scene,s=>withCString(id,e=>readNativeText((out,capacity)=>api.veldren_resource_state_read(world,s,e,out,capacity))));const state=json?freeze(JSON.parse(json)):null;resourceCache.set(key,state);return state;},
    patch(scene,id,patch){const ok=withCString(scene,s=>withCString(id,e=>withCString(JSON.stringify(patch),p=>api.veldren_resource_state_patch(world,s,e,p)===1)));if(ok)resourceCache.delete(JSON.stringify([scene,id]));return ok;},
@@ -270,7 +354,7 @@
    if(!active.length)return;if(api.veldren_animation_states_resolve(world,animationScratch,active.length)!==active.length)throw new Error('Native world core lost actor animation state');
    const clips=['idle','walk','run','death','hit','attack','attack2','attack3','cast','cast2','throw'];for(let index=0;index<active.length;index++){const offset=animationScratch+index*48;active[index]._nativeAnimation={clip:clips[memory.getUint32(offset+4,true)]||'idle',baseClip:clips[memory.getUint32(offset+12,true)]||'idle',phase:memory.getFloat32(offset+20,true),blend:memory.getFloat32(offset+24,true),basePhase:memory.getFloat32(offset+44,true)};}
   }
-  function destroy(){if(destroyed)return;destroyed=true;if(performanceHandle)api.veldren_performance_destroy(performanceHandle);globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
+  function destroy(){if(destroyed)return;destroyed=true;if(performanceHandle)api.veldren_performance_destroy(performanceHandle);if(frameCamera)api.free(frameCamera);if(lodScratch)api.free(lodScratch);frameMatrices=[];frameStrings=[];frameSymbols.clear();frameBytes=new Uint8Array(0);lodBytes=new Uint8Array(0);globalThis.VeldrenAssets?.destroy();api.free(scratch);if(routeCells)api.free(routeCells);if(routeIds)api.free(routeIds);if(animationScratch)api.free(animationScratch);api.veldren_world_destroy(world);liveHandles.clear();}
   window.addEventListener('pagehide',destroy,{once:true});
   const rules={
    chance:probability=>api.veldren_random_chance(world,probability)===1,

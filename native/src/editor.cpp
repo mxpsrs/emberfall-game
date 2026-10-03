@@ -53,7 +53,7 @@ void validate_component(const std::string& type,const Json::Object& fields,const
 
 void EditorHistory::touch(Scene& scene,const EntityId& id) {
   if(pending_->before.contains(id))return;
-  const auto found=scene.nodes_.find(id);pending_->before.emplace(id,found==scene.nodes_.end()?std::nullopt:std::optional(found->second));
+  const auto found=scene.nodes_.find(id);if(found!=scene.nodes_.end())scene.restore_payload(found->second);pending_->before.emplace(id,found==scene.nodes_.end()?std::nullopt:std::optional(found->second));
 }
 void EditorHistory::touch_branch(Scene& scene,const EntityId& id) {
   std::vector<EntityId> ids{id};for(std::size_t i=0;i<ids.size();++i){touch(scene,ids[i]);const auto& children=scene.require(ids[i]).children;ids.insert(ids.end(),children.begin(),children.end());}
@@ -61,11 +61,13 @@ void EditorHistory::touch_branch(Scene& scene,const EntityId& id) {
 void EditorHistory::restore(Scene& scene,const Patch& patch,const std::vector<EntityId>& roots) {
   for(const auto& [id,node]:patch){
     const auto old=scene.nodes_.find(id);
+    if(old!=scene.nodes_.end())scene.restore_payload(old->second);
     if(old!=scene.nodes_.end())for(const auto& [type,fields]:old->second.components){(void)fields;auto& ids=scene.component_index_[type];ids.erase(id);if(ids.empty())scene.component_index_.erase(type);}
     if(node){scene.nodes_[id]=*node;for(const auto& [type,fields]:node->components){(void)fields;scene.component_index_[type].insert(id);}}
     else {scene.nodes_.erase(id);scene.record_spatial_change(id);}
   }
   scene.roots_=roots;
+  scene.payload_candidates_dirty_=true;
   for(const auto& [id,node]:patch)if(node)scene.mark_dirty(id);
 }
 void EditorHistory::begin(Scene& scene,const std::string& label) {
@@ -86,7 +88,7 @@ bool EditorHistory::commit(Scene& scene) {
   bool different=scene.roots_!=pending_->before_roots;
   if(pending_->terrain_touched){pending_->after_terrain=terrain();different=different||pending_->before_terrain!=pending_->after_terrain;}
   for(const auto& [id,before]:pending_->before){
-    const auto at=scene.nodes_.find(id);pending_->after[id]=at==scene.nodes_.end()?std::nullopt:std::optional(at->second);
+    const auto at=scene.nodes_.find(id);if(at!=scene.nodes_.end())scene.restore_payload(at->second);pending_->after[id]=at==scene.nodes_.end()?std::nullopt:std::optional(at->second);
     // Cached matrices/dirty flags are derived; history compares persistent fields.
     if(bool(before)!=bool(pending_->after[id]))different=true;
     else if(before){

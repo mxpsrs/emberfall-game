@@ -28,6 +28,13 @@ assert(nature.length>1800,'the continent receives dense streamed ground cover');
 for(const name of ['Grass_Wispy_Short','Bush_Common','Fern_1','Flower_3_Group'])assert(nature.some(p=>p.name===name),name+' is represented in biome-aware ground cover');
 for(const name of ['Kenney_GrassLarge','Kenney_GrassLeafsLarge','Kenney_MushroomRed','Kenney_BushDetailed','Kenney_RockLarge','Kenney_FlowerPurple'])assert(nature.some(p=>p.name===name),name+' is integrated into Briarhaven ground cover');
 assert(nature.every(p=>worldWaterDistance(p.x,p.z)>=.55&&roadInfluence(p.x,p.z)[0]<=.23),'ground cover stays out of water and travelled road centers');
+let splitVerified=false;
+for(let bz=4;bz<16&&!splitVerified;bz++)for(let bx=4;bx<16&&!splitVerified;bx++){
+ const whole=worldUnderstoryPlacements(bx,bz);if(!whole.length)continue;
+ const split=[0,1,2,3].flatMap(part=>worldUnderstoryPlacements(bx,bz,part));
+ assert.deepEqual(split.map(JSON.stringify).sort(),whole.map(JSON.stringify).sort(),'incremental vegetation parts reproduce the complete stable chunk, including companions across a part edge');splitVerified=true;
+}
+assert(splitVerified,'a populated chunk is available to verify incremental vegetation generation');
 for(const b of worldScenes.overworld.buildings.filter(b=>b.archetype==='castle')){
  activateScene('overworld',b.service.x,b.service.y);setWalkInDoor(b.service,false,true);
  assert(inBuilding(b,b.service.x,b.service.y-1));setWalkInDoor(b.service,true,true);
@@ -37,3 +44,15 @@ for(const b of worldScenes.overworld.buildings.filter(b=>b.archetype==='castle')
 }
 `,ctx);
 console.log('PASS: organic surface normals, imported mesh bounds/materials, biome ground cover, elven woodland and all three castle entrances and exits.');
+vm.runInContext(`
+activateScene('overworld',320,280);screen.w=900;screen.h=520;view3d.zoom=32;view3d.yaw=0;
+const preparedParts=[],knownChunks=new Set(),knownParts=new Set(),initialUnderstory=visibleWorldUnderstoryChunks();assert.strictEqual(visibleWorldUnderstoryChunks(),initialUnderstory,'visible understory candidates are cached for an unchanged camera');knownChunks.add(initialUnderstory[0].join(':'));
+VeldrenSceneryScene={enabled:true,hasChunk:(bx,bz)=>knownChunks.has(bx+':'+bz),hasChunkPart:(bx,bz,part)=>knownParts.has(bx+':'+bz+':'+part),prepareChunkPart(bx,bz,part,plants){preparedParts.push({bx,bz,part,count:plants.length});knownParts.add(bx+':'+bz+':'+part);if([0,1,2,3].every(i=>knownParts.has(bx+':'+bz+':'+i)))knownChunks.add(bx+':'+bz);}};
+prepareWorldUnderstory();assert.equal(preparedParts.length,1,'at most one vegetation subchunk is materialized per frame');const first=preparedParts[0];assert.notEqual(first.bx+':'+first.bz,initialUnderstory[0].join(':'),'already materialized chunks are skipped');assert.equal(first.part,0);
+prepareWorldUnderstory();assert.equal(preparedParts.length,2);assert.equal(preparedParts[1].bx+':'+preparedParts[1].bz,first.bx+':'+first.bz,'the current logical chunk is spread across frames');assert.equal(preparedParts[1].part,1);
+prepareWorldUnderstory();assert.equal(preparedParts.length,3);assert.equal(preparedParts[2].part,2);
+prepareWorldUnderstory();assert.equal(preparedParts.length,4);assert.equal(preparedParts[3].part,3,'all four stable parts eventually complete the chunk');assert(knownChunks.has(first.bx+':'+first.bz));
+prepareWorldUnderstory();assert.equal(preparedParts.length,5,'after completion, the next frame advances to the next chunk');
+px+=8;assert.notStrictEqual(visibleWorldUnderstoryChunks(),initialUnderstory,'crossing into another terrain cell refreshes cached visibility');const beforeMove=preparedParts.length;prepareWorldUnderstory();assert.equal(preparedParts.length,beforeMove+1,'moving to a new terrain cell refreshes the prioritized queue');
+`,ctx);
+console.log('PASS: understory builds one stable subchunk per frame, skips existing chunks, and refreshes priority after camera movement.');

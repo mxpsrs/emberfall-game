@@ -26,10 +26,20 @@ async function bootEditor(){
    await window.VeldrenSceneOwnership.migrateWorld(realmStartupStep);
   }
   // These viewport coordinates are editor state, never a player spawn or save.
-  px=55;py=50;target=null;resize();assetsReady=true;last=performance.now();
-  realmLoadComplete();await window.VeldrenEditorBridge?.initialize?.();
+  // The editor opens the authored overworld, independent of the fresh-player
+  // tutorial destination chosen while hydrating the shared construction graph.
+  currentScene='overworld';
+  if(window.VeldrenWorldObjects?.enabled)VeldrenWorldObjects.select(worldScenes.overworld.objects);
+  else objects.splice(0,objects.length,...worldScenes.overworld.objects);
+  buildings.splice(0,buildings.length,...worldScenes.overworld.buildings);
+  resetLandSurface();px=55;py=50;target=null;resize();assetsReady=true;last=performance.now();
+  const bridge=window.VeldrenEditorBridge;
+  if(!bridge)throw Error('Editor controls did not load');
+  await bridge.initialize();
+  if(!bridge.isReady())throw Error('Editor controls could not initialize');
   const canonical=window.VeldrenSceneOwnership?.document?.();
-  if(canonical)window.VeldrenEditorBridge?.adoptCanonicalDocument?.(canonical);
+  if(canonical)bridge.adoptCanonicalDocument(canonical);
+  realmLoadComplete();
   requestAnimationFrame(editorFrame);
  }catch(error){assetsReady=false;realmLoadFailure('The editor world could not start.',error,'editor-world');}
 }

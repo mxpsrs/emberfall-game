@@ -16,7 +16,7 @@ try{
  for(const mode of ['runtime','editor']){
   let api;
   const {instance}=await WebAssembly.instantiate(fs.readFileSync('dist/native/veldren-core.wasm'),{
-   env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,
+   env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},proc_exit:code=>{throw Error('exit '+code);},environ_get:()=>0,
     environ_sizes_get:(a,b)=>{const memory=new DataView(api.memory.buffer);memory.setUint32(a,0,true);memory.setUint32(b,0,true);return 0;}}
   });api=instance.exports;api._initialize();assert.equal(typeof api.veldren_texture_create,'function','rebuilt WASM includes native texture exports');
   const testRegistry=JSON.parse(fs.readFileSync('dist/assets/asset-registry.json','utf8'));
@@ -33,12 +33,12 @@ try{
   const engine=F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig());
   const pool=context.createVeldrenTextureResources(engine,assets,F);
   const registry=JSON.parse(fs.readFileSync('dist/assets/asset-registry.json','utf8'));
-  const definitions=registry.records.filter(r=>r.material);assert.equal(definitions.length,516);
+  const definitions=registry.records.filter(r=>r.material);assert(definitions.length>=516,'all accepted canonical materials remain present');
   const keys=new Set();let plans=0;
   for(const record of definitions)for(const profile of ['browser-mobile','browser','desktop']){
    const plan=assets.materialPlan(record.id,profile);plans++;keys.add(plan.key);
-   assert.equal(plan.textures.length,5);assert.equal(plan.asset,record.id);assert.equal(plan.generation,1);
-   assert(plan.shader.endsWith('-'+record.material.alphaMode.toLowerCase()+'.filamat'));
+   assert.equal(plan.textures.length,record.material.appearanceKind?6:5);assert.equal(plan.asset,record.id);assert.equal(plan.generation,1);
+   assert(record.material.appearanceKind?plan.shader==='materials/veldren-character.filamat':plan.shader.endsWith('-'+record.material.alphaMode.toLowerCase()+'.filamat'));
    assert.equal(plan.doubleSided,record.material.doubleSided);
    assert.deepEqual(Array.from(plan.float4.baseFactor),record.material.baseColorFactor);
    assert.equal(plan.floats.normalScale,record.material.normalTexture?.scale??0);

@@ -115,7 +115,8 @@ function drawRealmCrossings(r){
  }realmArtCrossings=[...crossings.values()];}
  // Large bridge meshes used to enter the frame long before their terrain,
  // leaving detached slabs above the horizon in distant settlement views.
- for(const b of realmArtCrossings){if(typeof realmWideWorldLimit3==='function'&&Math.hypot(b.x-px,b.z-py)>realmWideWorldLimit3())continue;const p=project3(b.x,0,b.z);if(p.x< -48||p.x>screen.w+48||p.y<40||p.y>screen.h+90)continue;emitMesh3(r,cachedMesh3(b,'prop',r=>realmBridge(r,b.x,b.z,Math.max(b.w,b.d)+6,Math.min(b.w,b.d),b.w>b.d)));}
+ const bounds=globalThis.realmViewBounds3;
+ for(const b of realmArtCrossings){if(bounds?.valid&&(b.x+b.w/2<bounds.minx-3||b.x-b.w/2>bounds.maxx+3||b.z+b.d/2<bounds.minz-3||b.z-b.d/2>bounds.maxz+3))continue;if(typeof realmWideWorldLimit3==='function'&&Math.hypot(b.x-px,b.z-py)>realmWideWorldLimit3())continue;const p=project3(b.x,0,b.z);if(p.x< -48||p.x>screen.w+48||p.y<40||p.y>screen.h+90)continue;emitMesh3(r,cachedMesh3(b,'prop',r=>realmBridge(r,b.x,b.z,Math.max(b.w,b.d)+6,Math.min(b.w,b.d),b.w>b.d)));}
 }
 
 const realmArtWalls=new Map();

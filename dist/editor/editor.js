@@ -296,7 +296,7 @@
   try{
    const win=frame.contentWindow,doc=frame.contentDocument;if(!win||!doc)return;
    if(doc.readyState==='loading'||!win.VeldrenAssembly||!win.VeldrenBuildings){setTimeout(injectBridge,100);return;}
-   if(win.VeldrenEditorBridge){connect(win.VeldrenEditorBridge);return;}
+   if(win.VeldrenEditorBridge){waitForBridge();return;}
    if(doc.getElementById('veldrenEditorRuntime'))return;
    const script=doc.createElement('script');script.id='veldrenEditorRuntime';script.src='/editor/editor-runtime.js';
    script.onload=waitForBridge;script.onerror=()=>log('Editor runtime failed to load.','error');doc.body.appendChild(script);
@@ -306,11 +306,12 @@
  function waitForBridge(){
   let tries=0;const timer=setInterval(()=>{
    const candidate=frame.contentWindow?.VeldrenEditorBridge;
-   if(candidate){clearInterval(timer);connect(candidate);}
+   if(candidate?.isReady()){clearInterval(timer);connect(candidate);}
    else if(++tries>600){clearInterval(timer);log('World never became editor-ready.','error');}
   },100);
  }
  async function connect(candidate){
+  if(!candidate?.isReady()||bridge===candidate)return;
   bridge=candidate;bridge.setTool(tool);updateSnap();updateTerrainBrush();terrainState();status.textContent='Connected to Veldren world';terminalState.textContent='Connected';
   if(bridge.listScenes){$('sceneSelect').replaceChildren(...bridge.listScenes().map(scene=>new Option(scene.name,scene.id)));$('sceneSelect').value=bridge.sceneName();$('sceneSelect').onchange=()=>{try{bridge.selectScene($('sceneSelect').value);setTool('select');refreshEntities();refreshAssets();}catch(error){$('sceneSelect').value=bridge.sceneName();log(error.message,'error');}};}
   gameUiVisible=!!bridge.gameUiVisible?.();

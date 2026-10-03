@@ -20,13 +20,13 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   F.Engine.create=()=>F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig());
   const textures=new Uint8Array(fs.readFileSync(path.join(root,'dist/assets/realms/ground-surfaces-mobile.png')));
   const parent={insertBefore(node){node.parentElement=this;}},world={parentElement:parent};
-  let groundHeight=0,transforms=0;
+  let groundHeight=0,transforms=0,heightReads=0;
   const original=F.TransformManager.prototype.setTransform;
   F.TransformManager.prototype.setTransform=function(...args){transforms++;return original.apply(this,args);};
   const context={TextEncoder,TextDecoder,AbortController,atob,realmAssetURL:p=>p,Filament:F,console,performance,Math,Float32Array,Uint8Array,Uint16Array,Map,Set,WeakMap,Promise,Error,Number,Array,
    document:{createElement(){return {className:'',dataset:{},style:{},setAttribute(){},width:0,height:0};},getElementById(id){return id==='world'?world:null;}},
    VELDREN_FILAMENT_ASSETS:{material:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-world.filamat'))),terrainMaterial:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.filamat'))),atlasBytes:textures,groundSurfacesBytes:textures},
-   realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>groundHeight,
+   realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>{heightReads++;return groundHeight;},landSurfaceRevision:0,
    screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},profile3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
   context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+file+'.js'),'utf8'),context);
   // Real native residency decisions via the production world bridge.
@@ -43,16 +43,24 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const models=Array.from({length:256},(_,i)=>[1,0,0,(i%16)*3,0,1,0,0,0,0,1,Math.floor(i/16)*3]);
   const entries=models.map(model=>({buffer,stride:48,model}));
   const render=()=>gpu.render(entries,[],null);
-  render();const initialTransforms=transforms;
+  render();assert(gpu.scene.getRenderableCount()<256,'first-frame static construction is bounded');
+  for(let i=0;i<80&&gpu.scene.getRenderableCount()<256;i++)render();
+  assert.equal(gpu.scene.getRenderableCount(),256,'all deferred static entities eventually become resident');
+  assert(gpu.performanceSnapshot().construction.maxUsed<=16,'legacy and canonical construction share the desktop quota');
+  const initialTransforms=transforms,initialHeightReads=heightReads;
   const start=performance.now();for(let i=0;i<30;i++)render();const steadyMs=performance.now()-start;
-  const steadyTransforms=transforms-initialTransforms;
-  models[7][3]+=1;render();const movementTransforms=transforms-initialTransforms-steadyTransforms;
-  const beforeHeight=transforms;groundHeight=2;render();const groundingTransforms=transforms-beforeHeight;
+  const steadyTransforms=transforms-initialTransforms,steadyHeightReads=heightReads-initialHeightReads;
+  const beforeMoveHeightReads=heightReads;models[7][3]+=1;render();const movementTransforms=transforms-initialTransforms-steadyTransforms,movementHeightReads=heightReads-beforeMoveHeightReads;
+  const beforeHeight=transforms,beforeGroundingReads=heightReads;groundHeight=2;context.landSurfaceRevision++;render();const groundingTransforms=transforms-beforeHeight,groundingHeightReads=heightReads-beforeGroundingReads;
   if(!process.env.BENCHMARK_BASELINE){
    assert.equal(initialTransforms,256,'each new entity receives its world transform');
    assert.equal(steadyTransforms,0,'stationary entities do not resend transforms to Filament');
+   assert.equal(initialHeightReads,256,'new transforms sample the terrain once');
+   assert.equal(steadyHeightReads,0,'stationary transforms skip repeated terrain sampling');
    assert.equal(movementTransforms,1,'mutated model matrix moves only its own entity');
+   assert.equal(movementHeightReads,1,'a moved transform resamples terrain only for that entity');
    assert.equal(groundingTransforms,256,'terrain sculpting immediately regrounds all visible entities');
+   assert.equal(groundingHeightReads,256,'a terrain revision regrounds all active transforms');
   }
   assert.equal(gpu.diagnostics().frame,null,'production frame instrumentation is disabled by default');
   context.VELDREN_PERFORMANCE=true;render();
@@ -88,7 +96,8 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const submitted=[];const setTransform=F.TransformManager.prototype.setTransform;
   F.TransformManager.prototype.setTransform=function(instance,matrix){submitted.push(Array.from(matrix));return setTransform.call(this,instance,matrix);};
   const drawBuilding=()=>{const painter=context.painter3(null,context.project3);assert.equal(painter.cached(building),4);painter.flush();};
-  drawBuilding();
+  drawBuilding();for(let i=0;i<80&&buildingGpu.scene.getRenderableCount()<100;i++)drawBuilding();
+  assert.equal(buildingGpu.scene.getRenderableCount(),100);
   assert.equal(buildingGpu.diagnostics().legacy.meshes,1,'all building parts share one vertex/index allocation');
   assert.equal(buildingGpu.diagnostics().legacy.renderables,100,'every authored part remains present');
   assert.equal(buildingGpu.diagnostics().legacy.gpuBytes,4*44+6*2,'index topology is preserved instead of expanding triangles per building');
@@ -97,6 +106,16 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   parts[7].matrix[3]+=3;drawBuilding();assert.equal(submitted.length,1,'moving a part updates only that part');
   parts.pop();drawBuilding();assert.equal(buildingGpu.scene.getRenderableCount(),99,'removed/cutaway parts leave the rendered scene');
   F.TransformManager.prototype.setTransform=setTransform;
+  // Assembly faces used to rebuild into the dynamic stream on every frame.
+  context.briarPoint=(p,_unused,m)=>[m[0]*p[0]+m[1]*p[1]+m[2]*p[2]+m[3],m[4]*p[0]+m[5]*p[1]+m[6]*p[2]+m[7],m[8]*p[0]+m[9]*p[1]+m[10]*p[2]+m[11]];
+  const assembly={kind:'assembly',height:2,model:[1,0,0,0,0,1,0,0,0,0,1,0],instances:[],faces:[{points:[[0,0,0],[1,0,0],[0,0,1]],color:'#808080'}]};
+  context.VELDREN_PERFORMANCE=true;
+  const drawAssembly=()=>{const painter=context.painter3(null,context.project3);painter.cached(assembly);painter.flush();};
+  drawAssembly();const assemblyEntry=buildingGpu.cache.get(assembly);drawAssembly();
+  assert.equal(buildingGpu.cache.get(assembly),assemblyEntry,'unchanged assembly faces retain their GPU packet');assert.equal(buildingGpu.diagnostics().frame.dynamicVertices,0);
+  assembly.model[3]=7;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),assemblyEntry,'moving the native assembly rebuilds its baked surface once');
+  const movedAssembly=buildingGpu.cache.get(assembly);context.landSurfaceRevision++;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),movedAssembly,'terrain edits refresh assembly grounding');
+  context.VELDREN_PERFORMANCE=false;
   // Animated CPU poses retain separate simultaneous shapes, but recycle their
   // native geometry allocation across frames rather than retaining every pose.
   const poseA={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)},poseB={...partMesh,poseSource:partMesh,p:new Float32Array(partMesh.p)};

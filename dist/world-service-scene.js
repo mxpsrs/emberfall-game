@@ -83,7 +83,7 @@
   }}
   // Construction sources are no longer owners; held legacy references still forward.
   sources.clear();
-  if(!enabled)native().subscribe(event=>{if(event.kind==='load'){for(const r of views.values())r.reset();for(const scene of Object.keys(registry()))project(scene);}else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
+  if(!enabled)native().subscribe(event=>{if(native().isUnderstoryBatch?.(event))return;if(event.kind==='load'){for(const r of views.values())r.reset();for(const scene of Object.keys(registry()))project(scene);}else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
   enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function at(scene,x,z){return enabled?Object.freeze([...new Set(native().footprintsAt(scene,'ServiceCollider',x+.5,z+.5).map(id=>node(scene,id).components.ServiceCollider.owner))].filter(id=>node(scene,id)?.components.ServiceDefinition).map(id=>getView(scene,id))):Object.freeze([]);}

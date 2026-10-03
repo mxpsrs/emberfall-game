@@ -1,6 +1,6 @@
 """Retarget CC0 Universal Animation Library motion onto the shipped human rigs.
 
-Usage: python scripts/import-authored-motion.py .asset-cache/quaternius
+Usage: python scripts/import-authored-motion.py .asset-cache/quaternius [--locomotion-only]
 The original character meshes and world art are preserved. The two source packs
 are available from quaternius.itch.io; source names and hashes are recorded below.
 """
@@ -182,7 +182,7 @@ class Retarget:
         return socket[:3].ravel().tolist()
 
 
-def build(cache):
+def build(cache, locomotion_only=False):
     source = Gltf(next(cache.rglob('UAL1_Standard.glb')))
     dest = ROOT/'dist/assets/realms/models.js'
     out = json.loads(dest.read_text().removeprefix('const REALM_MODELS=').strip().removesuffix(';'))
@@ -191,15 +191,28 @@ def build(cache):
              'walk': ('Walk_Loop', 1.333), 'run': ('Jog_Fwd_Loop', .933),
              'melee': ('Sword_Attack', 1.05), 'unarmed': ('Punch_Cross', .65),
              'magic': ('Spell_Simple_Shoot', .65)}
+    # Keep the author's full walk and jog poses. Travel speed controls playback
+    # cadence in the game; it must not alter the authored joint motion.
+    for name in ('walk', 'run'):
+        original, _ = clips[name]
+        clips[name] = (original, float(source.duration(original)))
+    if locomotion_only:
+        assert sources['animation'] == out['motionSource']['files']['animation'], 'Use the pinned original animation source'
+        clips = {name: clips[name] for name in ('walk', 'run')}
     for sex, avatar in out['avatars'].items():
         target = Gltf(next(cache.rglob('Superhero_'+sex.capitalize()+'_FullBody.gltf')))
         rig = Retarget(source, target)
         assert len(rig.joints) == avatar['joints']
         bind = target.acc(target.g['skins'][0]['inverseBindMatrices']).reshape(-1, 4, 4).transpose(0, 2, 1)
         names = [target.nodes[j]['name'] for j in rig.joints]
-        avatar['rig'] = {'names': names, 'parents': rig.parents, 'bind': packed(bind[:, :3]),
-                         'head': names.index('Head'), 'right': names.index('hand_r'), 'left': names.index('hand_l'),
-                         'rightGrip': rig.grip('r'), 'leftGrip': rig.grip('l')}
+        if locomotion_only:
+            assert names == avatar['rig']['names'] and rig.parents == avatar['rig']['parents'], 'Target rig changed'
+            assert packed(bind[:, :3]) == avatar['rig']['bind'], 'Target bind pose changed'
+            assert hashlib.sha256(target.path.read_bytes()).hexdigest() == out['motionSource']['files'][sex]['sha256'], 'Use the pinned original character source'
+        else:
+            avatar['rig'] = {'names': names, 'parents': rig.parents, 'bind': packed(bind[:, :3]),
+                             'head': names.index('Head'), 'right': names.index('hand_r'), 'left': names.index('hand_l'),
+                             'rightGrip': rig.grip('r'), 'leftGrip': rig.grip('l')}
         foot = np.frombuffer(base64.b64decode(avatar['mesh']['p']), dtype='<f4').reshape(-1, 3)
         foot_ids = np.flatnonzero(foot[:, 1] < .25)
         foot = np.c_[foot[foot_ids], np.ones(len(foot_ids))]
@@ -207,20 +220,12 @@ def build(cache):
         weights /= weights.sum(axis=1)[:, None]
         influences = np.frombuffer(base64.b64decode(avatar['mesh']['j']), dtype='u1').reshape(-1, 4)[foot_ids]
         for name, (original, duration) in clips.items():
-            frames = math.ceil(duration*30)+1
+            frames = math.ceil(duration*30-1e-5)+1
             poses = []
             for f in range(frames):
                 phase = f/(frames-1)
                 local = np.asarray(rig.local_trs(rig.pose(original, source.duration(original)*phase)))
-                if name == 'run':
-                    # Blend the author's walk and jog for this game's travel speed;
-                    # the full sprinting stride was too long for four tiles/second.
-                    walk = np.asarray(rig.local_trs(rig.pose('Walk_Loop', source.duration('Walk_Loop')*phase)))
-                    signs = np.where((local[:, 3:7]*walk[:, 3:7]).sum(axis=1)<0, -1, 1)
-                    local[:, 3:7] *= signs[:, None]
-                    local = (local+walk)*.5
-                    local[:, 3:7] /= np.linalg.norm(local[:, 3:7], axis=1)[:, None]
-                elif name == 'melee':
+                if name == 'melee':
                     # Keep a planted lower body for a stationary attack. Preserve
                     # the authored upper-body turn by transferring pelvis rotation
                     # into the first spine joint before applying the resting legs.
@@ -251,7 +256,6 @@ def build(cache):
                 poses.append(local)
             avatar['clips'][name] = {'duration': duration, 'frames': frames, 'trs': packed(poses),
                                      'source': original, 'sourceDuration': float(source.duration(original))}
-            if name == 'run': avatar['clips'][name]['layers'] = '50% Walk_Loop / 50% Jog_Fwd_Loop'
             if name == 'melee': avatar['clips'][name]['layers'] = 'Sword_Attack upper body / Sword_Idle planted legs'
             if name == 'magic': avatar['clips'][name]['layers'] = 'Spell_Simple_Shoot / right-hand staff grip'
         # Keep the previous bow pose until a bow-specific motion is integrated.
@@ -267,4 +271,4 @@ def build(cache):
 
 
 if __name__ == '__main__':
-    build(pathlib.Path(sys.argv[1]))
+    build(pathlib.Path(sys.argv[1]), locomotion_only='--locomotion-only' in sys.argv[2:])

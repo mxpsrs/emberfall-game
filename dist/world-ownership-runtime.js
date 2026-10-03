@@ -12,7 +12,7 @@
  function worldRegistry(){return typeof worldScenes!=='undefined'?worldScenes:(root.worldScenes||{});}
  function activeScene(){return typeof currentScene!=='undefined'?String(currentScene):String(root.currentScene||'');}
  function activeObjects(){return typeof objects!=='undefined'?objects:root.objects||null;}
- function invalidateWorld(){if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation?.clear?.();if(typeof resetLandSurface==='function')resetLandSurface();}
+ function invalidateWorld(){root.VeldrenTerrainStreaming?.invalidateBase();if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation?.clear?.();if(typeof resetLandSurface==='function')resetLandSurface();}
 
  function safe(value,depth=0,seen=new Set()){
   if(value==null||typeof value==='string'||typeof value==='boolean'||typeof value==='number')return Number.isFinite(value)||typeof value!=='number'?value:undefined;
@@ -275,6 +275,7 @@
   root.VeldrenWorldObjects.install();return reports;
  }
  function onSceneChange(event){
+  if(root.realmNative?.scenes.isUnderstoryBatch?.(event))return;
   const names=event.kind==='load'?Object.keys(worldRegistry()):[event.scene];
   for(const name of names){
    const table=scenesByName.get(name);if(!table)continue;

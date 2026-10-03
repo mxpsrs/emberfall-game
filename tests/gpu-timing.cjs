@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const context={painter3:null};context.window=context;vm.createContext(context);vm.runInContext(fs.readFileSync('dist/renderer-filament.js','utf8'),context);
+assert.equal(context.createVeldrenGpuTimer({}).sample(),null);
+let next=0,active=null,disjoint=false,available=false,deletes=0,reads=0;
+const ext={TIME_ELAPSED_EXT:1,GPU_DISJOINT_EXT:2},gl={QUERY_RESULT_AVAILABLE:3,QUERY_RESULT:4,CURRENT_QUERY:5,getExtension:()=>ext,createQuery:()=>++next,beginQuery:(_,q)=>active=q,endQuery:()=>active=null,getQuery:()=>active,getParameter:()=>disjoint,getQueryParameter:(_,kind)=>{if(kind===3)return available;reads++;return 4000000;},deleteQuery:()=>deletes++};
+const timer=context.createVeldrenGpuTimer({getContext:()=>gl});
+for(let i=0;i<8;i++){timer.begin();timer.end();}assert.equal(next,4,'pending GPU queries stay bounded');assert.equal(reads,0,'unavailable results never block');
+available=true;timer.begin();timer.end();assert.equal(timer.sample(),4);assert.equal(deletes,4);
+disjoint=true;available=false;timer.begin();timer.end();assert.equal(timer.sample(),null,'disjoint GPU timings are discarded');assert.equal(deletes,5);
+console.log('PASS: GPU timing handles unsupported devices, asynchronous results, bounded queries, and disjoint resets.');

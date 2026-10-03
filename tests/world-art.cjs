@@ -7,6 +7,8 @@ vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/
 vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
 vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
 for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
+const realmArtCrossingsBase=vm.runInContext('drawRealmCrossings',ctx);
+ctx.realmArtCrossingsBase=realmArtCrossingsBase;
 
 // Load production dependencies added since this regression was introduced.
 for(const f of ["assets/realms/models", "realms-rebuilt", "tree-identity", "world-depth", "organic-world", "walk-in-world", "world-style", "building-orientation", "assets/realms/monsters", "assets/realms/approved-creatures", "creatures", "game-icons", "map-icons"])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
@@ -53,6 +55,10 @@ renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();s
 activateScene('overworld',14,17);view3d.zoom=14;draw3d();assert(realmGPU);assert(calls.shadows===1);assert(calls.draws>20);const uploads=calls.static;draw3d();assert.equal(calls.static,uploads,'static meshes stay cached on the next frame');assert(calls.dynamic>=2);view3d.zoom=45;draw3d();
 for(const t of SETTLEMENTS){activateScene('overworld',...realmDestination(t));view3d.zoom=14;draw3d();assert(hitboxes.some(h=>h.building),t.name);assert([...staticMeshQueues3.building.values()].filter(frame=>frame!==meshFrame3).length<=80);const count=calls.static;draw3d();assert.equal(calls.static,count,t.name+' reuses visible models');}
 assert(realmArtCrossings.length>=4);
+const oldBounds={...realmViewBounds3},oldWideLimit=realmWideWorldLimit3,oldProject3=project3;let crossingProjectionCount=0;
+Object.assign(realmViewBounds3,{minx:10000,maxx:10010,minz:10000,maxz:10010,valid:true});realmWideWorldLimit3=()=>Infinity;project3=(...args)=>{crossingProjectionCount++;return oldProject3(...args);};
+realmArtCrossingsBase({indexed(){throw Error('an offscreen crossing must not submit a mesh');}});assert.equal(crossingProjectionCount,0,'offscreen crossings skip projection and mesh submission');
+Object.assign(realmViewBounds3,oldBounds);realmWideWorldLimit3=oldWideLimit;project3=oldProject3;
 for(const id of ['inn','mine','dungeon','realm_ironhollow_25','realm_aelindor_25','realm_crownreach_25']){activateScene(id);draw3d();assert(hitboxes.length>0);}
 for(const id of Object.keys(ITEMS)){const g=new Proxy({canvas:{width:96,height:96}},{get:(o,k)=>o[k]||(()=>{})});if(['herbs','copperOre','relicShard','feather','wool'].includes(id))continue;drawRealmItem(g,id);}
 `,ctx);

@@ -79,7 +79,7 @@
   hydrate();return report;
  }
  function hydrate(){
-  if(!enabled){for(const map of [typeof civilWalls!=='undefined'&&civilWalls,typeof civilFloors!=='undefined'&&civilFloors,typeof civilStairWells!=='undefined'&&civilStairWells])if(map)readonly(map);native().subscribe(()=>{invalidate();project();});installRendering();}
+  if(!enabled){for(const map of [typeof civilWalls!=='undefined'&&civilWalls,typeof civilFloors!=='undefined'&&civilFloors,typeof civilStairWells!=='undefined'&&civilStairWells])if(map)readonly(map);native().subscribe(event=>{if(native().isUnderstoryBatch?.(event))return;invalidate();project();});installRendering();}
   enabled=true;invalidate();project();return {loaded:true};
  }
  function paint(r,scene,id){const m=matrix(scene,id);return root.VeldrenLightScene.painter(r,m,[m[3],m[11]]);}

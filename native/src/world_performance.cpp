@@ -44,6 +44,9 @@ void WorldPartition::update(Scene& scene,const AssetRegistry& assets,const Entit
  if(!mesh&&!light&&!road&&!building&&!footprint&&!collider&&!bridge&&!quarry)return;
  WorldSpatialRecord item;item.id=id;item.asset=text(mesh,"asset");item.render_path=text(mesh,"renderPath");item.renderable=mesh&&(!field(mesh,"visible")||field(mesh,"visible")->bool_or(true));item.dynamic=component(n,"ActorDefinition")||component(n,"ActorController");item.light=light;
  item.category=building||bridge||quarry?"structure":road?"terrain":item.dynamic?"actor":component(n,"Gatherable")&&(text(component(n,"Gatherable"),"kind")=="tree"||text(component(n,"Gatherable"),"type")=="tree")?"tree":component(n,"GeneratedDecoration")?"scenery":light?"light":"prop";
+ item.render_transform=n.world;item.material=text(mesh,"material");
+ const auto* cast=field(mesh,"castShadows");const auto* receive=field(mesh,"receiveShadows");
+ item.cast_shadows=!cast||cast->bool_or(true);item.receive_shadows=!receive||receive->bool_or(true);
  WorldBounds local{{-1,0,-1},{1,4,1}};bool known=false;
  if(!item.asset.empty()&&assets.has(item.asset)){
   const auto definition=assets.record(item.asset);if(const auto* b=definition.find("bounds")){local=array_bounds(*b);known=true;}

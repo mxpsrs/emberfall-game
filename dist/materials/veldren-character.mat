@@ -1,0 +1,62 @@
+// Authored PBR character textures with independent per-pixel appearance masks.
+material {
+    name : VeldrenCharacter,
+    flipUV : false,
+    requires : [ color, uv0 ],
+    shadingModel : lit,
+    blending : opaque,
+    doubleSided : true,
+    specularAntiAliasing : true,
+    parameters : [
+        { type : sampler2d, name : albedo },
+        { type : sampler2d, name : normalMap },
+        { type : sampler2d, name : metalRough },
+        { type : sampler2d, name : occlusion },
+        { type : sampler2d, name : emission },
+        { type : sampler2d, name : appearanceMask },
+        { type : mat3, name : albedoUv },
+        { type : mat3, name : normalUv },
+        { type : mat3, name : metalUv },
+        { type : mat3, name : occlusionUv },
+        { type : mat3, name : emissionUv },
+        { type : mat3, name : appearanceUv },
+        { type : float4, name : uvChannels },
+        { type : float, name : emissionChannel },
+        { type : float4, name : baseFactor },
+        { type : float3, name : emissiveFactor },
+        { type : float, name : metallic },
+        { type : float, name : roughness },
+        { type : float, name : normalScale },
+        { type : float, name : occlusionStrength },
+        { type : float, name : transparent },
+        { type : float, name : appearanceKind },
+        { type : float, name : appearanceAmount },
+        { type : float3, name : appearanceTint }
+    ]
+}
+fragment {
+    vec3 characterSrgb(vec3 linearColor) {
+        return mix(linearColor * 12.92, 1.055 * pow(max(linearColor, vec3(0.0)), vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), linearColor));
+    }
+    vec3 characterLinear(vec3 srgbColor) {
+        return mix(srgbColor / 12.92, pow((max(srgbColor, vec3(0.0)) + 0.055) / 1.055, vec3(2.4)), step(vec3(0.04045), srgbColor));
+    }
+    void material(inout MaterialInputs material) {
+        vec2 uv = getUV0();
+        vec2 uvA = (materialParams.albedoUv * vec3(uv, 1.0)).xy;
+        vec2 uvN = (materialParams.normalUv * vec3(uv, 1.0)).xy;
+        vec3 normalValue = texture(materialParams_normalMap, uvN).xyz * 2.0 - 1.0;
+        material.normal = normalize(vec3(normalValue.xy * materialParams.normalScale, normalValue.z));
+        prepareMaterial(material);
+        vec4 base = texture(materialParams_albedo, uvA) * materialParams.baseFactor;
+        vec3 srgb = characterSrgb(base.rgb);
+        vec3 changed = materialParams.appearanceKind < 1.5 ? srgb * materialParams.appearanceTint : vec3(max3(srgb)) * materialParams.appearanceTint;
+        float mask = texture(materialParams_appearanceMask, (materialParams.appearanceUv * vec3(uv, 1.0)).xy).r * materialParams.appearanceAmount;
+        material.baseColor = vec4(mix(base.rgb, characterLinear(clamp(changed, 0.0, 1.0)), mask), base.a);
+        vec4 mr = texture(materialParams_metalRough, (materialParams.metalUv * vec3(uv, 1.0)).xy);
+        material.metallic = materialParams.metallic * mr.b;
+        material.roughness = materialParams.roughness * mr.g;
+        material.ambientOcclusion = mix(1.0, texture(materialParams_occlusion, (materialParams.occlusionUv * vec3(uv, 1.0)).xy).r, materialParams.occlusionStrength);
+        material.emissive = vec4(texture(materialParams_emission, (materialParams.emissionUv * vec3(uv, 1.0)).xy).rgb * materialParams.emissiveFactor, 0.0);
+    }
+}

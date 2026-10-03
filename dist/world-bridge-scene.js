@@ -71,7 +71,7 @@
    const beforeBarrier=bridgeBarrier;bridgeBarrier=function(x,z){return enabled?!!at(currentScene,x,z,true):beforeBarrier(x,z);};
    const beforeHeight=bridgeDeckHeight;bridgeDeckHeight=function(b,x,z){return b._generatedBridge?height(b,x,z):beforeHeight(b,x,z);};
    const reset=resetLandSurface;resetLandSurface=function(){meshes.clear();return reset();};
-   native().subscribe(event=>{project(event.scene);invalidate();});
+   native().subscribe(event=>{if(native().isUnderstoryBatch?.(event))return;project(event.scene);invalidate();});
   }
   enabled=true;project();invalidate();return {loaded:true};
  }

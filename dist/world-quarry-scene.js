@@ -69,7 +69,7 @@
  function hydrate(){
   if(!enabled){
    quarryAt=at;quarryShapeEdge=(q,x,z)=>sample(x,z,0,q)?.edge??0;quarryDepth=(q,x,z)=>sample(x,z,0,q)?.depth??0;quarryCliff=(q,x,z)=>sample(x+.5,z+.5,0,q)?.cliff??false;
-   native().subscribe(event=>{if(event.scene!==null&&event.scene!==scene)return;project();invalidate();});
+   native().subscribe(event=>{if(native().isUnderstoryBatch?.(event)||event.scene!==null&&event.scene!==scene)return;project();invalidate();});
   }
   enabled=true;project();invalidate();return {loaded:true};
  }

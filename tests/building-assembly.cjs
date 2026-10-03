@@ -18,6 +18,9 @@ const house=scene.buildings.find(b=>b.walkIn&&!b.civilCastle&&b.archetype==='hou
 house._editorId='test-house';const assembly=B.ensure(house,scene);
 assert(assembly.modules.length>10,'actual authored modules captured');
 assert(assembly.modules.some(m=>m.role==='roof'));assert(assembly.modules.some(m=>m.role==='wall'));
+const oldShell=A.serialize(assembly);oldShell.modules=oldShell.modules.filter(m=>m.role!=='floor'&&!/Roof_Front_Brick/.test(m.model));const oldRoof=oldShell.modules.find(m=>/Roof_RoundTiles_/.test(m.model));assert(oldRoof);oldRoof.baseline=73;const duplicate=A.clone(oldRoof);duplicate.id='obsolete-second-roof';duplicate.local[3]+=14;oldShell.modules.push(duplicate);
+const oldText=JSON.stringify(oldShell),repair=B.repairLegacyAssembly(house,oldShell);assert.equal(JSON.stringify(oldShell),oldText);assert.equal(repair.modules.filter(m=>/Roof_RoundTiles_/.test(m.model)).length,1);assert.equal(repair.modules.filter(m=>/Roof_Front_Brick/.test(m.model)).length,2);assert(repair.modules.some(m=>m.role==='floor'));assert.deepEqual(repair.parent,oldShell.parent);assert.deepEqual(B.repairLegacyAssembly(house,repair),repair,'legacy shell repair is idempotent');for(const m of oldShell.modules.filter(m=>m.role==='interior'||/^rebuilt:Wall_/.test(m.model)))assert.deepEqual(repair.modules.find(p=>p.id===m.id),m,'legacy repair preserves walls and furniture');
+
 const wall=assembly.modules.find(m=>m.role==='wall'&&/Straight$/.test(m.model));assert(wall);
 const initial=A.serialize(assembly),history=new A.History();wall.local[3]+=.25;history.push(initial,assembly);const moved=A.serialize(assembly);
 assert.notDeepEqual(initial,moved);B.attach(house,history.undo(moved),scene);assert.deepEqual(A.serialize(house.assembly),initial);

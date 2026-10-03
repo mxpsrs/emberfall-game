@@ -137,7 +137,7 @@ function buildKingdoms(){
  for(const t of SETTLEMENTS){connectRealmRoad(96,112,t.x,t.y);if(t.legacy)continue;
   const count=t.kind==='city'?25:SETTLEMENT_PURPOSES[t.id]?.[0]==='large village'?12:6,lots=organicLots(t,count);
   for(let i=0;i<count;i++){const [x,y]=lots[i];
-   const kind=i===0?'inn':i===1?'shop':i===2?'forge':i===3?'hall':i===4?'temple':i===5&&t.kingdom==='khazdur'?'mine':'house';realmBuilding(t,i,x,y,kind,4+(i%7===0?1:0),4);
+   const kind=i===0?'inn':i===1?'shop':i===2?'forge':i===3?'hall':i===4?'temple':i===5&&t.kingdom==='khazdur'?'mine':'house';const plans={inn:[5,4],shop:[3,4],forge:[5,3],hall:[5,5],temple:[3,5],mine:[4,4]},homes=[[3,3],[3,4],[4,3],[5,4],[4,5]],size=plans[kind]||homes[(i+t.x)%homes.length];realmBuilding(t,i,x,y,kind,...size);
   }
   if(t.capital)realmBuilding(t,25,t.x-6,t.y-32,'castle',12,10);
  }

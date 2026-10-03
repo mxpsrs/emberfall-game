@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 (async()=>{
  const source=fs.readFileSync('dist/world-lighting.js','utf8'),context={};vm.createContext(context);
- vm.runInContext(source.slice(source.indexOf('function realmNearestLighting'),source.indexOf('function drawWallTorch3')),context);
+ vm.runInContext(source.slice(source.indexOf('function realmNearestLighting'),source.indexOf('const realmLightingFrame')),context);
  const values=Array.from({length:10000},(_,i)=>({id:i,distance:(i*7919)%10007}));let scored=0;
  const actual=context.realmNearestLighting(values,16,v=>{scored++;return v.distance;});
  assert.deepEqual(Array.from(actual,v=>v.id),values.slice().sort((a,b)=>a.distance-b.distance).slice(0,16).map(v=>v.id));assert.equal(scored,values.length);

@@ -5,7 +5,7 @@
 (function(root){
  const identity=()=>({position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]});
  const copy=value=>JSON.parse(JSON.stringify(value));
- const views=new Map(),byScene=new Map(),plantChunks=new Map(),decorLists=new Map();let enabled=false,materializing=false;
+ const views=new Map(),byScene=new Map(),streamedViews=new Map(),plantChunks=new Map(),decorLists=new Map();let enabled=false,materializing=false;
  const native=()=>root.realmNative.scenes,registry=()=>typeof worldScenes!=='undefined'?worldScenes:root.worldScenes;
  const hash=value=>root.VeldrenSceneOwnership.stableHash(JSON.stringify(value));
  const idFor=(scene,kind,signature)=>'generated:'+scene+':'+kind+':'+hash(signature);
@@ -18,8 +18,8 @@
   if(!isPlant){components.Interactable={action:'examine',label:source.model||source.kind};components.Collider={shape:'lair-decoration',solid:true};}
   return {id,name:source.name||source.model||source.kind,parent,active:true,transform:{position:[source.x,0,source.z],rotation:[0,Math.sin(angle),0,Math.cos(angle)],scale:[scale,scale,scale]},components,metadata:{}};
  }
- function getView(scene,id){
-  const key=scene+'|'+id,node=native().entity(scene,id);if(!node?.components.GeneratedDecoration)return undefined;if(views.has(key))return views.get(key);
+ function getView(scene,id,knownNode=null){
+  const key=scene+'|'+id,node=knownNode||native().entity(scene,id);if(!node?.components.GeneratedDecoration)return undefined;if(views.has(key))return views.get(key);
   const view=root.VeldrenSceneOwnership.createView(scene,node,'',{type:'decoration',fields:{kind:['components','WorldDecoration','kind'],tint:['components','Material','tint']},properties:{
    _generatedDecoration:{get:()=>true},
    z:{get:access=>access.pose().y,set:(access,value)=>access.setPose({y:value})},
@@ -32,7 +32,7 @@
  function project(scene){
   const w=registry()[scene];if(!w)return;
   const ids=native().componentIds(scene,'GeneratedDecoration'),all=ids.map(id=>getView(scene,id));
-  byScene.set(scene,Object.freeze(all));
+  byScene.set(scene,Object.freeze(all));streamedViews.delete(scene);
   decorLists.set(scene,Object.freeze(all.filter(view=>native().entity(scene,view._sceneEntityId).components.GeneratedDecoration.category==='lair')));
   // Legacy consumers can read the native catalog, but cannot replace its membership.
   if(!Object.getOwnPropertyDescriptor(w,'decor')?.get)Object.defineProperty(w,'decor',{enumerable:true,configurable:false,get:()=>decorLists.get(scene)});
@@ -44,8 +44,18 @@
    }
   }
  }
+ function indexUnderstoryBatch(event){
+  const scene=event.scene,added=[],dirty=[];
+  for(const change of event.changes||[]){if(change.kind!=='upsert')continue;const node=native().entity(scene,change.id);if(!node)continue;
+   const chunk=node.components.GeneratedChunk;if(chunk){dirty.push(chunk.x+':'+chunk.z);continue;}
+   if(node.components.GeneratedDecoration?.category!=='understory')continue;const view=getView(scene,change.id,node);if(!view)continue;const key=Math.floor(node.worldMatrix[12]/8)+':'+Math.floor(node.worldMatrix[14]/8);if(!plantChunks.has(key))plantChunks.set(key,[]);plantChunks.get(key).push(view);added.push(view);
+  }
+  if(added.length){let extra=streamedViews.get(scene);if(!extra){extra=[];streamedViews.set(scene,extra);}extra.push(...added);}
+  if(typeof worldUnderstory!=='undefined')for(const key of dirty)worldUnderstory.delete(key);
+ }
  function changed(event){
   if(event.kind==='load'){for(const scene of Object.keys(registry()))project(scene);}
+  else if(native().isUnderstoryBatch?.(event)){indexUnderstoryBatch(event);return;}
   else project(event.scene);
   // Parent transforms, reparenting and component edits also invalidate derived meshes.
   // First materialization has no previous mesh to discard.
@@ -72,25 +82,27 @@
   if(!enabled)native().subscribe(changed);
   enabled=true;return {loaded:true};
  }
+ const understoryChunkId=(bx,bz)=>idFor('overworld','understory-chunk',[bx,bz]),understoryChunkPartId=(bx,bz,part)=>idFor('overworld','understory-chunk',[bx,bz,part]);
+ function hasChunkPart(bx,bz,part){const group=native().entity('overworld',understoryChunkPartId(bx,bz,part));return !!group&&group.components.GeneratedChunk?.complete!==false;}
+ function hasChunk(bx,bz){if(native().entity('overworld',understoryChunkId(bx,bz)))return true;for(let part=0;part<4;part++)if(!hasChunkPart(bx,bz,part))return false;return true;}
+ function prepareChunkPart(bx,bz,part,generated){
+  if(!Number.isInteger(part)||part<0||part>3)throw Error('Invalid understory part');
+  const scene='overworld',parent='generated:'+scene+':root:understory',id=understoryChunkPartId(bx,bz,part);if(native().entity(scene,id))return false;
+  const repeats=new Map(),children=generated.map(source=>{const key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);return createEntity(scene,source,id,'understory',ordinal);});
+  materializing=true;try{native().materializeUnderstory(scene,{id,name:'Understory '+bx+', '+bz+' part '+part,parent,active:true,transform:identity(),components:{GeneratedChunk:{x:bx,z:bz,part,complete:true}},metadata:{}},children);}finally{materializing=false;}
+  return true;
+ }
  function chunk(bx,bz){
-  const scene='overworld',parent='generated:'+scene+':root:understory',id=idFor(scene,'understory-chunk',[bx,bz]);
+  const scene='overworld',parent='generated:'+scene+':root:understory',id=understoryChunkId(bx,bz);
   if(!native().entity(scene,parent)?.components.UnderstoryGenerator)return readChunk(bx,bz);
-  let group=native().entity(scene,id);
-  if(!group){
-   const generated=worldUnderstoryPlacements(bx,bz),repeats=new Map(),children=generated.map(source=>{const key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);return createEntity(scene,source,id,'understory',ordinal);});
-   // The generator output is construction-only. Coordinates are moved into
-   // native Transform fields, and the temporary records are discarded.
-   materializing=true;
-   try{native().materializeUnderstory(scene,{id,name:'Understory '+bx+', '+bz,parent,active:true,transform:identity(),components:{GeneratedChunk:{x:bx,z:bz,complete:true}},metadata:{}},children);}
-   finally{materializing=false;}
-  }
+  if(!hasChunk(bx,bz)){const generated=worldUnderstoryPlacements(bx,bz),parts=[[],[],[],[]];for(const plant of generated){const part=(plant.x>=bx*8+4?1:0)|(plant.z>=bz*8+4?2:0);parts[part].push(plant);}for(let part=0;part<parts.length;part++)if(!hasChunkPart(bx,bz,part))prepareChunkPart(bx,bz,part,parts[part]);}
   // Rendering is spatially indexed from native world transforms, not the original
   // generator's child list. Moved and duplicated plants follow their edited position.
   return readChunk(bx,bz);
 
  }
  function readChunk(bx,bz){return Object.freeze([...(plantChunks.get(bx+':'+bz)||[])]);}
- function prepareChunks(chunks){native().batch(()=>{for(const [bx,bz]of chunks)chunk(bx,bz);});}
+ function prepareChunks(chunks){if(!chunks.length)return;native().batch(()=>{for(const [bx,bz]of chunks)chunk(bx,bz);});}
  function painter(r,m){
   const A=root.VeldrenAssembly,inverse=A.inverse(m),normal=n=>{const v=[inverse[0]*n[0]+inverse[4]*n[1]+inverse[8]*n[2],inverse[1]*n[0]+inverse[5]*n[1]+inverse[9]*n[2],inverse[2]*n[0]+inverse[6]*n[1]+inverse[10]*n[2]],length=Math.hypot(...v)||1;return v.map(x=>x/length);};
   const q={software:r.software,face(points,color,normals,material,colors,uvs){r.face(points.map(p=>A.point(m,p)),color,normals?.map(normal),material,colors,uvs);}};
@@ -111,5 +123,5 @@
   const radius=kind==='plinth'&&!allowPlinth?k:kind==='pillar'?.8*k:kind==='crystal'?.85*k:kind==='egg'?1.35*k:kind==='hearth'?k+.2:kind==='orrery'?1.3*k:kind==='runeBasin'?.8*k:0;
   return radius>0&&Math.hypot(p[0],p[2])<radius;
  }
- root.VeldrenSceneryScene={migrate,hydrate,chunk,readChunk,prepareChunks,render,blocked,getView,selectables(scene){return byScene.get(scene)||[];},get enabled(){return enabled;}};
+ root.VeldrenSceneryScene={migrate,hydrate,chunk,hasChunk,hasChunkPart,prepareChunkPart,readChunk,prepareChunks,render,blocked,getView,selectables(scene){const base=byScene.get(scene)||[],extra=streamedViews.get(scene);if(!extra?.length)return base;const all=Object.freeze([...base,...extra]);byScene.set(scene,all);streamedViews.delete(scene);return all;},get enabled(){return enabled;}};
 })(globalThis);

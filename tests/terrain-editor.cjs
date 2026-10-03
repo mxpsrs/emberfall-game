@@ -15,7 +15,9 @@ evalInGame(`
  const a=terrain.stroke({mode:'raise',scene:'overworld',x:120,z:120,radius:1.5,strength:.8});
  assert(a.changed>0);assert(landHeight(120,120)>before+.7,'the actual world heightfield changes');
  assert.equal(realmNavigation.has('overworld'),false,'brush invalidates cached pathfinding slopes');
- assert.deepEqual(released,['near'],'only nearby GPU terrain chunks were released');
+ assert.deepEqual(released,[],'the visible surface stays resident until its replacement is ready');
+ assert.equal(near.complete,false,'the nearby chunk is marked for rebuilding');assert.equal(far.complete,undefined,'distant chunks remain unchanged');
+ assert.equal(near.buffer.id,'near');assert.equal(realmGPU.terrainQueueKey,null,'an unchanged camera cannot retain obsolete queued geometry');
  assert(realmGPU.terrain.get('overworld').has(far.key));
  terrain.stroke({mode:'paint',scene:'overworld',x:120.5,z:120.5,radius:1,strength:1,material:'grass'});
  assert.equal(terrain.paint(120,120),'grass');

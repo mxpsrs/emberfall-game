@@ -1029,7 +1029,6 @@
   free.x=55;free.y=50;px=free.x;py=free.y;
   free.yawTarget=view3d.yaw;free.tiltTarget=view3d.tilt;free.zoomTarget=view3d.zoom;view3d.min=FREE_ZOOM_MIN;view3d.max=FREE_ZOOM_MAX;
   applyAll();window.VeldrenSceneFormat.attachRuntimeWorld(projectWorld,worldScenes);installCameraRendering();installEditorUiIsolation();setGameUiVisible(false);
-  ready=true;
   T?.setHistoryOwner?.({execute:value=>commandSystem().execute('Edit terrain',[{op:'terrain',value}]),undo:()=>commandSystem().undo(),redo:()=>commandSystem().redo()});
   window.realmNative?.scenes?.subscribe?.(event=>{if(event.kind==='load'&&T)T.applyDocument(window.realmNative.scenes.serialize()?.terrain);});
   window.realmNative?.scenes?.setCommandWriter?.((scene,operation)=>{if(editorRendering)throw Error('Rendering cannot modify authored Scene data');if(scene!==String(currentScene))throw Error('Switch to the target scene before editing');return commandSystem().execute('Edit world entity',[operation]);});
@@ -1038,7 +1037,7 @@
   document.addEventListener('pointerdown',onPointerDown,true);document.addEventListener('pointermove',onPointerMove,true);document.addEventListener('pointerup',onPointerUp,true);document.addEventListener('pointercancel',onPointerUp,true);document.addEventListener('wheel',onWheel,{capture:true,passive:false});document.addEventListener('keydown',onKeyDown,true);document.addEventListener('keyup',onKeyUp,true);
   document.addEventListener('contextmenu',e=>{if(ready&&isViewportTarget(e.target,editorInputSurface())){e.preventDefault();e.stopImmediatePropagation()}},true);
   window.addEventListener('blur',()=>{clearCameraKeys();clearTouchInput()});document.addEventListener('visibilitychange',()=>{if(document.hidden){clearCameraKeys();clearTouchInput();}});
-  requestAnimationFrame(cameraTick);log(`Editor ready · project revision ${projectMeta.revision} · free camera detached at ${free.x.toFixed(1)}, ${free.y.toFixed(1)}.`,'ok');post('ready',{camera:cameraInfo()});
+  ready=true;requestAnimationFrame(cameraTick);log(`Editor ready · project revision ${projectMeta.revision} · free camera detached at ${free.x.toFixed(1)}, ${free.y.toFixed(1)}.`,'ok');post('ready',{camera:cameraInfo()});
   })().finally(()=>{initializing=null});
   return initializing;
  }

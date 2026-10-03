@@ -219,7 +219,9 @@ function trimRealmMeshes(gpu){
 }
 function realmSkinnedEntry(gpu,mesh){
  let entry=gpu.skinnedMeshes.get(mesh);gpu.skinUse??=new Map();
- const touch=()=>{entry.used=gpu.frameId||0;gpu.skinUse.delete(mesh);gpu.skinUse.set(mesh,entry);return entry;};
+ const touch=()=>{entry.used=gpu.frameId||0;gpu.skinUse.delete(mesh);gpu.skinUse.set(mesh,entry);
+  if(gpu.kind==='filament'&&!entry.buffer.retire)entry.buffer.retire=()=>{if(gpu.skinnedMeshes.get(mesh)!==entry)return;gpu.skinnedMeshes.delete(mesh);gpu.skinUse.delete(mesh);gpu.meshBytes-=entry.bytes;if(entry.index&&--entry.index.refs===0){gpu.gl.deleteBuffer(entry.index.buffer);gpu.indexMeshes.delete(entry.index.topology);gpu.meshBytes-=entry.index.bytes;}};
+  return entry;};
  if(entry)return touch();
  entry=realmUploadIndexed(gpu,mesh,true);if(entry){gpu.meshBytes=(gpu.meshBytes||0)+entry.bytes;gpu.skinnedMeshes.set(mesh,entry);return touch();}
  const data=new Float32Array(mesh.i.length*20);let offset=0;
@@ -341,31 +343,112 @@ function realmTerrainMaterial(road,x,z){
  if(painted)return {grass:1,dirt:5,stone:2,paving:3}[painted];
  return road[2]>.18?3:road[1]>.18?2:road[0]>.18?5:1;
 }
+function realmTerrainUpload(gpu,c,data){
+ const previous=c.buffer,entry=gpu.upload(data instanceof Float32Array?data:new Float32Array(data));c.buffer=entry.buffer;c.count=entry.count;
+ if(gpu.kind==='filament')c.buffer.retire=()=>{if(gpu.terrain.get(c.scene)?.get(c.key)===c)gpu.terrain.get(c.scene).delete(c.key);};
+ if(previous&&previous!==c.buffer)gpu.gl.deleteBuffer(previous);
+}
+function realmTerrainFallback(c,cell,mw,mh,tileBudget=1){
+ const x=c.x-cell/2,z=c.z-cell/2,world=inWorld();if(!world)return [];
+ const job=c.fallbackBuild||(c.fallbackBuild={data:[],xx:x,zz:z,endX:Math.min(x+cell,mw+128),endZ:Math.min(z+cell,mh+128)}),data=job.data;
+ // A very coarse surface covers a new mobile chunk while its precise mesh
+ // streams in bounded slices. Four-tile quads limit synchronous fallback work.
+ let processed=0;while(job.zz<job.endZ&&processed++<tileBudget){
+  const xx=job.xx,zz=job.zz,dx=Math.min(4,job.endX-xx),dz=Math.min(4,job.endZ-zz),points=[[xx,zz],[xx,zz+dz],[xx+dx,zz+dz],[xx+dx,zz]],cx=xx+dx/2,cz=zz+dz/2;
+  job.xx+=4;if(job.xx>=job.endX){job.xx=x;job.zz+=4;}
+  if(typeof civilStairWellAt==='function'&&civilStairWellAt(cx,cz))continue;
+  const type=terrainType(xx,zz),shore=points.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2),road=roadInfluence(cx,cz),colors=points.map(()=>[road[0],road[1],Math.max(0,Math.min(1,shoreDistance(cx,cz)/4))]),uvs=points.map(([a,b])=>[a,b]);
+  if(type!==3||shore){const vertices=points.map(([a,b])=>[a,landHeight(a,b),b]);flatFaceData(data,vertices,'#808080',vertices.map(()=>[0,1,0]),realmTerrainMaterial(road,cx,cz),colors,uvs);}
+  if(type===3||shore){const waterPoints=points.map(([a,b])=>[a,.01-landHeight(a,b),b]);realmFaceData(data,waterPoints,'#427e89',null,4,null,uvs);}
+ }
+ if(job.zz<job.endZ)return null;c.fallbackBuild=null;return data;
+}
+function realmTerrainChunkRow(gpu,c,cell,detail,mw,mh,tileBudget=4){
+ const world=inWorld(),x=c.x-cell/2,z=c.z-cell/2;
+ const job=c.build||(c.build={data:[],samples:new Map(),row:0,column:0,endX:Math.min(x+cell,world?mw+128:mw),endZ:Math.min(z+cell,world?mh+128:mh)});
+ if(job.row>=job.endZ-z||job.endX<=x){
+  if(job.data.length)realmTerrainUpload(gpu,c,job.data);else if(c.buffer){gpu.gl.deleteBuffer(c.buffer);c.buffer=null;c.count=0;}
+  c.noGeometry=!job.data.length;c.complete=true;c.build=null;return true;
+ }
+ const data=job.data,samples=job.samples,sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){const road=roadInfluence(a,b);v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),color:[road[0],road[1],Math.max(0,Math.min(1,shoreDistance(a,b)/4))],uv:[a,b]};samples.set(key,v);}return v;};
+ let processed=0;const limit=Math.max(1,Math.min(32,Math.floor(tileBudget)||1));
+ while(job.row<job.endZ-z&&processed<limit){
+  const zz=z+job.row,xx=x+job.column;
+  const skipped=typeof CREATURE_LAIRS!=='undefined'&&CREATURE_LAIRS[currentScene]&&worldWall(xx,zz)||typeof civilStairWellAt==='function'&&civilStairWellAt(xx+.5,zz+.5);
+  if(!skipped){
+   const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=world&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
+   if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(world&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2])),road=roadInfluence(a+k*.5,b+k*.5),painted=window.VeldrenTerrainEdits?.paint(xx,zz);flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),realmTerrainMaterial(road,xx,zz),vertices.map(v=>painted?[0,0,1]:v.color),vertices.map(v=>v.uv));}else realmFaceData(data,points,'#808080',null,type+1,points.map(()=>[0,0,1]),points.map(p=>[p[0],p[2]]));}}
+   if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(world?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,points.map(p=>[p[0],p[2]]));}
+  }
+  processed++;if(++job.column>=job.endX-x){job.column=0;job.row++;}
+ }
+ if(job.row>=job.endZ-z){
+  if(data.length)realmTerrainUpload(gpu,c,data);else if(c.buffer){gpu.gl.deleteBuffer(c.buffer);c.buffer=null;c.count=0;}
+  c.noGeometry=!data.length;c.complete=true;c.build=null;return true;
+ }
+ return false;
+}
 function realmTerrainEntries(gpu){
  let chunks=gpu.terrain.get(currentScene);const [mw,mh]=sceneSize();if(!chunks){chunks=new Map();gpu.terrain.set(currentScene,chunks);}
- const wide=inWorld()&&view3d.zoom<24,cell=wide?16:8,detail=inWorld()&&!wide?2:1;
+ const surfaceRevision=typeof landSurfaceRevision==='number'?landSurfaceRevision:0;
+ if(gpu.terrainSurfaceRevision!==undefined&&gpu.terrainSurfaceRevision!==surfaceRevision){
+  for(const sceneChunks of gpu.terrain.values())for(const c of sceneChunks.values()){c.complete=false;c.noGeometry=false;c.build=null;c.fallbackBuild=null;c.fallbackAttempted=false;}
+  gpu.terrainQueueKey=null;
+ }gpu.terrainSurfaceRevision=surfaceRevision;
+ const agent=typeof navigator==='undefined'?'':navigator.userAgent||'',mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(agent);
+ const wide=inWorld()&&view3d.zoom<24;
+ if(gpu.terrainStream===undefined)gpu.terrainStream=window.VeldrenTerrainStreaming?.create(gpu,mobile)||null;
+ const streamed=inWorld()&&gpu.terrainStream,cell=streamed?16:wide?16:8,detail=inWorld()&&!wide&&!mobile?2:1;
+ if(!inWorld())gpu.terrainStream?.frame([],surfaceRevision);
  const corners=realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p)),edge=inWorld()?128:0;
  const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/cell)*cell),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/cell)*cell),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/cell)*cell),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/cell)*cell),visible=[],margin=cameraZoom3()*cell*3.5;
  // A low camera can put a near chunk's center well outside the viewport while
  // one of its corners still fills the foreground, so retain a wider edge band.
- for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=project3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+detail+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
+ // The height-aware projection samples elevation for every candidate chunk.
+ // These corner-derived bounds already include a 16-unit edge band, so keep
+ // the wide screen margin and use flat projection to avoid those samples.
+ for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=flatProject3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+(streamed?'stream':detail)+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
  gpu.terrainTick=(gpu.terrainTick||0)+1;
- for(const c of visible){c.used=gpu.terrainTick;if(c.buffer)continue;const data=[],x=c.x-cell/2,z=c.z-cell/2,samples=new Map(),sample=(a,b)=>{const key=a+2048*b;let v=samples.get(key);if(!v){const road=roadInfluence(a,b);v={point:[a,landHeight(a,b),b],normal:landNormal(a,b),color:[road[0],road[1],Math.max(0,Math.min(1,shoreDistance(a,b)/4))],uv:[a,b]};samples.set(key,v);}return v;};
-  for(let zz=z;zz<Math.min(z+cell,inWorld()?mh+128:mh);zz++)for(let xx=x;xx<Math.min(x+cell,inWorld()?mw+128:mw);xx++){
-   if(typeof CREATURE_LAIRS!=='undefined'&&CREATURE_LAIRS[currentScene]&&worldWall(xx,zz))continue;
-   if(typeof civilStairWellAt==='function'&&civilStairWellAt(xx+.5,zz+.5))continue;
-   const type=terrainType(xx,zz),corners=[[xx,zz],[xx,zz+1],[xx+1,zz+1],[xx+1,zz]],shore=inWorld()&&corners.some(([a,b])=>Math.abs(worldWaterDistance(a,b))<2);
-   if(type!==3||shore){for(let dz=0;dz<detail;dz++)for(let dx=0;dx<detail;dx++){const a=xx+dx/detail,b=zz+dz/detail,k=1/detail,points=[[a,0,b],[a,0,b+k],[a+k,0,b+k],[a+k,0,b]];if(inWorld()&&typeof flatFaceData==='function'){const vertices=points.map(p=>sample(p[0],p[2])),road=roadInfluence(a+k*.5,b+k*.5),painted=window.VeldrenTerrainEdits?.paint(xx,zz);flatFaceData(data,vertices.map(v=>v.point),'#808080',vertices.map(v=>v.normal),realmTerrainMaterial(road,xx,zz),vertices.map(v=>painted?[0,0,1]:v.color),vertices.map(v=>v.uv));}else realmFaceData(data,points,'#808080',null,type+1,points.map(()=>[0,0,1]),points.map(p=>[p[0],p[2]]));}}
-   if(type===3||shore){const points=corners.map(([a,b])=>[a,.01-(inWorld()?landHeight(a,b):0),b]);realmFaceData(data,points,'#427e89',null,4,null,points.map(p=>[p[0],p[2]]));}
+ for(const c of visible){c.used=gpu.terrainTick;}
+ if(streamed){
+  for(const c of visible){const distance=Math.hypot(c.x-px,c.z-py),limits=mobile?[32,80,160]:[32,64,128],steps=mobile?[1,2,4,4]:[.5,1,2,4];
+   let level=distance<limits[0]?0:distance<limits[1]?1:distance<limits[2]?2:3;
+   if(c.lodLevel!==undefined&&level!==c.lodLevel){const boundary=limits[Math.min(level,c.lodLevel)];if(boundary&&Math.abs(distance-boundary)<boundary*.12)level=c.lodLevel;}
+   c.lodLevel=level;c.targetStep=steps[level];
   }
-  Object.assign(c,gpu.upload(new Float32Array(data)));if(gpu.kind==='filament')c.buffer.retire=()=>{if(chunks.get(c.key)===c)chunks.delete(c.key);};
+  if(gpu.terrainStream.frame(visible,surfaceRevision)){
+   const ready=gpu.terrainReady||(gpu.terrainReady=[]);ready.length=0;for(const c of visible)if(c.buffer)ready.push(c);
+   const cap=mobile?160:384;
+   // Evict stale scheduler records too, including cells abandoned before upload.
+   if(gpu.terrainTick%16===0)for(const map of gpu.terrain.values())for(const [key,c]of map)if(c.used!==gpu.terrainTick&&(gpu.terrainTick-c.used>32||map.size>cap)){if(c.buffer)gpu.gl.deleteBuffer(c.buffer);map.delete(key);}
+   return ready;
+  }
+  gpu.terrainStream=null;
  }
- const agent=typeof navigator==='undefined'?'':navigator.userAgent||'',mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(agent),terrainBudget=mobile?160:384,resident=[...gpu.terrain.values()].flatMap(scene=>[...scene.values()]).filter(c=>c.buffer);if(resident.length>terrainBudget){resident.sort((a,b)=>a.used-b.used);for(const c of resident.slice(0,resident.length-terrainBudget)){if(c.used===gpu.terrainTick)continue;gpu.gl.deleteBuffer(c.buffer);gpu.terrain.get(c.scene).delete(c.key);}}
+ const terrainStart=performance.now(),terrainMs=mobile?3:6;let fallbackSlices=0;
+ if(mobile&&inWorld()){
+  const fallbackCandidates=visible.filter(c=>!c.buffer&&!c.complete&&!c.noGeometry&&!c.fallbackAttempted);
+  fallbackCandidates.sort((a,b)=>((a.x-px)**2+(a.z-py)**2)-((b.x-px)**2+(b.z-py)**2));
+  for(const c of fallbackCandidates){
+   while(!c.fallbackAttempted&&fallbackSlices<4&&performance.now()-terrainStart<terrainMs){const data=realmTerrainFallback(c,cell,mw,mh);fallbackSlices++;if(data!==null){c.fallbackAttempted=true;if(data.length)realmTerrainUpload(gpu,c,data);}}
+   if(fallbackSlices>=4||performance.now()-terrainStart>=terrainMs)break;
+  }
+ }
+ const terrainBudget=mobile?160:384;
+ const cameraKey=[currentScene,cell,detail,screen.w,screen.h,Math.floor(px/8),Math.floor(py/8),Math.round(view3d.yaw*8),Math.round(cameraPitch3()*8),Math.round(cameraZoom3()*2)].join(':');
+ if(gpu.terrainQueueKey!==cameraKey){const visibleSet=new Set(visible);for(const c of gpu.terrainQueue||[]){c.queued=false;if(!visibleSet.has(c)){c.build=null;c.fallbackBuild=null;}}gpu.terrainQueue=visible.filter(c=>!c.complete&&!c.noGeometry);gpu.terrainQueue.sort((a,b)=>((a.x-px)**2+(a.z-py)**2)-((b.x-px)**2+(b.z-py)**2));for(const c of gpu.terrainQueue)c.queued=true;gpu.terrainQueueIndex=0;gpu.terrainQueueKey=cameraKey;}
+ else for(const c of visible)if(!c.complete&&!c.noGeometry&&!c.queued){c.queued=true;gpu.terrainQueue.push(c);}
+ const maxSlices=mobile?16:24,tileBudget=mobile?1:2;let slices=0;
+ while(gpu.terrainQueueIndex<gpu.terrainQueue.length&&slices<maxSlices&&performance.now()-terrainStart<terrainMs){const c=gpu.terrainQueue[gpu.terrainQueueIndex];if(c.complete||c.noGeometry){c.queued=false;gpu.terrainQueueIndex++;continue;}const complete=realmTerrainChunkRow(gpu,c,cell,detail,mw,mh,tileBudget);slices++;if(complete){c.queued=false;gpu.terrainQueueIndex++;}}
+ gpu.terrainWork={slices,fallbackSlices,ms:performance.now()-terrainStart,budgetMs:terrainMs,pending:gpu.terrainQueue.length-gpu.terrainQueueIndex};
+ if(gpu.terrainQueueIndex>=gpu.terrainQueue.length){gpu.terrainQueue.length=0;gpu.terrainQueueIndex=0;}
+ const ready=gpu.terrainReady||(gpu.terrainReady=[]);ready.length=0;for(const c of visible)if(c.buffer)ready.push(c);
+ if(gpu.terrainTick%16===0){const resident=[];for(const sceneChunks of gpu.terrain.values())for(const c of sceneChunks.values())if(c.buffer)resident.push(c);if(resident.length>terrainBudget){resident.sort((a,b)=>a.used-b.used);for(let i=0;i<resident.length-terrainBudget;i++){const c=resident[i];if(c.used===gpu.terrainTick)continue;gpu.gl.deleteBuffer(c.buffer);gpu.terrain.get(c.scene).delete(c.key);}}}
  if(!inWorld()&&(currentScene==='mine'||realmSceneInfo.get(currentScene)?.kind==='mine')){
   if(!gpu.caveBackground){const data=[];flatFaceData(data,[[-128,-.03,-128],[-128,-.03,512],[512,-.03,512],[512,-.03,-128]],'#323b35',null,14);gpu.caveBackground={...gpu.upload(new Float32Array(data)),terrain:true};if(gpu.kind==='filament')gpu.caveBackground.buffer.retire=()=>{gpu.caveBackground=null;};}
-  return [gpu.caveBackground,...visible];
+  return [gpu.caveBackground,...ready];
  }
- return visible;
+ return ready;
 }
 const canvasPainterRealm=painter3;
 painter3=function(g,project){

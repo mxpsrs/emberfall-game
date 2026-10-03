@@ -13,6 +13,11 @@ for(const sex of ['male','female']){
  const a=rebuiltAvatars[sex],rig=a.rig,rest=Array.from({length:a.joints},(_,i)=>invertMotionAffine(rig.bind.subarray(i*12,i*12+12)));
  assert.equal(rig.names.length,65);
  assert(a.clips.walk.source==='Walk_Loop'&&a.clips.melee.source==='Sword_Attack','the original artist clips are identified');
+ for(const [clip,source]of [['walk','Walk_Loop'],['run','Jog_Fwd_Loop']]){
+  assert.equal(a.clips[clip].source,source,'locomotion uses the corresponding Quaternius clip');
+  assert(!a.clips[clip].layers,'locomotion preserves the full authored pose');
+  assert.equal(a.clips[clip].duration,a.clips[clip].sourceDuration,'retain the authored cycle duration');
+ }
  for(const clip of ['idle','swordIdle','walk','run','melee','unarmed','magic','ranged','bowIdle','bury','firemaking']){
   const motion=a.clips[clip];assert(motion.trs&&!motion.m,'authored clips use local skeletal transforms');
   for(let f=0;f<=24;f++)for(const blend of [1,.5]){

@@ -22,6 +22,7 @@ function realmLightingState(){return {night:0,cave:0,house:0,lights:[]}}
 <script>
 window.acceptance=(async()=>{
  await Promise.all([filamentReady,realmNativeReady]);if(window.failure)throw Error(window.failure);
+ realmNative.scenes.upsert('overworld',{id:'fixture:root',name:'WebGL fixture',parent:null,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{},metadata:{}});
  const gpu=createRealmFilamentGPU();window.testGPU=gpu;
  const raw=new Float32Array([
  -3,0,-3,0,1,0,1,1,1,1,0,0, -3,0,3,0,1,0,1,1,1,1,0,1, 3,0,3,0,1,0,1,1,1,1,1,1,
@@ -49,7 +50,7 @@ const server=http.createServer((request,response)=>{
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 let browser;
 try{
- browser=await playwright.chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ browser=await playwright.chromium.launch({headless:true,...(process.env.VELDREN_CHROMIUM?{executablePath:process.env.VELDREN_CHROMIUM}:{}),args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const page=await browser.newPage({viewport:{width:800,height:600}}),errors=[];page.on('pageerror',error=>errors.push(String(error)));
  await page.goto('http://127.0.0.1:'+server.address().port,{waitUntil:'load',timeout:120000});
  const result=await page.evaluate(()=>window.acceptance);assert.equal(result.errors,false);assert.equal(result.native,'cpp-wasm');assert(result.models.geometry>0);assert(result.draws.instances>0);assert(result.renderables>1);assert.deepEqual(errors,[]);
