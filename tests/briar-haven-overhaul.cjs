@@ -18,6 +18,7 @@ const fixture=require('../scripts/native-world-fixture.cjs');
  for(const kind of ['actors','services'])for(const id of Object.values(ctx.acceptedIds[kind]))assert(ids.has(id),'preserved '+kind+' ID '+id);
  for(const values of Object.values(ctx.acceptedIds.parts))for(const id of values)assert(ids.has(id),'preserved structural child '+id);
  const layouts=new Set(buildings.map(b=>JSON.stringify(b.briarDesign.volumes)));assert(layouts.size>=10,'houses have different structural plans, including extensions and open work bays');
+ assert(buildings.every(b=>b.assembly),'Briar buildings enter the runtime as canonical native modules, without editor activation');
  ctx.testBuildings=buildings;
  run(`
  s.tutorialReward=true;s.tutorial=tutorialSteps.length;activateScene('overworld',42,51,false);

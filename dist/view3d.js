@@ -29,7 +29,7 @@ function cameraStructureDistance3(b,origin,dir,limit){
    // Procedural awnings and braces are retained as canonical MeshGeometry.
    // Their triangles extend beyond the footprint and must also stop the camera.
    const geometry=node.components.MeshGeometry?.faces;
-   if(geometry)for(const face of geometry){const points=face.points.map(p=>{const m=node.worldMatrix;return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]];});for(let i=1;i+1<points.length;i++)triangles.push([points[0],points[i],points[i+1]]);}
+   if(geometry)for(const face of geometry){const points=face.points.map(p=>{const m=node.worldMatrix,x=m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],z=m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14],ground=node.components.MeshRenderer?.renderPath==='canonical'?0:typeof landHeight==='function'?landHeight(x,z):0;return [x,m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13]+ground,z];});for(let i=1;i+1<points.length;i++)triangles.push([points[0],points[i],points[i+1]]);}
   }
   cached={revision,cut,triangles};cameraStructureCache3.set(b,cached);
  }

@@ -376,7 +376,7 @@ painter3=function(g,project){
    const revision=realmFilamentGroundRevision();let state=gpu.assemblyTransforms.get(cached);
    const instances=cached.instances||[],reset=!state||state.revision!==revision||!realmFilamentSourceMatches(state.source,cached.model);
    if(!state){state={matrices:[],children:[],source:new Float64Array(12)};gpu.assemblyTransforms.set(cached,state);}
-   for(let j=0;j<instances.length;j++)if(reset||!realmFilamentSourceMatches(state.children[j],instances[j].matrix)){const model=affineMultiply(cached.model,instances[j].matrix);model[7]-=typeof landHeight==='function'?landHeight(model[3],model[11]):0;state.matrices[j]=model;state.children[j]=new Float64Array(instances[j].matrix);}
+   for(let j=0;j<instances.length;j++)if(reset||!realmFilamentSourceMatches(state.children[j],instances[j].matrix)){const model=affineMultiply(cached.model,instances[j].matrix);state.matrices[j]=model;state.children[j]=new Float64Array(instances[j].matrix);}
    state.matrices.length=state.children.length=instances.length;state.instances=instances;state.revision=revision;realmFilamentRememberSource(state.source,cached.model);
    for(let j=0;j<state.matrices.length;j++){const i=state.instances[j];emit(i.mesh,state.matrices[j],i.ghost?{dissolve:.45}:{},i.entityId);}
    if(cached.faces.length){

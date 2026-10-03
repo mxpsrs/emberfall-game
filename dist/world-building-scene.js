@@ -309,6 +309,10 @@
   for(const [name,bindings]of result.bindings)for(const binding of bindings)if(binding.source.assembly&&!entity(name,binding.id)?.components.ModularBuilding)setAssembly(name,binding.id,binding.source.assembly,binding.source);
   refreshReferences(result.sourceReferences);installConsumers();
   if(!subscribed){native().subscribe(onChange);subscribed=true;}
+  // Cook the rebuilt settlement through the existing native modular assembly
+  // path. Its individual bounds, doors and geometry then participate in native
+  // visibility and camera obstruction before the first rendered frame.
+  for(const b of [...registry().overworld.buildings])if(b.briarDesign&&!b.assembly&&!b.editorCreated)ensureAssembly(b);
   return {loaded:true};
  }
  function createBuilding(scene,input){

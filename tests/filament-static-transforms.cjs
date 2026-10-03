@@ -173,13 +173,18 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   wallLease.release();
   // A visible parent must not submit its culled native modules. This exercises
   // the actual painter with the native visibility result, before resource work.
-  const captured=[];context.__cullGpu={kind:'filament',canonicalEntry(mesh,model){captured.push(model);return {model};}};vm.runInContext('realmGPU=__cullGpu',context);
+  const captured=[];context.__cullGpu={kind:'filament',assemblyTransforms:new WeakMap(),canonicalEntry(mesh,model){captured.push(model);return {model};}};vm.runInContext('realmGPU=__cullGpu',context);
   context.VeldrenWorldPerformance={frame:()=>({visibleIds:new Set(['visible-module'])})};
   context.affineMultiply=(_parent,local)=>Array.from(local);
   const cullingPainter=context.painter3(null,context.project3);
   cullingPainter.cached({kind:'prop',instances:[{mesh:{},matrix:models[0],entityId:'visible-module'},{mesh:{},matrix:models[1],entityId:'culled-module'}],faces:[]});
   assert.equal(captured.length,1,'culled building modules create no compatibility or canonical demand');
   assert.equal(captured[0],models[0]);
+  const groundedPart=[1,0,0,42,0,1,0,.035,0,0,1,51];
+  context.landHeight=()=>7;
+  cullingPainter.cached({kind:'assembly',model:groundedPart,instances:[{mesh:{},matrix:groundedPart,entityId:'visible-module'}],faces:[]});
+  assert.equal(captured[1][7],.035,'native module height remains terrain-relative until the shared Filament transform adds ground');
+  assert(Math.abs(context.realmFilamentMatrix(captured[1])[13]-7.035)<1e-6,'assembly floors, walls and procedural parts receive terrain height exactly once');
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}
