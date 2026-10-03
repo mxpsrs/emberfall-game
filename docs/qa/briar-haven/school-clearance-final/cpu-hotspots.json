@@ -1,0 +1,151 @@
+{
+  "workerSha256": "b96444e79b7aef50a19f83a7ff87c67e9b8b3e3e4d5a5d39c406cf60a34dee76",
+  "softwareGpu": true,
+  "samples": 30,
+  "hotspots": [
+    {
+      "name": "(idle)",
+      "url": "",
+      "line": -1,
+      "ms": 34160
+    },
+    {
+      "name": "(program)",
+      "url": "",
+      "line": -1,
+      "ms": 643
+    },
+    {
+      "name": "(garbage collector)",
+      "url": "",
+      "line": -1,
+      "ms": 240
+    },
+    {
+      "name": "creatureRigPose",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 275,
+      "ms": 205
+    },
+    {
+      "name": "",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 431,
+      "ms": 195
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 23,
+      "ms": 134
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 308,
+      "ms": 105
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 92
+    },
+    {
+      "name": "fetch",
+      "url": "",
+      "line": -1,
+      "ms": 88
+    },
+    {
+      "name": "read",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 332,
+      "ms": 86
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 332,
+      "ms": 76
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 308,
+      "ms": 74
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 23,
+      "ms": 73
+    },
+    {
+      "name": "read",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 308,
+      "ms": 69
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 68
+    },
+    {
+      "name": "editor",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 329,
+      "ms": 67
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 308,
+      "ms": 67
+    },
+    {
+      "name": "realmFaceData",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 239,
+      "ms": 64
+    },
+    {
+      "name": "worldObjectsInBounds",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 108,
+      "ms": 58
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 58
+    },
+    {
+      "name": "applySharedWorld",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 431,
+      "ms": 50
+    },
+    {
+      "name": "",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 431,
+      "ms": 46
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 308,
+      "ms": 44
+    },
+    {
+      "name": "editor",
+      "url": "http://127.0.0.1:44685/play",
+      "line": 329,
+      "ms": 43
+    }
+  ]
+}
