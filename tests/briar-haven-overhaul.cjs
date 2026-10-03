@@ -19,6 +19,21 @@ const fixture=require('../scripts/native-world-fixture.cjs');
  for(const values of Object.values(ctx.acceptedIds.parts))for(const id of values)assert(ids.has(id),'preserved structural child '+id);
  const layouts=new Set(buildings.map(b=>JSON.stringify(b.briarDesign.volumes)));assert(layouts.size>=10,'houses have different structural plans, including extensions and open work bays');
  assert(buildings.every(b=>b.assembly),'Briar buildings enter the runtime as canonical native modules, without editor activation');
+ const B=ctx.VeldrenBuildingScene,b=buildings[0],first=B.renderAssembly(b);
+ assert.equal(B.renderAssembly(b),first,'unchanged native building projections are reused');
+ const restore=node=>{const value=JSON.parse(JSON.stringify(node));delete value.worldMatrix;delete value.activeInHierarchy;return value;};
+ const move=node=>{const transform=restore(node).transform;if(transform.affine){transform.affine[12]+=.25;return transform;}return {...transform,position:transform.position.map((v,i)=>v+(i===0?.25:0))};};
+ const actorId=native.componentIds('overworld','GeneratedSpawn').find(id=>!native.entity('overworld',id).children?.length),actor=native.entity('overworld',actorId);
+ assert(actor,'the cache regression uses an actual independent native actor');
+ assert(native.setTransform('overworld',actorId,move(actor)));assert.equal(B.renderAssembly(b),first,'unrelated actor motion retains the building projection');assert(native.upsert('overworld',restore(actor)));
+ const moduleId=native.componentIds('overworld','BuildingModule').find(id=>{const n=native.entity('overworld',id);return n.components.BuildingPart.building===b._sceneEntityId&&n.components.BuildingModule.role==='wall';}),module=native.entity('overworld',moduleId);
+ assert(native.setTransform('overworld',moduleId,move(module)));const edited=B.renderAssembly(b);assert.notEqual(edited,first,'a real native wall edit refreshes geometry');assert.notDeepEqual(edited.instances.find(i=>i.entityId===moduleId).matrix,first.instances.find(i=>i.entityId===moduleId).matrix);assert(native.upsert('overworld',restore(module)));
+ const group=native.entity('overworld',native.entity('overworld',b._sceneEntityId).parent),beforeGroup=B.renderAssembly(b);
+ native.batch(()=>assert(native.setTransform('overworld',group.id,move(group))));const movedGroup=B.renderAssembly(b);assert.notEqual(movedGroup,beforeGroup,'batched parent movement refreshes descendant projections');assert.equal(movedGroup.model[3],beforeGroup.model[3]+.25);assert(native.upsert('overworld',restore(group)));
+ b._cutaway=true;const cutaway=B.renderAssembly(b);assert(cutaway.instances.length<first.instances.length,'occupied cutaways refresh the cached projection');b._cutaway=false;
+ ctx.VELDREN_CONTEXT='editor';assert.notEqual(B.renderAssembly(b),B.renderAssembly(b),'editor visibility and floor tools always receive fresh projections');delete ctx.VELDREN_CONTEXT;
+ const projectionStart=performance.now();for(let frame=0;frame<120;frame++)for(const building of buildings)B.renderAssembly(building);console.log('Native building projection benchmark:',JSON.stringify({frames:120,buildings:buildings.length,totalMs:Math.round((performance.now()-projectionStart)*100)/100}));
+ const beforeReload=B.renderAssembly(b);assert(native.load(saved));assert.notEqual(B.renderAssembly(b),beforeReload,'loading the authoritative scene refreshes render projections');
  ctx.testBuildings=buildings;
  run(`
  s.tutorialReward=true;s.tutorial=tutorialSteps.length;activateScene('overworld',42,51,false);
@@ -40,6 +55,7 @@ const fixture=require('../scripts/native-world-fixture.cjs');
    }
   }
   const full=VeldrenBuildingScene.renderAssembly(b);b._cutaway=true;const cut=VeldrenBuildingScene.renderAssembly(b);b._cutaway=false;
+  assert.strictEqual(VeldrenBuildingScene.renderAssembly(b),VeldrenBuildingScene.renderAssembly(b),b.name+' unchanged runtime projection is reused');
   assert(cut.instances.length>0&&cut.instances.length<full.instances.length,b.name+' cutaway keeps structure');
   assert(a.modules.some(m=>m.role==='wall'&&m.floor===0)&&a.modules.some(m=>m.role==='floor'&&m.floor===0),b.name+' retains ground walls and floors');
   if(b.civilUpper){const {ramp,decks}=b.civilUpper,lo=[Math.floor(ramp.x+ramp.w/2+1e-6),Math.floor(ramp.y+ramp.h-1+1e-6)],hi=[Math.floor(ramp.x+ramp.w/2+1e-6),Math.floor(ramp.y+1e-6)];

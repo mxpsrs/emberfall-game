@@ -120,7 +120,7 @@
  }
  // Compatibility views contain IDs only. The native Scene owns every field;
  // renderer/collision projections are computed from the same transform graph.
- const views=new Map(),tables=new Map();let subscribed=false,installed=false,buildingRender=null;
+ const views=new Map(),tables=new Map(),assemblyRenders=new Map();let subscribed=false,installed=false,buildingRender=null;
  const native=()=>root.realmNative.scenes;
  const registry=()=>typeof worldScenes!=='undefined'?worldScenes:root.worldScenes;
  const entity=(scene,id)=>native().entity(scene,id);
@@ -211,7 +211,16 @@
  }
  function onChange(event){
   if(native().isUnderstoryBatch?.(event))return;
-  if(event.kind==='load'){for(const name of tables.keys())project(name);wallMaps.clear();return;}
+  if(event.kind==='load'){assemblyRenders.clear();for(const name of tables.keys())project(name);wallMaps.clear();return;}
+  const renders=assemblyRenders.get(event.scene);
+  if(renders?.size)for(const change of event.kind==='batch'?event.changes:[event]){
+   const node=change.id&&entity(event.scene,change.id);
+   // Root, module and ancestor writes change the projection. Actor motion and
+   // independent scenery writes retain it; the native Scene remains authoritative.
+   if(!node){renders.clear();break;}
+   const owner=node.components.BuildingPart?.building;
+   for(const [id,cached] of renders)if(id===owner||cached.dependencies.has(change.id))renders.delete(id);
+  }
   const table=tables.get(event.scene);if(!table)return;
   if(event.kind==='batch'&&event.changes?.every(change=>{const node=entity(event.scene,change.id);return !table.ids.has(change.id)&&!table.doorIds.has(change.id)&&!node?.components.BuildingPart&&!node?.components.GeneratedBuilding;}))return;
   invalidate(event.scene,event.id);
@@ -417,16 +426,28 @@
   setAssembly(scene,id,a,draft);root.VeldrenBuildings.cache.delete(draft);return assemblyView(scene,id);
  }
  function renderAssembly(b){
-  const scene=b._generatedSceneName,id=b._sceneEntityId,definition=entity(scene,id).components.ModularBuilding,instances=[],faces=[],A=root.VeldrenAssembly,filter=root.VeldrenBuildings.floorFilter;
+  const scene=b._generatedSceneName,id=b._sceneEntityId,filter=root.VeldrenBuildings.floorFilter;
+  // The editor reads fresh projections for its visibility and floor tools.
+  // Runtime projections survive unrelated actor revisions and allocate only
+  // when their native hierarchy or occupied cutaway changes.
+  const cacheable=String(root.VELDREN_CONTEXT||'').toLowerCase()!=='editor'&&!filter,cutaway=!!b._cutaway;
+  let renders=assemblyRenders.get(scene);
+  if(cacheable){if(!renders)assemblyRenders.set(scene,renders=new Map());const cached=renders.get(id);if(cached?.cutaway===cutaway)return cached.value;}
+  const rootNode=entity(scene,id),definition=rootNode.components.ModularBuilding,instances=[],faces=[],A=root.VeldrenAssembly,dependencies=new Set([id,...definition.modules]);
+  const ancestors=node=>{let parent=node.parent;while(parent&&!dependencies.has(parent)){dependencies.add(parent);parent=entity(scene,parent)?.parent;}};
+  ancestors(rootNode);
   for(const moduleId of present(scene,definition.modules)){
-   const node=entity(scene,moduleId);if(!node.activeInHierarchy||node.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(moduleId))continue;const m=moduleData(scene,moduleId,id);if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;
+   const node=entity(scene,moduleId);ancestors(node);if(!node.activeInHierarchy||node.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(moduleId))continue;const m=moduleData(scene,moduleId,id);if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;
    if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;
    if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(node.components.MeshGeometry?.faces){for(const face of node.components.MeshGeometry.faces)faces.push({...face,points:face.points.map(p=>A.point(m.local,p))});continue;}
    const asset=node.components.MeshGeometry?.mesh||root.VeldrenBuildings.model(m.model),mesh=node.components.MeshVariant?{...asset,...node.components.MeshVariant}:asset;if(mesh)instances.push({mesh,matrix:m.local,entityId:moduleId});
   }
-  return {instances,faces,height:b.visualHeight||4,kind:'assembly',model:matrices.row(entity(scene,id).worldMatrix)};
+  const value={instances,faces,height:b.visualHeight||4,kind:'assembly',model:matrices.row(entity(scene,id).worldMatrix)};
+  if(cacheable)renders.set(id,{cutaway,value,dependencies});return value;
  }
+ root.VeldrenAssets?.onReload(()=>assemblyRenders.clear());
+ root.VeldrenAssets?.onDispose(()=>assemblyRenders.clear());
 
 
  root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,renderAssembly,setAssembly};
