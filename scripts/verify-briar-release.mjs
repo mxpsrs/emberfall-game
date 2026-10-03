@@ -13,6 +13,10 @@ for(const [path,expected] of Object.entries(release.files))assert.equal(hash(pat
 const rendered=read(directory+'/'+release.evidenceLabel+'/result.json.gz');
 assert.equal(rendered.workerSha256,release.workerSha256);
 assert.deepEqual(rendered.errors,[]);assert.deepEqual(rendered.editorBindingErrors,[]);
+const baseline=read(directory+'/before/result.json.gz');
+assert.deepEqual(rendered.resolution,baseline.resolution,'matching capture resolution');
+assert.equal(rendered.deviceScaleFactor,baseline.deviceScaleFactor,'matching backing scale');
+assert.equal(rendered.hour,baseline.hour,'matching daylight');
 const names=['main-street','services-smithy','houses','magic-school','interior','town-edge'];
 assert.deepEqual(rendered.results.map(r=>r.name),names);
 function verifyView(view,label){
@@ -24,7 +28,14 @@ function verifyView(view,label){
  assert.equal(final.frame.deferredResources,0);assert.equal(final.frame.deferredRenderables,0);
  assert.equal(final.models.buildQueue.queued,0);assert.equal(final.residency.overBudget,false);
 }
-for(const view of rendered.results)verifyView(view,release.evidenceLabel);
+for(const view of rendered.results){
+ const before=baseline.results.find(v=>v.name===view.name);
+ assert(before,'retained baseline route '+view.name);
+ assert.equal(view.scene,before.scene,'matching scene '+view.name);
+ assert.deepEqual(view.player,before.player,'matching route position '+view.name);
+ for(const input of ['yaw','tilt','zoom'])assert.equal(view.view[input],before.view[input],'matching camera input '+view.name+' '+input);
+ verifyView(view,release.evidenceLabel);
+}
 const landmark=read(directory+'/'+release.landmarkEvidenceLabel+'/result.json.gz');
 assert.equal(landmark.workerSha256,release.workerSha256);assert.deepEqual(landmark.errors,[]);assert.deepEqual(landmark.editorBindingErrors,[]);
 assert.equal(landmark.results.length,1);assert.equal(landmark.results[0].name,'school-facade');
