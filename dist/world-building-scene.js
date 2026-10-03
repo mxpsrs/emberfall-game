@@ -11,7 +11,7 @@
   row:m=>[m[0],m[4],m[8],m[12],m[1],m[5],m[9],m[13],m[2],m[6],m[10],m[14]]
  };
  const fieldGroups={
-  BuildingFootprint:['w','h'],BuildingAppearance:['race','archetype','variant','visualHeight'],
+  BuildingFootprint:['w','h'],BuildingAppearance:['race','archetype','variant','visualHeight','briarDesign'],
   SettlementMember:['settlement','kingdom','district','planned','quarry'],
   BuildingAccess:['walkIn','usableUpper','doorFacing','planFacing','civilGateHalfWidth'],
   QuestMarker:['questBeacon']
@@ -20,7 +20,7 @@
   const hash=root.VeldrenSceneOwnership.stableHash,repeats=new Map();let count=0;
   for(const [scene,world]of Object.entries(registry))for(const building of world.buildings||[]){
    if(building._generatedBuildingKey)continue;
-   const signature=JSON.stringify([scene,building.name,building.settlement||'',building.archetype||'',building.x,building.y,building.w,building.h,building.service?.destination||'']);
+   const signature=building._briarGenerationSignature||JSON.stringify([scene,building.name,building.settlement||'',building.archetype||'',building.x,building.y,building.w,building.h,building.service?.destination||'']);
    const ordinal=repeats.get(signature)||0;repeats.set(signature,ordinal+1);
    const key='building-v1:'+signature+':identical-copy:'+ordinal;
    Object.defineProperties(building,{_generatedBuildingKey:{value:key,configurable:true},_generatedBuildingId:{value:'generated:'+scene+':building:'+hash(key),configurable:true}});count++;
@@ -46,11 +46,13 @@
     for(const key of Object.keys(b))if(!known.has(key)&&!key.startsWith('_'))throw Error('Unmapped generated building field: '+key);
     sourceReferences.set(b,{scene:name,id});sceneBindings.push({source:b,id});
     if(complete)continue;
-    const entities=[],occurrences=new Map();
+    const entities=[],occurrences=new Map(),roleOccurrences=new Map();
     const child=(role,source,parent=id,at=null)=>{
      const position=at||[number(source.x)-number(b.x),0,number(source.y)-number(b.y)];
      const signature=JSON.stringify([parent,role,source.name||'',position,source.w??null,source.h??null]),ordinal=occurrences.get(signature)||0;occurrences.set(signature,ordinal+1);
-     const entity={id:id+':'+role+':'+hash(signature+':'+ordinal),name:source.name||role,parent,active:true,transform:{...identity(),position},components:{BuildingPart:{building:id,role}},metadata:{}};
+     const roleOrdinal=roleOccurrences.get(role)||0;roleOccurrences.set(role,roleOrdinal+1);
+     const preserved=typeof briarGenerationIdentity==='function'&&briarGenerationIdentity(name,'parts',id+':'+role)?.[roleOrdinal];
+     const entity={id:preserved||id+':'+role+':'+hash(signature+':'+ordinal),name:source.name||role,parent,active:true,transform:{...identity(),position},components:{BuildingPart:{building:id,role}},metadata:{}};
      entities.push(entity);parts++;if(source&&typeof source==='object')sourceReferences.set(source,{scene:name,id:entity.id});return entity;
     };
     const rect=(role,source,parent=id)=>{const entity=child(role,source,parent);entity.components.Footprint=pick(source,['w','h']);return entity;};

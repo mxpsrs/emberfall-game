@@ -148,10 +148,9 @@
   const oldIn=inBuilding;inBuilding=function(b,x,y){if(!b.assembly)return oldIn(b,x,y);const a=b.assembly,p=A.point(A.inverse(a.parent),[x+.5,0,y+.5]);
    const entrance=a.modules.find(m=>m.role==='entrance');if(entrance?.opening){const center=entrance.opening.service,n=entrance.opening.normal,dx=p[0]-(center[0]-n[0]+.5),dz=p[2]-(center[2]-n[2]+.5);if(Math.hypot(dx,dz)<.72)return b.service?.openedAt===undefined;}
    return a.modules.some(m=>m.floor===0&&['wall','window'].includes(m.role)&&contains(m,p));};
-  const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b.assembly)return oldWithin(b,x,y);const p=A.point(A.inverse(b.assembly.parent),[x,0,y]);if(!b.editorCreated)return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;const box=localBounds(b);return p[0]>=box.minX&&p[0]<box.maxX&&p[2]>=box.minZ&&p[2]<box.maxZ;};
+  const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b.assembly)return oldWithin(b,x,y);const p=A.point(A.inverse(b.assembly.parent),[x,0,y]);if(!b.editorCreated)return b.briarDesign?briarFootprintContains(b,b.x+p[0],b.y+p[2]):p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;const box=localBounds(b);return p[0]>=box.minX&&p[0]<box.maxX&&p[2]>=box.minZ&&p[2]<box.maxZ;};
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};
  }
  window.VeldrenBuildings={ensure,create,attach,repairLegacyAssembly,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
 })();
-

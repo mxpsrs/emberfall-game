@@ -246,7 +246,7 @@
   if(kind==='object'&&item.id!=null&&String(item.id))key=String(item.id);
   else if(kind==='building'){
    const service=item.service?.id!=null?String(item.service.id):'none';
-   key=String(item._editorId||`building:${service}:${String(item.name||'building').replace(/\\|/g,'_')}:${index}`);
+   key=String(item._editorId||`building:${service}:${String(item._briarOriginalName||item.name||'building').replace(/\\|/g,'_')}:${index}`);
   }else{
    const signature=[item.name||item.propKind||item.type||'object',item.type||'',item.propKind||'',Number(item.x)||0,Number(item.y)||0].join('|');
    const occurrence=occurrences.get(signature)||0;occurrences.set(signature,occurrence+1);

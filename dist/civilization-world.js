@@ -44,7 +44,8 @@ function civilFloorScene(id,title,size,rooms,race,building,returnAt){
  return world;
 }
 function civilContinuousUpper(world,b,{rise=3.05,deckDepth=3}={}){
- const deck={x:b.x+1,y:b.y+1,w:b.w-2,h:Math.min(deckDepth,b.h-7)},ramp={x:b.x+b.w-3,y:b.y+deck.h,w:2,h:b.h-deck.h-2},structure={building:b,rise,ramp,decks:[deck],kind:'interiorUpper'};
+ const lot=b.briarDesign?briarVolumeWorldRect(b,b.briarDesign.volumes.find(v=>v.floors>1)):b;
+ const deck={x:lot.x+1,y:lot.y+1,w:lot.w-2,h:Math.min(deckDepth,Math.max(1,lot.h-7))},ramp={x:lot.x+lot.w-3,y:lot.y+deck.h,w:2,h:lot.h-deck.h-2},structure={building:b,rise,ramp,decks:[deck],kind:'interiorUpper'};
  b.civilUpper=structure;b.usableUpper='overworld';civilWalkableStructures.push(structure);
  const occupied=(x,y,o)=>world.objects.some(p=>p!==o&&Math.hypot(p.x-x,p.y-y)<1.2);
  for(const o of world.objects.filter(o=>o.x>=ramp.x-1&&o.x<ramp.x+ramp.w+1&&o.y>=ramp.y-1&&o.y<ramp.y+ramp.h+1&&o!==b.service)){
@@ -131,7 +132,8 @@ function civilAddGatehouseWalls(map,gate){
 function buildHabitableFloors(world){
  for(const b of world.buildings){if(!b.walkIn||b.civilCastle||!b.service||!/inn|house|hall/.test(b.archetype||''))continue;
   // Selected sizable residences and every mainland inn gain actual stairs and rooms.
-  if(b.archetype!=='inn'&&!(b.w>=10&&b.h>=9&&(b.variant||0)%3===1))continue;
+  if(b.briarDesign?!b.briarDesign.volumes.some(v=>v.floors>1):b.archetype!=='inn'&&!(b.w>=10&&b.h>=9&&(b.variant||0)%3===1))continue;
+  const savedSerial=civilSerial;if(b.briarDesign?.school)civilSerial=9250000;
   const id=b.service.destination+'_upper',structure=civilContinuousUpper(world,b);civilLegacyReturns.set(id,[structure.ramp.x+1,structure.ramp.y]);
   const deck=structure.decks[0],upperObjects=b.archetype==='inn'?
    [['Guest bed',deck.x+2,deck.y+1],['Guest bed',deck.x+deck.w-3,deck.y+1],['Upper landing table',deck.x+Math.floor(deck.w/2),deck.y+1],['Guest chest',deck.x+deck.w-2,deck.y+1]]:
@@ -140,13 +142,14 @@ function buildHabitableFloors(world){
   b.civilUpperRooms=[{name:b.archetype==='inn'?'Guest loft':'Private loft',...deck}];
   if(b.archetype==='inn'){
    world.objects=world.objects.filter(o=>o.interiorBuilding!==b.service.destination||!/^Bed/.test(o.name)||o.civilUpper);
-   const returnAt=[b.x+3,b.y+b.h-3],cellarId=b.service.destination+'_cellar',cellar=civilFloorScene(cellarId,b.name+' · Store cellar',[16,13],[civilRoom('Supplies cellar',1,1,14,11,[8,11,'x'],'cellar')],b.race||'human',b,returnAt);cellar.entry=[8,9];
-   civilStair(world,'Trapdoor ladder down to the store cellar',b.x+2,b.y+b.h-3,cellarId,[8,9],b.service.destination,'ladder');civilStair(cellar,'Ladder up to the inn',8,10,'overworld',returnAt,null,'ladder');
+   const lot=b.briarDesign?briarVolumeWorldRect(b,b.briarDesign.volumes[1]):b,returnAt=b.briarDesign?[lot.x+2,lot.y+4]:[b.x+3,b.y+b.h-3],cellarId=b.service.destination+'_cellar',cellar=civilFloorScene(cellarId,b.name+' · Store cellar',[16,13],[civilRoom('Supplies cellar',1,1,14,11,[8,11,'x'],'cellar')],b.race||'human',b,returnAt);cellar.entry=[8,9];
+   civilStair(world,'Trapdoor ladder down to the store cellar',lot.x+(b.briarDesign?1:2),b.briarDesign?lot.y+3:lot.y+lot.h-3,cellarId,[8,9],b.service.destination,'ladder');civilStair(cellar,'Ladder up to the inn',8,10,'overworld',returnAt,null,'ladder');
   }
+  if(b.briarDesign?.school)civilSerial=savedSerial;
  }
 }
 function civilClearUpperRoutes(world){
- for(const b of world.buildings.filter(b=>b.civilUpper)){const {ramp,decks}=b.civilUpper,deck=decks[0],blocked=o=>o!==b.service&&!o.civilContinuousStair&&o.x>=ramp.x-1.5&&o.x<ramp.x+ramp.w+1.5&&o.y>=ramp.y-1.5&&o.y<ramp.y+ramp.h+1;
+ for(const b of world.buildings.filter(b=>b.civilUpper)){const {ramp,decks}=b.civilUpper,deck=decks[0],blocked=o=>o!==b.service&&!o.civilContinuousStair&&!(b.briarDesign&&o.civilUpper)&&o.x>=ramp.x-1.5&&o.x<ramp.x+ramp.w+1.5&&o.y>=ramp.y-1.5&&o.y<ramp.y+ramp.h+1;
   for(const o of world.objects.filter(blocked)){let moved=false;for(let y=b.y+deck.h+2;y<b.y+b.h-1&&!moved;y++)for(let x=b.x+1;x<ramp.x-2&&!moved;x++)if(!world.objects.some(p=>p!==o&&Math.hypot(p.x-x,p.y-y)<1.8)){civilMove(o,x,y);moved=true;}if(!moved)o.walkThrough=true;}
  }
 }
@@ -269,11 +272,11 @@ setupTutorialVillage=function(){civilizationSetupBefore();if(civilizationReady)r
  const saved={scene:currentScene,x:s.x,y:s.y},world=worldScenes.overworld;currentScene='overworld';
  for(const p of settlementPlans.values()){const t=SETTLEMENTS.find(t=>t.id===p.id);p.grade=p.id==='briarhaven'?.75:Math.max(1.5,landBase(t.x,t.y));}buildCivilGradeBuckets();
  const workbench=world.objects.find(o=>o.mountainKey==='workbench');if(workbench)civilMove(workbench,780,123);
- expandLegacyNeighborhoods(world);for(const b of world.buildings.filter(b=>b.archetype==='castle'))buildCastle(world,b);
- addSettlementIdentity(world);buildHabitableFloors(world);buildBeaconLevels(world);reinforceGoblinVillage(world);setupSurfaceQuarries(world);civilCityWalls(world);civilClearUpperRoutes(world);
+ expandLegacyNeighborhoods(world);finishBriarBuildingPlans(world);for(const b of world.buildings.filter(b=>b.archetype==='castle'))buildCastle(world,b);
+ addSettlementIdentity(world);buildHabitableFloors(world);briarClearGroundServices(world);buildBeaconLevels(world);reinforceGoblinVillage(world);setupSurfaceQuarries(world);civilCityWalls(world);civilClearUpperRoutes(world);
  // Replace the old radial lanes with a readable civic spine and three neighborhoods.
  for(let i=organicRoads.length-1;i>=0;i--){const r=organicRoads[i],x=(r.a[0]+r.b[0])/2,y=(r.a[1]+r.b[1])/2;if(x>=29&&x<=105&&y>=15&&y<=117)organicRoads.splice(i,1);}
- const briarRoutes=[[[64,15],[64,50],[55,50],[55,70],[64,70],[64,118]],[[27,69],[105,69]],[[30,29],[100,29]],[[30,115],[80,115]],[[40,50],[40,52],[55,52]],[[55,46],[55,50]],[[64,43],[78,43]],[[55,56],[64,56]],[[47,78],[64,78]],[[75,69],[75,76]],[[40,27],[40,29]],[[73,28],[73,29]],[[88,28],[88,29]],[[37,111],[37,115]],[[55,114],[55,115]],[[71,109],[71,115]],[[48,92],[64,92]],[[95,69],[95,85],[91,85],[91,97]],[[95,69],[95,52],[112,52]]];
+ const briarRoutes=[[[64,15],[64,51],[55,51],[55,69],[64,69],[64,118]],[[27,69],[105,69]],[[30,33],[100,33]],[[30,115],[80,115]],[[41,50],[41,52],[55,52]],[[55,46],[55,51]],[[64,43],[78,43]],[[55,56],[64,56]],[[47,78],[64,78]],[[75,69],[75,76]],[[38,24],[38,33]],[[72,30],[72,33]],[[89,25],[89,33]],[[38,111],[38,115]],[[55,114],[55,115]],[[73,107],[73,115]],[[48,92],[64,92]],[[95,69],[95,85],[91,85],[91,97]],[[95,69],[95,52],[112,52]]];
  const briarPlan=settlementPlans.get('briarhaven');briarPlan.roads=[];briarPlan.entrances=[[64,15],[105,69],[64,118]];
  for(const [i,points]of briarRoutes.entries())for(let j=1;j<points.length;j++)briarPlan.roads.push({a:points[j-1],b:points[j],width:i===0?1.6:1.2,role:i<2?'main road':'neighborhood street'});
  for(const route of briarRoutes)for(let i=1;i<route.length;i++)plannedRoad(route[i-1],route[i],route===briarRoutes[0]?1.6:1.2,true,'briarhaven');

@@ -70,12 +70,18 @@ function populateWalkInRooms(world){for(const b of world.buildings){if(!b.walkIn
  const b=world.buildings.find(b=>b.walkIn&&b.service.destination===s.sceneId);if(b){const [w,h]=sceneSizes[s.sceneId]||[16,14],x=Math.round(b.x+1+s.x/(w-1)*(b.w-3)),y=Math.round(b.y+1+s.y/(h-1)*(b.h-3));activateScene('overworld',x,y,false);}
 }
 const solidBuildingBefore=inBuilding;
-inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;const perimeter=x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1;if(!perimeter)return false;const [dx,dy]=doorThreshold(b.service);return !(y===dy&&x===dx&&b.service.openedAt!==undefined);};
+inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b.x||x>=b.x+b.w||y<b.y||y>=b.y+b.h)return false;
+ if(b.briarDesign){
+  if(!briarFootprintContains(b,x+.5,y+.5))return false;
+  const open=b.briarDesign.volumes.filter(v=>v.open).some(v=>{const r=briarVolumeWorldRect(b,v);return x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h;});if(open)return false;
+  if([[1,0],[-1,0],[0,1],[0,-1]].every(([a,c])=>briarFootprintContains(b,x+a+.5,y+c+.5)))return false;
+ }else if(!(x===b.x||x===b.x+b.w-1||y===b.y||y===b.y+b.h-1))return false;
+ const [dx,dy]=doorThreshold(b.service);return !(y===dy&&x===dx&&b.service.openedAt!==undefined);};
 // Door clicks operate the leaf without changing the building cutaway.
 // The roof and upper walls disappear only after the player crosses inside, and
 // remain hidden there even if the door closes behind them.
 function buildingRoofHidden(b,x=px,y=py){return !!b.walkIn&&withinWalkIn(b,x,y);}
-function withinWalkIn(b,x,y){return x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h;}
+function withinWalkIn(b,x,y){return b.briarDesign?briarFootprintContains(b,x,y):x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h;}
 function doorNormal(o){return ({south:[0,1],east:[1,0],north:[0,-1],west:[-1,0]})[o.building?.doorFacing||'south'];}
 function doorThreshold(o){const [dx,dy]=doorNormal(o);return [o.x-dx,o.y-dy];}
 function doorApproach(o,inside=false){const [dx,dy]=doorNormal(o);return [o.x-dx*(inside?2:0),o.y-dy*(inside?2:0)];}

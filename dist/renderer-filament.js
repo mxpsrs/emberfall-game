@@ -271,7 +271,7 @@ function createRealmFilamentGPU(){
  }
  const sun=Filament.EntityManager.get().create();
  Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.94,.83]).intensity(65000).direction([.55,-1,-.38]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
- const pointLights=[],canonicalMatrices=[],canonicalSources=[],canonicalRevisions=[],lodRowPool=[],lodRows=[];
+ const pointLights=[],canonicalMatrices=[],canonicalSources=[],canonicalRevisions=[],canonicalFallback=[],lodRowPool=[],lodRows=[];
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
   const outdoor=1-Math.max(lighting.cave||0,(lighting.house||0)*.65);
@@ -320,7 +320,12 @@ function createRealmFilamentGPU(){
    }
    let lodResult=null;if(canonicalCount&&realmNative.scenes.performance)lodResult=realmNative.scenes.lodFrame?realmNative.scenes.lodFrame(currentScene,lodRows):realmNative.scenes.performance(currentScene,{op:'lod-batch',entries:lodRows});
    this.lodDiagnostics=lodResult?.stats||null;let canonicalIndex=0;
-   try{for(const entry of entries){if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(entry.lodAsset){const mesh=VeldrenAssets.mesh(selected?.[0]||entry.lodAsset)||entry.mesh;acquire({...realmMeshEntry(backend,mesh),model:entry.model},next,groundRevision);}else if(!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],lodRows[index]?.[2]||0,null,entry.instanceId,!!selected))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next,groundRevision);}else acquire(entry,next,groundRevision);}}finally{assetDraws.end();}
+   // Collect authored demand before allocating compatibility fallbacks. Busy
+   // fallback frames otherwise exhaust the shared quota and starve wall parts.
+   try{for(const entry of entries)if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];canonicalFallback[index]=!entry.lodAsset&&!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],lodRows[index]?.[2]||0,null,entry.instanceId,!!selected);}}finally{assetDraws.end();}
+   authoredDraws?.render(String(currentScene),cameraForLod.eye);constructionBudget.drain();
+   canonicalIndex=0;
+   for(const entry of entries){if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(entry.lodAsset){const mesh=VeldrenAssets.mesh(selected?.[0]||entry.lodAsset)||entry.mesh;acquire({...realmMeshEntry(backend,mesh),model:entry.model},next,groundRevision);}else if(canonicalFallback[index])acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next,groundRevision);}else acquire(entry,next,groundRevision);}
    if(dynamic.length){
     const count=Math.floor(dynamic.length/12),capacity=dynamicCapacity(count);dynamicResourceIndex=(dynamicResourceIndex+1)%dynamicResources.length;let resource=dynamicResources[dynamicResourceIndex];
     if(!resource||resource.capacity<capacity){
@@ -336,7 +341,6 @@ function createRealmFilamentGPU(){
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
    const cameraState=cameraForLod,{eye,center,near,far,left,right,bottom,top}=cameraState;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
-   authoredDraws?.render(String(currentScene),eye);constructionBudget.drain();
    streaming?.end(cameraState.center,legacyGpuBytes+modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes);
    // Native policy owns the budget/LRU decision; this layer only inventories
    // existing handles and releases the returned IDs through their owners.

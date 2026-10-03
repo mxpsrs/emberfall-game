@@ -1,4 +1,7 @@
 const {ctx,vm,fs}=require('./game-fixture.cjs');
+// Keep saved editor placements alive before semantic dressing removes optional scenery.
+const authored=JSON.parse(fs.readFileSync(__dirname+'/../dist/world-scene.json','utf8'));
+ctx.VELDREN_AUTHORED_GENERATION=new Set(authored.scenes.flatMap(scene=>scene.entities.filter(e=>e.active!==false&&(e.components.LegacyWorldEdit?.change?.kind||e.metadata?.legacyKind)==='object').map(e=>scene.scene+':'+String(e.components.LegacyWorldEdit?.change?.id??e.metadata.legacyId))));
 vm.runInContext(`
 let seed=91482;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
 draw=()=>{};drawPortrait=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();

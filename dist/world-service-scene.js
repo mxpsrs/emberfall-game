@@ -12,7 +12,7 @@
  const transient=new Set(['dead','hitAt','attackAt','collected','openedAt','motion','blocksSight','respawnAt']);
  function capture(){if(enabled)return;for(const [scene,w]of Object.entries(registry())){const repeats=new Map();for(const o of w.objects||[]){if(!service(o)||o._generatedSceneEntity)continue;
   const source=[o.type,o.name,o.x,o.y,o.destination||'',o.tutorialRole||''],key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);
-  const id=o._generatedServiceId||'generated:'+scene+':service:'+root.VeldrenSceneOwnership.stableHash(JSON.stringify([source,ordinal]));
+  const id=o._generatedServiceId||(typeof briarGenerationIdentity==='function'&&briarGenerationIdentity(scene,'services',o.id))||'generated:'+scene+':service:'+root.VeldrenSceneOwnership.stableHash(JSON.stringify([source,ordinal]));
   if(!o._generatedServiceId)Object.defineProperty(o,'_generatedServiceId',{value:id,configurable:true});sources.set(scene+'|'+id,{scene,id,object:o});
   if(typeof trainingPenGate!=='undefined'&&o===trainingPenGate)gateRef={scene,id};
  }}}

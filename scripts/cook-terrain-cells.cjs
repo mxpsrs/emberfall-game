@@ -14,7 +14,9 @@ function deliver(cache,out){
 // Cook actual authored terrain into independent 32-unit pages. Runtime IO only
 // fetches nearby pages; neither startup nor a render frame samples the whole map.
 (async()=>{
- const inputs=['world-native.json','world-construction.json',...fs.readdirSync('dist').filter(p=>p.endsWith('.js'))].sort();
+ // GPU and camera presentation cannot change cooked heights, road masks or collision.
+ const presentation=new Set(['view3d.js','renderer-filament.js','renderer-gl.js','asset-draws.js']);
+ const inputs=['world-native.json','world-construction.json',...fs.readdirSync('dist').filter(p=>p.endsWith('.js')&&!presentation.has(p))].sort();
  const hash=crypto.createHash('sha256');for(const p of inputs)hash.update(fs.readFileSync('dist/'+p));const key=hash.digest('hex'),cache=path.resolve('.terrain-cache',key),out=path.resolve('dist/terrain-cells');
  fs.rmSync(out,{recursive:true,force:true});
  if(fs.existsSync(cache+'/manifest.json')){deliver(cache,out);console.log('Reused cooked terrain cells '+key.slice(0,12));return;}

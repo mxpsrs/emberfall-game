@@ -73,13 +73,13 @@ function environmentRoofChoice3(w,d){
   if(!best||score<best.score)best={name,turn,scale,score};
  }}return best;
 }
-function environmentRoofBays3(r,race,x,y,z,w,d,variant=0){
+function environmentRoofBays3(r,race,x,y,z,w,d,variant=0,options={}){
  // A simple building volume gets one complete roof, never intersecting bays.
  const choice=environmentRoofChoice3(w,d),mesh=environmentRoofMesh3(race,choice.name,variant),[lo,hi]=mesh.bounds,turn=choice.turn;
  const rw=turn?hi[2]-lo[2]:hi[0]-lo[0],rd=turn?hi[0]-lo[0]:hi[2]-lo[2],sx=(turn?d:w)/(hi[0]-lo[0]),sz=(turn?w:d)/(hi[2]-lo[2]),sy=sx;
- const height=(hi[1]-lo[1])*sy;
+ const height=options.rise||((hi[1]-lo[1])*sy),vertical=height/(hi[1]-lo[1]);
  const c=Math.cos(turn),sn=Math.sin(turn),cx=(lo[0]+hi[0])/2*sx,cz=(lo[2]+hi[2])/2*sz;
- briarEmit(r,mesh,[c*sx,0,sn*sz,x-c*cx-sn*cz,0,sy,0,y-lo[1]*sy,-sn*sx,0,c*sz,z+sn*cx-c*cz]);
+ briarEmit(r,mesh,[c*sx,0,sn*sz,x-c*cx-sn*cz,0,vertical,0,y-lo[1]*vertical,-sn*sx,0,c*sz,z+sn*cx-c*cz]);
  // Close both ridge ends with the kit's authored triangular front.
  const gable=rebuiltModels[(turn?d:w)<6?'Roof_Front_Brick4':(turn?d:w)<9?'Roof_Front_Brick6':'Roof_Front_Brick8']||rebuiltModels.Roof_Front_Brick4;
  if(gable){const across=(turn?d:w)-.45,along=(turn?w:d)-.45;
@@ -90,6 +90,12 @@ function environmentRoofBays3(r,race,x,y,z,w,d,variant=0){
 
 function worldHouseRoof(r,b,y,rise){
  if(b._castleCurtain)return y;
+ if(b._briarVolume){
+  const v=b._briarVolume,x=b.x+b.w/2,z=b.y+b.h/2;
+  if(v.roof==='hip')return y+environmentModule3(r,rebuiltModels.Roof_Tower_RoundTiles,x,y-.08,z,b.w+.55,Math.min(3.4,b.w*.38),b.h+.55);
+  if(v.roof==='lean'){environmentModule3(r,rebuiltModels.Roof_Wooden_2x1_Center,x,y-.12,z,b.w+.35,1.05,b.h+.35);return y+1.05;}
+  return environmentRoofBays3(r,'human',x,y-.08,z,b.w+.5,b.h+.5,0,{rise:Math.min(3.0,1.3+b.w*.16)});
+ }
  const race=b.race||realmArtRace(b.x,b.y),p=worldStyle[race],x=b.x+b.w/2,z=b.y+b.h/2,v=b.variant||0;
  const roofRise=race==='elf'?Math.max(rise,b.w*.25):race==='dwarf'?Math.max(1.35,rise*.7):rise;
  let authoredTop=y;
@@ -277,7 +283,7 @@ function worldUnderstoryPartIndex(bx,bz,x,z){return (x>=bx*8+4?1:0)|(z>=bz*8+4?2
 function worldUnderstoryPlacements(bx,bz,onlyPart=-1){
  const cell=8,cx=bx*cell+4,cz=bz*cell+4,race=kingdomAt(cx,cz).race,cluster=worldRand(bx*5,bz+3),nearBriar=currentScene==='overworld'&&Math.hypot(cx-55,cz-61)<72,out=[];
  if(cluster<(nearBriar?.025:race==='elf'?.09:race==='dwarf'?.30:.15))return out;
- const count=nearBriar?36:race==='elf'?26:race==='dwarf'?12:20;
+ const count=nearBriar?22:race==='elf'?26:race==='dwarf'?12:20;
  for(let i=0;i<count;i++){
   const patch=i%2,ax=bx*cell+1.2+worldRand(bx*19+patch*41,bz+patch*7)*5.6,az=bz*cell+1.2+worldRand(bz*17+patch*37,bx+8+patch)*5.6;
   const x=ax+(worldRand(bx*3+i,bz+i*7)-.5)*2.8,z=az+(worldRand(bz*3+i,bx+i*11)-.5)*2.8;
@@ -299,11 +305,21 @@ function worldUnderstoryPlacements(bx,bz,onlyPart=-1){
   else if(nearBriar&&!waterEdge&&seed>.74&&i<24){name=['Kenney_FlowerPurple','Kenney_FlowerRed','Kenney_FlowerYellow'][i%3];scale=.95+worldRand(x+4,z)*.28;}
   else if(!waterEdge&&seed>(nearBriar?.79:.84)&&i<(nearBriar?18:9)){name=i%2?'Flower_3_Group':'Flower_4_Group';scale=.36+worldRand(x+4,z)*.23;tint=race==='elf'?[.82,.92,.80]:[.91,.83,.64];}
   else{name=['Grass_Common_Short','Grass_Common_Tall','Grass_Wispy_Short','Grass_Wispy_Tall'][i%4];scale=.48+worldRand(z,x+6)*.34;tint=waterEdge?[.62,.82,.64]:[.65,.80,.54];}
+  // Village grasses stay below knees; shrubs and flowers form planted margins.
+  // The deterministic chunk/LOD system owns them, with no per-frame generation.
+  if(nearBriar){if(/Grass/.test(name)){name=i%3?'Grass_Common_Short':'Grass_Wispy_Short';scale=Math.min(scale*.43,.40);}else if(/Bush|Plant/.test(name))scale*=.72;tint=undefined;}
   if(onlyPart<0||parentPart===onlyPart)out.push({name,x,z,scale,heading:seed*6.28,tint});
-  const companions=/Grass/.test(name)?2:/Bush|Plant/.test(name)?1:0;
+  const companions=/Grass/.test(name)?(nearBriar?1:2):/Bush|Plant/.test(name)?1:0;
   for(let companion=0;companion<companions;companion++){
    const angle=seed*9.7+companion*2.4,distance=.34+companion*.22,gx=x+Math.cos(angle)*distance,gz=z+Math.sin(angle)*distance;
-   if((onlyPart<0||worldUnderstoryPartIndex(bx,bz,gx,gz)===onlyPart)&&worldWaterDistance(gx,gz)>=.55&&roadInfluence(gx,gz)[0]<=.23&&!worldUnderstoryNearBuilding(gx,gz))out.push({name:companion?'Grass_Common_Short':'Grass_Wispy_Short',x:gx,z:gz,scale:scale*(.68+companion*.13),heading:angle+1.2,tint:waterEdge?[.60,.80,.63]:[.63,.78,.52]});
+   if((onlyPart<0||worldUnderstoryPartIndex(bx,bz,gx,gz)===onlyPart)&&worldWaterDistance(gx,gz)>=.55&&roadInfluence(gx,gz)[0]<=.23&&!worldUnderstoryNearBuilding(gx,gz))out.push({name:companion?'Grass_Common_Short':'Grass_Wispy_Short',x:gx,z:gz,scale:Math.min(scale*(.68+companion*.13),nearBriar?.40:Infinity),heading:angle+1.2,tint:waterEdge?[.60,.80,.63]:[.63,.78,.52]});
+  }
+ }
+ if(nearBriar)for(const [gx,gz]of [[48,44],[49,58],[61,62],[62,73],[49,80],[33,30],[80,31],[96,31],[45,110],[81,107]]){
+  if(Math.floor(gx/8)!==bx||Math.floor(gz/8)!==bz)continue;
+  for(let i=0;i<9;i++){const a=i*2.399,x=gx+Math.cos(a)*(.3+Math.sqrt(i)*.25),z=gz+Math.sin(a)*(.3+Math.sqrt(i)*.25);
+   if(onlyPart>=0&&worldUnderstoryPartIndex(bx,bz,x,z)!==onlyPart||roadInfluence(x,z)[0]>.12||worldUnderstoryNearBuilding(x,z))continue;
+   out.push({name:i%3?'Flower_3_Group':'Bush_Common_Flowers',x,z,scale:i%3?.23:.25,heading:a});
   }
  }
  return out;
@@ -581,7 +597,14 @@ prop3=function(r,o,x,z){
   for(const side of [-1,1])box3(q,x+side*.28,1.48,z+.08,.45,.58,.02,'#d8c49a');return 2;
  }
  if(name==='Forge furnace'){
-  profile3(stone,x,.9,z,1.45,1.8,1.2,[[-.5,1],[-.28,1],[.2,.8],[.5,.65]],'#8d8b7a',a=>a,8);box3(stone,x,2.25,z,.65,1.2,.65,'#777c72');box3(q,x,.68,z+.62,.70,.68,.02,'#332821');box3(materialRealm(q,19),x,.45,z+.64,.45,.2,.025,'#d8994d');return 2.9;
+  profile3(stone,x,.9,z,1.45,1.8,1.2,[[-.5,1],[-.28,1],[.2,.8],[.5,.65]],'#8d8b7a',a=>a,8);box3(stone,x,2.25,z,.65,1.2,.65,'#777c72');box3(q,x,.68,z+.62,.70,.68,.02,'#332821');box3(materialRealm(q,19),x,.45,z+.64,.45,.2,.025,'#d8994d');
+  if(currentScene==='overworld'&&x>74&&x<95&&z>30&&z<54){
+   const flame=materialRealm(q,19),cycle=(time*.5+(o.id||0)*.13)%1;
+   cone3(flame,x,.46,z+.64,.13,.22+.07*Math.sin(time*7),'#efb760',6);
+   // Three recycled, low-poly puffs; no particles, timers or persistent entities.
+   for(let i=0;i<3;i++){const t=(cycle+i/3)%1,k=.16+t*.22;oval3(q,x+Math.sin(t*3+i)*t*.22,2.9+t*1.2,z+t*.18,k,k*.68,k,'#a3aba8',p=>p,5);}
+  }
+  return 4.1;
  }
  if(name==='Axe chopping block'){worldModel(q,'Anvil_Log',x,0,z,.5);worldModel(q,'Pickaxe_Bronze',x,.35,z,.45,Math.PI/2);return .8;}
  if(name==='Flower planter'){worldModel(q,'Crate_Wooden',x,0,z,.43);rebuiltPlace(q,'Flower_3_Group',x,.3,z,.5,0,.5);return .8;}

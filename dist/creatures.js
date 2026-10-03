@@ -106,6 +106,7 @@ const creatureBeforeImports=creature3;
 creature3=function(r,o,x,z){
  if(o.civilianModel||(!o.tutor&&!o.appearanceRole&&(o.type==='man'||o.type==='villager'||o.characterSprite||['elder','shop','questgiver','inn'].includes(o.type)))){
   const state=creatureMotion(o,x,z),gear=npcEquipment(o);gear._attackAt=o.attackAt;gear._animationActor=o;
+  if(o.name==='Smith Doran'&&currentScene==='overworld'&&state.blend<.015&&target!==o){const phase=(time/2.8)%1;gear._peerAction={work:{kind:'repair',started:time-phase*2.8,duration:2.8}};}
   humanoid3(r,x,z,npcLook(o),gear,state.heading,state.blend>.015?state.phase*7.5:0);return gear._race==='dwarf'?1.8:2;
  }
  const kind=o.creatureLook||creatureKinds[o.kind],a=creatureAssets[kind];if(!a)return creatureBeforeImports(r,o,x,z);

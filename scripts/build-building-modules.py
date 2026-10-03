@@ -8,7 +8,7 @@ root=pathlib.Path(__file__).resolve().parents[1]
 registry={r['id']:r for r in json.loads((root/'dist/assets/canonical/registry.json').read_text())['records']}
 legacy=json.loads((root/'dist/assets/realms/models.js').read_text().split('=',1)[1].rstrip(';\n'))
 atlas=np.asarray(Image.open(root/'dist/assets/realms/atlas.png').convert('RGB'))
-names=['Wall_Plaster_Window_Thin_Round','Wall_Plaster_Window_Wide_Round','Wall_UnevenBrick_Window_Thin_Round','Wall_UnevenBrick_Window_Wide_Round','Window_Thin_Round1','Window_Wide_Round1','Roof_Front_Brick6','Roof_Front_Brick8','Roof_Tower_RoundTiles','Roof_FrontSupports','WindowShutters_Wide_Flat_Open','WindowShutters_Thin_Round_Open']
+names=['Wall_Plaster_Window_Thin_Round','Wall_Plaster_Window_Wide_Round','Wall_UnevenBrick_Window_Thin_Round','Wall_UnevenBrick_Window_Wide_Round','Window_Thin_Round1','Window_Wide_Round1','Roof_Front_Brick6','Roof_Front_Brick8','Roof_Tower_RoundTiles','Roof_FrontSupports','WindowShutters_Wide_Flat_Open','WindowShutters_Thin_Round_Open','Corner_Exterior_Wood','Corner_Exterior_Brick','Roof_Wooden_2x1_Center']
 def decode(a):return np.frombuffer(base64.b64decode(a['data']),dtype={'float32-le':'<f4','uint32-le':'<u4','uint16-le':'<u2'}[a['encoding']]).reshape((-1,a.get('components',1)))
 def pack(a,t):return base64.b64encode(np.asarray(a,dtype=t).tobytes()).decode()
 result={}

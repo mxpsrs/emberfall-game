@@ -56,7 +56,7 @@
  function buildingId(b,index){
   if(b._editorId)return b._editorId;
   const service=b.service?.id!=null?String(b.service.id):'none';
-  return b._editorId=`building:${service}:${String(b.name||'building').replace(/\|/g,'_')}:${index}`;
+  return b._editorId=`building:${service}:${String(b._briarOriginalName||b.name||'building').replace(/\|/g,'_')}:${index}`;
  }
  function fallbackDistance(e,c){return Math.hypot((e.x??0)-(c.baseX??e.x),(e.y??0)-(c.baseY??e.y))}
  function resolve(scene,c){

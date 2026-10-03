@@ -312,6 +312,8 @@ function rebuiltLivingVine(r,x,y,z,scale=1,heading=0){
  }
 }
 function rebuiltHouseFloorCount(b,{tower=false,castle=false}={}){
+ if(b._briarVolume)return b._cutaway?1:b._briarVolume.floors;
+ if(b.briarDesign)return b._cutaway&&!b.civilUpper?1:Math.max(...b.briarDesign.volumes.map(v=>v.floors));
  if(b._cutaway&&!b.civilUpper)return 1;
  if(tower)return 3;
  if(castle)return 2;
@@ -321,6 +323,7 @@ function rebuiltHouseFloorCount(b,{tower=false,castle=false}={}){
  return ['hall','temple'].includes(b.archetype)||b.archetype==='inn'&&b.variant%2===0?2:1+(b.archetype==='house'&&b.variant===3?1:0);
 }
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
+ if(b.briarDesign&&!b._briarVolume)return rebuiltBriarHouse(r,b);
  const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||['temple','castle'].includes(b.archetype),wall=stone?'UnevenBrick':'Plaster',scale=1,level=3.02;
  const floors=rebuiltHouseFloorCount(b,{tower,castle}),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92],doorX=b.service?b.service.x+.5:x,variant=b.variant||0,frontWindows=[];
  // Wall joints use their two-metre structural width, not decorative mesh bounds.
@@ -333,7 +336,9 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const run=(start,end,cy,edge,angle,side,door=false)=>{
   const spans=[];
   const fill=(a,b)=>{const count=Math.ceil((b-a)/2-1e-8);for(let i=0;i<count;i++){const lo=a+i*2,hi=Math.min(b,lo+2);spans.push({center:(lo+hi)/2,width:hi-lo});}};
-  if(door){fill(start,doorX-1);spans.push({center:doorX,width:2,door:true});fill(doorX+1,end);}else fill(start,end);
+  const gaps=(b._briarGaps||[]).filter(g=>g.edge===edge&&g.side===side&&cy<g.height).sort((a,b)=>a.start-b.start);
+  const solidFill=(a,bb)=>{let cursor=a;for(const gap of gaps){if(gap.end<=cursor||gap.start>=bb)continue;fill(cursor,Math.min(bb,gap.start));cursor=Math.max(cursor,gap.end);}fill(cursor,bb);};
+  if(door){solidFill(start,doorX-1);spans.push({center:doorX,width:2,door:true});solidFill(doorX+1,end);}else solidFill(start,end);
   spans.forEach((bay,i)=>{
    const window=!bay.door&&bay.width>1.6&&(i+variant+Math.round(cy/level))%3!==1;
    const style=window?(['temple','hall'].includes(b.archetype)||variant%3===1?'Window_Thin_Round':variant%3===2?'Window_Wide_Round':'Window_Wide_Flat'):!stone&&variant%3===2?'WoodGrid':'Straight';
@@ -347,10 +352,12 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const floorMesh=rebuiltModels[stone?'Floor_UnevenBrick':'Floor_WoodDark'];
  for(let zz=b.y;zz<b.y+d;zz+=2)for(let xx=b.x;xx<b.x+w;xx+=2){const fw=Math.min(2,b.x+w-xx),fd=Math.min(2,b.y+d-zz);environmentModule3(r,floorMesh,xx+fw/2,.035,zz+fd/2,fw,.02,fd);}
  for(let floor=0;floor<floors;floor++){
-  run(b.x,b.x+w,floor*level,b.y+d,0,false,floor===0);
+  if(!b._briarVolume?.open){
+  run(b.x,b.x+w,floor*level,b.y+d,0,false,floor===0&&b._briarEntrance!==false);
   run(b.x,b.x+w,floor*level,b.y,Math.PI,false);
   run(b.y,b.y+d,floor*level,b.x+w,Math.PI/2,true);
   run(b.y,b.y+d,floor*level,b.x,-Math.PI/2,true);
+  }
  }
  if(b.walkIn&&['inn','house','hall','temple'].includes(b.archetype)){
   const rx=x,rz=b.y+d*.55,rw=Math.min(w-3,4.2),rd=Math.min(d-4,4.8),rug=materialRealm(r,13);
@@ -359,7 +366,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  }
  // The school's four open facets surround a common center: a local craft mark,
  // independent of each player's quest activation of the leyline altar.
- if(b.service?.destination==='realm_briarhaven_3'){
+ if(b.service?.destination==='realm_briarhaven_3'&&b._briarEntrance!==false){
   const cx=b.x+b.w*.5,cz=b.y+b.h*.5;
   for(let i=0;i<4;i++){const a=i*Math.PI/2,c=Math.cos(a),n=Math.sin(a),point=(u,v)=>[cx+u*c-v*n,.085,cz+u*n+v*c];
    r.face([point(.35,0),point(1.1,.36),point(1.65,0),point(1.1,-.36)],['#86c6d6','#779fc6','#be9cde','#8eb9a3'][i],null,13);
@@ -368,7 +375,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  if(b._cutaway)return level;
  // Service fronts use their own materials and furnishings at the same scale as residents.
  const front=groundedPainter(r,x,z),frontZ=b.y+d+.12,wood=materialRealm(front,5);
- if(['shop','inn','forge'].includes(b.archetype)){
+ if(['shop','inn','forge'].includes(b.archetype)&&b._briarEntrance!==false){
   const awningWidth=b.archetype==='shop'?4.0:2.8,awningY=level-.30,depth=b.archetype==='forge'?1.0:1.35;
   const colors=b.archetype==='shop'?['#68785a','#cfbf94']:b.archetype==='inn'?['#986552','#c7ad83']:['#615953','#787068'];
   for(let i=0;i<8;i++){
@@ -388,9 +395,29 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  const roofY=floors*level-.04,roofRise=tower?1.65:castle?Math.min(5,w*.18):Math.min(3.0,1.25+w*.11);
  const tileColor=race==='elf'?'#45635b':race==='dwarf'||b.archetype==='forge'?'#59636b':b.variant%3===1?'#746555':'#9b5038';
  const actualRoofTop=worldHouseRoof(r,b,roofY,roofRise,tileColor);
- if(!tower&&!b._castleCurtain)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
+ if(!tower&&!b._castleCurtain&&b._briarEntrance!==false)rebuiltPlace(r,b.archetype==='forge'?'Prop_Chimney2':'Prop_Chimney',x+w*.26,roofY+.1,z-d*.19,scale*.60);
  if(race==='elf'&&!tower)for(const side of [-1,1])rebuiltLivingVine(r,x+side*w*.35,level*.25,z+d*.5+.10,scale*.9);
  return Math.max(roofY+roofRise,actualRoofTop);
+}
+function rebuiltBriarHouse(r,b){
+ const design=b.briarDesign,volumes=design.volumes,source=b.southPlan||b,door=b.service?.x+.5;
+ let top=0;
+ for(const v of volumes){
+  const x=b.x+v.x,z=b.y+v.z,gaps=[];
+  for(const other of volumes){if(other===v)continue;const ox=b.x+other.x,oz=b.y+other.z,height=Math.min(v.floors,other.floors)*3.02;
+   for(const [edge,touch,side,start,end]of [[x,ox+other.w,true,Math.max(z,oz),Math.min(z+v.h,oz+other.h)],[x+v.w,ox,true,Math.max(z,oz),Math.min(z+v.h,oz+other.h)],[z,oz+other.h,false,Math.max(x,ox),Math.min(x+v.w,ox+other.w)],[z+v.h,oz,false,Math.max(x,ox),Math.min(x+v.w,ox+other.w)]])if(Math.abs(edge-touch)<1e-6&&end>start)gaps.push({edge,side,start,end,height});
+  }
+  const entrance=door>x+1&&door<x+v.w-1&&Math.abs(z+v.h-(source.y+source.h))<.01;
+  const part={...b,x,y:z,w:v.w,h:v.h,briarDesign:null,southPlan:null,civilUpper:null,usableUpper:undefined,_briarVolume:v,_briarGaps:gaps,_briarEntrance:entrance,race:v.stone?'dwarf':b.race,service:entrance?b.service:null};
+  top=Math.max(top,rebuiltHouse(r,part));
+  // Roofed working bays stay open, with real supported posts and a complete floor.
+  if(v.open)for(const [xx,zz]of [[x+.18,z+.18],[x+v.w-.18,z+.18],[x+.18,z+v.h-.18],[x+v.w-.18,z+v.h-.18]])rebuiltPlace(r,'Corner_Exterior_Wood',xx,0,zz,1,0,1);
+ }
+ if(design.porch){
+  const z=source.y+source.h+.75,w=Math.min(3.8,source.w-2),x=door;
+  for(let dx=-w/2;dx<w/2;dx+=2){const width=Math.min(2,w/2-dx);environmentModule3(r,rebuiltModels.Floor_WoodDark,x+dx+width/2,.035,z,width,.03,1.5);}
+ }
+ return top;
 }
 building3=function(r,b){
  const kind=b.archetype;

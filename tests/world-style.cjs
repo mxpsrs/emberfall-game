@@ -26,7 +26,8 @@ assert(worldScenes.overworld.objects.filter(o=>o.id>=2800000&&o.id<2900000).leng
 activateScene('overworld',320,280);const nature=[];for(let bz=2;bz<90;bz+=3)for(let bx=2;bx<138;bx+=3)nature.push(...worldUnderstoryPlacements(bx,bz));
 assert(nature.length>1800,'the continent receives dense streamed ground cover');
 for(const name of ['Grass_Wispy_Short','Bush_Common','Fern_1','Flower_3_Group'])assert(nature.some(p=>p.name===name),name+' is represented in biome-aware ground cover');
-for(const name of ['Kenney_GrassLarge','Kenney_GrassLeafsLarge','Kenney_MushroomRed','Kenney_BushDetailed','Kenney_RockLarge','Kenney_FlowerPurple'])assert(nature.some(p=>p.name===name),name+' is integrated into Briarhaven ground cover');
+for(const name of ['Grass_Common_Short','Grass_Wispy_Short','Kenney_MushroomRed','Kenney_BushDetailed','Kenney_RockLarge','Kenney_FlowerPurple'])assert(nature.some(p=>p.name===name),name+' is integrated into Briarhaven ground cover');
+const villagePlants=nature.filter(p=>Math.hypot(p.x-55,p.z-61)<55);assert(villagePlants.filter(p=>/Grass/.test(p.name)).every(p=>(rebuiltModels[p.name].bounds[1][1]-rebuiltModels[p.name].bounds[0][1])*p.scale<.65),'village grass stays below knees');
 assert(nature.every(p=>worldWaterDistance(p.x,p.z)>=.55&&roadInfluence(p.x,p.z)[0]<=.23),'ground cover stays out of water and travelled road centers');
 let splitVerified=false;
 for(let bz=4;bz<16&&!splitVerified;bz++)for(let bx=4;bx<16&&!splitVerified;bx++){

@@ -44,7 +44,7 @@
   const repeated=new Map();
   for(const record of records){
    const seed=record.scene+'|static-prop-v1|'+record.signature,index=repeated.get(seed)||0;repeated.set(seed,index+1);
-   const generationKey=seed+'|same-source-copy:'+index,id='generated:'+record.scene+':prop:'+hash(generationKey);
+   const generationKey=(typeof briarGenerationIdentity==='function'&&briarGenerationIdentity(record.scene,'props',record.object.id))||seed+'|same-source-copy:'+index,id='generated:'+record.scene+':prop:'+hash(generationKey);
    defineHidden(record.object,'_generatedSceneKey',generationKey);
    defineHidden(record.object,'_generatedEntityId',id);
    defineHidden(record.object,'_generatedLegacyId',String(record.object.id??''));

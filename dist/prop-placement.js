@@ -120,7 +120,8 @@ function propFinalizeSupportPads(){
 }
 let propPlacementReady=false;
 function propKind(o){if(o.propKind)return o.propKind;if(!['prop','range','camp','forge','practiceForge','furnace','cache'].includes(o.type))return null;return PROP_KINDS.find(([,match])=>match(o))?.[0]||null;}
-function propPinned(o){return !o.placementMovable&&!!(o.mainStoryKey||o.mountainKey||o.questModel||o.civilStair||o.workplace||o.penFence||o.lairEntrance||o.raiderCamp||['gate','tower','cellBars','brokenRamp','dummy','grove'].includes(o.civilDecor));}
+function propEditorAuthored(o){const key=currentScene+':'+String(o.id),changes=globalThis.VeldrenWorldEdits?.state?.changes;return globalThis.VELDREN_AUTHORED_GENERATION?.has(key)||changes?.some(c=>c.scene===currentScene&&c.kind==='object'&&String(c.id)===String(o.id)&&!c.deleted);}
+function propPinned(o){return !!propEditorAuthored(o)||!o.placementMovable&&!!(o.mainStoryKey||o.mountainKey||o.questModel||o.civilStair||o.workplace||o.penFence||o.lairEntrance||o.raiderCamp||['gate','tower','cellBars','brokenRamp','dummy','grove'].includes(o.civilDecor));}
 function propDimensions(o,yaw=o.placement?.yaw??o.roomYaw??o.heading??0){const [w,d]=PROP_RULES[propKind(o)]?.size||[.8,.8],c=Math.abs(Math.cos(yaw)),s=Math.abs(Math.sin(yaw));return [w*c+d*s,d*c+w*s];}
 function propBox(o,x=o.x,y=o.y,yaw=o.placement?.yaw??o.roomYaw??o.heading??0,offset=o.placement?.offset||[0,0]){const [w,d]=propDimensions(o,yaw),[cx,cy]=PROP_RULES[propKind(o)]?.modelCenter||[0,0];x+=offset[0]+cx*Math.cos(yaw)+cy*Math.sin(yaw);y+=offset[1]-cx*Math.sin(yaw)+cy*Math.cos(yaw);return {left:x+.5-w/2,right:x+.5+w/2,top:y+.5-d/2,bottom:y+.5+d/2};}
 function propBoxesOverlap(a,b,gap=0){return a.left<b.right+gap&&a.right>b.left-gap&&a.top<b.bottom+gap&&a.bottom>b.top-gap;}
@@ -139,7 +140,7 @@ function propRoomContexts(scene,w){
  const rooms=[];
  for(const b of w.buildings.filter(b=>b.walkIn&&b.service)){
   const threshold=doorThreshold(b.service),usage=propRoomUsage(b);
-  const parts=b.civilRooms||[{name:b.name,x:b.x,y:b.y,w:b.w,h:b.h,usage,door:[...threshold,b.doorFacing==='east'||b.doorFacing==='west'?'y':'x']}];
+  const parts=b.briarDesign?b.briarDesign.volumes.filter(v=>!v.open&&v.w>=4&&v.h>=4).map((v,i)=>({name:b.name+(i?' · Wing '+i:''),...briarVolumeWorldRect(b,v),usage,door:[...threshold,b.doorFacing==='east'||b.doorFacing==='west'?'y':'x']})):b.civilRooms||[{name:b.name,x:b.x,y:b.y,w:b.w,h:b.h,usage,door:[...threshold,b.doorFacing==='east'||b.doorFacing==='west'?'y':'x']}];
   for(const r of parts)rooms.push({...r,id:scene+':'+b.service.destination+':'+r.name,building:b.service.destination,race:b.race||'human',outer:b,scene});
  }
  const floor=civilFloors.get(scene);
@@ -236,6 +237,11 @@ function propFitsRoom(r,o,a,placed,fixed,w){
  const rule=PROP_RULES[propKind(o)],box=propBox(o,a.x,a.y,a.yaw,a.offset||[0,0]);
  const margin=(r.outer&&!r.outer.civilCastle) ? .18 : 1.03;
  if(rule.outdoorOnly||!rule.rooms?.includes(r.usage)||box.left<r.x+margin||box.right>r.x+r.w-margin||box.top<r.y+margin||box.bottom>r.y+r.h-margin)return false;
+ if(r.outer?.briarDesign&&r.outer.civilUpper&&!o.civilUpper){
+  const upper=r.outer.civilUpper,ramp=upper.ramp;if(propBoxesOverlap(box,{left:ramp.x-.2,right:ramp.x+ramp.w+.2,top:ramp.y-.2,bottom:ramp.y+ramp.h+.2}))return false;
+  if((rule.required||propKind(o)==='counter'||o.name==='Study table')&&upper.decks.some(d=>propBoxesOverlap(box,{left:d.x,right:d.x+d.w,top:d.y,bottom:d.y+d.h})))return false;
+  if(a.staffAt&&!briarGroundServiceClear(r.outer,...a.staffAt))return false;
+ }
  if(propWindowExclusion(r,o,a,box))return false;
  if(propDoorExclusion(r,box)||(propKind(o)!=='counter'&&propRoomAisle(r,box)))return false;
  const stairClear=w.objects.filter(p=>p.civilStair&&Math.abs(p.x-a.x)<5&&Math.abs(p.y-a.y)<5);
@@ -378,7 +384,7 @@ function propDressOutdoors(w,rooms){
  }
 }
 function propAnnotateAuthored(w,scene){
- for(const o of w.objects){if(!propPinned(o)||o.civilStair||o.workplace||o.penFence||o.lairEntrance||['gate','tower','cellBars'].includes(o.civilDecor))continue;
+ for(const o of w.objects){if(propEditorAuthored(o)||!propPinned(o)||o.civilStair||o.workplace||o.penFence||o.lairEntrance||['gate','tower','cellBars'].includes(o.civilDecor))continue;
   const model=o.questModel||o.campModel;
   const anchor={papers:'table',ledger:'table',satchel:'camp-edge',courier:'battlefield',tracks:'trail',seal:'ritual',oathstone:'ritual',wardStatue:'shrine',waymarker:'roadside',tent:'camp-edge',bedroll:'camp-edge',palisade:'fence-line',cart:'loading-area',tools:'workbench'}[model]||'authored-quest';
   o.placementContext={anchor,reason:'Authored '+(o.mainStoryKey||o.mountainKey||o.name)+' scene; gameplay identity and approach retained',scene};propPlacementReport.protected++;

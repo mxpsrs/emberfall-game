@@ -27,7 +27,7 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
    document:{createElement(){return {className:'',dataset:{},style:{},setAttribute(){},width:0,height:0};},getElementById(id){return id==='world'?world:null;}},
    VELDREN_FILAMENT_ASSETS:{material:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-world.filamat'))),terrainMaterial:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.filamat'))),atlasBytes:textures,groundSurfacesBytes:textures},
    realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>{heightReads++;return groundHeight;},landSurfaceRevision:0,
-   screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},profile3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
+   screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,cameraPose3:()=>({eye:[10.5,6,24],center:[10.5,1.12,20.5],near:.12,far:320,left:-.11,right:.11,bottom:-.05,top:.08}),currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},profile3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
   context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+file+'.js'),'utf8'),context);
   // Real native residency decisions via the production world bridge.
   Object.assign(context,{WebAssembly,DataView,URL,addEventListener(){},fetch:async p=>{const bytes=fs.readFileSync(path.join(root,'dist',String(p)));return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes.toString())};}});
@@ -154,6 +154,23 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.equal(buildingGpu.diagnostics().legacy.meshes,0,'idle pose buffers retire through native residency');assert.equal(a.resource.dynamicArrays,null,'retired pose staging is released');assert.equal(buildingGpu.meshBytes,0,'retirement balances shared index accounting');
   buildingGpu.frameId++;const rebuilt=buildingGpu.canonicalEntry(poseA,model);assert.notEqual(rebuilt.buffer,a.buffer);buildingGpu.render([rebuilt],[],null);
   assert.equal(buildingGpu.scene.getRenderableCount(),1,'a retired pose reconstructs correctly');
+  // Reproduce a crowded streaming frame: new fallback requests arrive every
+  // frame while an authored wall is ready. Neither may starve the wall queue.
+  assert(context.realmNative.scenes.upsert('overworld',{id:'starvation-fixture',name:'Construction acceptance',parent:null,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'rebuilt:Wall_Plaster_Straight',renderPath:'canonical'}},metadata:{}}));
+  context.VELDREN_FILAMENT_ASSETS.atlasBytes=textures;context.VELDREN_FILAMENT_ASSETS.groundSurfacesBytes=textures;
+  const mixedGpu=context.createRealmFilamentGPU(),wallId='rebuilt:Wall_Plaster_Straight';
+  const wallLease=mixedGpu.modelResources.acquire(wallId,'browser'),wallModel=await wallLease.ready;
+  const walls=Array.from({length:12},(_,i)=>({canonicalAsset:wallId,instanceId:'starvation-wall:'+i,mesh:{packed:beforeRetirement},model:models[i]}));
+  const expectedWalls=walls.length*wallModel.draws.length;
+  let mixedFrames=0;
+  while(mixedGpu.assetDraws.diagnostics().activeRenderables<expectedWalls&&mixedFrames<80){
+   const busy=Array.from({length:256},(_,i)=>({buffer:{data:new Float32Array(beforeRetirement)},stride:48,model:models[i]}));
+   mixedGpu.render([...busy,...walls],[],null);
+   assert(mixedGpu.performanceSnapshot().construction.used<=16,'mixed construction retains the desktop quota');
+   await new Promise(resolve=>setTimeout(resolve,0));mixedFrames++;
+  }
+  assert.equal(mixedGpu.assetDraws.diagnostics().activeRenderables,expectedWalls,'authored walls complete despite continuous compatibility demand');
+  wallLease.release();
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}
