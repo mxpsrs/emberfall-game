@@ -17,6 +17,8 @@ const workerSha256=createHash('sha256').update(readFileSync(join(root,'dist/serv
 const {openLocalStorage}=await import(pathToFileURL(join(root,'scripts/local-storage.mjs')).href);
 const {default:worker}=await import(pathToFileURL(join(root,'dist/server/index.js')).href);
 const {chromium}=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
+const {createCanvas,loadImage}=await import('@napi-rs/canvas');
+async function surfaceLuminance(path){const bitmap=await loadImage(path),canvas=createCanvas(bitmap.width,bitmap.height),context=canvas.getContext('2d');context.drawImage(bitmap,0,0);const region=[320,360,1160,600],pixels=context.getImageData(...region).data,values=[];let sum=0;for(let i=0;i<pixels.length;i+=64){const y=pixels[i]*.2126+pixels[i+1]*.7152+pixels[i+2]*.0722;sum+=y;values.push(y);}values.sort((a,b)=>a-b);return {region,mean:sum/values.length,median:values[Math.floor(values.length/2)]};}
 const storage=openLocalStorage({root,dataDirectory:mkdtempSync(join(tmpdir(),'veldren-briar-qa-'))}),{db,env}=storage;
 const owner='2db1d2ba-75e2-4c27-bcdf-94e742f95c86',token=randomBytes(32).toString('hex'),errors=[],requests=[];
 db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').run(owner,'BriarVisualQA','briarvisualqa',bcrypt.hashSync(randomBytes(32).toString('hex'),4),Date.now());
@@ -108,7 +110,9 @@ try{
   await page.waitForFunction(()=>__qaFrames.length>=30&&(realmGPU.terrainWork?.pending??0)===0&&realmGPU.diagnostics().draws.loading===0,{},{timeout:300000});
   const night=await page.evaluate(()=>({name:'night-school',hour:worldHour(),scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),frames:__qaFrames.slice(-30)}));
   await page.screenshot({path:join(output,'night-school.jpg'),type:'jpeg',quality:90,timeout:120000});
-  writeFileSync(join(output,'night.json.gz'),gzipSync(JSON.stringify({workerSha256,backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,night,errors}),{level:9}));console.log('READY night-school');
+  const dayLuminance=await surfaceLuminance(join(output,'school-facade.jpg')),nightLuminance=await surfaceLuminance(join(output,'night-school.jpg'));assert(nightLuminance.mean<dayLuminance.mean*.9,'actual night surfaces must remain visibly darker than matching daylight');
+  const landmark=await page.evaluate(()=>{const b=buildings.find(b=>b.briarDesign?.school);if(!b)throw Error('Missing canonical Magic School');if(Math.hypot(s.x-b.service.x,s.y-b.service.y)>8)throw Error('School facade view missed the actual entrance');return {buildingId:b._sceneEntityId,name:b.name,destination:b.service.destination,door:[b.service.x,b.service.y]};});
+  writeFileSync(join(output,'night.json.gz'),gzipSync(JSON.stringify({workerSha256,backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,night,landmark,surfaceLuminance:{day:dayLuminance,night:nightLuminance},errors}),{level:9}));console.log('READY night-school',JSON.stringify({landmark,surfaceLuminance:{day:dayLuminance.mean,night:nightLuminance.mean}}));
   // The matched services baseline faces the rear yard. Inspect the actual
   // west-facing smithy work bay as well, without changing that baseline route.
   await page.evaluate(()=>{worldHour=()=>11;stop();activateScene('overworld',74,40,false);view3d.yaw=-Math.PI/2;view3d.tilt=.27;view3d.zoom=102;__qaFrames.length=0;__qaPreviousFrame=0;});

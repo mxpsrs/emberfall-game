@@ -1,0 +1,3 @@
+Finish your apprenticeship with Rowan before travelling to the mainland.
+PASS: actual house modules, local transforms, snap, linked entrance/opening, parent move, roof count, undo/redo, serialization, isolated bad/stale edits and idempotence.
+PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.

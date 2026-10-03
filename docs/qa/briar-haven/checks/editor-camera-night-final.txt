@@ -1,0 +1,1 @@
+PASS: editor camera/navigation, scene-authored transforms and subtree editing, verified v2 save/revert, and temporary placement lifecycle.

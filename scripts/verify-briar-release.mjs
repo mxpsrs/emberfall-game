@@ -51,6 +51,8 @@ verifyView(landmark.results[0],release.landmarkEvidenceLabel);
 const night=read(directory+'/'+release.landmarkEvidenceLabel+'/night.json.gz');
 assert.equal(night.workerSha256,release.workerSha256);assert.deepEqual(night.errors,[]);
 assert.equal(night.night.hour,21);assert.equal(night.night.frames.length,30);
+assert.equal(night.landmark.destination,'realm_briarhaven_3','the facade capture faces the canonical Magic School');
+assert(night.surfaceLuminance.night.mean<night.surfaceLuminance.day.mean*.9,'matching actual night surfaces remain darker than daylight');
 assert(fs.statSync(directory+'/'+release.landmarkEvidenceLabel+'/night-school.jpg').size>10000);
 assert.equal(night.night.frames.at(-1).terrain.pending,0);
 assert.deepEqual(night.night.frames.at(-1).renderer.draws.failures,[]);

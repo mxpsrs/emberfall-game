@@ -1,0 +1,1 @@
+PASS: canonical construction cannot starve behind recurring terrain/prop work; desktop and mobile budgets remain bounded.

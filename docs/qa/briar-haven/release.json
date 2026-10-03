@@ -1,8 +1,8 @@
 {
-  "workerSha256": "129c8f4309687394a7814a6095cb2e05f1d4ff45b09f96e297d837464138c7ba",
-  "runtimeSourceLocalCommit": "60a931ee2b9a4beecd64666dfda3c5022a8f757e",
-  "runtimeSourceRemoteCommit": "c53561d2af4eb5b93a9fed5e959c5417783aea52",
-  "runtimeTree": "78787fd1ae4bc46d6b24e69e9975f4bd59336e9c",
+  "workerSha256": "30d2e7a6e6e307c4e3d9961a54ff34e01dca4cac5c01adc98e1887bfeab9d07e",
+  "runtimeSourceLocalCommit": "c706c0bff202265c8b33059ca5ecea00e05523f1",
+  "runtimeSourceRemoteCommit": "cb7aba41589db97198bb7f49d4fad46322473658",
+  "runtimeTree": "ef981867e0c261d45e3074c9bfc79ee8a5742b01",
   "files": {
     ".openai/hosting.json": "9eebf38abe3261e21481688d1694f77310a5eed6a80d7c3d0982d240c0cc8fbc",
     "art/derived/browser-assets.json": "5d368ddde52244381eefca6f701d862de906033e81367e6fdbb6fed765b4d539",
@@ -434,7 +434,7 @@
     "dist/briarhaven.js": "acf06a8add487bcf29d4892645f5c94d07cc785434665606a58896f39d101e6d",
     "dist/building-assembly.js": "5fcd5563fbd3422d5edc552b7458ab6c7e9d318d9fde8178557045e79173a013",
     "dist/building-orientation.js": "d1cb823d1580baf6cd7c4f5b308f1017c62b8a693c3d976e7cb9306158f1cd56",
-    "dist/building-runtime.js": "40d735d8b1a0d64cd8ebafeb0bc43250183001ca1f427b2de4ad3303d80a9d30",
+    "dist/building-runtime.js": "c7659c9339948624aa49ffd476c7bf06389a30005544aaeae314597777c2aaae",
     "dist/cave-passages.js": "4df48dd43fef060585c331239a788f34c2bd2d78664c7e174c16250872210523",
     "dist/character-creation.js": "532f43faa5c6c6327ade1d31091fdde23d47a1057accc1c3d434076a18bcbf9d",
     "dist/civilization-world.js": "22d3aef7470041e974d64ba63fedb66bf4af2b453947075b424197c8060f59ad",
@@ -524,10 +524,10 @@
     "dist/quest-world.js": "b0e443287a005a9128b4016c8036265185e3ca1812c502502e96b8bb20f282e5",
     "dist/realm-models.js": "cacba13fc7e7b8227bc449c9635f255644ff60ca39a2588f204e620d99bd4e4f",
     "dist/realm-story.js": "d3f520e406953c896872a8b2139fd75d33d1ffe8558e317e7ff94614e448eeaa",
-    "dist/realms-rebuilt.js": "c4d5008e21e95c4364e8457af0503c6b158dd62eab224cceb3cfb83f5466f510",
+    "dist/realms-rebuilt.js": "8fd9bcd001c9624fb306cd20f28b068b1e19ee05bedccdb480a3f183af2f5349",
     "dist/relic-shaping.js": "ffd3f613e2229c6eb01d729ae5679f001e3964c73d400189931b14b95d180434",
     "dist/render-diagnostics.js": "51df797a7f232f646fd282f044fd15e963df7a22230a4cd711edf1291ace9a0f",
-    "dist/renderer-filament.js": "7bc1566531da0c38807be61a869ff57dde97f4bc74a7849d7fbee2111357bf13",
+    "dist/renderer-filament.js": "d7811dc09882fcf52a7e1c32de613ec9dab266dd1f51d8be09adb84631963834",
     "dist/renderer-gl.js": "ebff6b27e8f105bab0e114cd4a9d6bc070423454234859e3071f6e240ca78bb3",
     "dist/robots.txt": "77fd6c914cc18bb6333080f384184c1589d2947c9c7bf087efa7e59d6b0a1219",
     "dist/scene-renderer.js": "0b973a1ea2babba8a3c9f8a0457e2310338b3f677a0588d49d39f9437e64165e",
@@ -563,7 +563,7 @@
     "dist/world-atlas.css": "0b7dc6fd6b0521376627da1c78a44d01ad80de314a7f2329e16fae5d6c71609e",
     "dist/world-atlas.js": "a9960bb9eab392d8bb7bf82f825960d159ffaf344c05e71e9dc531c399395078",
     "dist/world-bridge-scene.js": "821424668aa32d23f7a30ea34fc0de040d344ea449a951a5240bb584a5dd0d15",
-    "dist/world-building-scene.js": "518ec4cc7374e4661685d2c5813a874352e67501fc4f130f56e479c51831d4e7",
+    "dist/world-building-scene.js": "c462422d132acc88241fe11933277fcc91ee87269cf47abb1a9543fdf9fcdab0",
     "dist/world-depth.js": "bcbcfff2e3afc5d53edc10156e421a4924e95c9daf49f856d3d3776e2394fadc",
     "dist/world-dressing.js": "22eec9a987a6736c9f178803f4505b2d30270de0eee7372f2d0f08059db642f7",
     "dist/world-ecology-layout.js": "71c43b75e4fe0ce37308ef046fcc3c356d99bbc37198797c7290556e824ff003",
@@ -664,11 +664,11 @@
     "worker/world-snapshot.js": "3835bc897a0978b315a997c08d9aac1b03119e2309fa7d6f2435060200c08bfd"
   },
   "buildLog": "checks/build-final.txt",
-  "evidenceLabel": "after-door-final",
+  "evidenceLabel": "after-live-final",
   "liveWorldSnapshotSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
   "liveWorldSnapshotRevision": 26,
   "worldDataWritten": false,
   "physicalDeviceTargetsVerified": false,
   "releasePreparedAt": "2026-10-03T17:30:05.005Z",
-  "landmarkEvidenceLabel": "school-door-final"
+  "landmarkEvidenceLabel": "school-live-final"
 }

@@ -17,6 +17,7 @@ const origin='http://127.0.0.1:'+process.env.VELDREN_PREVIEW_PORT;
 const output=resolve('docs/qa/briar-haven/gameplay');mkdirSync(output,{recursive:true});
 const errors=[],networkFailures=[];let browser,page,currentBuilding=null;
 const recoveries=[];
+const heartbeat=setInterval(async()=>{if(!page)return;const value=await page.evaluate(()=>{const d=realmGPU?.diagnostics();return {position:[px,py],path:path.length,inside:s.insideBuilding||null,disconnected:cloudDisconnected,models:d?.draws.loading,construction:d?.draws.construction.queued,visible:d?.draws.pendingVisibleInstances,terrain:realmGPU?.terrainWork?.pending};}).catch(()=>null);if(value)console.log('PROGRESS doorway',currentBuilding?.name||'camera',JSON.stringify(value));},30000);
 const settleView=()=>page.waitForFunction(()=>{
  const d=realmGPU?.diagnostics();return d&&d.frame&&!cloudDisconnected&&!cloudConflict&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0&&(realmGPU.terrainWork?.pending??0)===0;
 },{},{timeout:360000});
@@ -139,4 +140,4 @@ try{
  writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,workerSha256,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,traversal,networkFailures,recoveries,errors},null,2)+'\n');
  console.log('PASS rendered door picking, physical entry/exit, occupied cutaway, restored roof and local account connection');
 }catch(error){const state=await page?.evaluate(()=>({position:[px,py],tile:[s.x,s.y],insideBuilding:s.insideBuilding,path,cloud:{disconnected:cloudDisconnected,conflict:cloudConflict,recovering:cloudRecovering,saveBusy:cloudBusy,syncBusy:onlineSyncBusy}})).catch(()=>null);await page?.screenshot({path:join(output,'failure.png'),timeout:30000}).catch(()=>{});writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),currentBuilding,state,networkFailures,errors},null,2));console.error(error);process.exitCode=1;}
-finally{await browser?.close();await releaseGraphics();process.kill(process.pid,'SIGTERM');}
+finally{clearInterval(heartbeat);await browser?.close();await releaseGraphics();process.kill(process.pid,'SIGTERM');}
