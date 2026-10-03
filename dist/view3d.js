@@ -19,7 +19,7 @@ const cameraStructureCache3=new WeakMap();
 function cameraStructureDistance3(b,origin,dir,limit){
  const native=globalThis.realmNative?.scenes;
  if(!native||!b._generatedBuildingEntity)return limit;
- const cut=buildingRoofHidden(b),revision=typeof worldObjectRevision==='number'?worldObjectRevision:0;
+ const cut=buildingRoofHidden(b),revision=(typeof worldObjectRevision==='number'?worldObjectRevision:0)+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(globalThis.VeldrenTerrainEdits?.revision??0);
  let cached=cameraStructureCache3.get(b);
  if(!cached||cached.revision!==revision||cached.cut!==cut){
   const root=native.entity(String(currentScene),b._sceneEntityId),triangles=[];

@@ -16,5 +16,7 @@ const terrain=fixture();terrain.ctx.walkSurfaceHeight=(x,z)=>z>63?8:1;terrain.ru
 const porch=fixture();porch.ctx.buildings=[{x:48,y:65,w:6,h:2,_generatedBuildingEntity:true,_sceneEntityId:'inn'}];
 porch.ctx.realmNative={scenes:{entity(_scene,id){return id==='inn'?{components:{ModularBuilding:{modules:['awning']}}}:{activeInHierarchy:true,worldMatrix:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],components:{BuildingModule:{role:'detail',floor:0},MeshGeometry:{faces:[{points:[[48,2,62],[53,2,62],[53,5,62],[48,5,62]]}]}}};}}};
 porch.run('view3d.yaw=0;view3d.tilt=.25');assert(porch.run('cameraPose3().distance')<clear/2,'canonical porch geometry outside the wall footprint stops the camera');
+porch.ctx.landHeight=()=>10;porch.ctx.landSurfaceRevision=1;
+assert.equal(porch.run('cameraStructureDistance3(buildings[0],[50,4,60],[0,0,1],10)'),10,'terrain edits invalidate cached porch triangles and keep camera obstruction aligned with rendered ground');
 const editor=fixture(true);editor.ctx.buildings=[{x:48,y:61,w:6,h:7}];const ep=editor.run('cameraPose3()');assert.equal(ep.target,0);assert.equal(ep.anchor,.82);assert(ep.distance>3,'detached editor can inspect a building without player collision');editor.tick(16);editor.run('view3d.yaw+=1');assert.equal(editor.run('cameraPose3().yaw'),ep.yaw+1,'editor movement remains immediate');
 console.log('PASS: shared camera projection/picking over 36 poses, smooth manual orbit, wall/terrain obstruction, recovery, and independent editor camera.');

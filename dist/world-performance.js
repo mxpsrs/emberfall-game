@@ -2,7 +2,7 @@
 // Browser marshalling only: membership and bounds decisions live in the native
 // partition over the canonical Scene. These maps resolve IDs to existing views.
 (function(root){
- let sceneName=null,objectList=null,buildingList=null,objectMap=new Map(),buildingMap=new Map(),legacyVisibility=new Map(),dynamic=[],dynamicPositions=new Map(),session=[],lastStats=null,currentFrame=null,owner=null,unsubscribe=null,viewRevision=0,listRevision=0,lastPreparedKey=null,lastPreparedViewRevision=-1,lastPreparedListRevision=-1,lastPrepared=null;
+ let sceneName=null,objectList=null,buildingList=null,objectMap=new Map(),buildingMap=new Map(),legacyVisibility=new Map(),dynamic=[],dynamicPositions=new Map(),session=[],lastStats=null,currentFrame=null,owner=null,unsubscribe=null,viewRevision=0,listRevision=0,lastPreparedKey=null,lastPreparedViewRevision=-1,lastPreparedListRevision=-1,lastPrepared=null,grounded=new Map(),groundKey='',groundPending=false,groundEpoch=0;
  function index(scene,objects,buildings){
   if(sceneName===scene&&objectList===objects&&buildingList===buildings)return false;
   sceneName=scene;objectList=objects;buildingList=buildings;objectMap=new Map();buildingMap=new Map();legacyVisibility.clear();dynamic=[];dynamicPositions.clear();session=[];listRevision++;lastPrepared=null;
@@ -10,17 +10,38 @@
   for(const building of buildings){const id=building._sceneEntityId;if(id)buildingMap.set(id,building);}
   return true;
  }
+ // The native partition starts with conservative terrain-relative bounds.
+ // Feed it the same terrain height used by rendering, once per changed record.
+ // Work is bounded; the native culler remains the only visibility authority.
+ function groundVisible(native,scene,result,query){
+  if(typeof landHeight!=='function')return result;
+  const revision=scene+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(root.VeldrenTerrainEdits?.revision??0)+':'+groundEpoch;
+  if(groundKey!==revision){grounded.clear();groundKey=revision;}
+  const changes=[],started=typeof performance==='undefined'?0:performance.now(),budget=typeof realmMobileFilament==='function'&&realmMobileFilament()?2:4;
+  groundPending=false;
+  for(const id of result.ids){
+   if(grounded.has(id))continue;
+   if(changes.length>=256||changes.length&&typeof performance!=='undefined'&&performance.now()-started>=budget){groundPending=true;break;}
+   const node=native.entity(scene,id);grounded.set(id,true);
+   if(!node||node.components.MeshRenderer?.renderPath==='canonical')continue;
+   const matrix=node.worldMatrix,height=landHeight(matrix[12],matrix[14]);
+   if(Number.isFinite(height))changes.push([id,height]);
+  }
+  if(changes.length){native.performance(scene,{op:'ground',changes});return query();}
+  return result;
+ }
  function prepare(scene,objects,buildings,minx,maxx,minz,maxz){
   const native=root.realmNative?.scenes;if(!native?.performance)return null;
-  if(owner!==native){unsubscribe?.();owner=native;sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;unsubscribe=native.subscribe(event=>{if(native.isUnderstoryBatch?.(event))return;if(event.kind==='load'){sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;return;}if(event.scene!==sceneName)return;currentFrame=null;lastPrepared=null;viewRevision++;if(event.kind!=='transform'&&(event.kind!=='batch'||event.changes.some(c=>c.kind!=='transform'))){legacyVisibility.clear();sceneName=null;}});}
+  if(owner!==native){unsubscribe?.();owner=native;groundEpoch++;grounded.clear();groundKey='';groundPending=false;sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;unsubscribe=native.subscribe(event=>{if(native.isUnderstoryBatch?.(event))return;groundEpoch++;if(event.kind==='load'){sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;return;}if(event.scene!==sceneName)return;currentFrame=null;lastPrepared=null;viewRevision++;if(event.kind!=='transform'&&(event.kind!=='batch'||event.changes.some(c=>c.kind!=='transform'))){legacyVisibility.clear();sceneName=null;}});}
   index(scene,objects,buildings);
-  if(dynamic.length){const changes=[];for(const o of dynamic){const id=o._sceneEntityId,x=o.drawX??o.x,z=o.drawY??o.y,previous=dynamicPositions.get(id);if(!previous||previous.x!==x||previous.z!==z){changes.push([id,x,0,z]);dynamicPositions.set(id,{x,z});}}if(changes.length){native.performance(scene,{op:'dynamic',changes});currentFrame=null;lastPrepared=null;viewRevision++;}}
+  if(dynamic.length){const changes=[];for(const o of dynamic){const id=o._sceneEntityId,x=o.drawX??o.x,z=o.drawY??o.y,previous=dynamicPositions.get(id);if(!previous||previous.x!==x||previous.z!==z){changes.push([id,x,0,z]);grounded.delete(id);dynamicPositions.set(id,{x,z});}}if(changes.length){native.performance(scene,{op:'dynamic',changes});currentFrame=null;lastPrepared=null;viewRevision++;}}
   const camera=typeof realmFilamentCameraState==='function'?realmFilamentCameraState():null;
-  const profile=typeof realmMobileFilament==='function'&&realmMobileFilament()?'browser-mobile':'browser',cameraKey=camera?[camera.eye?.join(','),camera.center?.join(','),camera.near,camera.far,camera.left,camera.right,camera.bottom,camera.top,camera.width,camera.height].join('|'):'',queryKey=camera?'':`${minx-128},${maxx+128},${minz-128},${maxz+128}`,key=`${scene}|${profile}|${cameraKey}|${queryKey}`;
+  const profile=typeof realmMobileFilament==='function'&&realmMobileFilament()?'browser-mobile':'browser',cameraKey=camera?[camera.eye?.join(','),camera.center?.join(','),camera.near,camera.far,camera.left,camera.right,camera.bottom,camera.top,camera.width,camera.height].join('|'):'',queryKey=camera?'':`${minx-128},${maxx+128},${minz-128},${maxz+128}`,key=`${scene}|${profile}|${cameraKey}|${queryKey}|${typeof landSurfaceRevision==='number'?landSurfaceRevision:0}|${root.VeldrenTerrainEdits?.revision??0}`;
   const editor=String(root.VELDREN_CONTEXT||root.window?.VELDREN_CONTEXT||'').toLowerCase()==='editor',cacheable=!editor;
   const appendSession=prepared=>{if(!session.length)return prepared;const visibleObjects=prepared.objects.slice();for(const o of session)if(o.x>=minx-16&&o.x<=maxx+16&&o.y>=minz-16&&o.y<=maxz+16)visibleObjects.push(o);lastStats={...lastStats,objects:visibleObjects.length};return {...prepared,objects:visibleObjects};};
-  if(cacheable&&lastPrepared&&lastPreparedKey===key&&lastPreparedViewRevision===viewRevision&&lastPreparedListRevision===listRevision){if(camera&&native.pagePayloads)lastStats.paging=native.pagePayloads(scene,camera.center);return appendSession(lastPrepared);}
-  const result=camera&&native.frame?native.frame(scene,camera,profile):native.performance(scene,camera?{op:'visible',camera,profile}:{op:'query',min:[minx-128,-100000,minz-128],max:[maxx+128,100000,maxz+128]}),visibleObjects=[],visibleBuildings=[];
+  if(cacheable&&!groundPending&&lastPrepared&&lastPreparedKey===key&&lastPreparedViewRevision===viewRevision&&lastPreparedListRevision===listRevision){if(camera&&native.pagePayloads)lastStats.paging=native.pagePayloads(scene,camera.center);return appendSession(lastPrepared);}
+  const query=()=>camera&&native.frame?native.frame(scene,camera,profile):native.performance(scene,camera?{op:'visible',camera,profile}:{op:'query',min:[minx-128,-100000,minz-128],max:[maxx+128,100000,maxz+128]});
+  const result=groundVisible(native,scene,query(),query),visibleObjects=[],visibleBuildings=[];
   const paging=camera&&native.pagePayloads?native.pagePayloads(scene,camera.center):null;
   currentFrame={scene,...result,paging,visibleIds:new Set(result.ids)};
   for(const id of result.ids){const object=objectMap.get(id);if(object)visibleObjects.push(object);const building=buildingMap.get(id);if(building)visibleBuildings.push(building);}
@@ -37,7 +58,7 @@
   const visible=!!node?.activeInHierarchy&&!!mesh&&mesh.visible!==false&&mesh.renderPath!=='canonical';
   legacyVisibility.set(key,visible);return visible;
  }
- root.VeldrenWorldPerformance={prepare,visible:(name,id)=>currentFrame?.scene!==name||currentFrame.visibleIds.has(id),legacyVisible,frame:name=>currentFrame?.scene===name?currentFrame:null,diagnostics:()=>lastStats,reset(){currentFrame=null;sceneName=objectList=buildingList=null;objectMap.clear();buildingMap.clear();legacyVisibility.clear();dynamic=[];dynamicPositions.clear();session=[];lastPrepared=null;lastPreparedKey=null;viewRevision++;listRevision++;}};
+ root.VeldrenWorldPerformance={prepare,visible:(name,id)=>currentFrame?.scene!==name||currentFrame.visibleIds.has(id),legacyVisible,frame:name=>currentFrame?.scene===name?currentFrame:null,diagnostics:()=>lastStats,reset(){grounded.clear();groundKey='';groundPending=false;currentFrame=null;sceneName=objectList=buildingList=null;objectMap.clear();buildingMap.clear();legacyVisibility.clear();dynamic=[];dynamicPositions.clear();session=[];lastPrepared=null;lastPreparedKey=null;viewRevision++;listRevision++;}};
 })(globalThis);
 
 // IO and handle marshalling for the native cell scheduler. The existing Phase 2

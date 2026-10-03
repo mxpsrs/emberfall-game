@@ -127,7 +127,7 @@ function createRealmFilamentGPU(){
  const materialInstances=new Map(),terrainMaterialInstances=new Set(),worldMaterialInstances=new Set(),resources=new Set(),resourceByBuffer=new WeakMap(),activeEntities=new Set(),nextEntities=new Set(),activePools=new Set();
  const sharedMeshes=new WeakMap(),poseMeshes=new WeakMap(),cache=new WeakMap(),assemblyTransforms=new WeakMap(),terrain=new Map();let legacyGpuBytes=0;
  const transformManager=engine.getTransformManager(),lightManager=engine.getLightManager(),matrixScratch=new Float32Array(16);
- const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null,previousSkyBackground='',frameMetrics=null,firstRenderMs=null,renderFrame=0,resourceSerial=0,residencyStats=null,framePrepared=false;
+ const dynamicResources=[null,null,null];let dynamicResourceIndex=-1,backend=null,previousSkyBackground='',frameMetrics=null,firstRenderMs=null,renderFrame=0,resourceSerial=0,residencyStats=null,framePrepared=false,disposed=false;
  const styleInstance=style=>{
   let instance=materialInstances.get(style.key);if(instance)return instance;
   if(style.terrain){instance=terrainMaterial.createInstance();instance.setTextureParameter('groundSurfaces',groundSurfaces,groundSampler);terrainMaterialInstances.add(instance);}
@@ -304,8 +304,19 @@ function createRealmFilamentGPU(){
   // in the normal frame loop. GPU bytes are allocation estimates, not driver VRAM.
   diagnostics(){return {firstRenderMs,paging:globalThis.VeldrenWorldPerformance?.diagnostics()?.paging||null,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
   performanceSnapshot(){return {frame:frameMetrics,gpuTimerSupported:gpuTimer.supported,activeRenderables:activeEntities.size,construction:constructionBudget.diagnostics(),streaming:streaming?.stats?.()||null,preparation:VeldrenAssets.ioDiagnostics().preparation,residency:residencyStats};},
+  destroy(){
+   if(disposed)return;disposed=true;this.presented=false;unsubscribeDispose();
+   // Character and compatibility draws also hold native material leases.
+   // Remove their renderables before the asset owners release those materials.
+   for(const resource of [...resources])destroyResource(resource);
+   assetDraws.destroy();authoredDraws?.destroy();streaming?.destroy();
+   for(const instance of materialInstances.values())engine.destroyMaterialInstance(instance);
+   materialInstances.clear();terrainMaterialInstances.clear();worldMaterialInstances.clear();
+   engine.destroyMaterial(material);engine.destroyMaterial(terrainMaterial);
+  },
   beginFrameWork(){constructionBudget.beginFrame();framePrepared=true;},
   render(entries,dynamic,g){
+   if(disposed)throw new Error('Filament world renderer destroyed');
    if(!framePrepared)constructionBudget.beginFrame();framePrepared=false;
    renderFrame++;const measured=window.VELDREN_PERFORMANCE===true,start=measured?performance.now():0;
    frameMetrics=measured?{submittedPackets:entries.length,dynamicVertices:dynamic.length/12,transformSubmissions:0,boneUploads:0,deferredResources:0,deferredRenderables:0,synchronizationMs:0,renderMs:0}:null;
@@ -363,6 +374,7 @@ function createRealmFilamentGPU(){
    engine.execute();if(measured)gpuTimer.begin();try{if(renderer.beginFrame(swapChain)){renderer.renderView(view);window.VeldrenEditorTools?.render(renderer);renderer.endFrame();}engine.execute();}finally{if(measured)gpuTimer.end();}
    if(frameMetrics){frameMetrics.renderMs=performance.now()-start;frameMetrics.gpuMs=gpuTimer.sample();if(firstRenderMs===null)firstRenderMs=performance.now();}
   }};
+ const unsubscribeDispose=VeldrenAssets.onDispose(()=>backend.destroy());
  window.VeldrenFilament={version:'1.77.0-pc-stable',backend,loadGlb};return backend;
 }
 

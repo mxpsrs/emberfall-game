@@ -185,6 +185,23 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   cullingPainter.cached({kind:'assembly',model:groundedPart,instances:[{mesh:{},matrix:groundedPart,entityId:'visible-module'}],faces:[]});
   assert.equal(captured[1][7],.035,'native module height remains terrain-relative until the shared Filament transform adds ground');
   assert(Math.abs(context.realmFilamentMatrix(captured[1])[13]-7.035)<1e-6,'assembly floors, walls and procedural parts receive terrain height exactly once');
+  // Actual Filament teardown with live canonical walls and legacy material
+  // parts must release renderables before releasing their material instances.
+  context.VeldrenWorldPerformance.diagnostics=()=>null;
+  const materialFixture={...partMesh,materialParts:[{material:'avatar:male/material/0',indexOffset:0,indexCount:6}]};
+  const materialEntry={...context.realmUploadIndexed(buildingGpu,materialFixture),model,characterMesh:materialFixture};
+  buildingGpu.render([materialEntry],[],null);
+  for(let i=0;i<150&&buildingGpu.scene.getRenderableCount()!==1;i++){
+   await new Promise(resolve=>setTimeout(resolve,10));buildingGpu.render([materialEntry],[],null);
+  }
+  assert.equal(buildingGpu.scene.getRenderableCount(),1,'a real native avatar material remains bound at teardown');
+  context.VeldrenAssets.destroy();
+  delete context.VeldrenWorldPerformance;
+  assert.equal(buildingGpu.scene.getRenderableCount(),0);
+  assert.equal(mixedGpu.scene.getRenderableCount(),0);
+  assert.equal(buildingGpu.diagnostics().legacy.meshes,0);
+  assert.equal(mixedGpu.materialResources.diagnostics().materials,0);
+  buildingGpu.destroy();mixedGpu.destroy();
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}
