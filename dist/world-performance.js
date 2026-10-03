@@ -13,6 +13,16 @@
  // The native partition starts with conservative terrain-relative bounds.
  // Feed it the same terrain height used by rendering, once per changed record.
  // Work is bounded; the native culler remains the only visibility authority.
+ function invalidateGround(native,event){
+  if(typeof landHeight!=='function')return;
+  if(event.kind==='load'){groundEpoch++;grounded.clear();return;}
+  if(event.scene!==sceneName||!grounded.size)return;
+  for(const change of event.kind==='batch'?event.changes:[event]){
+   if(!change.id)continue;
+   const pending=[change.id];
+   for(let i=0;i<pending.length;i++){const id=pending[i];grounded.delete(id);if(change.kind==='transform'||change.kind==='upsert')pending.push(...(native.entity(sceneName,id)?.children||[]));}
+  }
+ }
  function groundVisible(native,scene,result,query){
   if(typeof landHeight!=='function')return result;
   const revision=scene+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(root.VeldrenTerrainEdits?.revision??0)+':'+groundEpoch;
@@ -24,7 +34,7 @@
    if(changes.length>=256||changes.length&&typeof performance!=='undefined'&&performance.now()-started>=budget){groundPending=true;break;}
    const node=native.entity(scene,id);grounded.set(id,true);
    if(!node||node.components.MeshRenderer?.renderPath==='canonical')continue;
-   const matrix=node.worldMatrix,height=landHeight(matrix[12],matrix[14]);
+   const matrix=node.worldMatrix,position=dynamicPositions.get(id),height=landHeight(position?.x??matrix[12],position?.z??matrix[14]);
    if(Number.isFinite(height))changes.push([id,height]);
   }
   if(changes.length){native.performance(scene,{op:'ground',changes});return query();}
@@ -32,7 +42,7 @@
  }
  function prepare(scene,objects,buildings,minx,maxx,minz,maxz){
   const native=root.realmNative?.scenes;if(!native?.performance)return null;
-  if(owner!==native){unsubscribe?.();owner=native;groundEpoch++;grounded.clear();groundKey='';groundPending=false;sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;unsubscribe=native.subscribe(event=>{if(native.isUnderstoryBatch?.(event))return;groundEpoch++;if(event.kind==='load'){sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;return;}if(event.scene!==sceneName)return;currentFrame=null;lastPrepared=null;viewRevision++;if(event.kind!=='transform'&&(event.kind!=='batch'||event.changes.some(c=>c.kind!=='transform'))){legacyVisibility.clear();sceneName=null;}});}
+  if(owner!==native){unsubscribe?.();owner=native;groundEpoch++;grounded.clear();groundKey='';groundPending=false;sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;unsubscribe=native.subscribe(event=>{if(native.isUnderstoryBatch?.(event))return;invalidateGround(native,event);if(event.kind==='load'){sceneName=null;currentFrame=null;legacyVisibility.clear();lastPrepared=null;viewRevision++;return;}if(event.scene!==sceneName)return;currentFrame=null;lastPrepared=null;viewRevision++;if(event.kind!=='transform'&&(event.kind!=='batch'||event.changes.some(c=>c.kind!=='transform'))){legacyVisibility.clear();sceneName=null;}});}
   index(scene,objects,buildings);
   if(dynamic.length){const changes=[];for(const o of dynamic){const id=o._sceneEntityId,x=o.drawX??o.x,z=o.drawY??o.y,previous=dynamicPositions.get(id);if(!previous||previous.x!==x||previous.z!==z){changes.push([id,x,0,z]);grounded.delete(id);dynamicPositions.set(id,{x,z});}}if(changes.length){native.performance(scene,{op:'dynamic',changes});currentFrame=null;lastPrepared=null;viewRevision++;}}
   const camera=typeof realmFilamentCameraState==='function'?realmFilamentCameraState():null;

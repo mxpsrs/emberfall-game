@@ -25,6 +25,24 @@ context.VeldrenWorldPerformance.prepare('ground',objects,buildings,-20,20,-20,20
 assert.equal(calls,2,'terrain edits refresh grounded visibility even with a stationary camera');
 assert(Math.abs(n.performance('ground',{op:'record',id:'floor'}).bounds[0][1]-12)<.03);
 assert.deepEqual(n.serialize(),before,'grounding updates presentation bounds without changing entities or serialization');
+// Unrelated edits must not restart the whole terrain-grounding queue. Active
+// actors move in presentation space without changing their saved spawn.
+n.upsert('ground',{...entity('unrelated',1000),components:{}});
+context.VeldrenWorldPerformance.prepare('ground',objects,buildings,-20,20,-20,20);
+assert.equal(calls,2,'an unrelated Scene edit retains grounded static bounds');
+const actor={_sceneEntityId:'actor',_generatedSpawn:true,x:0,y:0};
+n.upsert('ground',entity('actor',0));
+context.realmFilamentCameraState=()=>({...camera,left:-1,right:1,bottom:-1,top:1});
+context.landHeight=x=>x<2?12:20;
+const actors=[...objects,actor];
+context.VeldrenWorldPerformance.prepare('ground',actors,buildings,-20,20,-20,20);
+const savedActor=n.entity('ground','actor').transform;
+actor.drawX=4;
+context.VeldrenWorldPerformance.prepare('ground',actors,buildings,-20,20,-20,20);
+assert(Math.abs(n.performance('ground',{op:'record',id:'actor'}).bounds[0][1]-20)<.03,'a moving actor uses terrain at its live position');
+assert.deepEqual(n.entity('ground','actor').transform,savedActor,'live grounding preserves the saved spawn transform');
+assert(Math.abs(n.performance('ground',{op:'record',id:'floor'}).bounds[0][1]-12)<.03,'actor motion retains the existing static terrain bounds');
+context.landHeight=()=>ground;context.realmFilamentCameraState=()=>camera;
 const sizes=[],performanceCommand=instrumented.performance;instrumented.performance=(scene,request)=>{if(request.op==='ground')sizes.push(request.changes.length);return performanceCommand(scene,request);};
 ground=9;context.landSurfaceRevision=++terrainRevision;
 for(let i=0;i<272;i++)n.upsert('ground',entity('batch-'+i,0));
