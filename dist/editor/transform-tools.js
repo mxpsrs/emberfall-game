@@ -19,12 +19,20 @@
    const selected=nodes(),first=selected[0],pivot=settings.pivot==='center'?selected.reduce((p,n)=>G.add(p,G.mul(n.worldMatrix.slice(12,15),1/selected.length)),[0,0,0]):first.worldMatrix.slice(12,15),axes=settings.orientation==='local'?G.orientation(first.worldMatrix):[[1,0,0],[0,1,0],[0,0,1]],start=G.beginDrag(mode(),handle,r,pivot,axes,size);if(!start)return true;
    // Selected descendants follow a selected ancestor, never receive delta twice.
    const ids=new Set(selected.map(n=>n.id)),roots=selected.filter(n=>{let p=n.parent;while(p){if(ids.has(p))return false;p=native.entity(scene(),p)?.parent;}return true;});
-   commands.begin('3D '+mode());gesture={...start,pointer:event.pointerId,handle,initial:roots.map(n=>({id:n.id,matrix:[...n.worldMatrix],offset:G.sub(n.worldMatrix.slice(12,15),n.canonicalMatrix.slice(12,15))}))};surface.setPointerCapture?.(event.pointerId);return true;
+   commands.begin('3D '+mode());gesture={...start,pointer:event.pointerId,handle,initial:roots.map(n=>({id:n.id,matrix:[...n.worldMatrix],canonical:[...n.canonicalMatrix],offset:G.sub(n.worldMatrix.slice(12,15),n.canonicalMatrix.slice(12,15))}))};surface.setPointerCapture?.(event.pointerId);return true;
   }
   function move(event,surface){const r=ray(event,surface);if(!r)return false;if(!gesture){hover=G.hitHandle(r,handles,size)?.id||null;return false;}if(event.pointerId!==gesture.pointer)return true;
-   const snapping=settings.snapping?{translation:settings.translation,rotation:settings.rotation*Math.PI/180,scale:settings.scale}:{},delta=G.dragDelta(gesture,r,snapping);if(delta)try{commands.execute('3D '+gesture.mode,gesture.initial.map(n=>({op:'transform',id:n.id,space:'world',transform:{affine:G.multiply(G.translation(G.mul(n.offset,-1)),G.multiply(delta,n.matrix))}})));}catch(error){cancel();report(error.message);}return true;
+   const snapping=settings.snapping?{translation:settings.translation,rotation:settings.rotation*Math.PI/180,scale:settings.scale}:{},delta=G.dragDelta(gesture,r,snapping);if(delta)try{
+    const operations=gesture.initial.map(n=>({op:'transform',id:n.id,space:'world',transform:{affine:G.multiply(G.translation(G.mul(n.offset,-1)),G.multiply(delta,n.matrix))}})).filter(op=>{const current=native.entity(scene(),op.id)?.worldMatrix;return !current||op.transform.affine.some((value,i)=>Math.abs(value-current[i])>1e-10);});
+    if(operations.length)commands.execute('3D '+gesture.mode,operations);
+   }catch(error){cancel();report(error.message);}return true;
   }
-  function up(event){if(!gesture||event.pointerId!==gesture.pointer)return false;try{if(event.type==='pointercancel')commands.cancel();else commands.commit();}finally{gesture=null;key='';}return true;}
+  function up(event){if(!gesture||event.pointerId!==gesture.pointer)return false;try{
+   // A snapped click, or a drag back to its starting pose, must preserve the
+   // exact authored TRS/affine representation and the preceding undo record.
+   const unchanged=gesture.initial.every(n=>{const current=native.entity(scene(),n.id)?.worldMatrix;return current&&n.canonical.every((value,i)=>Math.abs(value-current[i])<1e-10);});
+   if(event.type==='pointercancel'||unchanged)commands.cancel();else commands.commit();
+  }finally{gesture=null;key='';}return true;}
   function cancel(){if(gesture){try{commands.cancel();}finally{gesture=null;key='';}}}
   return {configuration,frame,down,move,up,cancel,render:renderer=>owner?.render(renderer),get camera(){return camera},get dragging(){return !!gesture}};
  }

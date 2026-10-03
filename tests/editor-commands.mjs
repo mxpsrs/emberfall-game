@@ -41,6 +41,16 @@ const tools=context.createVeldrenTransformTools({native:n,commands:toolCommands,
 const camera={eye:[5,4,7],center:[0,0,0],near:.25,left:-.18,right:.18,bottom:-.135,top:.135,height:600,width:800};
 const surface={getBoundingClientRect:()=>({left:0,top:0,width:800,height:600}),setPointerCapture(){}},pointerAt=(p,type='pointermove')=>{const q=G.project(camera,p);return {clientX:q[0]*800,clientY:q[1]*600,pointerId:1,button:0,type}};
 const length=G.length(camera.eye)*(.27/.25)*90/600;
+// Below-snap input must not silently normalize authored TRS into an affine
+// override, consume undo, or leave a cancelled return-to-origin mutation.
+toolMode='move';selectedIds=['second'];tools.frame({},camera);await Promise.resolve();
+const untouched=JSON.stringify(n.read('tools')),undoBefore=toolCommands.status().undo;
+const clickFrom=[length*.8,0,0],shortTo=[length*.81,0,0],longTo=[length*1.5,0,0];
+assert(tools.down(pointerAt(clickFrom,'pointerdown'),surface));tools.move(pointerAt(shortTo),surface);tools.up(pointerAt(shortTo,'pointerup'));
+assert.equal(JSON.stringify(n.read('tools')),untouched,'a snapped click preserves exact authored transforms');assert.equal(toolCommands.status().undo,undoBefore);
+tools.frame({},camera);assert(tools.down(pointerAt(clickFrom,'pointerdown'),surface));tools.move(pointerAt(longTo),surface);assert.notEqual(JSON.stringify(n.read('tools')),untouched);tools.move(pointerAt(clickFrom),surface);tools.up(pointerAt(clickFrom,'pointerup'));
+assert.equal(JSON.stringify(n.read('tools')),untouched,'returning a drag to its origin restores the exact native snapshot');assert.equal(toolCommands.status().undo,undoBefore);
+selectedIds=['part','second'];
 for(const orientation of ['world','local'])for(const mode of ['move','rotate','scale']){
  toolMode=mode;tools.configuration({orientation,translation:.25,rotation:15,scale:.1});tools.frame({},camera);await Promise.resolve();
  const before=JSON.stringify(n.read('tools')),matrix=n.entity('tools','part').worldMatrix,axes=orientation==='local'?G.orientation(matrix):[[1,0,0],[0,1,0],[0,0,1]];
@@ -64,6 +74,8 @@ console.log('PASS: actual WASM command execution, native asset references, group
 
 vm.runInContext(fs.readFileSync(new URL('dist/scene-renderer.js',root),'utf8'),context);
 let submitted=[];const authored=context.createVeldrenSceneRenderer(n,context.VeldrenAssets,{begin(){submitted=[]},submit(...args){submitted.push(args)},end(){},destroy(){}});
-authored.render('tools',[0,0,0]);assert.equal(submitted.length,1);assert.equal(submitted[0][0],model);assert.deepEqual(Array.from(submitted[0][1]),Array.from(n.entity('tools','part').worldMatrix));
+const authoredBefore=JSON.stringify(n.serialize());
+authored.render('tools',[0,0,0]);assert.equal(submitted.length,1);assert.equal(submitted[0][0],model);assert.deepEqual(Array.from(submitted[0][1]),Array.from(new Float32Array(n.entity('tools','part').worldMatrix)),'GPU matrices match the exact float32 upload representation');
+assert.equal(JSON.stringify(n.serialize()),authoredBefore,'render marshalling retains exact canonical Scene precision');
 toolCommands.execute('Hide canonical renderer',[{op:'field',id:'part',component:'MeshRenderer',field:'visible',value:false}]);authored.render('tools',[0,0,0]);assert.equal(submitted.length,0);toolCommands.undo();authored.render('tools',[0,0,0]);assert.equal(submitted.length,1);authored.destroy();
 native.destroy();
