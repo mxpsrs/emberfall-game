@@ -1,15 +1,10 @@
 {
-  "source": "https://playveldren.com/api/editor/edits",
+  "verifiedAt": "2026-10-03T17:06:09.209Z",
+  "url": "https://playveldren.com/api/editor/edits",
   "revision": 26,
+  "count": 103,
   "worldSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
-  "changes": 103,
-  "scenes": {
-    "mine": 21,
-    "overworld": 53,
-    "tutorial": 29
-  },
-  "terrainPreserved": true,
-  "sourceAndRuntimeMirrorsMatch": true,
-  "hostedWorldWasWritten": false,
-  "note": "The exact existing live editor snapshot was imported as the build seed. Player records and hosted editor data were not changed."
+  "sha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6",
+  "runtimeSha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6",
+  "preserved": true
 }

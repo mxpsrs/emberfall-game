@@ -38,8 +38,8 @@ try{
  const matchedRoutes=[['main-street',42,51,-2.05,.27],['services-smithy',75,49,-2.80,.32],['houses',62,31,-2.8,.32],['magic-school',75,71,0,.30],['interior',41,46,-2.05,.36],['town-edge',64,115,-2.05,.29]];
  // Preserve the matching baseline route. The school's north-facing facade
  // also needs a south-looking inspection from its actual entrance approach.
- assert(!process.env.VELDREN_QA_VIEW||process.env.VELDREN_QA_VIEW==='school-facade');
- const routes=process.env.VELDREN_QA_VIEW==='school-facade'?[['school-facade',75,73,Math.PI,.28]]:matchedRoutes;
+ assert(!process.env.VELDREN_QA_VIEW||['school-facade','terrain-first'].includes(process.env.VELDREN_QA_VIEW));
+ const routes=process.env.VELDREN_QA_VIEW==='school-facade'?[['school-facade',75,73,Math.PI,.28]]:process.env.VELDREN_QA_VIEW==='terrain-first'?[matchedRoutes[5],matchedRoutes[1],...matchedRoutes.filter((_,i)=>i!==5&&i!==1)]:matchedRoutes;
  const results=[];
  for(const [name,x,z,yaw,tilt]of routes){
   console.log('CAPTURE',name);const settleStarted=performance.now();await page.evaluate(({x,z,yaw,tilt})=>{stop();activateScene('overworld',x,z,false);view3d.yaw=yaw;view3d.tilt=tilt;view3d.zoom=102;for(const b of buildings)if(b.service&&withinWalkIn(b,x,z))setWalkInDoor(b.service,true,true);updateDoorThreshold();__qaFrames.length=0;__qaPreviousFrame=0;}, {x,z,yaw,tilt});
@@ -56,8 +56,9 @@ try{
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
   await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});
   await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
-  await page.screenshot({path:join(output,name+'.png'),timeout:120000});await page.screenshot({path:join(output,name+'.jpg'),type:'jpeg',quality:90,timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));console.log('READY',name,Math.round(settleMs),'ms');
+  await page.screenshot({path:join(output,name+'.png'),timeout:120000});await page.screenshot({path:join(output,name+'.jpg'),type:'jpeg',quality:90,timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);const progress={complete:false,label,workerSha256,editorBindingErrors,startupMs,resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors};writeFileSync(join(output,'partial.json'),JSON.stringify(progress,null,2));writeFileSync(join(output,'capture-progress.json.gz'),gzipSync(JSON.stringify(progress),{level:9}));console.log('READY',name,Math.round(settleMs),'ms');
  }
+ if(process.env.VELDREN_QA_VIEW==='terrain-first')results.sort((a,b)=>matchedRoutes.findIndex(r=>r[0]===a.name)-matchedRoutes.findIndex(r=>r[0]===b.name));
  assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));writeFileSync(join(output,'result.json.gz'),gzipSync(JSON.stringify(result),{level:9}));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
  const state=await qaPage?.evaluate(()=>({startup:globalThis.realmStartup,frames:globalThis.__qaFrames?.length||0,renderer:typeof realmGPU==='undefined'?null:realmGPU?.diagnostics?.(),recentFrames:globalThis.__qaFrames?.slice(-3),edits:globalThis.VELDREN_WORLD_EDITS_STATUS})).catch(()=>null);

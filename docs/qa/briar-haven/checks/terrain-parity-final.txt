@@ -1,0 +1,1 @@
+{"pass":true,"pages":1408,"groups":352,"samples":5632,"maxHeightError":0.00005009735788430447,"maxNormalError":0.0000977741227057863,"stairHoleTiles":0,"checks":["cooked authored cells versus live native collision","shared triangle height interpolation","normal halo continuity","valid terrain mesh attributes","stair openings","complete native world serialization unchanged"]}

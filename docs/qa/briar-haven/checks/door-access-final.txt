@@ -1,0 +1,1 @@
+PASS: 234 building doors open, enter, exit and close; all three castle gate models and click targets are present; entry never moves the camera.

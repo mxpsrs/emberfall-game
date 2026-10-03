@@ -1,0 +1,1 @@
+PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.

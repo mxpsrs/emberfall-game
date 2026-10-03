@@ -73,7 +73,9 @@ int main(){
   SceneSession selection_session(selection_scene,Context::Editor);selection_session.select(temporary);
   selection_scene.remove(temporary,ChildDisposition::Destroy);assert(selection_session.selection().empty());
 
-  std::ifstream input("../editor-data/world-edits.json");assert(input.good());
+  // Keep migration expectations independent of the owner's evolving live world.
+  // This is the unchanged revision-8 input from the accepted Phase 1 source.
+  std::ifstream input("tests/fixtures/legacy-world-edits-v1.json");assert(input.good());
   const std::string legacy{std::istreambuf_iterator<char>{input},{}};
   const auto original=parse_json(legacy);const auto& changes=original.find("changes")->array();
   auto migrated_world=WorldDocument::migrate_legacy_edits(legacy);
@@ -93,7 +95,7 @@ int main(){
     }
     assert(migrated.size()==expected);
   }
-  std::ifstream canonical("../editor-data/world-scene.json");assert(canonical.good());
+  std::ifstream canonical("tests/fixtures/world-scene-v2.json");assert(canonical.good());
   const std::string world_text{std::istreambuf_iterator<char>{canonical},{}};
   auto world_document=WorldDocument::deserialize(world_text);
   assert(world_document.revision==8);
