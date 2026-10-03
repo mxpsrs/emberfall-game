@@ -62,5 +62,35 @@
     "test": "identity-multiplayer.mjs",
     "exitCode": 0,
     "output": "PASS: two authenticated clients, normal combat action synchronization with a missing local target, duplicate suppression, expiry and independent player damage feedback.\n"
+  },
+  {
+    "test": "filament-static-transforms.cjs",
+    "exitCode": 0,
+    "output": "FEngine (32 bits) created at 0x2028b0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x19c58c0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x2d16610 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":18.3,\"frames\":30,\"entities\":256}\n",
+    "regression": {
+      "trigger": "Editor navigation with a live compatibility character using a native material.",
+      "before": "Engine.destroyMaterialInstance threw while the character draw still referenced it.",
+      "after": "Renderables retire before their material leases; live avatar-material teardown and repeated destroy pass."
+    }
+  },
+  {
+    "test": "asset-meshes.mjs",
+    "exitCode": 0,
+    "output": "FEngine (32 bits) created at 0x202890 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nPASS: runtime actual WASM / Filament geometry, native PBR, 100 shared models/instances, transform/deletion/Scene switch, invalidation, allocation failure, cancellation, 20 unload cycles and teardown.\nFEngine (32 bits) created at 0x202680 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nPASS: editor actual WASM / Filament geometry, native PBR, 100 shared models/instances, transform/deletion/Scene switch, invalidation, allocation failure, cancellation, 20 unload cycles and teardown.\n"
+  },
+  {
+    "test": "asset-materials.mjs",
+    "exitCode": 0,
+    "output": "FEngine (32 bits) created at 0x202890 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nPASS: runtime 1596 native material plans, 30 distinct real GPU materials, 100 shared leases, failure/cancellation/late completion, repeated unload and teardown.\nFEngine (32 bits) created at 0x202680 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nPASS: editor 1596 native material plans, 30 distinct real GPU materials, 100 shared leases, failure/cancellation/late completion, repeated unload and teardown.\n"
+  },
+  {
+    "test": "world-performance.cjs",
+    "exitCode": 0,
+    "output": "PASS: actual-WASM stable native LOD batch with real asset IDs and unchanged Scene\nPASS: actual-WASM memory budgets retire presentation only and preserve the complete WorldDocument\nPASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown\n"
+  },
+  {
+    "test": "briar-haven-overhaul.cjs",
+    "exitCode": 0,
+    "output": "PASS: twelve distinct Briar Haven plans, accepted entity IDs, complete real floor coverage, linked door/collision, structural cutaways, supported loft furniture, stair travel, Relic access and native serialization.\n"
   }
 ]

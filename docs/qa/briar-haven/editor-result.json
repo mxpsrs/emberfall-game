@@ -1,0 +1,34 @@
+{
+  "localOnly": true,
+  "workerSha256": "83fa25e578382e077d202fa41d60234a08c3e406ddbb06452fd165e663fd491f",
+  "initial": {
+    "scene": "overworld",
+    "count": 16262
+  },
+  "prefab": {
+    "definition": "entity-1",
+    "copy": "entity-2"
+  },
+  "buildingResult": {
+    "name": "Wayfarer’s Rest · Inn",
+    "part": "part-00025",
+    "history": {
+      "affected": [],
+      "changed": false,
+      "created": [],
+      "dirty": true,
+      "redo": 0,
+      "redoLabel": "",
+      "state": 8,
+      "transaction": false,
+      "undo": 7,
+      "undoLabel": "Edit building part"
+    }
+  },
+  "save": {
+    "revision": 9,
+    "verified": true
+  },
+  "reload": true,
+  "errors": []
+}

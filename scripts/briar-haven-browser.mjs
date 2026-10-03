@@ -45,7 +45,8 @@ try{
   await page.waitForFunction(()=>{
    if(!realmGPU?.presented||__qaFrames.length<60)return false;
    const d=realmGPU.assetDraws?.diagnostics();
-   return !d||d.loading===0&&(d.pendingVisibleInstances??d.pendingInstances)===0&&d.construction.queued===0&&d.failures.length===0;
+   const renderer=realmGPU.diagnostics(),terrain=globalThis.VeldrenTerrainCells?.diagnostics?.();
+   return (!d||d.loading===0&&(d.pendingVisibleInstances??d.pendingInstances)===0&&d.construction.queued===0&&d.failures.length===0)&&(!renderer.frame||renderer.frame.deferredResources===0&&renderer.frame.deferredRenderables===0)&&(renderer.models?.buildQueue?.queued??0)===0&&(terrain?.pending??0)===0;
   },{},{timeout:600000});
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
   await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});

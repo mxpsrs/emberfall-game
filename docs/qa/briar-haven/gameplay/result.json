@@ -1,0 +1,50 @@
+{
+  "localOnly": true,
+  "workerSha256": "83fa25e578382e077d202fa41d60234a08c3e406ddbb06452fd165e663fd491f",
+  "pointer": {
+    "cameraBefore": {
+      "yaw": -1.8,
+      "tilt": 0.25,
+      "zoom": 102,
+      "min": 58,
+      "max": 132
+    },
+    "cameraDragged": {
+      "yaw": -1.1249999999999993,
+      "tilt": 0.3500000000000001,
+      "zoom": 102,
+      "min": 58,
+      "max": 132
+    },
+    "cameraZoomed": {
+      "yaw": -1.1249999999999993,
+      "tilt": 0.3500000000000001,
+      "zoom": 85.19756156394975,
+      "min": 58,
+      "max": 132
+    },
+    "walkTarget": [
+      57,
+      61
+    ]
+  },
+  "inn": {
+    "name": "Wayfarer’s Rest · Inn",
+    "id": "generated:overworld:building:27223ad27ba064ac",
+    "outside": [
+      41,
+      50
+    ],
+    "inside": [
+      41,
+      48
+    ],
+    "frame": 50
+  },
+  "doorPicked": true,
+  "entered": true,
+  "closedDoorCutaway": true,
+  "exited": true,
+  "restoredRoof": true,
+  "errors": []
+}
