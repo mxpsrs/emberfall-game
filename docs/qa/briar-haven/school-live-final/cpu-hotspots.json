@@ -1,0 +1,151 @@
+{
+  "workerSha256": "30d2e7a6e6e307c4e3d9961a54ff34e01dca4cac5c01adc98e1887bfeab9d07e",
+  "softwareGpu": true,
+  "samples": 30,
+  "hotspots": [
+    {
+      "name": "(idle)",
+      "url": "",
+      "line": -1,
+      "ms": 34453
+    },
+    {
+      "name": "(program)",
+      "url": "",
+      "line": -1,
+      "ms": 514
+    },
+    {
+      "name": "(garbage collector)",
+      "url": "",
+      "line": -1,
+      "ms": 307
+    },
+    {
+      "name": "creatureRigPose",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 275,
+      "ms": 217
+    },
+    {
+      "name": "",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 431,
+      "ms": 154
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 23,
+      "ms": 135
+    },
+    {
+      "name": "read",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 332,
+      "ms": 105
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 98
+    },
+    {
+      "name": "fetch",
+      "url": "",
+      "line": -1,
+      "ms": 97
+    },
+    {
+      "name": "editor",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 329,
+      "ms": 92
+    },
+    {
+      "name": "realmFaceData",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 239,
+      "ms": 90
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 79
+    },
+    {
+      "name": "read",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 308,
+      "ms": 64
+    },
+    {
+      "name": "read",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 332,
+      "ms": 63
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 63
+    },
+    {
+      "name": "editor",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 329,
+      "ms": 53
+    },
+    {
+      "name": "applySharedWorld",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 431,
+      "ms": 52
+    },
+    {
+      "name": "outgoingSharedWorld",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 431,
+      "ms": 51
+    },
+    {
+      "name": "editor",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 329,
+      "ms": 51
+    },
+    {
+      "name": "get",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 332,
+      "ms": 51
+    },
+    {
+      "name": "wasm-function[124]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 48
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 23,
+      "ms": 46
+    },
+    {
+      "name": "wasm-function[93]",
+      "url": "wasm://wasm/00369e62",
+      "line": 0,
+      "ms": 45
+    },
+    {
+      "name": "veldrenLegacySceneVisible",
+      "url": "http://127.0.0.1:39055/play",
+      "line": 20,
+      "ms": 43
+    }
+  ]
+}

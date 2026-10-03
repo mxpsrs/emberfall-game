@@ -1,0 +1,23 @@
+{
+  "comparison": "Same School facade pose, 1920x1080, DPR 1, hour 11; Chrome V8 sampling over 30 presented frames.",
+  "beforeWorkerSha256": "129c8f4309687394a7814a6095cb2e05f1d4ff45b09f96e297d837464138c7ba",
+  "afterWorkerSha256": "30d2e7a6e6e307c4e3d9961a54ff34e01dca4cac5c01adc98e1887bfeab9d07e",
+  "before": {
+    "file": "school-door-final/cpu-profile.json.gz",
+    "sampledMs": 43914.14,
+    "nonIdleMs": 20644.97,
+    "copyMs": 5821.43,
+    "moduleDataMs": 1443.31,
+    "gcMs": 1031.41
+  },
+  "after": {
+    "file": "school-live-final/cpu-profile.json.gz",
+    "sampledMs": 42018.42,
+    "nonIdleMs": 7564.95,
+    "copyMs": 0,
+    "moduleDataMs": 0,
+    "gcMs": 307.15
+  },
+  "nonIdleReductionPercent": 63.36,
+  "limitation": "Software GPU; sampled CPU improvement relative to the prior door-safe implementation, not FPS certification or the original checkpoint baseline."
+}

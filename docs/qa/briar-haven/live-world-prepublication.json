@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-03T22:02:49.433Z",
+  "httpStatus": 200,
+  "revision": 26,
+  "worldMatchesSource": true,
+  "semanticWorldSha256": "f5f93fa4db1c328b0434784da4e1a8d4a271507deeb46d9f9067c9f5cfbb882d",
+  "semanticEditsSha256": "79e87765326c8ef871c35a3fcefdf8abf676ba8dac9bfad95dd81420d2890b98",
+  "hostedWrite": false,
+  "editCount": 103,
+  "editsMatchSource": true,
+  "hashEncoding": "Recursively sorted keys; compact JSON; no trailing newline",
+  "worldSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
+  "editsSha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6",
+  "runtimeEditsSha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6"
+}
