@@ -25,6 +25,14 @@ db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').
 if(!restoreDirectory)db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:43,y:52,hp:10,gold:0,xp:{},bag:{},character:{name:'PhaseOneQA',look:0,race:'human',frame:'male',hair:0},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
 if(restoreDirectory)assert.equal(db.prepare('SELECT username FROM game_accounts WHERE id=?').get(owner)?.username,'PhaseOneQA');
 const requests=[],errors=[];let browser,qaPage;
+async function settledEditorView(frame){
+ await frame.waitForFunction(()=>{
+  const d=realmGPU?.diagnostics(),t=realmGPU?.terrainWork;
+  return realmGPU?.presented&&!realmStartup.failed&&d?.frame&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0&&(t?.pending??0)===0;
+ },{},{timeout:600000});
+ const view=await frame.evaluate(()=>({renderer:realmGPU.diagnostics(),terrain:realmGPU.terrainWork,scene:VeldrenEditorBridge.sceneName(),camera:VeldrenEditorBridge.cameraState()}));
+ assert.deepEqual(view.renderer.draws.failures,[]);assert.equal(view.terrain.failures,0);return view;
+}
 const server=createServer(async(req,res)=>{try{const chunks=[];for await(const chunk of req)chunks.push(chunk);const body=Buffer.concat(chunks);requests.push({path:req.url,method:req.method});const request=new Request('http://'+req.headers.host+req.url,{method:req.method,headers:req.headers,...(body.length?{body}:{})});const response=await worker.fetch(request,env);if(response.status>=400)console.log('HTTP',response.status,req.method,req.url,(await response.clone().text()).slice(0,300));res.statusCode=response.status;response.headers.forEach((v,k)=>res.setHeader(k,v));if(response.body)Readable.fromWeb(response.body).pipe(res);else res.end();}catch(e){console.error(e);res.statusCode=500;res.end(String(e));}});
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;mkdirSync('.qa/phase3',{recursive:true});
 try{
@@ -87,6 +95,7 @@ try{
  await page.locator('#undoCommand').click();assert.deepEqual(await frame.evaluate(()=>VeldrenTerrainEdits.serialize()),terrainBefore);await page.locator('#redoCommand').click();assert.deepEqual(await frame.evaluate(()=>VeldrenTerrainEdits.serialize()),terrainAfter);
  console.log('PASS actual terrain pointer stroke and shared undo/redo');
  mkdirSync('docs/qa/briar-haven',{recursive:true});
+ const terrainRendered=await settledEditorView(frame);
  await page.screenshot({path:'docs/qa/briar-haven/editor-terrain.png'});
  await page.screenshot({path:'docs/qa/briar-haven/editor-terrain.jpg',type:'jpeg',quality:90});
  await page.screenshot({path:'.qa/phase3/hierarchy-inspector.png'});
@@ -95,7 +104,7 @@ try{
  console.log('PHASE reload');await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.querySelector('iframe')?.contentWindow?.VeldrenEditorBridge?.isReady(),{},{timeout:600000});
  const restoredFrame=page.frames().find(f=>f.url().includes('viewport.html'));
  const restored=await restoredFrame.evaluate(({id,definition})=>({wall:VeldrenEditorBridge.sceneEntity('phase3-wall'),instance:VeldrenEditorBridge.sceneEntity(id),definition:VeldrenEditorBridge.sceneEntity(definition)}),{id:prefab.copy,definition:prefab.definition});assert.deepEqual(restored.wall,savedWall);assert(restored.instance.components.PrefabInstance);assert(restored.definition.components.PrefabDefinition);
- assert.deepEqual(await restoredFrame.evaluate(()=>VeldrenTerrainEdits.serialize()),terrainAfter,'authored terrain survives verified save and fresh reload');console.log('PHASE restored');await restoredFrame.waitForFunction(()=>realmGPU?.presented&&!realmStartup.failed,{},{timeout:600000});await restoredFrame.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await page.screenshot({path:'docs/qa/briar-haven/editor-reloaded.png'});await page.screenshot({path:'docs/qa/briar-haven/editor-reloaded.jpg',type:'jpeg',quality:90});
+ assert.deepEqual(await restoredFrame.evaluate(()=>VeldrenTerrainEdits.serialize()),terrainAfter,'authored terrain survives verified save and fresh reload');console.log('PHASE restored');const reloadRendered=await settledEditorView(restoredFrame);await restoredFrame.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await page.screenshot({path:'docs/qa/briar-haven/editor-reloaded.png'});await page.screenshot({path:'docs/qa/briar-haven/editor-reloaded.jpg',type:'jpeg',quality:90});
  assert.deepEqual(errors,[]);assert.equal(requests.filter(r=>/^\/api\/(character|players|social|activity)/.test(r.path)).length,0);
- writeFileSync('docs/qa/briar-haven/editor-result.json',JSON.stringify({localOnly:true,workerSha256,initial,prefab,buildingResult,save:{revision:save.revision,verified:save.roundTripVerified},cameraMovement:true,gizmoDrag:true,terrainStroke:true,reload:true,errors},null,2));console.log('PASS: populated hierarchy, Inspector, native prefabs, grouped building edit, save/reload and editor isolation');
+ writeFileSync('docs/qa/briar-haven/editor-result.json',JSON.stringify({localOnly:true,workerSha256,initial,prefab,buildingResult,save:{revision:save.revision,verified:save.roundTripVerified},cameraMovement:true,gizmoDrag:true,terrainStroke:true,reload:true,renderedViews:{terrain:terrainRendered,reload:reloadRendered},errors},null,2));console.log('PASS: populated hierarchy, Inspector, native prefabs, grouped building edit, save/reload and editor isolation');
 }catch(error){await qaPage?.screenshot({path:'.qa/phase3/authoring-failure.png'}).catch(()=>{});console.error(error);if(process.env.VELDREN_BROWSER_HOLD){console.log('Diagnostic browser retained on localhost:9223');await new Promise(()=>{});}throw error;}finally{await browser?.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));storage.close();await releaseGraphics();}

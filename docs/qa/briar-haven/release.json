@@ -663,7 +663,7 @@
     "worker/tree-state.js": "9045b1bde88832bc7974ebe3bba50e374ec9fc6ff7803286d68c7688943cce9b",
     "worker/world-snapshot.js": "3835bc897a0978b315a997c08d9aac1b03119e2309fa7d6f2435060200c08bfd"
   },
-  "buildLog": "checks/build-final.txt",
+  "buildLog": "checks/build-restored-release.txt",
   "evidenceLabel": "after-live-final",
   "liveWorldSnapshotSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
   "liveWorldSnapshotRevision": 26,

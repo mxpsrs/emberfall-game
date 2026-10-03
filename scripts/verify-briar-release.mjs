@@ -68,4 +68,5 @@ assert.equal(new Set(gameplay.traversal.map(b=>b.id)).size,12);
 assert(gameplay.traversal.every(b=>b.closed&&b.clear&&b.entered&&b.exited));
 for(const flag of ['cameraMovement','gizmoDrag','terrainStroke','reload'])assert.equal(editor[flag],true);
 assert.equal(editor.save.verified,true);
+for(const name of ['terrain','reload']){const view=editor.renderedViews[name],d=view.renderer;assert.equal(view.scene,'overworld');assert.equal(view.terrain.pending,0);assert.equal(view.terrain.failures,0);assert.equal(d.draws.loading,0);assert.equal(d.draws.pendingVisibleInstances,0);assert.equal(d.draws.construction.queued,0);assert.deepEqual(d.draws.failures,[]);assert.equal(d.models.buildQueue.queued,0);assert.equal(d.frame.deferredResources,0);assert.equal(d.frame.deferredRenderables,0);}
 console.log('PASS: exact tested Worker, unchanged runtime inputs, six settled Filament views, twelve door traversals and complete editor acceptance.');
