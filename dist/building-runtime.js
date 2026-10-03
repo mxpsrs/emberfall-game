@@ -101,8 +101,8 @@
    }
    r.navBounds=next;
   }catch{} }
- function rendered(b){if(b._generatedBuildingEntity)return globalThis.VeldrenBuildingScene.renderAssembly(b);const r=cache.get(b),a=b.assembly;const instances=[],faces=[];
-  for(const m of a.modules){if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;const filter=window.VeldrenBuildings.floorFilter;if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
+ function rendered(b){if(b._generatedBuildingEntity)return globalThis.VeldrenBuildingScene.renderAssembly(b);const r=cache.get(b),a=b.assembly;const instances=[],faces=[],cutawayLevel=typeof buildingCutawayLevel3==='function'?buildingCutawayLevel3(b):0;
+  for(const m of a.modules){if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;if(b._cutaway&&(m.role==='roof'||m.floor>cutawayLevel))continue;const filter=window.VeldrenBuildings.floorFilter;if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(m.model==='captured:faces'){for(const f of r.faces)faces.push({...f,points:f.points.map(p=>A.point(m.local,p))});continue;}
    const source=r.full[m.baseline];const mesh=source&&identify(source.mesh)===m.model?source.mesh:model(m.model)||source?.mesh;if(mesh)instances.push({mesh,matrix:m.local,ghost:!!(filter?.building===b&&filter.isolate&&filter.below&&m.floor<filter.floor)});
   }
@@ -142,12 +142,16 @@
   }
   return a;
  }
- function contains(m,p){const q=A.point(A.inverse(m.local),p),lo=m.bounds[0],hi=m.bounds[1];return q[0]>=lo[0]-.12&&q[0]<=hi[0]+.12&&q[2]>=lo[2]-.12&&q[2]<=hi[2]+.12;}
+ function contains(m,p,inward=0){const q=A.point(A.inverse(m.local),p),lo=m.bounds[0],hi=m.bounds[1];
+  // Authored walls face outwards along local +Z. Grid locomotion samples cell
+  // centers half a unit inside the perimeter; a thin wall must reserve that
+  // inner cell without blocking the clear exterior door approach.
+  return q[0]>=lo[0]-.12&&q[0]<=hi[0]+.12&&q[2]>=Math.min(lo[2]-.12,-inward)&&q[2]<=hi[2]+.12;}
  function install(){if(installed)return;installed=true;originalRender=building3;
   const oldCached=cachedMesh3;cachedMesh3=function(key,kind,build){if(kind==='building'&&key.assembly&&(key._generatedBuildingEntity||cache.has(key))){return rendered(key)}return oldCached(key,kind,build)};
   const oldIn=inBuilding;inBuilding=function(b,x,y){if(!b.assembly)return oldIn(b,x,y);const a=b.assembly,p=A.point(A.inverse(a.parent),[x+.5,0,y+.5]);
    const entrance=a.modules.find(m=>m.role==='entrance');if(entrance?.opening){const center=entrance.opening.service,n=entrance.opening.normal,dx=p[0]-(center[0]-n[0]+.5),dz=p[2]-(center[2]-n[2]+.5);if(Math.hypot(dx,dz)<.72)return b.service?.openedAt===undefined;}
-   return a.modules.some(m=>m.floor===0&&['wall','window'].includes(m.role)&&contains(m,p));};
+   return a.modules.some(m=>m.floor===0&&['wall','window'].includes(m.role)&&contains(m,p,b.briarDesign ? .52 : 0));};
   const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b.assembly)return oldWithin(b,x,y);const p=A.point(A.inverse(b.assembly.parent),[x,0,y]);if(!b.editorCreated)return b.briarDesign?briarFootprintContains(b,b.x+p[0],b.y+p[2]):p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;const box=localBounds(b);return p[0]>=box.minX&&p[0]<box.maxX&&p[2]>=box.minZ&&p[2]<box.maxZ;};
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};

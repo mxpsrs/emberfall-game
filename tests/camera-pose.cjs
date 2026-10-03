@@ -18,5 +18,14 @@ porch.ctx.realmNative={scenes:{entity(_scene,id){return id==='inn'?{components:{
 porch.run('view3d.yaw=0;view3d.tilt=.25');assert(porch.run('cameraPose3().distance')<clear/2,'canonical porch geometry outside the wall footprint stops the camera');
 porch.ctx.landHeight=()=>10;porch.ctx.landSurfaceRevision=1;
 assert.equal(porch.run('cameraStructureDistance3(buildings[0],[50,4,60],[0,0,1],10)'),10,'terrain edits invalidate cached porch triangles and keep camera obstruction aligned with rendered ground');
+const moduleWall=fixture();vm.runInContext(fs.readFileSync('dist/building-assembly.js','utf8'),moduleWall.ctx);
+moduleWall.ctx.buildings=[{x:48,y:65,w:6,h:2,_generatedBuildingEntity:true,_sceneEntityId:'native-wall'}];
+moduleWall.ctx.realmNative={scenes:{entity(_scene,id){return id==='native-wall'?{components:{ModularBuilding:{modules:['panel']}}}:{activeInHierarchy:true,worldMatrix:[1,0,0,0,0,1,0,0,0,0,1,0,50.5,0,62,1],components:{BuildingModule:{role:'wall',floor:0},MeshRenderer:{asset:'rebuilt:Wall_Plaster_Straight'},MeshBounds:{bounds:[[-1,0,-.03],[1,3.12,.03]]}}};}}};
+moduleWall.run('view3d.yaw=0;view3d.tilt=.25');assert(moduleWall.run('cameraPose3().distance')<clear/2,'native thin wall bounds stop the camera without navigation samples or procedural faces');
+const doorway=moduleWall.ctx.VeldrenAssembly.identity(),vertices=[],indices=[];
+for(const [x1,x2,y1,y2]of [[-1,-.5,0,3],[.5,1,0,3],[-.5,.5,2.1,3]]){const start=vertices.length/3;vertices.push(x1,y1,2,x2,y1,2,x2,y2,2,x1,y2,2);indices.push(start,start+1,start+2,start,start+2,start+3);}
+moduleWall.ctx.doorCollider={inverse:doorway,bounds:[[-1,0,2],[1,3,2.03]],mesh:{p:Float32Array.from(vertices),i:Uint16Array.from(indices)}};
+assert.equal(moduleWall.run('cameraModuleRay3(doorCollider,[0,1,0],[0,0,1],10)'),null,'an open authored doorway retains its opening');
+assert.equal(moduleWall.run('cameraModuleRay3(doorCollider,[0,2.5,0],[0,0,1],10)'),2,'the lintel above an open door still stops a high camera');
 const editor=fixture(true);editor.ctx.buildings=[{x:48,y:61,w:6,h:7}];const ep=editor.run('cameraPose3()');assert.equal(ep.target,0);assert.equal(ep.anchor,.82);assert(ep.distance>3,'detached editor can inspect a building without player collision');editor.tick(16);editor.run('view3d.yaw+=1');assert.equal(editor.run('cameraPose3().yaw'),ep.yaw+1,'editor movement remains immediate');
 console.log('PASS: shared camera projection/picking over 36 poses, smooth manual orbit, wall/terrain obstruction, recovery, and independent editor camera.');

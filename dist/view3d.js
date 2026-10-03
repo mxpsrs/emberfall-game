@@ -16,27 +16,54 @@ function cameraDistance3(v=view3d,h=screen.h){return v===view3d?cameraPose3(h).d
 // Player follow is transient presentation; the detached editor keeps its own anchor.
 const cameraFollow3={key:'',pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,distance:0};
 const cameraStructureCache3=new WeakMap();
+const cameraMeshTriangles3=new WeakMap();
+function cameraTriangleDistance3(a,b,c,origin,dir,limit){
+ const e1=b.map((v,i)=>v-a[i]),e2=c.map((v,i)=>v-a[i]),cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],dot=(u,v)=>u[0]*v[0]+u[1]*v[1]+u[2]*v[2],p=cross(dir,e2),det=dot(e1,p);
+ if(Math.abs(det)<1e-8)return null;const inv=1/det,t=origin.map((v,i)=>v-a[i]),u=dot(t,p)*inv;if(u<0||u>1)return null;const q=cross(t,e1),v=dot(dir,q)*inv;if(v<0||u+v>1) return null;const distance=dot(e2,q)*inv;return distance>.05&&distance<limit+.3?distance:null;
+}
+function cameraModuleRay3(collider,origin,dir,limit){
+ const A=globalThis.VeldrenAssembly,p=A.point(collider.inverse,origin),end=A.point(collider.inverse,origin.map((v,i)=>v+dir[i])),d=end.map((v,i)=>v-p[i]);let near=0,far=limit+.3;
+ for(let axis=0;axis<3;axis++){
+  const lo=collider.bounds[0][axis],hi=collider.bounds[1][axis];if(Math.abs(d[axis])<1e-9){if(p[axis]<lo||p[axis]>hi)return null;continue;}
+  const a=(lo-p[axis])/d[axis],b=(hi-p[axis])/d[axis];near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));if(near>far)return null;
+ }
+ if(!collider.mesh)return near>.05?near:null;
+ // Door hosts need their authored opening rather than a solid bounding box.
+ let triangles=cameraMeshTriangles3.get(collider.mesh);
+ if(!triangles){triangles=[];const mesh=collider.mesh;for(let i=0;i<mesh.i.length;i+=3)triangles.push([0,1,2].map(k=>Array.from(mesh.p.slice(mesh.i[i+k]*3,mesh.i[i+k]*3+3))));cameraMeshTriangles3.set(mesh,triangles);}
+ let hit=null;for(const [a,b,c]of triangles){const t=cameraTriangleDistance3(a,b,c,p,d,hit??limit);if(t!==null)hit=t;}return hit;
+}
 function cameraStructureDistance3(b,origin,dir,limit){
  const native=globalThis.realmNative?.scenes;
  if(!native||!b._generatedBuildingEntity)return limit;
- const cut=buildingRoofHidden(b),revision=(typeof worldObjectRevision==='number'?worldObjectRevision:0)+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(globalThis.VeldrenTerrainEdits?.revision??0);
+ const cut=buildingRoofHidden(b),cutawayLevel=cut&&typeof buildingCutawayLevel3==='function'?buildingCutawayLevel3(b):0,revision=(typeof worldObjectRevision==='number'?worldObjectRevision:0)+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(globalThis.VeldrenTerrainEdits?.revision??0);
  let cached=cameraStructureCache3.get(b);
- if(!cached||cached.revision!==revision||cached.cut!==cut){
-  const root=native.entity(String(currentScene),b._sceneEntityId),triangles=[];
+ if(!cached||cached.revision!==revision||cached.cut!==cut||cached.cutawayLevel!==cutawayLevel){
+  const root=native.entity(String(currentScene),b._sceneEntityId),triangles=[],colliders=[],A=globalThis.VeldrenAssembly;
   for(const id of root?.components.ModularBuilding?.modules||[]){
    const node=native.entity(String(currentScene),id),module=node?.components.BuildingModule;
-   if(!node?.activeInHierarchy||node.components.MeshRenderer?.visible===false||cut&&(module?.role==='roof'||module?.floor>0))continue;
+   if(!node?.activeInHierarchy||node.components.MeshRenderer?.visible===false||cut&&(module?.role==='roof'||module?.floor>cutawayLevel))continue;
    // Procedural awnings and braces are retained as canonical MeshGeometry.
    // Their triangles extend beyond the footprint and must also stop the camera.
    const geometry=node.components.MeshGeometry?.faces;
    if(geometry)for(const face of geometry){const points=face.points.map(p=>{const m=node.worldMatrix,x=m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],z=m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14],ground=node.components.MeshRenderer?.renderPath==='canonical'?0:typeof landHeight==='function'?landHeight(x,z):0;return [x,m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13]+ground,z];});for(let i=1;i+1<points.length;i++)triangles.push([points[0],points[i],points[i+1]]);}
+   // Native Quaternius modules have MeshBounds instead of procedural faces.
+   // Their transformed volumes stop a high camera even when a navigation cell
+   // is clear. Authored door geometry retains the actual opening and lintel.
+   const bounds=node.components.MeshBounds?.bounds;
+   if(A&&bounds&&['wall','window','entrance'].includes(module?.role)){
+    const m=node.worldMatrix,row=[m[0],m[4],m[8],m[12],m[1],m[5],m[9],m[13],m[2],m[6],m[10],m[14]];
+    if(node.components.MeshRenderer?.renderPath!=='canonical'&&typeof landHeight==='function')row[7]+=landHeight(row[3],row[11]);
+    const asset=node.components.MeshRenderer?.asset,mesh=/Wall.*Door/.test(asset||'')?globalThis.VeldrenBuildings?.model(asset):null;
+    colliders.push({inverse:A.inverse(row),bounds,mesh,role:module.role});
+   }
   }
-  cached={revision,cut,triangles};cameraStructureCache3.set(b,cached);
+  cached={revision,cut,cutawayLevel,triangles,colliders};cameraStructureCache3.set(b,cached);
  }
  for(const [a,bb,c]of cached.triangles){
-  const e1=bb.map((v,i)=>v-a[i]),e2=c.map((v,i)=>v-a[i]),cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],dot=(u,v)=>u[0]*v[0]+u[1]*v[1]+u[2]*v[2],p=cross(dir,e2),det=dot(e1,p);
-  if(Math.abs(det)<1e-8)continue;const inv=1/det,t=origin.map((v,i)=>v-a[i]),u=dot(t,p)*inv;if(u<0||u>1)continue;const q=cross(t,e1),v=dot(dir,q)*inv;if(v<0||u+v>1)continue;const distance=dot(e2,q)*inv;if(distance>.05&&distance<limit+.3)limit=Math.max(.35,distance-.3);
+  const distance=cameraTriangleDistance3(a,bb,c,origin,dir,limit);if(distance!==null)limit=Math.max(.35,distance-.3);
  }
+ for(const collider of cached.colliders){if(collider.role==='entrance'&&b.service?.openedAt!==undefined)continue;const distance=cameraModuleRay3(collider,origin,dir,limit);if(distance!==null)limit=Math.max(.35,distance-.3);}
  return limit;
 }
 function cameraObstructionDistance3(center,yaw,pitch,distance){

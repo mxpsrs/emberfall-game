@@ -297,7 +297,7 @@
    return buildingRender(q,logical);
   };
   const previousIn=inBuilding;inBuilding=function(b,x,y){if(!b._generatedBuildingEntity)return previousIn(b,x,y);if(b.assembly)return previousIn(b,x,y);const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),p=A.point(A.inverse(m),[x+.5,m[7],y+.5]),logical=getView(b._generatedSceneName,b._sceneEntityId,b._sceneEntityId);return previousIn(logical,Math.floor(p[0]+1e-7)+m[3],Math.floor(p[2]+1e-7)+m[11]);};
-  const previousWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b._generatedBuildingEntity)return previousWithin(b,x,y);const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),p=A.point(A.inverse(m),[x,m[7],y]);return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;};
+  const previousWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b._generatedBuildingEntity||b.assembly)return previousWithin(b,x,y);const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),p=A.point(A.inverse(m),[x,m[7],y]);return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;};
   const previousNormal=doorNormal;doorNormal=function(o){if(!o?._buildingOwner)return previousNormal(o);const portal=entity(o._generatedSceneName,o._sceneEntityId),module=portal.parent&&entity(o._generatedSceneName,portal.parent);if(module?.components.DoorOpening?.normalLocal){const basis=matrices.row(module.worldMatrix);basis[3]=basis[7]=basis[11]=0;const n=A.point(basis,module.components.DoorOpening.normalLocal),length=Math.hypot(n[0],n[2]);return [n[0]/length,n[2]/length];}const b=o.building,m=matrices.row(entity(o._generatedSceneName,b._sceneEntityId).worldMatrix),n=previousNormal(getView(o._generatedSceneName,o._sceneEntityId,b._sceneEntityId)),dx=m[0]*n[0]+m[2]*n[1],dz=m[8]*n[0]+m[10]*n[1],length=Math.hypot(dx,dz);return [dx/length,dz/length];};
   const previousDoor=buildingDoorTransform;buildingDoorTransform=function(b){if(!b._generatedBuildingEntity)return previousDoor(b);const portal=b.service&&entity(b._generatedSceneName,b.service._sceneEntityId),module=portal?.parent&&entity(b._generatedSceneName,portal.parent);if(module?.components.DoorOpening)return A.multiply(matrices.row(module.worldMatrix),A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52));const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix);return A.multiply(A.multiply(m,A.transform(-m[3],0,-m[11])),previousDoor(getView(b._generatedSceneName,b._sceneEntityId,b._sceneEntityId)));};
  }
@@ -430,21 +430,21 @@
   // The editor reads fresh projections for its visibility and floor tools.
   // Runtime projections survive unrelated actor revisions and allocate only
   // when their native hierarchy or occupied cutaway changes.
-  const cacheable=String(root.VELDREN_CONTEXT||'').toLowerCase()!=='editor'&&!filter,cutaway=!!b._cutaway;
+  const cacheable=String(root.VELDREN_CONTEXT||'').toLowerCase()!=='editor'&&!filter,cutaway=!!b._cutaway,cutawayLevel=typeof buildingCutawayLevel3==='function'?buildingCutawayLevel3(b):0;
   let renders=assemblyRenders.get(scene);
-  if(cacheable){if(!renders)assemblyRenders.set(scene,renders=new Map());const cached=renders.get(id);if(cached?.cutaway===cutaway)return cached.value;}
+  if(cacheable){if(!renders)assemblyRenders.set(scene,renders=new Map());const cached=renders.get(id);if(cached?.cutaway===cutaway&&cached.cutawayLevel===cutawayLevel)return cached.value;}
   const rootNode=entity(scene,id),definition=rootNode.components.ModularBuilding,instances=[],faces=[],A=root.VeldrenAssembly,dependencies=new Set([id,...definition.modules]);
   const ancestors=node=>{let parent=node.parent;while(parent&&!dependencies.has(parent)){dependencies.add(parent);parent=entity(scene,parent)?.parent;}};
   ancestors(rootNode);
   for(const moduleId of present(scene,definition.modules)){
    const node=entity(scene,moduleId);ancestors(node);if(!node.activeInHierarchy||node.components.MeshRenderer?.visible===false||root.VeldrenEditorSelection?.hidden(moduleId))continue;const m=moduleData(scene,moduleId,id);if(m.role==='interior'||m.role==='entrance'&&m.objectId)continue;
-   if(b._cutaway&&(m.role==='roof'||m.floor>0))continue;
+   if(b._cutaway&&(m.role==='roof'||m.floor>cutawayLevel))continue;
    if(filter?.building===b&&filter.isolate&&(filter.floor==='roof'?m.role!=='roof':m.floor!==filter.floor&&!(filter.below&&m.floor<filter.floor)))continue;
    if(node.components.MeshGeometry?.faces){for(const face of node.components.MeshGeometry.faces)faces.push({...face,points:face.points.map(p=>A.point(m.local,p))});continue;}
    const asset=node.components.MeshGeometry?.mesh||root.VeldrenBuildings.model(m.model),mesh=node.components.MeshVariant?{...asset,...node.components.MeshVariant}:asset;if(mesh)instances.push({mesh,matrix:m.local,entityId:moduleId});
   }
   const value={instances,faces,height:b.visualHeight||4,kind:'assembly',model:matrices.row(entity(scene,id).worldMatrix)};
-  if(cacheable)renders.set(id,{cutaway,value,dependencies});return value;
+  if(cacheable)renders.set(id,{cutaway,cutawayLevel,value,dependencies});return value;
  }
  root.VeldrenAssets?.onReload(()=>assemblyRenders.clear());
  root.VeldrenAssets?.onDispose(()=>assemblyRenders.clear());

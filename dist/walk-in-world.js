@@ -81,6 +81,11 @@ inBuilding=function(b,x,y){if(!b.walkIn)return solidBuildingBefore(b,x,y);if(x<b
 // The roof and upper walls disappear only after the player crosses inside, and
 // remain hidden there even if the door closes behind them.
 function buildingRoofHidden(b,x=px,y=py){return !!b.walkIn&&withinWalkIn(b,x,y);}
+function buildingCutawayLevel3(b){
+ if(!b._cutaway||!buildingRoofHidden(b))return 0;
+ const x=px+.5,z=py+.5,base=landHeight(x,z)+(b.assembly?.parent?.[7]||0);
+ return Math.max(0,Math.floor((walkSurfaceHeight(x,z)-base+.1)/3.02));
+}
 function withinWalkIn(b,x,y){return b.briarDesign?briarFootprintContains(b,x,y):x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h;}
 function doorNormal(o){return ({south:[0,1],east:[1,0],north:[0,-1],west:[-1,0]})[o.building?.doorFacing||'south'];}
 function doorThreshold(o){const [dx,dy]=doorNormal(o);return [o.x-dx,o.y-dy];}

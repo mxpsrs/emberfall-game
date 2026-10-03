@@ -16,6 +16,7 @@ const {chromium}=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||'/op
 const origin='http://127.0.0.1:'+process.env.VELDREN_PREVIEW_PORT;
 const output=resolve('docs/qa/briar-haven/gameplay');mkdirSync(output,{recursive:true});
 const errors=[],networkFailures=[];let browser,page,currentBuilding=null;
+const recoveries=[];
 const settleView=()=>page.waitForFunction(()=>{
  const d=realmGPU?.diagnostics();return d&&d.frame&&!cloudDisconnected&&!cloudConflict&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0;
 },{},{timeout:360000});
@@ -23,13 +24,35 @@ async function serverDoor(id,open){
  await page.evaluate(({id,open})=>{const b=buildings.find(b=>b._sceneEntityId===id);setWalkInDoor(b.service,open);},{id,open});
  await page.waitForFunction(({id,open})=>{const o=buildings.find(b=>b._sceneEntityId===id).service;return !cloudDisconnected&&!cloudConflict&&!sharedPending('door',o.id)&&(o.openedAt!==undefined)===open;},{id,open},{timeout:120000});
 }
+async function travelThroughDoor(building,inside){
+ const goal=inside?building.inside:building.outside;
+ for(let attempt=0;attempt<4;attempt++){
+  await settleView();await serverDoor(building.id,true);const failuresBefore=networkFailures.length;
+  const frame=await page.evaluate(({building,goal})=>{if(!walkTo(...goal))throw Error(building.name+' door travel has no route');return meshFrame3;},{building,goal});
+  await page.waitForFunction(({building,goal,inside,frame})=>{
+   const reached=!path.length&&Math.hypot(px-goal[0],py-goal[1])<.05&&(inside?s.insideBuilding===building.destination:!s.insideBuilding);
+   return reached||cloudDisconnected||cloudConflict||meshFrame3>frame+2&&!path.length;
+  },{building,goal,inside,frame},{timeout:180000});
+  const state=await page.evaluate(({building,goal,inside})=>({reached:!path.length&&Math.hypot(px-goal[0],py-goal[1])<.05&&(inside?s.insideBuilding===building.destination:!s.insideBuilding),position:[px,py],disconnected:cloudDisconnected,conflict:cloudConflict}),{building,goal,inside});
+  if(state.reached)return;
+  assert.equal(state.conflict,false,'local fixture must not have an account conflict');
+  assert(state.disconnected||networkFailures.length>failuresBefore,building.name+' unexpectedly stopped door travel without a connection interruption');
+  // Keep the physical endpoint and collision checks. A software-GPU stall can
+  // expire the real presence channel. Resume the same walk after the existing
+  // reconnect flow and record it; never change server timeouts or teleport.
+  recoveries.push({building:building.name,leg:inside?'enter':'exit',attempt:attempt+1,position:state.position,failures:networkFailures.slice(failuresBefore)});
+  console.log('RECOVER software-render connection interruption',building.name,inside?'enter':'exit');
+  await page.waitForFunction(()=>!cloudDisconnected&&!cloudConflict,{},{timeout:120000});
+ }
+ throw Error(building.name+' could not complete physical door travel after connection recovery');
+}
 try{
  browser=await chromium.launch({headless:true,executablePath:process.env.VELDREN_CHROMIUM||'/tmp/chromium',args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1});
  await context.addInitScript(()=>{window.VELDREN_PERFORMANCE=true;});
  page=await context.newPage();page.on('pageerror',e=>errors.push(String(e)));
  page.on('requestfailed',request=>{const url=new URL(request.url());if(url.pathname.startsWith('/api/'))networkFailures.push({path:url.pathname,method:request.method(),error:request.failure()?.errorText});});
- page.on('response',response=>{const url=new URL(response.url());if(url.pathname.startsWith('/api/')&&response.status()>=400)networkFailures.push({path:url.pathname,status:response.status()});});
+ page.on('response',response=>{const url=new URL(response.url());if(url.pathname.startsWith('/api/')&&response.status()>=400){const failure={path:url.pathname,status:response.status()};networkFailures.push(failure);response.json().then(body=>{failure.error=body.error;}).catch(()=>{});}});
  await page.goto(origin+'/preview',{waitUntil:'domcontentloaded',timeout:120000});
  await page.waitForFunction(()=>realmStartup?.failed||typeof assetsReady!=='undefined'&&assetsReady,{},{timeout:600000});
  assert.equal(await page.evaluate(()=>!!realmStartup.failed),false);
@@ -100,11 +123,9 @@ try{
   Object.assign(building,await page.evaluate(b=>({clear:!inBuilding(buildings.find(o=>o._sceneEntityId===b.id),...b.threshold),planned:route(...b.inside)}),building));
   assert(building.closed&&building.clear,building.name+' server-confirmed door collision matches its open state');
   assert(building.planned,building.name+' has an entrance route');
-  await page.evaluate(b=>{if(!walkTo(...b.inside))throw Error(b.name+' entrance route is blocked');},building);
-  await page.waitForFunction(b=>s.insideBuilding===b.destination&&!path.length&&Math.hypot(px-b.inside[0],py-b.inside[1])<.05,building,{timeout:180000});
+  await travelThroughDoor(building,true);
   assert.equal(await page.evaluate(id=>buildingRoofHidden(buildings.find(b=>b._sceneEntityId===id)),id),true,building.name+' retains its occupied cutaway');
-  await page.evaluate(b=>{if(!walkTo(...b.outside))throw Error(b.name+' exit route is blocked');},building);
-  await page.waitForFunction(b=>!s.insideBuilding&&!path.length&&Math.hypot(px-b.outside[0],py-b.outside[1])<.05,building,{timeout:180000});
+  await travelThroughDoor(building,false);
   assert.equal(await page.evaluate(id=>buildingRoofHidden(buildings.find(b=>b._sceneEntityId===id)),id),false,building.name+' restores its roof after exit');
   traversal.push({...building,entered:true,exited:true});console.log('PASS building traversal',building.name);
  }
@@ -113,7 +134,7 @@ try{
  assert.deepEqual(errors,[]);
  await page.screenshot({path:join(output,'returned-outside.png'),timeout:120000});
  await page.screenshot({path:join(output,'returned-outside.jpg'),type:'jpeg',quality:90,timeout:120000});
- writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,workerSha256,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,traversal,networkFailures,errors},null,2)+'\n');
+ writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,workerSha256,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,traversal,networkFailures,recoveries,errors},null,2)+'\n');
  console.log('PASS rendered door picking, physical entry/exit, occupied cutaway, restored roof and local account connection');
 }catch(error){const state=await page?.evaluate(()=>({position:[px,py],tile:[s.x,s.y],insideBuilding:s.insideBuilding,path,cloud:{disconnected:cloudDisconnected,conflict:cloudConflict,recovering:cloudRecovering,saveBusy:cloudBusy,syncBusy:onlineSyncBusy}})).catch(()=>null);await page?.screenshot({path:join(output,'failure.png'),timeout:30000}).catch(()=>{});writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),currentBuilding,state,networkFailures,errors},null,2));console.error(error);process.exitCode=1;}
 finally{await browser?.close();await releaseGraphics();process.kill(process.pid,'SIGTERM');}

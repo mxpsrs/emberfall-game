@@ -43,6 +43,9 @@ const fixture=require('../scripts/native-world-fixture.cjs');
   const leaves=a.modules.filter(m=>m.role==='entrance');assert.equal(leaves.length,1,b.name+' has one usable door');
   assert(a.modules.some(m=>m.id===leaves[0].host&&/Wall.*Door/.test(m.model)),b.name+' door is linked to its actual wall opening');
   const [tx,tz]=doorThreshold(b.service);setWalkInDoor(b.service,false,true);assert(inBuilding(b,tx,tz),b.name+' closed door blocks');
+  const outsideClosed=doorApproach(b.service,false),insideClosed=doorApproach(b.service,true);
+  activateScene('overworld',...outsideClosed,false);
+  if(!b.briarDesign.volumes.some(v=>v.open))assert(!route(...insideClosed),b.name+' closed door cannot be bypassed through an adjacent wall');
   setWalkInDoor(b.service,true,true);assert(!inBuilding(b,tx,tz),b.name+' opened door clears the opening');
   const outside=doorApproach(b.service,false),inside=doorApproach(b.service,true);
   activateScene('overworld',...outside,false);assert(route(...inside),b.name+' entrance approach reaches its interior');
@@ -62,11 +65,22 @@ const fixture=require('../scripts/native-world-fixture.cjs');
    activateScene('overworld',...lo,false);const ascent=route(...hi);if(!ascent)console.log('STAIR DEBUG',b.name,JSON.stringify({lo,hi,ramp:[ramp.x,ramp.y,ramp.w,ramp.h],samples:Array.from({length:Math.ceil(ramp.h)},(_,i)=>{const x=lo[0],z=Math.floor(ramp.y)+i;return {x,z,height:walkSurfaceHeight(x+.5,z+.5),wall:worldWall(x,z),terrain:terrainCellBlocked(x,z),resource:VeldrenGatherableScene.blocked(currentScene,x,z),service:VeldrenServiceScene.blocked(currentScene,x,z),building:inBuilding(b,x,z),blocked:blocked(x,z),objects:objects.filter(o=>Math.hypot(o.x-x,o.y-z)<1.6).map(o=>[o.name,o.x,o.y,o.civilUpper,o.walkThrough])};})}));assert(ascent,b.name+' stairs ascend continuously');activateScene('overworld',...hi,false);assert(route(...lo),b.name+' stairs descend continuously');
    for(const d of decks)assert(briarFootprintContains(b,d.x+d.w/2,d.y+d.h/2),b.name+' loft has supported footprint');
    for(const o of objects.filter(o=>o.interiorBuilding===b.service.destination&&o.civilUpper)){assert(decks.some(d=>o.x+.5>=d.x&&o.x+.5<=d.x+d.w&&o.y+.5>=d.y&&o.y+.5<=d.y+d.h),b.name+' upper furniture stays on its loft: '+o.name);}
+   activateScene('overworld',...hi,false);b._cutaway=true;
+   const upstairs=VeldrenBuildingScene.renderAssembly(b);
+   assert(upstairs.instances.some(i=>{const m=realmNative.scenes.entity('overworld',i.entityId).components.BuildingModule;return m.role==='floor'&&m.floor===1;}),b.name+' keeps its actual upstairs floor visible under the player during cutaway');
+   const previous=upstairs;activateScene('overworld',...lo,false);
+   assert.notEqual(VeldrenBuildingScene.renderAssembly(b),previous,b.name+' changing occupied floors refreshes the derived visibility');b._cutaway=false;
   }
  }
  const school=testBuildings.find(b=>b.service.destination==='realm_briarhaven_3');assert(school.civilUpper,'Magic School has a supported library loft');
+ const courtyardInn=testBuildings.find(b=>b.service.destination==='inn');
+ assert(!withinWalkIn(courtyardInn,36,49),'the inn courtyard outside its L-shaped floor is outdoors');
+ assert(!buildingRoofHidden(courtyardInn,36,49),'standing in that courtyard retains the complete inn roof');
  const altar=worldScenes.overworld.objects.find(o=>o.relicKey==='altar');assert(altar,'Relic shaping service is retained');
  activateScene('overworld',75,76,false);assert(route(altar.x,altar.y,true), 'Relic shaping remains accessible from the school door');
+ activateScene('overworld',64,115,false);screen.w=1920;screen.h=1080;Object.assign(view3d,{yaw:-2.05,tilt:.29,zoom:102});
+ const copper=testBuildings.find(b=>b.service.destination==='civil_briarhaven_4'),pose=cameraPose3();
+ assert(!withinWalkIn(copper,pose.eye[0],pose.eye[2]),'the actual town-edge follow camera stays outside Copper House native wall modules');
  `);
  const roundtrip=native.serialize();assert(native.load({format:'veldren.world',version:2,scenes:[]}));assert(native.load(roundtrip));
  assert.equal(JSON.stringify(native.serialize()),JSON.stringify(roundtrip),'building plans, IDs, modular pieces, stairs and doors serialize unchanged');
