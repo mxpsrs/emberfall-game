@@ -67,11 +67,26 @@ try{
  }
  if(process.env.VELDREN_QA_VIEW==='terrain-first')results.sort((a,b)=>matchedRoutes.findIndex(r=>r[0]===a.name)-matchedRoutes.findIndex(r=>r[0]===b.name));
  if(process.env.VELDREN_QA_VIEW==='school-facade'){
+  const profiler=await context.newCDPSession(page);await profiler.send('Profiler.enable');await profiler.send('Profiler.start');
+  await page.evaluate(()=>{__qaFrames.length=0;});await page.waitForFunction(()=>__qaFrames.length>=30,{},{timeout:300000});
+  const {profile}=await profiler.send('Profiler.stop');await profiler.detach();
+  writeFileSync(join(output,'cpu-profile.json.gz'),gzipSync(JSON.stringify(profile),{level:9}));
+  const sampled=new Map();for(let i=0;i<(profile.samples||[]).length;i++)sampled.set(profile.samples[i],(sampled.get(profile.samples[i])||0)+(profile.timeDeltas[i]||0));
+  const hotspots=profile.nodes.map(n=>({name:n.callFrame.functionName,url:n.callFrame.url,line:n.callFrame.lineNumber,ms:Math.round((sampled.get(n.id)||0)/1000)})).filter(n=>n.ms>0).sort((a,b)=>b.ms-a.ms).slice(0,24);
+  writeFileSync(join(output,'cpu-hotspots.json'),JSON.stringify({workerSha256,softwareGpu:true,samples:30,hotspots},null,2));console.log('PROFILE',JSON.stringify(hotspots.slice(0,8)));
   await page.evaluate(()=>{worldHour=()=>21;__qaFrames.length=0;__qaPreviousFrame=0;});
   await page.waitForFunction(()=>__qaFrames.length>=30&&(realmGPU.terrainWork?.pending??0)===0&&realmGPU.diagnostics().draws.loading===0,{},{timeout:300000});
   const night=await page.evaluate(()=>({name:'night-school',hour:worldHour(),scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),frames:__qaFrames.slice(-30)}));
   await page.screenshot({path:join(output,'night-school.jpg'),type:'jpeg',quality:90,timeout:120000});
   writeFileSync(join(output,'night.json.gz'),gzipSync(JSON.stringify({workerSha256,backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,night,errors}),{level:9}));console.log('READY night-school');
+  // The matched services baseline faces the rear yard. Inspect the actual
+  // west-facing smithy work bay as well, without changing that baseline route.
+  await page.evaluate(()=>{worldHour=()=>11;stop();activateScene('overworld',74,40,false);view3d.yaw=-Math.PI/2;view3d.tilt=.27;view3d.zoom=102;__qaFrames.length=0;__qaPreviousFrame=0;});
+  await page.waitForFunction(()=>{const d=realmGPU.diagnostics(),t=realmGPU.terrainWork;return __qaFrames.length>=60&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0&&t?.pending===0;},{},{timeout:600000});
+  await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
+  const smithy=await page.evaluate(()=>({name:'smithy-facade',scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}));
+  await page.screenshot({path:join(output,'smithy-facade.jpg'),type:'jpeg',quality:90,timeout:120000});
+  writeFileSync(join(output,'smithy.json.gz'),gzipSync(JSON.stringify({workerSha256,hour:11,resolution:[1920,1080],deviceScaleFactor:1,smithy,errors}),{level:9}));console.log('READY smithy-facade');
  }
  assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));writeFileSync(join(output,'result.json.gz'),gzipSync(JSON.stringify(result),{level:9}));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){

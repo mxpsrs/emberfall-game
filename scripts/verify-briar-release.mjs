@@ -54,6 +54,9 @@ assert.equal(night.night.hour,21);assert.equal(night.night.frames.length,30);
 assert(fs.statSync(directory+'/'+release.landmarkEvidenceLabel+'/night-school.jpg').size>10000);
 assert.equal(night.night.frames.at(-1).terrain.pending,0);
 assert.deepEqual(night.night.frames.at(-1).renderer.draws.failures,[]);
+const smithy=read(directory+'/'+release.landmarkEvidenceLabel+'/smithy.json.gz');
+assert.equal(smithy.workerSha256,release.workerSha256);assert.deepEqual(smithy.errors,[]);assert.equal(smithy.hour,11);
+verifyView(smithy.smithy,release.landmarkEvidenceLabel);
 const gameplay=read(directory+'/gameplay/result.json'),editor=read(directory+'/editor-result.json');
 for(const receipt of [gameplay,editor]){assert.equal(receipt.workerSha256,release.workerSha256);assert.deepEqual(receipt.errors,[]);}
 for(const flag of ['doorPicked','entered','exited','closedDoorCutaway','restoredRoof'])assert.equal(gameplay[flag],true);
