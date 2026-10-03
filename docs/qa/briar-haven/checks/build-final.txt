@@ -10,7 +10,7 @@ Canonical PBR LODs: 19 roofs; 59140 near triangles -> 40309 far triangles
 Cooked scenery LODs: 50 models; 97104 near triangles -> 39476 far triangles
 Exported 3484 native asset records from existing Veldren assets.
 Exported 4674 shared world entities.
-{"cookedScenes":259,"entities":21741,"cookMs":41419.425487,"editorLayer":"fb6e62231e01a07b","editorWarnings":[]}
+{"cookedScenes":259,"entities":21741,"cookMs":41431.018821,"editorLayer":"fb6e62231e01a07b","editorWarnings":[]}
 Cooked terrain row -128 / 896
 Cooked terrain row -96 / 896
 Cooked terrain row -64 / 896
@@ -44,4 +44,4 @@ Cooked terrain row 800 / 896
 Cooked terrain row 832 / 896
 Cooked terrain row 864 / 896
 Cooked 1408 terrain pages.
-Built character-save Worker and 883 game assets; 65527 KiB module.
+Built character-save Worker and 883 game assets; 65529 KiB module.

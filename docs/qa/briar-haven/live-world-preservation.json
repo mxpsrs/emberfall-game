@@ -1,10 +1,12 @@
 {
-  "verifiedAt": "2026-10-03T17:06:09.209Z",
+  "verifiedAt": "2026-10-03T18:16:26.151Z",
   "url": "https://playveldren.com/api/editor/edits",
   "revision": 26,
   "count": 103,
   "worldSha256": "fdbaf2dd9b3a96790941b5c55aed62a5f82514af8232854936a2ab1575e51747",
   "sha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6",
   "runtimeSha256": "09b23665743cd9357317b12ab690d4534a3ec098419e1df770713b14ace890e6",
-  "preserved": true
+  "preserved": true,
+  "semanticWorldSha256": "6109f4fb1ba5cbb327cfb0378150f18aa688873218190711ba7d592ccd535b75",
+  "semanticEditsSha256": "55248ed045ec4603b89c2ac4d4dba7fd8e85b51eebfbba231e158964cd8be599"
 }

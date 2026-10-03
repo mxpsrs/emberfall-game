@@ -1,0 +1,11 @@
+tests/prebuilt-world.cjs
+{"pass":true,"scenes":259,"objects":9495,"decodeMs":355.23456799999997,"checks":["graph and cyclic-reference parity","fresh tutorial entry","saved progress and position","legacy save fallback","network fallback","invalid asset rejection"]}
+Using world generation: offline
+tests/editor-native-startup.cjs
+PASS: complete native editor world starts with controls ready, overworld camera and 259 canonical scenes (DOM fixture, no GPU).
+tests/editor-modular-start.cjs
+PASS: empty modular start, indexed local assets, real module render, and saved assembly restore.
+tests/terrain-document.mjs
+PASS: persistent terrain schema, strict coordinates/material/size validation, CAS, and preservation for older clients.
+tests/editor-context.cjs
+PASS: authenticated editor viewport has a dedicated, playerless startup and render loop.

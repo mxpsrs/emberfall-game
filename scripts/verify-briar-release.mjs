@@ -30,6 +30,10 @@ function verifyView(view,label){
  const terrain=view.frames.at(-1).terrain;assert(terrain&&Number.isFinite(terrain.ms),'record actual terrain work');
  assert.equal(terrain.pending??0,0,'terrain streaming is settled '+view.name);
  assert.equal(terrain.failures??0,0,'terrain streaming has no failed loads '+view.name);
+ assert.equal(terrain.mode,'worker','production terrain uses its background worker '+view.name);
+ assert.equal(terrain.bakedSourceMatched,true,'matching authored terrain source '+view.name);
+ assert.equal(terrain.baseValid,true,'unchanged startup retains prebuilt terrain '+view.name);
+ assert.equal(terrain.snapshotMs,0,'unchanged startup avoids live heightfield resampling '+view.name);
 }
 for(const view of rendered.results){
  const before=baseline.results.find(v=>v.name===view.name);
