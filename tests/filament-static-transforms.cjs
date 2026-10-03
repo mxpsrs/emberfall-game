@@ -115,6 +115,18 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.equal(buildingGpu.cache.get(assembly),assemblyEntry,'unchanged assembly faces retain their GPU packet');assert.equal(buildingGpu.diagnostics().frame.dynamicVertices,0);
   assembly.model[3]=7;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),assemblyEntry,'moving the native assembly rebuilds its baked surface once');
   const movedAssembly=buildingGpu.cache.get(assembly);context.landSurfaceRevision++;drawAssembly();assert.notEqual(buildingGpu.cache.get(assembly),movedAssembly,'terrain edits refresh assembly grounding');
+  // The native building projection returns fresh wrappers every frame. Those
+  // wrappers must not continuously recreate unchanged procedural geometry.
+  const projected=()=>({...assembly,model:[...assembly.model],faces:assembly.faces.map(f=>({...f,points:f.points.map(p=>[...p])}))});
+  const drawProjection=view=>{const painter=context.painter3(null,context.project3);painter.entity('native-assembly-fixture');painter.cached(view);painter.flush();};
+  drawProjection(projected());const nativeFaces=buildingGpu.assemblyFaces.get('overworld:native-assembly-fixture'),nativeMeshCount=buildingGpu.diagnostics().legacy.meshes;
+  for(let i=0;i<40;i++)drawProjection(projected());
+  assert.equal(buildingGpu.diagnostics().legacy.meshes,nativeMeshCount,'fresh native wrappers reuse their real Filament geometry allocation');
+  assert.equal(buildingGpu.assemblyFaces.get('overworld:native-assembly-fixture').buffer,nativeFaces.buffer);
+  assert.equal(buildingGpu.diagnostics().frame.deferredResources,0,'settled procedural geometry produces no continuing allocation demand');
+  const changedProjection=projected();changedProjection.faces[0].points[0][1]+=.25;drawProjection(changedProjection);
+  assert.notEqual(buildingGpu.assemblyFaces.get('overworld:native-assembly-fixture').buffer,nativeFaces.buffer,'an actual geometry edit refreshes the native surface');
+  assert.equal(buildingGpu.diagnostics().legacy.meshes,nativeMeshCount,'replaced native surfaces retire their old GPU allocation');
   context.VELDREN_PERFORMANCE=false;
   // Animated CPU poses retain separate simultaneous shapes, but recycle their
   // native geometry allocation across frames rather than retaining every pose.
