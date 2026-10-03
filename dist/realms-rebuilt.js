@@ -417,6 +417,16 @@ function rebuiltBriarHouse(r,b){
   const z=source.y+source.h+.75,w=Math.min(3.8,source.w-2),x=door;
   for(let dx=-w/2;dx<w/2;dx+=2){const width=Math.min(2,w/2-dx);environmentModule3(r,rebuiltModels.Floor_WoodDark,x+dx+width/2,.035,z,width,.03,1.5);}
  }
+ if(design.school){
+  // Entrance-wing banners carry the school's existing four-facet Relic mark.
+  // Their brackets attach above the doorway approach, outside its clear width.
+  const z=source.y+source.h+.18;
+  for(const side of [-1,1]){const x=door+side*1.6;
+   beamArt(materialRealm(r,5),[x-.42,2.82,z],[x+.42,2.82,z],.04,'#66513b',5);
+   r.face([[x-.35,2.78,z],[x+.35,2.78,z],[x+.35,1.52,z],[x,1.38,z],[x-.35,1.52,z]],side<0?'#486c91':'#59678e',null,13);
+   for(let i=0;i<4;i++){const a=i*Math.PI/2,c=Math.cos(a),s=Math.sin(a),p=(u,v)=>[x+u*c-v*s,2.10+u*s+v*c,z+.012];r.face([p(.04,0),p(.15,.12),p(.30,0),p(.15,-.12)],['#86c6d6','#779fc6','#be9cde','#8eb9a3'][i],null,13);}
+  }
+ }
  return top;
 }
 building3=function(r,b){

@@ -34,6 +34,15 @@ for(const sample of [[10.123,2.4,20.456,-.55,.8,34,3],[-42.73,8.1,611.29,1.2,.55
 }
 assert.equal(context.realmFilamentStyle({bossColor:2,dissolve:.126}).key,'t0:b20:d3');
 assert.equal(context.realmFilamentStyle({terrain:true}).key,'t1:b0:d0');
+const daylight=JSON.parse(JSON.stringify(context.realmFilamentLightingProfile({night:0,cave:0,house:0}))),nightlight=JSON.parse(JSON.stringify(context.realmFilamentLightingProfile({night:1,cave:0,house:0})));
+assert.deepEqual([daylight.sun,daylight.ambient,daylight.aperture,daylight.speed],[57500,19000,12.8,125],'daylight exposure and energy remain consistent');
+const exposure=p=>1/(p.aperture*p.aperture*p.speed);
+assert(exposure(nightlight)/exposure(daylight)<2.1,'night adaptation stays within about one stop');
+for(const light of ['sun','ambient'])assert(nightlight[light]*exposure(nightlight)<daylight[light]*exposure(daylight)*.25,'night illumination stays darker after actual camera exposure: '+light);
+let previousSun=Infinity,previousAmbient=Infinity;
+for(let step=0;step<=20;step++){const p=context.realmFilamentLightingProfile({night:step/20});const sun=p.sun*exposure(p),ambient=p.ambient*exposure(p);assert(sun<=previousSun&&ambient<=previousAmbient,'dusk changes illumination continuously and monotonically');previousSun=sun;previousAmbient=ambient;}
+const retainedProfile=context.realmFilamentLightingProfile({night:0}),retainedColor=retainedProfile.color;assert.equal(context.realmFilamentLightingProfile({night:1}),retainedProfile);assert.equal(retainedProfile.color,retainedColor,'lighting updates reuse their bounded color storage');
+const caveProfile=context.realmFilamentLightingProfile({night:0,cave:1});assert(caveProfile.sun<daylight.sun*.13&&caveProfile.ambient<daylight.ambient*.41,'cave lighting stays bounded independently of night exposure');
 assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:16,glbBytes:96*1024*1024,ao:false,dithering:false,lightLimit:12});
 assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:2048,shadowCascades:2,stable:true,normalBias:.6,constantBias:.001,maxShadowDistance:95},'desktop uses sharper two-cascade shadows');
 context.window.matchMedia=()=>({matches:true});assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentShadowOptions())),{mapSize:1024,shadowCascades:1,stable:true,normalBias:.6,constantBias:.001,maxShadowDistance:80},'coarse-pointer devices use the mobile-safe shadow allocation');assert.deepEqual(JSON.parse(JSON.stringify(context.realmFilamentQualityProfile())),{anisotropy:8,glbBytes:32*1024*1024,ao:false,dithering:false,lightLimit:8});delete context.window.matchMedia;

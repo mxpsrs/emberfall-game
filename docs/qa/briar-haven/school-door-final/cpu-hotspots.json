@@ -1,0 +1,151 @@
+{
+  "workerSha256": "129c8f4309687394a7814a6095cb2e05f1d4ff45b09f96e297d837464138c7ba",
+  "softwareGpu": true,
+  "samples": 30,
+  "hotspots": [
+    {
+      "name": "(idle)",
+      "url": "",
+      "line": -1,
+      "ms": 23269
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 1667
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 1552
+    },
+    {
+      "name": "present",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 1239
+    },
+    {
+      "name": "(garbage collector)",
+      "url": "",
+      "line": -1,
+      "ms": 1031
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 23,
+      "ms": 988
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 920
+    },
+    {
+      "name": "(program)",
+      "url": "",
+      "line": -1,
+      "ms": 860
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 777
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 694
+    },
+    {
+      "name": "moduleData",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 417
+    },
+    {
+      "name": "moduleData",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 380
+    },
+    {
+      "name": "moduleData",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 236
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 23,
+      "ms": 217
+    },
+    {
+      "name": "next",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 197
+    },
+    {
+      "name": "moduleData",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 196
+    },
+    {
+      "name": "moduleData",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 172
+    },
+    {
+      "name": "inverse",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 293,
+      "ms": 160
+    },
+    {
+      "name": "creatureRigPose",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 275,
+      "ms": 158
+    },
+    {
+      "name": "copy",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 147
+    },
+    {
+      "name": "entity",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 23,
+      "ms": 143
+    },
+    {
+      "name": "moduleView",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 140
+    },
+    {
+      "name": "",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 135
+    },
+    {
+      "name": "",
+      "url": "http://127.0.0.1:44633/play",
+      "line": 311,
+      "ms": 132
+    }
+  ]
+}

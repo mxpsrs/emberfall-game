@@ -120,7 +120,7 @@
  }
  // Compatibility views contain IDs only. The native Scene owns every field;
  // renderer/collision projections are computed from the same transform graph.
- const views=new Map(),tables=new Map(),assemblyRenders=new Map();let subscribed=false,installed=false,buildingRender=null;
+ const views=new Map(),tables=new Map(),assemblyRenders=new Map(),assemblyProjections=new Map();let subscribed=false,installed=false,buildingRender=null;
  const native=()=>root.realmNative.scenes;
  const registry=()=>typeof worldScenes!=='undefined'?worldScenes:root.worldScenes;
  const entity=(scene,id)=>native().entity(scene,id);
@@ -211,15 +211,16 @@
  }
  function onChange(event){
   if(native().isUnderstoryBatch?.(event))return;
-  if(event.kind==='load'){assemblyRenders.clear();for(const name of tables.keys())project(name);wallMaps.clear();return;}
-  const renders=assemblyRenders.get(event.scene);
+  if(event.kind==='load'){assemblyRenders.clear();assemblyProjections.clear();for(const name of tables.keys())project(name);wallMaps.clear();return;}
+  for(const store of [assemblyRenders,assemblyProjections]){const renders=store.get(event.scene);
   if(renders?.size)for(const change of event.kind==='batch'?event.changes:[event]){
    const node=change.id&&entity(event.scene,change.id);
    // Root, module and ancestor writes change the projection. Actor motion and
    // independent scenery writes retain it; the native Scene remains authoritative.
    if(!node){renders.clear();break;}
-   const owner=node.components.BuildingPart?.building;
+   const owner=node.components.BuildingPart?.building||node.components.Entrance?.building;
    for(const [id,cached] of renders)if(id===owner||cached.dependencies.has(change.id))renders.delete(id);
+  }
   }
   const table=tables.get(event.scene);if(!table)return;
   if(event.kind==='batch'&&event.changes?.every(change=>{const node=entity(event.scene,change.id);return !table.ids.has(change.id)&&!table.doorIds.has(change.id)&&!node?.components.BuildingPart&&!node?.components.GeneratedBuilding;}))return;
@@ -367,6 +368,20 @@
   const key=JSON.stringify([scene,id]);if(moduleViews.has(key))return moduleViews.get(key);
   const view=mutableValue(()=>moduleData(scene,id,building),value=>native().batch(()=>writeModule(scene,id,building,value)));moduleViews.set(key,view);return view;
  }
+ function assemblySnapshot(b){
+  const scene=b._generatedSceneName,id=b._sceneEntityId,node=entity(scene,id),definition=node?.components.ModularBuilding;
+  if(!definition)return undefined;
+  const cacheable=String(root.VELDREN_CONTEXT||'').toLowerCase()!=='editor';let values=assemblyProjections.get(scene);
+  if(cacheable){if(!values)assemblyProjections.set(scene,values=new Map());const cached=values.get(id);if(cached)return cached.value;}
+  const dependencies=new Set([id]),modules=[];
+  const track=node=>{while(node&&!dependencies.has(node.id)){dependencies.add(node.id);node=entity(scene,node.parent);}};
+  track(entity(scene,node.parent));
+  for(const moduleId of present(scene,definition.modules)){const part=entity(scene,moduleId);track(part);if(part.components.DoorOpening?.portal)track(entity(scene,part.components.DoorOpening.portal));modules.push(moduleData(scene,moduleId,id));}
+  const value={version:1,buildingId:id,parent:matrices.row(node.worldMatrix),layout:[],modules};
+  // This is an immutable read projection, never another owner of Scene data.
+  const freeze=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;};freeze(value);
+  if(cacheable)values.set(id,{value,dependencies});return value;
+ }
  function assemblyView(scene,building){
   const key=JSON.stringify([scene,building]);if(assemblyViews.has(key))return assemblyViews.get(key);
   const read=()=>{const node=entity(scene,building),definition=node.components.ModularBuilding;return {version:1,buildingId:building,parent:matrices.row(node.worldMatrix),layout:[],modules:present(scene,definition.modules).map(id=>moduleData(scene,id,building))};};
@@ -450,5 +465,5 @@
  root.VeldrenAssets?.onDispose(()=>assemblyRenders.clear());
 
 
- root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,renderAssembly,setAssembly};
+ root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,assemblySnapshot,renderAssembly,setAssembly};
 })(globalThis);

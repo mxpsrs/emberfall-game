@@ -38,6 +38,16 @@ function realmFilamentCameraCenter(x,y,z,yaw,pitch,zoom,dpr){
 function realmFilamentCameraState(){
  return cameraPose3();
 }
+const realmFilamentLightingValues={sun:0,ambient:0,aperture:0,speed:0,color:[0,0,0]};
+function realmFilamentLightingProfile(lighting){
+ const day=1-Math.max(0,Math.min(1,lighting.night||0)),cave=Math.max(0,Math.min(1,lighting.cave||0)),house=Math.max(0,Math.min(1,lighting.house||0)),p=realmFilamentLightingValues;
+ // Night adapts by one stop, rather than cancelling the darker illumination
+ // with the former four-stop exposure jump. Preserve the accepted daylight.
+ p.sun=(1200+day*56300)*Math.max(.12,1-Math.max(cave,house*.65));p.ambient=(1800+day*17200)*(1-cave*.6);
+ p.aperture=10+day*2.8;p.speed=100+day*25;
+ p.color[0]=.70+.30*day;p.color[1]=.75+.20*day;p.color[2]=.91-.07*day;
+ return p;
+}
 const realmFilamentWorldStyle={key:'t0:b0:d0',boss:0,dissolve:0,terrain:0};
 const realmFilamentTerrainStyle={key:'t1:b0:d0',boss:0,dissolve:0,terrain:1};
 const realmFilamentStyleCache=new Map();
@@ -280,10 +290,9 @@ function createRealmFilamentGPU(){
  Filament.LightManager.Builder(Filament.LightManager$Type.SUN).color([1,.94,.83]).intensity(65000).direction([.55,-1,-.38]).castShadows(true).shadowOptions(realmFilamentShadowOptions()).sunAngularRadius(1.4).build(engine,sun);scene.addEntity(sun);
  const pointLights=[],canonicalMatrices=[],canonicalSources=[],canonicalRevisions=[],canonicalFallback=[],lodRowPool=[],lodRows=[];
  function updateLights(lighting){
-  const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
-  const outdoor=1-Math.max(lighting.cave||0,(lighting.house||0)*.65);
-  manager.setIntensity(sunInstance,(5500+day*52000)*Math.max(.12,outdoor));manager.setColor(sunInstance,[.70+.30*day,.75+.20*day,.91-.07*day]);sunInstance.delete();
-  indirectLight.setIntensity((6500+day*12500)*(1-(lighting.cave||0)*.6));camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
+  const manager=lightManager,sunInstance=manager.getInstance(sun),p=realmFilamentLightingProfile(lighting);
+  manager.setIntensity(sunInstance,p.sun);manager.setColor(sunInstance,p.color);sunInstance.delete();
+  indirectLight.setIntensity(p.ambient);camera3d.setExposure(p.aperture,1/p.speed,100);
   const limit=quality.lightLimit,lights=lighting.lights;
   for(let i=0;i<limit;i++){
    let record=pointLights[i];const source=lights[i];
