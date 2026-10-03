@@ -1,6 +1,8 @@
 'use strict';
 (function(){
  const state={version:1,revision:0,updatedAt:null,changes:[],loaded:false,error:null,source:null};
+ let sourceDocument=null;
+ const rememberSource=()=>{sourceDocument=JSON.stringify(state.world??null);return state;};
 
  async function load(){
   // Local editor API is authoritative during development because it also
@@ -14,7 +16,7 @@
     if(edits?.version!==1||!Array.isArray(edits.changes))throw Error('Invalid editor API world layer');
     Object.assign(state,edits,{loaded:true,source:'editor-api',world:payload.world||convertLegacyWorld(edits)});
     state.meta={path:payload.path,runtimePath:payload.runtimePath,sha256:payload.sha256,runtimeSha256:payload.runtimeSha256};
-    return state;
+    return rememberSource();
    }
   }catch(error){console.warn('Veldren editor API unavailable; using static world layer.',error)}
 
@@ -22,14 +24,14 @@
    const sceneResponse=await fetch('/world-scene.json?cache='+Date.now(),{cache:'no-store'});
    if(sceneResponse.ok){
     const world=await sceneResponse.json(),data=window.VeldrenSceneFormat.toLegacy(world,{forRender:true});
-    Object.assign(state,data,{loaded:true,source:'static-scene',world});return state;
+    Object.assign(state,data,{loaded:true,source:'static-scene',world});return rememberSource();
    }
    const response=await fetch('/world-edits.json?cache='+Date.now(),{cache:'no-store'});
    if(response.ok){
     const data=await response.json();
     if(data?.version!==1||!Array.isArray(data.changes))throw Error('Invalid static Veldren world layer');
     Object.assign(state,data,{loaded:true,source:'static',world:convertLegacyWorld(data)});
-    return state;
+    return rememberSource();
    }
    throw Error('Static world layer HTTP '+response.status);
   }catch(error){
@@ -247,7 +249,12 @@
  }
 
  // Await all extension scripts, but never wrap scene construction/activation.
- window.VeldrenWorldEdits={validate,applyDocument,state,refreshSceneRenderables(world,sceneName){
+ window.VeldrenWorldEdits={validate,applyDocument,state,
+  // Legacy runtime bindings are derived consumers, not changes to the loaded
+  // authored layer. Terrain pages match the immutable source, while native
+  // editing still invalidates the live terrain manager through Scene events.
+  get sourceKey(){return sourceDocument===null?null:window.VeldrenSceneOwnership?.stableHash(sourceDocument);},
+  refreshSceneRenderables(world,sceneName){
   synchronizeSceneRenderables(world||state.world,sceneName??null);
   if(sceneName!=null&&typeof currentScene!=='undefined'&&currentScene===String(sceneName))syncCurrentScene();
   return true;

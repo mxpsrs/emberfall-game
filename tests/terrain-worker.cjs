@@ -19,10 +19,15 @@ const sea=simple(0,0);sea.flags.fill(2);const ocean=M.mesh(sea,4);for(let i=0;i<
  const c={console,Worker:BrowserWorker,performance,URL,Uint8Array,Float32Array,setTimeout,clearTimeout,location:{href:'https://terrain.test/editor/viewport.html'},document:{baseURI:'https://terrain.test/'},addEventListener(){},realmAssetURL:p=>p,VeldrenWorldEdits:{state:{world:source}},VeldrenPrebuiltWorld:{fingerprint},px:200,py:80,currentScene:'overworld',inWorld:()=>c.currentScene==='overworld',requestIdleCallback:cb=>setTimeout(()=>cb({timeRemaining:()=>2}),0),fetch:async url=>{const file=path.join(root,new URL(url,'https://terrain.test/').pathname);return {ok:true,json:async()=>JSON.parse(await fs.promises.readFile(file,'utf8'))};},landNode(){throw Error('Baked terrain must not sample on the main thread');}};c.window=c;vm.createContext(c);vm.runInContext(fs.readFileSync('dist/terrain-streaming.js','utf8'),c);
  const uploads=[],retired=[],gpu={terrain:new Map(),gl:{deleteBuffer:b=>retired.push(b)},upload(data){uploads.push(data);return {buffer:{data},count:data.length/12};}};
  c.realmTerrainUpload=(gpu,chunk,data)=>{const old=chunk.buffer,entry=gpu.upload(data);chunk.buffer=entry.buffer;chunk.count=entry.count;if(old)gpu.gl.deleteBuffer(old);};
- const manager=c.VeldrenTerrainStreaming.create(gpu,true),chunk=(x,z,step)=>({x:x+8,z:z+8,key:'16:stream:'+x+':'+z,targetStep:step,complete:false}),pause=()=>new Promise(r=>setTimeout(r,4));
+ c.VeldrenWorldEdits.sourceKey=fingerprint(source);
+ c.VeldrenWorldEdits.state.world=JSON.parse(JSON.stringify(source));c.VeldrenWorldEdits.state.world.scenes[0].entities[0].components.RuntimeBinding={kind:'object',key:'legacy-derived'};
+ c.VeldrenWorldObjects={enabled:false};c.VeldrenTerrainStreaming.invalidateBase();c.VeldrenTerrainStreaming.invalidate();c.VeldrenWorldObjects.enabled=true;
+ let manager=c.VeldrenTerrainStreaming.create(gpu,true);
+ const chunk=(x,z,step)=>({x:x+8,z:z+8,key:'16:stream:'+x+':'+z,targetStep:step,complete:false}),pause=()=>new Promise(r=>setTimeout(r,4));
  const settle=async visible=>{for(let i=0;i<1500;i++){manager.frame(visible,1);if(visible.every(x=>x.complete)&&manager.stats.working===0&&manager.stats.pending===0)return;await pause();}throw Error('Terrain did not settle: '+JSON.stringify(manager.stats));};
  try{
   const near=chunk(192,64,.5),start=performance.now();await settle([near]);const firstMeshMs=performance.now()-start;assert(near.buffer);assert(uploads.length>=2,'coarse first, then fine');assert(requests.length===1,'two LODs share one fetched world page');const stable=near.buffer;await settle([near]);assert.equal(near.buffer,stable);
+  assert.equal(manager.stats.baseValid,true,'initial hydration and temporary legacy bindings retain cooked terrain');assert.equal(manager.stats.snapshotMs,0,'unchanged startup does not take main-thread snapshots');
   near.targetStep=4;await settle([near]);assert.notEqual(near.buffer,stable);assert(retired.includes(stable));assert.equal(requests.length,1,'LOD changes reuse the page');
   const abandoned=chunk(400,400,.5);manager.frame([abandoned],1);manager.frame([],1);for(let i=0;i<30;i++){manager.frame([],1);await pause();}assert(!abandoned.buffer,'a stale result cannot upload after travel');
   for(let lap=0;lap<40;lap++){const cell=chunk((lap%36)*32,Math.floor(lap/36)*32+160,4);c.px=cell.x;c.py=cell.z;await settle([cell]);assert(manager.stats.pages<=12);assert(manager.stats.pageBytes<2*1024*1024);manager.frame([],1);}
@@ -34,6 +39,13 @@ const sea=simple(0,0);sea.flags.fill(2);const ocean=M.mesh(sea,4);for(let i=0;i<
   for(let i=0;i<edited.buffer.data.length;i+=12){const d=edited.buffer.data;assert(Math.abs(d[i+1]-(d[i]*.03+d[i+2]*.01+2))<.00001);}
   const beforeEdit=edited.buffer;c.landNode=(x,z)=>x*.03+z*.01+3;manager.invalidateBase();manager.frame([edited],1);assert.equal(edited.buffer,beforeEdit,'edits keep the old surface until replacement');await settle([edited]);assert.notEqual(edited.buffer,beforeEdit);
   c.currentScene='mine';manager.frame([],2);assert.equal(manager.stats.pending,0);c.currentScene='overworld';await settle([edited]);
+  manager.destroy();c.VeldrenTerrainStreaming.invalidate({minX:192,minZ:64,maxX:208,maxZ:80});
+  manager=c.VeldrenTerrainStreaming.create(gpu,true);c.landNode=(x,z)=>x*.03+z*.01+4;const restored=chunk(192,64,.5);await settle([restored]);
+  assert.equal(manager.stats.baseValid,true,'local edits retain unaffected baked pages after manager recreation');
+  for(let i=0;i<restored.buffer.data.length;i+=12){const d=restored.buffer.data;assert(Math.abs(d[i+1]-(d[i]*.03+d[i+2]*.01+4))<.00001,'recreated manager retains touched terrain');}
+  c.VeldrenTerrainStreaming.invalidateBase();manager.destroy();manager=c.VeldrenTerrainStreaming.create(gpu,true);c.landNode=(x,z)=>x*.03+z*.01+5;const moved=chunk(192,64,.5);await settle([moved]);
+  assert.equal(manager.stats.baseValid,false,'a real Scene edit remains invalid after manager recreation');
+  for(let i=0;i<moved.buffer.data.length;i+=12){const d=moved.buffer.data;assert(Math.abs(d[i+1]-(d[i]*.03+d[i+2]*.01+5))<.00001);}
   const manifest=JSON.parse(fs.readFileSync('dist/terrain-cells/manifest.json'));assert.equal(Object.keys(manifest.pages).length,1408);
   console.log(JSON.stringify({pass:true,firstMeshMs,terrainPages:Object.keys(manifest.pages).length,workerCacheLimit:12,workerCacheBytes:manager.stats.pageBytes,checks:['32 combinations of horizontal/vertical LOD seams','fine roads/paint','stair holes','water plane','real background worker and transferable meshes','coarse then fine','no main-thread baked sampling','nearby page IO only','LOD page reuse','stale travel results','40 travel cells and bounded memory','offscreen dirty-region snapshots','native edit snapshot fallback','atomic dirty replacement','scene switch','editor base URL']}));
  }finally{manager.destroy();await Promise.all(workers.map(w=>w.terminate()));}

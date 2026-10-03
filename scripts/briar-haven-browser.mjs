@@ -46,7 +46,14 @@ try{
   await page.waitForFunction(()=>realmGPU?.presented&&__qaFrames.length>=12,{},{timeout:120000});
   await page.screenshot({path:join(output,name+'-loading.png'),timeout:120000});
   console.log('STREAM',name,JSON.stringify(await page.evaluate(()=>({renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.(),terrain:realmGPU.terrainWork,native:VeldrenWorldPerformance.diagnostics(),preparation:VeldrenAssets.ioDiagnostics()}))));
-  if(process.env.VELDREN_QA_QUICK==='1'){writeFileSync(join(output,'diagnostic.json'),JSON.stringify(await page.evaluate(()=>({camera:realmFilamentCameraState(),renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.()})),null,2));break;}
+  if(process.env.VELDREN_QA_QUICK==='1'){
+   const diagnostic=await page.evaluate(async()=>{
+    const expected=await(await fetch(realmAssetURL('world-scene.json'))).json(),actual=VeldrenWorldEdits.state.world,differences=[];
+    const compare=(a,b,path)=>{if(differences.length>=12)return;if(a&&b&&typeof a==='object'&&typeof b==='object'){for(const k of new Set([...Object.keys(a),...Object.keys(b)]))compare(a[k],b[k],path+'.'+k);}else if(a!==b)differences.push({path,expected:a,actual:b});};compare(expected,actual,'world');
+    return {camera:realmFilamentCameraState(),renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.(),terrain:realmGPU.terrainWork,source:{expected:VeldrenPrebuiltWorld.fingerprint(expected),actual:VeldrenPrebuiltWorld.fingerprint(actual),differences}};
+   });
+   writeFileSync(join(output,'diagnostic.json'),JSON.stringify(diagnostic,null,2));console.log('SOURCE',JSON.stringify(diagnostic.source));break;
+  }
   await page.waitForFunction(()=>{
    if(!realmGPU?.presented||__qaFrames.length<60)return false;
    const d=realmGPU.assetDraws?.diagnostics();

@@ -1,0 +1,97 @@
+{
+  "observed": "Legacy layout startup adds derived RuntimeBinding/runtimeType fields to the loaded document; baked terrain mismatch followed despite unchanged authored layer.",
+  "source": {
+    "expected": "fb6e62231e01a07b",
+    "actual": "1ef34e785176ce34",
+    "differences": [
+      {
+        "path": "world.scenes.0.entities.0.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "258"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.0.metadata.runtimeType",
+        "actual": "enemy"
+      },
+      {
+        "path": "world.scenes.0.entities.1.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "252"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.1.metadata.runtimeType",
+        "actual": "ore"
+      },
+      {
+        "path": "world.scenes.0.entities.2.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "editor-1790328429705-1.790327441290179e+30"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.2.metadata.runtimeType",
+        "actual": "ore"
+      },
+      {
+        "path": "world.scenes.0.entities.3.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "251"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.3.metadata.runtimeType",
+        "actual": "ore"
+      },
+      {
+        "path": "world.scenes.0.entities.4.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "editor-1790328462021-1.790327441290179e+30"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.4.metadata.runtimeType",
+        "actual": "ore"
+      },
+      {
+        "path": "world.scenes.0.entities.6.components.RuntimeBinding",
+        "actual": {
+          "kind": "object",
+          "key": "254"
+        }
+      },
+      {
+        "path": "world.scenes.0.entities.6.metadata.runtimeType",
+        "actual": "ore"
+      }
+    ]
+  },
+  "terrain": {
+    "mode": "worker",
+    "queued": 249,
+    "working": 1,
+    "uploads": 0,
+    "stale": 0,
+    "failures": 0,
+    "pages": 0,
+    "pageBytes": 0,
+    "workerMs": 0,
+    "snapshotMs": 0.40000000037252903,
+    "baseValid": false,
+    "bakedSourceMatched": false,
+    "invalidations": 0,
+    "ms": 0.09999999962747097,
+    "budgetMs": 4,
+    "pending": 250,
+    "slices": 0,
+    "fallbackSlices": 0
+  },
+  "workerSha256": "7bc224fd12d3015b0a3c82175b48e00bb33696a56e0feed17022302a069f905f",
+  "acceptance": false
+}
