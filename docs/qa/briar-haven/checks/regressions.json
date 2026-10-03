@@ -1,0 +1,56 @@
+[
+  {
+    "test": "camera-pose.cjs",
+    "exitCode": 0,
+    "seconds": 0.07,
+    "output": "PASS: shared camera projection/picking over 36 poses, smooth manual orbit, wall/terrain obstruction, recovery, and independent editor camera.\n"
+  },
+  {
+    "test": "camera-height-cache.cjs",
+    "exitCode": 0,
+    "seconds": 0.84,
+    "output": "Camera-ground projection reuse and edit invalidation verified\n"
+  },
+  {
+    "test": "render-construction-fairness.cjs",
+    "exitCode": 0,
+    "seconds": 0.05,
+    "output": "PASS: canonical construction cannot starve behind recurring terrain/prop work; desktop and mobile budgets remain bounded.\n"
+  },
+  {
+    "test": "door-access.cjs",
+    "exitCode": 0,
+    "seconds": 41.95,
+    "output": "PASS: 234 building doors open, enter, exit and close; all three castle gate models and click targets are present; entry never moves the camera.\n"
+  },
+  {
+    "test": "terrain-frame-budget.cjs",
+    "exitCode": 0,
+    "seconds": 0.83,
+    "output": "PASS: fallback deadline, shared coarse/fine budget, eventual completion, unchanged buffer reuse and atomic terrain replacement.\n"
+  },
+  {
+    "test": "editor-terrain-integration.cjs",
+    "exitCode": 0,
+    "seconds": 0.14,
+    "output": "PASS: actual-WASM terrain and entity shared undo/redo, saved boundary, no-op, transaction rollback, validation, blocked preview rollback and persistence\n"
+  },
+  {
+    "test": "editor-native-startup.cjs",
+    "exitCode": 0,
+    "seconds": 19.4,
+    "output": "PASS: complete native editor world starts with controls ready, overworld camera and 259 canonical scenes (DOM fixture, no GPU).\n"
+  },
+  {
+    "test": "world-scene-runtime-binding.cjs",
+    "exitCode": 0,
+    "seconds": 0.08,
+    "output": "PASS: 285 generated world objects/buildings bind to canonical runtime scene entities across 10 scenes; IDs are stable, rebinding is idempotent, and generated entities remain transient.\n"
+  },
+  {
+    "test": "multiplayer.mjs",
+    "exitCode": 0,
+    "seconds": 1.66,
+    "output": "PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.\nPASS: complete ordered movement trails survive the server; invalid, distant, fractional and discontinuous trails are excluded.\n"
+  }
+]

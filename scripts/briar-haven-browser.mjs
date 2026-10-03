@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import {createServer} from 'node:http';
 import {Readable} from 'node:stream';
 import {createHash,randomBytes} from 'node:crypto';
+import {gzipSync} from 'node:zlib';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
@@ -20,7 +21,7 @@ const storage=openLocalStorage({root,dataDirectory:mkdtempSync(join(tmpdir(),'ve
 const owner='2db1d2ba-75e2-4c27-bcdf-94e742f95c86',token=randomBytes(32).toString('hex'),errors=[],requests=[];
 db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').run(owner,'BriarVisualQA','briarvisualqa',bcrypt.hashSync(randomBytes(32).toString('hex'),4),Date.now());
 db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').update(token).digest('hex'),owner,Date.now()+86400000);
-db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:42,y:51,sceneId:'overworld',worldScale:3,briarhavenLayoutVersion:2,buildingLayoutVersion:1,kitchenLayoutVersion:1,tutorialReward:true,tutorial:100,hp:10,gold:0,xp:{},bag:{},character:{name:'BriarVisualQA',look:0,race:'human',frame:'male',hair:0},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
+db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:42,y:51,sceneId:'overworld',worldScale:3,briarhavenLayoutVersion:2,buildingLayoutVersion:1,kitchenLayoutVersion:1,tutorialReward:true,tutorial:100,hp:10,gold:0,xp:{},bag:{},character:{name:'BriarVisualQA',look:0,race:'human',frame:'male',hair:1},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
 const server=createServer(async(req,res)=>{try{const chunks=[];for await(const c of req)chunks.push(c);const body=Buffer.concat(chunks);requests.push(req.url);const response=await worker.fetch(new Request('http://'+req.headers.host+req.url,{method:req.method,headers:req.headers,...(body.length?{body}:{})}),env);res.statusCode=response.status;response.headers.forEach((v,k)=>res.setHeader(k,v));if(response.body)Readable.fromWeb(response.body).pipe(res);else res.end();}catch(e){errors.push(String(e));res.statusCode=500;res.end(String(e));}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
 const output=resolve('docs/qa/briar-haven',label);mkdirSync(output,{recursive:true});let browser,qaPage;
@@ -34,7 +35,11 @@ try{
  assert.equal(await page.evaluate(()=>!!realmStartup?.failed),false,'production startup succeeds');
  const editorBindingErrors=await page.evaluate(()=>globalThis.VELDREN_WORLD_EDITS_STATUS?.errors||[]);
  const startupMs=performance.now()-started;await page.evaluate(()=>{if($('creator').open)$('creator').close();if($('modal').open)$('modal').close();worldHour=()=>11;renderUI();window.__qaFrames=[];window.__qaPreviousFrame=0;const original=draw;draw=function(...args){const start=performance.now(),interval=__qaPreviousFrame?start-__qaPreviousFrame:0,result=original.apply(this,args);__qaPreviousFrame=start;if(realmGPU?.presented)__qaFrames.push({cpuMs:performance.now()-start,frameIntervalMs:interval,heap:performance.memory?.usedJSHeapSize||0,renderer:realmGPU.diagnostics()});if(__qaFrames.length>180)__qaFrames.shift();return result}});
- const routes=[['main-street',42,51,-2.05,.27],['services-smithy',75,49,-2.80,.32],['houses',62,31,-2.8,.32],['magic-school',75,71,0,.30],['interior',41,46,-2.05,.36],['town-edge',64,115,-2.05,.29]];
+ const matchedRoutes=[['main-street',42,51,-2.05,.27],['services-smithy',75,49,-2.80,.32],['houses',62,31,-2.8,.32],['magic-school',75,71,0,.30],['interior',41,46,-2.05,.36],['town-edge',64,115,-2.05,.29]];
+ // Preserve the matching baseline route. The school's north-facing facade
+ // also needs a south-looking inspection from its actual entrance approach.
+ assert(!process.env.VELDREN_QA_VIEW||process.env.VELDREN_QA_VIEW==='school-facade');
+ const routes=process.env.VELDREN_QA_VIEW==='school-facade'?[['school-facade',75,73,Math.PI,.28]]:matchedRoutes;
  const results=[];
  for(const [name,x,z,yaw,tilt]of routes){
   console.log('CAPTURE',name);const settleStarted=performance.now();await page.evaluate(({x,z,yaw,tilt})=>{stop();activateScene('overworld',x,z,false);view3d.yaw=yaw;view3d.tilt=tilt;view3d.zoom=102;for(const b of buildings)if(b.service&&withinWalkIn(b,x,z))setWalkInDoor(b.service,true,true);updateDoorThreshold();__qaFrames.length=0;__qaPreviousFrame=0;}, {x,z,yaw,tilt});
@@ -51,9 +56,9 @@ try{
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
   await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});
   await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
-  await page.screenshot({path:join(output,name+'.png'),timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));console.log('READY',name,Math.round(settleMs),'ms');
+  await page.screenshot({path:join(output,name+'.png'),timeout:120000});await page.screenshot({path:join(output,name+'.jpg'),type:'jpeg',quality:90,timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));console.log('READY',name,Math.round(settleMs),'ms');
  }
- assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
+ assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));writeFileSync(join(output,'result.json.gz'),gzipSync(JSON.stringify(result),{level:9}));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
  const state=await qaPage?.evaluate(()=>({startup:globalThis.realmStartup,frames:globalThis.__qaFrames?.length||0,renderer:typeof realmGPU==='undefined'?null:realmGPU?.diagnostics?.(),recentFrames:globalThis.__qaFrames?.slice(-3),edits:globalThis.VELDREN_WORLD_EDITS_STATUS})).catch(()=>null);
  writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),state,errors},null,2));

@@ -15,11 +15,21 @@ await import('./briar-haven-preview.mjs');
 const {chromium}=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
 const origin='http://127.0.0.1:'+process.env.VELDREN_PREVIEW_PORT;
 const output=resolve('docs/qa/briar-haven/gameplay');mkdirSync(output,{recursive:true});
-const errors=[];let browser,page;
+const errors=[],networkFailures=[];let browser,page,currentBuilding=null;
+const settleView=()=>page.waitForFunction(()=>{
+ const d=realmGPU?.diagnostics();return d&&d.frame&&!cloudDisconnected&&!cloudConflict&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0;
+},{},{timeout:360000});
+async function serverDoor(id,open){
+ await page.evaluate(({id,open})=>{const b=buildings.find(b=>b._sceneEntityId===id);setWalkInDoor(b.service,open);},{id,open});
+ await page.waitForFunction(({id,open})=>{const o=buildings.find(b=>b._sceneEntityId===id).service;return !cloudDisconnected&&!cloudConflict&&!sharedPending('door',o.id)&&(o.openedAt!==undefined)===open;},{id,open},{timeout:120000});
+}
 try{
  browser=await chromium.launch({headless:true,executablePath:process.env.VELDREN_CHROMIUM||'/tmp/chromium',args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1});
+ await context.addInitScript(()=>{window.VELDREN_PERFORMANCE=true;});
  page=await context.newPage();page.on('pageerror',e=>errors.push(String(e)));
+ page.on('requestfailed',request=>{const url=new URL(request.url());if(url.pathname.startsWith('/api/'))networkFailures.push({path:url.pathname,method:request.method(),error:request.failure()?.errorText});});
+ page.on('response',response=>{const url=new URL(response.url());if(url.pathname.startsWith('/api/')&&response.status()>=400)networkFailures.push({path:url.pathname,status:response.status()});});
  await page.goto(origin+'/preview',{waitUntil:'domcontentloaded',timeout:120000});
  await page.waitForFunction(()=>realmStartup?.failed||typeof assetsReady!=='undefined'&&assetsReady,{},{timeout:600000});
  assert.equal(await page.evaluate(()=>!!realmStartup.failed),false);
@@ -50,9 +60,10 @@ try{
  const inn=await page.evaluate(()=>{
   const b=buildings.find(b=>b.settlement==='briarhaven'&&b.archetype==='inn');if(!b)throw Error('Briar inn absent');
   const outside=doorApproach(b.service,false),inside=doorApproach(b.service,true);
-  setWalkInDoor(b.service,false,true);activateScene('overworld',...outside,false);view3d.yaw=0;view3d.tilt=.30;view3d.zoom=102;renderUI();
+  activateScene('overworld',...outside,false);view3d.yaw=0;view3d.tilt=.30;view3d.zoom=102;renderUI();
   window.__gameplayInn=b.service.destination;return {name:b.name,id:b._sceneEntityId,outside,inside,frame:meshFrame3};
  });
+ await settleView();await serverDoor(inn.id,false);
  await page.waitForFunction(frame=>meshFrame3>frame+2,inn.frame,{timeout:30000});
  const door=await page.evaluate(()=>{
   const h=hitboxes.find(h=>h.door&&h.o.destination===__gameplayInn);if(!h)return null;
@@ -61,17 +72,48 @@ try{
  });
  assert(door&&door.picked===await page.evaluate(()=>__gameplayInn),'the rendered door is picked before its wall');
  await page.mouse.click(box.x+door.pixel[0]*box.width/door.size[0],box.y+door.pixel[1]*box.height/door.size[1]);
- await page.waitForFunction(()=>buildings.find(b=>b.service?.destination===__gameplayInn).service.openedAt!==undefined,{},{timeout:30000});
+ await page.waitForFunction(()=>{const o=buildings.find(b=>b.service?.destination===__gameplayInn).service;return o.openedAt!==undefined&&!sharedPending('door',o.id);},{},{timeout:120000});
  await page.evaluate(()=>openBuilding3(buildings.find(b=>b.service?.destination===__gameplayInn)));
  await page.waitForFunction(()=>s.insideBuilding===__gameplayInn&&!path.length,{},{timeout:60000});
- assert.equal(await page.evaluate(()=>{const b=buildings.find(b=>b.service?.destination===__gameplayInn);setWalkInDoor(b.service,false,true);return buildingRoofHidden(b);}),true,'closing the door keeps the occupied cutaway');
- await page.evaluate(()=>{const b=buildings.find(b=>b.service?.destination===__gameplayInn);setWalkInDoor(b.service,true,true);walkTo(...doorApproach(b.service,false));});
+ await serverDoor(inn.id,false);
+ assert.equal(await page.evaluate(()=>buildingRoofHidden(buildings.find(b=>b.service?.destination===__gameplayInn))),true,'closing the door keeps the occupied cutaway');
+ await serverDoor(inn.id,true);
+ await page.evaluate(()=>{const b=buildings.find(b=>b.service?.destination===__gameplayInn);if(!walkTo(...doorApproach(b.service,false)))throw Error('Inn exit route is blocked');});
  await page.waitForFunction(()=>!s.insideBuilding&&!path.length,{},{timeout:60000});
  assert.equal(await page.evaluate(()=>buildingRoofHidden(buildings.find(b=>b.service?.destination===__gameplayInn))),false,'walking outside restores the full roof');
+ const buildingIds=await page.evaluate(()=>buildings.filter(b=>b.briarDesign).map(b=>b._sceneEntityId));
+ assert.equal(buildingIds.length,12,'all twelve rebuilt buildings are present in the actual runtime');
+ const traversal=[];
+ for(const id of buildingIds){
+ let building=await page.evaluate(id=>{
+   const b=buildings.find(b=>b._sceneEntityId===id),outside=doorApproach(b.service,false),inside=doorApproach(b.service,true),threshold=doorThreshold(b.service);
+   stop();activateScene('overworld',...outside,false);updateDoorThreshold();
+   view3d.yaw=({south:0,north:Math.PI,east:Math.PI/2,west:-Math.PI/2})[b.doorFacing||'south'];view3d.tilt=.30;
+   return {id,name:b.name,destination:b.service.destination,outside,inside,threshold};
+  },id);
+  currentBuilding=building;console.log('ENTER building traversal',building.name,JSON.stringify({outside:building.outside,inside:building.inside}));
+  // SwiftShader can block the browser while a new view builds. Settle that work
+  // before measuring physical door travel; this is not a hardware FPS test.
+  await settleView();await serverDoor(id,false);
+  building.closed=await page.evaluate(b=>inBuilding(buildings.find(o=>o._sceneEntityId===b.id),...b.threshold),building);
+  await serverDoor(id,true);
+  Object.assign(building,await page.evaluate(b=>({clear:!inBuilding(buildings.find(o=>o._sceneEntityId===b.id),...b.threshold),planned:route(...b.inside)}),building));
+  assert(building.closed&&building.clear,building.name+' server-confirmed door collision matches its open state');
+  assert(building.planned,building.name+' has an entrance route');
+  await page.evaluate(b=>{if(!walkTo(...b.inside))throw Error(b.name+' entrance route is blocked');},building);
+  await page.waitForFunction(b=>s.insideBuilding===b.destination&&!path.length&&Math.hypot(px-b.inside[0],py-b.inside[1])<.05,building,{timeout:180000});
+  assert.equal(await page.evaluate(id=>buildingRoofHidden(buildings.find(b=>b._sceneEntityId===id)),id),true,building.name+' retains its occupied cutaway');
+  await page.evaluate(b=>{if(!walkTo(...b.outside))throw Error(b.name+' exit route is blocked');},building);
+  await page.waitForFunction(b=>!s.insideBuilding&&!path.length&&Math.hypot(px-b.outside[0],py-b.outside[1])<.05,building,{timeout:180000});
+  assert.equal(await page.evaluate(id=>buildingRoofHidden(buildings.find(b=>b._sceneEntityId===id)),id),false,building.name+' restores its roof after exit');
+  traversal.push({...building,entered:true,exited:true});console.log('PASS building traversal',building.name);
+ }
+ await page.evaluate(outside=>{stop();activateScene('overworld',...outside,false);view3d.yaw=0;view3d.tilt=.30;renderUI();},inn.outside);
  assert.equal(await page.evaluate(()=>cloudDisconnected||cloudConflict),false);
  assert.deepEqual(errors,[]);
  await page.screenshot({path:join(output,'returned-outside.png'),timeout:120000});
- writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,workerSha256,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,errors},null,2)+'\n');
+ await page.screenshot({path:join(output,'returned-outside.jpg'),type:'jpeg',quality:90,timeout:120000});
+ writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,workerSha256,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,traversal,networkFailures,errors},null,2)+'\n');
  console.log('PASS rendered door picking, physical entry/exit, occupied cutaway, restored roof and local account connection');
-}catch(error){await page?.screenshot({path:join(output,'failure.png'),timeout:30000}).catch(()=>{});writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),errors},null,2));console.error(error);process.exitCode=1;}
+}catch(error){const state=await page?.evaluate(()=>({position:[px,py],tile:[s.x,s.y],insideBuilding:s.insideBuilding,path,cloud:{disconnected:cloudDisconnected,conflict:cloudConflict,recovering:cloudRecovering,saveBusy:cloudBusy,syncBusy:onlineSyncBusy}})).catch(()=>null);await page?.screenshot({path:join(output,'failure.png'),timeout:30000}).catch(()=>{});writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),currentBuilding,state,networkFailures,errors},null,2));console.error(error);process.exitCode=1;}
 finally{await browser?.close();await releaseGraphics();process.kill(process.pid,'SIGTERM');}

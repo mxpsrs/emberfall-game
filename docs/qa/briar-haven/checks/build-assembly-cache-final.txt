@@ -1,0 +1,47 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> node scripts/build.mjs
+
+Built 72 shared icons from 64 credited selections.
+Packed 15 authored building modules
+Texture variants: 111 unique outputs for 865 stable image IDs; 0 rebuilt; 10844071 browser image bytes
+Canonical PBR LODs: 19 roofs; 59140 near triangles -> 40309 far triangles
+Cooked scenery LODs: 50 models; 97104 near triangles -> 39476 far triangles
+Exported 3484 native asset records from existing Veldren assets.
+Exported 4674 shared world entities.
+{"cookedScenes":259,"entities":21567,"cookMs":38392.183376,"editorLayer":"d42a9e23227cee9b","editorWarnings":[]}
+Cooked terrain row -128 / 896
+Cooked terrain row -96 / 896
+Cooked terrain row -64 / 896
+Cooked terrain row -32 / 896
+Cooked terrain row 0 / 896
+Cooked terrain row 32 / 896
+Cooked terrain row 64 / 896
+Cooked terrain row 96 / 896
+Cooked terrain row 128 / 896
+Cooked terrain row 160 / 896
+Cooked terrain row 192 / 896
+Cooked terrain row 224 / 896
+Cooked terrain row 256 / 896
+Cooked terrain row 288 / 896
+Cooked terrain row 320 / 896
+Cooked terrain row 352 / 896
+Cooked terrain row 384 / 896
+Cooked terrain row 416 / 896
+Cooked terrain row 448 / 896
+Cooked terrain row 480 / 896
+Cooked terrain row 512 / 896
+Cooked terrain row 544 / 896
+Cooked terrain row 576 / 896
+Cooked terrain row 608 / 896
+Cooked terrain row 640 / 896
+Cooked terrain row 672 / 896
+Cooked terrain row 704 / 896
+Cooked terrain row 736 / 896
+Cooked terrain row 768 / 896
+Cooked terrain row 800 / 896
+Cooked terrain row 832 / 896
+Cooked terrain row 864 / 896
+Cooked 1408 terrain pages.
+Built character-save Worker and 883 game assets; 65458 KiB module.

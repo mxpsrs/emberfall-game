@@ -1,0 +1,22 @@
+make: Entering directory '/workspace/scratch/2222b76c39ba/briar-haven/native'
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/editor.cpp src/editor_prefabs.cpp tests/world_performance_test.cpp -o build/world-performance-test
+./build/world-performance-test ../dist/assets/asset-registry.json
+PASS: incremental cells, static/dynamic separation, transformed parent bounds, large spans, history/delete restore, grounding, runtime identity, reload and journal overflow.
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_visibility_test.cpp -o build/world-visibility-test
+./build/world-visibility-test
+PASS: camera planes, asymmetric projection, large intersecting bounds, rotated view, category distance, projected size and read-only Scene.
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/world_lod.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_lod_test.cpp -o build/world-lod-test
+./build/world-lod-test
+PASS: existing LOD thresholds, explicit target/current levels, 300 threshold oscillations, hysteresis, exact LOD0 return, LOD0-only art, retirement and reimport reset.
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_residency.cpp src/scene.cpp tests/world_residency_test.cpp -o build/world-residency-test
+./build/world-residency-test
+PASS: native resource budgets, LRU, grace, active protection, cancellation, release acknowledgement, CPU/shared accounting and 1000 travel cycles.
+mkdir -p build
+g++ -O3 -std=c++20 -Wall -Wextra -Werror -Iinclude -isystem third_party src/world_streaming.cpp src/world_residency.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp tests/world_streaming_test.cpp -o build/world-streaming-test
+./build/world-streaming-test
+PASS: bounded prioritized loads, shared cell demand, teleport cancellation, late receipt isolation, retirement, editor pins, generation changes, pressure and unchanged canonical owners.
+make: Leaving directory '/workspace/scratch/2222b76c39ba/briar-haven/native'

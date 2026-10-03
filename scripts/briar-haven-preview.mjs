@@ -17,7 +17,7 @@ const account=storage.db.prepare('SELECT id FROM game_accounts WHERE id=?').get(
 if(!account)storage.db.prepare('INSERT INTO game_accounts VALUES (?,?,?,?,?)').run(owner,'BriarReview','briarreview',bcrypt.hashSync(randomBytes(32).toString('hex'),4),Date.now());
 storage.db.prepare('INSERT INTO game_sessions VALUES (?,?,?)').run(createHash('sha256').update(token).digest('hex'),owner,Date.now()+86400000);
 if(!storage.db.prepare('SELECT user_id FROM character_saves WHERE user_id=?').get('account:'+owner)){
- storage.db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:55,y:61,sceneId:'overworld',worldScale:3,briarhavenLayoutVersion:2,buildingLayoutVersion:1,kitchenLayoutVersion:1,tutorialReward:true,tutorial:100,hp:10,gold:0,xp:{},bag:{},character:{name:'BriarReview',look:0,race:'human',frame:'male',hair:0},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
+ storage.db.prepare('INSERT INTO character_saves VALUES (?,?,?,?)').run('account:'+owner,JSON.stringify({x:55,y:61,sceneId:'overworld',worldScale:3,briarhavenLayoutVersion:2,buildingLayoutVersion:1,kitchenLayoutVersion:1,tutorialReward:true,tutorial:100,hp:10,gold:0,xp:{},bag:{},character:{name:'BriarReview',look:0,race:'human',frame:'male',topStyle:5,bottomStyle:4,topColor:4,bottomColor:5,hair:1,hairColor:1,skin:2,beard:0},storyOpeningSeen:true,metRowan:true}),1,new Date().toISOString());
 }
 const server=createServer(async(req,res)=>{
  try{

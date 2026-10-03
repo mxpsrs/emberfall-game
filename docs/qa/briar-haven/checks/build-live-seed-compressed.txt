@@ -1,0 +1,15 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> node scripts/build.mjs
+
+Built 72 shared icons from 64 credited selections.
+Packed 15 authored building modules
+Texture variants: 111 unique outputs for 865 stable image IDs; 0 rebuilt; 10844071 browser image bytes
+Canonical PBR LODs: 19 roofs; 59140 near triangles -> 40309 far triangles
+Cooked scenery LODs: 50 models; 97104 near triangles -> 39476 far triangles
+Exported 3484 native asset records from existing Veldren assets.
+Exported 4674 shared world entities.
+{"cookedScenes":259,"entities":21741,"cookMs":41726.495963,"editorLayer":"fb6e62231e01a07b","editorWarnings":[]}
+Reused cooked terrain cells 0ff50ebd90eb
+Built character-save Worker and 883 game assets; 65521 KiB module.

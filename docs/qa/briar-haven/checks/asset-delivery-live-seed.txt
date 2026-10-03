@@ -1,0 +1,2 @@
+PASS: bundled authored Scene seed retains every saved field with lossless compression.
+PASS: lossless asset embedding, malformed payload rejection, deterministic Brotli cache and corruption recovery.
