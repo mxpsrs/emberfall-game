@@ -1,18 +1,56 @@
 'use strict';
 // Perspective world camera: the player sits low in frame so roads, hills and
 // landmarks read as a place ahead instead of a flat board viewed from above.
-const cameraDefault3={yaw:-2.05,tilt:.27,zoom:118},cameraAnchor3=.82,cameraFov3=54;
+const cameraEditor3=typeof window!=='undefined'&&window.VELDREN_CONTEXT==='editor';
+const cameraDefault3={yaw:-2.05,tilt:.25,zoom:102},cameraAnchor3=cameraEditor3?.82:.64,cameraFov3=54;
 const view3d={...cameraDefault3,min:58,max:132};
 try{const v=JSON.parse(localStorage.getItem('veldren-camera-v6'));if(v){view3d.yaw=Number(v.yaw)||cameraDefault3.yaw;view3d.tilt=Math.max(.22,Math.min(.70,Number(v.tilt)||cameraDefault3.tilt));view3d.zoom=Math.max(view3d.min,Math.min(view3d.max,Number(v.zoom)||cameraDefault3.zoom));}}catch{}
 function syncCameraZoom(){const percent=Math.round((view3d.max-view3d.zoom)/(view3d.max-view3d.min)*100),slider=$('cameraZoom'),label=$('cameraZoomValue');if(slider){slider.value=String(percent);slider.setAttribute('aria-valuetext',percent+' percent zoomed out');}if(label)label.textContent=percent+'%';}
 function rememberView(){syncCameraZoom();try{localStorage.setItem('veldren-camera-v6',JSON.stringify(view3d));}catch{}}
 // Camera angle changes only through the player's camera controls.
-function cameraPitch3(){return view3d.tilt;}
+function cameraPitch3(){return cameraPose3().pitch;}
 function cameraZoom3(v=view3d){return v.zoom*(v===view3d?Math.max(1,screen.h/640):1);}
 function cameraFocalLength3(h=screen.h){return (h||500)/(2*Math.tan(cameraFov3*Math.PI/360));}
-function cameraDistance3(v=view3d,h=screen.h){return cameraFocalLength3(h)/cameraZoom3(v);}
-function project3(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){const dx=x-cx,dz=z-cz,c=Math.cos(v.yaw),s=Math.sin(v.yaw),u=dx*c-dz*s,d=dx*s+dz*c,pitch=v===view3d?cameraPitch3():v.tilt,anchor=v===view3d?cameraAnchor3:.54;if(v!==view3d)return {x:w/2+u*cameraZoom3(v),y:h*anchor+(d*Math.sin(pitch)-y*Math.cos(pitch))*cameraZoom3(v),depth:d*Math.cos(pitch)+y*Math.sin(pitch)};w=w||900;h=h||500;const depth=d*Math.cos(pitch)+y*Math.sin(pitch),focal=cameraFocalLength3(h),distance=cameraDistance3(v,h),scale=focal/Math.max(.35,distance-depth);return {x:w/2+u*scale,y:h*anchor+(d*Math.sin(pitch)-y*Math.cos(pitch))*scale,depth};}
-function unproject3(sx,sy){const p=cameraPitch3(),c=Math.cos(view3d.yaw),s=Math.sin(view3d.yaw),sw=screen.w||900,sh=screen.h||500,f=cameraFocalLength3(sh),distance=cameraDistance3(view3d,sh),qx=(sx-sw/2)/f,qy=(sy-sh*cameraAnchor3)/f,dy=-Math.sin(p)-qy*Math.cos(p),t=Math.abs(dy)>.0001?Math.sin(p)*distance/-dy:distance;return {x:px+.5+Math.sin(view3d.yaw)*Math.cos(p)*distance+t*(-Math.sin(view3d.yaw)*Math.cos(p)+qx*c+qy*s*Math.sin(p)),z:py+.5+Math.cos(view3d.yaw)*Math.cos(p)*distance+t*(-Math.cos(view3d.yaw)*Math.cos(p)-qx*s+qy*c*Math.sin(p))};}
+function cameraDistance3(v=view3d,h=screen.h){return v===view3d?cameraPose3(h).distance:cameraFocalLength3(h)/cameraZoom3(v);}
+// One pose feeds Filament, screen projection, picking and native visibility.
+// Player follow is transient presentation; the detached editor keeps its own anchor.
+const cameraFollow3={key:'',pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,distance:0};
+function cameraObstructionDistance3(center,yaw,pitch,distance){
+ if(cameraEditor3||typeof walkSurfaceHeight!=='function')return distance;
+ const sn=Math.sin(yaw),c=Math.cos(yaw),st=Math.sin(pitch),ct=Math.cos(pitch);
+ const nearby=typeof buildings==='undefined'?[]:buildings.filter(b=>b.x<center[0]+distance+2&&b.x+b.w>center[0]-distance-2&&b.y<center[2]+distance+2&&b.y+b.h>center[2]-distance-2);
+ for(let t=.35;t<=distance+.001;t+=.18){
+  const x=center[0]+sn*ct*t,y=center[1]+st*t,z=center[2]+c*ct*t,bridge=typeof bridgeAt==='function'&&bridgeAt(x,z),ground=bridge?bridgeDeckHeight(bridge,x,z):typeof landHeight==='function'?landHeight(x,z):walkSurfaceHeight(x,z);
+  if(y<ground+.32)return Math.max(.35,t-.30);
+  for(const b of nearby){
+   const cut=typeof buildingRoofHidden==='function'&&buildingRoofHidden(b),height=cut?3.02:Math.max(3.02,(b.visualHeight||0),typeof rebuiltHouseFloorCount==='function'?rebuiltHouseFloorCount(b)*3.02+2:5);
+   if(y>ground+height+.20)continue;
+   const wall=typeof inBuilding==='function'&&inBuilding(b,Math.floor(x),Math.floor(z));
+   const roof=!cut&&x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h&&y>ground+3.02;
+   if(wall||roof)return Math.max(.35,t-.30);
+  }
+ }
+ return distance;
+}
+function cameraPose3(h=screen.h){
+ const x=px+.5,z=py+.5,ground=typeof projectionCameraHeight3==='function'?projectionCameraHeight3(x,z):typeof walkSurfaceHeight==='function'?walkSurfaceHeight(x,z):0,target=cameraEditor3?0:1.12;
+ const key=[meshFrame3,currentScene,x,z,ground,view3d.yaw,view3d.tilt,view3d.zoom,h,screen.w,typeof worldObjectRevision==='number'?worldObjectRevision:0,typeof window==='undefined'?0:window.VeldrenTerrainEdits?.revision||0].join(':');
+ if(cameraFollow3.key===key)return cameraFollow3.pose;
+ const now=typeof performance==='undefined'?0:performance.now(),dt=Math.max(0,Math.min(.1,(now-cameraFollow3.stamp)/1000)),jump=!cameraFollow3.pose||cameraFollow3.scene!==currentScene||Math.hypot(x-cameraFollow3.x,z-cameraFollow3.z)>8;
+ const response=cameraEditor3||jump||now===0?1:1-Math.exp(-dt*18),angle=Math.atan2(Math.sin(view3d.yaw-cameraFollow3.yaw),Math.cos(view3d.yaw-cameraFollow3.yaw));
+ const yaw=cameraFollow3.yaw+angle*response,pitch=cameraFollow3.pitch+(view3d.tilt-cameraFollow3.pitch)*response,center=[x,ground+target,z],wanted=cameraFocalLength3(h)/cameraZoom3(),safe=cameraObstructionDistance3(center,yaw,pitch,wanted);
+ const distance=jump||cameraEditor3||now===0||safe<cameraFollow3.distance?safe:cameraFollow3.distance+(safe-cameraFollow3.distance)*(1-Math.exp(-dt*8));
+ const eye=[x+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,z+Math.cos(yaw)*Math.cos(pitch)*distance],near=.12,half=near*Math.tan(cameraFov3*Math.PI/360),aspect=(screen.w||900)/(h||500);
+ const pose={eye,center,yaw,pitch,distance,ground,target,anchor:cameraAnchor3,fov:cameraFov3,near,far:320,left:-half*aspect,right:half*aspect,bottom:-2*(1-cameraAnchor3)*half,top:2*cameraAnchor3*half,width:screen.w,height:h};
+ Object.assign(cameraFollow3,{key,pose,stamp:now,scene:currentScene,x,z,yaw,pitch,distance});return pose;
+}
+function cameraRay3(sx,sy){const p=cameraPose3(),c=Math.cos(p.yaw),sn=Math.sin(p.yaw),st=Math.sin(p.pitch),ct=Math.cos(p.pitch),f=cameraFocalLength3(p.height),qx=(sx-p.width/2)/f,qy=(sy-p.height*p.anchor)/f;return {eye:p.eye,dir:[-sn*ct+qx*c+qy*sn*st,-st-qy*ct,-c*ct-qx*sn+qy*c*st]};}
+function project3(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){
+ if(v!==view3d){const dx=x-cx,dz=z-cz,c=Math.cos(v.yaw),sn=Math.sin(v.yaw),d=dx*sn+dz*c;return {x:w/2+(dx*c-dz*sn)*cameraZoom3(v),y:h*.54+(d*Math.sin(v.tilt)-y*Math.cos(v.tilt))*cameraZoom3(v),depth:d*Math.cos(v.tilt)+y*Math.sin(v.tilt)};}
+ const pose=cameraPose3(h),dx=x-cx,dz=z-cz,yy=y-pose.target,c=Math.cos(pose.yaw),sn=Math.sin(pose.yaw),d=dx*sn+dz*c,depth=d*Math.cos(pose.pitch)+yy*Math.sin(pose.pitch),scale=cameraFocalLength3(h)/Math.max(.12,pose.distance-depth);
+ return {x:w/2+(dx*c-dz*sn)*scale,y:h*pose.anchor+(d*Math.sin(pose.pitch)-yy*Math.cos(pose.pitch))*scale,depth};
+}
+function unproject3(sx,sy){const {eye,dir}=cameraRay3(sx,sy),pose=cameraPose3(),t=Math.abs(dir[1])>.0001?(pose.ground-eye[1])/dir[1]:pose.distance;return {x:eye[0]+dir[0]*t,z:eye[2]+dir[2]*t};}
 function boundedViewPoint3(sx,sy,max=72){const p=unproject3(sx,sy),dx=p.x-px-.5,dz=p.z-py-.5,d=Math.hypot(dx,dz);return d>max?{x:px+.5+dx/d*max,z:py+.5+dz/d*max}:p;}
 function shade3(hex,f){const n=parseInt(hex.slice(1),16);return '#'+[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))).toString(16).padStart(2,'0')).join('');}
 let meshDetail3=1;

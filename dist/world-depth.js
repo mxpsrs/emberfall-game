@@ -52,8 +52,7 @@ project3=function(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){return
 // Intersect the camera ray with the visible surface, from front to back.
 // Fixed-point iteration diverged on banks and snapped taps across bridge edges.
 unproject3=function(sx,sy){
- const surface=typeof civilPickSurfaceHeight==='function'?civilPickSurfaceHeight:walkSurfaceHeight,p=cameraPitch3(),yaw=view3d.yaw,c=Math.cos(yaw),sn=Math.sin(yaw),st=Math.sin(p),ct=Math.cos(p),sw=screen.w||900,sh=screen.h||500,f=cameraFocalLength3(sh),distance=cameraDistance3(view3d,sh),qx=(sx-sw/2)/f,qy=(sy-sh*cameraAnchor3)/f,base=walkSurfaceHeight(px+.5,py+.5);
- const eye={x:px+.5+sn*ct*distance,y:base+st*distance,z:py+.5+c*ct*distance},dir={x:-sn*ct+qx*c+qy*sn*st,y:-st-qy*ct,z:-c*ct-qx*sn+qy*c*st},point=t=>({x:eye.x+dir.x*t,y:eye.y+dir.y*t,z:eye.z+dir.z*t});
+ const surface=typeof civilPickSurfaceHeight==='function'?civilPickSurfaceHeight:walkSurfaceHeight,{eye,dir}=cameraRay3(sx,sy),distance=cameraDistance3(),point=t=>({x:eye[0]+dir[0]*t,y:eye[1]+dir[1]*t,z:eye[2]+dir[2]*t});
  const value=t=>{const q=point(t);return q.y-surface(q.x,q.z);};let lo=0,hi=distance+150,previous=0,found=false;
  for(let t=.5;t<=hi;t+=1.25){if(value(t)<=0){lo=previous;hi=t;found=true;break;}previous=t;}
  if(!found){const q=point(hi);return {x:q.x,z:q.z};}

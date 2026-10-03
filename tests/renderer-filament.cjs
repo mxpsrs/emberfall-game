@@ -53,13 +53,9 @@ assert.ok(source.indexOf('surface.width=initialWidth;surface.height=initialHeigh
 assert.match(source,/view\.setViewport\(\[0,0,initialWidth,initialHeight\]\)/,'the first Filament frame uses the pre-sized backing viewport');
 assert.match(source,/setAntiAliasing\(Filament\.View\$AntiAliasing\.FXAA\)/,'non-temporal edge smoothing remains enabled');
 assert.doesNotMatch(source,/setTemporalAntiAliasingOptions/,'temporal history cannot smear or lag the moving world');
-assert.match(source,/center=realmFilamentCameraCenter\(px\+\.5,landCamera,py\+\.5,yaw,pitch,zoom,dprNow\)/,'the live camera uses the backing-pixel-locked center');
-assert.match(source,/anchor=typeof cameraAnchor3==='number'\?cameraAnchor3:\.82/,'standalone Filament startup retains the third-person frame anchor');
-Object.assign(context,{px:12,py:34,screen:{w:1440,h:900},view3d:{yaw:-.5},walkSurfaceHeight:()=>7,cameraPitch3:()=>.8,cameraZoom3:()=>34,realmPixelScale:()=>2});
-const cameraState=context.realmFilamentCameraState(),half=.25*Math.tan(54*Math.PI/360);
-assert.equal(cameraState.bottom,-2*(1-.82)*half,'the shared culling/render camera preserves the lower frame anchor');
-assert.equal(cameraState.top,2*.82*half);assert.equal(cameraState.left,-half*1.6);assert.equal(cameraState.right,half*1.6);assert.equal(cameraState.far,320);
-assert.deepEqual(Array.from(cameraState.center),Array.from(context.realmFilamentCameraCenter(12.5,7,34.5,-.5,.8,34,2)));
+assert.match(source,/return cameraPose3\(\)/,'Filament consumes the canonical camera without independent framing');
+const canonicalPose={eye:[12,9,36],center:[12.5,8.12,34.5],yaw:-.5,pitch:.8,distance:6,near:.12,far:320,left:-.1,right:.1,bottom:-.05,top:.08};
+context.cameraPose3=()=>canonicalPose;assert.equal(context.realmFilamentCameraState(),canonicalPose,'rendering and native culling receive the same pose object');
 assert.match(source,/setProjection\(Filament.Camera\$Projection.PERSPECTIVE,left,right,bottom,top,near,far\)/,'Filament consumes the shared projection');
 assert.match(source,/instance\.setTextureParameter\('atlas',atlas,sampler\)/,'lit terrain shares the stable world material atlas binding');
 assert.match(source,/groundSampler\.setAnisotropy\(quality\.anisotropy\)/,'quality profile controls oblique terrain filtering');

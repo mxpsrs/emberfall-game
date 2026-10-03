@@ -29,9 +29,8 @@ function realmFilamentCameraCenter(x,y,z,yaw,pitch,zoom,dpr){
  const step=1/(Math.max(1,zoom)*Math.max(1,dpr)),right=Math.round((x*c-z*s)/step)*step,up=Math.round(((x*s+z*c)*st-y*ct)/step)*step;
  return [right*c+up*s*st+depth*s*ct,-up*ct+depth*st,-right*s+up*c*st+depth*c*ct];
 }
-function realmFilamentCameraState(dprNow=realmPixelScale()){
- const landCamera=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(px+.5,py+.5):0,pitch=cameraPitch3(),yaw=view3d.yaw,zoom=cameraZoom3(),anchor=typeof cameraAnchor3==='number'?cameraAnchor3:.82,fov=typeof cameraFov3==='number'?cameraFov3:54,distance=typeof cameraDistance3==='function'?cameraDistance3():screen.h/(2*Math.tan(fov*Math.PI/360))/zoom,center=realmFilamentCameraCenter(px+.5,landCamera,py+.5,yaw,pitch,zoom,dprNow),eye=[center[0]+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,center[2]+Math.cos(yaw)*Math.cos(pitch)*distance],near=.25,half=near*Math.tan(fov*Math.PI/360),aspect=screen.w/screen.h;
- return {eye,center,near,far:320,left:-half*aspect,right:half*aspect,bottom:-2*(1-anchor)*half,top:2*anchor*half,width:screen.w,height:screen.h};
+function realmFilamentCameraState(){
+ return cameraPose3();
 }
 const realmFilamentWorldStyle={key:'t0:b0:d0',boss:0,dissolve:0,terrain:0};
 const realmFilamentTerrainStyle={key:'t1:b0:d0',boss:0,dissolve:0,terrain:1};
@@ -101,7 +100,7 @@ function createRealmFilamentGPU(){
  const colorGrading=Filament.ColorGrading.Builder().quality(Filament.ColorGrading$QualityLevel.MEDIUM).toneMapping(Filament.ColorGrading$ToneMapping.ACES).exposure(.2).contrast(1.04).saturation(1.03).vibrance(1.08).gamutMapping(true).build(engine);view.setColorGrading(colorGrading);
  // Low-order sky irradiance gives upward faces a cool fill and downward faces
  // a softer ground response without adding a texture or another render pass.
- const skySh=new Float32Array([.52,.60,.72,-.06,-.08,-.12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+ const skySh=new Float32Array([.62,.68,.76,-.045,-.06,-.08,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
  const indirectLight=Filament.IndirectLight.Builder().irradianceSh(3,skySh).intensity(18000).build(engine);scene.setIndirectLight(indirectLight);
  const assets=window.VELDREN_FILAMENT_ASSETS,material=engine.createMaterial(assets.material),terrainMaterial=engine.createMaterial(assets.terrainMaterial);
  const textureResources=createVeldrenTextureResources(engine,VeldrenAssets),textureSettings={colorSpace:'srgb',maxDimension:realmMobileFilament()?1024:2048};
@@ -276,8 +275,8 @@ function createRealmFilamentGPU(){
  function updateLights(lighting){
   const manager=lightManager,sunInstance=manager.getInstance(sun),day=1-lighting.night;
   const outdoor=1-Math.max(lighting.cave||0,(lighting.house||0)*.65);
-  manager.setIntensity(sunInstance,(5500+day*52000)*Math.max(.12,outdoor));manager.setColor(sunInstance,[.72+.28*day,.76+.18*day,.92-.10*day]);sunInstance.delete();
-  indirectLight.setIntensity(6500+day*12500);camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
+  manager.setIntensity(sunInstance,(5500+day*52000)*Math.max(.12,outdoor));manager.setColor(sunInstance,[.70+.30*day,.75+.20*day,.91-.07*day]);sunInstance.delete();
+  indirectLight.setIntensity((6500+day*12500)*(1-(lighting.cave||0)*.6));camera3d.setExposure(5.6+day*7.2,1/(60+day*65),100+lighting.night*100);
   const limit=quality.lightLimit,lights=lighting.lights;
   for(let i=0;i<limit;i++){
    let record=pointLights[i];const source=lights[i];
