@@ -1,0 +1,1 @@
+PASS: saved zoom migration, slider/wheel/pinch/button limits, reset readout, touch and mouse pitch, pinch zoom, hold/cancel, held arrow keys, input focus, modal guards and unconsumed WASD.

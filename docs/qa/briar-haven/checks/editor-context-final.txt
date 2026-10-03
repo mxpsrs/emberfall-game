@@ -1,0 +1,1 @@
+PASS: authenticated editor viewport has a dedicated, playerless startup and render loop.

@@ -1,0 +1,2 @@
+Native building projection benchmark: {"frames":120,"buildings":12,"totalMs":111.64}
+PASS: twelve distinct Briar Haven plans, accepted entity IDs, complete real floor coverage, linked door/collision, structural cutaways, supported loft furniture, stair travel, Relic access and native serialization.

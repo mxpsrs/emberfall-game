@@ -1,0 +1,2 @@
+PASS: two separate username accounts, durable saves, real player discovery, movement/emote synchronization, session secrecy, stale-player expiry, tutorial/mainland separation, one-way completion and rejected invalid writes.
+PASS: complete ordered movement trails survive the server; invalid, distant, fractional and discontinuous trails are excluded.

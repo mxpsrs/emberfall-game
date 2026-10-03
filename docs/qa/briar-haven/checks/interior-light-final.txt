@@ -1,0 +1,1 @@
+PASS: indoor lamps, ranges, furnaces and hearths produce no outside light; outdoor lanterns switch off in daylight; room lighting stops below roofs.

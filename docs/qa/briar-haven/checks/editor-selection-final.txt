@@ -1,0 +1,1 @@
+PASS: actual-WASM incremental picking, parent transforms, active state, reparent/delete undo, hierarchy filters, inherited hide/lock and scene/load invalidation

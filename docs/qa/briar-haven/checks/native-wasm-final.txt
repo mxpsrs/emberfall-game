@@ -1,0 +1,1 @@
+PASS: browser bridge loads the C++ WASM core and delegates actor simulation

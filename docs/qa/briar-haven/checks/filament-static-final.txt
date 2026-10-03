@@ -1,0 +1,19 @@
+FEngine (32 bits) created at 0x2028b0 (threading is disabled)
+
+Backend feature level: 1
+
+FEngine feature level: 1
+
+FEngine (32 bits) created at 0x19c58c0 (threading is disabled)
+
+Backend feature level: 1
+
+FEngine feature level: 1
+
+FEngine (32 bits) created at 0x2d16610 (threading is disabled)
+
+Backend feature level: 1
+
+FEngine feature level: 1
+
+{"initialTransforms":256,"steadyTransforms":0,"movementTransforms":1,"groundingTransforms":256,"steadyMs":17.63,"frames":30,"entities":256}
