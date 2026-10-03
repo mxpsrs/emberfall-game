@@ -34,7 +34,7 @@ try{
  await page.waitForFunction(()=>globalThis.realmStartup?.failed||typeof assetsReady!=='undefined'&&assetsReady,{},{timeout:600000});
  assert.equal(await page.evaluate(()=>!!realmStartup?.failed),false,'production startup succeeds');
  const editorBindingErrors=await page.evaluate(()=>globalThis.VELDREN_WORLD_EDITS_STATUS?.errors||[]);
- const startupMs=performance.now()-started;await page.evaluate(()=>{if($('creator').open)$('creator').close();if($('modal').open)$('modal').close();worldHour=()=>11;renderUI();window.__qaFrames=[];window.__qaPreviousFrame=0;const original=draw;draw=function(...args){const start=performance.now(),interval=__qaPreviousFrame?start-__qaPreviousFrame:0,result=original.apply(this,args);__qaPreviousFrame=start;if(realmGPU?.presented)__qaFrames.push({cpuMs:performance.now()-start,frameIntervalMs:interval,heap:performance.memory?.usedJSHeapSize||0,renderer:realmGPU.diagnostics()});if(__qaFrames.length>180)__qaFrames.shift();return result}});
+ const startupMs=performance.now()-started;await page.evaluate(()=>{if($('creator').open)$('creator').close();if($('modal').open)$('modal').close();worldHour=()=>11;renderUI();window.__qaFrames=[];window.__qaPreviousFrame=0;const original=draw;draw=function(...args){const start=performance.now(),interval=__qaPreviousFrame?start-__qaPreviousFrame:0,result=original.apply(this,args);__qaPreviousFrame=start;if(realmGPU?.presented)__qaFrames.push({cpuMs:performance.now()-start,frameIntervalMs:interval,heap:performance.memory?.usedJSHeapSize||0,terrain:{...realmGPU.terrainWork},renderer:realmGPU.diagnostics()});if(__qaFrames.length>180)__qaFrames.shift();return result}});
  const matchedRoutes=[['main-street',42,51,-2.05,.27],['services-smithy',75,49,-2.80,.32],['houses',62,31,-2.8,.32],['magic-school',75,71,0,.30],['interior',41,46,-2.05,.36],['town-edge',64,115,-2.05,.29]];
  // Preserve the matching baseline route. The school's north-facing facade
  // also needs a south-looking inspection from its actual entrance approach.
@@ -45,12 +45,12 @@ try{
   console.log('CAPTURE',name);const settleStarted=performance.now();await page.evaluate(({x,z,yaw,tilt})=>{stop();activateScene('overworld',x,z,false);view3d.yaw=yaw;view3d.tilt=tilt;view3d.zoom=102;for(const b of buildings)if(b.service&&withinWalkIn(b,x,z))setWalkInDoor(b.service,true,true);updateDoorThreshold();__qaFrames.length=0;__qaPreviousFrame=0;}, {x,z,yaw,tilt});
   await page.waitForFunction(()=>realmGPU?.presented&&__qaFrames.length>=12,{},{timeout:120000});
   await page.screenshot({path:join(output,name+'-loading.png'),timeout:120000});
-  console.log('STREAM',name,JSON.stringify(await page.evaluate(()=>({renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.(),terrain:globalThis.VeldrenTerrainCells?.diagnostics?.(),native:VeldrenWorldPerformance.diagnostics(),preparation:VeldrenAssets.ioDiagnostics()}))));
+  console.log('STREAM',name,JSON.stringify(await page.evaluate(()=>({renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.(),terrain:realmGPU.terrainWork,native:VeldrenWorldPerformance.diagnostics(),preparation:VeldrenAssets.ioDiagnostics()}))));
   if(process.env.VELDREN_QA_QUICK==='1'){writeFileSync(join(output,'diagnostic.json'),JSON.stringify(await page.evaluate(()=>({camera:realmFilamentCameraState(),renderer:realmGPU.diagnostics(),performance:realmGPU.performanceSnapshot?.()})),null,2));break;}
   await page.waitForFunction(()=>{
    if(!realmGPU?.presented||__qaFrames.length<60)return false;
    const d=realmGPU.assetDraws?.diagnostics();
-   const renderer=realmGPU.diagnostics(),terrain=globalThis.VeldrenTerrainCells?.diagnostics?.();
+   const renderer=realmGPU.diagnostics(),terrain=realmGPU.terrainWork;
    return (!d||d.loading===0&&(d.pendingVisibleInstances??d.pendingInstances)===0&&d.construction.queued===0&&d.failures.length===0)&&(!renderer.frame||renderer.frame.deferredResources===0&&renderer.frame.deferredRenderables===0)&&(renderer.models?.buildQueue?.queued??0)===0&&(terrain?.pending??0)===0;
   },{},{timeout:600000});
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
@@ -61,7 +61,7 @@ try{
  if(process.env.VELDREN_QA_VIEW==='terrain-first')results.sort((a,b)=>matchedRoutes.findIndex(r=>r[0]===a.name)-matchedRoutes.findIndex(r=>r[0]===b.name));
  assert.deepEqual(errors,[]);const result={label,workerSha256,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));writeFileSync(join(output,'result.json.gz'),gzipSync(JSON.stringify(result),{level:9}));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
- const state=await qaPage?.evaluate(()=>({startup:globalThis.realmStartup,frames:globalThis.__qaFrames?.length||0,renderer:typeof realmGPU==='undefined'?null:realmGPU?.diagnostics?.(),recentFrames:globalThis.__qaFrames?.slice(-3),edits:globalThis.VELDREN_WORLD_EDITS_STATUS})).catch(()=>null);
+  const state=await qaPage?.evaluate(()=>({startup:globalThis.realmStartup,frames:globalThis.__qaFrames?.length||0,renderer:typeof realmGPU==='undefined'?null:realmGPU?.diagnostics?.(),terrain:typeof realmGPU==='undefined'?null:realmGPU?.terrainWork,recentFrames:globalThis.__qaFrames?.slice(-3),edits:globalThis.VELDREN_WORLD_EDITS_STATUS})).catch(()=>null);
  writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),state,errors},null,2));
  await qaPage?.screenshot({path:join(output,'failure.png'),timeout:120000}).catch(()=>{});
  console.log('CAPTURE FAILURE',JSON.stringify({frames:state?.frames,draws:state?.renderer?.draws,frame:state?.renderer?.frame}));throw error;

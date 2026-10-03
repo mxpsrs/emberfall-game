@@ -389,6 +389,10 @@ function realmTerrainChunkRow(gpu,c,cell,detail,mw,mh,tileBudget=4){
  return false;
 }
 function realmTerrainEntries(gpu){
+ // Scene hydration installs native floors, pads and saved terrain before the
+ // first playable frame. Starting the worker earlier turns that initial data
+ // load into a live edit and needlessly resamples every baked terrain page.
+ if(window.VeldrenWorldObjects&&!window.VeldrenWorldObjects.enabled)return [];
  let chunks=gpu.terrain.get(currentScene);const [mw,mh]=sceneSize();if(!chunks){chunks=new Map();gpu.terrain.set(currentScene,chunks);}
  const surfaceRevision=typeof landSurfaceRevision==='number'?landSurfaceRevision:0;
  if(gpu.terrainSurfaceRevision!==undefined&&gpu.terrainSurfaceRevision!==surfaceRevision){

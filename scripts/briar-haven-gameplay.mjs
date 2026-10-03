@@ -18,7 +18,7 @@ const output=resolve('docs/qa/briar-haven/gameplay');mkdirSync(output,{recursive
 const errors=[],networkFailures=[];let browser,page,currentBuilding=null;
 const recoveries=[];
 const settleView=()=>page.waitForFunction(()=>{
- const d=realmGPU?.diagnostics();return d&&d.frame&&!cloudDisconnected&&!cloudConflict&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0;
+ const d=realmGPU?.diagnostics();return d&&d.frame&&!cloudDisconnected&&!cloudConflict&&d.draws.loading===0&&d.draws.pendingVisibleInstances===0&&d.draws.construction.queued===0&&d.models.buildQueue.queued===0&&d.frame.deferredResources===0&&d.frame.deferredRenderables===0&&(realmGPU.terrainWork?.pending??0)===0;
 },{},{timeout:360000});
 async function serverDoor(id,open){
  await page.evaluate(({id,open})=>{const b=buildings.find(b=>b._sceneEntityId===id);setWalkInDoor(b.service,open);},{id,open});

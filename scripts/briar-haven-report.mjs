@@ -25,7 +25,8 @@ const views=after.results.map(v=>{
   renderSubmissionMs:timings(f.map(x=>x.renderer.frame.renderMs)),
   submissions:{canonicalRenderableMaximum:max(f,x=>x.renderer.draws.submissions),compatibilityPacketMaximum:max(f,x=>x.renderer.frame.submittedPackets),note:'Renderer submission counters; these are not measured hardware draw calls.'},
   memory:{estimatedGpuBytesMaximum:max(f,x=>x.renderer.residency.gpuBytes),accountedCpuBytesMaximum:max(f,x=>x.renderer.residency.cpuBytes),reportedJsHeapBytesMaximum:max(f,x=>x.heap),overBudget:f.some(x=>x.renderer.residency.overBudget),note:'Resource estimates and browser heap reporting, not physical driver VRAM or a long-duration leak test.'},
-  finalQueues:{loading:f.at(-1).renderer.draws.loading,visibleInstances:f.at(-1).renderer.draws.pendingVisibleInstances,construction:f.at(-1).renderer.draws.construction.queued,modelBuild:f.at(-1).renderer.models.buildQueue.queued,compatibilityResources:f.at(-1).renderer.frame.deferredResources,compatibilityRenderables:f.at(-1).renderer.frame.deferredRenderables},
+  terrain:{workerMs:timings(f.map(x=>x.terrain?.workerMs)),schedulerMs:timings(f.map(x=>x.terrain?.ms)),snapshotMs:timings(f.map(x=>x.terrain?.snapshotMs)),final:f.at(-1).terrain},
+  finalQueues:{loading:f.at(-1).renderer.draws.loading,visibleInstances:f.at(-1).renderer.draws.pendingVisibleInstances,construction:f.at(-1).renderer.draws.construction.queued,modelBuild:f.at(-1).renderer.models.buildQueue.queued,compatibilityResources:f.at(-1).renderer.frame.deferredResources,compatibilityRenderables:f.at(-1).renderer.frame.deferredRenderables,terrain:f.at(-1).terrain?.pending??0},
   modelFailures:[...new Set(f.flatMap(x=>x.renderer.draws.failures))]};
 });
 const result={workerSha256:release.workerSha256,runtimeSourceRemoteCommit:release.runtimeSourceRemoteCommit,

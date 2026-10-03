@@ -12,7 +12,7 @@
  function worldRegistry(){return typeof worldScenes!=='undefined'?worldScenes:(root.worldScenes||{});}
  function activeScene(){return typeof currentScene!=='undefined'?String(currentScene):String(root.currentScene||'');}
  function activeObjects(){return typeof objects!=='undefined'?objects:root.objects||null;}
- function invalidateWorld(){root.VeldrenTerrainStreaming?.invalidateBase();if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation?.clear?.();if(typeof resetLandSurface==='function')resetLandSurface();}
+ function invalidateWorld(terrainChanged=true){if(terrainChanged)root.VeldrenTerrainStreaming?.invalidateBase();if(typeof worldObjectRevision!=='undefined')worldObjectRevision++;if(typeof worldObjectIndex!=='undefined')worldObjectIndex=null;if(typeof realmNavigation!=='undefined')realmNavigation?.clear?.();if(terrainChanged&&typeof resetLandSurface==='function')resetLandSurface();}
 
  function safe(value,depth=0,seen=new Set()){
   if(value==null||typeof value==='string'||typeof value==='boolean'||typeof value==='number')return Number.isFinite(value)||typeof value!=='number'?value:undefined;
@@ -250,7 +250,9 @@
   const captured=capturedByScene(),output=[];for(const [sceneName] of Object.entries(worldRegistry())){const scene=document?.scenes.find(s=>s.scene===sceneName)||root.realmNative.scenes.read(sceneName);if(scene)output.push(projectNativeScene(sceneName,scene,captured.get(sceneName)||[]));}
   const changed=output.reduce((sum,item)=>sum+item.count,0);generatedCount=changed;
   if(!unsubscribe)unsubscribe=root.realmNative.scenes.subscribe(onSceneChange);
-  try{invalidateWorld();}catch{}
+  // Hydrating the already cooked document connects views to unchanged geometry.
+  // Keep its matching terrain pages; authored edits still invalidate below.
+  try{invalidateWorld(!document);}catch{}
   return {migrated:changed,scenes:output.length,authoritative};
  }
  async function migrateWorld(step=(_message,_progress,_stage,task)=>task()){
@@ -276,6 +278,17 @@
  }
  function onSceneChange(event){
   if(root.realmNative?.scenes.isUnderstoryBatch?.(event))return;
+  if(event.kind==='transform'||event.kind==='upsert'){
+   const node=root.realmNative.scenes.entity(event.scene,event.id),c=node?.components,table=scenesByName.get(event.scene);
+   if(node&&table&&table.parents.get(event.id)!==node.parent){
+    table.children.get(table.parents.get(event.id))?.delete(event.id);
+    if(node.parent){if(!table.children.has(node.parent))table.children.set(node.parent,new Set());table.children.get(node.parent).add(event.id);}
+    table.parents.set(event.id,node.parent);
+   }
+   // Leaf actors and entrance state cannot alter the heightfield. Their own
+   // Scene owners update rendering/collision; keep navigation queries fresh.
+   if(node&&table&&!table.children.get(event.id)?.size&&!c.GeneratedProp&&!c.TerrainPad&&(c.GeneratedSpawn||c.Entrance&&c.DoorState)){invalidateWorld(false);return;}
+  }
   const names=event.kind==='load'?Object.keys(worldRegistry()):[event.scene];
   for(const name of names){
    const table=scenesByName.get(name);if(!table)continue;

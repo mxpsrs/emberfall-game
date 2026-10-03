@@ -7,8 +7,15 @@ vm.runInContext(`
  landHeight=(x,z)=>{clock+=.3;return x*.02+z*.01;};landNormal=()=>[0,1,0];
  terrainType=()=>0;roadInfluence=()=>[0,0,0];worldWaterDistance=()=>20;shoreDistance=()=>20;civilStairWellAt=()=>false;
  const retired=[],gpu={kind:'filament',terrain:new Map(),gl:{deleteBuffer(buffer){retired.push(buffer);}},upload(data){return {buffer:{data},count:data.length/12};}};
+ let workerStarts=0;
+ window.VeldrenWorldObjects={enabled:false};window.VeldrenTerrainStreaming={create(){workerStarts++;return null;}};
+ assert.equal(realmTerrainEntries(gpu).length,0);
+ assert.equal(workerStarts,0,'initial Scene hydration cannot start or dirty baked terrain');
+ assert.equal(gpu.terrain.size,0,'no half-installed surface enters the terrain cache');
+ window.VeldrenWorldObjects.enabled=true;
  window.matchMedia=()=>({matches:true});
  realmTerrainEntries(gpu);
+ assert.equal(workerStarts,1,'the terrain manager starts once the canonical world is installed');
  assert(gpu.terrainWork.fallbackSlices<=4);assert(gpu.terrainWork.ms<5,'fallback work stops after the current atomic quad');
  assert(gpu.terrainWork.slices===0,'fallback and fine terrain share the same deadline');
  let completed=null;

@@ -27,6 +27,9 @@ function verifyView(view,label){
  assert.equal(final.draws.pendingVisibleInstances,0);assert.equal(final.draws.construction.queued,0);
  assert.equal(final.frame.deferredResources,0);assert.equal(final.frame.deferredRenderables,0);
  assert.equal(final.models.buildQueue.queued,0);assert.equal(final.residency.overBudget,false);
+ const terrain=view.frames.at(-1).terrain;assert(terrain&&Number.isFinite(terrain.ms),'record actual terrain work');
+ assert.equal(terrain.pending??0,0,'terrain streaming is settled '+view.name);
+ assert.equal(terrain.failures??0,0,'terrain streaming has no failed loads '+view.name);
 }
 for(const view of rendered.results){
  const before=baseline.results.find(v=>v.name===view.name);

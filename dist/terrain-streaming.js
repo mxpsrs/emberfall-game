@@ -10,11 +10,11 @@
   if(typeof Worker!=='function')return null;
   let worker;try{const url=new URL(asset('terrain-worker.js'),root.location.href);url.searchParams.set('mesher',new URL(asset('terrain-mesher.js'),root.location.href).href);worker=new Worker(url);}catch{return null;}
   let alive=true,initialized=false,baseValid=true,serial=0,epoch=0,busy=null,pending=[],done=[],wanted=new Set(),snapshots=new Map(),lastRevision=-1,dirtyRevision=0,allDirty=false,dirtyRegions=[];
-  const stats={mode:'worker',queued:0,working:0,uploads:0,stale:0,failures:0,pages:0,pageBytes:0,workerMs:0,snapshotMs:0};
+  const stats={mode:'worker',queued:0,working:0,uploads:0,stale:0,failures:0,pages:0,pageBytes:0,workerMs:0,snapshotMs:0,baseValid:true,bakedSourceMatched:null,invalidations:0};
   const touched=(c,bounds)=>{const left=c.x-8,top=c.z-8;return !bounds||left<=bounds.maxX+2&&left+16>=bounds.minX-2&&top<=bounds.maxZ+2&&top+16>=bounds.minZ-2;};
   const invalidate=(bounds=null,changed=true)=>{
    if(changed){dirtyRevision++;if(!bounds||dirtyRegions.length>=128){allDirty=true;dirtyRegions=[];}else dirtyRegions.push({...bounds});}
-   epoch++;snapshots.clear();
+   epoch++;stats.invalidations++;snapshots.clear();
    for(const c of wanted){if(!touched(c,bounds))continue;c.complete=false;c.noGeometry=false;if(changed)c.streamDirty=true;c.dirtyRevision=dirtyRevision;}
    pending=[];done=[];lastRevision=-1;
   };
@@ -22,7 +22,8 @@
    if(!alive)return;
    if(m.format!=='veldren.terrain-cells'||m.version!==1)throw Error('Incompatible terrain cells');
    const source=root.VeldrenWorldEdits?.state?.world;
-   baseValid=baseValid&&!!root.VeldrenPrebuiltWorld&&m.sourceKey===root.VeldrenPrebuiltWorld.fingerprint(source);
+   stats.bakedSourceMatched=!!root.VeldrenPrebuiltWorld&&m.sourceKey===root.VeldrenPrebuiltWorld.fingerprint(source);
+   baseValid=baseValid&&stats.bakedSourceMatched;stats.baseValid=baseValid;
    const urls={};for(const path of Object.values(m.pages))urls[path]=new URL(asset(path),root.location.href).href;
    worker.postMessage({type:'init',manifest:m,urls,maxPages:mobile?12:24});initialized=true;pump();
   }).catch(error=>{initialized=true;baseValid=false;stats.failures++;console.warn('Terrain page fallback:',error.message);pump();});
@@ -89,7 +90,7 @@
    stats.queued=pending.length;stats.working=busy?1:0;stats.uploads=uploads;stats.ms=performance.now()-start;stats.budgetMs=budget;stats.pending=pending.length+done.length+(busy?1:0);stats.slices=0;stats.fallbackSlices=0;gpu.terrainWork=stats;
    pump();return true;
   }
-  const manager={frame,invalidate,invalidateBase(){baseValid=false;invalidate();},destroy(){if(alive){alive=false;worker.terminate();}pending=[];done=[];busy=null;snapshots.clear();managers.delete(manager);},stats};managers.add(manager);return manager;
+  const manager={frame,invalidate,invalidateBase(){baseValid=false;stats.baseValid=false;invalidate();},destroy(){if(alive){alive=false;worker.terminate();}pending=[];done=[];busy=null;snapshots.clear();managers.delete(manager);},stats};managers.add(manager);return manager;
  }
  root.addEventListener?.('pagehide',()=>{for(const manager of managers)manager.destroy();},{once:true});
  root.VeldrenTerrainStreaming={create,invalidate(bounds){for(const m of managers)m.invalidate(bounds);},invalidateBase(){for(const m of managers)m.invalidateBase();}};
