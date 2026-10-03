@@ -400,14 +400,22 @@ function realmTerrainEntries(gpu){
  if(gpu.terrainStream===undefined)gpu.terrainStream=window.VeldrenTerrainStreaming?.create(gpu,mobile)||null;
  const streamed=inWorld()&&gpu.terrainStream,cell=streamed?16:wide?16:8,detail=inWorld()&&!wide&&!mobile?2:1;
  if(!inWorld())gpu.terrainStream?.frame([],surfaceRevision);
- const corners=realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p)),edge=inWorld()?128:0;
+ const eye=typeof cameraPose3==='function'?cameraPose3().eye:[px,0,py];
+ const corners=[...(realmViewCorners||[[0,0],[screen.w,0],[screen.w,screen.h],[0,screen.h]].map(p=>boundedViewPoint3(...p))),{x:eye[0],z:eye[2]}],edge=inWorld()?128:0;
  const minX=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.x))-16)/cell)*cell),maxX=Math.min(mw+edge,Math.ceil((Math.max(...corners.map(p=>p.x))+16)/cell)*cell),minZ=Math.max(-edge,Math.floor((Math.min(...corners.map(p=>p.z))-16)/cell)*cell),maxZ=Math.min(mh+edge,Math.ceil((Math.max(...corners.map(p=>p.z))+16)/cell)*cell),visible=[],margin=cameraZoom3()*cell*3.5;
  // A low camera can put a near chunk's center well outside the viewport while
  // one of its corners still fills the foreground, so retain a wider edge band.
  // The height-aware projection samples elevation for every candidate chunk.
  // These corner-derived bounds already include a 16-unit edge band, so keep
  // the wide screen margin and use flat projection to avoid those samples.
- for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){const p=flatProject3(x+cell/2,0,z+cell/2);if(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin)continue;const key=cell+':'+(streamed?'stream':detail)+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);}
+ for(let z=minZ;z<maxZ;z+=cell)for(let x=minX;x<maxX;x+=cell){
+  // A chunk straddling the camera plane can fill the foreground even when its
+  // center projects behind the eye. Keep this bounded near-camera ring instead
+  // of rejecting it by that center; streaming and upload budgets still apply.
+  const dx=Math.max(x-eye[0],0,eye[0]-x-cell),dz=Math.max(z-eye[2],0,eye[2]-z-cell),near=dx*dx+dz*dz<=cell*cell;
+  const p=flatProject3(x+cell/2,0,z+cell/2);if(!near&&(p.x< -margin||p.x>screen.w+margin||p.y< -margin||p.y>screen.h+margin))continue;
+  const key=cell+':'+(streamed?'stream':detail)+':'+x+':'+z;let c=chunks.get(key);if(!c){c={x:x+cell/2,z:z+cell/2,terrain:true,key,scene:currentScene};chunks.set(key,c);}visible.push(c);
+ }
  gpu.terrainTick=(gpu.terrainTick||0)+1;
  for(const c of visible){c.used=gpu.terrainTick;}
  if(streamed){

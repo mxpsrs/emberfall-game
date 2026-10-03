@@ -29,6 +29,9 @@ const fixture=require('../scripts/native-world-fixture.cjs');
   assert(a.modules.some(m=>m.id===leaves[0].host&&/Wall.*Door/.test(m.model)),b.name+' door is linked to its actual wall opening');
   const [tx,tz]=doorThreshold(b.service);setWalkInDoor(b.service,false,true);assert(inBuilding(b,tx,tz),b.name+' closed door blocks');
   setWalkInDoor(b.service,true,true);assert(!inBuilding(b,tx,tz),b.name+' opened door clears the opening');
+  const outside=doorApproach(b.service,false),inside=doorApproach(b.service,true);
+  activateScene('overworld',...outside,false);assert(route(...inside),b.name+' entrance approach reaches its interior');
+  activateScene('overworld',...inside,false);assert(route(...outside),b.name+' interior reaches the exterior approach');
   for(const v of b.briarDesign.volumes){
    const r=briarVolumeWorldRect(b,v);
    for(let z=r.y+.75;z<r.y+r.h;z+=1.5)for(let x=r.x+.75;x<r.x+r.w;x+=1.5){
