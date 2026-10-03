@@ -171,6 +171,15 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   }
   assert.equal(mixedGpu.assetDraws.diagnostics().activeRenderables,expectedWalls,'authored walls complete despite continuous compatibility demand');
   wallLease.release();
+  // A visible parent must not submit its culled native modules. This exercises
+  // the actual painter with the native visibility result, before resource work.
+  const captured=[];context.__cullGpu={kind:'filament',canonicalEntry(mesh,model){captured.push(model);return {model};}};vm.runInContext('realmGPU=__cullGpu',context);
+  context.VeldrenWorldPerformance={frame:()=>({visibleIds:new Set(['visible-module'])})};
+  context.affineMultiply=(_parent,local)=>Array.from(local);
+  const cullingPainter=context.painter3(null,context.project3);
+  cullingPainter.cached({kind:'prop',instances:[{mesh:{},matrix:models[0],entityId:'visible-module'},{mesh:{},matrix:models[1],entityId:'culled-module'}],faces:[]});
+  assert.equal(captured.length,1,'culled building modules create no compatibility or canonical demand');
+  assert.equal(captured[0],models[0]);
   context.realmNative.destroy();
   console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
  }catch(error){reject(error);}

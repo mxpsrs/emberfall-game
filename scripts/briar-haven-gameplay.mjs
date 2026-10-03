@@ -4,7 +4,9 @@ import {mkdtempSync,mkdirSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {acquireBriarBrowserLock} from './briar-browser-lock.mjs';
 
+const releaseGraphics=await acquireBriarBrowserLock();
 process.env.VELDREN_PREVIEW_PORT=process.env.VELDREN_PREVIEW_PORT||'8797';
 process.env.VELDREN_PREVIEW_DATA=mkdtempSync(join(tmpdir(),'briar-gameplay-'));
 await import('./briar-haven-preview.mjs');
@@ -70,4 +72,4 @@ try{
  writeFileSync(join(output,'result.json'),JSON.stringify({localOnly:true,pointer:{cameraBefore,cameraDragged,cameraZoomed,walkTarget:[target.x,target.z]},inn,doorPicked:true,entered:true,closedDoorCutaway:true,exited:true,restoredRoof:true,errors},null,2)+'\n');
  console.log('PASS rendered door picking, physical entry/exit, occupied cutaway, restored roof and local account connection');
 }catch(error){await page?.screenshot({path:join(output,'failure.png'),timeout:30000}).catch(()=>{});writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),errors},null,2));console.error(error);process.exitCode=1;}
-finally{await browser?.close();process.kill(process.pid,'SIGTERM');}
+finally{await browser?.close();await releaseGraphics();process.kill(process.pid,'SIGTERM');}

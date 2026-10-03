@@ -370,7 +370,7 @@ painter3=function(g,project){
  if(project!==project3){const painter=canvasPainterRealm(g,project);painter.software=true;return painter;}
  if(!realmGPU||realmGPU.kind!=='filament')realmGPU=createRealmFilamentGPU();
  const gpu=realmGPU,entries=[],dynamic=[];let ownerId=null,part=0;
- const emit=(mesh,m,style={},entityId=null)=>{const entry=gpu.canonicalEntry(mesh,m,style);entry.entityId=entityId||ownerId;entry.instanceId=entityId?entityId+":draw:0":ownerId?ownerId+":draw:"+(part++):null;entries.push(entry);};
+ const emit=(mesh,m,style={},entityId=null)=>{const frame=globalThis.VeldrenWorldPerformance?.frame(String(currentScene));if(entityId&&frame?.visibleIds&&!frame.visibleIds.has(entityId))return;const entry=gpu.canonicalEntry(mesh,m,style);entry.entityId=entityId||ownerId;entry.instanceId=entityId?entityId+":draw:0":ownerId?ownerId+":draw:"+(part++):null;entries.push(entry);};
  const painter={entity(id){ownerId=id||null;part=0;},face(points,color,normals,materialId,colors,uvs){realmFaceData(dynamic,points,color,normals,materialId,colors,uvs);},indexed(mesh,m,style={}){emit(mesh,m,style);},skinned(mesh,model,palette){entries.push({...realmSkinnedEntry(gpu,mesh),model,palette,characterMesh:mesh.materialParts?mesh:null});},cached(cached){
   if(cached.kind==='assembly'){
    const revision=realmFilamentGroundRevision();let state=gpu.assemblyTransforms.get(cached);

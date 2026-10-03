@@ -15,10 +15,35 @@ function cameraDistance3(v=view3d,h=screen.h){return v===view3d?cameraPose3(h).d
 // One pose feeds Filament, screen projection, picking and native visibility.
 // Player follow is transient presentation; the detached editor keeps its own anchor.
 const cameraFollow3={key:'',pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,distance:0};
+const cameraStructureCache3=new WeakMap();
+function cameraStructureDistance3(b,origin,dir,limit){
+ const native=globalThis.realmNative?.scenes;
+ if(!native||!b._generatedBuildingEntity)return limit;
+ const cut=buildingRoofHidden(b),revision=typeof worldObjectRevision==='number'?worldObjectRevision:0;
+ let cached=cameraStructureCache3.get(b);
+ if(!cached||cached.revision!==revision||cached.cut!==cut){
+  const root=native.entity(String(currentScene),b._sceneEntityId),triangles=[];
+  for(const id of root?.components.ModularBuilding?.modules||[]){
+   const node=native.entity(String(currentScene),id),module=node?.components.BuildingModule;
+   if(!node?.activeInHierarchy||node.components.MeshRenderer?.visible===false||cut&&(module?.role==='roof'||module?.floor>0))continue;
+   // Procedural awnings and braces are retained as canonical MeshGeometry.
+   // Their triangles extend beyond the footprint and must also stop the camera.
+   const geometry=node.components.MeshGeometry?.faces;
+   if(geometry)for(const face of geometry){const points=face.points.map(p=>{const m=node.worldMatrix;return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]];});for(let i=1;i+1<points.length;i++)triangles.push([points[0],points[i],points[i+1]]);}
+  }
+  cached={revision,cut,triangles};cameraStructureCache3.set(b,cached);
+ }
+ for(const [a,bb,c]of cached.triangles){
+  const e1=bb.map((v,i)=>v-a[i]),e2=c.map((v,i)=>v-a[i]),cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],dot=(u,v)=>u[0]*v[0]+u[1]*v[1]+u[2]*v[2],p=cross(dir,e2),det=dot(e1,p);
+  if(Math.abs(det)<1e-8)continue;const inv=1/det,t=origin.map((v,i)=>v-a[i]),u=dot(t,p)*inv;if(u<0||u>1)continue;const q=cross(t,e1),v=dot(dir,q)*inv;if(v<0||u+v>1)continue;const distance=dot(e2,q)*inv;if(distance>.05&&distance<limit+.3)limit=Math.max(.35,distance-.3);
+ }
+ return limit;
+}
 function cameraObstructionDistance3(center,yaw,pitch,distance){
  if(cameraEditor3||typeof walkSurfaceHeight!=='function')return distance;
  const sn=Math.sin(yaw),c=Math.cos(yaw),st=Math.sin(pitch),ct=Math.cos(pitch);
  const nearby=typeof buildings==='undefined'?[]:buildings.filter(b=>b.x<center[0]+distance+2&&b.x+b.w>center[0]-distance-2&&b.y<center[2]+distance+2&&b.y+b.h>center[2]-distance-2);
+ for(const b of nearby)distance=cameraStructureDistance3(b,center,[sn*ct,st,c*ct],distance);
  for(let t=.35;t<=distance+.001;t+=.18){
   const x=center[0]+sn*ct*t,y=center[1]+st*t,z=center[2]+c*ct*t,bridge=typeof bridgeAt==='function'&&bridgeAt(x,z),ground=bridge?bridgeDeckHeight(bridge,x,z):typeof landHeight==='function'?landHeight(x,z):walkSurfaceHeight(x,z);
   if(y<ground+.32)return Math.max(.35,t-.30);

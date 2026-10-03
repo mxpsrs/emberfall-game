@@ -8,8 +8,10 @@ import {mkdtempSync,mkdirSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {acquireBriarBrowserLock} from './briar-browser-lock.mjs';
 const root=resolve(process.env.VELDREN_QA_ROOT||'.'),label=process.env.VELDREN_QA_LABEL||'after';
 assert.match(label,/^[a-z0-9-]+$/);
+const releaseGraphics=await acquireBriarBrowserLock();
 const {openLocalStorage}=await import(pathToFileURL(join(root,'scripts/local-storage.mjs')).href);
 const {default:worker}=await import(pathToFileURL(join(root,'dist/server/index.js')).href);
 const {chromium}=await import(pathToFileURL(process.env.VELDREN_PLAYWRIGHT||'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
@@ -43,11 +45,11 @@ try{
    if(!realmGPU?.presented||__qaFrames.length<60)return false;
    const d=realmGPU.assetDraws?.diagnostics();
    return !d||d.loading===0&&(d.pendingVisibleInstances??d.pendingInstances)===0&&d.construction.queued===0&&d.failures.length===0;
-  },{},{timeout:300000});
+  },{},{timeout:600000});
   const settleMs=performance.now()-settleStarted,arrivalFrames=await page.evaluate(()=>__qaFrames.slice(0,8));
   await page.evaluate(()=>{__qaFrames.length=0;__qaPreviousFrame=0;});
-  await page.waitForFunction(()=>__qaFrames.length>=30,{},{timeout:120000});
-  await page.screenshot({path:join(output,name+'.png'),timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-30)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));
+  await page.waitForFunction(()=>__qaFrames.length>=120,{},{timeout:300000});
+  await page.screenshot({path:join(output,name+'.png'),timeout:120000});const result=await page.evaluate(name=>({name,scene:currentScene,player:[s.x,s.y],camera:realmFilamentCameraState(),view:{...view3d},frames:__qaFrames.slice(-120)}),name);result.arrivalFrames=arrivalFrames;result.settleMs=settleMs;results.push(result);writeFileSync(join(output,'partial.json'),JSON.stringify({startupMs,results,errors},null,2));console.log('READY',name,Math.round(settleMs),'ms');
  }
  assert.deepEqual(errors,[]);const result={label,editorBindingErrors,startupMs,browser:await browser.version(),backend:'Filament WebGL / SwiftShader software GPU',resolution:[1920,1080],deviceScaleFactor:1,hour:11,results,errors,limitations:['Software rendering does not certify physical GPU or phone performance.']};writeFileSync(join(output,'result.json'),JSON.stringify(result,null,2));assert.deepEqual(editorBindingErrors,[],'saved editor objects must resolve before visual acceptance');if(process.env.VELDREN_QA_QUICK!=='1')assert.equal(results.length,routes.length);console.log(process.env.VELDREN_QA_QUICK==='1'?'DIAGNOSTIC':'PASS',label,results.length,'production-Filament views');
 }catch(error){
@@ -55,4 +57,4 @@ try{
  writeFileSync(join(output,'failure.json'),JSON.stringify({error:String(error),state,errors},null,2));
  await qaPage?.screenshot({path:join(output,'failure.png'),timeout:120000}).catch(()=>{});
  console.log('CAPTURE FAILURE',JSON.stringify({frames:state?.frames,draws:state?.renderer?.draws,frame:state?.renderer?.frame}));throw error;
-}finally{await browser?.close();server.closeAllConnections();await new Promise(r=>server.close(r));storage.close();}
+}finally{await browser?.close();server.closeAllConnections();await new Promise(r=>server.close(r));storage.close();await releaseGraphics();}
