@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+
+const output=path.resolve(process.argv[2]||'briar-haven-review.zip');
+execFileSync('git',['diff','--quiet']);
+execFileSync('git',['diff','--cached','--quiet']);
+execFileSync('git',['ls-files','--error-unmatch','scripts/briar-haven-preview.mjs','scripts/package-briar-preview.mjs'],{stdio:'ignore'});
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'briar-review-package-'));
+const target=path.join(root,'Briar-Haven-Review');
+const copy=(file)=>{const out=path.join(target,file);fs.mkdirSync(path.dirname(out),{recursive:true});fs.copyFileSync(file,out);};
+for(const file of ['dist/server/index.js','scripts/briar-haven-preview.mjs','scripts/local-storage.mjs','scripts/local-accounts.mjs','worker/reset-policy.js'])copy(file);
+for(const name of fs.readdirSync('drizzle').filter(n=>n.endsWith('.sql')&&!/owner_/.test(n)))copy('drizzle/'+name);
+fs.cpSync('node_modules/bcryptjs',path.join(target,'node_modules/bcryptjs'),{recursive:true});
+fs.writeFileSync(path.join(target,'package.json'),JSON.stringify({name:'briar-haven-review',private:true,type:'module',scripts:{start:'node scripts/briar-haven-preview.mjs'},engines:{node:'>=24'}},null,2));
+const commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+const hash=createHash('sha256').update(fs.readFileSync('dist/server/index.js')).digest('hex');
+fs.writeFileSync(path.join(target,'BUILD.json'),JSON.stringify({commit,workerSha256:hash,builtAt:new Date().toISOString(),localOnly:true},null,2));
+fs.writeFileSync(path.join(target,'README.txt'),`BRIAR HAVEN REVIEW\n\n1. Install Node.js 24 or newer on your computer.\n2. Extract this ZIP. Open a terminal in the Briar-Haven-Review folder.\n3. Run: npm start\n4. Open http://127.0.0.1:8787/preview in your browser.\n\nThe game starts in Briar Haven with a separate local review character.\nUse click-to-walk, drag to orbit/pitch, and wheel or the camera slider to zoom.\nVisit the market, bank, smithy, homes, and Magic School.\nThe editor is at http://127.0.0.1:8787/editor/ after opening the preview.\nPress Ctrl+C in the terminal to stop.\n\nThis review build cannot modify your live account or the live game.\nYour local review progress is stored in briar-preview-data beside these files.\nNode dependencies needed to run the build are included. No npm install is needed.\n\nSource commit: ${commit}\nBuilt Worker SHA-256: ${hash}\n`);
+execFileSync('python3',['-c',`import pathlib,sys,zipfile\nroot=pathlib.Path(sys.argv[1])\nwith zipfile.ZipFile(sys.argv[2],'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:\n for p in sorted(root.rglob('*')):\n  if p.is_file():z.write(p,p.relative_to(root))\n` ,root,output]);
+fs.rmSync(root,{recursive:true,force:true});
+console.log(JSON.stringify({output,bytes:fs.statSync(output).size,commit,workerSha256:hash}));

@@ -1,0 +1,42 @@
+{
+  "localOnly": true,
+  "redirect": true,
+  "character": "BriarReview",
+  "results": [
+    {
+      "route": "/play",
+      "status": 200,
+      "bytes": 2176826
+    },
+    {
+      "route": "/editor/",
+      "status": 200,
+      "bytes": 13881
+    },
+    {
+      "route": "/editor/viewport.html",
+      "status": 200,
+      "bytes": 349651
+    },
+    {
+      "route": "/api/auth/session",
+      "status": 200,
+      "bytes": 38
+    },
+    {
+      "route": "/api/character",
+      "status": 200,
+      "bytes": 517
+    },
+    {
+      "route": "/api/editor/access",
+      "status": 200,
+      "bytes": 11
+    },
+    {
+      "route": "/api/editor/edits",
+      "status": 200,
+      "bytes": 29785
+    }
+  ]
+}
