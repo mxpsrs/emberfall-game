@@ -1,0 +1,1 @@
+PASS: native metadata, scene bounds and entry hierarchy, shared realm/lair views, canonical stair/exit references, exit mesh transforms, guarded membership, save/unload/load and authoritative saved boot.

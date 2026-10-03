@@ -1,0 +1,1 @@
+PASS: interior/outdoor frame submission, native indexed footprints, gate/tower/wall hierarchy, ramps and decks, stair holes/borders, floor rooms, nonuniform transforms, activation, immutable projections and canonical reload/deletion.

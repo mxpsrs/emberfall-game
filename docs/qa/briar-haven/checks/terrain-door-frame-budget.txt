@@ -1,0 +1,1 @@
+PASS: fallback deadline, shared coarse/fine budget, eventual completion, unchanged buffer reuse and atomic terrain replacement.

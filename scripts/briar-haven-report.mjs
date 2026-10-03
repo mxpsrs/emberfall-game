@@ -23,6 +23,7 @@ const views=after.results.map(v=>{
   intervalsOver100ms:intervals.filter(x=>x>100).length,
   synchronizationMs:timings(f.map(x=>x.renderer.frame.synchronizationMs)),
   renderSubmissionMs:timings(f.map(x=>x.renderer.frame.renderMs)),
+  webglCalls:{draws:timings(f.map(x=>x.webglCalls?.draws)),instanced:timings(f.map(x=>x.webglCalls?.instanced)),note:'Measured WebGL submission calls in each presented frame; software backend, not physical-driver GPU measurements.'},
   submissions:{canonicalRenderableMaximum:max(f,x=>x.renderer.draws.submissions),compatibilityPacketMaximum:max(f,x=>x.renderer.frame.submittedPackets),note:'Renderer submission counters; these are not measured hardware draw calls.'},
   memory:{estimatedGpuBytesMaximum:max(f,x=>x.renderer.residency.gpuBytes),accountedCpuBytesMaximum:max(f,x=>x.renderer.residency.cpuBytes),reportedJsHeapBytesMaximum:max(f,x=>x.heap),overBudget:f.some(x=>x.renderer.residency.overBudget),note:'Resource estimates and browser heap reporting, not physical driver VRAM or a long-duration leak test.'},
   terrain:{workerMs:timings(f.map(x=>x.terrain?.workerMs)),schedulerMs:timings(f.map(x=>x.terrain?.ms)),snapshotMs:timings(f.map(x=>x.terrain?.snapshotMs)),final:f.at(-1).terrain},

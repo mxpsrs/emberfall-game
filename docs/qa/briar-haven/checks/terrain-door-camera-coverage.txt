@@ -1,0 +1,1 @@
+PASS: perspective near-plane terrain coverage, bounded local retention, remote culling and moved-camera coverage.

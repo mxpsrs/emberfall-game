@@ -1,0 +1,1 @@
+{"pass":true,"startupMs":12869.38819,"scenes":259,"entities":21741,"checks":["single native load without migration or serialization","tutorial entry","door state and cyclic bindings","transient actor state","saved player progress","partial edit fallback","canonical edit precedence","deleted entity stays deleted","editor transform and save reload"]}

@@ -1,37 +1,9 @@
-# Briar Haven live update — execution checkpoint
+# Briar Haven live update — verification in progress
 
-The existing live game is https://playveldren.com. It remains on version **241**;
-this overhaul has **not** been published. The execution environment disconnected
-during the final terrain correction, preventing rebuilding and the remaining
-browser checks and packaging.
+The overhaul is implemented on the existing work branch. The existing live game, https://playveldren.com, is still version 241 while final verification runs. Publication is authorized.
 
-The branch contains twelve distinct native building plans, assembled authored
-floors/roofs/gables, aligned door collision, stairs and lofts, settlement routes,
-vegetation, forge activity, warm runtime daylight, shared third-person camera,
-wall obstruction, occupied-floor cutaways and editor fixes. Existing saved-world
-revision 26, all 103 edits, accounts, saves, gameplay data and entity IDs are
-preserved. No main/PR #4 merge, reset or production database rewrite occurred.
+Twelve distinct buildings use authored Quaternius walls, floors, stairs, roofs and complete gables. Linked entrances and collision, supported lofts, settlement routes, planted clusters, restrained forge activity, warm runtime lighting and the shared third-person camera are in place. Existing editor revision 26, all 103 edits and stable entity IDs remain preserved. Accounts, saves, inventories, banks and quests have not been reset.
 
-See [the exact checkpoint, tests, performance, defects and next steps](EXECUTION-CHECKPOINT.md).
-The pending far-terrain coverage and final-step test corrections passed syntax
-parsing only; they still require regressions, a build and actual rendered checks.
-The release receipt intentionally pins the earlier tested Worker and will reject
-the unbuilt correction.
+A fresh build reproduced the terrain-correct Worker byte-for-byte after workspace cleanup. Five complete actual rendered views are retained under [after-final](after-final): [street](after-final/main-street.jpg), [services](after-final/services-smithy.jpg), [homes](after-final/houses.jpg), [School approach](after-final/magic-school.jpg) and [town edge](after-final/town-edge.jpg). Their 120-frame records have fully settled terrain and construction, with no asset failures. The inn check then exposed an unnecessary terrain rebuild on door changes; that correction and its positive/negative native regressions are saved on GitHub. A new build and complete exact-Worker walkthrough, landmark views and editor save/reload acceptance are in progress.
 
-These are actual settled screenshots of that tested Worker, saved to GitHub:
-
-| Main street | Services/smithy | Varied houses | School approach |
-| --- | --- | --- | --- |
-| [View](after-live/main-street.jpg) | [View](after-live/services-smithy.jpg) | [View](after-live/houses.jpg) | [View](after-live/magic-school.jpg) |
-
-All six routes were captured and inspected locally; the last two image files
-could not be uploaded before the execution server disconnected. Distant terrain
-coverage remained visibly incomplete, so visual acceptance is unfinished.
-The twelve physical door walks, latest actual editor GUI, School facade and live
-publication remain. This is not a finished delivery or a separate-game preview.
-
-The software GPU recorded CPU p50 **289–782 ms** and frame-interval p95
-**2.30–4.26 seconds**. Those slow results are not performance acceptance.
-Physical desktop/phone FPS targets and 39-player hosting capacity are unverified.
-Full measurements, passing checks, missing `em++` and six pre-existing other-city
-banker-counter failures are recorded in the checkpoint.
+See [the execution checkpoint](EXECUTION-CHECKPOINT.md) for exact source, completed checks and remaining steps. Physical desktop/phone FPS and hosted 39-player capacity are unverified. The software GPU results are slow and are not performance acceptance. Full native:test cannot rebuild WASM without em++; supplied WASM and available C++ checks passed. Six pre-existing other-city banker-counter failures remain. No maintenance, live deployment, main merge, PR #4 merge or production data rewrite has occurred.
