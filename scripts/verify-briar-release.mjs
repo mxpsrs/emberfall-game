@@ -48,6 +48,12 @@ assert.equal(landmark.workerSha256,release.workerSha256);assert.deepEqual(landma
 assert.equal(landmark.results.length,1);assert.equal(landmark.results[0].name,'school-facade');
 assert(Math.abs(landmark.results[0].camera.yaw-Math.PI)<.001,'inspect the north-facing School entrance');
 verifyView(landmark.results[0],release.landmarkEvidenceLabel);
+const night=read(directory+'/'+release.landmarkEvidenceLabel+'/night.json.gz');
+assert.equal(night.workerSha256,release.workerSha256);assert.deepEqual(night.errors,[]);
+assert.equal(night.night.hour,21);assert.equal(night.night.frames.length,30);
+assert(fs.statSync(directory+'/'+release.landmarkEvidenceLabel+'/night-school.jpg').size>10000);
+assert.equal(night.night.frames.at(-1).terrain.pending,0);
+assert.deepEqual(night.night.frames.at(-1).renderer.draws.failures,[]);
 const gameplay=read(directory+'/gameplay/result.json'),editor=read(directory+'/editor-result.json');
 for(const receipt of [gameplay,editor]){assert.equal(receipt.workerSha256,release.workerSha256);assert.deepEqual(receipt.errors,[]);}
 for(const flag of ['doorPicked','entered','exited','closedDoorCutaway','restoredRoof'])assert.equal(gameplay[flag],true);
