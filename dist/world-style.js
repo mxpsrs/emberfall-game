@@ -74,13 +74,20 @@ function environmentRoofChoice3(w,d){
  }}return best;
 }
 function environmentRoofBays3(r,race,x,y,z,w,d,variant=0){
- const columns=Math.max(1,Math.ceil(w/10)),rows=Math.max(1,Math.ceil(d/14)),bw=w/columns,bd=d/rows;let top=y;
- for(let ix=0;ix<columns;ix++)for(let iz=0;iz<rows;iz++){
-  const choice=environmentRoofChoice3(bw,bd),mesh=environmentRoofMesh3(race,choice.name,variant+ix+iz),cx=x-w/2+bw*(ix+.5),cz=z-d/2+bd*(iz+.5);
-  top=Math.max(top,y+environmentNative3(r,mesh,cx,y,cz,choice.turn,choice.scale));
+ // A simple building volume gets one complete roof, never intersecting bays.
+ const choice=environmentRoofChoice3(w,d),mesh=environmentRoofMesh3(race,choice.name,variant),[lo,hi]=mesh.bounds,turn=choice.turn;
+ const rw=turn?hi[2]-lo[2]:hi[0]-lo[0],rd=turn?hi[0]-lo[0]:hi[2]-lo[2],sx=(turn?d:w)/(hi[0]-lo[0]),sz=(turn?w:d)/(hi[2]-lo[2]),sy=sx;
+ const height=(hi[1]-lo[1])*sy;
+ const c=Math.cos(turn),sn=Math.sin(turn),cx=(lo[0]+hi[0])/2*sx,cz=(lo[2]+hi[2])/2*sz;
+ briarEmit(r,mesh,[c*sx,0,sn*sz,x-c*cx-sn*cz,0,sy,0,y-lo[1]*sy,-sn*sx,0,c*sz,z+sn*cx-c*cz]);
+ // Close both ridge ends with the kit's authored triangular front.
+ const gable=rebuiltModels[(turn?d:w)<6?'Roof_Front_Brick4':(turn?d:w)<9?'Roof_Front_Brick6':'Roof_Front_Brick8']||rebuiltModels.Roof_Front_Brick4;
+ if(gable){const across=(turn?d:w)-.45,along=(turn?w:d)-.45;
+  for(const side of [-1,1])environmentModule3(r,gable,x+sn*side*along/2,y,z+c*side*along/2,across,height-.08,.32,turn+(side===1?0:Math.PI));
  }
- return top;
+ return y+height;
 }
+
 function worldHouseRoof(r,b,y,rise){
  if(b._castleCurtain)return y;
  const race=b.race||realmArtRace(b.x,b.y),p=worldStyle[race],x=b.x+b.w/2,z=b.y+b.h/2,v=b.variant||0;
@@ -94,12 +101,9 @@ function worldHouseRoof(r,b,y,rise){
    environmentModule3(r,realmArtMesh('curtainWall','dwarf'),x,y,z+side*(b.h/2-.2),b.w,.65,.4);
    environmentModule3(r,realmArtMesh('curtainWall','dwarf'),x+side*(b.w/2-.2),y,z,b.h,.65,.4,Math.PI/2);
   }
- }else authoredTop=environmentRoofBays3(r,race,x,y,z,b.w+.45,b.h+.45,v+Math.floor(worldRand(b.x,b.y)*4));
+ }else if(b.archetype==='temple'&&b.w<=b.h){const mesh=rebuiltModels.Roof_Tower_RoundTiles;authoredTop=y+Math.min(b.w,b.h)*.95;environmentModule3(r,mesh,x,y,z,b.w+.6,authoredTop-y,b.h+.6);}
+ else authoredTop=environmentRoofBays3(r,race,x,y,z,b.w+.45,b.h+.45,v+Math.floor(worldRand(b.x,b.y)*4));
  const q=groundedPainter(r,x,z),wood=materialRealm(q,5),stone=materialRealm(q,18),front=b.y+b.h+.15;
- if(race==='human'&&b.w>=9&&b.archetype!=='castle'){
-  worldDormer(q,x+b.w*.27,y+roofRise*.47,z-b.h*.13,Math.PI/2,p);
-  worldDormer(q,x-b.w*.27,y+roofRise*.47,z+b.h*.17,-Math.PI/2,p);
- }
  for(const side of [-1,1]){
   const xx=x+side*(b.w/2-.13);
   if(race==='dwarf'){

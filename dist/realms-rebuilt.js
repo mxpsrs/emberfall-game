@@ -321,21 +321,36 @@ function rebuiltHouseFloorCount(b,{tower=false,castle=false}={}){
  return ['hall','temple'].includes(b.archetype)||b.archetype==='inn'&&b.variant%2===0?2:1+(b.archetype==='house'&&b.variant===3?1:0);
 }
 function rebuiltHouse(r,b,{tower=false,castle=false}={}){
- const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||['temple','castle'].includes(b.archetype),wall=stone?'UnevenBrick':'Plaster',segments=Math.max(3,Math.floor(w/2)),sideSegments=Math.max(3,Math.floor(d/2)),scale=1,sideScale=1,wallScale=1,level=3.02;
- const floors=rebuiltHouseFloorCount(b,{tower,castle}),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92];
- if(b.walkIn){for(let zz=b.y+.15;zz<b.y+d-.15;zz+=1)for(let xx=b.x+.15;xx<b.x+w-.15;xx+=1)r.face([[xx,.055,zz],[xx,.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,Math.min(zz+1,b.y+d-.15)],[Math.min(xx+1,b.x+w-.15),.055,zz]],'#9b8465',null,b.archetype==='forge'?3:5);}
+ const race=b.race||kingdomAt(b.x,b.y).race,w=b.w,d=b.h,x=b.x+w/2,z=b.y+d/2,stone=race==='dwarf'||tower||castle||['temple','castle'].includes(b.archetype),wall=stone?'UnevenBrick':'Plaster',scale=1,level=3.02;
+ const floors=rebuiltHouseFloorCount(b,{tower,castle}),tint=race==='elf'?[.90,1,.91]:race==='dwarf'?[.83,.87,.91]:[1,.97,.92],doorX=b.service?b.service.x+.5:x,variant=b.variant||0,frontWindows=[];
+ // Wall joints use their two-metre structural width, not decorative mesh bounds.
+ // Only a closing bay changes width; height, thickness and door proportions stay native.
+ const part=(name,cx,cy,cz,width,angle=0,color)=>{
+  const mesh=rebuiltModels[name];if(!mesh)return;
+  const c=Math.cos(angle),n=Math.sin(angle),sx=width/2;
+  briarEmit(r,mesh,[c*sx,0,n,cx,0,1,0,cy,-n*sx,0,c,cz]);
+ };
+ const run=(start,end,cy,edge,angle,side,door=false)=>{
+  const spans=[];
+  const fill=(a,b)=>{const count=Math.ceil((b-a)/2-1e-8);for(let i=0;i<count;i++){const lo=a+i*2,hi=Math.min(b,lo+2);spans.push({center:(lo+hi)/2,width:hi-lo});}};
+  if(door){fill(start,doorX-1);spans.push({center:doorX,width:2,door:true});fill(doorX+1,end);}else fill(start,end);
+  spans.forEach((bay,i)=>{
+   const window=!bay.door&&bay.width>1.6&&(i+variant+Math.round(cy/level))%3!==1;
+   const style=window?(['temple','hall'].includes(b.archetype)||variant%3===1?'Window_Thin_Round':variant%3===2?'Window_Wide_Round':'Window_Wide_Flat'):!stone&&variant%3===2?'WoodGrid':'Straight';
+   const name='Wall_'+wall+'_'+(bay.door?'Door_Round':style),cx=side?edge:bay.center,cz=side?bay.center:edge;
+   part(rebuiltModels[name]?name:'Wall_'+wall+'_Straight',cx,cy,cz,bay.width,angle,tint);
+   if(window){const insert=style==='Window_Thin_Round'?'Window_Thin_Round1':style==='Window_Wide_Round'?'Window_Wide_Round1':'Window_Wide_Flat1';part(rebuiltModels[insert]?insert:'Window_Wide_Flat1',cx,cy,cz,bay.width,angle);const shutter=style==='Window_Thin_Round'?'WindowShutters_Thin_Round_Open':style==='Window_Wide_Flat'?'WindowShutters_Wide_Flat_Open':null;if(shutter&&variant%2)part(shutter,cx,cy,cz,bay.width,angle);if(!side&&angle===0&&cy===0)frontWindows.push(bay.center);}
+   if(bay.door)rebuiltPlace(r,'DoorFrame_Round_WoodDark',cx,cy,cz+.04,1,0,1);
+  });
+ };
+ // Every shell has a complete floor, including non-enterable and cutaway houses.
+ const floorMesh=rebuiltModels[stone?'Floor_UnevenBrick':'Floor_WoodDark'];
+ for(let zz=b.y;zz<b.y+d;zz+=2)for(let xx=b.x;xx<b.x+w;xx+=2){const fw=Math.min(2,b.x+w-xx),fd=Math.min(2,b.y+d-zz);environmentModule3(r,floorMesh,xx+fw/2,.035,zz+fd/2,fw,.02,fd);}
  for(let floor=0;floor<floors;floor++){
-  for(const side of [-1,1])for(let i=0;i<segments;i++){
-   const xx=x+(i-(segments-1)/2)*2,door=floor===0&&side===1&&i===Math.floor(segments/2),window=!door&&(i+floor)%2===0;
-   const name='Wall_'+wall+'_'+(door?'Door_Round':window?'Window_Wide_Flat':'Straight');rebuiltPlace(r,name,xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale,tint);
-   if(window)rebuiltPlace(r,'Window_Wide_Flat1',xx,floor*level,z+side*d/2,scale,side===1?0:Math.PI,wallScale);
-   if(door){rebuiltPlace(r,'DoorFrame_Round_WoodDark',xx,floor*level,z+d/2+.04,scale,0,wallScale);}
-  }
-  for(const side of [-1,1])for(let i=0;i<sideSegments;i++){
-   const zz=z+(i-(sideSegments-1)/2)*2,angle=side===1?Math.PI/2:-Math.PI/2,window=(i+floor)%2===0;
-   rebuiltPlace(r,'Wall_'+wall+'_'+(window?'Window_Wide_Flat':'Straight'),x+side*w/2,floor*level,zz,sideScale,angle,wallScale,tint);
-   if(window)rebuiltPlace(r,'Window_Wide_Flat1',x+side*w/2,floor*level,zz,sideScale,angle,wallScale);
-  }
+  run(b.x,b.x+w,floor*level,b.y+d,0,false,floor===0);
+  run(b.x,b.x+w,floor*level,b.y,Math.PI,false);
+  run(b.y,b.y+d,floor*level,b.x+w,Math.PI/2,true);
+  run(b.y,b.y+d,floor*level,b.x,-Math.PI/2,true);
  }
  if(b.walkIn&&['inn','house','hall','temple'].includes(b.archetype)){
   const rx=x,rz=b.y+d*.55,rw=Math.min(w-3,4.2),rd=Math.min(d-4,4.8),rug=materialRealm(r,13);
@@ -352,7 +367,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
  }
  if(b._cutaway)return level;
  // Service fronts use their own materials and furnishings at the same scale as residents.
- const front=groundedPainter(r,x,z),doorX=x+(Math.floor(segments/2)-(segments-1)/2)*2,frontZ=b.y+d+.12,wood=materialRealm(front,5);
+ const front=groundedPainter(r,x,z),frontZ=b.y+d+.12,wood=materialRealm(front,5);
  if(['shop','inn','forge'].includes(b.archetype)){
   const awningWidth=b.archetype==='shop'?4.0:2.8,awningY=level-.30,depth=b.archetype==='forge'?1.0:1.35;
   const colors=b.archetype==='shop'?['#68785a','#cfbf94']:b.archetype==='inn'?['#986552','#c7ad83']:['#615953','#787068'];
@@ -364,8 +379,7 @@ function rebuiltHouse(r,b,{tower=false,castle=false}={}){
   for(const side of [-1,1])beamArt(wood,[doorX+side*awningWidth/2,awningY-.95,frontZ],[doorX+side*awningWidth/2,awningY-.29,frontZ+depth],.045,'#644d36');
  }
  // Shutters and window boxes break up repeated blank plaster walls.
- if(!stone)for(let i=0;i<segments;i++)if(i%2===0&&i!==Math.floor(segments/2)){
-  const wx=b.x+(i+.5)*w/segments;
+ if(!stone)for(const wx of frontWindows){
   for(const side of [-1,1])box3(wood,wx+side*.60*scale,1.46*scale,frontZ,.24*scale,.72*scale,.065,'#666b4c');
   box3(wood,wx,1.02*scale,frontZ+.14,.85*scale,.16,.28,'#755a3e');
   for(const side of [-1,0,1])oval3(front,wx+side*.25*scale,1.18*scale,frontZ+.14,.34,.22,.27,'#607544',p=>p,6);

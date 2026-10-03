@@ -368,6 +368,7 @@
   });assemblyViews.set(key,view);return view;
  }
  function setAssembly(scene,building,input,source=null){
+  input=globalThis.VeldrenBuildings?.repairLegacyAssembly?.(getView(scene,building),input)||input;
   const A=root.VeldrenAssembly,a=A.serialize(input),b=getView(scene,building),previous=entity(scene,building).components.ModularBuilding,byKey=new Map(present(scene,previous?.modules).map(id=>[entity(scene,id).components.BuildingModule.key,id])),cache=source&&root.VeldrenBuildings.cache.get(source);
   // A temporary edit transaction is validated before it changes native nodes.
   const repeats=new Map(),modules=a.modules.map(m=>{const signature=JSON.stringify([m.id.startsWith('part-editor-')?m.id:null,m.model,m.role,m.local,m.objectId||null]),ordinal=repeats.get(signature)||0;repeats.set(signature,ordinal+1);return {data:m,id:byKey.get(m.id)||building+':module:'+root.VeldrenSceneOwnership.stableHash(signature+':identical-copy:'+ordinal)};});

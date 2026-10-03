@@ -15,8 +15,8 @@ function buildingRotation(b){
 }
 function buildingDoorTransform(b){
  if(b.civilCastle){const [x,y]=doorThreshold(b.service);return briarTransform(x+.5-.53,0,y+.54,1,-doorOpenFraction(b.service)*Math.PI*.52,.85);}
- const p=b.southPlan||b,seg=Math.max(1,Math.round(p.w/2)),scale=p.w/seg/2,xx=p.x+(Math.floor(seg/2)+.5)*p.w/seg;
- const leaf=briarTransform(xx-.53*scale,0,p.y+p.h+.04,scale,-doorOpenFraction(b.service)*Math.PI*.52,scale*.85);
+ const p=b.southPlan||b,xx=p.service?p.service.x+.5:b.service?b.service.x+.5:p.x+p.w/2;
+ const leaf=briarTransform(xx-.514,0,p.y+p.h+.04,1,-doorOpenFraction(b.service)*Math.PI*.52,1);
  return affineMultiply(buildingRotation(b),leaf);
 }
 function chooseBuildingFacing(b,world){

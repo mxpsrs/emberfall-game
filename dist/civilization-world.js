@@ -44,7 +44,7 @@ function civilFloorScene(id,title,size,rooms,race,building,returnAt){
  return world;
 }
 function civilContinuousUpper(world,b,{rise=3.05,deckDepth=3}={}){
- const deck={x:b.x+1,y:b.y+1,w:b.w-2,h:Math.min(deckDepth,b.h-4)},ramp={x:b.x+b.w-3,y:b.y+deck.h,w:2,h:b.h-deck.h-2},structure={building:b,rise,ramp,decks:[deck],kind:'interiorUpper'};
+ const deck={x:b.x+1,y:b.y+1,w:b.w-2,h:Math.min(deckDepth,b.h-7)},ramp={x:b.x+b.w-3,y:b.y+deck.h,w:2,h:b.h-deck.h-2},structure={building:b,rise,ramp,decks:[deck],kind:'interiorUpper'};
  b.civilUpper=structure;b.usableUpper='overworld';civilWalkableStructures.push(structure);
  const occupied=(x,y,o)=>world.objects.some(p=>p!==o&&Math.hypot(p.x-x,p.y-y)<1.2);
  for(const o of world.objects.filter(o=>o.x>=ramp.x-1&&o.x<ramp.x+ramp.w+1&&o.y>=ramp.y-1&&o.y<ramp.y+ramp.h+1&&o!==b.service)){

@@ -6,7 +6,7 @@ export function packAssetStreams(assets){
  const marker='@veldren-stream:',parts=[],chunks=[],lookup=new Map();let buffers=[],chunkBytes=0,originalBytes=0,packetBytes=0,packedAssets=0;
  function finish(){if(!chunkBytes)return;const raw=Buffer.concat(buffers),compressed=compressAsset(raw);chunks.push({data:encodeAsset(compressed),storageLength:compressed.length,length:raw.length});buffers=[];chunkBytes=0;}
  for(const [path,asset]of Object.entries(assets)){
-  if(!/^\/assets\/(?:canonical\/models\/.*\.json|(?:realms|briarhaven)\/(?:models|monsters|approved-creatures)\.js)$/.test(path))continue;
+  if(!/^\/assets\/(?:canonical\/models\/.*\.json|(?:realms|briarhaven)\/(?:models|building-modules|monsters|approved-creatures)\.js)$/.test(path))continue;
   const original=Buffer.from(asset.data,'base64'),text=original.toString('utf8');if(text.includes(marker))throw Error('Reserved stream marker in '+path);
   let replacements=0;
   const packet=text.replace(/("(?:data|p|n|uv|t|i|c|f|j|w)"\s*:\s*")([A-Za-z0-9+/=]{1024,})(")/g,(_match,prefix,value,suffix)=>{

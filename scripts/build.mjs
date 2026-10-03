@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
+execFileSync('python3',['scripts/build-building-modules.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-texture-variants.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-canonical-lods.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-scenery-lods.py'],{stdio:'inherit'});
@@ -53,7 +54,7 @@ html=html.replace(/<script src="([^\"]+\.js)(?:\?v=[^\"]+)?"><\/script>/g,(tag,s
  const file=sourcePath.replace(/^\/+/,''),asset=assets['/'+file];
  // Filament derives its wasm directory from document.currentScript.src.
  // Keep vendor scripts external so that URL remains available at evaluation.
- if(!asset||asset.length>512*1024||file.startsWith('vendor/'))return tag;
+ if(!asset||asset.length>512*1024||file.startsWith('vendor/')||file==='assets/realms/building-modules.js')return tag;
  const source=Buffer.from(asset.data,'base64').toString('utf8');
  if(/<\/script/i.test(source))throw new Error('Cannot safely inline script containing a closing script tag: '+file);
  inlinedScripts.push(file);
@@ -99,7 +100,7 @@ for(const [url,asset]of Object.entries(assets)){
  // Keep runtime-sized JavaScript files as their original bytes. Safari and
  // desktop reports have failed while downloading precompressed renderer code.
  // Large generated model/creature catalogs remain compressed to fit the Worker.
- if((url.endsWith('.js')&&asset.length<=512*1024)||!/\.(html|js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
+ if((url.endsWith('.js')&&asset.length<=512*1024&&!asset.packedStreams&&url!=='/world-ecology-layout.js')||!/\.(html|js|json|css|txt|wasm|filamat)$/.test(url)||asset.length<1024)continue;
  const raw=Buffer.from(asset.data,'base64'),compressed=compressAsset(raw);
  if(compressed.length<raw.length*.90){asset.data=compressed.toString('base64');asset.storageEncoding='brotli';}
 }
