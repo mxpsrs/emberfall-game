@@ -118,7 +118,7 @@
  function hydrate(){
   const map=realm();if(!enabled&&map){Map.prototype.clear.call(map);for(const method of ['set','delete','clear'])Object.defineProperty(map,method,{value(){throw Error('Edit scene association entities through the Scene');}});}
   for(const name of Object.keys(registry()))project(name);
-  if(!enabled)native().subscribe(event=>{if(native().isUnderstoryBatch?.(event))return;if(event.kind==='load')for(const name of Object.keys(registry()))project(name);else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
+  if(!enabled)native().subscribe(event=>{if(native().isUnderstoryBatch?.(event)||root.VeldrenSceneOwnership.terrainUnchanged?.(event))return;if(event.kind==='load')for(const name of Object.keys(registry()))project(name);else if(['remove','upsert','batch'].includes(event.kind))project(event.scene);invalidate();});
   enabled=true;installRendering();invalidate();return {loaded:true};
  }
  function installRendering(){

@@ -276,19 +276,28 @@
   for(let i=0;i<stages.length;i++){const [name,task]=stages[i];reports[name]=await step('Connecting the world…',80+i,'scene-ownership',task);}
   root.VeldrenWorldObjects.install();return reports;
  }
+ function terrainUnchanged(event){
+  const table=scenesByName.get(event.scene);if(!table)return false;
+  const changes=event.kind==='batch'?event.changes:[event];
+  return !!changes?.length&&changes.every(change=>{
+   if(change.kind!=='transform'&&change.kind!=='upsert')return false;
+   const node=root.realmNative.scenes.entity(event.scene,change.id),c=node?.components;
+   return !!node&&!table.children.get(change.id)?.size&&!c.GeneratedProp&&!c.TerrainPad&&!!(c.GeneratedSpawn||c.Entrance&&c.DoorState);
+  });
+ }
  function onSceneChange(event){
   if(root.realmNative?.scenes.isUnderstoryBatch?.(event))return;
-  if(event.kind==='transform'||event.kind==='upsert'){
-   const node=root.realmNative.scenes.entity(event.scene,event.id),c=node?.components,table=scenesByName.get(event.scene);
-   if(node&&table&&table.parents.get(event.id)!==node.parent){
-    table.children.get(table.parents.get(event.id))?.delete(event.id);
-    if(node.parent){if(!table.children.has(node.parent))table.children.set(node.parent,new Set());table.children.get(node.parent).add(event.id);}
-    table.parents.set(event.id,node.parent);
+  for(const change of event.kind==='batch'?event.changes:[event])if(change.kind==='transform'||change.kind==='upsert'){
+   const node=root.realmNative.scenes.entity(event.scene,change.id),table=scenesByName.get(event.scene);
+   if(node&&table&&table.parents.get(change.id)!==node.parent){
+    table.children.get(table.parents.get(change.id))?.delete(change.id);
+    if(node.parent){if(!table.children.has(node.parent))table.children.set(node.parent,new Set());table.children.get(node.parent).add(change.id);}
+    table.parents.set(change.id,node.parent);
    }
-   // Leaf actors and entrance state cannot alter the heightfield. Their own
-   // Scene owners update rendering/collision; keep navigation queries fresh.
-   if(node&&table&&!table.children.get(event.id)?.size&&!c.GeneratedProp&&!c.TerrainPad&&(c.GeneratedSpawn||c.Entrance&&c.DoorState)){invalidateWorld(false);return;}
   }
+  // Every terrain-owning subscriber uses the same conservative classification.
+  // Leaf actor and entrance state keep navigation fresh without rebuilding land.
+  if(terrainUnchanged(event)){invalidateWorld(false);return;}
   const names=event.kind==='load'?Object.keys(worldRegistry()):[event.scene];
   for(const name of names){
    const table=scenesByName.get(name);if(!table)continue;
@@ -338,5 +347,5 @@
   writeEntity(scene,entity);return scenesByName.get(scene)?.byId.get(id);
  }
  function status(){return {captured:generationCaptured,migrated:generatedCount,scenes:scenesByName.size,savedCatalogAuthoritative:authoritative};}
- root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},bindLegacyField,captureGenerationIdentity,migrateStaticProps,migrateWorld,hydrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
+ root.VeldrenSceneOwnership={ownsLegacy(scene,kind,id){if(kind==='object')return legacyAliases.get(String(scene))?.has(String(id))||root.VeldrenLightScene?.ownsLegacy(String(scene),id)||root.VeldrenMetadataScene?.ownsLegacy(String(scene),id)||root.VeldrenSpawnScene?.ownsLegacy(String(scene),id)||root.VeldrenGatherableScene?.ownsLegacy(String(scene),id)||false;return (root.realmNative?.scenes?.componentIds(String(scene),'GeneratedBuilding')||[]).some(entityId=>root.realmNative.scenes.entity(String(scene),entityId).components.GeneratedBuilding.legacyKey===String(id));},terrainUnchanged,bindLegacyField,captureGenerationIdentity,migrateStaticProps,migrateWorld,hydrateWorld,createProp,setWorldTransform,setTransform,remove,replaceDocument,document,status,createView:makeProjection,copyData:safe,stableHash:hash,find(sceneName,id){return scenesByName.get(String(sceneName))?.byId.get(String(id))||null;},resolveLegacy(sceneName,id){return legacyAliases.get(String(sceneName))?.get(String(id))||null;}};
 })(globalThis);

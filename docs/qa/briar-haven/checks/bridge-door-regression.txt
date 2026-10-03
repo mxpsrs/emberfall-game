@@ -1,0 +1,1 @@
+PASS: native bridge ownership, original mesh parity, edited deck/barrier queries, parent rotation/scale, heights, cache invalidation, activation, duplicate/delete, deterministic identities and saved boot.

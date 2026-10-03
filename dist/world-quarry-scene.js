@@ -4,7 +4,7 @@
 (function(root){
  const scene='overworld',native=()=>root.realmNative.scenes,A=()=>root.VeldrenAssembly,M=()=>root.VeldrenBuildingScene.matrices;
  const identity=()=>({position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]});
- const sources=[],pads=[],roadOwners=new Map(),views=new Map();let captured=false,enabled=false,quarries=Object.freeze([]),workPads=Object.freeze([]);
+ const sources=[],pads=[],roadOwners=new Map(),views=new Map(),dependencies=new Set();let captured=false,enabled=false,quarries=Object.freeze([]),workPads=Object.freeze([]);
  function capture(){if(captured)return;captured=true;
   for(const q of typeof surfaceQuarries==='undefined'?[]:surfaceQuarries)sources.push(JSON.parse(JSON.stringify(q)));
   for(const p of typeof propWorkPads==='undefined'?[]:propWorkPads)pads.push(JSON.parse(JSON.stringify(p)));
@@ -19,6 +19,8 @@
  }
  function project(){
   quarries=Object.freeze(native().componentIds(scene,'Quarry').map(getView));workPads=Object.freeze(native().componentIds(scene,'TerrainPad').map(getView));
+  dependencies.clear();
+  for(const view of [...quarries,...workPads])for(let n=native().entity(scene,view._sceneEntityId);n&&!dependencies.has(n.id);n=n.parent?native().entity(scene,n.parent):null)dependencies.add(n.id);
   if(typeof surfaceQuarries!=='undefined')surfaceQuarries=Object.freeze(quarries.filter(q=>native().entity(scene,q._sceneEntityId).activeInHierarchy));
   if(typeof propWorkPads!=='undefined')propWorkPads=Object.freeze(workPads.filter(p=>native().entity(scene,p._sceneEntityId).activeInHierarchy));
   if(typeof propSupportPads!=='undefined')propSupportPads=Object.freeze(propWorkPads.filter(p=>p.supportOnly));
@@ -69,7 +71,14 @@
  function hydrate(){
   if(!enabled){
    quarryAt=at;quarryShapeEdge=(q,x,z)=>sample(x,z,0,q)?.edge??0;quarryDepth=(q,x,z)=>sample(x,z,0,q)?.depth??0;quarryCliff=(q,x,z)=>sample(x+.5,z+.5,0,q)?.cliff??false;
-   native().subscribe(event=>{if(native().isUnderstoryBatch?.(event)||event.scene!==null&&event.scene!==scene)return;project();invalidate();});
+   native().subscribe(event=>{
+    if(native().isUnderstoryBatch?.(event)||event.scene!==null&&event.scene!==scene)return;
+    // Door state and actor motion do not change quarry surfaces or work pads.
+    // Retain old dependencies for removals, and inspect new component owners
+    // so added pads and transformed/reparented ancestors still refresh terrain.
+    const affected=event.kind==='load'||(event.kind==='batch'?event.changes:[event]).some(change=>{const n=change.id&&native().entity(scene,change.id);return dependencies.has(change.id)||n?.components.Quarry||n?.components.TerrainPad;});
+    if(!affected)return;project();invalidate();
+   });
   }
   enabled=true;project();invalidate();return {loaded:true};
  }

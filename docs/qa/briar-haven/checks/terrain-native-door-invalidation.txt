@@ -1,0 +1,1 @@
+PASS: cooked Scene hydration, actor movement and door state retain baked terrain; real building and prop edits still invalidate.
