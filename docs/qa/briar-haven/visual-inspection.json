@@ -1,0 +1,23 @@
+{
+  "workerSha256": "b96444e79b7aef50a19f83a7ff87c67e9b8b3e3e4d5a5d39c406cf60a34dee76",
+  "complete": false,
+  "method": "Opened and visually inspected actual JPEG screenshots from the production Filament path; no generated imagery.",
+  "views": [
+    {
+      "image": "school-clearance-final/school-facade.jpg",
+      "observed": "Aligned full roof, windows, stone foundation and visible entrance; blue/purple banners identify the canonical Magic School. Clear paved approach; no missing surface textures or visible assembly holes in this view."
+    },
+    {
+      "image": "school-clearance-final/night-school.jpg",
+      "observed": "Same camera and doorway. Night surfaces are distinctly darker; warm lamps, path, banners and player silhouette remain readable."
+    },
+    {
+      "image": "school-clearance-final/smithy-facade.jpg",
+      "observed": "Complete triangular gable and pitched main roof; open side work bay, paired forge stacks, fire and log piles give the smithy a distinct function. Paved doorway approach remains clear. Existing gatherable mushroom clusters are preserved."
+    }
+  ],
+  "limits": [
+    "Screenshots inspect selected views, not every world surface.",
+    "Physical hardware FPS and extended device traversal remain unverified."
+  ]
+}
