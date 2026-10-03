@@ -1,0 +1,1 @@
+PASS: actual cooked Briar workbench bounds, generated vegetation clearance, native move/rotation/scale invalidation and unchanged serialized world.

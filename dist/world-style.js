@@ -216,8 +216,8 @@ prop3=function(r,o,x,z){
   if(/chandelier/i.test(name)){return worldModel(q,'Chandelier',x,1.65,z,1.25);}
   if(/table/i.test(name)){
    const tool=/Tool|Smith/i.test(name),display=/Display|Merchandise/i.test(name),large=/Banquet|Council/i.test(name),h=tool?.90:.78;
-   worldModel(q,tool?(o.id||0)%2?'Workbench_Drawers':'Workbench':'Table_Large',x,0,z,h);
-   if(tool){worldModel(q,'Pickaxe_Bronze',x-.32,h,z,.42,Math.PI/2);worldModel(q,'Bucket_Wooden_1',x+.34,.01,z+.18,.35);}
+   worldModel(q,tool?'Workbench':'Table_Large',x,0,z,h);
+   if(tool){if((o.id||0)%2){const b=rebuiltModels.World_Workbench.bounds,k=h/(b[1][1]-b[0][1]);rebuiltPlace(q,'World_Workbench_Drawers',x-(b[0][0]+b[1][0])*k/2,-b[0][1]*k,z-(b[0][2]+b[1][2])*k/2,k);}worldModel(q,'Pickaxe_Bronze',x-.32,h,z,.42,Math.PI/2);worldModel(q,'Bucket_Wooden_1',x+.34,.01,z+.18,.35);}
    else if(display){worldModel(q,'Potion_1',x-.34,h,z,.23);worldModel(q,'FarmCrate_Apple',x+.32,h,z,.23);}
    else{worldModel(q,'Table_Plate',x-.34,h,z,.035,0,null,.30);worldModel(q,'Mug',x+.30,h,z-.12,.17,0,null,.18);worldModel(q,'CandleStick',x,h,z,.29);}
    return h+.45;
@@ -269,10 +269,11 @@ function worldFire(r,o,x,z){
 const worldUnderstory=new Map();
 const worldUnderstoryBuildingBuckets=new Map();let worldUnderstoryBuildingSource=null,worldUnderstoryBuildingRevision=-1;
 function worldUnderstoryNearBuilding(x,z){
- const revision=typeof worldObjectRevision==='number'?worldObjectRevision:0;
+ const revision=typeof landSurfaceRevision==='number'?landSurfaceRevision:typeof worldObjectRevision==='number'?worldObjectRevision:0;
  if(worldUnderstoryBuildingSource!==buildings||worldUnderstoryBuildingRevision!==revision){
   worldUnderstoryBuildingSource=buildings;worldUnderstoryBuildingRevision=revision;worldUnderstoryBuildingBuckets.clear();
-  for(const building of buildings){const size=16,minX=Math.floor((building.x-.8)/size),maxX=Math.floor((building.x+building.w+.8)/size),minZ=Math.floor((building.y-.8)/size),maxZ=Math.floor((building.y+building.h+.8)/size);
+  const blockers=[...buildings];if(currentScene==='overworld')for(const o of objects)if(propKind(o)&&Math.hypot(o.x-55,o.y-61)<72){const b=propBox(o),s=o.editorTransform?.scale||1,w=(b.right-b.left)*s,h=(b.bottom-b.top)*s;blockers.push({x:(b.left+b.right-w)/2,y:(b.top+b.bottom-h)/2,w,h});}
+  for(const building of blockers){const size=16,minX=Math.floor((building.x-.8)/size),maxX=Math.floor((building.x+building.w+.8)/size),minZ=Math.floor((building.y-.8)/size),maxZ=Math.floor((building.y+building.h+.8)/size);
    for(let bz=minZ;bz<=maxZ;bz++)for(let bx=minX;bx<=maxX;bx++){const key=bx+':'+bz;if(!worldUnderstoryBuildingBuckets.has(key))worldUnderstoryBuildingBuckets.set(key,[]);worldUnderstoryBuildingBuckets.get(key).push(building);}
   }
  }
