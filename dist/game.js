@@ -344,11 +344,13 @@ function advanceMovement(dt){
 let nextFrameAt=0;
 let expiryScanAt=0;
 function frame(now){
-  const mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(globalThis.navigator?.userAgent||''),interval=1000/(mobile?30:60);if(now+.2<nextFrameAt){requestAnimationFrame(frame);return;}nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
+ let phase='frame-timing';
+ try{
+  const mobile=window.matchMedia?.('(pointer: coarse)')?.matches===true||/iPhone|iPad|iPod|Android/i.test(globalThis.navigator?.userAgent||''),interval=1000/(mobile?30:60);if(now+.2<nextFrameAt)return;nextFrameAt=now+interval-Math.max(0,now-nextFrameAt)%interval;
   if(assetsReady&&!document.hidden&&typeof observeRenderTime==='function')observeRenderTime(now-last);
   const measured=window.VELDREN_PERFORMANCE===true,frameStarted=measured?performance.now():0;
   const dt=Math.min((now-last)/1000||0,.05);last=now;
-  if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
+  phase='frame-simulation';if(typeof updateCameraKeys==='function')updateCameraKeys(dt);
   if(assetsReady&&!cloudConflict&&!cloudDisconnected&&!window.maintenancePreparing)updateWorldTimers();
   const crossing=typeof tutorialCrossing!=='undefined'&&tutorialCrossing;
   if(crossing&&!cloudConflict&&!cloudDisconnected&&!document.hidden){time+=dt;updateTutorialCrossing(dt);}
@@ -371,8 +373,10 @@ function frame(now){
   }
   if(window.playerTrade||$('creator').open){playerMotion.moving=false;playerMotion.blend=Math.max(0,playerMotion.blend-dt*10);}
   const simulationEnded=measured?performance.now():0;let sceneryEnded=simulationEnded;
-  if(assetsReady&&!document.hidden){if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();if(measured)sceneryEnded=performance.now();draw();}
-  if(measured){const ended=performance.now();globalThis.VeldrenFrameTiming={cpuFrameMs:ended-frameStarted,simulationMs:simulationEnded-frameStarted,sceneryMs:sceneryEnded-simulationEnded,drawMs:ended-sceneryEnded};}requestAnimationFrame(frame);
+  if(assetsReady&&!document.hidden){phase='frame-scenery';if(typeof prepareWorldUnderstory==='function')prepareWorldUnderstory();if(measured)sceneryEnded=performance.now();phase='frame-render';draw();}
+  if(measured){const ended=performance.now();globalThis.VeldrenFrameTiming={cpuFrameMs:ended-frameStarted,simulationMs:simulationEnded-frameStarted,sceneryMs:sceneryEnded-simulationEnded,drawMs:ended-sceneryEnded};}
+ }catch(error){if(typeof realmReportRuntimeFailure==='function')realmReportRuntimeFailure(error,phase);else console.error('Game frame failed',error);}
+ finally{requestAnimationFrame(frame);}
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGamePanel(b.dataset.tab,true));
 $('closeModal').onclick=close;$('journal').onclick=showHelp;$('mapBtn').onclick=worldMap;

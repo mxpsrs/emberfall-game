@@ -274,12 +274,12 @@ function createRealmFilamentGPU(){
  function previousDraw(entry,next,groundRevision){const previous=entry.buffer?.previous;if(previous)return acquire({...entry,buffer:previous},next,groundRevision);}
  function acquire(entry,next,groundRevision){
   const essential=!!(entry.palette||entry.characterMesh);let resource=resourceByBuffer.get(entry.buffer);
-  if(!resource){if(!essential&&!constructionBudget.consume()){deferredEntry(entry,'deferredResources');return previousDraw(entry,next,groundRevision);}resource=makeResource(entry);}
+  if(!resource){resource=essential?makeResource(entry):constructionBudget.run(()=>makeResource(entry));if(!resource){deferredEntry(entry,'deferredResources');return previousDraw(entry,next,groundRevision);}}
   if(resource.materialError)throw resource.materialError;
   if(resource.parts&&!resource.materialsReady){resource.lastFrame=renderFrame;return;}
   resource.lastFrame=renderFrame;const pool=poolFor(resource,realmFilamentStyle(entry));activePools.add(pool);
   const slot=pool.used;let entity=pool.entities[slot];
-  if(!entity){if(!essential&&!constructionBudget.consume()){deferredEntry(entry,'deferredRenderables');return previousDraw(entry,next,groundRevision);}entity=createRenderable(resource,pool);}pool.used++;
+  if(!entity){entity=essential?createRenderable(resource,pool):constructionBudget.run(()=>createRenderable(resource,pool));if(!entity){deferredEntry(entry,'deferredRenderables');return previousDraw(entry,next,groundRevision);}}pool.used++;
   if(entry.palette&&pool.palettes[slot]!==entry.palette){
    const palette=entry.palette,bones=pool.bones[slot]||(pool.bones[slot]=Array.from({length:palette.length/12},()=>new Array(16).fill(0)));
    for(let b=0;b<bones.length;b++){const matrix=bones[b],o=b*12;for(let row=0;row<3;row++)for(let col=0;col<4;col++)matrix[col*4+row]=palette[o+row*4+col];matrix[15]=1;}

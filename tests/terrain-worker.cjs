@@ -29,6 +29,16 @@ const sea=simple(0,0);sea.flags.fill(2);const ocean=M.mesh(sea,4);for(let i=0;i<
   const near=chunk(192,64,.5),start=performance.now();await settle([near]);const firstMeshMs=performance.now()-start;assert(near.buffer);assert(uploads.length>=2,'coarse first, then fine');assert(requests.length===1,'two LODs share one fetched world page');const stable=near.buffer;await settle([near]);assert.equal(near.buffer,stable);
   assert.equal(manager.stats.baseValid,true,'initial hydration and temporary legacy bindings retain cooked terrain');assert.equal(manager.stats.snapshotMs,0,'unchanged startup does not take main-thread snapshots');
   near.targetStep=4;await settle([near]);assert.notEqual(near.buffer,stable);assert(retired.includes(stable));assert.equal(requests.length,1,'LOD changes reuse the page');
+  c.inWorld=()=>c.currentScene==='overworld'||c.currentScene==='tutorial';
+  c.landNode=()=>.75;c.roadInfluence=()=>[0,0,0];c.shoreDistance=()=>20;c.worldWaterDistance=()=>20;c.terrainType=()=>0;c.civilStairWellAt=()=>false;c.realmTerrainMaterial=()=>1;
+  c.currentScene='tutorial';const island=chunk(32,48,.5),pageCount=requests.length;await settle([island]);
+  assert.equal(manager.stats.baseValid,false,'Firstlight cannot use matching overworld pages');assert.equal(requests.length,pageCount,'Firstlight takes its own live surface without fetching overworld pages');
+  for(let i=0;i<island.buffer.data.length;i+=12)assert.equal(island.buffer.data[i+1],.75,'Firstlight terrain matches its own collision surface');
+  c.terrainType=()=>3;c.landNode=()=>{throw Error('Pure water must not sample unused land heights');};c.roadInfluence=()=>{throw Error('Pure water must not sample unused road colors');};const water=chunk(96,112,4);await settle([water]);
+  for(let i=0;i<water.buffer.data.length;i+=12){assert(Math.abs(water.buffer.data[i+1]-.01)<1e-8);assert.equal(water.buffer.data[i+9],4,'idle snapshot optimization retains exact water geometry');}
+  c.terrainType=()=>0;c.landNode=()=>.75;c.roadInfluence=()=>[0,0,0];
+  const leaving=chunk(48,48,.5);manager.frame([leaving],1);c.currentScene='overworld';c.landNode=()=>{throw Error('Returning overworld must retain baked sampling');};await settle([near]);
+  assert.equal(manager.stats.baseValid,true,'returning overworld restores valid cooked pages');assert(!leaving.buffer,'a previous scene snapshot cannot upload after travel');assert.equal(requests.length,pageCount,'returning LOD still reuses its cooked page');
   const abandoned=chunk(400,400,.5);manager.frame([abandoned],1);manager.frame([],1);for(let i=0;i<30;i++){manager.frame([],1);await pause();}assert(!abandoned.buffer,'a stale result cannot upload after travel');
   for(let lap=0;lap<40;lap++){const cell=chunk((lap%36)*32,Math.floor(lap/36)*32+160,4);c.px=cell.x;c.py=cell.z;await settle([cell]);assert(manager.stats.pages<=12);assert(manager.stats.pageBytes<2*1024*1024);manager.frame([],1);}
   // Live edits take exact current samples in idle tasks, keeping mesh assembly
@@ -47,6 +57,6 @@ const sea=simple(0,0);sea.flags.fill(2);const ocean=M.mesh(sea,4);for(let i=0;i<
   assert.equal(manager.stats.baseValid,false,'a real Scene edit remains invalid after manager recreation');
   for(let i=0;i<moved.buffer.data.length;i+=12){const d=moved.buffer.data;assert(Math.abs(d[i+1]-(d[i]*.03+d[i+2]*.01+5))<.00001);}
   const manifest=JSON.parse(fs.readFileSync('dist/terrain-cells/manifest.json'));assert.equal(Object.keys(manifest.pages).length,1408);
-  console.log(JSON.stringify({pass:true,firstMeshMs,terrainPages:Object.keys(manifest.pages).length,workerCacheLimit:12,workerCacheBytes:manager.stats.pageBytes,checks:['32 combinations of horizontal/vertical LOD seams','fine roads/paint','stair holes','water plane','real background worker and transferable meshes','coarse then fine','no main-thread baked sampling','nearby page IO only','LOD page reuse','stale travel results','40 travel cells and bounded memory','offscreen dirty-region snapshots','native edit snapshot fallback','atomic dirty replacement','scene switch','editor base URL']}));
+  console.log(JSON.stringify({pass:true,firstMeshMs,terrainPages:Object.keys(manifest.pages).length,workerCacheLimit:12,workerCacheBytes:manager.stats.pageBytes,checks:['32 combinations of horizontal/vertical LOD seams','fine roads/paint','stair holes','water plane','real background worker and transferable meshes','coarse then fine','no main-thread baked sampling','nearby page IO only','LOD page reuse','Firstlight collision surface and canceled scene snapshots','stale travel results','40 travel cells and bounded memory','offscreen dirty-region snapshots','native edit snapshot fallback','atomic dirty replacement','scene switch','editor base URL']}));
  }finally{manager.destroy();await Promise.all(workers.map(w=>w.terminate()));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

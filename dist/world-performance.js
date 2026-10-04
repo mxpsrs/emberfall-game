@@ -74,16 +74,30 @@
 // IO and handle marshalling for the native cell scheduler. The existing Phase 2
 // owner shares dependencies and allocations with draw leases and cancels IO.
 function createVeldrenWorldStreaming(native,assets,models,profile){
- const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=0,previousDemands=null,previousCenter=null,previousPins=null,previousGpu=-1;
+ const nextEpoch=()=>createVeldrenWorldStreaming.epoch=(createVeldrenWorldStreaming.epoch||0)+1;
+ const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=nextEpoch(),previousDemands=null,previousCenter=null,previousPins=null,previousGpu=-1;
  const pair=(id,material)=>JSON.stringify([id,material||'']);
- function reset(){previousDemands=previousCenter=previousPins=null;previousGpu=-1;++epoch;for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
+ const now=()=>globalThis.performance?.now?.()??Date.now();
+ function load(entry){
+  entry.lease?.release();entry.state='loading';entry.error=null;entry.attempts++;
+  const failed=error=>{
+   if(disposed||entries.get(entry.key)!==entry)return;
+   entry.lease?.release();entry.error=error;
+   if(entry.attempts<3){entry.state='retrying';entry.retryAt=now()+500*2**(entry.attempts-1);}else{entry.state='failed';receipts.push([entry.key,'failed']);}
+   if(!entry.reported){entry.reported=true;if(typeof realmReportRuntimeFailure==='function')realmReportRuntimeFailure(error,'asset-stream');}
+  };
+  try{entry.lease=models.acquire(entry.asset,profile,entry.material?{material:entry.material}:{});entry.lease.ready.then(()=>{if(disposed||entries.get(entry.key)!==entry)return;entry.state='ready';entry.error=null;receipts.push([entry.key,'ready']);},failed);}catch(error){failed(error);}
+ }
+ function reset(){previousDemands=previousCenter=previousPins=null;previousGpu=-1;epoch=nextEpoch();for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
  const unsubscribeScene=native.subscribe(event=>{if(event.kind==='load')reset();else if(event.scene===scene||event.kind==='batch'&&event.changes.some(c=>c.scene===scene))previousDemands=null;}),unsubscribeReload=assets.onReload(reset),unsubscribeDispose=assets.onDispose(destroy);
  function destroy(){if(disposed)return;disposed=true;unsubscribeScene();unsubscribeReload();unsubscribeDispose();reset();}
  function begin(name){if(disposed)throw Error('World streaming owner destroyed');if(scene!==name){reset();scene=name;}demands=[];}
  function want(id,matrix,options,identity){
   const material=options?.material||'';demands.push([id,material,identity||'',matrix[12],matrix[13],matrix[14]]);
   const entry=byAsset.get(pair(id,material));if(!entry||entry.generation!==assets.record(id).generation||material&&entry.materialGeneration!==assets.record(material).generation){if(entry)previousDemands=null;return false;}
-  if(entry.error)throw entry.error;return entry.state==='ready';
+  // A failed download retains the current complete model or its compatibility
+  // mesh. It cannot throw out of the frame loop and freeze the entire world.
+  return entry.state==='ready';
  }
  function end(center,gpuBytes){
   const pins=globalThis.VeldrenEditorSelection?.ids||[],same=(a,b)=>!!a&&a.length===b.length&&a.every((v,i)=>Array.isArray(v)?same(v,b[i]):v===b[i]);
@@ -94,11 +108,12 @@ function createVeldrenWorldStreaming(native,assets,models,profile){
   const consumed=receipts.length,result=native.performance(scene,{op:'streaming',profile,epoch,center,demands,receipts:receipts.slice(0,consumed),pins,gpuBytes});receipts.splice(0,consumed);status=result;
   for(const key of result.release){const entry=entries.get(key);if(entry){entries.delete(key);if(byAsset.get(pair(entry.asset,entry.material))===entry)byAsset.delete(pair(entry.asset,entry.material));entry.lease?.release();}receipts.push([key,'released']);}
   for(const request of result.load){
-   const existing=entries.get(request.key);if(existing){if(existing.state!=='loading')receipts.push([request.key,existing.state]);continue;}
-   const entry={...request,state:'loading',lease:null,error:null};entries.set(request.key,entry);byAsset.set(pair(request.asset,request.material),entry);
-   const failed=error=>{if(entries.get(request.key)!==entry)return;entry.error=error;entry.state='failed';receipts.push([request.key,'failed']);};
-   try{entry.lease=models.acquire(request.asset,profile,request.material?{material:request.material}:{});entry.lease.ready.then(()=>{if(disposed||entries.get(request.key)!==entry)return;entry.state='ready';receipts.push([request.key,'ready']);},failed);}catch(error){failed(error);}
+   const existing=entries.get(request.key);if(existing){if(existing.state==='ready'||existing.state==='failed')receipts.push([request.key,existing.state]);continue;}
+   const entry={...request,state:'loading',lease:null,error:null,attempts:0,retryAt:0,reported:false};entries.set(request.key,entry);byAsset.set(pair(request.asset,request.material),entry);load(entry);
   }
+  // The native scheduler retains its loading slot during bounded retries.
+  // Its existing concurrency limit also bounds retries and cancellation.
+  for(const entry of entries.values())if(entry.state==='retrying'&&now()>=entry.retryAt)load(entry);
  }
- return Object.freeze({begin,want,end,destroy,retains:(id,material='')=>byAsset.has(pair(id,material)),pending:()=>status?(status.stats.queued+status.stats.loading):0,stats:()=>status?.stats||null,diagnostics:()=>status?{...status.stats,cells:status.cells,leases:entries.size}:null});
+ return Object.freeze({begin,want,end,destroy,retains:(id,material='')=>byAsset.has(pair(id,material)),pending:()=>status?(status.stats.queued+status.stats.loading):0,stats:()=>status?.stats||null,diagnostics:()=>status?{...status.stats,retrying:[...entries.values()].filter(e=>e.state==='retrying').length,cells:status.cells,leases:entries.size}:null});
 }

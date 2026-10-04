@@ -16,7 +16,8 @@
   for(const previous of managers)previous.destroy();
   if(typeof Worker!=='function')return null;
   let worker;try{const url=new URL(asset('terrain-worker.js'),root.location.href);url.searchParams.set('mesher',new URL(asset('terrain-mesher.js'),root.location.href).href);worker=new Worker(url);}catch{return null;}
-  let alive=true,initialized=false,baseValid=!baseChanged,serial=0,epoch=0,busy=null,pending=[],done=[],wanted=new Set(),snapshots=new Map(),lastRevision=-1,dirtyRevision=allChanged||changedRegions.length?1:0,allDirty=allChanged,dirtyRegions=changedRegions.slice();
+  const activeScene=()=>typeof currentScene==='string'?currentScene:'overworld';
+  let scene=activeScene(),sceneRevision=0,alive=true,initialized=false,baseSourceValid=!baseChanged,baseValid=baseSourceValid&&scene==='overworld',serial=0,epoch=0,busy=null,pending=[],done=[],wanted=new Set(),snapshots=new Map(),lastRevision=-1,dirtyRevision=allChanged||changedRegions.length?1:0,allDirty=allChanged,dirtyRegions=changedRegions.slice();
   const stats={mode:'worker',queued:0,working:0,uploads:0,stale:0,failures:0,pages:0,pageBytes:0,workerMs:0,snapshotMs:0,baseValid,bakedSourceMatched:null,invalidations:0};
   const touched=(c,bounds)=>{const left=c.x-8,top=c.z-8;return !bounds||left<=bounds.maxX+2&&left+16>=bounds.minX-2&&top<=bounds.maxZ+2&&top+16>=bounds.minZ-2;};
   const invalidate=(bounds=null,changed=true)=>{
@@ -30,14 +31,14 @@
    if(m.format!=='veldren.terrain-cells'||m.version!==1)throw Error('Incompatible terrain cells');
    const source=root.VeldrenWorldEdits?.state?.world;
    stats.bakedSourceMatched=!!root.VeldrenPrebuiltWorld&&m.sourceKey===(root.VeldrenWorldEdits?.sourceKey??root.VeldrenPrebuiltWorld.fingerprint(source));
-   baseValid=baseValid&&stats.bakedSourceMatched;stats.baseValid=baseValid;
+   baseSourceValid=baseSourceValid&&stats.bakedSourceMatched;baseValid=baseSourceValid&&scene==='overworld';stats.baseValid=baseValid;
    const urls={};for(const path of Object.values(m.pages))urls[path]=new URL(asset(path),root.location.href).href;
    worker.postMessage({type:'init',manifest:m,urls,maxPages:mobile?12:24});initialized=true;pump();
-  }).catch(error=>{initialized=true;baseValid=false;stats.failures++;console.warn('Terrain page fallback:',error.message);pump();});
+  }).catch(error=>{initialized=true;baseSourceValid=baseValid=false;stats.baseValid=false;stats.failures++;console.warn('Terrain page fallback:',error.message);pump();});
   function sourceSnapshot(c,token){
    const x=c.x-8,z=c.z-8,n=16,side=n+3,cs=n*2+1;
    const h=new Float32Array(side*side),colors=new Uint8Array(cs*cs*3),flags=new Uint8Array(n*n),materials=new Uint8Array(n*n*4);
-   const counts=[h.length,cs*cs,n*n,materials.length];let phase=0,index=0;
+   const counts=[n*n,h.length,cs*cs,materials.length];let phase=0,index=0;
    return new Promise(resolve=>{
     const slice=()=>{
      if(!alive||token!==epoch||!wanted.has(c)||typeof inWorld!=='function'||!inWorld()){resolve(null);return;}
@@ -45,12 +46,16 @@
      // Snapshot edits in bounded idle tasks, never inside terrain rendering.
      // These samples use the same live native foundations, pads and height edits
      // as collision. Only the worker emits triangles or allocates vertex arrays.
-     while(phase<4&&units++<32&&performance.now()-start<budget){
-      if(phase===0){const a=x+index%side-1,b=z+Math.floor(index/side)-1;h[index]=landNode(a,b);}
-      else if(phase===1){const a=x+(index%cs)/2,b=z+Math.floor(index/cs)/2,r=roadInfluence(a,b),k=index*3;colors[k]=Math.round(Math.max(0,Math.min(1,r[0]))*255);colors[k+1]=Math.round(Math.max(0,Math.min(1,r[1]))*255);colors[k+2]=Math.round(Math.max(0,Math.min(1,shoreDistance(a,b)/4))*255);}
-      else if(phase===2){const a=x+index%n,b=z+Math.floor(index/n),t=terrainType(a,b),shore=[[a,b],[a,b+1],[a+1,b+1],[a+1,b]].some(p=>Math.abs(worldWaterDistance(...p))<2);flags[index]=(t!==3||shore?1:0)|(t===3||shore?2:0)|(civilStairWellAt(a+.5,b+.5)?4:0);}
+     while(phase<4&&units++<256&&performance.now()-start<budget){
+      if(phase===0){const a=x+index%n,b=z+Math.floor(index/n),t=terrainType(a,b),shore=[[a,b],[a,b+1],[a+1,b+1],[a+1,b]].some(p=>Math.abs(worldWaterDistance(...p))<2);flags[index]=(t!==3||shore?1:0)|(t===3||shore?2:0)|(civilStairWellAt(a+.5,b+.5)?4:0);}
+      else if(phase===1){const a=x+index%side-1,b=z+Math.floor(index/side)-1;h[index]=landNode(a,b);}
+      else if(phase===2){const a=x+(index%cs)/2,b=z+Math.floor(index/cs)/2,r=roadInfluence(a,b),k=index*3;colors[k]=Math.round(Math.max(0,Math.min(1,r[0]))*255);colors[k+1]=Math.round(Math.max(0,Math.min(1,r[1]))*255);colors[k+2]=Math.round(Math.max(0,Math.min(1,shoreDistance(a,b)/4))*255);}
       else {const a=x+(index%(n*2))/2,b=z+Math.floor(index/(n*2))/2;materials[index]=realmTerrainMaterial(roadInfluence(a+.25,b+.25),Math.floor(a),Math.floor(b))|(root.VeldrenTerrainEdits?.paint(a,b)?128:0);}
-      if(++index===counts[phase]){phase++;index=0;}
+      if(++index===counts[phase]){phase++;index=0;
+       // Water and empty stair holes emit no land vertices. Their unchanged
+       // worker output needs no heights, road colors or ground materials.
+       if(phase===1&&!flags.some(f=>(f&1)&&!(f&4)))phase=4;
+      }
      }
      stats.snapshotMs=performance.now()-start;
      if(phase<4)idle(slice);else resolve({x,z,size:n,heights:h,colors,flags,materials});
@@ -74,7 +79,7 @@
    if(!alive)return;
    const result=event.data,job=busy;if(!job||result.id!==job.id)return;busy=null;
    if(job.token!==epoch||!wanted.has(job.c)){stats.stale++;pump();return;}
-   if(result.type==='error'){stats.failures++;job.c.streamDirty=true;baseValid=false;pending.unshift(job.c);}
+   if(result.type==='error'){stats.failures++;job.c.streamDirty=true;baseSourceValid=baseValid=false;stats.baseValid=false;pending.unshift(job.c);}
    else {stats.pages=result.pages;stats.pageBytes=result.pageBytes;stats.workerMs=result.ms;done.push({...result,c:job.c});}
    // Bound pending upload memory as well as worker concurrency.
    if(done.length<2)pump();
@@ -82,8 +87,12 @@
   worker.onerror=error=>{stats.failures++;alive=false;worker.terminate();console.warn('Terrain worker unavailable; using bounded terrain fallback.',error.message);};
   function frame(visible,revision){
    if(!alive)return false;
+   // Cooked pages contain only the overworld. Firstlight uses its live native
+   // surface, and an old scene's queued mesh must never upload after travel.
+   if(scene!==activeScene()){scene=activeScene();sceneRevision++;baseValid=baseSourceValid&&scene==='overworld';stats.baseValid=baseValid;invalidate(null,false);}
    if(lastRevision!==-1&&lastRevision!==revision)invalidate(null,false);lastRevision=revision;
    wanted=new Set(visible);
+   for(const c of visible)if(c.streamSceneRevision!==sceneRevision){c.streamSceneRevision=sceneRevision;c.complete=false;c.noGeometry=false;}
    for(const c of visible)if(c.dirtyRevision!==dirtyRevision){if(allDirty||dirtyRegions.some(b=>touched(c,b))){c.streamDirty=true;c.complete=false;c.noGeometry=false;}c.dirtyRevision=dirtyRevision;}
    pending=pending.filter(c=>wanted.has(c));done=done.filter(r=>{if(wanted.has(r.c)&&r.epoch===epoch)return true;stats.stale++;return false;});
    for(const key of snapshots.keys())if(!visible.some(c=>c.key===key))snapshots.delete(key);
@@ -97,7 +106,7 @@
    stats.queued=pending.length;stats.working=busy?1:0;stats.uploads=uploads;stats.ms=performance.now()-start;stats.budgetMs=budget;stats.pending=pending.length+done.length+(busy?1:0);stats.slices=0;stats.fallbackSlices=0;gpu.terrainWork=stats;
    pump();return true;
   }
-  const manager={frame,invalidate,invalidateBase(){baseValid=false;stats.baseValid=false;invalidate();},destroy(){if(alive){alive=false;worker.terminate();}pending=[];done=[];busy=null;snapshots.clear();managers.delete(manager);},stats};managers.add(manager);return manager;
+  const manager={frame,invalidate,invalidateBase(){baseSourceValid=baseValid=false;stats.baseValid=false;invalidate();},destroy(){if(alive){alive=false;worker.terminate();}pending=[];done=[];busy=null;snapshots.clear();managers.delete(manager);},stats};managers.add(manager);return manager;
  }
  root.addEventListener?.('pagehide',()=>{for(const manager of managers)manager.destroy();},{once:true});
  root.VeldrenTerrainStreaming={create,invalidate(bounds){rememberEdit(bounds);for(const m of managers)m.invalidate(bounds);},invalidateBase(){if(worldReady())baseChanged=true;for(const m of managers)m.invalidateBase();}};

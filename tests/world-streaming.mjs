@@ -43,6 +43,21 @@ try{
  n.load(original);await settle([ids[0]]);assert.equal(streaming.diagnostics().resident,1);assert.deepEqual(n.serialize(),original);
  // Cell unload/reload never acquires a new canonical entity or history entry.
  for(let lap=0;lap<12;lap++){await settle([ids[lap%ids.length]]);for(let i=0;i<35;i++)frame([]);assert.equal(streaming.diagnostics().tracked,0);assert.equal(models.diagnostics().gpuBytes,0);}
- assert.deepEqual(n.serialize(),original);streaming.destroy();draws.destroy();context.VeldrenEditorSelection.destroy();native.destroy();assert.equal(models.diagnostics().gpuBytes,0);assert.equal(materials.diagnostics().materials,0);assert.equal(textures.diagnostics().gpuBytes,0);engine.destroyScene(scene);F.Engine.destroy(engine);
- console.log('PASS: actual WASM/Filament cell scheduling, 2-load mobile limit, shared leases, cancellation, selection pins, undo, generation invalidation, registry/document reload, 12 travel cycles and complete release.');
+ assert.deepEqual(n.serialize(),original);streaming.destroy();draws.destroy();
+ let retryNow=0,attempts=0,permanent=false;const reports=[];context.performance={now:()=>retryNow};context.realmReportRuntimeFailure=(error,stage)=>reports.push({message:error.message,stage});
+ const flaky={acquire(...args){attempts++;const lease=models.acquire(...args),fail=permanent||attempts===1;return {ready:lease.ready.then(value=>{if(fail){lease.release();throw Error('injected transient model failure');}return value;}),release:()=>lease.release()};}};
+ const recovery=context.createVeldrenWorldStreaming(n,assets,flaky,'browser-mobile'),recoveryDraws=context.createVeldrenAssetDraws(engine,scene,assets,models,'browser-mobile',F,recovery);
+ const recoveryFrame=()=>{recovery.begin('stream');recoveryDraws.begin('stream');const visible=recoveryDraws.submit(ids[0],matrix,0,null,'recovering-instance');recoveryDraws.end();recovery.end([5000,0,5000],0);return visible;};
+ recoveryFrame();for(let i=0;i<100&&!recovery.diagnostics().retrying;i++){await tick();assert.doesNotThrow(recoveryFrame);}
+ assert.equal(recovery.diagnostics().retrying,1);assert.equal(attempts,1);assert.equal(reports.length,1);assert.equal(reports[0].stage,'asset-stream');assert.equal(models.diagnostics().gpuBytes,0,'failed preparation releases its allocation');
+ for(let i=0;i<5;i++)assert.doesNotThrow(recoveryFrame);assert.equal(attempts,1,'the retry delay prevents per-frame fetch churn');
+ retryNow=500;for(let i=0;i<150;i++){if(recoveryFrame()&&!recovery.pending())break;await tick();}
+ assert(recoveryFrame(),'the complete canonical instance replaces the fallback after retry');assert.equal(attempts,2);assert.equal(recovery.diagnostics().failed,0);assert.equal(recovery.diagnostics().resident,1);
+ recovery.destroy();recoveryDraws.destroy();assert.equal(models.diagnostics().gpuBytes,0);
+ permanent=true;attempts=0;const blocked=context.createVeldrenWorldStreaming(n,assets,flaky,'browser-mobile');
+ const blockedFrame=()=>{blocked.begin('stream');blocked.want(ids[0],matrix,null,'blocked-instance');blocked.end([5000,0,5000],0);};
+ for(let i=0;i<150&&!blocked.diagnostics()?.failed;i++){retryNow+=500;assert.doesNotThrow(blockedFrame);await tick();}
+ assert.equal(blocked.diagnostics().failed,1);assert.equal(attempts,3,'a permanently failed asset has a bounded retry count');for(let i=0;i<10;i++){retryNow+=1000;assert.doesNotThrow(blockedFrame);}assert.equal(attempts,3);
+ blocked.destroy();assert.deepEqual(n.serialize(),original);context.VeldrenEditorSelection.destroy();native.destroy();assert.equal(models.diagnostics().gpuBytes,0);assert.equal(materials.diagnostics().materials,0);assert.equal(textures.diagnostics().gpuBytes,0);engine.destroyScene(scene);F.Engine.destroy(engine);
+ console.log('PASS: actual WASM/Filament scheduling, bounded mobile loading, cancellation, editor pins/undo, invalidation/reload, travel, transient retry, bounded permanent failure and complete release.');
 }finally{fs.rmSync(temporary,{recursive:true,force:true});delete global.window;delete global.__VELDREN_TEST_FILAMENT__;}

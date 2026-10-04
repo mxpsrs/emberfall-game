@@ -30,6 +30,14 @@ for(const failure of ['download','runtime','timeout']){
  elements.get('loading').children.at(-1).onclick();assert.equal(ctx.reloads,1);
 }
 const recoverable=setup();recoverable.listeners.unhandledrejection({reason:new Error('background refresh')});recoverable.listeners.error({filename:'https://third-party.test/widget.js',error:new Error('optional widget')});assert.equal(recoverable.ctx.window.realmStartup.failed,false,'unrelated rejections and errors do not fail startup');assert.equal(recoverable.reports.length,0,'recoverable noise does not consume the one fatal report');
+const runtime=setup();vm.runInContext('realmLoadComplete()',runtime.ctx);
+let runtimeNow=100000;runtime.ctx.Date={now:()=>runtimeNow};
+runtime.listeners.error({filename:'https://game.test/renderer-filament.js',error:new Error('Failed texture?token=private-value')});
+runtime.listeners.unhandledrejection({reason:new Error('Asset preparation failed')});
+assert.equal(runtime.reports.length,2,'post-startup errors are reported');assert.equal(runtime.reports[0].payload.code,'VLD-FRM');assert.equal(runtime.reports[0].payload.stage,'runtime-script');assert(!JSON.stringify(runtime.reports).includes('private-value'),'runtime diagnostics redact sensitive URL values');
+runtime.listeners.error({error:new Error('same repeated frame')});assert.equal(runtime.reports.length,2,'a repeated failure cannot flood the reporting endpoint');assert(!runtime.ctx.window.realmStartup.failed,'runtime reporting preserves the loaded character and scene');
+runtimeNow+=60000;runtime.listeners.unhandledrejection({reason:Object.assign(new Error('cancelled'),{name:'AbortError'})});assert.equal(runtime.reports.length,2,'ordinary cancellation does not report a runtime failure');
+runtime.listeners.error({error:new Error('later frame')});assert.equal(runtime.reports.length,3,'runtime diagnostics recover their bounded allowance after a minute');
 const {ctx,elements,timers}=setup();
 vm.runInContext("realmLoadStatus('World',90);realmLoadStatus('Scripts',20);",ctx);assert.equal(elements.get('loadingStatus').textContent,'World');assert.equal(elements.get('loadingProgress').value,90);
 vm.runInContext('realmLoadComplete()',ctx);timers[0]();assert.equal(elements.get('loading').hidden,true);assert.equal(ctx.window.realmStartup.failed,false);

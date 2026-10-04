@@ -16,10 +16,20 @@ function realmDiagnosticCode(stage=window.realmStartup?.stageCode){return 'VLD-'
 function realmDiagnosticText(value,limit){return String(value??'').replace(/([?&](?:password|token|session|key)=)[^&#\s]*/gi,'$1[redacted]').replace(/("(?:password|state)"\s*:\s*")[^"]*/gi,'$1[redacted]').slice(0,limit);}
 function realmReportStartupFailure(error,code){
  const state=window.realmStartup;if(state.reportedFailure)return;state.reportedFailure=true;
- const object=error&&typeof error==='object'?error:null,payload={release:realmDiagnosticText(window.REALM_RELEASE||'unknown',64),stage:realmDiagnosticText(state.stageCode||'unknown',32),code,error:{name:realmDiagnosticText(object?.name||'Error',80),message:realmDiagnosticText(object?.message??error??'Unknown startup failure',500),stack:realmDiagnosticText(object?.stack||'',2400)},userAgent:realmDiagnosticText(typeof navigator!=='undefined'?navigator.userAgent:'',400),viewport:{width:Math.max(0,Math.round(Number(window.innerWidth)||0)),height:Math.max(0,Math.round(Number(window.innerHeight)||0)),dpr:Math.max(0,Math.min(8,Number(window.devicePixelRatio)||1))}};
+ realmSendFailureReport(error,code,state.stageCode||'unknown');
+}
+function realmSendFailureReport(error,code,stage){
+ const object=error&&typeof error==='object'?error:null,payload={release:realmDiagnosticText(window.REALM_RELEASE||'unknown',64),stage:realmDiagnosticText(stage,32),code,error:{name:realmDiagnosticText(object?.name||'Error',80),message:realmDiagnosticText(object?.message??error??'Unknown game failure',500),stack:realmDiagnosticText(object?.stack||'',2400)},userAgent:realmDiagnosticText(typeof navigator!=='undefined'?navigator.userAgent:'',400),viewport:{width:Math.max(0,Math.round(Number(window.innerWidth)||0)),height:Math.max(0,Math.round(Number(window.innerHeight)||0)),dpr:Math.max(0,Math.min(8,Number(window.devicePixelRatio)||1))}};
  const body=JSON.stringify(payload);
  try{if(navigator.sendBeacon&&typeof Blob!=='undefined'&&navigator.sendBeacon('/api/client-error',new Blob([body],{type:'application/json'})))return;}catch{}
  try{if(typeof fetch==='function')fetch('/api/client-error',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',keepalive:true,body}).catch(()=>{});}catch{}
+}
+let realmRuntimeReportWindow=0,realmRuntimeReportCount=0;
+function realmReportRuntimeFailure(error,stage='runtime'){
+ const now=Date.now();if(now-realmRuntimeReportWindow>=60000){realmRuntimeReportWindow=now;realmRuntimeReportCount=0;}
+ if(realmRuntimeReportCount>=2)return;realmRuntimeReportCount++;
+ console.error('Veldren runtime failure ('+stage+'):',error);
+ realmSendFailureReport(error,'VLD-FRM',stage);
 }
 function realmRefreshLoadingTimeout(){
  const state=window.realmStartup;if(state.failed||state.finished||state.paused)return;
@@ -76,11 +86,11 @@ document.addEventListener('load',e=>{if(e.target?.tagName==='SCRIPT'){window.rea
 function realmStartupInlineLoaded(){const state=window.realmStartup;if(!state||state.failed||state.finished)return;state.loaded++;realmLoadStatus('Loading the game…',Math.min(30,state.loaded));}
 document.addEventListener('error',e=>{if(e.target?.tagName==='SCRIPT')realmLoadFailure('A game file could not download. Please retry.',new Error('Script unavailable: '+e.target.src),'script-download');},true);
 window.addEventListener('error',e=>{
- const state=window.realmStartup;if(state.finished||state.failed)return;let critical=false;
+ const state=window.realmStartup;if(state.finished){realmReportRuntimeFailure(e.error||e.message,'runtime-script');return;}if(state.failed)return;let critical=false;
  try{const source=new URL(e.filename||'',location.href);critical=state.stageCode==='scripts'&&/^https?:$/.test(source.protocol)&&source.origin===location.origin&&/\.js$/.test(source.pathname);}catch{}
  if(critical)realmLoadFailure('A game file could not start. Please retry.',e.error||e.message,'script-runtime');else console.warn('Recoverable startup error:',e.error||e.message);
 });
-window.addEventListener('unhandledrejection',e=>{const state=window.realmStartup;if(!state.finished&&!state.failed)console.warn('Recoverable startup rejection:',e.reason);});
+window.addEventListener('unhandledrejection',e=>{const state=window.realmStartup;if(state.finished){if(e.reason?.name!=='AbortError')realmReportRuntimeFailure(e.reason,'runtime-promise');}else if(!state.failed)console.warn('Recoverable startup rejection:',e.reason);});
 let realmUpdateNotice=null,realmUpdateCheckBusy=false;
 function realmShowUpdateNotice(){
  if(realmUpdateNotice)return;const button=document.createElement('button');realmUpdateNotice=button;button.type='button';button.textContent='Game update ready · Reload';button.setAttribute('aria-label','Save and reload the latest Veldren update');Object.assign(button.style,{position:'fixed',left:'50%',top:'12px',transform:'translateX(-50%)',zIndex:'100000',padding:'11px 18px',border:'1px solid #d9bd72',borderRadius:'8px',background:'#10242a',color:'#fff5cf',font:'600 15px system-ui',boxShadow:'0 5px 24px #0009',cursor:'pointer'});button.onclick=async()=>{button.disabled=true;button.textContent='Saving…';try{if(typeof flushCloudSave==='function')await flushCloudSave();}catch{}location.reload();};document.body.appendChild(button);

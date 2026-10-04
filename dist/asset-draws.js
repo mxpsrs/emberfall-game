@@ -3,18 +3,24 @@
 // render-only hierarchy. No draw handle or load status is serialized.
 function createVeldrenRenderableBudget(profile){
  const limit=profile==='browser-mobile'?16:64,budgetMs=profile==='browser-mobile'?3:5,owners=[];
- let remaining=limit,used=0,legacyUsed=0,deferredUsed=0,legacyLimit=limit,deferredLimit=limit,legacyStart=null,deferredStart=null,maxUsed=0,frame=0,nextOwner=0;
+ let remaining=limit,used=0,legacyUsed=0,deferredUsed=0,legacyLimit=limit,deferredLimit=limit,legacyStart=null,deferredStart=null,legacyMs=0,deferredMs=0,legacyMeasured=false,deferredMeasured=false,maxUsed=0,frame=0,nextOwner=0;
  const now=()=>globalThis.performance?.now?.()??Date.now();
  function consume(deferred=false){
   const count=deferred?deferredUsed:legacyUsed,started=deferred?deferredStart:legacyStart,quota=deferred?deferredLimit:legacyLimit;
-  if(remaining<=0||count>=quota||count&&now()-started>=budgetMs/2)return false;
+  const measured=deferred?deferredMeasured:legacyMeasured,spent=measured?(deferred?deferredMs:legacyMs):now()-started;
+  if(remaining<=0||count>=quota||count&&spent>=budgetMs/2)return false;
   if(!count){if(deferred)deferredStart=now();else legacyStart=now();}
   remaining--;used++;if(deferred)deferredUsed++;else legacyUsed++;maxUsed=Math.max(maxUsed,used);return true;
  }
+ function run(work,deferred=false){
+  if(deferred)deferredMeasured=true;else legacyMeasured=true;
+  if(!consume(deferred))return null;
+  const started=now();try{return work();}finally{const ms=Math.max(0,now()-started);if(deferred)deferredMs+=ms;else legacyMs+=ms;}
+ }
  return Object.freeze({registerOwner(){const owner={items:[],cursor:0};owners.push(owner);return owner;},beginFrame(){
   frame++;const pending=owners.some(o=>o.items.some(i=>i.pending));legacyLimit=pending?Math.ceil(limit/2):limit;deferredLimit=pending?Math.floor(limit/2):limit;
-  for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=legacyUsed=deferredUsed=0;legacyStart=deferredStart=null;
- },consume,enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){
+  for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=legacyUsed=deferredUsed=0;legacyStart=deferredStart=null;legacyMs=deferredMs=0;legacyMeasured=deferredMeasured=false;
+ },consume,run,enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){
   // Reserve count and time for both kinds of construction. Neither queue may
   // spend the other's entire frame allowance, whichever is visited first.
   if(owners.some(o=>o.items.some(i=>i.pending))){legacyLimit=Math.ceil(limit/2);deferredLimit=Math.floor(limit/2);}
@@ -22,13 +28,19 @@ function createVeldrenRenderableBudget(profile){
   while(remaining>0){let chosen=-1,best=Infinity;
    for(let offset=0;offset<owners.length;offset++){const index=(ownerIndex+offset)%owners.length,owner=owners[index],instance=owner?.items[owner.cursor];if(!instance)continue;const priority=Number.isFinite(instance.priority)?instance.priority:0;if(priority<best){best=priority;chosen=index;}}
    if(chosen<0)break;const owner=owners[chosen],instance=owner.items[owner.cursor++];ownerIndex=(chosen+1)%owners.length;instance.queuedFrame=0;
-   if(!instance.pending||typeof instance.advance!=='function')continue;if(!consume(true))break;instance.advance();
+   if(!instance.pending||typeof instance.advance!=='function')continue;if(run(()=>instance.advance(),true)===null)break;
   }
   nextOwner=ownerIndex;return used;
- },diagnostics:()=>({limit,budgetMs,remaining,used,maxUsed,queued:owners.reduce((n,owner)=>n+owner.items.length-owner.cursor,0)})});
+ },diagnostics:()=>({limit,budgetMs,remaining,used,maxUsed,constructionMs:legacyMs+deferredMs,queued:owners.reduce((n,owner)=>n+owner.items.length-owner.cursor,0)})});
 }
 function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=Filament,streaming=null,constructionBudget=null){
- const pools=new Map(),activeByIdentity=new Map(),manager=engine.getTransformManager(),constructionOwner=constructionBudget?.registerOwner?.();let disposed=false,frame=0,sceneKey=null;
+ const pools=new Map(),activeByIdentity=new Map(),failedModels=new Map(),manager=engine.getTransformManager(),constructionOwner=constructionBudget?.registerOwner?.();let disposed=false,frame=0,sceneKey=null;
+ const now=()=>globalThis.performance?.now?.()??Date.now();
+ function failed(key,generation,error){
+  const previous=failedModels.get(key),attempts=previous?.generation===generation?previous.attempts+1:1;
+  failedModels.set(key,{generation,attempts,retryAt:now()+500*2**(attempts-1)});
+  if(attempts===1&&typeof realmReportRuntimeFailure==='function')realmReportRuntimeFailure(error,'asset-draw');
+ }
  const unsubscribe=assets.onDispose(destroy);
  function removeInstance(instance){
   instance.pending=false;instance.advance=null;if(activeByIdentity.get(instance.identity)===instance)activeByIdentity.delete(instance.identity);
@@ -80,7 +92,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
  }
  function begin(key){
   if(disposed)throw Error('Asset draw owner destroyed');frame++;
-  if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();sceneKey=key;}
+  if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();failedModels.clear();sceneKey=key;}
   for(const pool of pools.values())pool.used=0;
  }
  function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false){
@@ -88,11 +100,13 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(streaming&&!streaming.want(id,matrix,options,identity))return retainPrevious(identity,matrix);
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
+  const failure=(!pool||pool.error)&&failedModels.get(key);
+  if(failure&&failure.generation===generation){if(failure.attempts>=3||now()<failure.retryAt)return retainPrevious(identity,matrix);if(pool){removePool(pool);pools.delete(key);pool=null;}}
   if(!pool){
-   const lease=resources.acquire(id,profile,options||{});pool={asset:id,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
-   const current=pool;lease.ready.then(model=>{current.model=model;},error=>{current.error=error;});
+   let lease;try{lease=resources.acquire(id,profile,options||{});}catch(error){failed(key,generation,error);return retainPrevious(identity,matrix);}pool={asset:id,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
+   const current=pool;lease.ready.then(model=>{if(pools.get(key)!==current)return;failedModels.delete(key);current.model=model;},error=>{if(pools.get(key)!==current)return;current.error=error;failed(key,generation,error);});
   }
-  pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return retainPrevious(identity,matrix);
+  pool.lastUsed=frame;if(pool.error||!pool.model)return retainPrevious(identity,matrix);
   const slot=pool.used++,keyIdentity=identity==null?'slot:'+slot:'entity:'+identity;
   let instance=pool.identities.get(keyIdentity);
   if(!instance){instance=constructionBudget?beginInstance(pool.model,options||{}):makeInstance(pool.model,options||{});instance.identity=keyIdentity;instance.pool=pool;pool.identities.set(keyIdentity,instance);pool.instances.push(instance);
@@ -121,6 +135,6 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
    if(frame-pool.lastUsed>120){removePool(pool);pools.delete(id);}
   }
  }
- function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();}
+ function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();failedModels.clear();}
  return Object.freeze({begin,submit,end,destroy,ready(id,identity){const instance=pools.get(id)?.identities.get('entity:'+identity);return !!instance?.active&&instance.seen===frame;},diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),pendingVisibleInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending&&i.seen===frame).length,0),pendingInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending).length,0),construction:constructionBudget?.diagnostics?.()||null,loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
 }
