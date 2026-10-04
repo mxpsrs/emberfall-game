@@ -227,7 +227,18 @@ function renderCombatBar(){
 }
 function buySupply(id,count,cost){if(!ITEMS[id]||!Number.isInteger(count)||count<1||!Number.isSafeInteger(cost)||cost<0)return false;if(carriedCoins()<cost){toast('You need '+cost+' coins.');return false;}const oldCoins=s.bag.coins||0,oldPouch=s.gold;if(!spendCoins(cost))return false;if(!canCarry(id,count)){s.bag.coins=oldCoins;s.gold=oldPouch;toast('Not enough inventory space.');return false;}if(ITEMS[id].slot)s.gear[id]=(s.gear[id]||0)+count;else s.bag[id]=(s.bag[id]||0)+count;renderUI();save();return true;}
 function craftArrows(){if(s.bag.logs<1||s.bag.ore<1){toast('You need 1 log and 1 iron ore.');return false;}s.bag.logs--;s.bag.ore--;s.bag.arrows+=20;gain('Smithing',12);renderUI();save();return true;}
-function lineOfSight(ax,ay,bx,by){const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);for(let i=1;i<steps;i++){const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);if((x===ax&&y===ay)||(x===bx&&y===by))continue;if(worldWall(x,y)||buildings.some(b=>inBuilding(b,x,y))||(typeof worldObjectsAt==='function'?worldObjectsAt(x,y):objects).some(o=>(o.type==='tree'||o.blocksSight&&!o.penFence&&!/fence/i.test(o.name||''))&&o.x===x&&o.y===y))return false;}return true;}
+function lineOfSight(ax,ay,bx,by){
+ const distance=Math.hypot(bx-ax,by-ay),steps=Math.ceil(distance*8);let previousX=NaN,previousY=NaN;
+ for(let i=1;i<steps;i++){
+  const x=Math.round(ax+(bx-ax)*i/steps),y=Math.round(ay+(by-ay)*i/steps);
+  // Sub-tile sampling preserves the existing diagonal/corner rules. Check a
+  // rounded tile once instead of repeating all its collision queries eight times.
+  if(x===previousX&&y===previousY)continue;previousX=x;previousY=y;
+  if((x===ax&&y===ay)||(x===bx&&y===by))continue;
+  if(worldWall(x,y)||(globalThis.VeldrenBuildingScene?.sightBlockedAt?VeldrenBuildingScene.sightBlockedAt(x,y):buildings.some(b=>inBuilding(b,x,y)))||(typeof worldSightBlockedAt==='function'?worldSightBlockedAt(x,y):(typeof worldObjectsAt==='function'?worldObjectsAt(x,y):objects).some(o=>(o.type==='tree'||o.blocksSight&&!o.penFence&&!/fence/i.test(o.name||''))&&o.x===x&&o.y===y)))return false;
+ }
+ return true;
+}
 function inAttackRange(o){return Math.hypot(o.x-px,o.y-py)<=attackRange(o)+.01&&lineOfSight(px,py,o.x,o.y);}
 let projectiles=[],meleeImpacts=[],enemyClock=0,retaliationClock=0,playerHitAt=-100,playerAttackReadyAt=0;
 function actorWalkSpeed(o){return o.type==='man'||o.type==='villager'?.75:['wolf','ridgewolf'].includes(o.kind)?1.6:o.kind==='slime'?.85:1.25;}

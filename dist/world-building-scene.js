@@ -120,7 +120,7 @@
  }
  // Compatibility views contain IDs only. The native Scene owns every field;
  // renderer/collision projections are computed from the same transform graph.
- const views=new Map(),tables=new Map(),assemblyRenders=new Map(),assemblyProjections=new Map();let subscribed=false,installed=false,buildingRender=null;
+ const views=new Map(),tables=new Map(),assemblyRenders=new Map(),assemblyProjections=new Map(),collisionQueries=new Map(),collisionBuckets=new Map();let subscribed=false,installed=false,buildingRender=null;
  const native=()=>root.realmNative.scenes;
  const registry=()=>typeof worldScenes!=='undefined'?worldScenes:root.worldScenes;
  const entity=(scene,id)=>native().entity(scene,id);
@@ -211,18 +211,19 @@
  }
  function onChange(event){
   if(native().isUnderstoryBatch?.(event))return;
-  if(event.kind==='load'){assemblyRenders.clear();assemblyProjections.clear();for(const name of tables.keys())project(name);wallMaps.clear();return;}
-  for(const store of [assemblyRenders,assemblyProjections]){const renders=store.get(event.scene);
+  if(event.kind==='load'){assemblyRenders.clear();assemblyProjections.clear();collisionQueries.clear();collisionBuckets.clear();for(const name of tables.keys())project(name);wallMaps.clear();return;}
+  for(const store of [assemblyRenders,assemblyProjections,collisionQueries]){const renders=store.get(event.scene);
   if(renders?.size)for(const change of event.kind==='batch'?event.changes:[event]){
    const node=change.id&&entity(event.scene,change.id);
    // Root, module and ancestor writes change the projection. Actor motion and
    // independent scenery writes retain it; the native Scene remains authoritative.
-   if(!node){renders.clear();break;}
+   if(!node){renders.clear();collisionBuckets.delete(event.scene);break;}
    const owner=node.components.BuildingPart?.building||node.components.Entrance?.building;
-   for(const [id,cached] of renders)if(id===owner||cached.dependencies.has(change.id))renders.delete(id);
+   for(const [id,cached] of renders)if(id===owner||cached.dependencies.has(change.id)){renders.delete(id);collisionBuckets.delete(event.scene);}
   }
   }
   const table=tables.get(event.scene);if(!table)return;
+  for(const change of event.kind==='batch'?event.changes:[event])if(entity(event.scene,change.id)?.components.GeneratedBuilding)collisionBuckets.delete(event.scene);
   if(event.kind==='batch'&&event.changes?.every(change=>{const node=entity(event.scene,change.id);return !table.ids.has(change.id)&&!table.doorIds.has(change.id)&&!node?.components.BuildingPart&&!node?.components.GeneratedBuilding;}))return;
   invalidate(event.scene,event.id);
   const node=event.id&&entity(event.scene,event.id);if(event.kind==='batch'||event.kind==='remove'||event.kind==='upsert'&&(node?.components.GeneratedBuilding||node?.components.Entrance)&&!table.ids.has(event.id)&&!table.doorIds.has(event.id))project(event.scene);
@@ -290,6 +291,50 @@
   for(const deck of q.decks)if(surfaceRectZ(deck,x,z)!==null)return {height:q.base+q.rise,kind:'rampart',structure:surface};
   return null;
  }
+ function collisionQuery(b){
+  const scene=b._generatedSceneName,id=b._sceneEntityId;let values=collisionQueries.get(scene);
+  if(!values)collisionQueries.set(scene,values=new Map());const cached=values.get(id);if(cached)return cached.value;
+  const node=entity(scene,id),A=root.VeldrenAssembly,matrix=matrices.row(node.worldMatrix),inverse=A.inverse(matrix),dependencies=new Set([id]);
+  const track=node=>{while(node&&!dependencies.has(node.id)){dependencies.add(node.id);node=entity(scene,node.parent);}};track(entity(scene,node.parent));
+  const footprint=node.components.BuildingFootprint,pad=2+(node.components.BuildingAccess?.civilGateHalfWidth||0);
+  let minX=-pad,minZ=-pad,maxX=number(footprint?.w,1)+pad,maxZ=number(footprint?.h,1)+pad;
+  // Legacy wall tiles and entrances can extend past a building's nominal
+  // rectangle. Include their actual native positions before rejecting a ray.
+  for(const partId of [...(node.components.BuildingLayout?.walls||[]),node.components.BuildingAccess?.entrance].filter(Boolean)){
+   const part=entity(scene,partId);if(!part)continue;track(part);
+   const p=A.point(inverse,[part.worldMatrix[12],part.worldMatrix[13],part.worldMatrix[14]]);
+   minX=Math.min(minX,p[0]-pad);maxX=Math.max(maxX,p[0]+pad);minZ=Math.min(minZ,p[2]-pad);maxZ=Math.max(maxZ,p[2]+pad);
+  }
+  const value={matrix,inverse,minX,minZ,maxX,maxZ,logical:getView(scene,id,id)};values.set(id,{value,dependencies});return value;
+ }
+ function sightBlockedAt(x,z){
+  const scene=String(currentScene),members=registry()[scene]?.buildings;
+  if(!tables.has(scene))return buildings.some(b=>inBuilding(b,x,z));
+  let index=collisionBuckets.get(scene);
+  if(index?.members!==members){
+   const buckets=new Map(),fallback=[];
+   for(const b of members||[]){
+    if(!b._generatedBuildingEntity){fallback.push(b);continue;}
+    let bounds=b.assembly&&root.VeldrenBuildings.collisionBounds(b);
+    if(!bounds){
+     const q=collisionQuery(b),m=q.inverse,det=m[0]*m[10]-m[2]*m[8];
+     if(Math.abs(det)<1e-8){fallback.push(b);continue;}
+     const ox=m[3]+m[1]*q.matrix[7],oz=m[11]+m[9]*q.matrix[7];bounds={minX:Infinity,minZ:Infinity,maxX:-Infinity,maxZ:-Infinity};
+     for(const px of [q.minX,q.maxX+1])for(const pz of [q.minZ,q.maxZ+1]){
+      const dx=px-ox,dz=pz-oz,wx=(m[10]*dx-m[2]*dz)/det-.5,wz=(m[0]*dz-m[8]*dx)/det-.5;
+      bounds.minX=Math.min(bounds.minX,wx);bounds.maxX=Math.max(bounds.maxX,wx);bounds.minZ=Math.min(bounds.minZ,wz);bounds.maxZ=Math.max(bounds.maxZ,wz);
+     }
+    }
+    if(bounds.minX>bounds.maxX||bounds.minZ>bounds.maxZ)continue;
+    const minX=Math.floor((bounds.minX-1e-7)/16),maxX=Math.floor((bounds.maxX+1e-7)/16),minZ=Math.floor((bounds.minZ-1e-7)/16),maxZ=Math.floor((bounds.maxZ+1e-7)/16);
+    if(![minX,maxX,minZ,maxZ].every(Number.isFinite)||(maxX-minX+1)*(maxZ-minZ+1)>4096){fallback.push(b);continue;}
+    for(let z=minZ;z<=maxZ;z++)for(let x=minX;x<=maxX;x++){const key=x+':'+z;let bucket=buckets.get(key);if(!bucket)buckets.set(key,bucket=[]);bucket.push(b);}
+   }
+   index={members,buckets,fallback};collisionBuckets.set(scene,index);
+  }
+  for(const b of index.buckets.get(Math.floor(x/16)+':'+Math.floor(z/16))||[])if(inBuilding(b,x,z))return true;
+  for(const b of index.fallback)if(inBuilding(b,x,z))return true;return false;
+ }
  function installConsumers(){
   if(installed)return;installed=true;const A=root.VeldrenAssembly;
   buildingRender=building3;building3=function(r,b){if(!b._generatedBuildingEntity)return buildingRender(r,b);const world=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),model=A.multiply(world,A.transform(-world[3],0,-world[11])),logical=getView(b._generatedSceneName,b._sceneEntityId,b._sceneEntityId);
@@ -297,7 +342,10 @@
    if(r.indexed)q.indexed=(mesh,matrix,style)=>r.indexed(mesh,A.multiply(model,matrix),style);
    return buildingRender(q,logical);
   };
-  const previousIn=inBuilding;inBuilding=function(b,x,y){if(!b._generatedBuildingEntity)return previousIn(b,x,y);if(b.assembly)return previousIn(b,x,y);const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),p=A.point(A.inverse(m),[x+.5,m[7],y+.5]),logical=getView(b._generatedSceneName,b._sceneEntityId,b._sceneEntityId);return previousIn(logical,Math.floor(p[0]+1e-7)+m[3],Math.floor(p[2]+1e-7)+m[11]);};
+  const previousIn=inBuilding;inBuilding=function(b,x,y){if(!b._generatedBuildingEntity)return previousIn(b,x,y);if(b.assembly)return previousIn(b,x,y);
+   const q=collisionQuery(b),m=q.matrix,p=A.point(q.inverse,[x+.5,m[7],y+.5]),tx=Math.floor(p[0]+1e-7),ty=Math.floor(p[2]+1e-7);
+   if(tx<q.minX||tx>q.maxX||ty<q.minZ||ty>q.maxZ)return false;
+   return previousIn(q.logical,tx+m[3],ty+m[11]);};
   const previousWithin=withinWalkIn;withinWalkIn=function(b,x,y){if(!b._generatedBuildingEntity||b.assembly)return previousWithin(b,x,y);const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix),p=A.point(A.inverse(m),[x,m[7],y]);return p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;};
   const previousNormal=doorNormal;doorNormal=function(o){if(!o?._buildingOwner)return previousNormal(o);const portal=entity(o._generatedSceneName,o._sceneEntityId),module=portal.parent&&entity(o._generatedSceneName,portal.parent);if(module?.components.DoorOpening?.normalLocal){const basis=matrices.row(module.worldMatrix);basis[3]=basis[7]=basis[11]=0;const n=A.point(basis,module.components.DoorOpening.normalLocal),length=Math.hypot(n[0],n[2]);return [n[0]/length,n[2]/length];}const b=o.building,m=matrices.row(entity(o._generatedSceneName,b._sceneEntityId).worldMatrix),n=previousNormal(getView(o._generatedSceneName,o._sceneEntityId,b._sceneEntityId)),dx=m[0]*n[0]+m[2]*n[1],dz=m[8]*n[0]+m[10]*n[1],length=Math.hypot(dx,dz);return [dx/length,dz/length];};
   const previousDoor=buildingDoorTransform;buildingDoorTransform=function(b){if(!b._generatedBuildingEntity)return previousDoor(b);const portal=b.service&&entity(b._generatedSceneName,b.service._sceneEntityId),module=portal?.parent&&entity(b._generatedSceneName,portal.parent);if(module?.components.DoorOpening)return A.multiply(matrices.row(module.worldMatrix),A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52));const m=matrices.row(entity(b._generatedSceneName,b._sceneEntityId).worldMatrix);return A.multiply(A.multiply(m,A.transform(-m[3],0,-m[11])),previousDoor(getView(b._generatedSceneName,b._sceneEntityId,b._sceneEntityId)));};
@@ -465,5 +513,5 @@
  root.VeldrenAssets?.onDispose(()=>assemblyRenders.clear());
 
 
- root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,createBuilding,ensureAssembly,assemblySnapshot,renderAssembly,setAssembly};
+ root.VeldrenBuildingScene={capture,populate,migrate,hydrate,fieldGroups,matrices,getView,surfaceAt,surfaceCandidates,sightBlockedAt,createBuilding,ensureAssembly,assemblySnapshot,renderAssembly,setAssembly};
 })(globalThis);

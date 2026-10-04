@@ -1,6 +1,6 @@
 'use strict';
 (function(){
- const A=globalThis.VeldrenAssembly,cache=new WeakMap();let originalRender,installed=false;
+ const A=globalThis.VeldrenAssembly,cache=new WeakMap(),collisionQueries=new WeakMap();let originalRender,installed=false;
  function registries(){return {rebuilt:typeof rebuiltModels==='undefined'?{}:rebuiltModels,briar:typeof briarModels==='undefined'?{}:briarModels};}
  function catalog(){return Object.entries(registries()).flatMap(([source,models])=>Object.entries(models).filter(([,m])=>m?.bounds).map(([key,m])=>({id:source+':'+key,key,source,name:key.replaceAll('_',' '),category:A.category(key),bounds:A.clone(m.bounds),size:m.bounds[1].map((v,i)=>v-m.bounds[0][i])})));}
  function identify(mesh){for(const [source,models]of Object.entries(registries()))for(const [key,m]of Object.entries(models))if(m===mesh||m.p===mesh.p&&m.i===mesh.i)return source+':'+key;return null;}
@@ -70,7 +70,7 @@
   }
   return null;
  }
- function invalidate(b){const r=cache.get(b);if(r)r.render=null;try{staticMeshes3.delete(b);staticMeshQueues3.building.delete(b)}catch{} }
+ function invalidate(b){collisionQueries.delete(b);const r=cache.get(b);if(r)r.render=null;try{staticMeshes3.delete(b);staticMeshQueues3.building.delete(b)}catch{} }
  function readAssembly(b){return b._generatedBuildingEntity?globalThis.VeldrenBuildingScene.assemblySnapshot(b):b.assembly;}
  function localBounds(b){const modules=readAssembly(b)?.modules||[];let minX=0,minZ=0,maxX=Number(b.w)||1,maxZ=Number(b.h)||1,found=false;for(const m of modules){if(!m.bounds)continue;const [lo,hi]=A.bounds(m);if(!found){minX=lo[0];minZ=lo[2];maxX=hi[0];maxZ=hi[2];found=true;}else{minX=Math.min(minX,lo[0]);minZ=Math.min(minZ,lo[2]);maxX=Math.max(maxX,hi[0]);maxZ=Math.max(maxZ,hi[2]);}}return {minX,minZ,maxX,maxZ};}
  function worldBounds(b){const a=readAssembly(b);if(!a)return {x:Number(b.x)||0,y:Number(b.y)||0,w:Number(b.w)||1,h:Number(b.h)||1};const points=b.editorCreated?(()=>{const box=localBounds(b);return [[box.minX,0,box.minZ],[box.maxX,0,box.minZ],[box.maxX,0,box.maxZ],[box.minX,0,box.maxZ]].map(p=>A.point(a.parent,p));})():[[0,0,0],[b.w,0,0],[b.w,0,b.h],[0,0,b.h]].map(p=>A.point(a.parent,p));const x=Math.min(...points.map(p=>p[0])),y=Math.min(...points.map(p=>p[2]));return {x,y,w:Math.max(...points.map(p=>p[0]))-x,h:Math.max(...points.map(p=>p[2]))-y};}
@@ -143,19 +143,34 @@
   }
   return a;
  }
- function contains(m,p,inward=0){const q=A.point(A.inverse(m.local),p),lo=m.bounds[0],hi=m.bounds[1];
-  // Authored walls face outwards along local +Z. Grid locomotion samples cell
-  // centers half a unit inside the perimeter; a thin wall must reserve that
-  // inner cell without blocking the clear exterior door approach.
-  return q[0]>=lo[0]-.12&&q[0]<=hi[0]+.12&&q[2]>=Math.min(lo[2]-.12,-inward)&&q[2]<=hi[2]+.12;}
+ function collisionQuery(b){
+  const a=readAssembly(b);if(!a)return null;const inward=b.briarDesign?.52:0,cached=collisionQueries.get(b);
+  if(cached?.assembly===a&&cached.inward===inward)return cached;
+  const inverse=A.inverse(a.parent),walls=[];let minX=Infinity,minZ=Infinity,maxX=-Infinity,maxZ=-Infinity;
+  // Collision remains a read projection of the native assembly. Cache matrix
+  // inverses and exact bounds of its collision strips, including moved modules.
+  const extend=(m,loX,hiX,loZ,hiZ)=>{
+   const det=m[0]*m[10]-m[2]*m[8];if(Math.abs(det)<1e-8){minX=minZ=-Infinity;maxX=maxZ=Infinity;return;}
+   for(const x of [loX,hiX])for(const z of [loZ,hiZ]){const dx=x-m[3],dz=z-m[11],wx=(m[10]*dx-m[2]*dz)/det,wz=(m[0]*dz-m[8]*dx)/det;minX=Math.min(minX,wx);maxX=Math.max(maxX,wx);minZ=Math.min(minZ,wz);maxZ=Math.max(maxZ,wz);}
+  };
+  for(const m of a.modules)if(m.floor===0&&['wall','window'].includes(m.role)){
+   const matrix=A.multiply(A.inverse(m.local),inverse),loX=m.bounds[0][0]-.12,hiX=m.bounds[1][0]+.12,loZ=Math.min(m.bounds[0][2]-.12,-inward),hiZ=m.bounds[1][2]+.12;
+   walls.push({matrix,loX,hiX,loZ,hiZ});extend(matrix,loX,hiX,loZ,hiZ);
+  }
+  const opening=a.modules.find(m=>m.role==='entrance')?.opening,door=opening?{x:opening.service[0]-opening.normal[0]+.5,z:opening.service[2]-opening.normal[2]+.5}:null;
+  if(door)extend(inverse,door.x-.72,door.x+.72,door.z-.72,door.z+.72);
+  const value={assembly:a,inward,inverse,walls,door,minX,minZ,maxX,maxZ};collisionQueries.set(b,value);return value;
+ }
  function install(){if(installed)return;installed=true;originalRender=building3;
   const oldCached=cachedMesh3;cachedMesh3=function(key,kind,build){if(kind==='building'&&key.assembly&&(key._generatedBuildingEntity||cache.has(key))){return rendered(key)}return oldCached(key,kind,build)};
-  const oldIn=inBuilding;inBuilding=function(b,x,y){const a=readAssembly(b);if(!a)return oldIn(b,x,y);const p=A.point(A.inverse(a.parent),[x+.5,0,y+.5]);
-   const entrance=a.modules.find(m=>m.role==='entrance');if(entrance?.opening){const center=entrance.opening.service,n=entrance.opening.normal,dx=p[0]-(center[0]-n[0]+.5),dz=p[2]-(center[2]-n[2]+.5);if(Math.hypot(dx,dz)<.72)return b.service?.openedAt===undefined;}
-   return a.modules.some(m=>m.floor===0&&['wall','window'].includes(m.role)&&contains(m,p,b.briarDesign ? .52 : 0));};
+  const oldIn=inBuilding;inBuilding=function(b,x,y){const q=collisionQuery(b);if(!q)return oldIn(b,x,y);const wx=x+.5,wz=y+.5;
+   if(wx<q.minX-1e-7||wx>q.maxX+1e-7||wz<q.minZ-1e-7||wz>q.maxZ+1e-7)return false;
+   if(q.door){const m=q.inverse,dx=m[0]*wx+m[2]*wz+m[3]-q.door.x,dz=m[8]*wx+m[10]*wz+m[11]-q.door.z;if(Math.hypot(dx,dz)<.72)return b.service?.openedAt===undefined;}
+   for(const wall of q.walls){const m=wall.matrix,px=m[0]*wx+m[2]*wz+m[3],pz=m[8]*wx+m[10]*wz+m[11];if(px>=wall.loX&&px<=wall.hiX&&pz>=wall.loZ&&pz<=wall.hiZ)return true;}
+   return false;};
   const oldWithin=withinWalkIn;withinWalkIn=function(b,x,y){const a=readAssembly(b);if(!a)return oldWithin(b,x,y);const p=A.point(A.inverse(a.parent),[x,0,y]);if(!b.editorCreated)return b.briarDesign?briarFootprintContains(b,b.x+p[0],b.y+p[2]):p[0]>=0&&p[0]<b.w&&p[2]>=0&&p[2]<b.h;const box=localBounds(b);return p[0]>=box.minX&&p[0]<box.maxX&&p[2]>=box.minZ&&p[2]<box.maxZ;};
   const oldNormal=doorNormal;doorNormal=o=>o?._assemblyNormal||oldNormal(o);
   const oldDoor=buildingDoorTransform;buildingDoorTransform=function(b){const m=b.service?._assemblyDoor;if(!m||!b.assembly)return oldDoor(b);return A.multiply(b.assembly.parent,A.multiply(m.local,A.transform(0,0,0,-doorOpenFraction(b.service)*Math.PI*.52)));};
  }
- window.VeldrenBuildings={ensure,create,attach,repairLegacyAssembly,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,floorFilter:null};
+ window.VeldrenBuildings={ensure,create,attach,repairLegacyAssembly,sync,commit,worldBounds,invalidate,catalog,model,install,validate:A.validate,serialize:A.serialize,cache,opening,rendered,stairConnection,collisionBounds:b=>{const q=collisionQuery(b);return q&&{minX:q.minX-.5,minZ:q.minZ-.5,maxX:q.maxX-.5,maxZ:q.maxZ-.5};},floorFilter:null};
 })();

@@ -17,14 +17,23 @@ let worldObjectRevision=0,worldObjectIndex=null,worldObjectArrayObserved=false;
 function worldIndex(){
  if(!worldObjectArrayObserved){worldObjectArrayObserved=true;for(const name of ['push','pop','shift','unshift','splice','sort','reverse','copyWithin','fill'])Object.defineProperty(objects,name,{configurable:true,writable:true,value:function(...args){worldObjectRevision++;return Array.prototype[name].apply(this,args);}});}
  if(worldObjectIndex?.revision===worldObjectRevision&&worldObjectIndex.scene===currentScene&&worldObjectIndex.length===objects.length)return worldObjectIndex;
- const actors=[],buckets=new Map(),order=new Map(),byId=new Map();
- for(let i=0;i<objects.length;i++){const o=objects[i];order.set(o,i);byId.set(String(o.id),o);if(fighter(o)||o.characterSprite||o.penId||['elder','shop','questgiver','spirit','villager','inn','tutor'].includes(o.type)){actors.push(o);continue;}
+ const actors=[],buckets=new Map(),sightBuckets=new Map(),sightActors=[],order=new Map(),byId=new Map();
+ for(let i=0;i<objects.length;i++){const o=objects[i];order.set(o,i);byId.set(String(o.id),o);const actor=fighter(o)||o.characterSprite||o.penId||['elder','shop','questgiver','spirit','villager','inn','tutor'].includes(o.type);
+  if(o.type==='tree'||o.blocksSight&&!o.penFence&&!/fence/i.test(o.name||'')){
+   if(actor)sightActors.push(o);else{const key=o.x+':'+o.y;let bucket=sightBuckets.get(key);if(!bucket)sightBuckets.set(key,bucket=[]);bucket.push(o);}
+  }
+  if(actor){actors.push(o);continue;}
   const key=Math.floor(o.x/16)+':'+Math.floor(o.y/16);let bucket=buckets.get(key);if(!bucket){bucket=[];buckets.set(key,bucket);}bucket.push(o);
  }
- return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,order,byId};
+ return worldObjectIndex={revision:worldObjectRevision,scene:currentScene,length:objects.length,actors,buckets,sightBuckets,sightActors,order,byId};
 }
 function worldActors(){return worldIndex().actors.filter(o=>questFightVisible(o,s));}
 function worldObjectsAt(x,y){const index=worldIndex(),bucket=index.buckets.get(Math.floor(x/16)+':'+Math.floor(y/16))||[];return [...bucket,...index.actors].filter(o=>questFightVisible(o,s)&&o.x===x&&o.y===y);}
+function worldSightBlockedAt(x,y){
+ const index=worldIndex();
+ for(const o of index.sightBuckets.get(x+':'+y)||[])if(o.x===x&&o.y===y&&questFightVisible(o,s))return true;
+ for(const o of index.sightActors)if(o.x===x&&o.y===y&&questFightVisible(o,s))return true;return false;
+}
 function worldObjectsInBounds(minX,maxX,minY,maxY){
  const index=worldIndex(),visible=[];
  for(let by=Math.floor(minY/16);by<=Math.floor(maxY/16);by++)for(let bx=Math.floor(minX/16);bx<=Math.floor(maxX/16);bx++)for(const o of index.buckets.get(bx+':'+by)||[])if(o.x>=minX&&o.x<=maxX&&o.y>=minY&&o.y<=maxY)visible.push(o);
