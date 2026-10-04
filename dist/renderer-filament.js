@@ -48,6 +48,15 @@ function realmFilamentLightingProfile(lighting){
  p.color[0]=.70+.30*day;p.color[1]=.75+.20*day;p.color[2]=.91-.07*day;
  return p;
 }
+function realmFilamentPointLightPower(source,profile){
+ const strength=Number(source?.intensity),radius=Number(source?.radius);
+ if(!Number.isFinite(strength)||strength<=0||!Number.isFinite(radius)||radius<=0)return 0;
+ // Scene intensities are relative strengths. Filament point lights take
+ // lumens: scale against the camera exposure so their pools survive the
+ // accepted sun/sky lighting without raising the whole night's brightness.
+ const power=strength*75*profile.aperture*profile.aperture*profile.speed;
+ return Number.isFinite(power)?power:0;
+}
 const realmFilamentWorldStyle={key:'t0:b0:d0',boss:0,dissolve:0,terrain:0};
 const realmFilamentTerrainStyle={key:'t1:b0:d0',boss:0,dissolve:0,terrain:1};
 const realmFilamentStyleCache=new Map();
@@ -298,10 +307,10 @@ function createRealmFilamentGPU(){
   indirectLight.setIntensity(p.ambient);camera3d.setExposure(p.aperture,1/p.speed,100);
   const limit=quality.lightLimit,lights=lighting.lights;
   for(let i=0;i<limit;i++){
-   let record=pointLights[i];const source=lights[i];
-   if(source&&!record){const entity=Filament.EntityManager.get().create();Filament.LightManager.Builder(Filament.LightManager$Type.POINT).falloff(source.radius).intensity(900).build(engine,entity);record=pointLights[i]={entity,active:false};}
+   let record=pointLights[i];const source=lights[i],power=source?realmFilamentPointLightPower(source,p):0;
+   if(power>0&&!record){const entity=Filament.EntityManager.get().create();Filament.LightManager.Builder(Filament.LightManager$Type.POINT).falloff(source.radius).intensity(power).castShadows(false).build(engine,entity);record=pointLights[i]={entity,active:false};}
    if(!record)continue;
-   if(source){const instance=manager.getInstance(record.entity);manager.setPosition(instance,[source.x,source.y,source.z]);manager.setColor(instance,source.color);manager.setFalloff(instance,source.radius);manager.setIntensity(instance,Math.max(120,source.intensity*950));instance.delete();if(!record.active){scene.addEntity(record.entity);record.active=true;}}
+   if(power>0){const instance=manager.getInstance(record.entity);manager.setPosition(instance,[source.x,source.y,source.z]);manager.setColor(instance,source.color);manager.setFalloff(instance,source.radius);manager.setIntensity(instance,power);instance.delete();if(!record.active){scene.addEntity(record.entity);record.active=true;}}
    else if(record.active){scene.remove(record.entity);record.active=false;}
   }
  }

@@ -78,7 +78,21 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const changed=Array.from(raw);changed[3]=1;changed[4]=0;gpu.render([],changed,null);assert.equal(orientationBuilds,before+1,'changed normals rebuild tangent staging');
   assert.equal(context.VELDREN_FILAMENT_ASSETS.atlasBytes,null);assert.equal(context.VELDREN_FILAMENT_ASSETS.groundSurfacesBytes,null);
   assert.equal(gpu.scene.getRenderableCount(),1);assert.equal(gpu.scene.getLightCount(),2);assert.equal(gpu.engine.hasUnrecoverableFailure(),false);
+  const originalIntensity=F.LightManager.prototype.setIntensity,pointSamples=[];
+  F.LightManager.prototype.setIntensity=function(instance,power){originalIntensity.call(this,instance,power);if(this.isPointLight(instance))pointSamples.push({candela:this.getIntensity(instance),position:Array.from(this.getPosition(instance)),color:Array.from(this.getColor(instance)),radius:this.getFalloff(instance),shadows:this.isShadowCaster(instance)});};
+  const lantern={x:10,y:2.75,z:20,radius:19,intensity:1.7,color:[1,.8,.51]},lighting={night:1,cave:0,house:0,lights:[lantern]};context.realmLightingState=()=>lighting;
+  gpu.render([],Array.from(raw),null);const point=pointSamples.at(-1);
+  assert.deepEqual(point.position,[10,2.75,20]);assert.equal(point.radius,19);assert.equal(point.shadows,false,'local lighting retains the existing shadow cost');assert(point.color[0]>point.color[1]&&point.color[1]>point.color[2],'authored warm light reaches Filament');
+  // Native getIntensity returns candela. At four units from the lantern,
+  // ground-facing illuminance must compete with the accepted night fill.
+  const d2=4*4+lantern.y*lantern.y,cutoff=(1-(d2/(point.radius*point.radius))**2)**2,floorLux=point.candela*lantern.y/(d2*Math.sqrt(d2))*cutoff;
+  const nightSun=context.realmFilamentLightingProfile(lighting).sun;assert(floorLux>nightSun,'a visible lamp illuminates nearby ground instead of only glowing itself');assert(floorLux<nightSun*4,'local light does not wash out the night');
+  lantern.intensity=0;gpu.render([],Array.from(raw),null);assert.equal(gpu.scene.getLightCount(),1,'zero-strength sources fully stop illuminating');
+  lantern.intensity=1.7;lighting.lights=Array.from({length:20},(_,i)=>({...lantern,x:10+i}));
+  for(let i=0;i<30;i++)gpu.render([],Array.from(raw),null);assert.equal(gpu.scene.getLightCount(),9,'mobile retains eight point lights plus the sun');
+  lighting.lights=[];gpu.render([],Array.from(raw),null);assert.equal(gpu.scene.getLightCount(),1,'scene light removal leaves no active emitter');
+  F.LightManager.prototype.setIntensity=originalIntensity;
   assert.equal(gpu.textureResources.diagnostics().textures,2);context.VeldrenAssets.destroy();assert.equal(gpu.textureResources.diagnostics().textures,0);
-  console.log('Filament 1.77 iPhone-sized runtime, capped backing surface, mobile shadows, textures, geometry and render pass verified');resolve();
+  console.log('Filament 1.77 runtime verified: local light '+floorLux.toFixed(1)+' lux at four units, native color/position/falloff, zero/off transitions and bounded mobile lights.');resolve();
  }catch(error){reject(error);}
 })).finally(()=>fs.rmSync(temporary,{recursive:true,force:true})).catch(error=>{console.error(error);process.exitCode=1;});
