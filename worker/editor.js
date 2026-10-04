@@ -5,15 +5,19 @@ import '../dist/world-scene-format.js';
 import seed from '../editor-data/world-scene.json' with {type:'json'};
 const {fromLegacy,toLegacy,mergeLegacy,validateWorld}=globalThis.VeldrenSceneFormat;
 
-// Verified existing owner account. Never grant editor access by a reusable name.
+// Editor grants use immutable account IDs, never reusable usernames.
 const OWNER='2db1d2ba-75e2-4c27-bcdf-94e742f95c86';
 const MAX_BYTES=MAX_WORLD_BYTES;
 const headers={'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
-async function owner(request,env){return (await authenticatedPlayer(request,env))?.id===OWNER;}
+async function authorizedEditor(request,env){
+ const account=await authenticatedPlayer(request,env);if(!account)return null;
+ const grants=typeof env.VELDREN_EDITOR_ACCOUNT_IDS==='string'?env.VELDREN_EDITOR_ACCOUNT_IDS.split(/[\s,]+/):[];
+ return account.id===OWNER||grants.includes(account.id)?account:null;
+}
 export async function editorAccess(request,env){
  if(request.method!=='GET')return reply({error:'Method not allowed'},405);
- try{return await owner(request,env)?reply({ok:true}):reply({error:'Sign in with the owner account to open the editor.'},403);}
+ try{return await authorizedEditor(request,env)?reply({ok:true}):reply({error:'Sign in with an account that has editor access.'},403);}
  catch{return reply({error:'Editor authorization unavailable. Please retry.'},503);}
 }
 async function metadata(data){
@@ -44,7 +48,8 @@ export async function handleEditorEdits(request,env){
   if(request.method==='GET')return reply(await metadata(await read(env)));
   if(request.method!=='PUT')return reply({error:'Method not allowed'},405);
   if(request.headers.get('origin')!==new URL(request.url).origin)return reply({error:'Invalid origin'},403);
-  if(!await owner(request,env))return reply({error:'Only the owner can save world edits.'},403);
+  const editor=await authorizedEditor(request,env);
+  if(!editor)return reply({error:'Editor access is required to save world edits.'},403);
   const input=await readBody(request);
   if(!Number.isSafeInteger(input?.expectedRevision)||input.expectedRevision<0)return reply({error:'A valid expectedRevision is required.'},400);
   const current=await read(env);
@@ -59,7 +64,7 @@ export async function handleEditorEdits(request,env){
     validateWorld(data);toLegacy(data);
    }else data=mergeLegacy(current,sanitize(input,toLegacy(current)));
   }catch(error){return reply({error:error.message},error.status||400);}
-  const saved=await saveWorld(env.DB,data,current,OWNER,input.expectedRevision);
+  const saved=await saveWorld(env.DB,data,current,editor.id,input.expectedRevision);
   if(!saved.meta.changes)return reply({error:'The world was saved in another tab. Reload before saving.'},409);
   return reply({...await metadata(data),confirmed:toLegacy(data).changes.map(confirmation)});
  }catch(error){console.error('editor_storage_failed',error?.message);return reply({error:error.status?error.message:'World edit storage is unavailable. Your changes have not been confirmed.'},error.status||503);}

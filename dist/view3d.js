@@ -1,4 +1,5 @@
 'use strict';
+const PLAYER_WORLD_SCALE3=1.18;
 // Perspective world camera: the player sits low in frame so roads, hills and
 // landmarks read as a place ahead instead of a flat board viewed from above.
 const cameraEditor3=typeof window!=='undefined'&&window.VELDREN_CONTEXT==='editor';
@@ -305,7 +306,7 @@ function drawScene3d(){meshFrame3++;meshDetail3=realmGeometryDetail3();const w=s
  if(typeof drawWorldLightFixtures3==='function')drawWorldLightFixtures3(mesh,minx,maxx,minz,maxz);
  if(window.VELDREN_CONTEXT!=='editor'){
  const moving=playerMotion.moving,headingTime=playerMotion.headingTime??time,headingDt=Math.max(0,Math.min(.1,time-headingTime));playerMotion.headingTime=time;const desiredHeading=moving?playerMotion.heading:target?Math.atan2(target.x-px,target.y-py):playerHeading,headingDelta=Math.atan2(Math.sin(desiredHeading-playerHeading),Math.cos(desiredHeading-playerHeading));playerHeading+=headingDelta*(1-Math.exp(-headingDt*18));
- const worldDetail=meshDetail3;meshDetail3=1;humanoid3(mesh,px+.5,py+.5,s.character?.look||0,s.equipment,playerHeading,moving?1:0,Math.max(0,Math.sin(Math.min(1,(time-lastAttack)/.65)*Math.PI)),1.18);meshDetail3=worldDetail;
+ const worldDetail=meshDetail3;meshDetail3=1;humanoid3(mesh,px+.5,py+.5,s.character?.look||0,s.equipment,playerHeading,moving?1:0,Math.max(0,Math.sin(Math.min(1,(time-lastAttack)/.65)*Math.PI)),PLAYER_WORLD_SCALE3);meshDetail3=worldDetail;
  }
  for(const pile of s.groundLoot||[])if(pile.scene===currentScene&&near(pile.x,pile.y)){
   const x=pile.x+.5,z=pile.y+.5;
