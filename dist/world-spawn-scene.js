@@ -25,7 +25,7 @@
   if(enabled)return;
   for(const [scene,w]of Object.entries(registry())){const repeats=new Map();for(const o of w.objects||[]){
    if(!actor(o)||o._generatedSpawn)continue;
-   const source=[o.type,o.kind||'',o.name||'',o.x,o.y,o.mainStoryKey||o.mountainKey||o.tutorialRole||''],key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);
+   const [ix,iy]=o._spawnIdentityPosition||[o.x,o.y],source=[o.type,o.kind||'',o.name||'',ix,iy,o.mainStoryKey||o.mountainKey||o.tutorialRole||''],key=JSON.stringify(source),ordinal=repeats.get(key)||0;repeats.set(key,ordinal+1);
    if(!o._generatedSpawnId)Object.defineProperty(o,'_generatedSpawnId',{value:(typeof briarGenerationIdentity==='function'&&briarGenerationIdentity(scene,'actors',o.id))||'generated:'+scene+':spawn:'+hash([source,ordinal]),configurable:true});
    sources.set(scene+'|'+o._generatedSpawnId,{scene,id:o._generatedSpawnId,object:o});
   }}

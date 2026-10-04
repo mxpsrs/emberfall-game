@@ -15,7 +15,8 @@ function cameraFocalLength3(h=screen.h){return (h||500)/(2*Math.tan(cameraFov3*M
 function cameraDistance3(v=view3d,h=screen.h){return v===view3d?cameraPose3(h).distance:cameraFocalLength3(h)/cameraZoom3(v);}
 // One pose feeds Filament, screen projection, picking and native visibility.
 // Player follow is transient presentation; the detached editor keeps its own anchor.
-const cameraFollow3={key:'',pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,distance:0};
+const cameraFollow3={pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,distance:0};
+const cameraPoseInputs3={};
 const cameraStructureCache3=new WeakMap();
 const cameraMeshTriangles3=new WeakMap();
 function cameraTriangleDistance3(a,b,c,origin,dir,limit){
@@ -87,15 +88,18 @@ function cameraObstructionDistance3(center,yaw,pitch,distance){
 }
 function cameraPose3(h=screen.h){
  const x=px+.5,z=py+.5,ground=typeof projectionCameraHeight3==='function'?projectionCameraHeight3(x,z):typeof walkSurfaceHeight==='function'?walkSurfaceHeight(x,z):0,target=cameraEditor3?0:1.12;
- const key=[meshFrame3,currentScene,x,z,ground,view3d.yaw,view3d.tilt,view3d.zoom,h,screen.w,typeof worldObjectRevision==='number'?worldObjectRevision:0,typeof window==='undefined'?0:window.VeldrenTerrainEdits?.revision||0].join(':');
- if(cameraFollow3.key===key)return cameraFollow3.pose;
+ const worldRevision=typeof worldObjectRevision==='number'?worldObjectRevision:0,surfaceRevision=typeof landSurfaceRevision==='number'?landSurfaceRevision:0,terrainRevision=typeof window==='undefined'?0:window.VeldrenTerrainEdits?.revision||0,input=cameraPoseInputs3;
+ // Projection visits thousands of vertices. Reuse the pose without allocating
+ // and formatting a string key for every point; retain all edit invalidations.
+ if(input.frame===meshFrame3&&input.scene===currentScene&&input.x===x&&input.z===z&&input.ground===ground&&input.yaw===view3d.yaw&&input.tilt===view3d.tilt&&input.zoom===view3d.zoom&&input.height===h&&input.width===screen.w&&input.worldRevision===worldRevision&&input.surfaceRevision===surfaceRevision&&input.terrainRevision===terrainRevision)return cameraFollow3.pose;
  const now=typeof performance==='undefined'?0:performance.now(),dt=Math.max(0,Math.min(.1,(now-cameraFollow3.stamp)/1000)),jump=!cameraFollow3.pose||cameraFollow3.scene!==currentScene||Math.hypot(x-cameraFollow3.x,z-cameraFollow3.z)>8;
  const response=cameraEditor3||jump||now===0?1:1-Math.exp(-dt*18),angle=Math.atan2(Math.sin(view3d.yaw-cameraFollow3.yaw),Math.cos(view3d.yaw-cameraFollow3.yaw));
  const yaw=cameraFollow3.yaw+angle*response,pitch=cameraFollow3.pitch+(view3d.tilt-cameraFollow3.pitch)*response,center=[x,ground+target,z],wanted=cameraFocalLength3(h)/cameraZoom3(),safe=cameraObstructionDistance3(center,yaw,pitch,wanted);
  const distance=jump||cameraEditor3||now===0||safe<cameraFollow3.distance?safe:cameraFollow3.distance+(safe-cameraFollow3.distance)*(1-Math.exp(-dt*8));
  const eye=[x+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,z+Math.cos(yaw)*Math.cos(pitch)*distance],near=.12,half=near*Math.tan(cameraFov3*Math.PI/360),aspect=(screen.w||900)/(h||500);
  const pose={eye,center,yaw,pitch,distance,ground,target,anchor:cameraAnchor3,fov:cameraFov3,near,far:!cameraEditor3&&currentScene==='overworld'&&Math.hypot(x-55,z-61)<90?192:320,left:-half*aspect,right:half*aspect,bottom:-2*(1-cameraAnchor3)*half,top:2*cameraAnchor3*half,width:screen.w,height:h};
- Object.assign(cameraFollow3,{key,pose,stamp:now,scene:currentScene,x,z,yaw,pitch,distance});return pose;
+ Object.assign(input,{frame:meshFrame3,scene:currentScene,x,z,ground,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom,height:h,width:screen.w,worldRevision,surfaceRevision,terrainRevision});
+ Object.assign(cameraFollow3,{pose,stamp:now,scene:currentScene,x,z,yaw,pitch,distance});return pose;
 }
 function cameraRay3(sx,sy){const p=cameraPose3(),c=Math.cos(p.yaw),sn=Math.sin(p.yaw),st=Math.sin(p.pitch),ct=Math.cos(p.pitch),f=cameraFocalLength3(p.height),qx=(sx-p.width/2)/f,qy=(sy-p.height*p.anchor)/f;return {eye:p.eye,dir:[-sn*ct+qx*c+qy*sn*st,-st-qy*ct,-c*ct-qx*sn+qy*c*st]};}
 function project3(x,y,z,v=view3d,cx=px+.5,cz=py+.5,w=screen.w,h=screen.h){
@@ -300,7 +304,7 @@ function drawScene3d(){meshFrame3++;meshDetail3=realmGeometryDetail3();const w=s
  if(typeof drawCreatureLair==='function')drawCreatureLair(mesh,minx,maxx,minz,maxz);
  const near=(x,z)=>{if(Math.hypot(x-px,z-py)>wideWorldLimit||x<minx-3||x>maxx+3||z<minz-3||z>maxz+3)return false;const q=project3(x,1,z),m=visibility.pixels;return q.x>-m&&q.x<w+m&&q.y>-m&&q.y<h+m;};
  const hit=(o,x,z,height,width=.65,geometry=null)=>{const a=project3(x,0,z),b=project3(x,height,z);hitboxes.push({x:a.x-width*cameraZoom3()/2,y:Math.min(a.y,b.y)-8,w:width*cameraZoom3(),h:Math.abs(a.y-b.y)+16,o,depth:a.depth,geometry});};
- for(const b of partitionView?.buildings||buildings){if(typeof veldrenLegacySceneVisible==='function'&&!veldrenLegacySceneVisible(b,currentScene))continue;b._cutaway=buildingRoofHidden(b);const bx=b.x+b.w/2,bz=b.y+b.h/2;if(Math.hypot(bx-px,bz-py)>wideWorldLimit+Math.hypot(b.w,b.h)/2)continue;const padding=Math.max(b.visualHeight||0,b.civilCastle?30:18)/Math.tan(cameraPitch3())+8;if(b.x+b.w<minx-padding||b.x>maxx+padding||b.y+b.h<minz-padding||b.y>maxz+padding)continue;const center=project3(bx,(b.visualHeight||3.3)/2,bz),radius=(Math.hypot(b.w,b.h)+(b.visualHeight||3.3))*cameraFocalLength3(h)/Math.max(.3,cameraPose3(h).distance-center.depth)*.6+48;if(center.x< -radius||center.x>w+radius||center.y< -radius||center.y>h+radius)continue;visibleBuildings.push(b);mesh.entity?.(b._sceneEntityId);if(b._cutaway)openRooms.add(b.service?.destination);const cached=cachedMesh3(b,'building',r=>building3(r,b));if(cached.deferred)continue;if(!b._generatedBuildingEntity)b.visualHeight=cached.height||b.visualHeight;emitMesh3(mesh,cached);if(b.service&&!b._cutaway){hitboxes.push({get polygon(){return buildingHull3(cached);},o:b.service,building:b,depth:project3(bx,0,bz).depth});}if((s.insideBuilding===b.service?.destination||target===b.service)&&Math.hypot(px-b.x,py-b.y)<10)labels.push([b.name,bx,(b.visualHeight||3.3)+.15,bz,'#e8d9b0']);}
+ for(const b of partitionView?.buildings||buildings){if(typeof veldrenLegacySceneVisible==='function'&&!veldrenLegacySceneVisible(b,currentScene))continue;b._cutaway=buildingRoofHidden(b);const bx=b.x+b.w/2,bz=b.y+b.h/2;if(Math.hypot(bx-px,bz-py)>wideWorldLimit+Math.hypot(b.w,b.h)/2)continue;const padding=Math.max(b.visualHeight||0,b.civilCastle?30:18)/Math.tan(cameraPitch3())+8;if(b.x+b.w<minx-padding||b.x>maxx+padding||b.y+b.h<minz-padding||b.y>maxz+padding)continue;const center=project3(bx,(b.visualHeight||3.3)/2,bz),radius=(Math.hypot(b.w,b.h)+(b.visualHeight||3.3))*cameraFocalLength3(h)/Math.max(.3,cameraPose3(h).distance-center.depth)*.6+48;if(center.x< -radius||center.x>w+radius||center.y< -radius||center.y>h+radius)continue;visibleBuildings.push(b);mesh.entity?.(b._sceneEntityId);if(b._cutaway)openRooms.add(b.service?.destination);const cached=cachedMesh3(b,'building',r=>building3(r,b));if(cached.deferred)continue;if(!b._generatedBuildingEntity)b.visualHeight=cached.height||b.visualHeight;emitMesh3(mesh,cached);if(b.service&&!b._cutaway){hitboxes.push({get polygon(){return buildingHull3(cached);},buildingMesh:cached,o:b.service,building:b,depth:project3(bx,0,bz).depth});}if((s.insideBuilding===b.service?.destination||target===b.service)&&Math.hypot(px-b.x,py-b.y)<10)labels.push([b.name,bx,(b.visualHeight||3.3)+.15,bz,'#e8d9b0']);}
  for(const o of viewObjects){if(typeof veldrenLegacySceneVisible==='function'&&!veldrenLegacySceneVisible(o,currentScene))continue;if(o.type==='spirit')continue;const treeState=o.type==='tree'&&typeof treeLifecycle==='function'?treeLifecycle(o):null;if(treeState==='syncing')continue;if(o.interiorBuilding&&!openRooms.has(o.interiorBuilding)||o.building?.walkIn||(o.dead>time&&!creatureDying(o)&&!treeState)||(o.kind==='king'&&s.boss&&!o.repeatable&&!creatureDying(o))||!near(o.x,o.y))continue;mesh.entity?.(o._sceneEntityId);const x=(o.drawX??o.x)+.5,z=(o.drawY??o.y)+.5,living=fighter(o)||o.characterSprite||['elder','shop','questgiver','spirit','villager','inn'].includes(o.type),pickable=o.type==='tree'||fighter(o)||o.passageKind==='ladder'||o.mainStoryKey||o.mountainKey||o.questModel,precisePick=pickable&&(target===o||Math.hypot(o.x-px,o.y-py)<6),pick=precisePick?capturePickGeometry3(mesh):null,objectPainter=pick?.painter||mesh,drawObject=()=>treeState&&['stump','regrowing'].includes(treeState)?emitMesh3(objectPainter,cachedMesh3(o,'tree-'+treeState,r=>drawTreeStump(r,o,x,z,treeState==='regrowing'))):living?creature3(objectPainter,o,x,z):(o.arcPhantom||o.mountainKey==='memory'||['camp','crop','spirit','gate'].includes(o.type)||o.name==='Forge furnace'&&currentScene==='overworld'&&o.x>74&&o.x<95&&o.y>30&&o.y<54)?prop3(objectPainter,o,x,z):emitMesh3(objectPainter,cachedMesh3(o,'prop',r=>prop3(r,o,x,z))),height=typeof withCivilGrounding3==='function'?withCivilGrounding3(o,drawObject):drawObject();if(height===null)continue;if(o.dead>time)continue;if(o.passageKind==='cave'||o.lairEntrance&&cavePassageKind(o.destination)==='cave')hitboxes.push({o,polygon:caveOpeningPolygon3(o,x,z),depth:project3(x,0,z).depth});else hit(o,x,z,height,o.type==='tree'?1.1:o.kind==='rat'?1.35:.7+(o.combatRadius||0)*2,pick?.geometry);const marker=typeof questNpcMarker==='function'?questNpcMarker(o):null;if(marker)labels.push([marker,x,height+.55,z,'#ffdb8d']);if(o.type==='fish'){const q=project3(x,.12,z);hitboxes.push({o,x:q.x-24,y:q.y-18,w:48,h:36,depth:q.depth});if(target!==o&&Math.hypot(x-px,z-py)<12)labels.push([o.name,x,.7,z,'#ccefff']);}if(target===o||fighter(o)&&typeof sharedCombatVisible==='function'&&sharedCombatVisible(o))labels.push([o.name,x,height+.35,z,'#ffe0bb',o]);else if(o.tutor&&Math.hypot(x-px,z-py)<7&&!target)labels.push([o.name,x,height+.35,z,'#e8d6a6']);}
  mesh.entity?.(null);
  if(typeof drawWorldLightFixtures3==='function')drawWorldLightFixtures3(mesh,minx,maxx,minz,maxz);
@@ -347,9 +351,9 @@ draw=draw3d;
 // Project building selection hulls only when a click needs them. Orbiting
 // never changes visible geometry and should not rebuild interaction polygons.
 function buildingHull3(cached){
- if(!cached.pickPoints){const layers=new Map(),add=p=>{const key=Math.round(p[1]*20),b=layers.get(key);if(b){b[0]=Math.min(b[0],p[0]);b[1]=Math.min(b[1],p[1]);b[2]=Math.min(b[2],p[2]);b[3]=Math.max(b[3],p[0]);b[4]=Math.max(b[4],p[1]);b[5]=Math.max(b[5],p[2]);}else layers.set(key,[...p,...p]);};
+ if(!cached.pickPoints){const layers=new Map(),add=p=>{if(cached.kind==='assembly')p=briarPoint(p,0,cached.model);const key=Math.round(p[1]*20),b=layers.get(key);if(b){b[0]=Math.min(b[0],p[0]);b[1]=Math.min(b[1],p[1]);b[2]=Math.min(b[2],p[2]);b[3]=Math.max(b[3],p[0]);b[4]=Math.max(b[4],p[1]);b[5]=Math.max(b[5],p[2]);}else layers.set(key,[...p,...p]);};
   for(const f of cached.faces)for(const p of f.points)add(p);
-  for(const {mesh,matrix}of cached.instances||[])if(mesh.bounds){const [lo,hi]=mesh.bounds;for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])add(briarPoint([x,y,z],0,matrix));}
+  for(const {mesh,matrix}of cached.instances||[]){const [lo,hi]=mesh.bounds||pickBounds3(pickReadableMesh3(mesh).p);for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])add(briarPoint([x,y,z],0,matrix));}
   cached.pickPoints=[...layers.values()].flatMap(b=>[[b[0],b[1],b[2]],[b[3],b[1],b[2]],[b[3],b[4],b[5]],[b[0],b[4],b[5]]]);
  }
  const pickW=screen.w||900,pickH=screen.h||500,key=[view3d.yaw,cameraPitch3(),cameraZoom3(),px,py,pickW,pickH].join(':');if(cached.hullKey!==key){
@@ -358,6 +362,24 @@ function buildingHull3(cached){
  }return cached.hull;
 }
 function pointInHull3(x,y,p){let inside=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if((a.y>y)!==(b.y>y)&&x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)inside=!inside;}return inside;}
+// A convex screen hull includes empty courtyards and can cover the screen when
+// a neighbor crosses the camera plane. Confirm buildings against visible mesh
+// triangles in world space; work is deferred until an actual click.
+function buildingPick3(cached,sx,sy){
+ const {eye,dir}=cameraRay3(sx,sy),pose=cameraPose3();let nearest=pose.far,found=false;
+ const triangle=(a,b,c)=>{const t=cameraTriangleDistance3(a,b,c,eye,dir,nearest);if(t!==null&&t>=pose.near&&t<nearest){nearest=t;found=true;}};
+ const transform=p=>cached.kind==='assembly'?briarPoint(p,0,cached.model):Array.from(p);
+ for(const face of cached.faces){const points=face.points.map(p=>{const q=transform(p);q[1]+=landHeight(q[0],q[2]);return q;});for(let i=1;i+1<points.length;i++)triangle(points[0],points[i],points[i+1]);}
+ for(const instance of cached.instances||[]){
+  const mesh=pickReadableMesh3(instance.mesh),matrix=cached.kind==='assembly'?affineMultiply(cached.model,instance.matrix):instance.matrix,ground=landHeight(matrix[3],matrix[11]);
+  const bounds=pickCorners3(mesh.bounds||pickBounds3(mesh.p)).map(p=>{const q=briarPoint(p,0,matrix);q[1]+=ground;return q;}),lo=[0,1,2].map(a=>Math.min(...bounds.map(p=>p[a]))),hi=[0,1,2].map(a=>Math.max(...bounds.map(p=>p[a])));let near=pose.near,far=nearest;
+  for(let a=0;a<3;a++){if(Math.abs(dir[a])<1e-9){if(eye[a]<lo[a]||eye[a]>hi[a])far=-1;}else{const first=(lo[a]-eye[a])/dir[a],last=(hi[a]-eye[a])/dir[a];near=Math.max(near,Math.min(first,last));far=Math.min(far,Math.max(first,last));}}
+  if(near>far)continue;
+  const points=new Array(mesh.p.length/3),point=id=>{if(points[id])return points[id];const q=briarPoint([mesh.p[id*3],mesh.p[id*3+1],mesh.p[id*3+2]],0,matrix);q[1]+=ground;return points[id]=q;};
+  for(let i=0;i<mesh.i.length;i+=3)triangle(point(mesh.i[i]),point(mesh.i[i+1]),point(mesh.i[i+2]));
+ }
+ return found?{depth:pose.distance-nearest,distance:0}:null;
+}
 function openBuilding3(b){if(!b.service?.destination){toast(b.name);return;}dialog(b.name,'<p>Enter this building?</p>',[['Enter',()=>{close();engage(b.service);}],['Cancel',close]]);}
 // Keep references to the geometry already submitted for this frame. Mesh work
 // happens on a click, not in the animation loop or shared combat simulation.
@@ -400,7 +422,7 @@ function pickGeometry3(geometry,x,y,pad=4){
 }
 function worldHits3(sx,sy){
  const hits=[];for(const h of hitboxes){if(h.o&&(h.o.dead>time||h.o.collected))continue;
-  const result=h.geometry?pickGeometry3(h.geometry,sx,sy):(h.polygon?pointInHull3(sx,sy,h.polygon):sx>=h.x&&sx<=h.x+h.w&&sy>=h.y&&sy<=h.y+h.h)?{depth:h.depth,distance:0}:null;
+  const result=h.buildingMesh?buildingPick3(h.buildingMesh,sx,sy):h.geometry?pickGeometry3(h.geometry,sx,sy):(h.polygon?pointInHull3(sx,sy,h.polygon):sx>=h.x&&sx<=h.x+h.w&&sy>=h.y&&sy<=h.y+h.h)?{depth:h.depth,distance:0}:null;
   if(result)hits.push({...h,pickDepth:result.depth,pickDistance:result.distance});
  }
  return hits.sort((a,b)=>Number(!!b.o?.passageKind)-Number(!!a.o?.passageKind)||Number(!!b.door)-Number(!!a.door)||Number(a.pickDistance>0)-Number(b.pickDistance>0)||(a.pickDistance&&b.pickDistance?a.pickDistance-b.pickDistance:b.pickDepth-a.pickDepth));

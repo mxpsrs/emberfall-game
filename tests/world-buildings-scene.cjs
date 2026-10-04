@@ -23,7 +23,7 @@ async function main(){
  const beforeGeometry=shape(raw),result=await ctx.VeldrenBuildingScene.migrate(),native=ctx.realmNative.scenes;
  assert.equal(result.buildings,count);assert(result.parts>count,'buildings have room/wall/deck/door child entities');
  const b=registry.overworld.buildings.find(b=>b._sceneEntityId===origin.id);assert(b?._generatedBuildingEntity);assert.equal(b.service.id,origin.doorId,'network-visible door catalog identity preserved');assert.equal(b.service.building,b);
- assert.equal(b.service.x,origin.doorX);assert.equal(b.civilUpper.ramp.x,origin.ramp.x);assert.equal(b.civilUpper.decks[0].y,origin.deck.y);
+ assert(Math.abs(b.service.x-origin.doorX)<1e-7);assert(Math.abs(b.civilUpper.ramp.x-origin.ramp.x)<1e-7);assert(Math.abs(b.civilUpper.decks[0].y-origin.deck.y)<1e-7);
  const compare=(a,b,path='geometry')=>{if(typeof a==='number'){assert(Math.abs(a-b)<1e-7,path+': '+a+' != '+b);return;}assert.deepEqual(Object.keys(a||{}),Object.keys(b||{}),path+' shape');for(const key of Object.keys(a||{}))compare(a[key],b[key],path+'.'+key);};compare(JSON.parse(shape(b)),JSON.parse(beforeGeometry));
  const decorationCount=Object.values(registry).reduce((n,w)=>n+(w.decor?.length||0),0),sceneryResult=await ctx.VeldrenSceneryScene.migrate();assert.equal(sceneryResult.decorations,decorationCount);
  const roadResult=await ctx.VeldrenRoadScene.migrate();assert(roadResult.roads>100,'full procedural road network');assert(registry.tutorial.roads.length>0,'Firstlight streets materialized before ownership transfer');

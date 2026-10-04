@@ -41,7 +41,13 @@ for(const scene of ['overworld','tutorial']){
 activateScene('overworld',55,61,false);for(const b of buildings)if(b.walkIn)setWalkInDoor(b.service,true,true);
 check(objects.filter(o=>o.briarhavenGoblin).length===15,'15 goblins retained');
 check(objects.filter(o=>o.name==='Brambleclaw tent').length===6,'six purposeful goblin shelters retained');
-for(const clerk of objects.filter(o=>o.name==='Civic banker'))check(objects.some(o=>o.propKind==='counter'&&o.serviceOwner===clerk.id&&o.placement),'civic banker has an accessible customer counter');
+for(const clerk of objects.filter(o=>o.name==='Civic banker')){
+ const counter=objects.find(o=>o.propKind==='counter'&&o.serviceOwner===clerk.id&&o.placement);check(!!counter,'civic banker has an accessible customer counter');if(!counter)continue;
+ check(clerk.workstationId===counter.id,'banker retains its actual counter identity');
+ check(Math.abs(counter.x-clerk.x-Math.sin(counter.placement.yaw))<.001&&Math.abs(counter.y-clerk.y-Math.cos(counter.placement.yaw))<.001,'banker stands behind the counter');
+ const front=propFrontBox(counter),x=Math.floor((front.left+front.right)/2),y=Math.floor((front.top+front.bottom)/2);s.x=px=x;s.y=py=y;
+ check(!blocked(x,y)&&!!route(clerk.x,clerk.y,true),'bank counter has a usable customer approach');
+}
 for(const feed of objects.filter(o=>o.name==='Stable feed')){const b=buildings.find(b=>b.service?.destination===feed.civilCourtyard);check(feed.propKind==='storage'&&feed.y>=b.y+35,'stable supplies belong to courtyard service edge');}
 for(const q of surfaceQuarries){check(objects.some(o=>o.quarry===q.id&&o.civilDecor==='crane'),'quarry crane retained: '+q.id);check(objects.some(o=>o.quarry===q.id&&/cart/i.test(o.name)),'quarry loading cart retained: '+q.id);}
 for(const q of surfaceQuarries)for(let y=q.y-8;y<=q.y+q.ry+6;y++)for(const dx of [-2,0,2])check(gradeLand(q.x+dx,y,0)===propGradeBefore(q.x+dx,y,0),'quarry work pads preserve ramp: '+q.id);

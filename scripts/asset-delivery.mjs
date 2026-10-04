@@ -64,12 +64,14 @@ export function compressAsset(bytes,cacheRoot='.asset-cache/brotli-v1-q11'){
 
 export function compressedCatalogPlugin(){
  return {name:'veldren-native-catalog-storage',setup(build){
+  build.onResolve({filter:/^veldren-seed-codec$/},()=>({path:'seed-codec',namespace:'veldren-seed-codec'}));
+  build.onLoad({filter:/.*/,namespace:'veldren-seed-codec'},()=>({loader:'js',contents:'export '+decodeAsset.toString().replace('function decodeAsset(','function decodeSeedAsset(')}));
   // The current authored Scene is also delivered as a browser asset. Compress
   // its API seed through the same lossless path instead of embedding another
   // large uncompressed copy in the Worker.
   build.onLoad({filter:/(?:worker\/(?:shared-catalog|trade-items)|editor-data\/world-scene)\.json$/},({path:file})=>{
-   const data=compressAsset(fs.readFileSync(file)).toString('base64');
-   return {loader:'js',contents:`import {brotliDecompressSync} from 'node:zlib';export default JSON.parse(new TextDecoder().decode(brotliDecompressSync(Uint8Array.from(atob(${JSON.stringify(data)}),c=>c.charCodeAt(0)))));`};
+   const compressed=compressAsset(fs.readFileSync(file)),data=encodeAsset(compressed);
+   return {loader:'js',contents:`import {brotliDecompressSync} from 'node:zlib';import {decodeSeedAsset} from 'veldren-seed-codec';export default JSON.parse(new TextDecoder().decode(brotliDecompressSync(decodeSeedAsset(${JSON.stringify(data)},${compressed.length}))));`};
   });
  }};
 }

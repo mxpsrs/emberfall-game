@@ -1,6 +1,6 @@
-const vm=require('node:vm'),assert=require('node:assert/strict'),{ctx}=require('../scripts/benchmark-desktop.cjs');ctx.assert=assert;
+const vm=require('node:vm'),assert=require('node:assert/strict'),{ctx}=require('../scripts/game-fixture.cjs');ctx.assert=assert;ctx.Path2D=class {};
 vm.runInContext(`{
-renderUI=renderAction=renderTutorial=save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();s.character={name:'Door tester'};s.tutorial=tutorialSteps.length;assetsReady=true;
+renderUI=renderAction=renderTutorial=save=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();s.character={name:'Door tester'};s.tutorial=tutorialSteps.length;s.tutorialReward=true;activateScene('overworld',55,61,false);assetsReady=true;
 function settle(){for(let i=0;i<500;i++){time+=.05;advanceMovement(.05);updateDoorThreshold();if(!path.length&&!pendingWalkInDoor&&Math.hypot(px-s.x,py-s.y)<.02)return;}throw new Error('Door interaction did not finish');}
 const cases=[...new Set(buildings.filter(b=>b.walkIn).map(b=>b.doorFacing))].map(facing=>buildings.find(b=>b.walkIn&&b.doorFacing===facing));
 for(const id of ['realm_briarhaven_4','realm_briarhaven_3','village_kitchen']){const b=buildings.find(b=>b.service?.destination===id);if(!cases.includes(b))cases.push(b);}
@@ -25,11 +25,12 @@ for(const id of ['realm_briarhaven_4','realm_briarhaven_3','village_kitchen']){
  let candidate=null;
  for(let y=b.y+1;y<b.y+b.h-1&&!candidate;y++)for(let x=b.x+1;x<b.x+b.w-1&&!candidate;x++){
   if(!land(x,y))continue;const p=project3(x+.5,0,y+.5);
-  const hit=hitboxes.some(h=>h.polygon?pointInHull3(p.x,p.y,h.polygon):p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h);
+  const hit=worldHits3(p.x,p.y).length>0;
   if(!hit&&p.x>0&&p.x<1112&&p.y>0&&p.y<512)candidate=p;
  }
  assert(candidate,b.name+' exposes a clear floor target');clickWorld3({clientX:candidate.x,clientY:candidate.y});settle();assert(withinWalkIn(b,px,py),b.name+' actual floor click walks inside');
- const tutor=objects.find(p=>p.tutor&&p.interiorBuilding===id);assert(route(tutor.x,tutor.y,true,1.45)!==null,'interior tutor is reachable');
+ const banker=objects.find(p=>p.type==='banker'&&p.interiorBuilding===id);if(id==='realm_briarhaven_4'){assert(banker,'mainland bank keeps its banker');assert(route(banker.x,banker.y,true,1.45)!==null,'interior banker is reachable');}
+ assert(!objects.some(p=>p.tutor&&p.interiorBuilding===id),'tutorial-only tutors stay on Firstlight Isle');
 }
-console.log('PASS: manual doors, occupied-only roof and upper-floor removal, unobstructed interior floor clicks, entry/exit and tutor routes for bank, school and kitchen; all four orientations and cancellation.');
+console.log('PASS: manual doors, occupied-only roof and upper-floor removal, unobstructed interior floor clicks, entry/exit and banker access for bank, school and kitchen; all four orientations and cancellation.');
 }`,ctx);

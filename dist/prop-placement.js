@@ -299,7 +299,16 @@ function propOutdoorContext(o,w){
 }
 function propOutdoorAnchors(o,context,w){
  const kind=propKind(o),{town,b,q,zone}=context,rule=PROP_RULES[kind],out=[],reason='';
- if(kind==='counter'&&o.serviceOwner){const staff=w.objects.find(p=>p.id===o.serviceOwner);for(const yaw of [0,Math.PI/2,-Math.PI/2,Math.PI])out.push(propAnchor('shop-counter',staff.x+Math.sin(yaw),staff.y+Math.cos(yaw),yaw,'Public banking counter faces customers with the clerk behind it',{target:staff.id}));return out;}
+ if(kind==='counter'&&o.serviceOwner){
+  const staff=w.objects.find(p=>p.id===o.serviceOwner);if(!staff)return out;
+  const station=(sx,sy,yaw,move)=>propAnchor('shop-counter',sx+Math.sin(yaw),sy+Math.cos(yaw),yaw,'Public banking counter faces customers with the clerk behind it',{target:staff.id,...(move?{staffAt:[sx,sy]}:{})});
+  for(const yaw of [0,Math.PI/2,-Math.PI/2,Math.PI])out.push(station(staff.x,staff.y,yaw,false));
+  // City avenues cross the old clerk position. Move the generated station as
+  // a pair onto a nearby clear market edge, retaining authored placements.
+  if(!propEditorAuthored(staff))for(let r=1;r<=8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===r)
+   for(const yaw of [0,Math.PI/2,-Math.PI/2,Math.PI])out.push(station(staff.x+dx,staff.y+dy,yaw,true));
+  return out;
+ }
  if(kind==='well'||kind==='monument'){
   const focal=o.civilCourtyard?[b.x+20,b.y+28]:kind==='well'&&w.objects.some(p=>p!==o&&propKind(p)==='monument'&&Math.hypot(p.x-town.x,p.y-town.y)<12)?[town.x-5,town.y+3]:[town.x,town.y];
   for(const [dx,dy]of [[0,0],[1,1],[-1,1],[1,-1],[-1,-1],[0,1],[1,0],[-1,0],[0,-1]])out.push(propAnchor('plaza-center',focal[0]+dx,focal[1]+dy,0,'Public water or monument is the planned civic focal point',{target:focal}));return out;
@@ -345,16 +354,22 @@ function propOutdoorAnchors(o,context,w){
 }
 function propOutdoorRejection(o,a,context,w,occupied){
  const rule=PROP_RULES[propKind(o)],box=propBox(o,a.x,a.y,a.yaw),{zone}=context;
+ if(a.staffAt){
+  const [x,y]=a.staffAt,staffBox={left:x+.1,right:x+.9,top:y+.1,bottom:y+.9};
+  if(water(x,y)||worldWall(x,y)||propTravelOverlap(staffBox))return 'staff access';
+  if(w.buildings.some(b=>propBoxesOverlap(staffBox,{left:b.x-.15,right:b.x+b.w+.15,top:b.y-.15,bottom:b.y+b.h+.15})))return 'staff access';
+  if(occupied.some(p=>p.id!==o.serviceOwner&&!p.walkThrough&&Math.abs(p.x-x)<8&&Math.abs(p.y-y)<8&&propBoxesOverlap(staffBox,propBox(p),.15)))return 'staff access';
+ }
  if(rule.indoorOnly||!rule.zones?.includes(zone))return 'incompatible';
  if(propBridgeOverlap(box))return 'bridge';
  if(w.buildings.some(b=>propBoxesOverlap(box,{left:b.x-.15,right:b.x+b.w+.15,top:b.y-.15,bottom:b.y+b.h+.15})&&!(o.civilCourtyard===b.service?.destination)))return 'building';
  if(w.buildings.some(b=>b.service&&propBoxesOverlap(box,{left:b.service.x-1.25,right:b.service.x+2.25,top:b.service.y-1.25,bottom:b.service.y+2.25})))return 'door';
  if(!['well','monument'].includes(propKind(o))&&propTravelOverlap(box))return 'road';
- if(occupied.some(p=>!p.walkThrough&&Math.abs(p.x-a.x)<8&&Math.abs(p.y-a.y)<8&&propBoxesOverlap(box,propBox(p),(o.serviceOwner===p.id ? .04 : .4))))return 'object';
+ if(occupied.some(p=>!(a.staffAt&&p.id===o.serviceOwner)&&!p.walkThrough&&Math.abs(p.x-a.x)<8&&Math.abs(p.y-a.y)<8&&propBoxesOverlap(box,propBox(p),(o.serviceOwner===p.id ? .04 : .4))))return 'object';
  if(rule.clearance){const front=propFrontBox(o,a.x,a.y,a.yaw),fx=(front.left+front.right)/2,fy=(front.top+front.bottom)/2;
   if(water(Math.floor(fx),Math.floor(fy))||worldWall(Math.floor(fx),Math.floor(fy)))return 'front access';
   if(w.buildings.some(b=>b.service?.destination!==o.civilCourtyard&&propBoxesOverlap(front,{left:b.x,right:b.x+b.w,top:b.y,bottom:b.y+b.h})))return 'front access';
-  if(occupied.some(p=>!p.walkThrough&&Math.abs(p.x-fx)<8&&Math.abs(p.y-fy)<8&&propBoxesOverlap(front,propBox(p))))return 'front access';
+  if(occupied.some(p=>!(a.staffAt&&p.id===o.serviceOwner)&&!p.walkThrough&&Math.abs(p.x-fx)<8&&Math.abs(p.y-fy)<8&&propBoxesOverlap(front,propBox(p))))return 'front access';
  }
  if(occupied.some(p=>p.placement&&!p.placement.room&&PROP_RULES[propKind(p)]?.clearance&&Math.abs(p.x-a.x)<8&&Math.abs(p.y-a.y)<8&&propBoxesOverlap(box,propFrontBox(p))))return 'front access';
  if(w.entry&&Math.hypot(a.x-w.entry[0],a.y-w.entry[1])<1.5||currentScene==='overworld'&&Math.hypot(a.x-55,a.y-61)<1.2)return 'entry';
@@ -375,7 +390,7 @@ function propDressOutdoors(w,rooms){
   if(['well','monument'].includes(kind)&&focal.has(focalKey)){propRemove(w,o,'Duplicate civic focal object');continue;}
   const anchors=propOutdoorAnchors(o,context,w),a=anchors.find(a=>propFitsOutdoor(o,a,context,w,occupied));
   if(!a){if(rule.required)throw new Error('No usable outdoor '+o.name+' anchor at '+o.x+','+o.y+' '+JSON.stringify(anchors.map(a=>[a.x,a.y,propOutdoorRejection(o,a,context,w,occupied)])));propRemove(w,o,'No compatible '+kind+' anchor outside entrances, roads and bridges');continue;}
-  propAssign(o,a,null,context.zone);occupied.push(o);if(o.serviceOwner){const staff=w.objects.find(p=>p.id===o.serviceOwner);staff.heading=a.yaw;staff.workstationId=o.id;}if(['well','monument'].includes(kind))focal.add(focalKey);
+  propAssign(o,a,null,context.zone);occupied.push(o);if(o.serviceOwner){const staff=w.objects.find(p=>p.id===o.serviceOwner);if(a.staffAt)civilMove(staff,...a.staffAt);staff.heading=a.yaw;staff.workstationId=o.id;}if(['well','monument'].includes(kind))focal.add(focalKey);
  }
  // Low-risk natural dressing still cannot occupy a bridge, doorstep or travel lane.
  for(const o of [...w.objects])if(!o.interiorBuilding&&!propPinned(o)&&['tree','crop'].includes(o.type)){
