@@ -32,6 +32,17 @@ function creatureSkinBatches(asset){
 }
 function creatureSize(o){if(o.size)return o.size;return o.kind==='rat'?1.9:o.kind==='ridgewolf'?1.12:o.kind==='warden'||o.kind==='sentinel'?1.16:1;}
 function creatureAsset(o){return creatureAssets[o.creatureLook||creatureKinds[o.kind]];}
+// UV seams repeat identical skinned points. Contact height needs each unique
+// point once; the render mesh, weights, animation and every triangle stay intact.
+function creatureFloorSkin(asset){
+ if(asset.floorSkin)return asset.floorSkin;const mesh=asset.mesh,seen=new Set(),data=[];
+ for(let i=0,k=0;i<mesh.p.length/3;i++,k+=3){
+  const x=mesh.p[k],y=mesh.p[k+1],z=mesh.p[k+2],key=[x,y,z,...mesh.j.subarray(i*4,i*4+4),...mesh.w.subarray(i*4,i*4+4)].join(',');
+  if(seen.has(key))continue;seen.add(key);const start=data.length;data.push(0);
+  for(let j=0;j<4;j++){const weight=mesh.w[i*4+j];if(!weight)continue;data[start]++;data.push(mesh.j[i*4+j]*12+4,weight,x,y,z);}
+ }
+ return asset.floorSkin=new Float32Array(data);
+}
 function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0,animation=null){
  const a=creatureAssets[kind],motion=a.clips[clip],frame=Math.max(0,Math.min(motion.frames-1,phase*(motion.frames-1)));
  const baseFrame=Math.max(0,Math.min(a.clips[baseClip].frames-1,basePhase*(a.clips[baseClip].frames-1)));
@@ -48,9 +59,9 @@ function creatureRigPose(kind,clip,phase,blend=1,baseClip='idle',basePhase=0,ani
  for(let i=0;i<a.rig.deforms.length;i++)palette.set(affineMultiply(global[a.rig.deforms[i]],a.rig.bind.subarray(i*12,i*12+12)),i*12);
  // Only solve contact height on the CPU. Positions and normals are deformed
  // by the GPU, using the same palette, in both the color and shadow passes.
- const mesh=a.mesh;let floorY=Infinity;
- for(let i=0,k=0;i<mesh.p.length/3;i++,k+=3){let y=0;
-  for(let j=0;j<4;j++){const weight=mesh.w[i*4+j];if(!weight)continue;const t=mesh.j[i*4+j]*12+4;y+=weight*(palette[t]*mesh.p[k]+palette[t+1]*mesh.p[k+1]+palette[t+2]*mesh.p[k+2]+palette[t+3]);}
+ const skin=creatureFloorSkin(a);let floorY=Infinity;
+ for(let i=0;i<skin.length;){const count=skin[i++],end=i+count*5;let y=0;
+  for(;i<end;i+=5){const t=skin[i];y+=skin[i+1]*(palette[t]*skin[i+2]+palette[t+1]*skin[i+3]+palette[t+2]*skin[i+4]+palette[t+3]);}
   floorY=Math.min(floorY,y);
  }
  const pose={key,palette,floorY,localTrs};creatureRigPoses.set(key,pose);if(animation?.animationState)animation.animationState.pose=localTrs;

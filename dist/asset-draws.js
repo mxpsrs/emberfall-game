@@ -2,20 +2,36 @@
 // Scene transforms arrive from the native Scene; Filament owns the corresponding
 // render-only hierarchy. No draw handle or load status is serialized.
 function createVeldrenRenderableBudget(profile){
- const limit=profile==='browser-mobile'?8:16,budgetMs=profile==='browser-mobile'?3:5,owners=[];let remaining=limit,used=0,legacyUsed=0,legacyLimit=limit,started=null,maxUsed=0,frame=0,nextOwner=0,deferredUsed=0;
+ const limit=profile==='browser-mobile'?16:64,budgetMs=profile==='browser-mobile'?3:5,owners=[];
+ let remaining=limit,used=0,legacyUsed=0,deferredUsed=0,legacyLimit=limit,deferredLimit=limit,legacyStart=null,deferredStart=null,maxUsed=0,frame=0,nextOwner=0;
  const now=()=>globalThis.performance?.now?.()??Date.now();
- function consume(deferred=false){if(remaining<=0||!deferred&&legacyUsed>=legacyLimit||(used&&now()-started>=budgetMs&&(!deferred||deferredUsed)))return false;if(started===null)started=now();remaining--;used++;if(deferred)deferredUsed++;else legacyUsed++;maxUsed=Math.max(maxUsed,used);return true;}
- return Object.freeze({registerOwner(){const owner={items:[],cursor:0};owners.push(owner);return owner;},beginFrame(){frame++;legacyLimit=owners.some(o=>o.items.some(i=>i.pending))?Math.ceil(limit/2):limit;legacyUsed=0;deferredUsed=0;for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=0;started=null;},consume,enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){for(const owner of owners)owner.items.sort((a,b)=>(a.priority||0)-(b.priority||0));let ownerIndex=nextOwner;
-   while(remaining>0&&(!deferredUsed||!used||now()-started<budgetMs)){let chosen=-1,best=Infinity;for(let offset=0;offset<owners.length;offset++){const index=(ownerIndex+offset)%owners.length,owner=owners[index],instance=owner?.items[owner.cursor];if(!instance)continue;const priority=Number.isFinite(instance.priority)?instance.priority:0;if(priority<best){best=priority;chosen=index;}}
-    if(chosen<0)break;const owner=owners[chosen],instance=owner.items[owner.cursor++];ownerIndex=(chosen+1)%owners.length;instance.queuedFrame=0;if(!instance.pending||typeof instance.advance!=='function')continue;if(!consume(true))break;instance.advance();}
-   nextOwner=ownerIndex;return used;
-  },diagnostics:()=>({limit,budgetMs,remaining,used,maxUsed,queued:owners.reduce((n,owner)=>n+owner.items.length-owner.cursor,0)})});
+ function consume(deferred=false){
+  const count=deferred?deferredUsed:legacyUsed,started=deferred?deferredStart:legacyStart,quota=deferred?deferredLimit:legacyLimit;
+  if(remaining<=0||count>=quota||count&&now()-started>=budgetMs/2)return false;
+  if(!count){if(deferred)deferredStart=now();else legacyStart=now();}
+  remaining--;used++;if(deferred)deferredUsed++;else legacyUsed++;maxUsed=Math.max(maxUsed,used);return true;
+ }
+ return Object.freeze({registerOwner(){const owner={items:[],cursor:0};owners.push(owner);return owner;},beginFrame(){
+  frame++;const pending=owners.some(o=>o.items.some(i=>i.pending));legacyLimit=pending?Math.ceil(limit/2):limit;deferredLimit=pending?Math.floor(limit/2):limit;
+  for(const owner of owners){owner.items.length=0;owner.cursor=0;}remaining=limit;used=legacyUsed=deferredUsed=0;legacyStart=deferredStart=null;
+ },consume,enqueue(owner,instance){if(!owner||instance.queuedFrame===frame)return;instance.queuedFrame=frame;owner.items.push(instance);},drain(){
+  // Reserve count and time for both kinds of construction. Neither queue may
+  // spend the other's entire frame allowance, whichever is visited first.
+  if(owners.some(o=>o.items.some(i=>i.pending))){legacyLimit=Math.ceil(limit/2);deferredLimit=Math.floor(limit/2);}
+  for(const owner of owners)owner.items.sort((a,b)=>(a.priority||0)-(b.priority||0));let ownerIndex=nextOwner;
+  while(remaining>0){let chosen=-1,best=Infinity;
+   for(let offset=0;offset<owners.length;offset++){const index=(ownerIndex+offset)%owners.length,owner=owners[index],instance=owner?.items[owner.cursor];if(!instance)continue;const priority=Number.isFinite(instance.priority)?instance.priority:0;if(priority<best){best=priority;chosen=index;}}
+   if(chosen<0)break;const owner=owners[chosen],instance=owner.items[owner.cursor++];ownerIndex=(chosen+1)%owners.length;instance.queuedFrame=0;
+   if(!instance.pending||typeof instance.advance!=='function')continue;if(!consume(true))break;instance.advance();
+  }
+  nextOwner=ownerIndex;return used;
+ },diagnostics:()=>({limit,budgetMs,remaining,used,maxUsed,queued:owners.reduce((n,owner)=>n+owner.items.length-owner.cursor,0)})});
 }
 function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=Filament,streaming=null,constructionBudget=null){
- const pools=new Map(),manager=engine.getTransformManager(),constructionOwner=constructionBudget?.registerOwner?.();let disposed=false,frame=0,sceneKey=null;
+ const pools=new Map(),activeByIdentity=new Map(),manager=engine.getTransformManager(),constructionOwner=constructionBudget?.registerOwner?.();let disposed=false,frame=0,sceneKey=null;
  const unsubscribe=assets.onDispose(destroy);
  function removeInstance(instance){
-  instance.pending=false;instance.advance=null;
+  instance.pending=false;instance.advance=null;if(activeByIdentity.get(instance.identity)===instance)activeByIdentity.delete(instance.identity);
   if(instance.active)scene.removeEntities(instance.entities);
   instance.parent?.delete();instance.parent=null;
   for(const entity of instance.root?[...instance.entities,instance.root]:instance.entities){engine.destroyEntity(entity);filament.EntityManager.get().destroy(entity);entity.delete();}
@@ -43,8 +59,17 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   const parent=manager.getInstance(instance.root),child=manager.getInstance(entity);try{manager.setParent(child,parent);manager.setTransform(child,draw.matrix);}finally{child.delete();parent.delete();}
  }
  function finishInstance(instance){instance.pending=false;}
+ function rememberActive(instance){
+  const previous=activeByIdentity.get(instance.identity);if(previous&&previous!==instance&&previous.active){scene.removeEntities(previous.entities);previous.active=false;}activeByIdentity.set(instance.identity,instance);
+ }
+ function retainPrevious(identity,matrix){
+  if(identity==null)return false;const instance=activeByIdentity.get('entity:'+identity);if(!instance?.active)return false;
+  instance.seen=frame;instance.pool.used++;instance.pool.lastUsed=frame;
+  if(matrix.some((v,i)=>v!==instance.matrix[i])){const transform=manager.getInstance(instance.root);try{manager.setTransform(transform,matrix);}finally{transform.delete();}instance.matrix=Array.from(matrix);}
+  return true;
+ }
  function activateInstance(instance){
-  finishInstance(instance);const transform=manager.getInstance(instance.root);
+  rememberActive(instance);finishInstance(instance);const transform=manager.getInstance(instance.root);
   try{manager.setTransform(transform,instance.pendingMatrix);}finally{transform.delete();}
   instance.matrix=Array.from(instance.pendingMatrix);instance.pendingMatrix=null;scene.addEntities(instance.entities);instance.active=true;
  }
@@ -60,25 +85,25 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
  }
  function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false){
   if(!lodSelected&&assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
-  if(streaming&&!streaming.want(id,matrix,options,identity))return false;
+  if(streaming&&!streaming.want(id,matrix,options,identity))return retainPrevious(identity,matrix);
   const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   if(!pool){
    const lease=resources.acquire(id,profile,options||{});pool={asset:id,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
    const current=pool;lease.ready.then(model=>{current.model=model;},error=>{current.error=error;});
   }
-  pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return false;
+  pool.lastUsed=frame;if(pool.error)throw pool.error;if(!pool.model)return retainPrevious(identity,matrix);
   const slot=pool.used++,keyIdentity=identity==null?'slot:'+slot:'entity:'+identity;
   let instance=pool.identities.get(keyIdentity);
-  if(!instance){instance=constructionBudget?beginInstance(pool.model,options||{}):makeInstance(pool.model,options||{});instance.identity=keyIdentity;pool.identities.set(keyIdentity,instance);pool.instances.push(instance);
+  if(!instance){instance=constructionBudget?beginInstance(pool.model,options||{}):makeInstance(pool.model,options||{});instance.identity=keyIdentity;instance.pool=pool;pool.identities.set(keyIdentity,instance);pool.instances.push(instance);
    if(constructionBudget)instance.advance=()=>{try{if(!instance.root){createInstanceRoot(instance);return true;}if(instance.nextDraw>=instance.model.draws.length){activateInstance(instance);return false;}appendInstanceDraw(instance,instance.model.draws[instance.nextDraw++],instance.options);if(instance.nextDraw>=instance.model.draws.length){activateInstance(instance);return false;}return true;}catch(error){removeInstance(instance);pool.identities.delete(instance.identity);const at=pool.instances.indexOf(instance);if(at>=0)pool.instances.splice(at,1);throw error;}};
   }
   instance.seen=frame;
-  if(instance.pending){if(!instance.pendingMatrix)instance.pendingMatrix=new Float32Array(matrix.length);instance.pendingMatrix.set(matrix);instance.priority=Number.isFinite(distance)?distance:0;return true;}
+  if(instance.pending){if(!instance.pendingMatrix)instance.pendingMatrix=new Float32Array(matrix.length);instance.pendingMatrix.set(matrix);instance.priority=Number.isFinite(distance)?distance:0;return retainPrevious(identity,matrix);}
   if(!instance.matrix||matrix.some((v,i)=>v!==instance.matrix[i])){
    const transform=manager.getInstance(instance.root);try{manager.setTransform(transform,matrix);}finally{transform.delete();}instance.matrix=Array.from(matrix);
   }
-  if(!instance.active){scene.addEntities(instance.entities);instance.active=true;}return true;
+  if(!instance.active){rememberActive(instance);scene.addEntities(instance.entities);instance.active=true;}return true;
  }
  function end(){
   if(constructionBudget){
@@ -97,5 +122,5 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   }
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();}
- return Object.freeze({begin,submit,end,destroy,diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),pendingVisibleInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending&&i.seen===frame).length,0),pendingInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending).length,0),construction:constructionBudget?.diagnostics?.()||null,loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
+ return Object.freeze({begin,submit,end,destroy,ready(id,identity){const instance=pools.get(id)?.identities.get('entity:'+identity);return !!instance?.active&&instance.seen===frame;},diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),pendingVisibleInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending&&i.seen===frame).length,0),pendingInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending).length,0),construction:constructionBudget?.diagnostics?.()||null,loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
 }

@@ -32,7 +32,14 @@ function landNode(x,z){
  landHeights.set(key,h);if(landHeights.size>70000)landHeights.delete(landHeights.keys().next().value);return h;
 }
 function landNormal(x,z){const a=landHeight(x-.2,z)-landHeight(x+.2,z),b=landHeight(x,z-.2)-landHeight(x,z+.2),length=Math.hypot(a,.4,b);return [a/length,.4/length,b/length];}
-function landHeight(x,z){if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz;return v>=u?landNode(ix,iz)*(1-v)+landNode(ix,iz+1)*(v-u)+landNode(ix+1,iz+1)*u:landNode(ix,iz)*(1-u)+landNode(ix+1,iz)*(u-v)+landNode(ix+1,iz+1)*v;}
+// Consecutive face vertices often share a triangle cell. Preserve the exact
+// heightfield while avoiding three Map lookups for every repeated sample.
+const landSampleCell={x:NaN,z:NaN,scene:null,surface:-1,terrain:-1,heights:new Float64Array(4)};
+function landHeight(x,z){
+ if(!inWorld())return 0;const ix=Math.floor(x),iz=Math.floor(z),u=x-ix,v=z-iz,c=landSampleCell,revision=window.VeldrenTerrainEdits?.revision??0;
+ if(c.x!==ix||c.z!==iz||c.scene!==currentScene||c.surface!==landSurfaceRevision||c.terrain!==revision){c.x=ix;c.z=iz;c.scene=currentScene;c.surface=landSurfaceRevision;c.terrain=revision;c.heights[0]=landNode(ix,iz);c.heights[1]=landNode(ix,iz+1);c.heights[2]=landNode(ix+1,iz);c.heights[3]=landNode(ix+1,iz+1);}
+ const h=c.heights;return v>=u?h[0]*(1-v)+h[1]*(v-u)+h[3]*u:h[0]*(1-u)+h[2]*(u-v)+h[3]*v;
+}
 function terrainCellSlope(x,z){const heights=[landHeight(x,z),landHeight(x+1,z),landHeight(x,z+1),landHeight(x+1,z+1)];return Math.max(...heights)-Math.min(...heights);}
 function terrainCellBlocked(x,z){if(!inWorld()||bridgeAt(x+.5,z+.5))return false;const q=typeof quarryAt==='function'&&quarryAt(x+.5,z+.5);if(q)return false;return terrainCellSlope(x,z)>1.2;}
 const flatProject3=project3;

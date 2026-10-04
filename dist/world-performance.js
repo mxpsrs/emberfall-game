@@ -74,19 +74,24 @@
 // IO and handle marshalling for the native cell scheduler. The existing Phase 2
 // owner shares dependencies and allocations with draw leases and cancels IO.
 function createVeldrenWorldStreaming(native,assets,models,profile){
- const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=0;
+ const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=0,previousDemands=null,previousCenter=null,previousPins=null,previousGpu=-1;
  const pair=(id,material)=>JSON.stringify([id,material||'']);
- function reset(){++epoch;for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
- const unsubscribeScene=native.subscribe(event=>{if(event.kind==='load')reset();}),unsubscribeReload=assets.onReload(reset),unsubscribeDispose=assets.onDispose(destroy);
+ function reset(){previousDemands=previousCenter=previousPins=null;previousGpu=-1;++epoch;for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
+ const unsubscribeScene=native.subscribe(event=>{if(event.kind==='load')reset();else if(event.scene===scene||event.kind==='batch'&&event.changes.some(c=>c.scene===scene))previousDemands=null;}),unsubscribeReload=assets.onReload(reset),unsubscribeDispose=assets.onDispose(destroy);
  function destroy(){if(disposed)return;disposed=true;unsubscribeScene();unsubscribeReload();unsubscribeDispose();reset();}
  function begin(name){if(disposed)throw Error('World streaming owner destroyed');if(scene!==name){reset();scene=name;}demands=[];}
  function want(id,matrix,options,identity){
   const material=options?.material||'';demands.push([id,material,identity||'',matrix[12],matrix[13],matrix[14]]);
-  const entry=byAsset.get(pair(id,material));if(!entry||entry.generation!==assets.record(id).generation||material&&entry.materialGeneration!==assets.record(material).generation)return false;
+  const entry=byAsset.get(pair(id,material));if(!entry||entry.generation!==assets.record(id).generation||material&&entry.materialGeneration!==assets.record(material).generation){if(entry)previousDemands=null;return false;}
   if(entry.error)throw entry.error;return entry.state==='ready';
  }
  function end(center,gpuBytes){
-  const consumed=receipts.length,result=native.performance(scene,{op:'streaming',profile,epoch,center,demands,receipts:receipts.slice(0,consumed),pins:globalThis.VeldrenEditorSelection?.ids||[],gpuBytes});receipts.splice(0,consumed);status=result;
+  const pins=globalThis.VeldrenEditorSelection?.ids||[],same=(a,b)=>!!a&&a.length===b.length&&a.every((v,i)=>Array.isArray(v)?same(v,b[i]):v===b[i]);
+  // A settled, unchanged view cannot alter residency or the cell schedule.
+  // Receipts, camera motion, demand, memory and editor pins reopen the scheduler.
+  if(status&&status.stats.tracked===status.stats.required&&status.cells.every(c=>c[4])&&!status.stats.queued&&!status.stats.loading&&!receipts.length&&previousGpu===gpuBytes&&same(previousCenter,center)&&same(previousPins,pins)&&same(previousDemands,demands))return;
+  previousDemands=demands;previousCenter=Array.from(center);previousPins=Array.from(pins);previousGpu=gpuBytes;
+  const consumed=receipts.length,result=native.performance(scene,{op:'streaming',profile,epoch,center,demands,receipts:receipts.slice(0,consumed),pins,gpuBytes});receipts.splice(0,consumed);status=result;
   for(const key of result.release){const entry=entries.get(key);if(entry){entries.delete(key);if(byAsset.get(pair(entry.asset,entry.material))===entry)byAsset.delete(pair(entry.asset,entry.material));entry.lease?.release();}receipts.push([key,'released']);}
   for(const request of result.load){
    const existing=entries.get(request.key);if(existing){if(existing.state!=='loading')receipts.push([request.key,existing.state]);continue;}

@@ -29,7 +29,7 @@ async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true
  if(ext==='.png'&&!relative.startsWith('assets/canonical/')&&!['assets/realms/atlas-filament.png','assets/realms/atlas-filament-mobile.png','assets/realms/ground-surfaces.png','assets/realms/ground-surfaces-mobile.png'].includes(relative)){const img=await loadImage(bytes),c=createCanvas(img.width,img.height);c.getContext('2d').drawImage(img,0,0);bytes=await c.encode('webp',88);mime='image/webp';}
  // Keep classic-script globals and the plain JS delivery path, while removing
  // comments/whitespace. Vendor loaders keep their authored currentScript URLs.
- if(ext==='.js'&&bytes.length<=512*1024&&!relative.startsWith('vendor/')&&!relative.startsWith('assets/'))bytes=Buffer.from((await transform(bytes.toString('utf8'),{minifyWhitespace:true,legalComments:'none',target:'es2022'})).code);
+ if(ext==='.js'&&bytes.length<=512*1024&&!relative.startsWith('vendor/')&&!relative.startsWith('assets/'))bytes=Buffer.from((await transform(bytes.toString('utf8'),{minifyWhitespace:true,minifySyntax:true,legalComments:'none',target:'es2022'})).code);
  assets['/'+relative]={data:bytes.toString('base64'),mime,length:bytes.length};}}}
 await walk('dist');
 // Versioned assets can be reused across visits. The document and account API

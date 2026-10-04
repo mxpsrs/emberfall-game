@@ -30,6 +30,8 @@ try{
  frame();assert.equal(streaming.diagnostics().loading,2);assert.equal(acquisitions,2);assert.equal(streaming.diagnostics().queued,4);
  frame([]);assert.equal(models.diagnostics().leases,0);await tick();frame([]);assert.equal(streaming.diagnostics().resident,0);assert.equal(streaming.diagnostics().tracked,0);
  await settle();assert(maximum<=2);assert.equal(streaming.diagnostics().resident,6);assert.equal(models.diagnostics().models,6);assert(scene.getRenderableCount()>0);
+ const nativePerformance=n.performance;let scheduled=0;n.performance=function(scene,request){if(request.op==='streaming')scheduled++;return nativePerformance.call(this,scene,request);};
+ for(let i=0;i<8;i++)frame();assert.equal(scheduled,0,'settled unchanged demand skips repeated native scheduler marshalling');
  const acquired=acquisitions;for(let i=0;i<5;i++)frame([...ids].reverse());assert.equal(acquisitions,acquired);assert.equal(models.diagnostics().models,6);
  // Selection pins retain their existing resource even outside camera cells.
  context.VeldrenEditorSelection.select('entity:5');for(let i=0;i<40;i++)frame([]);assert.equal(streaming.diagnostics().resident,1);assert.equal(models.diagnostics().models,1);assert.deepEqual(Array.from(context.VeldrenEditorSelection.ids),['entity:5']);

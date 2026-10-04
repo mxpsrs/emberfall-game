@@ -345,8 +345,8 @@ function realmTerrainMaterial(road,x,z){
 }
 function realmTerrainUpload(gpu,c,data){
  const previous=c.buffer,entry=gpu.upload(data instanceof Float32Array?data:new Float32Array(data));c.buffer=entry.buffer;c.count=entry.count;
- if(gpu.kind==='filament')c.buffer.retire=()=>{if(gpu.terrain.get(c.scene)?.get(c.key)===c)gpu.terrain.get(c.scene).delete(c.key);};
- if(previous&&previous!==c.buffer)gpu.gl.deleteBuffer(previous);
+ if(gpu.kind==='filament'){const buffer=c.buffer;buffer.retire=()=>{if(c.buffer===buffer&&gpu.terrain.get(c.scene)?.get(c.key)===c)gpu.terrain.get(c.scene).delete(c.key);};}
+ if(previous&&previous!==c.buffer){if(gpu.retainReplacement)gpu.retainReplacement(c.buffer,previous);else gpu.gl.deleteBuffer(previous);}
 }
 function realmTerrainFallback(c,cell,mw,mh,tileBudget=1){
  const x=c.x-cell/2,z=c.z-cell/2,world=inWorld();if(!world)return [];
@@ -445,6 +445,7 @@ function realmTerrainEntries(gpu){
   }
   if(gpu.terrainStream.frame(visible,surfaceRevision)){
    const ready=gpu.terrainReady||(gpu.terrainReady=[]);ready.length=0;for(const c of visible)if(c.buffer)ready.push(c);
+   ready.sort((a,b)=>((a.x-px)**2+(a.z-py)**2)-((b.x-px)**2+(b.z-py)**2));
    const cap=mobile?160:384;
    // Evict stale scheduler records too, including cells abandoned before upload.
    if(gpu.terrainTick%16===0)for(const map of gpu.terrain.values())for(const [key,c]of map)if(c.used!==gpu.terrainTick&&(gpu.terrainTick-c.used>32||map.size>cap)){if(c.buffer)gpu.gl.deleteBuffer(c.buffer);map.delete(key);}

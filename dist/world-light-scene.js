@@ -135,9 +135,12 @@
  function painter(r,m,origin){
   const A=root.VeldrenAssembly,terrain=(x,z)=>typeof landHeight==='function'?landHeight(x,z):0,base=typeof walkSurfaceHeight==='function'?walkSurfaceHeight(origin[0],origin[1]):terrain(...origin),inverse=A.inverse(m);
   const normal=n=>{const p=[inverse[0]*n[0]+inverse[4]*n[1]+inverse[8]*n[2],inverse[1]*n[0]+inverse[5]*n[1]+inverse[9]*n[2],inverse[2]*n[0]+inverse[6]*n[1]+inverse[10]*n[2]],length=Math.hypot(...p)||1;return p.map(v=>v/length);};
-  const point=p=>{const q=A.point(m,[p[0]-origin[0],p[1]+terrain(p[0],p[2])-base,p[2]-origin[1]]);q[1]+=base-terrain(q[0],q[2]);return q;};
+  // For an untranslated basis the terrain additions cancel exactly. Avoid
+  // sampling both sides of that identity for every procedural face vertex.
+  const flat=m[0]===1&&m[1]===0&&m[2]===0&&m[4]===0&&m[5]===1&&m[6]===0&&m[8]===0&&m[9]===0&&m[10]===1&&m[3]===origin[0]&&m[11]===origin[1];
+  const point=flat?p=>[p[0],p[1]+m[7],p[2]]:p=>{const q=A.point(m,[p[0]-origin[0],p[1]+terrain(p[0],p[2])-base,p[2]-origin[1]]);q[1]+=base-terrain(q[0],q[2]);return q;};
   const out={software:r.software,face(points,color,normals,material,colors,uvs){r.face(points.map(point),color,normals?.map(normal),material,colors,uvs);}};
-  const matrix=t=>{const local=[...t];local[7]+=terrain(local[3],local[11]);const next=A.multiply(m,A.multiply(A.transform(-origin[0],-base,-origin[1]),local));next[7]+=base-terrain(next[3],next[11]);return next;};
+  const matrix=flat?t=>{const next=[...t];next[7]+=m[7];return next;}:t=>{const local=[...t];local[7]+=terrain(local[3],local[11]);const next=A.multiply(m,A.multiply(A.transform(-origin[0],-base,-origin[1]),local));next[7]+=base-terrain(next[3],next[11]);return next;};
   if(r.indexed)out.indexed=(mesh,t,style)=>r.indexed(mesh,matrix(t),style);
   if(r.skinned)out.skinned=(mesh,t,palette,style)=>r.skinned(mesh,matrix(t),palette,style);
   out.transformPoint=point;return out;

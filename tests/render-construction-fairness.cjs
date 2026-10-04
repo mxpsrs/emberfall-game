@@ -13,5 +13,8 @@ for(const profile of ['browser','browser-mobile']){
   assert(budget.diagnostics().used<=budget.diagnostics().limit,'desktop/mobile construction count remains bounded');
  }
  assert(!instance.pending,profile+' completes its model construction');
+ const canonicalFirst=ctx.createVeldrenRenderableBudget(profile),other=canonicalFirst.registerOwner();let legacyProgress=0;
+ for(let frame=0;frame<12;frame++){clock=frame*20;canonicalFirst.beginFrame();for(let i=0;i<80;i++)canonicalFirst.enqueue(other,{pending:true,priority:i,advance(){clock+=3;}});canonicalFirst.drain();while(canonicalFirst.consume()){clock+=3;legacyProgress++;}assert(legacyProgress>frame,'terrain/compatibility work also advances after continuous canonical demand');assert(canonicalFirst.diagnostics().used<=canonicalFirst.diagnostics().limit);}
+
 }
 console.log('PASS: canonical construction cannot starve behind recurring terrain/prop work; desktop and mobile budgets remain bounded.');

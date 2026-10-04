@@ -66,7 +66,7 @@
   const frameResult={ids:[],lights:[],stats:{},lod:{},drawCount:0,drawBuffer:true,strings:null,words:null,floats:null,matrixAt:index=>frameMatrices[index]};
   const frameStatKeys=['records','cells','staticRecords','dynamicRecords','largeRecords','updated','rebuilds','queriedCells','consideredSpatialRecords','visibleSpatialRecords','consideredRenderables','visibleRenderables','frustumCulled','distanceCulled','projectedCulled','visibleLights'];
   const frameLodKeys=['lod0','lod1','lod2','missingLods','transitions','tracked'];
-  const frameSymbols=new Map(),lodRowPool=[],lodResult={selections:[],stats:{}};
+  const frameSymbols=new Map(),lodRowPool=[],lodResult={selections:[],stats:{},generation:0};
   const payloadPaging={paged:0,bytes:0,compacted:0,restored:0,scanned:0};
   function pagePayloads(scene,center,radius=128,budget=64){
    const handle=performanceOwner(),pointer=withCString(scene,p=>api.veldren_performance_page_payloads(handle,p,center[0],center[2],radius,budget));
@@ -118,7 +118,7 @@
    if(length>lodBytes.length){let size=Math.max(4096,lodBytes.length);while(size<length)size*=2;lodBytes=new Uint8Array(size);}lodBytes.set(new Uint8Array(api.memory.buffer,pointer,length));const words=new Uint32Array(lodBytes.buffer),floats=new Float32Array(lodBytes.buffer);
    if(words[0]!==0x564c4f44||words[1]!==1||words[2]!==length||words[4]!==count||words[11]!==16)throw Error('Invalid LOD frame layout');refreshFrameStrings(words[3]);
    lodResult.selections.length=count;for(let i=0;i<count;i++){const row=lodRowPool[i]||(lodRowPool[i]=['',0,0,0]),o=12+i*4;row[0]=frameStrings[words[o]];row[1]=words[o+1];row[2]=words[o+2];row[3]=floats[o+3];lodResult.selections[i]=row;}
-   for(let i=0;i<6;i++)lodResult.stats[frameLodKeys[i]]=words[5+i];return lodResult;
+   for(let i=0;i<6;i++)lodResult.stats[frameLodKeys[i]]=words[5+i];lodResult.generation++;return lodResult;
   }
   // Startup mappers still author temporary import documents; the native Scene
   // remains the only live owner. Avoid cloning/reloading the entire native world

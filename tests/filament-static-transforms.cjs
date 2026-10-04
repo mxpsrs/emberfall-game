@@ -28,7 +28,7 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
    VELDREN_FILAMENT_ASSETS:{material:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-world.filamat'))),terrainMaterial:new Uint8Array(fs.readFileSync(path.join(root,'dist/materials/veldren-terrain.filamat'))),atlasBytes:textures,groundSurfacesBytes:textures},
    realmIdentityModel:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]),realmPixelScale:()=>1,landHeight:()=>{heightReads++;return groundHeight;},landSurfaceRevision:0,
    screen:{w:900,h:500},px:10,py:20,view3d:{yaw:0},cameraPitch3:()=>.8,cameraZoom3:()=>32,cameraPose3:()=>({eye:[10.5,6,24],center:[10.5,1.12,20.5],near:.12,far:320,left:-.11,right:.11,bottom:-.05,top:.08}),currentScene:'overworld',time:1,realmGPU:null,painter3(){},project3(){},profile3(){},navigator:{userAgent:'Mozilla/5.0'},realmLightingState:()=>({night:0,cave:0,house:0,lights:[]})};
-  context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+file+'.js'),'utf8'),context);
+  context.setTimeout=setTimeout;context.requestAnimationFrame=callback=>setTimeout(callback,0);context.window=context;context.matchMedia=()=>({matches:false});vm.createContext(context);for(const file of ['asset-runtime','asset-textures','asset-materials','asset-meshes','asset-draws'])vm.runInContext(fs.readFileSync(path.join(root,'dist/'+file+'.js'),'utf8'),context);
   // Real native residency decisions via the production world bridge.
   Object.assign(context,{WebAssembly,DataView,URL,addEventListener(){},fetch:async p=>{const bytes=fs.readFileSync(path.join(root,'dist',String(p)));return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes.toString())};}});
   vm.runInContext(fs.readFileSync(path.join(root,'dist/native-runtime.js'),'utf8'),context);
@@ -46,9 +46,12 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   render();assert(gpu.scene.getRenderableCount()<256,'first-frame static construction is bounded');
   for(let i=0;i<80&&gpu.scene.getRenderableCount()<256;i++)render();
   assert.equal(gpu.scene.getRenderableCount(),256,'all deferred static entities eventually become resident');
-  assert(gpu.performanceSnapshot().construction.maxUsed<=16,'legacy and canonical construction share the desktop quota');
+  assert(gpu.performanceSnapshot().construction.maxUsed<=64,'legacy and canonical construction share the desktop quota');
   const initialTransforms=transforms,initialHeightReads=heightReads;
-  const start=performance.now();for(let i=0;i<30;i++)render();const steadyMs=performance.now()-start;
+  const nativePerformance=context.realmNative.scenes.performance;let residencyCalls=0;
+  context.realmNative.scenes.performance=function(scene,request){if(request.op==='residency')residencyCalls++;return nativePerformance.call(this,scene,request);};
+  const start=performance.now();for(let i=0;i<30;i++)render();
+  assert.equal(residencyCalls,0,'an unchanged fully active scene skips repeated native residency marshalling');const steadyMs=performance.now()-start;
   const steadyTransforms=transforms-initialTransforms,steadyHeightReads=heightReads-initialHeightReads;
   const beforeMoveHeightReads=heightReads;models[7][3]+=1;render();const movementTransforms=transforms-initialTransforms-steadyTransforms,movementHeightReads=heightReads-beforeMoveHeightReads;
   const beforeHeight=transforms,beforeGroundingReads=heightReads;groundHeight=2;context.landSurfaceRevision++;render();const groundingTransforms=transforms-beforeHeight,groundingHeightReads=heightReads-beforeGroundingReads;
@@ -84,6 +87,39 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   const secondEntry=context.realmMeshEntry(gpu,mesh);assert.notEqual(secondEntry,firstEntry);
   assert.deepEqual(Array.from(secondEntry.buffer.data),Array.from(beforeRetirement));gpu.render([{...secondEntry,model:models[0]}],[],null);
   assert.equal(gpu.scene.getRenderableCount(),1);
+  // A loaded model can still need several construction frames. Every instance
+  // retains its complete compatibility draw until all replacement parts exist.
+  const canonicalId='rebuilt:Door_1_Flat',canonicalMesh={packed:beforeRetirement},compatibility=context.realmMeshEntry(gpu,canonicalMesh);
+  const coverage=Array.from({length:96},(_,i)=>({...compatibility,model:models[i],instanceId:'coverage:'+i}));
+  for(let i=0;i<96;i++)context.realmNative.scenes.upsert('overworld',{id:'coverage:'+i,name:'Coverage '+i,parent:null,active:true,transform:{position:[models[i][3],0,models[i][11]],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:canonicalId}},metadata:{}});
+  for(let i=0;i<96&&gpu.scene.getRenderableCount()<96;i++)gpu.render(coverage,[],null);
+  assert.equal(gpu.scene.getRenderableCount(),96);
+  const modelLease=gpu.modelResources.acquire(canonicalId,'browser'),canonicalModel=await modelLease.ready,partCount=canonicalModel.draws.length;
+  assert(partCount>1,'exercise a genuinely multipart replacement');
+  const imported=coverage.map(entry=>({...entry,canonicalAsset:canonicalId,mesh:canonicalMesh}));
+  let pendingObserved=false;
+  for(let i=0;i<160;i++){
+   gpu.render(imported,[],null);const stats=gpu.diagnostics();
+   pendingObserved||=stats.draws.pendingVisibleInstances>0;
+   assert.equal(stats.legacy.renderables+stats.draws.activeRenderables/partCount,96,'every submitted instance has exactly one complete representation during the handoff');
+   if(stats.draws.activeRenderables===96*partCount)break;
+   await new Promise(resolve=>setTimeout(resolve,2));
+  }
+  assert(pendingObserved);assert.equal(gpu.diagnostics().draws.activeRenderables,96*partCount,'construction eventually finishes every visible replacement');
+  assert.equal(gpu.diagnostics().legacy.renderables,0,'compatibility draws leave in the same frame replacements activate');modelLease.release();
+  const nativeLod=context.realmNative.scenes.lodFrame;let lodCalls=0;context.realmNative.scenes.lodFrame=function(...args){lodCalls++;return nativeLod.apply(this,args);};for(let i=0;i<8;i++)gpu.render(imported,[],null);assert.equal(lodCalls,0,'stationary model identity and distance reuse the native LOD decision');coverage[0].model[3]+=1;imported[0].model=coverage[0].model;gpu.render(imported,[],null);assert.equal(lodCalls,1,'movement immediately refreshes LOD selection');nativeLod.call(context.realmNative.scenes,'overworld',[['other-renderer',canonicalId,180]]);gpu.render(imported,[],null);assert.equal(lodCalls,2,'another renderer cannot overwrite a cached LOD transfer');
+  const nextId='rebuilt:Door_2_Flat',nextLease=gpu.modelResources.acquire(nextId,'browser'),nextModel=await nextLease.ready;assert.equal(nextModel.draws.length,partCount);
+  const switched=imported.map(entry=>({...entry,canonicalAsset:nextId}));let oldWhilePending=false;
+  for(let frame=0;frame<160;frame++){gpu.render(switched,[],null);const stats=gpu.diagnostics();assert.equal(stats.legacy.renderables+stats.draws.activeRenderables/partCount,96,'changing LOD/model keeps each complete old model until its replacement activates');oldWhilePending||=stats.draws.pendingVisibleInstances>0&&stats.legacy.renderables===0;if(switched.every(entry=>gpu.assetDraws.ready(nextId,entry.instanceId)))break;await new Promise(resolve=>setTimeout(resolve,2));}
+  assert(oldWhilePending);assert(switched.every(entry=>gpu.assetDraws.ready(nextId,entry.instanceId)));nextLease.release();
+  // A terrain LOD/edited upload keeps its current GPU surface under pressure.
+  const oldTerrain=gpu.upload(beforeRetirement),cell={...oldTerrain,scene:'overworld',key:'replacement',terrain:true};gpu.terrain.set('overworld',new Map([['replacement',cell]]));
+  gpu.render([cell],[],null);const oldBuffer=cell.buffer;
+  context.realmTerrainUpload(gpu,cell,beforeRetirement);const abandoned=cell.buffer;
+  context.realmTerrainUpload(gpu,cell,beforeRetirement);assert.equal(abandoned.data,null,'superseded staging packets are released');assert.equal(cell.buffer.previous,oldBuffer);
+  const pressure=gpu.upload(beforeRetirement),busy=Array.from({length:128},(_,i)=>({...pressure,model:models[i%256]}));
+  gpu.render([...busy,cell],[],null);assert.equal(cell.buffer.previous,oldBuffer,'deferred new resources retain the old terrain');assert(oldBuffer.data,'the active old surface remains allocated');
+  gpu.render([cell],[],null);assert.equal(cell.buffer.previous,null);assert.equal(oldBuffer.data,null,'the old surface releases after its replacement is drawable');assert.equal(gpu.scene.getRenderableCount(),1);
   // The production cached-building painter must keep repeated parts indexed
   // and shared, including their authored terrain-relative transforms.
   context.VELDREN_FILAMENT_ASSETS.atlasBytes=textures;context.VELDREN_FILAMENT_ASSETS.groundSurfacesBytes=textures;
@@ -178,7 +214,7 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   while(mixedGpu.assetDraws.diagnostics().activeRenderables<expectedWalls&&mixedFrames<80){
    const busy=Array.from({length:256},(_,i)=>({buffer:{data:new Float32Array(beforeRetirement)},stride:48,model:models[i]}));
    mixedGpu.render([...busy,...walls],[],null);
-   assert(mixedGpu.performanceSnapshot().construction.used<=16,'mixed construction retains the desktop quota');
+   assert(mixedGpu.performanceSnapshot().construction.used<=64,'mixed construction retains the desktop quota');
    await new Promise(resolve=>setTimeout(resolve,0));mixedFrames++;
   }
   assert.equal(mixedGpu.assetDraws.diagnostics().activeRenderables,expectedWalls,'authored walls complete despite continuous compatibility demand');

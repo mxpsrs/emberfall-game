@@ -13,6 +13,7 @@ for(const [kind,a]of Object.entries(creatureAssets)){
   assert.equal(motion.trs.length,motion.frames*a.joints*10);
   assert(motion.trs.every(Number.isFinite));
   const start=creaturePose(kind,clip,0),middle=creaturePose(kind,clip,.5),end=creaturePose(kind,clip,1);
+  for(const phase of [0,.193,.5,.817,1]){const rig=creatureRigPose(kind,clip,phase);let floor=Infinity;for(let i=0;i<a.mesh.p.length/3;i++){let y=0;for(let j=0;j<4;j++){const w=a.mesh.w[i*4+j],b=a.mesh.j[i*4+j]*12+4,k=i*3;y+=w*(rig.palette[b]*a.mesh.p[k]+rig.palette[b+1]*a.mesh.p[k+1]+rig.palette[b+2]*a.mesh.p[k+2]+rig.palette[b+3]);}floor=Math.min(floor,y);}assert(Math.abs(rig.floorY-floor)<1e-7,kind+' '+clip+' contact-height optimization matches every original skinned vertex');}
   assert(middle.p.every(Number.isFinite)&&middle.n.every(Number.isFinite));
   assert(kind==='boss_colossus'&&clip==='death'||start.p.some((p,i)=>Math.abs(p-middle.p[i])*a.scale>(clip==='idle'?.00001:.015)),kind+' '+clip+' moves the actual mesh');
   for(const mesh of [start,middle,end]){const [lo,hi]=bounds(mesh);assert(Math.max(...hi.map((v,i)=>(v-lo[i])*a.scale))<Math.max(9,Math.max(...a.mesh.bounds[1].map((v,i)=>(v-a.mesh.bounds[0][i])*a.scale))*1.8),kind+' '+clip+' has no exploded joints');}

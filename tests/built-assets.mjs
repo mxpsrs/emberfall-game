@@ -11,7 +11,7 @@ import {transform} from 'esbuild';
 async function deliveredSource(file){
  const source=readFileSync(new URL('../dist/'+file,import.meta.url));
  return file.endsWith('.js')&&source.length<=512*1024&&!file.startsWith('vendor/')&&!file.startsWith('assets/')
-  ?Buffer.from((await transform(source.toString(),{minifyWhitespace:true,legalComments:'none',target:'es2022'})).code):source;
+  ?Buffer.from((await transform(source.toString(),{minifyWhitespace:true,minifySyntax:true,legalComments:'none',target:'es2022'})).code):source;
 }
 const request=(path,headers={'Accept-Encoding':'gzip, br'})=>worker.fetch(new Request('https://veldren.test'+path,{headers}),{});
 async function body(response){
