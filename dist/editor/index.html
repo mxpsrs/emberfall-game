@@ -6,50 +6,57 @@
 <title>Veldren World Editor</title>
 <link rel="stylesheet" href="/editor/editor.css">
 </head>
-<body>
+<body data-panel="viewport">
 <header class="topbar">
   <div class="brand"><strong>VELDREN</strong><span>WORLD EDITOR</span></div>
-  <div class="toolbar" aria-label="Editor tools">
-    <button id="undoCommand" type="button" title="Ctrl/Cmd+Z" disabled>Undo</button><button id="redoCommand" type="button" title="Ctrl/Cmd+Shift+Z" disabled>Redo</button>
-    <button id="selectTool" class="active" type="button">Select</button>
-    <button id="moveTool" type="button">Move</button>
-    <button id="rotateTool" type="button">Rotate</button>
-    <button id="scaleTool" type="button">Scale</button>
-    <button id="placeTool" type="button">Place</button>
-    <button id="buildingEditTool" type="button" title="Edit the selected building or start a blank modular assembly at the editor camera focus">Building Edit</button>
-    <button id="newBuildingTool" type="button" title="Start a blank modular assembly at the editor camera focus">New Building</button>
-    <button id="terrainTool" type="button">Terrain</button>
-    <button id="cameraTool" type="button">Camera</button>
-    <span class="divider"></span>
-    <button id="playerView" type="button" hidden disabled>Player View</button>
-    <button id="gameUiToggle" type="button" hidden disabled aria-pressed="false">UI Edit</button>
-    <span class="divider"></span>
-    <label class="toolbar-field">Grid
-      <select id="positionSnap">
-        <option value="0">Off</option>
-        <option value="0.25" selected>0.25</option>
-        <option value="0.5">0.5</option>
-        <option value="1">1</option>
-      </select>
-    </label>
-    <label class="toolbar-field">Angle
-      <select id="rotationSnap">
-        <option value="0">Off</option>
-        <option value="5">5°</option>
-        <option value="15" selected>15°</option>
-        <option value="45">45°</option>
-        <option value="90">90°</option>
-      </select>
-    </label>
-    <label class="toolbar-field">Space <select id="gizmoSpace"><option value="world">World</option><option value="local">Local</option></select></label>
-    <label class="toolbar-field">Pivot <select id="gizmoPivot"><option value="object">Object</option><option value="center">Selection center</option></select></label>
-    <label class="toolbar-field">Scale step <select id="scaleSnap"><option value="0">Off</option><option value="0.1" selected>0.1</option><option value="0.25">0.25</option></select></label>
-    <label class="toolbar-field"><input id="gizmoSnap" type="checkbox" checked> Snap</label>
-    <span class="toolbar-spacer"></span>
-    <span id="saveState">No unsaved changes</span>
-    <button id="saveWorld" class="primary" type="button">Save World</button>
-  </div>
+  <nav class="toolbar" aria-label="Editor menus">
+    <details class="toolbar-menu"><summary aria-controls="fileMenu">File</summary><div id="fileMenu" class="menu-popover">
+      <button id="saveWorld" class="primary" type="button">Save World <kbd>Ctrl / ⌘ S</kbd></button>
+    </div></details>
+    <details class="toolbar-menu"><summary aria-controls="editMenu">Edit</summary><div id="editMenu" class="menu-popover">
+      <button id="undoCommand" type="button" title="Ctrl/Cmd+Z" disabled>Undo <kbd>Ctrl / ⌘ Z</kbd></button>
+      <button id="redoCommand" type="button" title="Ctrl/Cmd+Shift+Z" disabled>Redo <kbd>Shift Z</kbd></button>
+    </div></details>
+    <details class="toolbar-menu"><summary aria-controls="toolsMenu">Tools</summary><div id="toolsMenu" class="menu-popover">
+      <button id="selectTool" class="active" type="button">Select <kbd>1</kbd></button>
+      <button id="moveTool" type="button">Move <kbd>2 / W</kbd></button>
+      <button id="rotateTool" type="button">Rotate <kbd>3 / E</kbd></button>
+      <button id="scaleTool" type="button">Scale <kbd>4 / R</kbd></button>
+      <button id="placeTool" type="button">Place model <kbd>5</kbd></button>
+      <button id="terrainTool" type="button">Terrain brush <kbd>7 / T</kbd></button>
+      <button id="cameraTool" type="button">Camera <kbd>6 / C</kbd></button>
+    </div></details>
+    <details class="toolbar-menu"><summary aria-controls="buildMenu">Build</summary><div id="buildMenu" class="menu-popover">
+      <button id="buildingEditTool" type="button" title="Edit the selected building or start a blank modular assembly">Edit building</button>
+      <button id="newBuildingTool" type="button">New building</button>
+      <button id="browseBuildingModelMenu" type="button">Browse building models</button>
+    </div></details>
+    <details class="toolbar-menu"><summary aria-controls="snapMenu">Snap</summary><div id="snapMenu" class="menu-popover menu-settings">
+      <label>Position grid <select id="positionSnap"><option value="0">Off</option><option value="0.25" selected>0.25</option><option value="0.5">0.5</option><option value="1">1</option></select></label>
+      <label>Rotation angle <select id="rotationSnap"><option value="0">Off</option><option value="5">5°</option><option value="15" selected>15°</option><option value="45">45°</option><option value="90">90°</option></select></label>
+      <label>Gizmo space <select id="gizmoSpace"><option value="world">World</option><option value="local">Local</option></select></label>
+      <label>Gizmo pivot <select id="gizmoPivot"><option value="object">Object</option><option value="center">Selection center</option></select></label>
+      <label>Scale step <select id="scaleSnap"><option value="0">Off</option><option value="0.1" selected>0.1</option><option value="0.25">0.25</option></select></label>
+      <label class="check-field"><input id="gizmoSnap" type="checkbox" checked> Enable snapping</label>
+    </div></details>
+    <details class="toolbar-menu"><summary aria-controls="viewMenu">View</summary><div id="viewMenu" class="menu-popover">
+      <button type="button" data-workspace-panel="scene">Scene / building controls</button>
+      <button type="button" data-workspace-panel="viewport">Viewport</button>
+      <button type="button" data-workspace-panel="inspector">Inspector</button>
+      <button type="button" data-model-library>Models</button>
+      <button id="consoleToggle" type="button" aria-pressed="false">Show console</button>
+      <button id="playerView" type="button" hidden disabled>Player View</button>
+      <button id="gameUiToggle" type="button" hidden disabled aria-pressed="false">UI Edit</button>
+    </div></details>
+  </nav>
+  <span id="saveState" role="status">No unsaved changes</span>
 </header>
+<nav class="panel-tabs" aria-label="Workspace panels">
+  <button type="button" data-workspace-panel="scene" aria-pressed="false">Scene</button>
+  <button type="button" data-workspace-panel="viewport" aria-pressed="true" class="active">Viewport</button>
+  <button type="button" data-workspace-panel="inspector" aria-pressed="false">Inspector</button>
+  <button type="button" data-model-library aria-pressed="false">Models</button>
+</nav>
 
 <main class="workspace">
   <aside class="hierarchy">
@@ -59,8 +66,8 @@
     </div>
 
     <div class="browser-tabs" role="tablist" aria-label="Editor browser">
-      <button id="worldBrowserTab" class="active" type="button" role="tab" aria-selected="true">World</button>
-      <button id="assetBrowserTab" type="button" role="tab" aria-selected="false">Assets</button>
+      <button id="worldBrowserTab" class="active" type="button" role="tab" aria-selected="true">Scene</button>
+      <button id="assetBrowserTab" type="button" role="tab" aria-selected="false">Models</button>
     </div>
 
     <section id="buildingPanel" hidden>
@@ -84,11 +91,7 @@
         <button id="applyPart" type="button">Apply Part</button>
         <label>Entrance wall <select id="entranceWall"></select></label><button id="moveEntrance" type="button">Move Entrance Here</button>
       </fieldset>
-      <label>Find a model <input id="partSearch" type="search" placeholder="Search all modular parts…"></label>
-      <label>Category <select id="partCategory"></select></label><select id="partAsset" aria-label="Selected local building model" hidden></select>
-      <div id="partAssetList" class="entity-list asset-list" role="listbox" aria-label="Visual modular model library"></div>
-      <button id="placePart" type="button">Place Selected Part</button><button id="cancelPartPlacement" type="button" disabled>Cancel Part Placement</button><button id="replacePart" type="button">Replace Selected Model</button>
-      <p id="buildingHint" class="hint">Choose a thumbnail to inspect the real model. Move to preview a snap; press R to rotate, click to place, or Escape to cancel.</p>
+      <button id="browseBuildingModels" type="button">Browse building models</button>
     </section>
     <section id="terrainPanel" class="browser-panel" hidden aria-label="Terrain tools">
       <strong>Terrain brush</strong>
@@ -116,15 +119,7 @@
       <div id="entityList" class="entity-list" role="listbox" aria-label="World entities"></div>
     </section>
 
-    <section id="assetBrowser" class="browser-panel" hidden>
-      <button id="reloadAssets" type="button" title="Reload imported asset definitions">Reload assets</button>
-      <input id="assetSearch" type="search" placeholder="Search Veldren models…">
-      <select id="assetCategory" aria-label="Asset category"><option value="">All categories</option></select>
-      <div id="assetHint" class="asset-hint">Select a model to inspect it before placement.</div>
-      <button id="beginAssetPlacement" type="button" disabled>Place selected model</button>
-      <div id="assetList" class="entity-list asset-list" role="listbox" aria-label="Veldren assets"></div>
-      <button id="cancelPlacement" type="button" disabled>Cancel placement</button>
-    </section>
+
   </aside>
 
   <section class="stage" id="stage">
@@ -147,14 +142,7 @@
       <span id="objectType" class="type-pill">—</span>
     </div>
 
-    <section id="modelPreview" class="model-preview" hidden aria-label="Model preview">
-      <canvas id="modelPreviewCanvas" width="640" height="360" aria-label="Drag to orbit; use the wheel to zoom"></canvas>
-      <h2 id="modelPreviewName">Model</h2>
-      <p id="modelPreviewCategory" class="hint"></p>
-      <dl><dt>Asset reference</dt><dd id="modelPreviewPath"></dd><dt>Bounds</dt><dd id="modelPreviewBounds"></dd></dl>
-      <p class="asset-hint">Drag to orbit · scroll to zoom</p>
-      <button id="previewPlaceButton" class="primary" type="button">Choose for placement</button>
-    </section>
+
     <p class="hint" id="selectionHint">
       Select any world entity or building, or open <b>Assets</b> to inspect Veldren models before placement.
     </p>
@@ -190,17 +178,49 @@
       <p>Movement keys continue working after you select an editor control. Drag with the middle or right mouse button to pan. Tool shortcuts are 1–7.</p><p><b>Terrain:</b> choose Terrain, then drag on overworld ground to sculpt or paint; Save World records changes for the runtime.</p><p><b>Asset placement:</b> open Assets, choose a model, then click the terrain. Placement stays active for repeated placement; Cancel placement or switch tools to stop.</p>
     </section>
   </aside>
+
+  <section id="assetDock" class="asset-dock" hidden aria-label="Model library">
+    <div class="library-head">
+      <strong id="modelLibraryTitle">Models</strong>
+      <div class="library-view"><button id="modelListView" type="button" aria-pressed="true">Models</button><button id="modelPreviewView" type="button" aria-pressed="false" disabled>Preview</button></div>
+      <button id="expandModelLibrary" type="button" aria-pressed="false">Expand</button>
+      <button id="closeModelLibrary" type="button" aria-label="Close model library">Close</button>
+    </div>
+    <div class="library-body">
+      <div class="library-browsers">
+        <section id="assetBrowser" class="model-browser" hidden aria-label="World models">
+          <div class="model-filters"><input id="assetSearch" type="search" aria-label="Search models" placeholder="Search Veldren models…"><select id="assetCategory" aria-label="Asset category"><option value="">All categories</option></select><button id="reloadAssets" type="button" title="Reload imported asset definitions">Reload</button></div>
+          <div class="library-actions"><button id="beginAssetPlacement" type="button" disabled>Place selected model</button><button id="cancelPlacement" type="button" disabled>Cancel placement</button><span id="assetHint" class="asset-hint" role="status">Select a model to preview it.</span></div>
+          <div id="assetList" class="entity-list asset-list" role="listbox" aria-label="Veldren assets"></div>
+        </section>
+        <section id="partBrowser" class="model-browser" hidden aria-label="Building models">
+          <div class="model-filters"><input id="partSearch" type="search" aria-label="Search building models" placeholder="Search modular parts…"><select id="partCategory" aria-label="Building model category"></select><select id="partAsset" aria-label="Selected local building model" hidden></select></div>
+          <div class="library-actions"><button id="placePart" type="button" disabled>Place selected part</button><button id="cancelPartPlacement" type="button" disabled>Cancel placement</button><button id="replacePart" type="button" disabled>Replace selected part</button><span id="buildingHint" class="asset-hint" role="status">Choose a model, then place it in the viewport. R rotates; Escape cancels.</span></div>
+          <div id="partAssetList" class="entity-list asset-list" role="listbox" aria-label="Visual modular model library"></div>
+        </section>
+      </div>
+    <section id="modelPreview" class="model-preview" hidden aria-label="Model preview">
+      <canvas id="modelPreviewCanvas" width="640" height="360" aria-label="Drag to orbit; use the wheel to zoom"></canvas>
+      <h2 id="modelPreviewName">Model</h2>
+      <p id="modelPreviewCategory" class="hint"></p>
+      <dl><dt>Asset reference</dt><dd id="modelPreviewPath"></dd><dt>Bounds</dt><dd id="modelPreviewBounds"></dd></dl>
+      <p class="asset-hint">Drag to orbit · scroll to zoom</p>
+      <button id="previewPlaceButton" class="primary" type="button">Choose for placement</button>
+    </section>
+    </div>
+  </section>
 </main>
 
-<section class="editor-terminal" aria-label="Editor terminal">
+<section id="editorTerminal" class="editor-terminal" aria-label="Editor terminal">
   <div class="terminal-head">
-    <strong>TERMINAL</strong>
+    <button id="terminalToggle" type="button" aria-expanded="false" aria-controls="terminalLog">Show console</button>
     <span id="terminalState">Starting editor…</span>
     <button id="clearTerminal" type="button">Clear</button>
   </div>
-  <div id="terminalLog" class="terminal-log" role="log" aria-live="polite"></div>
+  <div id="terminalLog" class="terminal-log" hidden role="log" aria-live="polite"></div>
 </section>
 
+<script src="/editor/workspace-ui.js"></script>
 <script src="/editor/panels.js"></script><script src="/editor/editor.js"></script>
 </body>
 </html>

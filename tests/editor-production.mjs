@@ -40,7 +40,9 @@ assert.equal(db.prepare('SELECT state FROM character_saves').get().state,'existi
 assert.equal(db.prepare('SELECT count(*) n FROM game_accounts').get().n,2);
 for(const path of ['/editor','/editor/','/editor/index.html']){
  let response=await worker.fetch(req(path),env);assert.equal(response.status,200);const login=await response.text();assert.match(login,/id="editorLogin"/);assert.match(login,/name="username"[^>]*value="owner"/);assert.match(response.headers.get('Cache-Control'),/no-store/);
- response=await worker.fetch(req(path,'GET',null,token),env);assert.equal(response.status,200);assert.match(await response.text(),/id="gameFrame"/);
+ response=await worker.fetch(req(path,'GET',null,token),env);assert.equal(response.status,200);const shell=await response.text();assert.match(shell,/id="gameFrame"/);
+ assert.match(shell,/id="assetDock"/);assert.match(shell,/aria-label="Editor menus"/);
+ for(const match of shell.matchAll(/<script[^>]+src="([^"]+)"/g))assert.equal((await worker.fetch(req(match[1],'GET',null,token),env)).status,200,'authenticated editor shell script '+match[1]);
 }
 assert.equal((await worker.fetch(req('/editor/editor-runtime.js'),env)).status,403);
 assert.equal((await worker.fetch(req('/editor/editor-runtime.js','GET',null,token),env)).status,200);
