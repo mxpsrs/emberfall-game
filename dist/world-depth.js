@@ -40,7 +40,13 @@ function landHeight(x,z){
  if(c.x!==ix||c.z!==iz||c.scene!==currentScene||c.surface!==landSurfaceRevision||c.terrain!==revision){c.x=ix;c.z=iz;c.scene=currentScene;c.surface=landSurfaceRevision;c.terrain=revision;c.heights[0]=landNode(ix,iz);c.heights[1]=landNode(ix,iz+1);c.heights[2]=landNode(ix+1,iz);c.heights[3]=landNode(ix+1,iz+1);}
  const h=c.heights;return v>=u?h[0]*(1-v)+h[1]*(v-u)+h[3]*u:h[0]*(1-u)+h[2]*(u-v)+h[3]*v;
 }
-function terrainCellSlope(x,z){const heights=[landHeight(x,z),landHeight(x+1,z),landHeight(x,z+1),landHeight(x+1,z+1)];return Math.max(...heights)-Math.min(...heights);}
+function terrainCellSlope(x,z){
+ const a=landHeight(x,z),b=landHeight(x+1,z),c=landHeight(x,z+1),d=landHeight(x+1,z+1);
+ // Navigation measures the grade of the same two triangles as landHeight.
+ // Corner range incorrectly makes a diagonal hillside steeper than its
+ // identical axis-aligned counterpart, blocking otherwise climbable ground.
+ return Math.max(Math.hypot(d-c,c-a),Math.hypot(b-a,d-b));
+}
 function terrainCellBlocked(x,z){if(!inWorld()||bridgeAt(x+.5,z+.5))return false;const q=typeof quarryAt==='function'&&quarryAt(x+.5,z+.5);if(q)return false;return terrainCellSlope(x,z)>1.2;}
 const flatProject3=project3;
 // Projection can visit hundreds of points in one frame. Their shared camera

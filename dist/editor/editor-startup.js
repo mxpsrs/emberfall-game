@@ -2,9 +2,12 @@
 // Editor control runs only from the authenticated editor viewport. The shared
 // world generators and Filament renderer have no player/controller authority.
 function editorFrame(now){
- const dt=Math.min(Math.max(0,(now-last)/1000),.05);last=now;
- if(assetsReady&&!document.hidden){time+=dt;window.VeldrenEditorBridge?.prepareFrame?.();draw();}
- requestAnimationFrame(editorFrame);
+ let phase='editor-frame';
+ try{
+  const dt=Math.min(Math.max(0,(now-last)/1000),.05);last=now;
+  if(assetsReady&&!document.hidden){time+=dt;phase='editor-preparation';window.VeldrenEditorBridge?.prepareFrame?.();phase='editor-render';draw();}
+ }catch(error){if(typeof realmReportRuntimeFailure==='function')realmReportRuntimeFailure(error,phase);else console.error('Editor frame failed',error);}
+ finally{requestAnimationFrame(editorFrame);}
 }
 async function bootEditor(){
  if(window.VELDREN_CONTEXT!=='editor')throw Error('Editor boot requires editor context');

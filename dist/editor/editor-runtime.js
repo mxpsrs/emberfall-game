@@ -302,8 +302,15 @@
  function normalizeChange(c){
   return {...c,kind:c.kind==='building'?'building':'object',rotation:Number.isFinite(Number(c.rotation))?Number(c.rotation):(Number(c.yaw)||0)*180/Math.PI,scale:Number(c.scale)||1};
  }
+ async function requestProject(){
+  for(let attempt=0;attempt<3;attempt++){
+   try{const response=await fetch('/api/editor/edits',{cache:'no-store'});if(response.ok||![408,429,500,502,503,504].includes(response.status)||attempt===2)return response;}
+   catch(error){if(attempt===2)throw error;}
+   await new Promise(resolve=>setTimeout(resolve,250*2**attempt));
+  }
+ }
  async function loadProject(){
-  const response=await fetch('/api/editor/edits',{cache:'no-store'});if(!response.ok)throw new Error('Project edit file read failed: HTTP '+response.status);
+  const response=await requestProject();if(!response.ok)throw new Error('Project edit file read failed: HTTP '+response.status);
   const payload=await response.json(),disk=payload.edits;
   projectWorld=window.VeldrenSceneOwnership?.document?.()||(payload.world?.format==='veldren.world'?JSON.parse(JSON.stringify(payload.world)):window.VeldrenSceneFormat.fromLegacy(disk));
   sceneDocumentDirty=false;
