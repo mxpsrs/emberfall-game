@@ -15,7 +15,7 @@ function deliver(cache,out){
 // fetches nearby pages; neither startup nor a render frame samples the whole map.
 (async()=>{
  // GPU and camera presentation cannot change cooked heights, road masks or collision.
- const presentation=new Set(['view3d.js','renderer-filament.js','renderer-gl.js','asset-draws.js']);
+ const presentation=new Set(['view3d.js','renderer-filament.js','renderer-occlusion.js','renderer-gl.js','asset-draws.js']);
  const inputs=['world-native.json','world-construction.json',...fs.readdirSync('client').filter(p=>p.endsWith('.js')&&!presentation.has(p))].sort();
  const hash=crypto.createHash('sha256');for(const p of inputs)hash.update(fs.readFileSync('client/'+p));const key=hash.digest('hex'),cache=path.resolve('.terrain-cache',key),out=path.resolve('client/terrain-cells');
  fs.rmSync(out,{recursive:true,force:true});

@@ -1,0 +1,115 @@
+{
+  "kind": "October performance phase two: software integration, not hardware FPS",
+  "tests": [
+    {
+      "test": "tests/editor/editor-building-history.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.2,
+      "output": "PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.\n"
+    },
+    {
+      "test": "tests/rendering/building-lod-resources.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.6,
+      "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"workerSourceDraws\":60,\"proxyRenderables\":2,\"occlusionRemovedRenderables\":2,\"constructionFrames\":3,\"dependencyLeases\":0,\"gpuBytesAfterRetirement\":0}\nPASS: real native worker transfers, cancellation/reload, Filament NOOP buffers/materials, atomic construction handoff and full resource retirement.\n"
+    },
+    {
+      "test": "tests/rendering/building-lod.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 49,
+      "output": "PASS: 12 Briar Haven canonical building plans, colors/UVs/materials, transformed normals/tangents, memory cap, authored immutability, near/editor selection and retirement.\n{\"modules\":990,\"sourceDraws\":1747,\"draws\":255,\"nearTriangles\":222479,\"triangles\":202400,\"bytes\":36812400}\n"
+    },
+    {
+      "test": "tests/rendering/camera-cutaway.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1,
+      "output": "PASS: indoor and outdoor wall/tree cutaways, eye containment, restored geometry, terrain/matrix invalidation, software/GL/Filament submission and matching picking.\n"
+    },
+    {
+      "test": "tests/rendering/filament-static-transforms.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.5,
+      "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x17b8ae0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x303b080 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":23.48,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
+    },
+    {
+      "test": "tests/rendering/renderer-occlusion.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 10.8,
+      "output": "{\"occludedObjects\":214,\"independentVisibilityRays\":17120,\"coverageCells\":14400,\"sunCells\":16384}\nPASS: solid coverage, door/window gaps, alpha exclusion, near plane, camera/source reveals, budget, reflection and shadow guard.\n"
+    },
+    {
+      "test": "tests/world/world-performance-grounding.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.4,
+      "output": "PASS: actual-WASM grounded visibility, off-screen demand removal, stationary-frame reuse, terrain revision refresh and unchanged canonical entities.\n"
+    },
+    {
+      "test": "tests/world/world-performance.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.6,
+      "output": "PASS: actual-WASM stable native LOD batch with real asset IDs and unchanged Scene\nPASS: actual-WASM memory budgets retire presentation only and preserve the complete WorldDocument\nPASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown\n"
+    },
+    {
+      "test": "tests/assets/packed-asset-delivery.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 7,
+      "output": "PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection and the 64 MiB limit\n"
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "sourceCheck": "454 scripts parse; imports and documentation links resolve",
+  "independentOracle": {
+    "culledBounds": 214,
+    "rays": 17120,
+    "falseCullsInSamples": 0
+  },
+  "filamentNoop": {
+    "canonicalRemoved": 2,
+    "canonicalRestored": 2,
+    "productionTerrainRemoved": 1,
+    "immediateCameraReveal": true,
+    "editorFailOpen": true,
+    "sourceRemovalReveal": true,
+    "gpuBytesAfterRetirement": 0,
+    "dependencyLeasesAfterRetirement": 0
+  },
+  "limits": {
+    "renderedPixelsVerified": false,
+    "productionGpuSavingsMeasured": false,
+    "physicalPhoneFrameTimesMeasured": false,
+    "production39PlayerCapacityCertified": false
+  },
+  "build": {
+    "passed": true,
+    "release": "realm-c349ec52b06c40f6",
+    "workerBytes": 65147701,
+    "workerSha256": "3b73c1cf2c5f145ea189c14ece246072638a1688465de0f195620932227aa8cc",
+    "workerLimitBytes": 67108864,
+    "cookedScenes": 259,
+    "terrainPages": 1408,
+    "terrainInputKey": "ae92770749532006b27df59a3cc9cf6e94cc91cb743133de20127695a285cb17",
+    "sameWorldSourceKey": "fb6e62231e01a07b",
+    "sameConstructionKey": "3e033aa586f6393d",
+    "deliveryVerifiedAgainstExactSource": true
+  },
+  "date": "2026-10-05T22:18:30.629030+00:00"
+}

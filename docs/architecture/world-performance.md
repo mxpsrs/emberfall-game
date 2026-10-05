@@ -5,6 +5,12 @@ and limits are in [PHASE4_ACCEPTANCE.md](../acceptance/native-phase4-acceptance.
 checkpoint entries below retain their original status; historical open software
 gates are superseded by that closeout, not by hardware-performance certification.
 Repository: `mxpsrs/emberfall-game`; branch: `phase4-world-performance-wip`.
+
+The later October performance work adds a conservative, bounded presentation
+occlusion pass after the native visibility plan and GPU construction. Its current
+behavior and verification limits are recorded in
+[October phase-two acceptance](../qa/occlusion-phase2/README.md). The historical
+checkpoints below describe the earlier native foundation acceptance.
 The branch was created on GitHub from the exact accepted Phase 3 commit
 `3f0deb4daf83a8aec108f5c896af1d47cb0e2542` and independently queried before work.
 Phase 1 and Phase 2 remain accepted at `f49ef4896b910a57bfc3dbd56948fcebca830c30`
