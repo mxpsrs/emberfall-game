@@ -18,7 +18,10 @@ data=await (await call()).json();assert.equal(data.status,'online');assert.equal
 db.exec('UPDATE game_maintenance SET kick_at=0');response=await call();assert.equal(response.status,200,'status remains reachable during maintenance');data=await response.json();assert.equal(data.status,'maintenance');assert.equal(data.players,0);assert.equal(db.prepare('SELECT COUNT(*) n FROM player_presence').get().n,0);
 response=await call('GET',{});assert.equal(response.status,503);assert.equal((await response.json()).players,null,'database failure must not claim zero players');
 assert.equal((await call('POST')).status,405);assert.equal(await (await call('HEAD')).text(),'');
-const html=await (await worker.fetch(new Request('https://veldren.test/'),{})).text();assert(html.includes('Veldren Beta v1'));assert(html.includes('/landing-status.js'));
+const html = await (await worker.fetch(new Request('https://veldren.test/'), {})).text();
+assert(html.includes('Veldren Beta v1'));
+assert(html.includes('id="realm-status"'));
+assert(html.includes('/api/status'));
 // Exercise the actual homepage script as successive responses arrive.
 const elements=Object.fromEntries(['realm-status','server-state','player-count','status-note'].map(id=>[id,{dataset:{},textContent:''}]));
 let mode='online',next,listener;
