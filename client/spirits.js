@@ -1,6 +1,5 @@
 'use strict';
-// Removed gameplay compatibility surface. This file only removes retired save
-// fields and keeps old test fixtures from manufacturing a spirit feature.
+// Remove retired spirit fields from old saves and preserve legacy callers.
 const SPIRITS={},FIRST_SPIRITS=[],SPIRIT_SKILLS={};
 function normalizeSpiritRemoval(state){
  if(!state||typeof state!=='object'||state.spiritRemovalVersion===1)return state;
