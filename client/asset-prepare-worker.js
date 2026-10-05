@@ -5,6 +5,7 @@ let initialized=null,api=null;const jobs=new Map();
 async function initialize(message){
  globalThis.realmAssetURL=path=>new URL(message.versions?.[path]||path,message.base).href;
  importScripts(realmAssetURL('asset-runtime.js'));
+ importScripts(realmAssetURL('renderer-occlusion.js'));
  const imports={env:{emscripten_notify_memory_growth(){}},wasi_snapshot_preview1:{fd_close(){return 8;},
   proc_exit(code){throw Error('Asset worker exited '+code);},
   environ_sizes_get(a,b){if(!api)return 21;const memory=new DataView(api.memory.buffer);memory.setUint32(a,0,true);memory.setUint32(b,0,true);return 0;},environ_get(){return 0;}
@@ -26,6 +27,8 @@ self.onmessage=async({data})=>{
    const plans=new Map();
    for(const d of data.building.definitions){const response=await fetch(realmAssetURL(d.derivedPath),{signal:controller.signal});if(!response.ok)throw Error('Building source unavailable: '+d.id);const model=await response.json();if(controller.signal.aborted)return;if(model.id!==d.id||model.sourceHash!==d.sourceHash)throw Error('Stale building source: '+d.id);plans.set(d.id,VeldrenAssets.renderPlan(model));}
    const started=performance.now(),plan=VeldrenBuildingLOD.merge(data.id,data.building.modules.map(m=>({...m,plan:plans.get(m.id)})),data.building.maxBytes),buffers=plan.geometry.flatMap(p=>[p.vertices.buffer,p.normals.buffer,p.tangents.buffer,p.indices.buffer]);
+   plan.occlusion=VeldrenOcclusion.compile(plan,id=>VeldrenAssets.materialPlan(id,'browser'),512);
+   if(plan.occlusion){plan.stats.bytes+=plan.occlusion.bytes;if(plan.stats.bytes>data.building.maxBytes)throw Error('Building LOD exceeds its geometry budget');buffers.push(plan.occlusion.polygons.buffer);}
    if(!controller.signal.aborted)self.postMessage({request:data.request,plan,prepareMs:performance.now()-started},buffers);return;
   }
   const response=await fetch(data.url,{signal:controller.signal});if(!response.ok)throw Error('Derived model unavailable: '+data.id);
@@ -35,6 +38,8 @@ self.onmessage=async({data})=>{
   for(const packet of plan.geometry)for(const [key,Type] of [['vertices',Float32Array],['normals',Float32Array],['tangents',Float32Array],['indices',Uint32Array],['joints',Float32Array],['weights',Float32Array]]){
    if(!packet[key])continue;const bytes=Uint8Array.from(atob(packet[key]),c=>c.charCodeAt(0));packet[key]=new Type(bytes.buffer);buffers.push(bytes.buffer);
   }
+  plan.occlusion=VeldrenOcclusion.compile(plan,id=>VeldrenAssets.materialPlan(id,'browser'));
+  if(plan.occlusion)buffers.push(plan.occlusion.polygons.buffer);
   if(!controller.signal.aborted)self.postMessage({request:data.request,plan,prepareMs:performance.now()-started},buffers);
  }catch(error){if(!controller.signal.aborted)self.postMessage({request:data.request,error:String(error.message||error)});}
  finally{jobs.delete(data.request);}

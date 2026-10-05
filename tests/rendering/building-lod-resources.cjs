@@ -24,7 +24,7 @@ async function main(){
   assets=await require('../helpers/native-assets.cjs')(context,root);context.Worker=BrowserWorker;
   const matrix=[1,0,0,0,0,1,0,0,0,0,1,0],modules=Array.from({length:30},(_,i)=>({id:'rebuilt:Wall_Plaster_Straight',matrix:[...matrix.slice(0,3),i*2,...matrix.slice(4)]}));
   const lease=assets.leaseBuildingPlan('qa:whole-building',modules,4*1024*1024),plan=await lease.ready;
-  assert(plan.geometry.every(p=>ArrayBuffer.isView(p.vertices)&&ArrayBuffer.isView(p.indices)),'worker transfers typed buffers');assert(plan.stats.draws<plan.stats.sourceDraws);lease.release();assert.equal(assets.diagnostics().dependencyLeases,0);
+  assert(plan.geometry.every(p=>ArrayBuffer.isView(p.vertices)&&ArrayBuffer.isView(p.indices)),'worker transfers typed buffers');assert(plan.stats.draws<plan.stats.sourceDraws);assert(ArrayBuffer.isView(plan.occlusion.polygons),'worker transfers bounded solid coverage');assert(plan.occlusion.polygons.length<=512*14);lease.release();assert.equal(assets.diagnostics().dependencyLeases,0);
   const cancelled=assets.leaseBuildingPlan('qa:cancelled',modules,4*1024*1024);cancelled.release();await assert.rejects(cancelled.ready,{name:'AbortError'});assert.equal(assets.diagnostics().dependencyLeases,0);
   engine=F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig());scene=engine.createScene();textures=context.createVeldrenTextureResources(engine,assets,F);materials=context.createVeldrenMaterialResources(engine,assets,textures,F,async p=>new Uint8Array(fs.readFileSync(path.join(root,'client',p))));models=context.createVeldrenModelResources(engine,assets,materials,F);
   const budget=context.createVeldrenRenderableBudget('browser-mobile');draws=context.createVeldrenAssetDraws(engine,scene,assets,models,'browser-mobile',F,null,budget);
@@ -34,11 +34,24 @@ async function main(){
   let frames=0;while(!draws.readyPrepared(plan.id,'building')&&frames<50){budget.beginFrame();draws.begin('town');assert.equal(draws.submitPrepared(descriptor,world,100,'building'),false);draws.end();budget.drain();assert.equal(scene.getRenderableCount(),0,'completed proxy waits for the next atomic painter handoff');assert(budget.diagnostics().used<=budget.diagnostics().limit);frames++;}
   assert(draws.readyPrepared(plan.id,'building'));assert.equal(draws.diagnostics().activeRenderables,0);
   budget.beginFrame();draws.begin('town');assert(draws.submitPrepared(descriptor,world,100,'building'));draws.end();budget.drain();assert.equal(scene.getRenderableCount(),plan.draws.length,'entire proxy activates together');
+  vm.runInContext(fs.readFileSync(path.join(root,'client/renderer-occlusion.js'),'utf8'),context);
+  const small=[.001,0,0,0,0,.001,0,0,0,0,.001,0,0,1,-5,1],solid=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+  const submit=()=>{budget.beginFrame();draws.begin('town');draws.submitPrepared(descriptor,solid,10,'building');draws.submit(plan.id,small,15,{castShadows:false},'hidden',true,descriptor);draws.end();budget.drain();};
+  for(let i=0;i<50;i++){submit();await new Promise(resolve=>setTimeout(resolve,5));if(draws.diagnostics().activeRenderables===plan.draws.length*2)break;}
+  submit();assert.equal(scene.getRenderableCount(),plan.draws.length*2);
+  const records=[];draws.collectOcclusion(records);assert.equal(records.length,2);
+  const controller=context.VeldrenOcclusion.create('browser',{budgetMs:1000,maxChecks:1000000}),pose={eye:[0,1,10],center:[0,1,0],near:.1,left:-.1,right:.1,bottom:-.1,top:.1};
+  const hidden=controller.evaluate(pose,records);assert(hidden.some(r=>!r.castShadows),'actual native wall geometry covers the smaller instance');for(const r of hidden)r.hide();
+  assert.equal(scene.getRenderableCount(),plan.draws.length,'actual Filament Scene skips hidden renderables');
+  submit();assert.equal(scene.getRenderableCount(),plan.draws.length*2,'fresh submission reveals the entire instance');
+  const revealed=[];draws.collectOcclusion(revealed);assert(!controller.evaluate({...pose,eye:[10,1,10],center:[10,1,0]},revealed).some(r=>!r.castShadows),'camera movement reveals immediately');
+  // Remove the second options pool too before verifying complete retirement.
+  draws.destroy();draws=context.createVeldrenAssetDraws(engine,scene,assets,models,'browser-mobile',F,null,budget);
   draws.begin('town');draws.end();assert.equal(scene.getRenderableCount(),0,'near view removes distant proxy in that frame');
   draws.retirePrepared(plan.id);assert.equal(models.diagnostics().gpuBytes,0);assert.equal(materials.diagnostics().materials,0);assert.equal(textures.diagnostics().gpuBytes,0);assert.equal(assets.diagnostics().dependencyLeases,0);
   // A source hot reload invalidates jobs and balances all dependency leases.
   const stale=assets.leaseBuildingPlan('qa:stale',modules,4*1024*1024);assets.invalidate(modules[0].id);await assert.rejects(stale.ready,{name:'AbortError'});stale.release();assert.equal(assets.diagnostics().dependencyLeases,0);
-  console.log(JSON.stringify({workerSourceDraws:plan.stats.sourceDraws,proxyRenderables:plan.draws.length,constructionFrames:frames,dependencyLeases:0,gpuBytesAfterRetirement:0}));
+  console.log(JSON.stringify({workerSourceDraws:plan.stats.sourceDraws,proxyRenderables:plan.draws.length,occlusionRemovedRenderables:hidden.reduce((n,r)=>n+r.renderables,0),constructionFrames:frames,dependencyLeases:0,gpuBytesAfterRetirement:0}));
   console.log('PASS: real native worker transfers, cancellation/reload, Filament NOOP buffers/materials, atomic construction handoff and full resource retirement.');
  }finally{draws?.destroy();models?.destroy();materials?.destroy();textures?.destroy();assets?.destroy();if(engine){engine.destroyScene(scene);engine.delete();}fs.rmSync(temporary,{recursive:true,force:true});}
 }

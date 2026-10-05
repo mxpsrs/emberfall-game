@@ -137,7 +137,9 @@ function createRealmFilamentGPU(){
  const resourceProfile=realmMobileFilament()?'browser-mobile':'browser',streaming=typeof createVeldrenWorldStreaming==='function'?createVeldrenWorldStreaming(realmNative.scenes,VeldrenAssets,modelResources,resourceProfile):null,constructionBudget=createVeldrenRenderableBudget(resourceProfile);
  const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget);
  const buildingLOD=globalThis.VeldrenBuildingLOD?.create(VeldrenAssets,id=>assetDraws.retirePrepared(id),resourceProfile)||null;
- const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget)):null;
+ const authoredAssetDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget):null;
+ const authoredDraws=authoredAssetDraws?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,authoredAssetDraws):null;
+ const occlusion=globalThis.VeldrenOcclusion?.create(resourceProfile),occlusionRecords=[];
  const canonicalEligibility=new Map();
  function canonicalEntry(mesh,model,style={}){
   if(mesh.poseSource)return {...poseEntry(mesh),model,...style};
@@ -331,8 +333,8 @@ function createRealmFilamentGPU(){
  backend={kind:'filament',skinning:true,textureResources,materialResources,modelResources,assetDraws,buildingLOD,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,assemblyFaces,assemblyTransforms,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,retainReplacement(buffer,previous){buffer.previous=resourceByBuffer.has(previous)?previous:previous.previous;previous.previous=null;if(buffer.previous!==previous)this.releaseBuffer(previous);},releaseBuffer(buffer){if(buffer.previous){const previous=buffer.previous;buffer.previous=null;this.releaseBuffer(previous);}const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;buffer.retire=null;for(const [target,bound] of fakeBindings)if(bound===buffer)fakeBindings.delete(target);},loadGlb,
   // Snapshot only on an explicit development request; never enumerate resources
   // in the normal frame loop. GPU bytes are allocation estimates, not driver VRAM.
-  diagnostics(){return {firstRenderMs,buildingLod:buildingLOD?.diagnostics()||null,paging:globalThis.VeldrenWorldPerformance?.diagnostics()?.paging||null,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
-  performanceSnapshot(){return {frame:frameMetrics,buildingLod:buildingLOD?.diagnostics()||null,gpuTimerSupported:gpuTimer.supported,activeRenderables:activeEntities.size,construction:constructionBudget.diagnostics(),streaming:streaming?.stats?.()||null,preparation:VeldrenAssets.ioDiagnostics().preparation,residency:residencyStats};},
+  diagnostics(){return {firstRenderMs,buildingLod:buildingLOD?.diagnostics()||null,occlusion:occlusion?.diagnostics()||null,paging:globalThis.VeldrenWorldPerformance?.diagnostics()?.paging||null,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
+  performanceSnapshot(){return {frame:frameMetrics,buildingLod:buildingLOD?.diagnostics()||null,occlusion:occlusion?.diagnostics()||null,gpuTimerSupported:gpuTimer.supported,activeRenderables:activeEntities.size,construction:constructionBudget.diagnostics(),streaming:streaming?.stats?.()||null,preparation:VeldrenAssets.ioDiagnostics().preparation,residency:residencyStats};},
   destroy(){
    if(disposed)return;disposed=true;this.presented=false;unsubscribeDispose();
    // Character and compatibility draws also hold native material leases.
@@ -396,6 +398,16 @@ function createRealmFilamentGPU(){
      resource.buffer?.retire?.();destroyResource(resource);backend.releaseBuffer(resource.buffer);
      if(resource.ephemeral){const slot=dynamicResources.indexOf(resource);if(slot>=0)dynamicResources[slot]=null;}
     }
+   }
+   if(occlusion){
+    occlusionRecords.length=0;
+    const disabled=window.VELDREN_OCCLUSION===false||String(window.VELDREN_CONTEXT||'').toLowerCase()==='editor';
+    if(!disabled){assetDraws.collectOcclusion(occlusionRecords);authoredAssetDraws?.collectOcclusion(occlusionRecords);
+     for(const resource of resources){if(resource.ephemeral||resource.pose||resource.boneCount)continue;for(const pool of resource.pools.values())for(let slot=0;slot<pool.used;slot++){const entity=pool.entities[slot];if(!activeEntities.has(entity)||!pool.transforms[slot])continue;
+      occlusionRecords.push({data:{bounds:resource.bounds},matrix:pool.transforms[slot],castShadows:!resource.terrain,renderables:1,hide(){scene.remove(entity);activeEntities.delete(entity);}});
+     }}
+    }
+    for(const record of occlusion.evaluate(cameraState,occlusionRecords,disabled))record.hide();
    }
    window.VeldrenEditorTools?.frame(this,{...cameraState,up:[0,1,0]});
    const lair=typeof CREATURE_LAIRS!=='undefined'?CREATURE_LAIRS[currentScene]:null,lighting=typeof realmLightingState==='function'?realmLightingState():{lights:[],cave:0,house:0,night:0},day=1-lighting.night,sky=lair?.fog||[.055+.35*day,.075+.58*day,.14+.69*day];if(surface.style&&!lair){const top=`rgb(${Math.round(13+70*day)},${Math.round(25+145*day)},${Math.round(55+178*day)})`,haze=`rgb(${Math.round(30+150*day)},${Math.round(43+181*day)},${Math.round(67+176*day)})`,background=`radial-gradient(ellipse at 22% 15%,rgba(255,255,255,${(.28*day).toFixed(2)}) 0,rgba(255,255,255,0) 20%),radial-gradient(ellipse at 68% 22%,rgba(244,251,255,${(.22*day).toFixed(2)}) 0,rgba(244,251,255,0) 25%),linear-gradient(${top},${haze} 70%,rgb(166,205,190))`;if(background!==previousSkyBackground){surface.style.background=background;previousSkyBackground=background;}}

@@ -34,6 +34,7 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   vm.runInContext(fs.readFileSync(path.join(root,'client/native-runtime.js'),'utf8'),context);
   context.realmNative=await context.realmNativeReady;
   vm.runInContext(fs.readFileSync(path.join(root,'client/renderer-gl.js'),'utf8'),context,{filename:'renderer-gl.js'});
+  vm.runInContext(fs.readFileSync(path.join(root,'client/renderer-occlusion.js'),'utf8'),context,{filename:'renderer-occlusion.js'});
   vm.runInContext(fs.readFileSync(path.join(root,'client/renderer-filament.js'),'utf8'),context,{filename:'renderer-filament.js'});
   const gpu=context.createRealmFilamentGPU(),raw=new Float32Array([
    0,0,0,0,1,0,1,0,0,1,0,0,
@@ -219,6 +220,23 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   }
   assert.equal(mixedGpu.assetDraws.diagnostics().activeRenderables,expectedWalls,'authored walls complete despite continuous compatibility demand');
   wallLease.release();
+  // Exercise the production late-frame pass, including its actual Scene diff.
+  const originalCamera=context.cameraPose3,oldGround=groundHeight;groundHeight=0;context.landSurfaceRevision++;
+  context.cameraPose3=()=>({eye:[0,1,10],center:[0,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
+  const occlusionPlan={...wallModel.plan,geometry:wallModel.plan.geometry.map(packet=>{const p={...packet};for(const [key,T] of [['vertices',Float32Array],['indices',Uint32Array]]){const bytes=Buffer.from(p[key],'base64');p[key]=new T(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));}return p;})};
+  occlusionPlan.occlusion=context.VeldrenOcclusion.compile(occlusionPlan,id=>context.VeldrenAssets.materialPlan(id,'browser'));
+  const preparedWall={buildingLod:{id:'qa:occlusion-wall',generation:1,plan:occlusionPlan},model:[1,0,0,0,0,1,0,0,0,0,1,0],instanceId:'qa:occlusion-wall',distance:10};
+  const hiddenTerrain=mixedGpu.upload(new Float32Array([-.01,1,-5,0,1,0,1,1,1,1,0,0,.01,1,-5,0,1,0,1,1,1,1,1,0,0,1.01,-5,0,1,0,1,1,1,1,0,1]));
+  const hiddenEntry={...hiddenTerrain,terrain:true};let occlusionFrames=0;
+  while(occlusionFrames++<50){mixedGpu.render([preparedWall,hiddenEntry],[],null);await new Promise(resolve=>setTimeout(resolve,2));if(mixedGpu.diagnostics().occlusion.hiddenRenderables===1)break;}
+  assert.equal(mixedGpu.diagnostics().occlusion.hiddenRenderables,1,'production pass removes the hidden legacy terrain renderable');
+  assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length,'only solid source renderables remain');
+  context.cameraPose3=()=>({eye:[10,1,10],center:[10,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
+  mixedGpu.render([preparedWall,hiddenEntry],[],null);assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length+1,'camera turn restores the skipped object in the same frame');
+  context.cameraPose3=()=>({eye:[0,1,10],center:[0,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
+  context.VELDREN_CONTEXT='editor';mixedGpu.render([preparedWall,hiddenEntry],[],null);assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length+1,'editor keeps all ready instances');delete context.VELDREN_CONTEXT;
+  mixedGpu.render([hiddenEntry],[],null);assert.equal(mixedGpu.scene.getRenderableCount(),1,'source removal restores hidden terrain immediately');
+  context.cameraPose3=originalCamera;groundHeight=oldGround;context.landSurfaceRevision++;
   // A visible parent must not submit its culled native modules. This exercises
   // the actual painter with the native visibility result, before resource work.
   const captured=[];context.__cullGpu={kind:'filament',assemblyTransforms:new WeakMap(),canonicalEntry(mesh,model){captured.push(model);return {model};}};vm.runInContext('realmGPU=__cullGpu',context);
@@ -251,6 +269,6 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.equal(mixedGpu.materialResources.diagnostics().materials,0);
   buildingGpu.destroy();mixedGpu.destroy();
   context.realmNative.destroy();
-  console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256}));resolve();
+  console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256,productionOcclusionRemoved:1,cameraReveal:true,editorFailOpen:true,sourceRemovalReveal:true}));resolve();
  }catch(error){reject(error);}
 })).finally(()=>fs.rmSync(temporary,{recursive:true,force:true})).catch(error=>{console.error(error);process.exitCode=1;});
