@@ -19,7 +19,7 @@
   if(enabled)return;
   for(const [scene,w]of Object.entries(registry())){const repeats=new Map();for(const o of w.objects||[]){if(!resource(o)||o._generatedGatherable)continue;
    const source=[o.type,o.name||'',o.x,o.y,o.resourceId||'',o.tutorialRole||o.relicKey||''],k=JSON.stringify(source),ordinal=repeats.get(k)||0;repeats.set(k,ordinal+1);
-   if(!o._generatedGatherableId)Object.defineProperty(o,'_generatedGatherableId',{value:'generated:'+scene+':resource:'+hash([source,ordinal]),configurable:true});
+   if(!o._generatedGatherableId)Object.defineProperty(o,'_generatedGatherableId',{value:o.resourceSceneId||'generated:'+scene+':resource:'+hash([source,ordinal]),configurable:true});
    sources.set(key(scene,o._generatedGatherableId),{scene,id:o._generatedGatherableId,object:o});
   }}
  }
@@ -80,7 +80,7 @@
    if(world.components.WorldGeneration.gatherablesComplete)continue;
    const group=rootId+':resources';s.entities.push({id:group,name:'Gatherable resources',parent:rootId,active:true,transform:identity(),components:{SceneGroup:{category:'Resources'}},metadata:{}});
    for(const o of w.objects||[]){if(!o._generatedGatherableId||o._generatedGatherable)continue;
-    for(const field of Object.keys(o))if(!field.startsWith('_')&&!fields[field]&&!transient.has(field)&&!positional.has(field)&&!['id','name','sprite','collisionRadius','walkThrough'].includes(field))throw Error('Unmapped generated resource field: '+field);
+    for(const field of Object.keys(o))if(!field.startsWith('_')&&!fields[field]&&!transient.has(field)&&!positional.has(field)&&!['id','name','sprite','collisionRadius','walkThrough','resourceSceneId'].includes(field))throw Error('Unmapped generated resource field: '+field);
     const A=root.VeldrenAssembly,M=root.VeldrenBuildingScene.matrices,rotation=o.editorTransform?.rotation!==undefined?o.editorTransform.rotation*Math.PI/180:(o.placement?.yaw??o.heading??0),worldMatrix=A.transform(o.x,o.height||0,o.y,rotation,o.editorTransform?.scale||1);
     const building=(w.buildings||[]).find(b=>b.service?.destination===o.interiorBuilding&&o.interiorBuilding),parent=building?._sceneEntityId||group,local=building?A.multiply(A.inverse(M.row(node(scene,parent).worldMatrix)),worldMatrix):worldMatrix;
     const components={GeneratedGatherable:{version:1},CatalogIdentity:{id:o.id,scene}};

@@ -14,7 +14,7 @@ let n=0;for(const e of Object.values(catalog.entities).filter(e=>e.mainStoryStag
 assert.equal(n,8);assert.equal(catalog.items.airRunes.name,'Air relic');assert.equal(catalog.items.runes.name,'Mind relic');assert.equal(catalog.items.rune_body.name,'Eldrite chestplate');
 // Regression from the owner's 2026-09-14 recording: the current final lesson
 // is index 37, so a permit requiring index 38 can never finish the tutorial.
-assert.equal(catalog.tutorial.version,7);assert.equal(catalog.tutorial.finishStage,37);
+assert.equal(catalog.tutorial.version,8);assert.equal(catalog.tutorial.finishStage,36);
 for(const [version,finish]of Object.entries(catalog.tutorial.finishStages)){
  for(const stage of [finish-1,finish,finish+1]){
   const id='rowan-'+(++n),state={tutorialVersion:Number(version),tutorial:stage,tutorialReward:false};

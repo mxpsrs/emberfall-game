@@ -1,12 +1,5 @@
-const fs=require('fs'),vm=require('vm'),assert=require('assert');const root=__dirname+'/../../client/';const noop=()=>{};
-function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},appendChild:noop,querySelectorAll:()=>[],addEventListener:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
-const els={},data={},ctx={assert,console,Path2D:class {},atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v},document:{getElementById:id=>els[id]??=el(),querySelectorAll:()=>[],createElement:el,addEventListener:noop,body:el()},window:{addEventListener:noop,matchMedia:()=>({matches:false})}};vm.createContext(ctx);
-for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
-
-for(const f of ['view3d','art-direction','renderer-gl','kingdoms','realm-models'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
-// Load production dependencies added since this regression was introduced.
-for(const f of ["assets/briarhaven/models", "briarhaven-art", "assets/realms/models", "realms-rebuilt", "tree-identity", "world-depth", "organic-world", "walk-in-world", "world-style", "building-orientation", "assets/realms/monsters", "assets/realms/approved-creatures", "creatures", "game-icons", "map-icons"])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
-
+const assert=require('node:assert/strict');
+const {ctx,vm,fs,els,el,data,noop,root}=require('../../scripts/qa/game-fixture.cjs');
 vm.runInContext(`
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};s.sceneId='realm_aelindor_25';s.x=12;s.y=10;s.returnPoint=[131,178];setupExpandedWorld();setupSpirits();setupLoot();
 assert.equal(currentScene,'overworld');const restoredPalace=buildings.find(b=>b.service?.destination==='realm_aelindor_25');assert(withinWalkIn(restoredPalace,s.x,s.y),'old room save resumes inside its physical palace');assert(restoredPalace.service.openedAt!==undefined,'restored character has an exit');assert(route(...doorApproach(restoredPalace.service,false)));activateScene('overworld',42,51);

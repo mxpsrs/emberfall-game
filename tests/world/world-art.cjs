@@ -1,18 +1,7 @@
-const fs=require('fs'),vm=require('vm'),assert=require('assert');const root=__dirname+'/../../client/';const noop=()=>{};
-function el(){return {style:{},dataset:{},classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},appendChild:noop,querySelectorAll:()=>[],listeners:{},addEventListener(type,fn){const before=this.listeners[type];this.listeners[type]=before?e=>{before(e);fn(e)}:fn},setPointerCapture:noop,setAttribute:noop,getContext:()=>new Proxy({},{get:()=>noop}),showModal(){this.open=true},close(){this.open=false},getBoundingClientRect:()=>({width:800,height:390,left:0,top:0})};}
-const els={},data={},ctx={assert,console,Path2D:class {},atob,performance:{now:()=>0},setTimeout:noop,clearTimeout:noop,requestAnimationFrame:noop,localStorage:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v},document:{getElementById:id=>els[id]??=el(),querySelectorAll:()=>[],createElement:el,addEventListener:noop,body:el()},window:{addEventListener:noop,matchMedia:()=>({matches:false})}};vm.createContext(ctx);
-for(const f of ['cloud','loot','spirits','hud','systems','frontier','world','tutorial','skills','game'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
-
-vm.runInContext(fs.readFileSync(root+'view3d.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'view3d'});
-vm.runInContext(fs.readFileSync(root+'art-direction.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'art-direction'});
-vm.runInContext(fs.readFileSync(root+'renderer-gl.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:'renderer-gl'});
-for(const f of ['kingdoms','realm-models','assets/briarhaven/models','briarhaven-art'])vm.runInContext(fs.readFileSync(root+f+'.js','utf8').replace(/boot\(\);\s*$/,''),ctx,{filename:f});
-const realmArtCrossingsBase=vm.runInContext('drawRealmCrossings',ctx);
-ctx.realmArtCrossingsBase=realmArtCrossingsBase;
-
-// Load production dependencies added since this regression was introduced.
-for(const f of ["assets/realms/models", "realms-rebuilt", "tree-identity", "world-depth", "organic-world", "walk-in-world", "world-style", "building-orientation", "assets/realms/monsters", "assets/realms/approved-creatures", "creatures", "game-icons", "map-icons"])vm.runInContext(fs.readFileSync(root+f+'.js','utf8'),ctx,{filename:f});
-
+const assert=require('node:assert/strict');
+const {ctx,vm,fs,els,el,data,noop,root}=require('../../scripts/qa/game-fixture.cjs');
+const crossingSource=fs.readFileSync(root+'briarhaven-art.js','utf8');
+ctx.realmArtCrossingsBase=vm.runInContext('('+crossingSource.slice(crossingSource.indexOf('function drawRealmCrossings('),crossingSource.indexOf('\nconst realmArtWalls=',crossingSource.indexOf('function drawRealmCrossings(')))+')',ctx);
 vm.runInContext(`
 // Imported geometry, equipment selection and all animation poses must remain valid.
 for(const [name,rig]of Object.entries(briarRigs))for(const [part,mesh]of Object.entries(rig.meshes)){
@@ -51,7 +40,7 @@ const oldCreate=ctx.document.createElement;let gpuCanvas;
 ctx.document.createElement=()=>{const e=oldCreate();e.getContext=type=>{if(type==='webgl'){gpuCanvas=e;return gl;}return new Proxy({},{get:()=>noop});};return e;};ctx.calls=calls;
 
 vm.runInContext(`
-renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();screen={w:900,h:400};assetsReady=true;
+renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupLoot();s.tutorialReward=true;s.tutorial=tutorialSteps.length;screen={w:900,h:400};assetsReady=true;
 activateScene('overworld',14,17);view3d.zoom=14;draw3d();assert(realmGPU);assert(calls.shadows===1);assert(calls.draws>20);const uploads=calls.static;draw3d();assert.equal(calls.static,uploads,'static meshes stay cached on the next frame');assert(calls.dynamic>=2);view3d.zoom=45;draw3d();
 for(const t of SETTLEMENTS){activateScene('overworld',...realmDestination(t));view3d.zoom=14;draw3d();assert(hitboxes.some(h=>h.building),t.name);assert([...staticMeshQueues3.building.values()].filter(frame=>frame!==meshFrame3).length<=80);const count=calls.static;draw3d();assert.equal(calls.static,count,t.name+' reuses visible models');}
 assert(realmArtCrossings.length>=4);

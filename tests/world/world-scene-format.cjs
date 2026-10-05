@@ -6,11 +6,12 @@ const root=path.join(__dirname,'../..');
 const context={};vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(root,'client/world-scene-format.js'),'utf8'),context);
 const {fromLegacy,toLegacy,mergeLegacy,validateWorld,renderables}=context.VeldrenSceneFormat;
-const original=JSON.parse(fs.readFileSync(path.join(root,'editor-data/world-edits.json'),'utf8'));
-const world=fromLegacy(original),saved=JSON.parse(fs.readFileSync(path.join(root,'client/world-scene.json'),'utf8'));
+const original=JSON.parse(fs.readFileSync(path.join(root,'native/tests/fixtures/legacy-world-edits-v1.json'),'utf8'));
+const world=fromLegacy(original),saved=JSON.parse(fs.readFileSync(path.join(root,'native/tests/fixtures/world-scene-v2.json'),'utf8'));
 assert.equal(world.format,'veldren.world');assert.equal(world.version,2);
 assert.equal(world.scenes[0].scene,'tutorial');assert.equal(world.scenes[0].entities.length,29);
-assert.deepEqual(JSON.parse(JSON.stringify(world)),saved,'checked-in runtime mirror matches the migrated source');
+assert.deepEqual(JSON.parse(JSON.stringify(world)),saved,'accepted migration fixture remains stable');
+assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'client/world-scene.json'))),JSON.parse(fs.readFileSync(path.join(root,'editor-data/world-scene.json'))),'production runtime mirror matches the authored world');
 const restored=JSON.parse(JSON.stringify(toLegacy(world)));
 assert.deepEqual(restored,original,'legacy mirror remains byte-value stable after canonical conversion');
 for(let i=0;i<original.changes.length;i++){

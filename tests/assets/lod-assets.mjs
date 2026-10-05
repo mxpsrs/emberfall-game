@@ -28,7 +28,7 @@ for(const row of canonical){
 }
 const unpack=text=>JSON.parse(text.slice(text.indexOf('=')+1).trim().replace(/;$/,''));
 const catalog=unpack(fs.readFileSync('client/assets/realms/models.js','utf8'));
-const original=unpack(execFileSync('git',['show','8f82a643bd45ff3155158a3884b7d2a246b0ef47:client/assets/realms/models.js'],{maxBuffer:64*1024*1024}).toString());
+const original=unpack(execFileSync('git',['show','8f82a643bd45ff3155158a3884b7d2a246b0ef47:dist/assets/realms/models.js'],{maxBuffer:64*1024*1024}).toString());
 const scenery=JSON.parse(fs.readFileSync('client/assets/realms/scenery-lods.json')).models;
 for(const row of scenery){
  const near=catalog.models[row.model];for(const field of ['p','pScale','n','uv','t','i','c','f'])assert.equal(near[field],original.models[row.model][field],'LOD0 '+row.model+' '+field);

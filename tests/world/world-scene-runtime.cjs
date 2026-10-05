@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-const root=path.join(__dirname,'../..'),world=JSON.parse(fs.readFileSync(path.join(root,'client/world-scene.json'),'utf8'));
+const root=path.join(__dirname,'../..'),world=JSON.parse(fs.readFileSync(path.join(root,'native/tests/fixtures/world-scene-v2.json'),'utf8'));
 world.scenes[0].entities.push({id:'tutorial:group:lamps',name:'Lamps',parent:null,active:true,
  transform:{position:[5,0,10],rotation:[0,0,0,1],scale:[1,1,1]},components:{},metadata:{}});
 world.scenes[0].entities.push({id:'tutorial:lamp:1',name:'Author light',parent:'tutorial:group:lamps',active:true,

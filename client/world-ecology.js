@@ -110,7 +110,7 @@ function ecologyPlant(scene,w){
  const cached=typeof ECOLOGY_LAYOUT!=='undefined'&&ECOLOGY_LAYOUT[scene];
  if(cached?.signature===signature&&!(typeof ecologyRegenerate!=='undefined'&&ecologyRegenerate)){
   const originals=new Map(old.map(o=>[o.id,o]));
-  for(const [id,x,y,resourceId,treeArt,race,purpose]of cached.trees){const o=originals.get(id)||{id,type:'tree',name:TREE_RESOURCES[resourceId].name,resourceId,treeArt,race,sprite:4,dead:0,hitAt:-100};ecologyPlace(ctx,o,x,y,purpose);}
+  for(const [id,x,y,resourceId,treeArt,race,purpose,resourceSceneId]of cached.trees){const o=originals.get(id)||{id,type:'tree',name:TREE_RESOURCES[resourceId].name,resourceId,treeArt,race,sprite:4,dead:0,hitAt:-100};if(resourceSceneId)o.resourceSceneId=resourceSceneId;ecologyPlace(ctx,o,x,y,purpose);}
   w.objects=[...w.objects.filter(o=>o.type!=='tree'),...ctx.placed];ecologyScenes.set(scene,ctx);ecologyReport.scenes[scene]=cached.stats;ecologyReport.added+=cached.stats.added;ecologyReport.moved.push(...cached.moved);ecologyReport.removed.push(...cached.removed);ecologyLayouts[scene]=cached;return;
  }
  const movedStart=ecologyReport.moved.length,removedStart=ecologyReport.removed.length;
@@ -136,7 +136,9 @@ function ecologyPlant(scene,w){
   }
  }
  w.objects=[...w.objects.filter(o=>o.type!=='tree'),...ctx.placed];stats.after=ctx.placed.length;ecologyScenes.set(scene,ctx);ecologyReport.scenes[scene]=stats;
- ecologyLayouts[scene]={signature,trees:ctx.placed.map(o=>[o.id,o.x,o.y,o.resourceId,o.treeArt||null,o.race||null,o.ecology.purpose]),stats,moved:ecologyReport.moved.slice(movedStart),removed:ecologyReport.removed.slice(removedStart)};
+ // Retain authored resource identities when placement search is regenerated.
+ const identities=new Map((cached?.trees||[]).filter(row=>row[7]).map(row=>[row[0],row[7]]));for(const o of ctx.placed)if(identities.has(o.id))o.resourceSceneId=identities.get(o.id);
+ ecologyLayouts[scene]={signature,trees:ctx.placed.map(o=>[o.id,o.x,o.y,o.resourceId,o.treeArt||null,o.race||null,o.ecology.purpose,...(o.resourceSceneId?[o.resourceSceneId]:[])]),stats,moved:ecologyReport.moved.slice(movedStart),removed:ecologyReport.removed.slice(removedStart)};
 }
 const ecologySetupBefore=setupTutorialVillage;
 setupTutorialVillage=function(){

@@ -9,20 +9,22 @@ gl.uniformMatrix3fv=(name,transpose,values)=>assert([...values].every(Number.isF
 vm.runInContext(`{
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};
 setupExpandedWorld();setupSpirits();setupTutorialVillage();setupLoot();assetsReady=true;
-s.character={name:'Render check',look:0,frame:'male',hair:0};s.tutorial=tutorialSteps.length;s.worldClock=120;
+s.character={name:'Render check',look:0,frame:'male',hair:0};s.tutorial=tutorialSteps.length;s.tutorialReward=true;s.worldClock=120;
 resize();assert(canvas.width*canvas.height<=8294400,'the transparent HUD does not allocate an oversized 8K canvas');
 screen={w:1920,h:1080};activateScene('overworld',42,51);draw3d();
 assert(realmGPU.presented,'the GPU canvas is displayed directly');
+// Finish scheduled construction before measuring stable-world reuse.
+for(let i=0;i<24;i++)draw3d();
 const firstUploads=counters.static;
-for(let i=0;i<4;i++){time+=1/60;draw3d();}
-assert(counters.static-firstUploads<=4,'only the nearby player idle pose changes; distant NPCs and the world stay cached');
-const idleUploads=counters.static;draw3d();assert.equal(counters.static,idleUploads,'rendering the same pose reuses its mesh');
+for(let i=0;i<4;i++)draw3d();
+assert(counters.static-firstUploads<=4,'completed world reuses cached meshes while queued terrain finishes');
+const idleMesh=avatarPose('male','idle',0,s.equipment,0);draw3d();assert.strictEqual(avatarPose('male','idle',0,s.equipment,0),idleMesh,'rendering the same pose reuses its mesh');
 assert.equal(counters.images,0,'displaying a frame does not copy the GPU canvas into the HUD');
-assert(realmGPU.terrain.get(currentScene).size<200,'only nearby terrain is constructed');
+const terrainCamera=cameraPose3();assert([...realmGPU.terrain.get(currentScene).values()].every(c=>Math.hypot(c.x-terrainCamera.eye[0],c.z-terrainCamera.eye[2])<terrainCamera.far*2+32),'terrain stays within the current camera reach and chunk margin');
 	for(const [w,h]of [[1920,1080],[3840,2160]]){
 	 screen={w,h};window.devicePixelRatio=2;draw3d();
 	 const d=Math.min(2,Math.sqrt(8294400/(w*h)));assert.equal(realmGPU.surface.width,Math.floor(w*d),'GPU width stays within the shared backing budget');assert.equal(realmGPU.surface.height,Math.floor(h*d),'GPU height stays within the shared backing budget');
- for(const [x,z]of [[42,51],[40,53],[48,49]]){const p=project3(x,0,z),back=unproject3(p.x,p.y);assert(Math.hypot(back.x-x,back.z-z)<.03,'desktop clicks map back onto their terrain positions');}
+ for(const [x,z]of [[42,51],[40,53],[48,49]]){const p=project3(x,civilPickSurfaceHeight(x,z)-landHeight(x,z),z),back=unproject3(p.x,p.y);assert(Math.hypot(back.x-x,back.z-z)<.03,'desktop clicks map back onto their terrain positions');}
 }
 screen={w:1920,h:1080};
 const inn=buildings.find(b=>b.service?.destination==='willowInn');

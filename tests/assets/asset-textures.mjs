@@ -39,8 +39,9 @@ try{
    assert.equal(a.info.gpuBytes,variant.gpuBytes);assert.equal(a.info.sourceHash,variant.derivedHash);
    a.release();b.release();assert.equal(pool.diagnostics().textures,0);
   }
-  assert.equal(verified.size,68);
-  const files=fs.readdirSync('client/assets/canonical/images');assert.equal(files.length,34);
+  const expectedVariants=new Set(registry.records.flatMap(record=>['browser-mobile','browser'].flatMap(profile=>(record.variants?.[profile]||[]).map(entry=>entry.key))));
+  assert.deepEqual(verified,expectedVariants);
+  const files=fs.readdirSync('client/assets/canonical/images');assert.deepEqual(new Set(files),new Set(registry.records.filter(record=>record.type==='texture'&&record.derivedPath.startsWith('assets/canonical/images/')).map(record=>path.basename(record.derivedPath))));
   for(const file of files){
    const bytes=new Uint8Array(fs.readFileSync('client/assets/canonical/images/'+file));
    const settings={sourceHash:path.parse(file).name,colorSpace:'srgb',maxDimension:64};

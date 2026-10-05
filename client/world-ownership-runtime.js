@@ -302,7 +302,7 @@
   for(const name of names){
    const table=scenesByName.get(name);if(!table)continue;
    if(event.kind==='batch'&&event.changes?.every(change=>!table.parents.has(change.id)&&!root.realmNative.scenes.entity(name,change.id)?.components.GeneratedProp))continue;
-   if(event.kind==='transform'||event.kind==='upsert'&&table.parents.has(event.id)){
+   if(event.kind==='transform'||event.kind==='upsert'&&table.byId.has(event.id)){
     const entity=root.realmNative.scenes.entity(name,event.id);
     // Parent edits invalidate only renderer entries in the affected branch.
     if(entity&&table.parents.get(event.id)!==entity.parent){table.children.get(table.parents.get(event.id))?.delete(event.id);if(entity.parent){if(!table.children.has(entity.parent))table.children.set(entity.parent,new Set());table.children.get(entity.parent).add(event.id);}table.parents.set(event.id,entity.parent);}

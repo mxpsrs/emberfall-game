@@ -7,7 +7,7 @@ const require=createRequire(import.meta.url),sql=new DatabaseSync(':memory:');
 for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')))sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));
 const env={DB:{prepare(query){return {bind(...args){assert(args.length<=100,'D1 bind limit');return {query,args,async first(){return sql.prepare(query).get(...args)},async all(){return {results:sql.prepare(query).all(...args)}},async run(){return {meta:{changes:sql.prepare(query).run(...args).changes}}}}}}},async batch(statements){sql.exec('BEGIN');try{const rows=statements.map(({query,args})=>({meta:{changes:sql.prepare(query).run(...args).changes}}));sql.exec('COMMIT');return rows;}catch(e){sql.exec('ROLLBACK');throw e;}}}};
 // Reproducible damage and roaming keep animation checks independent of lucky kills.
-let simulationSeed=91583;const realRandom=Math.random;const testRandom=()=>{simulationSeed=(Math.imul(simulationSeed,1664525)+1013904223)>>>0;return simulationSeed/4294967296;};Math.random=testRandom;
+let deferDamage=false,simulationSeed=91583;const realRandom=Math.random;const testRandom=()=>{if(deferDamage)return .999999;simulationSeed=(Math.imul(simulationSeed,1664525)+1013904223)>>>0;return simulationSeed/4294967296;};Math.random=testRandom;
 let clock=Date.now();const realNow=Date.now;Date.now=()=>Math.floor(clock);
 const req=(url,cookie,body,method='POST')=>new Request('https://game.test'+url,{method,headers:{cookie,origin:'https://game.test'},body:JSON.stringify({...body,resetVersion:SAVE_RESET_VERSION})});
 async function client(name){
@@ -36,7 +36,8 @@ for(let frame=0;frame<360;frame++){
 assert.deepEqual(a.json('[rat.x,rat.y]'),b.json('[rat.x,rat.y]'),'same rat position after independent roaming');
 // Both browsers render the server-owned NPC; neither may publish its position.
 for(const c of [a,b])c.run('px=s.x=rat.x+1;py=s.y=rat.y;playerMotion.moving=false;');
-assert(b.run('target=rat;performAttack(rat)')); 
+// Keep the two-hitpoint training rat alive until its first server attack is observed.
+deferDamage=true;assert(b.run('target=rat;performAttack(rat)'));
 a.run(`screen={w:1112,h:512};var renderedClips=[];const poseBeforeTest=avatarGpuPose;avatarGpuPose=function(...args){renderedClips.push(args[1]);return poseBeforeTest(...args);};var creatureClips=[];const creaturePoseBeforeTest=creatureRigPose;creatureRigPose=function(...args){creatureClips.push(args[1]);return creaturePoseBeforeTest(...args);};var testMesh={face:()=>{},indexed:()=>{},skinned:()=>{}};`);
 let damage=false,peerAttack=false,enemyAttack=false,renderedAttack=false,renderedEnemy=false;
 for(let frame=0;frame<12000;frame++){
@@ -45,7 +46,7 @@ for(let frame=0;frame<12000;frame++){
  if(!renderedAttack&&a.run(`!![...onlinePeers.values()].find(p=>p.action?.kind==='combat'&&sharedNow()-p.action.started>100&&sharedNow()-p.action.started<p.action.duration-100)`)){
   a.run(`var peer=[...onlinePeers.values()].find(p=>p.action?.kind==='combat');peer.drawX=peer.x-.2;peer.drawAt=performance.now()-16;renderedClips=[];drawOnlinePlayers(testMesh,[]);assert(renderedClips.includes('melee'),'remote melee renders during final movement interpolation');assert.equal(peer.action.target.entity,String(rat.id),'attack identifies the same shared monster');`);renderedAttack=true;
  }
- if(!renderedEnemy&&a.run('rat.attackAt>0&&time-rat.attackAt>.15&&time-rat.attackAt<.7')){a.run(`creatureClips=[];creature3(testMesh,rat,rat.drawX+.5,rat.drawY+.5);assert(creatureClips.some(c=>c.startsWith('attack')),'observer renders monster attack geometry');`);renderedEnemy=true;}
+ if(!renderedEnemy&&a.run('rat.attackAt>0&&time-rat.attackAt>.15&&time-rat.attackAt<.7')){a.run(`creatureClips=[];creature3(testMesh,rat,rat.drawX+.5,rat.drawY+.5);assert(creatureClips.some(c=>c.startsWith('attack')),'observer renders monster attack geometry');`);renderedEnemy=true;deferDamage=false;}
  if(frame%160===159&&b.run('rat.hp>0'))b.run('performAttack(rat)');
  if(b.run('rat.hp===0'))break;
 }

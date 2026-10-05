@@ -19,7 +19,7 @@ try{
  s.bag={bones:2,coins:10};s.bank={normalLogs:3};s.xp.Mining=123;
  activateScene('tutorial',42,51);assetsReady=cloudReady=true;cloudDirty=cloudBusy=false;
  let finalSave=null;save=()=>{finalSave=JSON.parse(JSON.stringify(s));};
- assert.equal(s.tutorial,37);assert(beginTutorialCrossing());assert(sharedPending('teleport'));
+ assert.equal(s.tutorial,36);assert(beginTutorialCrossing());assert(sharedPending('teleport'));
  assert.equal(tutorialCrossing,null,'cast cannot begin before the server permit');
  `,ctx);
  const snapshot=()=>JSON.parse(vm.runInContext('JSON.stringify(s)',ctx));

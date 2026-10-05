@@ -9,7 +9,7 @@ async function fixture(saved=null,editor=false){
  const props=fs.readFileSync(base+'prop-placement.js','utf8');run(props.slice(props.indexOf('let propWorkPads='),props.indexOf('function propPrepareWorkPads(')));
  run(`propFootingsReady=true;propWorkPads.push({x:58,y:87,rx:7,ry:6,height:7,reason:'Loading apron',quarry:'west'},{x:60,y:88,rx:2,ry:2,height:6,reason:'Second work pad',quarry:'west'},{x:58,y:87,rx:1,ry:1,height:5,reason:'Crane footing',supportOnly:true,objectId:77});propSupportPads.push(propWorkPads[2]);for(const p of propWorkPads)propIndexPad(p);`);
  const baseline=run(`(()=>{const out=[];for(const q of surfaceQuarries)for(let x=q.x-q.rx-13;x<q.x+q.rx+14;x+=2.3)for(let y=q.y-q.ry-13;y<q.y+q.ry+14;y+=2.7)out.push({x,y,id:quarryAt(x,y,14)?.id,edge:quarryShapeEdge(q,x,y),depth:quarryDepth(q,x,y),cliff:quarryCliff(q,x,y),key:q.id,grade:gradeLand(x,y,2),footing:propWorkFootingHeight(x,y,2)});return out;})()`);
- load('terrain-editor-runtime');load('native-runtime');await ctx.realmNativeReady;for(const f of ['building-assembly','world-ownership-runtime','world-building-scene','world-quarry-scene'])load(f);
+ load('terrain-editor-runtime');load('native-runtime');load('editor/commands');await ctx.realmNativeReady;for(const f of ['building-assembly','world-ownership-runtime','world-building-scene','world-quarry-scene'])load(f);
  const n=ctx.realmNative.scenes;
  for(const row of [
   {id:'generated:overworld:root',name:'World',components:{WorldGeneration:{}},transform:I()},
@@ -32,13 +32,13 @@ async function main(){
   const A=ctx.VeldrenAssembly,m=ctx.VeldrenBuildingScene.matrices.row(n.entity('overworld',id).worldMatrix),p=A.point(m,[-10,0,-4]),ramp=A.point(m,[0,0,12]);
   assert.equal(q.at(p[0],p[2])._sceneEntityId,id);assert(!q.at(50,60));assert(q.rampAt(ramp[0],ramp[2]));assert(!q.rampAt(50,72));
   close(n.entity('overworld','ore').worldMatrix[12],p[0]);close(n.entity('overworld','ore').worldMatrix[14],p[2]);close(q.sample(p[0],p[2]).height,3+3*(8-q.sample(p[0],p[2]).depth),'parent elevation/scale');
-  const padPoint=A.point(m,[8,0,27]);close(q.padHeight(padPoint[0],padPoint[2],0,true),18,'transformed crane support');close(q.padHeight(58,87,2,true),2,'old pad index discarded');assert(run('invalidations>0'));assert.equal(run("realmGPU.terrain.get('overworld').size"),0);assert.equal(run('landHeights.size'),0);assert.equal(run('realmNavigation.size'),0);
+  const padPoint=A.point(m,[8,0,27]);close(q.padHeight(padPoint[0],padPoint[2],0,true),18,'transformed crane support');close(q.padHeight(58,87,2,true),2,'old pad index discarded');assert.equal(run("realmGPU.terrain.get('overworld').get('8:50:60').complete"),false,'edited terrain is scheduled to rebuild while its old mesh remains visible');assert.equal(run('landHeights.size'),0);assert.equal(run('realmNavigation.size'),0);
 
   if(editor){
    // Run the production editor selection/transform functions against real
    // native quarry and pad views, including the distinct pad surface height.
    const editorSource=fs.readFileSync(base+'editor/editor-runtime.js','utf8');
-   run(`let ready=true,buildingContext=null,sceneDocumentDirty=false;const buildings=[],objects=[],snap={position:0,rotation:0};function sceneObjects(){return []}function sceneBuildings(){return []}function ensureBase(ref){return {x:ref.entity.x,y:ref.entity.y}}function invalidate(){}function recordChange(){}const snapValue=(v,s)=>s?Math.round(v/s)*s:v;`);
+   run(`let ready=true,buildingContext=null,sceneDocumentDirty=false;const buildings=[],objects=[],snap={position:0,rotation:0};function sceneObjects(){return []}function sceneBuildings(){return []}function ensureBase(ref){return {x:ref.entity.x,y:ref.entity.y}}function invalidate(){}function recordChange(){}const editorCommands=createVeldrenEditorCommands(window.realmNative.scenes,()=>String(currentScene),()=>{});function commandSystem(){return editorCommands}const snapValue=(v,s)=>s?Math.round(v/s)*s:v;`);
    for(const name of ['protectedObject','refForObject','resolveRef','entityRotation','entityScale','entityInfo','allEntities','setEntityTransform']){
     const start=editorSource.indexOf(' function '+name+'('),end=editorSource.indexOf('\n function ',start+1);assert(start>=0&&end>start,name);run(editorSource.slice(start,end));
    }

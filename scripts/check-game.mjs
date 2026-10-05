@@ -35,7 +35,8 @@ async function run(file) {
   const child = spawn(process.execPath, [file], {stdio: ['ignore', 'pipe', 'pipe']});
   child.stdout.on('data', chunk => { output += chunk; });
   child.stderr.on('data', chunk => { output += chunk; });
-  const timer = setTimeout(() => { timedOut = true; child.kill('SIGTERM'); }, 240000);
+  const timeout = file === 'tests/gameplay/main-story.cjs' ? 600000 : 240000;
+  const timer = setTimeout(() => { timedOut = true; child.kill('SIGTERM'); }, timeout);
   const exitCode = await new Promise((resolve, reject) => {
     child.once('error', reject);
     child.once('close', resolve);

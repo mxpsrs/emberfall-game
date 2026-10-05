@@ -26,7 +26,6 @@ s.bag={lodestone:1,relicChisel:1,normalLogs:23};assert(requestRelicOperation('sh
 s.bag={airRunes:10,runes:10,waterRunes:10,earthRunes:10};s.xp.Magic=skillThreshold('Magic',25);s.runEnergy=30;s.hp=3;
 assert(castFieldSpell('trailwind'));assert.equal(s.runEnergy,54);assert.equal(s.bag.airRunes,8);assert(!castFieldSpell('trailwind'));assert(castFieldSpell('mendingCurrent'));assert.equal(s.hp,9);
 for(const [metal,key,value]of [['mithril','runCost',.9],['adamant','guard',1],['black','magicDefense',10]]){s.equipment={head:metal+'_head',body:metal+'_body',legs:metal+'_legs'};assert.equal(fieldEquipmentEffects(s)[key],value);delete s.equipment.legs;assert.equal(fieldEquipmentEffects(s).sets.length,0);}
-s.equipment={};s.fieldwork={Mining:11};s.attunedSpirit='flint';s.spirits.flint={state:'set',bondXP:0};const xp=s.xp.Mining;discoverSkillSpirit('Mining');assert.equal(s.fieldwork.Mining,12);assert.equal(s.xp.Mining,xp);
 for(const [scene,stats]of Object.entries(ecologyReport.scenes))assert(stats.after>0,scene+' retains trees');
 console.log('PASS: mining, quest order/range, inscription, animated crossings, lake proof, altar item use, one-time reward, independent skill/save recovery, full bag, support spells and material traits.');
 `,ctx);

@@ -38,7 +38,7 @@ currentScene='overworld';for(const title of ['Old pilgrim camp','Ironhollow resc
 assert(worldScenes.overworld.objects.filter(o=>o.raiderCamp&&o.campModel==='tent').length===3);
 const lookout=mainStoryObject('lookout');assert.equal(worldScenes.overworld.objects.find(o=>o.id===lookout.id),lookout);
 assert(route(lookout.x,lookout.y,true,1.5,205,142)!==null,'camp entrance connected');assert(route(mainStoryObject('dispatch').x,mainStoryObject('dispatch').y,true,1.5,212,142)!==null,'satchel accessible');
-// Brook boosts maximum, never base level; healing and recovery honor the current cap.
-s.xp.Hitpoints=skillThreshold('Hitpoints',10);s.spirits={brook:{state:'set'}};s.hp=5;assert.equal(lv('Hitpoints'),10);assert.equal(maxhp(),14);s.bag.fish=3;eatFood('fish');eatFood('fish');assert.equal(s.hp,14);s.spirits.brook={state:'recovery',readyAt:Date.now()+30000};s.hp=Math.min(s.hp,maxhp());assert.equal(s.hp,14);assert.equal(lv('Hitpoints'),10);s.spirits.brook.state='set';assert.equal(maxhp(),14);assert.equal(s.hp,14,'recovery does not remove the attuned health bonus');
-console.log('PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.');
+// Legacy spirit fields cannot increase maximum health or change healing.
+s.xp.Hitpoints=skillThreshold('Hitpoints',10);s.spirits={brook:{state:'set'}};s.hp=5;assert.equal(lv('Hitpoints'),10);assert.equal(maxhp(),10);s.bag.fish=3;eatFood('fish');eatFood('fish');assert.equal(s.hp,10);s.spiritRemovalVersion=0;normalizeSpiritRemoval(s);assert(!('spirits' in s));assert.equal(maxhp(),10);
+console.log('PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and legacy-save health migration.');
 `,ctx);

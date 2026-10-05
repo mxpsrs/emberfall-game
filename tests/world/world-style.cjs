@@ -22,8 +22,8 @@ const roofBase=environmentRoofMesh3('human','Roof_RoundTiles_4x6',0),roofSlate=e
 assert.equal(roofBase,rebuiltModels.Roof_RoundTiles_4x6,'one human roof variant preserves the authored tile material');
 assert.notDeepEqual(Array.from(roofSlate.c.slice(0,24)),Array.from(roofUmber.c.slice(0,24)),'human settlements no longer repeat one orange roof across every building');
 renderUI=()=>{};renderAction=()=>{};renderTutorial=()=>{};setupExpandedWorld();setupSpirits();setupTutorialVillage();
-assert(worldScenes.overworld.objects.filter(o=>o.id>=2800000&&o.id<2900000).length>20,'elven streets receive woodland, not only roof tint');
-activateScene('overworld',320,280);const nature=[];for(let bz=2;bz<90;bz+=3)for(let bx=2;bx<138;bx+=3)nature.push(...worldUnderstoryPlacements(bx,bz));
+assert(worldScenes.overworld.objects.filter(o=>o.type==='tree'&&(o.race==='elf'||o.settlementTree&&SETTLEMENTS.some(t=>t.race==='elf'&&Math.hypot(t.x-o.x,t.y-o.y)<100))).length>20,'elven settlements retain authored woodland after ecology placement');
+s.tutorialReward=true;s.tutorial=tutorialSteps.length;activateScene('overworld',320,280);const nature=[];for(let bz=2;bz<90;bz+=3)for(let bx=2;bx<138;bx+=3)nature.push(...worldUnderstoryPlacements(bx,bz));
 assert(nature.length>1800,'the continent receives dense streamed ground cover');
 for(const name of ['Grass_Wispy_Short','Bush_Common','Fern_1','Flower_3_Group'])assert(nature.some(p=>p.name===name),name+' is represented in biome-aware ground cover');
 for(const name of ['Grass_Common_Short','Grass_Wispy_Short','Kenney_MushroomRed','Kenney_BushDetailed','Kenney_RockLarge','Kenney_FlowerPurple'])assert(nature.some(p=>p.name===name),name+' is integrated into Briarhaven ground cover');
@@ -46,7 +46,7 @@ for(const b of worldScenes.overworld.buildings.filter(b=>b.archetype==='castle')
 `,ctx);
 console.log('PASS: organic surface normals, imported mesh bounds/materials, biome ground cover, elven woodland and all three castle entrances and exits.');
 vm.runInContext(`
-activateScene('overworld',320,280);screen.w=900;screen.h=520;view3d.zoom=32;view3d.yaw=0;
+s.tutorialReward=true;s.tutorial=tutorialSteps.length;activateScene('overworld',320,280);screen.w=900;screen.h=520;view3d.zoom=32;view3d.yaw=0;
 const preparedParts=[],knownChunks=new Set(),knownParts=new Set(),initialUnderstory=visibleWorldUnderstoryChunks();assert.strictEqual(visibleWorldUnderstoryChunks(),initialUnderstory,'visible understory candidates are cached for an unchanged camera');knownChunks.add(initialUnderstory[0].join(':'));
 VeldrenSceneryScene={enabled:true,hasChunk:(bx,bz)=>knownChunks.has(bx+':'+bz),hasChunkPart:(bx,bz,part)=>knownParts.has(bx+':'+bz+':'+part),prepareChunkPart(bx,bz,part,plants){preparedParts.push({bx,bz,part,count:plants.length});knownParts.add(bx+':'+bz+':'+part);if([0,1,2,3].every(i=>knownParts.has(bx+':'+bz+':'+i)))knownChunks.add(bx+':'+bz);}};
 prepareWorldUnderstory();assert.equal(preparedParts.length,1,'at most one vegetation subchunk is materialized per frame');const first=preparedParts[0];assert.notEqual(first.bx+':'+first.bz,initialUnderstory[0].join(':'),'already materialized chunks are skipped');assert.equal(first.part,0);

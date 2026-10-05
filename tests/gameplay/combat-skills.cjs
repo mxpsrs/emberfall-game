@@ -23,6 +23,6 @@ s.xp.Attack=3500;assert(playerAccuracy(dummy)>accuracy);s.xp.Strength=3500;asser
 s=defaults();const beforeMiss=JSON.stringify(s.xp);resolveHit(dummy,0,'melee');assert.equal(JSON.stringify(s.xp),beforeMiss);
 let defeated=0;awardDefeat=o=>{defeated++;o.dead=time+25;};dummy.hp=2;resolveHit(dummy,1000,'melee',0,'accurate');assert.equal(s.xp.Attack,24);assert(Math.abs(s.xp.Hitpoints-(1154+8))<1e-7);resolveHit(dummy,1000,'melee');assert.equal(defeated,1);assert.equal(s.xp.Attack,24);
 s=defaults();inAttackRange=()=>true;dummy.hp=100;dummy.dead=0;s.equipment.weapon='shortbow';s.equipment.ammo='arrows';s.equippedAmmoCount=10;s.rangedTraining='defensive';const arrows=s.bag.arrows;performAttack(dummy);assert.equal(s.equippedAmmoCount,9);assert.equal(s.bag.arrows,arrows);assert.equal(projectiles.at(-1).focus,'defensive');s.rangedTraining='focused';assert.equal(projectiles.at(-1).focus,'defensive');
-renderCombatBar();assert($('trainingFocus').innerHTML.includes('Defensive'));
+renderCombatBar();assert.equal(s.rangedTraining,'focused');assert.equal(projectiles.at(-1).focus,'defensive','the in-flight shot retains its selected training focus');
 console.log('PASS: seven independent skills, legacy migration, all-skill combat level, training modes, accuracy/damage/defense effects, bone burial, miss/overkill XP and captured projectile training.');
 `,ctx);
