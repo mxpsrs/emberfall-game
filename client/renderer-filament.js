@@ -420,15 +420,16 @@ painter3=function(g,project){
    if(!state){state={matrices:[],children:[],source:new Float64Array(12)};gpu.assemblyTransforms.set(cached,state);}
    for(let j=0;j<instances.length;j++)if(reset||!realmFilamentSourceMatches(state.children[j],instances[j].matrix)){const model=affineMultiply(cached.model,instances[j].matrix);state.matrices[j]=model;state.children[j]=new Float64Array(instances[j].matrix);}
    state.matrices.length=state.children.length=instances.length;state.instances=instances;state.revision=revision;realmFilamentRememberSource(state.source,cached.model);
-   for(let j=0;j<state.matrices.length;j++){const i=state.instances[j];emit(i.mesh,state.matrices[j],i.ghost?{dissolve:.45}:{},i.entityId);}
-   if(cached.faces.length){
+   for(let j=0;j<state.matrices.length;j++){const i=state.instances[j],m=state.matrices[j];if(typeof cameraMeshHidden3==='function'&&cameraMeshHidden3(i.mesh,m))continue;emit(i.mesh,m,i.ghost?{dissolve:.45}:{},i.entityId);}
+   const faces=typeof cameraVisibleFaces3==='function'?cameraVisibleFaces3(cached.faces,cached.model):cached.faces;
+   if(faces.length){
     // Native assembly projections are temporary wrappers. Their persistent
     // entity identity and geometry keep unchanged procedural faces resident.
     const faceCache=ownerId?gpu.assemblyFaces:gpu.cache,faceKey=ownerId?String(currentScene)+':'+ownerId:cached;
     let entry=faceCache.get(faceKey);
-    if(!entry||entry.groundRevision!==revision||!realmFilamentFacesMatch(entry.faces,cached.faces)||!realmFilamentSourceMatches(entry.source,cached.model)){
-     const previous=entry,data=[];for(const f of cached.faces)realmFaceData(data,f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);
-     entry={...gpu.upload(new Float32Array(data)),groundRevision:revision,faces:cached.faces,source:new Float64Array(12)};realmFilamentRememberSource(entry.source,cached.model);faceCache.set(faceKey,entry);
+    if(!entry||entry.groundRevision!==revision||!realmFilamentFacesMatch(entry.faces,faces)||!realmFilamentSourceMatches(entry.source,cached.model)){
+     const previous=entry,data=[];for(const f of faces)realmFaceData(data,f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);
+     entry={...gpu.upload(new Float32Array(data)),groundRevision:revision,faces,source:new Float64Array(12)};realmFilamentRememberSource(entry.source,cached.model);faceCache.set(faceKey,entry);
      entry.buffer.retire=()=>{if(faceCache.get(faceKey)===entry)faceCache.delete(faceKey);};if(previous)gpu.gl.deleteBuffer(previous.buffer);
     }entries.push(entry);
    }return cached.height;
@@ -436,9 +437,10 @@ painter3=function(g,project){
   // Buildings use the same shared indexed meshes as other world objects.
   // Baking every repeated wall/roof/prop into a private triangle buffer made
   // the first visible settlement allocate the same geometry many times.
-  for(const instance of cached.instances||[])emit(instance.mesh,instance.matrix,{},instance.entityId);
-  if(!cached.faces.length)return cached.height;
-  let entry=gpu.cache.get(cached);if(!entry){const data=[];for(const face of cached.faces){let materialId=face.material||0;if(!materialId&&cached.kind==='building'){const value=parseInt(face.color.slice(1),16),red=value>>16,green=(value>>8)&255,blue=value&255,top=face.points.reduce((sum,p)=>sum+p[1],0)/face.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)materialId=6;else if(red>green*1.15&&green>blue*1.1)materialId=5;}realmFaceData(data,face.points,face.color,face.normals,materialId,face.colors,face.uvs);}entry=gpu.upload(new Float32Array(data));gpu.cache.set(cached,entry);entry.buffer.retire=()=>gpu.cache.delete(cached);}entries.push(cached.model?{...entry,model:cached.model}:entry);return cached.height;
+  for(const instance of cached.instances||[]){if(cached.cameraOcclusion&&typeof cameraMeshHidden3==='function'&&cameraMeshHidden3(instance.mesh,instance.matrix))continue;emit(instance.mesh,instance.matrix,{},instance.entityId);}
+  const faces=cached.cameraOcclusion&&typeof cameraVisibleFaces3==='function'?cameraVisibleFaces3(cached.faces):cached.faces;
+  if(!faces.length)return cached.height;
+  let entry=gpu.cache.get(cached);if(!entry||entry.faces!==faces){const previous=entry,data=[];for(const face of faces){let materialId=face.material||0;if(!materialId&&cached.kind==='building'){const value=parseInt(face.color.slice(1),16),red=value>>16,green=(value>>8)&255,blue=value&255,top=face.points.reduce((sum,p)=>sum+p[1],0)/face.points.length;if(top>2.05&&Math.max(red,green,blue)-Math.min(red,green,blue)>23)materialId=6;else if(red>green*1.15&&green>blue*1.1)materialId=5;}realmFaceData(data,face.points,face.color,face.normals,materialId,face.colors,face.uvs);}entry={...gpu.upload(new Float32Array(data)),faces};gpu.cache.set(cached,entry);entry.buffer.retire=()=>{if(gpu.cache.get(cached)===entry)gpu.cache.delete(cached);};if(previous)gpu.gl.deleteBuffer(previous.buffer);}entries.push(cached.model?{...entry,model:cached.model}:entry);return cached.height;
  },flush(){gpu.beginFrameWork();const submitted=realmTerrainEntries(gpu).slice();for(const entry of entries)submitted.push(entry);gpu.render(submitted,dynamic,g);trimRealmMeshes(gpu);gpu.frameId++;}};
  return painter;
 };

@@ -5,12 +5,12 @@ const PLAYER_WORLD_SCALE3=1.18;
 const cameraEditor3=typeof window!=='undefined'&&window.VELDREN_CONTEXT==='editor';
 const cameraDefault3={yaw:-1.8,tilt:.25,zoom:102},cameraAnchor3=cameraEditor3?.82:.64,cameraFov3=54;
 const view3d={...cameraDefault3,min:58,max:132};
-try{const v=JSON.parse(localStorage.getItem('veldren-camera-v6'));if(v){view3d.yaw=Number(v.yaw)||cameraDefault3.yaw;view3d.tilt=Math.max(.22,Math.min(.70,Number(v.tilt)||cameraDefault3.tilt));view3d.zoom=Math.max(view3d.min,Math.min(view3d.max,Number(v.zoom)||cameraDefault3.zoom));}}catch{}
+try{const v=JSON.parse(localStorage.getItem('veldren-camera-v6'));if(v){view3d.yaw=Number.isFinite(Number(v.yaw))?Number(v.yaw):cameraDefault3.yaw;view3d.tilt=Math.max(.22,Math.min(.70,Number(v.tilt)||cameraDefault3.tilt));view3d.zoom=Math.max(view3d.min,Math.min(view3d.max,Number(v.zoom)||cameraDefault3.zoom));}}catch{}
 function syncCameraZoom(){const percent=Math.round((view3d.max-view3d.zoom)/(view3d.max-view3d.min)*100),slider=$('cameraZoom'),label=$('cameraZoomValue');if(slider){slider.value=String(percent);slider.setAttribute('aria-valuetext',percent+' percent zoomed out');}if(label)label.textContent=percent+'%';}
 function rememberView(){syncCameraZoom();try{localStorage.setItem('veldren-camera-v6',JSON.stringify(view3d));}catch{}}
 // Camera angle changes only through the player's camera controls.
 function cameraPitch3(){return cameraPose3().pitch;}
-function cameraZoom3(v=view3d){return v.zoom*(v===view3d?Math.max(1,screen.h/640):1);}
+function cameraZoom3(v=view3d){return v.zoom*(v===view3d?Math.max(1,screen.h)/640:1);}
 function cameraFocalLength3(h=screen.h){return (h||500)/(2*Math.tan(cameraFov3*Math.PI/360));}
 function cameraDistance3(v=view3d,h=screen.h){return v===view3d?cameraPose3(h).distance:cameraFocalLength3(h)/cameraZoom3(v);}
 // One pose feeds Filament, screen projection, picking and native visibility.
@@ -19,6 +19,9 @@ const cameraFollow3={pose:null,stamp:0,scene:null,x:NaN,z:NaN,yaw:0,pitch:0,dist
 const cameraPoseInputs3={};
 const cameraStructureCache3=new WeakMap();
 const cameraMeshTriangles3=new WeakMap();
+const cameraOccluderCache3=new WeakMap();
+const cameraFaceCache3=new WeakMap(),cameraFaceLists3=new WeakMap();
+const cameraBuildingBounds3={scene:null,revision:-1,source:null,rows:[]};
 function cameraTriangleDistance3(a,b,c,origin,dir,limit){
  const e1=b.map((v,i)=>v-a[i]),e2=c.map((v,i)=>v-a[i]),cross=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],dot=(u,v)=>u[0]*v[0]+u[1]*v[1]+u[2]*v[2],p=cross(dir,e2),det=dot(e1,p);
  if(Math.abs(det)<1e-8)return null;const inv=1/det,t=origin.map((v,i)=>v-a[i]),u=dot(t,p)*inv;if(u<0||u>1)return null;const q=cross(t,e1),v=dot(dir,q)*inv;if(v<0||u+v>1) return null;const distance=dot(e2,q)*inv;return distance>.05&&distance<limit+.3?distance:null;
@@ -29,7 +32,7 @@ function cameraModuleRay3(collider,origin,dir,limit){
   const lo=collider.bounds[0][axis],hi=collider.bounds[1][axis];if(Math.abs(d[axis])<1e-9){if(p[axis]<lo||p[axis]>hi)return null;continue;}
   const a=(lo-p[axis])/d[axis],b=(hi-p[axis])/d[axis];near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));if(near>far)return null;
  }
- if(!collider.mesh)return near>.05?near:null;
+ if(!collider.mesh)return near;
  // Door hosts need their authored opening rather than a solid bounding box.
  let triangles=cameraMeshTriangles3.get(collider.mesh);
  if(!triangles){triangles=[];const mesh=collider.mesh;for(let i=0;i<mesh.i.length;i+=3)triangles.push([0,1,2].map(k=>Array.from(mesh.p.slice(mesh.i[i+k]*3,mesh.i[i+k]*3+3))));cameraMeshTriangles3.set(mesh,triangles);}
@@ -69,22 +72,65 @@ function cameraStructureDistance3(b,origin,dir,limit){
  return limit;
 }
 function cameraObstructionDistance3(center,yaw,pitch,distance){
+ cameraFollow3.terrainBlocked=false;
  if(cameraEditor3||typeof walkSurfaceHeight!=='function')return distance;
  const sn=Math.sin(yaw),c=Math.cos(yaw),st=Math.sin(pitch),ct=Math.cos(pitch);
- const nearby=typeof buildings==='undefined'?[]:buildings.filter(b=>b.x<center[0]+distance+2&&b.x+b.w>center[0]-distance-2&&b.y<center[2]+distance+2&&b.y+b.h>center[2]-distance-2);
+ const source=typeof buildings==='undefined'?null:buildings,revision=typeof worldObjectRevision==='number'?worldObjectRevision:0,bounds=cameraBuildingBounds3;
+ if(bounds.scene!==currentScene||bounds.revision!==revision||bounds.source!==source||bounds.rows.length!==source?.length){bounds.scene=currentScene;bounds.revision=revision;bounds.source=source;bounds.rows=(source||[]).map(b=>{const x=b.x,z=b.y;return {b,x,z,right:x+b.w,bottom:z+b.h};});}
+ const nearby=bounds.rows.filter(b=>b.x<center[0]+distance+2&&b.right>center[0]-distance-2&&b.z<center[2]+distance+2&&b.bottom>center[2]-distance-2).map(b=>b.b);
+ const minimum=Math.min(distance,3.2);
  for(const b of nearby)distance=cameraStructureDistance3(b,center,[sn*ct,st,c*ct],distance);
+ // Close walls use a local render cutaway instead of pushing the eye into
+ // the character. Terrain still owns the hard limit below this distance.
+ distance=Math.max(minimum,distance);
  for(let t=.35;t<=distance+.001;t+=.18){
   const x=center[0]+sn*ct*t,y=center[1]+st*t,z=center[2]+c*ct*t,bridge=typeof bridgeAt==='function'&&bridgeAt(x,z),ground=bridge?bridgeDeckHeight(bridge,x,z):typeof landHeight==='function'?landHeight(x,z):walkSurfaceHeight(x,z);
-  if(y<ground+.32)return Math.max(.35,t-.30);
+  if(y<ground+.32){cameraFollow3.terrainBlocked=true;return Math.max(.35,t-.30);}
   for(const b of nearby){
+   if(b._generatedBuildingEntity)continue;
    const cut=typeof buildingRoofHidden==='function'&&buildingRoofHidden(b),height=cut?3.02:Math.max(3.02,(b.visualHeight||0),typeof rebuiltHouseFloorCount==='function'?rebuiltHouseFloorCount(b)*3.02+2:5);
    if(y>ground+height+.20)continue;
    const wall=typeof inBuilding==='function'&&inBuilding(b,Math.floor(x),Math.floor(z));
    const roof=!cut&&x>b.x&&x<b.x+b.w&&z>b.y&&z<b.y+b.h&&y>ground+3.02;
-   if(wall||roof)return Math.max(.35,t-.30);
+   if(wall||roof)return Math.max(minimum,t-.30);
   }
  }
  return distance;
+}
+function cameraMeshHidden3(mesh,model){
+ if(cameraEditor3||!mesh.bounds||!model||!globalThis.VeldrenAssembly)return false;
+ const pose=cameraPose3(),A=globalThis.VeldrenAssembly,revision=String(currentScene)+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(globalThis.VeldrenTerrainEdits?.revision||0);
+ let cached=cameraOccluderCache3.get(model),changed=!cached||cached.revision!==revision||cached.bounds!==mesh.bounds;
+ for(let i=0;!changed&&i<model.length;i++)changed=cached.source[i]!==model[i];
+ if(changed){
+  const row=model.length===16?[model[0],model[4],model[8],model[12],model[1],model[5],model[9],model[13],model[2],model[6],model[10],model[14]]:Array.from(model);
+  if(model.length!==16&&typeof landHeight==='function')row[7]+=landHeight(row[3],row[11]);
+  let inverse;try{inverse=A.inverse(row);}catch{return false;}
+  const lo=mesh.bounds[0],hi=mesh.bounds[1],center=A.point(row,lo.map((v,i)=>(v+hi[i])/2)),radius=lo.reduce((sum,v,i)=>sum+(hi[i]-v)*.5*Math.hypot(row[i],row[4+i],row[8+i]),0);
+  cached={source:Array.from(model),revision,bounds:mesh.bounds,inverse,center,radius};cameraOccluderCache3.set(model,cached);
+ }
+ if(cached.pose===pose)return cached.hidden;
+ const dx=pose.center[0]-pose.eye[0],dy=pose.center[1]-pose.eye[1],dz=pose.center[2]-pose.eye[2],cx=cached.center[0]-pose.eye[0],cy=cached.center[1]-pose.eye[1],cz=cached.center[2]-pose.eye[2],t=Math.max(0,Math.min(1,(cx*dx+cy*dy+cz*dz)/(dx*dx+dy*dy+dz*dz)));
+ cached.pose=pose;if((cx-dx*t)**2+(cy-dy*t)**2+(cz-dz*t)**2>(cached.radius+.8)**2){cached.hidden=false;return false;}
+ const c=Math.cos(pose.yaw),sn=Math.sin(pose.yaw),targets=[pose.center,[pose.center[0],pose.center[1]+.7,pose.center[2]],[pose.center[0]+c*.3,pose.center[1],pose.center[2]-sn*.3],[pose.center[0]-c*.3,pose.center[1],pose.center[2]+sn*.3]];
+ // Only the geometry between the eye and the character is cut away. The
+ // far side of a room remains visible, and this never edits its Scene node.
+ cached.hidden=targets.some(target=>{const delta=target.map((v,i)=>v-pose.eye[i]),length=Math.hypot(...delta),hit=cameraModuleRay3(cached,pose.eye,delta.map(v=>v/length),length-.45);return hit!==null&&hit<length-.45;});
+ return cached.hidden;
+}
+function cameraVisibleFaces3(faces,model=null){
+ if(cameraEditor3||!globalThis.VeldrenAssembly)return faces;
+ const pose=cameraPose3(),revision=String(currentScene)+':'+(typeof landSurfaceRevision==='number'?landSurfaceRevision:0)+':'+(globalThis.VeldrenTerrainEdits?.revision||0);
+ let list=cameraFaceLists3.get(faces);if(list?.pose===pose&&list.model===model)return list.visible;
+ const visible=[];
+ for(const face of faces){
+  let cached=cameraFaceCache3.get(face),changed=!cached||cached.revision!==revision||cached.model!==model;
+  for(let i=0;!changed&&model&&i<model.length;i++)changed=cached.source[i]!==model[i];
+  if(changed){const points=face.points.map(p=>{const q=model?globalThis.VeldrenAssembly.point(model,p):Array.from(p);q[1]+=typeof landHeight==='function'?landHeight(q[0],q[2]):0;return q;}),bounds=[0,1].map(k=>[0,1,2].map(i=>Math[k?'max':'min'](...points.map(p=>p[i]))));cached={model,source:model&&Array.from(model),revision,bounds,matrix:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]};cameraFaceCache3.set(face,cached);}
+  if(cached.bounds[1][1]<=pose.ground+.2||!cameraMeshHidden3(cached,cached.matrix))visible.push(face);
+ }
+ const value=visible.length===faces.length?faces:list?.visible.length===visible.length&&visible.every((face,i)=>list.visible[i]===face)?list.visible:visible;
+ cameraFaceLists3.set(faces,{pose,model,visible:value});return value;
 }
 function cameraPose3(h=screen.h){
  const x=px+.5,z=py+.5,ground=typeof projectionCameraHeight3==='function'?projectionCameraHeight3(x,z):typeof walkSurfaceHeight==='function'?walkSurfaceHeight(x,z):0,target=cameraEditor3?0:1.12;
@@ -95,7 +141,7 @@ function cameraPose3(h=screen.h){
  const now=typeof performance==='undefined'?0:performance.now(),dt=Math.max(0,Math.min(.1,(now-cameraFollow3.stamp)/1000)),jump=!cameraFollow3.pose||cameraFollow3.scene!==currentScene||Math.hypot(x-cameraFollow3.x,z-cameraFollow3.z)>8;
  const response=cameraEditor3||jump||now===0?1:1-Math.exp(-dt*18),angle=Math.atan2(Math.sin(view3d.yaw-cameraFollow3.yaw),Math.cos(view3d.yaw-cameraFollow3.yaw));
  const yaw=cameraFollow3.yaw+angle*response,pitch=cameraFollow3.pitch+(view3d.tilt-cameraFollow3.pitch)*response,center=[x,ground+target,z],wanted=cameraFocalLength3(h)/cameraZoom3(),safe=cameraObstructionDistance3(center,yaw,pitch,wanted);
- const distance=jump||cameraEditor3||now===0||safe<cameraFollow3.distance?safe:cameraFollow3.distance+(safe-cameraFollow3.distance)*(1-Math.exp(-dt*8));
+ const distance=jump||cameraEditor3||now===0||cameraFollow3.terrainBlocked&&safe<cameraFollow3.distance?safe:cameraFollow3.distance+(safe-cameraFollow3.distance)*(1-Math.exp(-dt*(safe<cameraFollow3.distance?12:8)));
  const eye=[x+Math.sin(yaw)*Math.cos(pitch)*distance,center[1]+Math.sin(pitch)*distance,z+Math.cos(yaw)*Math.cos(pitch)*distance],near=.12,half=near*Math.tan(cameraFov3*Math.PI/360),aspect=(screen.w||900)/(h||500);
  const pose={eye,center,yaw,pitch,distance,ground,target,anchor:cameraAnchor3,fov:cameraFov3,near,far:!cameraEditor3&&currentScene==='overworld'&&Math.hypot(x-55,z-61)<90?192:320,left:-half*aspect,right:half*aspect,bottom:-2*(1-cameraAnchor3)*half,top:2*cameraAnchor3*half,width:screen.w,height:h};
  Object.assign(input,{frame:meshFrame3,scene:currentScene,x,z,ground,yaw:view3d.yaw,tilt:view3d.tilt,zoom:view3d.zoom,height:h,width:screen.w,worldRevision,surfaceRevision,terrainRevision});
@@ -121,12 +167,12 @@ function cachedMesh3(key,kind,build,variant=''){
  const tag=kind+':'+meshDetail3+':'+(key._cutaway?'ground-floor':'closed')+':'+variant;
  let variants=staticMeshes3.get(key);if(!variants?.has(tag)&&(typeof performance==='undefined'?0:performance.now())>=staticMeshDeadline3)return deferredStaticMesh3;
  if(!variants){variants=new Map();staticMeshes3.set(key,variants);}
- if(!variants.has(tag)){const faces=[],instances=[],collector={face:(points,color,normals,material,colors,uvs)=>faces.push({points,color,normals,material,colors,uvs})};collector.indexed=(mesh,matrix)=>instances.push({mesh,matrix});const height=build(collector);variants.set(tag,{faces,instances,height,kind});}return variants.get(tag);
+ if(!variants.has(tag)){const faces=[],instances=[],collector={face:(points,color,normals,material,colors,uvs)=>faces.push({points,color,normals,material,colors,uvs})};collector.indexed=(mesh,matrix)=>instances.push({mesh,matrix});const height=build(collector);variants.set(tag,{faces,instances,height,kind,cameraOcclusion:kind==='building'||kind==='prop'&&!key.characterSprite&&!['enemy','boss','man','dummy','elder','shop','questgiver','villager','inn'].includes(key.type)});}return variants.get(tag);
 }
 function trimStaticMeshes3(){for(const [kind,queue]of Object.entries(staticMeshQueues3)){const limit=kind==='building'?80:480;for(const [key,used]of queue){if(queue.size<=limit)break;if(used===meshFrame3)continue;queue.delete(key);const discarded=staticMeshes3.get(key);if(realmGPU&&discarded)for(const mesh of discarded.values()){const entry=realmGPU.cache.get(mesh);if(entry){realmGPU.gl.deleteBuffer(entry.buffer);realmGPU.cache.delete(mesh);}}staticMeshes3.delete(key);}}}
-function emitMesh3(r,cached){if(r.cached)return r.cached(cached);if(cached.kind==='assembly'){for(const i of cached.instances||[])briarEmit(r,i.mesh,affineMultiply(cached.model,i.matrix));for(const f of cached.faces)r.face(f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}for(const instance of cached.instances||[])briarEmit(r,instance.mesh,instance.matrix);for(const f of cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
+function emitMesh3(r,cached){if(r.cached)return r.cached(cached);const occlusion=r.cameraCutaways&&(cached.kind==='assembly'||cached.cameraOcclusion);if(cached.kind==='assembly'){for(const i of cached.instances||[]){const m=affineMultiply(cached.model,i.matrix);if(!occlusion||!cameraMeshHidden3(i.mesh,m))briarEmit(r,i.mesh,m);}for(const f of occlusion?cameraVisibleFaces3(cached.faces,cached.model):cached.faces)r.face(f.points.map(p=>briarPoint(p,0,cached.model)),f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}for(const instance of cached.instances||[])if(!occlusion||!cameraMeshHidden3(instance.mesh,instance.matrix))briarEmit(r,instance.mesh,instance.matrix);for(const f of occlusion?cameraVisibleFaces3(cached.faces):cached.faces)r.face(f.points,f.color,f.normals,f.material,f.colors,f.uvs);return cached.height;}
 function painter3(g,project){const faces=[],fast=project===project3,sw=screen.w,sh=screen.h;
- return {face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
+ return {cameraCutaways:fast,face(points,color){const p=[];let depth=0,minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;
  for(const a of points){const q=project(...a);p.push(q);depth+=q.depth;minx=Math.min(minx,q.x);maxx=Math.max(maxx,q.x);miny=Math.min(miny,q.y);maxy=Math.max(maxy,q.y);}
  if(fast&&(maxx<0||minx>sw||maxy<0||miny>sh))return;
  faces.push({p,color,d:depth/p.length});},flush(){faces.sort((a,b)=>a.d-b.d);for(const {p,color}of faces){g.fillStyle=color;g.beginPath();g.moveTo(p[0].x,p[0].y);for(let i=1;i<p.length;i++)g.lineTo(p[i].x,p[i].y);g.closePath();g.fill();}}};}
@@ -369,9 +415,10 @@ function buildingPick3(cached,sx,sy){
  const {eye,dir}=cameraRay3(sx,sy),pose=cameraPose3();let nearest=pose.far,found=false;
  const triangle=(a,b,c)=>{const t=cameraTriangleDistance3(a,b,c,eye,dir,nearest);if(t!==null&&t>=pose.near&&t<nearest){nearest=t;found=true;}};
  const transform=p=>cached.kind==='assembly'?briarPoint(p,0,cached.model):Array.from(p);
- for(const face of cached.faces){const points=face.points.map(p=>{const q=transform(p);q[1]+=landHeight(q[0],q[2]);return q;});for(let i=1;i+1<points.length;i++)triangle(points[0],points[i],points[i+1]);}
+ for(const face of cameraVisibleFaces3(cached.faces,cached.kind==='assembly'?cached.model:null)){const points=face.points.map(p=>{const q=transform(p);q[1]+=landHeight(q[0],q[2]);return q;});for(let i=1;i+1<points.length;i++)triangle(points[0],points[i],points[i+1]);}
  for(const instance of cached.instances||[]){
   const mesh=pickReadableMesh3(instance.mesh),matrix=cached.kind==='assembly'?affineMultiply(cached.model,instance.matrix):instance.matrix,ground=landHeight(matrix[3],matrix[11]);
+  if(cameraMeshHidden3(instance.mesh,matrix))continue;
   const bounds=pickCorners3(mesh.bounds||pickBounds3(mesh.p)).map(p=>{const q=briarPoint(p,0,matrix);q[1]+=ground;return q;}),lo=[0,1,2].map(a=>Math.min(...bounds.map(p=>p[a]))),hi=[0,1,2].map(a=>Math.max(...bounds.map(p=>p[a])));let near=pose.near,far=nearest;
   for(let a=0;a<3;a++){if(Math.abs(dir[a])<1e-9){if(eye[a]<lo[a]||eye[a]>hi[a])far=-1;}else{const first=(lo[a]-eye[a])/dir[a],last=(hi[a]-eye[a])/dir[a];near=Math.max(near,Math.min(first,last));far=Math.min(far,Math.max(first,last));}}
   if(near>far)continue;
@@ -412,7 +459,7 @@ function pickGeometry3(geometry,x,y,pad=4){
  let best=null;const accept=hit=>{if(hit&&(!best||hit.distance===0&&best.distance>0||hit.distance===0&&best.distance===0&&hit.depth>best.depth||hit.distance>0&&best.distance>0&&hit.distance<best.distance))best=hit;};
  const outside=points=>x<Math.min(...points.map(p=>p.x))-pad||x>Math.max(...points.map(p=>p.x))+pad||y<Math.min(...points.map(p=>p.y))-pad||y>Math.max(...points.map(p=>p.y))+pad;
  const visit=command=>{
-  if(command.cached){for(const f of command.cached.faces)visit({points:f.points});for(const i of command.cached.instances||[])visit({mesh:i.mesh,m:i.matrix});return;}
+  if(command.cached){const cached=command.cached,assembly=cached.kind==='assembly',occlusion=assembly||cached.cameraOcclusion;for(const f of occlusion?cameraVisibleFaces3(cached.faces,assembly?cached.model:null):cached.faces)visit({points:assembly?f.points.map(p=>briarPoint(p,0,cached.model)):f.points});for(const i of cached.instances||[]){const m=assembly?affineMultiply(cached.model,i.matrix):i.matrix;if(!occlusion||!cameraMeshHidden3(i.mesh,m))visit({mesh:i.mesh,m});}return;}
   if(command.points){const p=command.points.map(v=>project3(...v));if(outside(p))return;for(let i=1;i<p.length-1;i++)accept(pickTriangle3(x,y,p[0],p[i],p[i+1],pad));return;}
   const {m,palette}=command,mesh=pickReadableMesh3(command.mesh),bounds=palette?pickSkinBounds3(mesh,palette):pickBounds3(mesh.p);if(outside(pickCorners3(bounds).map(p=>pickMeshProject3(p,m))))return;
   const projected=new Array(mesh.p.length/3),point=id=>{if(projected[id])return projected[id];let p=[mesh.p[id*3],mesh.p[id*3+1],mesh.p[id*3+2]];if(palette){const v=[0,0,0];for(let n=0;n<4;n++){const weight=mesh.w[id*4+n];if(!weight)continue;const bone=mesh.j[id*4+n]*12;for(let a=0;a<3;a++){const row=bone+a*4;v[a]+=weight*(palette[row]*p[0]+palette[row+1]*p[1]+palette[row+2]*p[2]+palette[row+3]);}}p=v;}return projected[id]=pickMeshProject3(p,m);};
