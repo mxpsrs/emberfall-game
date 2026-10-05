@@ -2,7 +2,7 @@
 
 Minimum capacity requirement from Raymond: at least 39 simultaneous playtesters. A local integration pass is not live hosting capacity certification. Preserve that distinction in reports and require sustained authenticated hosted evidence before calling this requirement satisfied.
 
-Playtest freeze requested 2026-09-14: read `docs/PLAYTEST-HANDOFF-2026-09-14.md` and the committed QA report before resuming. After the final audit/handoff, pause development until Saturday 2026-09-19 (America/Chicago), unless Raymond explicitly requests an earlier change. Preserve unresolved test failures honestly; a client-only walkthrough is not proof of shared-server end-to-end correctness.
+Playtest freeze requested 2026-09-14: read `docs/archive/playtest-handoff-2026-09-14.md` and the committed QA report before resuming. After the final audit/handoff, pause development until Saturday 2026-09-19 (America/Chicago), unless Raymond explicitly requests an earlier change. Preserve unresolved test failures honestly; a client-only walkthrough is not proof of shared-server end-to-end correctness.
 
 Latest owner clarification, 2026-09-15: **“If you’re publishing changes that don’t affect the game’s server, why would you shut it down?”** This narrows the earlier blanket maintenance rule. Website-only search metadata, sitemap/crawl settings, landing-page text and other compatible changes that do not affect the live game server must publish while the game stays open. Do not disconnect players merely because a new site version is being published.
 

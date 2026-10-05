@@ -1,4 +1,4 @@
-import '../dist/building-assembly.js';
+import '../client/building-assembly.js';
 const TERRAIN_MATERIALS=new Set(['grass','dirt','stone','paving']);
 export function sanitizeTerrain(input){
  if(!input||typeof input!=='object'||Array.isArray(input)||input.version!==1||!input.scenes||typeof input.scenes!=='object'||Array.isArray(input.scenes))throw Error('Invalid terrain layer');

@@ -42,7 +42,7 @@
     "initialRun": {
       "exitCode": 1,
       "seconds": 84.76,
-      "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n4341 !== 4339\n\n    at main (/workspace/scratch/2222b76c39ba/briar-haven/tests/world-buildings-scene.cjs:34:73) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 4341,\n  expected: 4339,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n"
+      "output": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n4341 !== 4339\n\n    at main (/workspace/scratch/2222b76c39ba/briar-haven/tests/world/world-buildings-scene.cjs:34:73) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 4341,\n  expected: 4339,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n"
     },
     "note": "Expected resource count updated to 4341; each identity, geometry, catalog and save/unload/load assertion remains active."
   },

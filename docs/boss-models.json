@@ -2,7 +2,7 @@
   "status": "Rejected procedural draft; do not publish as the accepted boss roster",
   "superseded_by": "boss-candidates/roster.json",
   "note": "Historical geometry measurements for the rejected draft, retained to identify the existing unpublished asset. The owner requested finished third-party models with existing rigs and animations, and retired every draft name except Runeforged Colossus. These IDs are not approvals or replacement selections.",
-  "source": "Existing Quaternius assets documented in dist/assets/realms/CREDITS.txt and BESTIARY-LICENSE.txt",
+  "source": "Existing Quaternius assets documented in client/assets/realms/CREDITS.txt and BESTIARY-LICENSE.txt",
   "models": {
     "boss_king": {
       "base_rig": "skeleton",

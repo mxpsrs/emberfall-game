@@ -1,7 +1,7 @@
 import {authenticatedPlayer} from './auth.js';
 import {MAX_WORLD_BYTES,decodeWorld,saveWorld} from './editor-storage.js';
 import {sanitize,sanitizeTerrain,confirmation} from './editor-document.js';
-import '../dist/world-scene-format.js';
+import '../client/world-scene-format.js';
 import seed from '../editor-data/world-scene.json' with {type:'json'};
 const {fromLegacy,toLegacy,mergeLegacy,validateWorld}=globalThis.VeldrenSceneFormat;
 

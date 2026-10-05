@@ -4,73 +4,73 @@
   "failed": 0,
   "results": [
     {
-      "test": "tests/phase2-progression.cjs",
+      "test": "tests/gameplay/phase2-progression.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: mining, quest order/range, inscription, animated crossings, lake proof, altar item use, one-time reward, independent skill/save recovery, full bag, support spells and material traits.\n"
     },
     {
-      "test": "tests/phase2-shared.mjs",
+      "test": "tests/server/phase2-shared.mjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: competing cutters, stump/regrowth/late arrival, tree generations, omitted unchanged snapshots, receipt retries, one-time quest rewards, altar proximity/unlock, and server-approved Fairy crossings.\n"
     },
     {
-      "test": "tests/shared-two-clients.mjs",
+      "test": "tests/server/shared-two-clients.mjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: authenticated two-client server-owned roaming, combat, melee damage, player/enemy actions and private death loot.\nPASS: observer renders ranged, magic, chopping, mining, fishing, cooking, firemaking and red/green teleport departure/arrival poses, correct colors and expiry from authenticated action packets.\nPASS: moved doors open on first click, allow real entry, and close from inside for both clients.\nPASS: trading after a completed attack and escape; active combat remains protected.\nPASS: server keeps fighting while attacker simulation is stalled; browser NPC pose injection is ignored.\nPASS: urgent combat reaches an open observer stream independently of stalled world polling; delayed animation plays once; unauthenticated/cross-origin writes rejected.\n"
     },
     {
-      "test": "tests/home-teleport.mjs",
+      "test": "tests/server/home-teleport.mjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: free purple Home Teleport; server authorization, combat/tutorial guards, real client round trip, safe Briarhaven destination, unchanged XP/items, observer color, and recorded arrival.\n"
     },
     {
-      "test": "tests/identity-server.mjs",
+      "test": "tests/server/identity-server.mjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: authoritative passive triggers, zero damage, slowing, two-Spirit limit, durable receipt retries, client healing and bond XP exactly once across save/reload.\n"
     },
     {
-      "test": "tests/apprenticeship.cjs",
+      "test": "tests/gameplay/apprenticeship.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: summoned-hero opening, paged NPC conversations and all 38 isolated-island lessons through real routes, item targeting, workbench recipes, combat, banking and spirits; one-way mainland departure, completed-save recovery, walking and running.\n"
     },
     {
-      "test": "tests/tutorial-guidance.cjs",
+      "test": "tests/gameplay/tutorial-guidance.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: automatic and queued supplies, no rune menu, idempotent kits, sequential UI targets, recipe guard and highlight cleanup.\n"
     },
     {
-      "test": "tests/tutorial-world-fit.cjs",
+      "test": "tests/gameplay/tutorial-world-fit.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: graded smith/ore yard, nine stable ore silhouettes and veins, fitted staff geometry on both rigs through idle, casting, walking and running.\n"
     },
     {
-      "test": "tests/world-cohesion.cjs",
+      "test": "tests/world/world-cohesion.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: 233 house interiors, both wall-mounted ranges, furniture spacing, dry buildings, real forest clusters, clear streets, winding water, every bridge, all 13 connected settlements, all room entrances, whole-world bounds and labels.\n"
     },
     {
-      "test": "tests/quarry-maps.cjs",
+      "test": "tests/world/quarry-maps.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "PASS: five named quarries, proper Mining icons, all surface ore access and skill requirements, atlas/list/filter/minimap visibility, scaled touch selection and safe travel with tutorial gating.\n"
     },
     {
-      "test": "tests/prop-placement.cjs",
+      "test": "tests/gameplay/prop-placement.cjs",
       "passed": true,
       "evidence": "final recovered-source recheck",
       "output": "{\"counts\":{\"rooms\":654,\"bookcases\":720,\"ranges\":5,\"lamps\":497,\"chairs\":370,\"stalls\":30,\"services\":42},\"errors\":[]}\nPASS: global semantic placement, wall facing, furniture groups, bridge/door/stair clearance, all services and retained quest records.\n"
     },
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "evidence": "final rebuilt artifact",
       "output": "Five licensed music tracks, 24 CC0 foley clips, music range responses, all 96 startup resources, JavaScript/JSON parsing, fresh cache URLs and conditional requests passed."

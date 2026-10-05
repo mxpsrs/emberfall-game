@@ -6,7 +6,7 @@
   "total": 1,
   "results": [
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

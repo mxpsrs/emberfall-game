@@ -6,7 +6,7 @@
   "total": 9,
   "results": [
     {
-      "test": "tests/combat-skills.cjs",
+      "test": "tests/gameplay/combat-skills.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -14,7 +14,7 @@
       "output": "PASS: seven independent skills, legacy migration, all-skill combat level, training modes, accuracy/damage/defense effects, bone burial, miss/overkill XP and captured projectile training.\n"
     },
     {
-      "test": "tests/cooking-lesson.cjs",
+      "test": "tests/gameplay/cooking-lesson.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -22,7 +22,7 @@
       "output": "PASS: Nell’s nearby tree, fire and shrimp lesson; ingredient-preserving walk-to-cook/cancel, indoor kitchen/range and distinct modelled baking ingredients.\n"
     },
     {
-      "test": "tests/creature-animation.cjs",
+      "test": "tests/gameplay/creature-animation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -30,15 +30,15 @@
       "output": "PASS: distinct imported creatures, weighted animation, complete attacks, death/loot/respawn, movement heading and bounded pose cache.\n"
     },
     {
-      "test": "tests/encounters.cjs",
+      "test": "tests/gameplay/encounters.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 20,
-      "output": "Starter rat / 1,000 real simulated fights: median 67.50s; p95 110.70s; mean HP lost 2.10; deaths 0. Zero hits are preserved.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: median starter rat stays near the requested 15 seconds; measured 67.50s\n    at evalmachine.<anonymous>:160:1\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/78f9dab719ee/veldren/tests/encounters.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "Starter rat / 1,000 real simulated fights: median 67.50s; p95 110.70s; mean HP lost 2.10; deaths 0. Zero hits are preserved.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: median starter rat stays near the requested 15 seconds; measured 67.50s\n    at evalmachine.<anonymous>:160:1\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/78f9dab719ee/veldren/tests/gameplay/encounters.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/kingdoms.cjs",
+      "test": "tests/world/kingdoms.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -46,7 +46,7 @@
       "output": "{\"pass\":true,\"kingdoms\":3,\"cities\":6,\"villages\":7,\"settlementBuildings\":189,\"castles\":3,\"interiors\":181,\"validatedModelFaces\":5313650}\n"
     },
     {
-      "test": "tests/modular-equipment.cjs",
+      "test": "tests/gameplay/modular-equipment.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -54,7 +54,7 @@
       "output": "PASS: independent armor, requirements, acquisition, protected worn items, tool belt persistence, both rigs through movement/combat, real geometry and civilian body.\n"
     },
     {
-      "test": "tests/skill-progression.cjs",
+      "test": "tests/gameplay/skill-progression.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -62,7 +62,7 @@
       "output": "PASS: XP thresholds, migration, gear and tools, combat training, gathering/respawn, recipe costs, cooking/food, fletching, permanent tutor workplaces, and tutorial-only guidance.\n"
     },
     {
-      "test": "tests/view3d.cjs",
+      "test": "tests/gameplay/view3d.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -70,7 +70,7 @@
       "output": "PASS: 45 camera angle/zoom combinations, screen-to-world inversion, 3D draw, interior scenes, all weapon meshes and articulated equipment.\n"
     },
     {
-      "test": "tests/world-art.cjs",
+      "test": "tests/world/world-art.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

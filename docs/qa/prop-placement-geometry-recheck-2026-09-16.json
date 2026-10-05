@@ -6,7 +6,7 @@
   "total": 4,
   "results": [
     {
-      "test": "tests/civilization-world.cjs",
+      "test": "tests/world/civilization-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -14,7 +14,7 @@
       "output": "{\"settlements\":13,\"castles\":3,\"floors\":96,\"quarries\":5,\"quests\":\"reachable\",\"goblins\":15}\n"
     },
     {
-      "test": "tests/prop-placement.cjs",
+      "test": "tests/gameplay/prop-placement.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -22,7 +22,7 @@
       "output": "{\"counts\":{\"rooms\":654,\"bookcases\":720,\"ranges\":5,\"lamps\":497,\"chairs\":370,\"stalls\":30,\"services\":42},\"errors\":[]}\nPASS: global semantic placement, wall facing, furniture groups, bridge/door/stair clearance, all services and retained quest records.\n"
     },
     {
-      "test": "tests/world-cohesion.cjs",
+      "test": "tests/world/world-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -30,7 +30,7 @@
       "output": "PASS: 233 house interiors, both wall-mounted ranges, furniture spacing, dry buildings, real forest clusters, clear streets, winding water, every bridge, all 13 connected settlements, all room entrances, whole-world bounds and labels.\n"
     },
     {
-      "test": "tests/world-lighting.cjs",
+      "test": "tests/world/world-lighting.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

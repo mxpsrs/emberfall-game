@@ -7,7 +7,7 @@ PASS: native C++ actor simulation and visibility for 256 actors
 PASS: hierarchy, affine reparent, deep transforms, components, deterministic round-trip, editor isolation and real legacy world migration.
 ./build/desktop-scene-test
 PASS: C++ actor simulation updates scene-owned player, NPC and monster representations; renderer state reflects scene transforms.
-node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
+node tests/core_wasm_test.mjs ../client/native/veldren-core.wasm
 (node:20) ExperimentalWarning: WASI is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 PASS: standalone C++ WebAssembly ABI executes without generated gameplay JavaScript

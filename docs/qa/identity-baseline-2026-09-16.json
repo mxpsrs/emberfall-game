@@ -6,55 +6,55 @@
   "total": 10,
   "results": [
     {
-      "test": "tests/dungeon-journeys.cjs",
+      "test": "tests/gameplay/dungeon-journeys.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 25,
-      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: 'story_mine' == 'overworld'\n    at evalmachine.<anonymous>:16:64\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/dungeon-journeys.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'story_mine',\n  expected: 'overworld',\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: 'story_mine' == 'overworld'\n    at evalmachine.<anonymous>:16:64\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/dungeon-journeys.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'story_mine',\n  expected: 'overworld',\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/game.cjs",
+      "test": "tests/gameplay/game.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 0.5,
-      "output": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: cinder\n    at evalmachine.<anonymous>:2:72\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/game.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: cinder\n    at evalmachine.<anonymous>:2:72\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/game.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/indoor-light-boundaries.cjs",
+      "test": "tests/world/indoor-light-boundaries.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 0.1,
-      "output": "evalmachine.<anonymous>:24\nfunction worldNightFactor(){const hours=worldHour();return hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0;}\n                                        ^\n\nReferenceError: worldHour is not defined\n    at worldNightFactor (evalmachine.<anonymous>:24:41)\n    at worldLightSources (evalmachine.<anonymous>:26:46)\n    at evalmachine.<anonymous>:2:64\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/indoor-light-boundaries.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n\nNode.js v24.19.0\n"
+      "output": "evalmachine.<anonymous>:24\nfunction worldNightFactor(){const hours=worldHour();return hours>=20||hours<5?1:hours>=17?(hours-17)/3:hours<8?(8-hours)/3:0;}\n                                        ^\n\nReferenceError: worldHour is not defined\n    at worldNightFactor (evalmachine.<anonymous>:24:41)\n    at worldLightSources (evalmachine.<anonymous>:26:46)\n    at evalmachine.<anonymous>:2:64\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/world/indoor-light-boundaries.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/item-use.cjs",
+      "test": "tests/gameplay/item-use.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 5.4,
-      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: one intentional use cooks one item\n\n3 !== 2\n\n    at evalmachine.<anonymous>:6:79\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/item-use.cjs:10:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 3,\n  expected: 2,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: one intentional use cooks one item\n\n3 !== 2\n\n    at evalmachine.<anonymous>:6:79\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/item-use.cjs:10:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 3,\n  expected: 2,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/player-options.cjs",
+      "test": "tests/gameplay/player-options.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 0.5,
-      "output": "evalmachine.<anonymous>:3\nconst box=hitboxes.find(b=>b.o?.type==='player');assert(box,'rendered peer has a world interaction target');canvas.getBoundingClientRect=()=>({left:0,top:0});const event={clientX:box.x+box.w/2,clientY:box.y+box.h/2};const picked=worldPick(event);assert.equal(picked.objects[0].username,'bobby');let requested=null;requestPlayerTrade=username=>requested=username;const options=worldOptionsFor(picked.objects[0]);options.find(([name])=>name==='Trade with Bob')[1]();assert.equal(requested,'bobby');assert.deepEqual(options.map(([name])=>name),['Trade with Bob','Follow Bob']);peer.x=s.x+5;onlinePeers.set(peer.id,peer);let routed=false;const realRoute=route;route=()=>{routed=true;return [[s.x+1,s.y]]};followPlayer(peer.id);assert(routed);assert.equal(followedPlayerId,peer.id);walkTo(s.x,s.y);assert.equal(followedPlayerId,null,'walking elsewhere cancels follow');route=realRoute;\n                                                                                                                                                                                                                                                                                     ^\n\nTypeError: Cannot read properties of undefined (reading 'username')\n    at evalmachine.<anonymous>:3:278\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at eval (eval at <anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/player-options.cjs:3:1), <anonymous>:16:4)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/player-options.cjs:3:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n\nNode.js v24.19.0\n"
+      "output": "evalmachine.<anonymous>:3\nconst box=hitboxes.find(b=>b.o?.type==='player');assert(box,'rendered peer has a world interaction target');canvas.getBoundingClientRect=()=>({left:0,top:0});const event={clientX:box.x+box.w/2,clientY:box.y+box.h/2};const picked=worldPick(event);assert.equal(picked.objects[0].username,'bobby');let requested=null;requestPlayerTrade=username=>requested=username;const options=worldOptionsFor(picked.objects[0]);options.find(([name])=>name==='Trade with Bob')[1]();assert.equal(requested,'bobby');assert.deepEqual(options.map(([name])=>name),['Trade with Bob','Follow Bob']);peer.x=s.x+5;onlinePeers.set(peer.id,peer);let routed=false;const realRoute=route;route=()=>{routed=true;return [[s.x+1,s.y]]};followPlayer(peer.id);assert(routed);assert.equal(followedPlayerId,peer.id);walkTo(s.x,s.y);assert.equal(followedPlayerId,null,'walking elsewhere cancels follow');route=realRoute;\n                                                                                                                                                                                                                                                                                     ^\n\nTypeError: Cannot read properties of undefined (reading 'username')\n    at evalmachine.<anonymous>:3:278\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at eval (eval at <anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/player-options.cjs:3:1), <anonymous>:16:4)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/player-options.cjs:3:1)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/quest-celebration.cjs",
+      "test": "tests/gameplay/quest-celebration.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 23.8,
-      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be loosely deep-equal:\n\n[\n  200,\n  300,\n  400\n]\n\nshould loosely deep-equal\n\n[\n  210,\n  280,\n  350\n]\n    at evalmachine.<anonymous>:21:8\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/quest-celebration.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [ 200, 300, 400 ],\n  expected: [ 210, 280, 350 ],\n  operator: 'deepEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be loosely deep-equal:\n\n[\n  200,\n  300,\n  400\n]\n\nshould loosely deep-equal\n\n[\n  210,\n  280,\n  350\n]\n    at evalmachine.<anonymous>:21:8\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/quest-celebration.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: [ 200, 300, 400 ],\n  expected: [ 210, 280, 350 ],\n  operator: 'deepEqual',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/quest-cohesion.cjs",
+      "test": "tests/gameplay/quest-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -62,7 +62,7 @@
       "output": "PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.\n"
     },
     {
-      "test": "tests/shore-lanterns.cjs",
+      "test": "tests/world/shore-lanterns.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -70,20 +70,20 @@
       "output": "PASS: all 10 fish spots in appropriate water with reachable banks; 621 visible outdoor lamps, all settlements/castles, clear doors and fixed light sources.\n"
     },
     {
-      "test": "tests/skill-progression.cjs",
+      "test": "tests/gameplay/skill-progression.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 12,
-      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: 36 == 12\n    at evalmachine.<anonymous>:9:115\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at eval (eval at <anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/skill-progression.cjs:4:1), <anonymous>:17:4)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/skill-progression.cjs:26:11)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 36,\n  expected: 12,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: 36 == 12\n    at evalmachine.<anonymous>:9:115\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at eval (eval at <anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/skill-progression.cjs:4:1), <anonymous>:17:4)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/skill-progression.cjs:26:11)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 36,\n  expected: 12,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     },
     {
-      "test": "tests/walk-in-controls.cjs",
+      "test": "tests/gameplay/walk-in-controls.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 7.7,
-      "output": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: Briarhaven Bank actual floor click walks inside\n    at evalmachine.<anonymous>:29:123\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/walk-in-controls.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
+      "output": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: Briarhaven Bank actual floor click walks inside\n    at evalmachine.<anonymous>:29:123\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/99bc11ac4278/veldren-baseline/tests/gameplay/walk-in-controls.cjs:2:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n"
     }
   ]
 }

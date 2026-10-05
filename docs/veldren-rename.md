@@ -12,4 +12,4 @@ Some old identifiers are intentionally retained:
 
 This commit does not deploy the website or build a new signed APK. Production publishing must follow AGENTS.md's maintenance procedure.
 
-Verification: run `node tests/branding.cjs` and `node tests/account-flow.cjs`.
+Verification: run `node tests/gameplay/branding.cjs` and `node tests/server/account-flow.cjs`.

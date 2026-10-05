@@ -1,0 +1,10 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let now=1000;const timers=[],streams=[];
+const ctx={currentScene:'overworld',sharedActivityScene:'overworld',sharedActivityStream:null,sharedActivityRetry:0,sharedActivityBackoff:250,sharedLive:()=>true,document:{hidden:false},Date:{now:()=>now},sharedVisualActions:new Map(),sharedEffectIds:new Map(),applySharedEffects:()=>{},setTimeout:(fn,ms)=>timers.push({fn,ms}),EventSource:class {constructor(){streams.push(this);}close(){this.closed=true;}}};
+const source=fs.readFileSync('client/shared-world.js','utf8');vm.createContext(ctx);vm.runInContext(source.slice(source.indexOf('function ensureSharedActivityStream(){'),source.indexOf('function sharedLocalHazard(')),ctx);
+ctx.ensureSharedActivityStream();const first=streams.at(-1);first.onerror();assert.equal(timers.at(-1).ms,250);
+ctx.ensureSharedActivityStream();assert.equal(streams.length,1,'backoff prevents an immediate new connection');
+now+=250;ctx.ensureSharedActivityStream();const second=streams.at(-1);first.onerror();assert.equal(ctx.sharedActivityStream,second,'stale errors cannot clear the replacement connection');
+second.onerror();assert.equal(timers.at(-1).ms,500);now+=500;ctx.ensureSharedActivityStream();streams.at(-1).onmessage({data:JSON.stringify({scene:'overworld',serverTime:now,effects:[]})});assert.equal(ctx.sharedActivityBackoff,250,'successful stream resets backoff');
+for(let i=0;i<10;i++){streams.at(-1).onerror();const delay=timers.at(-1).ms;assert(delay<=8000);now+=delay;ctx.ensureSharedActivityStream();}assert.equal(timers.at(-1).ms,8000);
+console.log('PASS: failed streams back off, successful delivery resets delay, and stale errors cannot spawn overlapping connections.');

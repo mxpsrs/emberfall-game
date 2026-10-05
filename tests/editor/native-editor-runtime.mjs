@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const wasm=fs.readFileSync(new URL('../../client/native/veldren-core.wasm',import.meta.url)),listeners={},calls=[];
+const window={VELDREN_CONTEXT:'editor',addEventListener(type,fn){listeners[type]=fn;}};
+const context={window,TextEncoder,TextDecoder,DataView,realmAssetURL:p=>p,fetch:async()=>({ok:true,arrayBuffer:async()=>wasm.buffer.slice(wasm.byteOffset,wasm.byteOffset+wasm.byteLength)}),WebAssembly:{async instantiate(...args){const result=await WebAssembly.instantiate(...args);const exports=Object.fromEntries(Object.entries(result.instance.exports).map(([key,value])=>[key,typeof value==='function'?(...args)=>{calls.push(key);return value(...args);}:value]));return {instance:{exports}};}}};
+vm.createContext(context);vm.runInContext(fs.readFileSync(new URL('../../client/native-runtime.js',import.meta.url),'utf8'),context);
+const engine=await window.realmNativeReady;
+assert.equal(engine.context,'editor');assert.equal(engine.abi,19);
+for(const key of ['stepActors','animateActors','pathfind','rules','transactions','stateMachines','resources'])assert.equal(engine[key],undefined,'editor cannot access '+key);
+const n=engine.scenes,I={position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]};
+assert(n.upsert('cave',{id:'lamp',name:'Editor lamp',parent:null,active:true,transform:I,components:{Light:{type:'point',offset:[0,2,0],radius:10}},metadata:{}}));
+assert(n.setWorldTransform('cave','lamp',{...I,position:[5,3,7]}));const light=n.lights('cave')[0];assert.equal(light.x,5);assert.equal(light.y,5);assert.equal(light.z,7);
+const saved=n.serialize();assert(n.remove('cave','lamp'));assert(n.load(saved));assert.equal(n.entity('cave','lamp').name,'Editor lamp');
+assert(!calls.some(name=>/veldren_(actors?_.*|world_step.*|world_seed|.*combat.*|.*inventory.*)/.test(name)),'scene edits and light queries never invoke gameplay exports');
+assert.equal(calls.filter(name=>name==='veldren_world_create').length,1);listeners.pagehide();engine.destroy();assert.equal(calls.filter(name=>name==='veldren_world_destroy').length,1,'editor core is released exactly once');
+console.log('PASS: editor loads the real native core, exposes only Scene capabilities, resolves edited lights, persists the graph and never invokes gameplay exports.');

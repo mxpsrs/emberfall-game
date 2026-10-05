@@ -1,48 +1,48 @@
 [
   {
-    "test": "tests/environment-architecture.cjs",
+    "test": "tests/world/environment-architecture.cjs",
     "exit": 0,
     "seconds": 27.99,
     "tail": "PASS: 20 buildings \u00d7 10 roof cycles; all 3 castles keep walls and towers during orbit/entry; wall coverage matches collision; local state and assisted mobile picking.\n"
   },
   {
-    "test": "tests/world-art.cjs",
+    "test": "tests/world/world-art.cjs",
     "exit": 0,
     "seconds": 52.14,
     "tail": "PASS: all 188 settlement buildings, three authored peoples, 13 towns at maximum zoom-out, regional castles, cross-kingdom bridges, six interiors, bounded model cache, source geometry, GPU reuse and context-loss fallback.\n"
   },
   {
-    "test": "tests/civilization-world.cjs",
+    "test": "tests/world/civilization-world.cjs",
     "exit": 0,
     "seconds": 29.92,
     "tail": "{\"settlements\":13,\"castles\":3,\"floors\":96,\"quarries\":5,\"quests\":\"reachable\",\"goblins\":15}\n"
   },
   {
-    "test": "tests/walk-in-controls.cjs",
+    "test": "tests/gameplay/walk-in-controls.cjs",
     "exit": 0,
     "seconds": 7.75,
     "tail": "PASS: manual doors, interior-only roof removal, unobstructed floor clicks, entry/exit and tutor routes for bank, school and kitchen; all four orientations and cancellation.\n"
   },
   {
-    "test": "tests/desktop-rendering.cjs",
+    "test": "tests/gameplay/desktop-rendering.cjs",
     "exit": 0,
     "seconds": 8.16,
     "tail": "PASS: desktop and 4K rendering budgets, mesh reuse, direct presentation, terrain picking, hidden interiors, persistent doors, and model lighting.\n"
   },
   {
-    "test": "tests/camera-input.cjs",
+    "test": "tests/rendering/camera-input.cjs",
     "exit": 0,
     "seconds": 0.06,
     "tail": "PASS: tap versus swipe, one-finger orbit/tilt, pinch zoom, hold/cancel, held arrow keys, input focus, modal guards and unconsumed WASD.\n"
   },
   {
-    "test": "tests/terrain-travel.cjs",
+    "test": "tests/world/terrain-travel.cjs",
     "exit": 0,
     "seconds": 4.39,
     "tail": "PASS: run across bridge, matching deck picking, continuous banks, level room floors, coastline and terrain road coverage.\n"
   },
   {
-    "test": "tests/world-style.cjs",
+    "test": "tests/world/world-style.cjs",
     "exit": 0,
     "seconds": 4.39,
     "tail": "PASS: organic surface normals, imported mesh bounds/materials, elven woodland and all three castle entrances and exits.\n"

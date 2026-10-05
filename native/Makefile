@@ -48,23 +48,23 @@ build/veldren-desktop: src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/sc
 	$(CXX) $(CXXFLAGS) src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp src/desktop.cpp src/desktop_renderer.cpp src/desktop_main.cpp -ldl -lz -o $@
 
 asset-test: build/asset-test
-	./build/asset-test ../dist/assets/asset-registry.json
+	./build/asset-test ../client/assets/asset-registry.json
 
 build/asset-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp include/veldren/assets.h include/veldren/asset_profile.h include/veldren/scene.h
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/assets_test.cpp -o $@
 
-wasm: ../dist/native/veldren-core.wasm
+wasm: ../client/native/veldren-core.wasm
 
 wasm-test: wasm
-	node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
+	node tests/core_wasm_test.mjs ../client/native/veldren-core.wasm
 
-../dist/native/veldren-core.wasm: src/world_streaming.cpp src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp include/veldren/world_streaming.h include/veldren/world_residency.h include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
-	mkdir -p ../dist/native
+../client/native/veldren-core.wasm: src/world_streaming.cpp src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp include/veldren/world_streaming.h include/veldren/world_residency.h include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h src/asset_import.cpp src/asset_texture.cpp include/veldren/asset_texture.h third_party/stb_image.h Makefile src/asset_render.cpp src/asset_material.cpp src/assets.cpp include/veldren/asset_profile.h include/veldren/assets.h src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp include/veldren/core.h include/veldren/scene.h
+	mkdir -p ../client/native
 	$(EMXX) $(CXXFLAGS) -fwasm-exceptions src/world_streaming.cpp src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/world_performance_bridge.cpp src/asset_texture.cpp src/asset_import.cpp src/asset_render.cpp src/asset_material.cpp src/assets.cpp src/core.cpp src/editor.cpp src/editor_prefabs.cpp src/scene.cpp --no-entry -sSTANDALONE_WASM=1 -sALLOW_MEMORY_GROWTH=1 -sEXPORTED_FUNCTIONS='$(EXPORTS)' -o $@
 
 clean:
-	rm -rf build ../dist/native/veldren-core.wasm
+	rm -rf build ../client/native/veldren-core.wasm
 
 build/asset-import: src/asset_import.cpp src/scene.cpp tools/import_asset.cpp include/veldren/asset_import.h include/veldren/scene.h
 	mkdir -p build
@@ -72,11 +72,11 @@ build/asset-import: src/asset_import.cpp src/scene.cpp tools/import_asset.cpp in
 
 .PHONY: asset-import-test
 asset-import-test: build/asset-import
-	python3 ../tests/asset-import.py
+	python3 ../tests/assets/asset-import.py
 
 .PHONY: texture-test
 texture-test: build/texture-test
-	./build/texture-test ../dist/assets/canonical/images
+	./build/texture-test ../client/assets/canonical/images
 
 build/texture-test: src/asset_texture.cpp src/asset_import.cpp src/scene.cpp tests/texture_test.cpp include/veldren/asset_texture.h third_party/stb_image.h
 	mkdir -p build
@@ -88,11 +88,11 @@ build/texture-variants: src/asset_texture.cpp src/asset_import.cpp src/scene.cpp
 
 .PHONY: material-test
 material-test: build/material-test
-	./build/material-test ../dist/assets/asset-registry.json
+	./build/material-test ../client/assets/asset-registry.json
 
 .PHONY: render-asset-test
 render-asset-test: build/render-asset-test
-	./build/render-asset-test ../dist/assets
+	./build/render-asset-test ../client/assets
 
 build/render-asset-test: src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/assets.cpp src/scene.cpp tests/render_asset_test.cpp include/veldren/asset_render.h
 	mkdir -p build
@@ -115,7 +115,7 @@ build/editor-test: src/scene.cpp src/editor.cpp src/editor_prefabs.cpp tests/edi
 
 .PHONY: world-performance-test
 world-performance-test: build/world-performance-test
-	./build/world-performance-test ../dist/assets/asset-registry.json
+	./build/world-performance-test ../client/assets/asset-registry.json
 
 build/world-performance-test: src/world_residency.cpp src/world_lod.cpp src/world_visibility.cpp src/world_performance.cpp src/scene.cpp src/assets.cpp src/asset_render.cpp src/asset_material.cpp src/asset_import.cpp src/editor.cpp src/editor_prefabs.cpp tests/world_performance_test.cpp include/veldren/world_residency.h include/veldren/world_lod.h include/veldren/world_visibility.h include/veldren/world_performance.h include/veldren/scene.h include/veldren/assets.h
 	mkdir -p build

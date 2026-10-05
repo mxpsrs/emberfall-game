@@ -1,28 +1,28 @@
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
-execFileSync('python3',['scripts/build-building-modules.py'],{stdio:'inherit'});
-execFileSync('python3',['scripts/build-texture-variants.py'],{stdio:'inherit'});
-execFileSync('python3',['scripts/build-canonical-lods.py'],{stdio:'inherit'});
-execFileSync('python3',['scripts/build-scenery-lods.py'],{stdio:'inherit'});
-execFileSync('python3',['scripts/build-asset-registry.py'],{stdio:'inherit'});
-execFileSync(process.execPath,['scripts/export-shared-world.cjs'],{stdio:'inherit'});
-execFileSync(process.execPath,['scripts/cook-native-world.cjs'],{stdio:'inherit'});
-execFileSync(process.execPath,['scripts/cook-terrain-cells.cjs'],{stdio:'inherit'});
-execFileSync(process.execPath,['scripts/export-trade-items.cjs'],{stdio:'inherit'});
+execFileSync('python3',['scripts/assets/build-building-modules.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/assets/build-texture-variants.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/assets/build-canonical-lods.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/assets/build-scenery-lods.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/assets/build-asset-registry.py'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/world/export-shared-world.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/world/cook-native-world.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/world/cook-terrain-cells.cjs'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/world/export-trade-items.cjs'],{stdio:'inherit'});
 import {build,transform} from 'esbuild';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {compressAsset,compressedCatalogPlugin,sourceOnlyAssets,encodeAsset,decodeAsset,acceptsBrotli} from './asset-delivery.mjs';
-import {packAssetStreams,createStreamExpander} from './model-stream-storage.mjs';
+import {compressAsset,compressedCatalogPlugin,sourceOnlyAssets,encodeAsset,decodeAsset,acceptsBrotli} from './build/asset-delivery.mjs';
+import {packAssetStreams,createStreamExpander} from './build/model-stream-storage.mjs';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
-import './build-icons.mjs';
+import './assets/build-icons.mjs';
 // Preserve the authored browser game and bundle its assets with the API Worker.
 const assets={};
 const delivery=JSON.parse(fs.readFileSync('art/derived/browser-assets.json','utf8'));
 const browserImages=new Set(delivery.canonicalImages);
-const modelPaths=new Set(JSON.parse(fs.readFileSync('dist/assets/canonical/registry.json','utf8')).records.filter(r=>r.type==='model').map(r=>r.derivedPath));
-for(const file of browserImages)if(!fs.existsSync(path.join('dist',file)))throw new Error('Missing browser texture: '+file);
-async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p),relative=path.relative('dist',p).split(path.sep).join('/');if(sourceOnlyAssets.has(relative)||relative.endsWith('.mat')||relative.startsWith('assets/canonical/models/')&&!modelPaths.has(relative))continue;if((relative.startsWith('assets/canonical/images/')||relative.startsWith('assets/canonical/variants/'))&&!browserImages.has(relative))continue;let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.txt':'text/plain; charset=utf-8','.wasm':'application/wasm','.filamat':'application/octet-stream','.ktx2':'image/ktx2','.glb':'model/gltf-binary','.gltf':'model/gltf+json'})[ext]||'application/octet-stream';
+const modelPaths=new Set(JSON.parse(fs.readFileSync('client/assets/canonical/registry.json','utf8')).records.filter(r=>r.type==='model').map(r=>r.derivedPath));
+for(const file of browserImages)if(!fs.existsSync(path.join('client',file)))throw new Error('Missing browser texture: '+file);
+async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){if(['server','.openai'].includes(ent.name))continue;const p=path.join(dir,ent.name);if(ent.isDirectory())await walk(p);else{const ext=path.extname(p),relative=path.relative('client',p).split(path.sep).join('/');if(sourceOnlyAssets.has(relative)||relative.endsWith('.mat')||relative.startsWith('assets/canonical/models/')&&!modelPaths.has(relative))continue;if((relative.startsWith('assets/canonical/images/')||relative.startsWith('assets/canonical/variants/'))&&!browserImages.has(relative))continue;let bytes=fs.readFileSync(p),mime=({'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.json':'application/json','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.txt':'text/plain; charset=utf-8','.wasm':'application/wasm','.filamat':'application/octet-stream','.ktx2':'image/ktx2','.glb':'model/gltf-binary','.gltf':'model/gltf+json'})[ext]||'application/octet-stream';
  // Filament's createTextureFromPng consumes the file bytes directly. Keep
  // this renderer atlas as PNG instead of applying the site's WebP delivery
  // optimization, which otherwise makes the first authenticated draw throw.
@@ -31,7 +31,7 @@ async function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true
  // comments/whitespace. Vendor loaders keep their authored currentScript URLs.
  if(ext==='.js'&&bytes.length<=512*1024&&!relative.startsWith('vendor/')&&!relative.startsWith('assets/'))bytes=Buffer.from((await transform(bytes.toString('utf8'),{minifyWhitespace:true,minifySyntax:true,legalComments:'none',target:'es2022'})).code);
  assets['/'+relative]={data:bytes.toString('base64'),mime,length:bytes.length};}}}
-await walk('dist');
+await walk('client');
 // Versioned assets can be reused across visits. The document and account API
 // remain fresh, so new publications never depend on clearing a phone's cache.
 const versions={};

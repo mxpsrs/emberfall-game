@@ -32,11 +32,11 @@ Hover and keyboard focus show labels; skills include XP and spells list their
 requirements. Holding menu/skill icons on a phone shows help without activating
 them. Item and player/world long presses keep their existing context menus.
 
-Validation: `tests/icon-system.cjs`, `tests/icon-tooltips.cjs`,
-`tests/item-models.cjs`, `tests/equipment-interface.cjs`, `tests/classic-ui.cjs`,
-`tests/map-services.cjs`, `tests/item-input.cjs`, `tests/ranged-overhaul.cjs`,
-`tests/trading.cjs`, `tests/social-ui.cjs`, `tests/play-display.cjs` and the built
-asset checks. `node scripts/review-icons.cjs OUTPUT_DIRECTORY` produces offline
+Validation: `tests/gameplay/icon-system.cjs`, `tests/gameplay/icon-tooltips.cjs`,
+`tests/gameplay/item-models.cjs`, `tests/gameplay/equipment-interface.cjs`, `tests/gameplay/classic-ui.cjs`,
+`tests/world/map-services.cjs`, `tests/gameplay/item-input.cjs`, `tests/gameplay/ranged-overhaul.cjs`,
+`tests/gameplay/trading.cjs`, `tests/gameplay/social-ui.cjs`, `tests/gameplay/play-display.cjs` and the built
+asset checks. `node scripts/qa/review-icons.cjs OUTPUT_DIRECTORY` produces offline
 contact sheets for the interface, all spells and every item at 48 and 25 pixels.
 
 Publishing still follows the two-minute maintenance procedure in `AGENTS.md`.

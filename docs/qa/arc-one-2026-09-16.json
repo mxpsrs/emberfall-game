@@ -5,87 +5,87 @@
   "failed": 0,
   "tests": [
     {
-      "test": "tests/main-story.cjs",
+      "test": "tests/gameplay/main-story.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/mountain-quest.cjs",
+      "test": "tests/gameplay/mountain-quest.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-journal-selection.cjs",
+      "test": "tests/gameplay/quest-journal-selection.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/arc-rewards.cjs",
+      "test": "tests/gameplay/arc-rewards.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/arc-boss-loot.mjs",
+      "test": "tests/server/arc-boss-loot.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-cohesion.cjs",
+      "test": "tests/gameplay/quest-cohesion.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-navigation.cjs",
+      "test": "tests/gameplay/quest-navigation.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/item-models.cjs",
+      "test": "tests/gameplay/item-models.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/equipment-fit.cjs",
+      "test": "tests/gameplay/equipment-fit.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-fight-phases.mjs",
+      "test": "tests/server/quest-fight-phases.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/story-server.mjs",
+      "test": "tests/server/story-server.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-shared-credit.mjs",
+      "test": "tests/server/quest-shared-credit.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/quest-observer-animation.mjs",
+      "test": "tests/server/quest-observer-animation.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/encounters.cjs",
+      "test": "tests/gameplay/encounters.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/dungeon-server.mjs",
+      "test": "tests/server/dungeon-server.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/shared-world.mjs",
+      "test": "tests/server/shared-world.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/social-maintenance.mjs",
+      "test": "tests/server/social-maintenance.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/server-npc-simulation.mjs",
+      "test": "tests/server/server-npc-simulation.mjs",
       "result": "passed"
     },
     {
-      "test": "tests/equipment-interface.cjs",
+      "test": "tests/gameplay/equipment-interface.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/equipped-ammunition.cjs",
+      "test": "tests/gameplay/equipped-ammunition.cjs",
       "result": "passed"
     },
     {
-      "test": "tests/classic-ui.cjs",
+      "test": "tests/gameplay/classic-ui.cjs",
       "result": "passed"
     }
   ],

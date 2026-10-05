@@ -6,7 +6,7 @@
   "total": 7,
   "results": [
     {
-      "test": "tests/civilization-server.mjs",
+      "test": "tests/server/civilization-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -14,7 +14,7 @@
       "output": "PASS: two authenticated accounts share castle, inn and watchtower floors, preserve saves, and share quarry harvesting/depletion/respawns with idempotent rewards.\n"
     },
     {
-      "test": "tests/civilization-world.cjs",
+      "test": "tests/world/civilization-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -22,7 +22,7 @@
       "output": "{\"settlements\":13,\"castles\":3,\"floors\":96,\"quarries\":5,\"quests\":\"reachable\",\"goblins\":15}\n"
     },
     {
-      "test": "tests/local-storage.mjs",
+      "test": "tests/server/local-storage.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -30,7 +30,7 @@
       "output": "PASS: automatic JSON files, two-player chat/trade, rollback, persistent login/saves, JSON recovery, and full local file deletion requiring fresh registration.\n"
     },
     {
-      "test": "tests/map-services.cjs",
+      "test": "tests/world/map-services.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -38,7 +38,7 @@
       "output": "PASS: real shop stock, all nine tutors, bank deduplication, indoor entrance/exit routes, scaled marker taps, square boundaries and every shared icon.\n"
     },
     {
-      "test": "tests/quarry-maps.cjs",
+      "test": "tests/world/quarry-maps.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -46,7 +46,7 @@
       "output": "PASS: five named quarries, proper Mining icons, all surface ore access and skill requirements, atlas/list/filter/minimap visibility, scaled touch selection and safe travel with tutorial gating.\n"
     },
     {
-      "test": "tests/world-atlas.cjs",
+      "test": "tests/world/world-atlas.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -54,7 +54,7 @@
       "output": "PASS: production canvas labels every kingdom and settlement, whole-world opening from tutorial, scene preservation, fit-world button, zoom buttons, pinch, wheel and settlement selection.\n"
     },
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

@@ -13,14 +13,14 @@ Production startup requires this module. Actor interpolation, species speeds, sl
 effects, crowded-world update budgeting, world-grid A* pathfinding, gameplay random
 rolls, skill progression, combat levels, accuracy, maximum hits, combat XP, gathering,
 cooking, firemaking, smelting probabilities, inventory capacity, crafting-capacity
-checks, bank transfer quantities, and coin debits run here. `dist/native-runtime.js`
+checks, bank transfer quantities, and coin debits run here. `client/native-runtime.js`
 loads the module and marshals browser state across the ABI.
 
 Browser builds are verified with Emscripten 4.0.10. The browser and asset worker
 provide the standalone module's WASI environment hooks and `fd_close` returning
 BADF (no filesystem descriptors). ABI 19 also offers reusable packed visible-draw
 and LOD transfer buffers and bounded native Scene payload paging. See
-`docs/RENDERER-ENGINE-UPGRADE-2026-09-30.md` for formats, preservation guarantees,
+`docs/archive/renderer-engine-upgrade-2026-09-30.md` for formats, preservation guarantees,
 test results and performance limits. `make world-payload-test` verifies paging
 with serialization, editor history, collision and hierarchy queries.
 
@@ -66,7 +66,7 @@ render and animation batches directly. Its Ultra profile targets 2560×1440 with
 
 The renderer loads the full 4096 world atlas, full 1024 ground atlas, and native
 OBJ conversions of all eleven local Kenney nature GLBs. These conversions preserve
-the source geometry and are reproducible with `scripts/build-native-models.sh`;
+the source geometry and are reproducible with `scripts/assets/build-native-models.sh`;
 there is no JavaScript asset or runtime step.
 
 The desktop window is directly playable with WASD movement and mouse camera

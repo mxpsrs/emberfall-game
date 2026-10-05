@@ -51,25 +51,25 @@ set_tests_properties(desktop-headless PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRE
 
 add_executable(veldren-asset-test tests/assets_test.cpp)
 target_link_libraries(veldren-asset-test PRIVATE veldren_core)
-add_test(NAME asset-registry COMMAND veldren-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/asset-registry.json)
+add_test(NAME asset-registry COMMAND veldren-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../client/assets/asset-registry.json)
 
 add_executable(veldren-asset-import tools/import_asset.cpp)
 target_link_libraries(veldren-asset-import PRIVATE veldren_core)
 
 add_executable(veldren-texture-test tests/texture_test.cpp)
 target_link_libraries(veldren-texture-test PRIVATE veldren_core)
-add_test(NAME asset-textures COMMAND veldren-texture-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/canonical/images)
+add_test(NAME asset-textures COMMAND veldren-texture-test ${CMAKE_CURRENT_SOURCE_DIR}/../client/assets/canonical/images)
 
 add_executable(veldren-texture-variants tools/texture_variants.cpp)
 target_link_libraries(veldren-texture-variants PRIVATE veldren_core ZLIB::ZLIB)
 
 add_executable(veldren-material-test tests/material_test.cpp)
 target_link_libraries(veldren-material-test PRIVATE veldren_core)
-add_test(NAME asset-materials COMMAND veldren-material-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/asset-registry.json)
+add_test(NAME asset-materials COMMAND veldren-material-test ${CMAKE_CURRENT_SOURCE_DIR}/../client/assets/asset-registry.json)
 
 add_executable(veldren-render-asset-test tests/render_asset_test.cpp)
 target_link_libraries(veldren-render-asset-test PRIVATE veldren_core)
-add_test(NAME asset-render COMMAND veldren-render-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets)
+add_test(NAME asset-render COMMAND veldren-render-asset-test ${CMAKE_CURRENT_SOURCE_DIR}/../client/assets)
 
 add_executable(veldren-asset-validate tools/validate_assets.cpp)
 target_link_libraries(veldren-asset-validate PRIVATE veldren_core)
@@ -80,7 +80,7 @@ add_test(NAME editor-commands COMMAND veldren-editor-test)
 
 add_executable(veldren-world-performance-test tests/world_performance_test.cpp)
 target_link_libraries(veldren-world-performance-test PRIVATE veldren_core)
-add_test(NAME world-performance COMMAND veldren-world-performance-test ${CMAKE_CURRENT_SOURCE_DIR}/../dist/assets/asset-registry.json)
+add_test(NAME world-performance COMMAND veldren-world-performance-test ${CMAKE_CURRENT_SOURCE_DIR}/../client/assets/asset-registry.json)
 add_executable(veldren-world-visibility-test tests/world_visibility_test.cpp)
 target_link_libraries(veldren-world-visibility-test PRIVATE veldren_core)
 add_test(NAME world-visibility COMMAND veldren-world-visibility-test)

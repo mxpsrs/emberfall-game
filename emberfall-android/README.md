@@ -8,7 +8,7 @@ The 0.1.1 branding update is built and signed with the existing app key. Install
 
 Open `Veldren-Beta-0.1.1.apk` on Android 8.0 or newer. If Android asks, allow your chosen browser or file manager to install this APK. Sign in with your existing Veldren username and password. Browser login cookies do not automatically transfer into the app.
 
-Internet is required. The game and its assets load from https://emberfall-realms.rayfgarrison97.chatgpt.site/. Website updates appear in the app when it reloads; the APK does not include a separate offline game or change server capacity. This is a beta APK for direct installation, not a Google Play release.
+Internet is required. The game and its assets load from https://playveldren.com/. Website updates appear in the app when it reloads; the APK does not include a separate offline game or change server capacity. This is a beta APK for direct installation, not a Google Play release.
 
 The app requests only INTERNET. It uses a hardware-accelerated WebView, persistent first-party cookies, landscape orientation, immersive display, cutout and keyboard handling, and native retry controls. External web links open in the browser. It grants no JavaScript-to-native bridge and disables local file access, cleartext traffic and mixed content.
 

@@ -1,10 +1,10 @@
 {"counts":{"rooms":488,"bookcases":566,"ranges":5,"lamps":450,"chairs":198,"stalls":24,"services":42},"errors":["civic banker has an accessible customer counter","civic banker has an accessible customer counter","civic banker has an accessible customer counter","civic banker has an accessible customer counter","civic banker has an accessible customer counter","civic banker has an accessible customer counter"]}
-/workspace/scratch/2222b76c39ba/briar-haven/tests/prop-placement.cjs:65
+/workspace/scratch/2222b76c39ba/briar-haven/tests/gameplay/prop-placement.cjs:65
 if(ctx.propAudit.errors.length)throw new Error(ctx.propAudit.errors.length+' prop placement regressions; see .qa/prop-placement-audit.json');
                                ^
 
 Error: 6 prop placement regressions; see .qa/prop-placement-audit.json
-    at Object.<anonymous> (/workspace/scratch/2222b76c39ba/briar-haven/tests/prop-placement.cjs:65:38)
+    at Object.<anonymous> (/workspace/scratch/2222b76c39ba/briar-haven/tests/gameplay/prop-placement.cjs:65:38)
     at Module._compile (node:internal/modules/cjs/loader:1872:14)
     at Object..js (node:internal/modules/cjs/loader:2003:10)
     at Module.load (node:internal/modules/cjs/loader:1594:32)

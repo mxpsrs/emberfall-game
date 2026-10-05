@@ -18,7 +18,7 @@
   "streamFrames": 4797,
   "savedCharacters": 39,
   "runtimeCommit": "f9e8421fcde8d922f559436e2f9f04d36dc4ee6d",
-  "command": "node tests/shared-39-clients.mjs",
+  "command": "node tests/server/shared-39-clients.mjs",
   "limitations": [
     "30-second local in-memory SQLite workload; no D1 network or provider queue emulation",
     "39 handler clients, not 39 browser renderers or physical devices",

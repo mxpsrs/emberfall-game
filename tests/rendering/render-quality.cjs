@@ -1,0 +1,25 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {ctx,gl}=require('../../scripts/qa/benchmark-desktop.cjs');
+const source=fs.readFileSync('client/renderer-gl.js','utf8');
+vm.runInContext(`{
+ window.devicePixelRatio=3;window.matchMedia=()=>({matches:true});screen={w:844,h:390};const native=realmPixelScale();
+ for(let i=0;i<600;i++)observeRenderTime(i%2?80:16);
+ assert.equal(realmResolution.scale,1);assert.equal(realmPixelScale(),native);assert.equal(native,1.5);
+ const range=40,light=[-.55,1,.38],l=Math.hypot(...light);for(let i=0;i<3;i++)light[i]/=l;
+ const right=[light[2],0,-light[0]],rl=Math.hypot(...right);for(let i=0;i<3;i++)right[i]/=rl;
+ const up=[light[1]*right[2],light[2]*right[0]-light[0]*right[2],-light[1]*right[0]],dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+ const origin=realmShadowCamera(55.5,61.5,range),step=range*2/1024;
+ assert(Math.abs(dot(origin,right)/step-Math.round(dot(origin,right)/step))<1e-9);
+ assert(Math.abs(dot(origin,up)/step-Math.round(dot(origin,up)/step))<1e-9);
+ const next=realmShadowCamera(55.500001,61.500001,range);
+ assert(Math.abs(dot(next,right)-dot(origin,right))<1e-8);assert(Math.abs(dot(next,up)-dot(origin,up))<1e-8);
+}`,ctx);
+const calls=[],priorExtension=gl.getExtension,priorParameter=gl.getParameter;
+gl.getExtension=name=>name==='OES_standard_derivatives'||name==='EXT_shader_texture_lod'?{}:name==='EXT_texture_filter_anisotropic'?{TEXTURE_MAX_ANISOTROPY_EXT:77,MAX_TEXTURE_MAX_ANISOTROPY_EXT:78}:priorExtension(name);
+gl.getParameter=p=>p===78?16:priorParameter(p);gl.generateMipmap=()=>calls.push('mips');gl.texParameterf=(target,p,v)=>calls.push(['anisotropy',v]);gl.pixelStorei=(p,v)=>calls.push(['premultiply',v]);gl.shaderSource=(shader,text)=>{if(text.includes('atlasSample')){assert(text.includes('#define REALM_TEXTURE_GRAD'));assert(text.includes('texture2DGradEXT'));}};
+vm.runInContext('createRealmGPU()',ctx);
+assert(calls.includes('mips'));assert(calls.some(v=>v[0]==='anisotropy'&&v[1]===8));assert.deepEqual(calls.filter(v=>v[0]==='premultiply'),[['premultiply',true],['premultiply',false]]);
+assert(!/taa|motionblur/i.test(source));
+ctx.performance={now:()=>0};vm.runInContext(fs.readFileSync('client/render-diagnostics.js','utf8'),ctx);
+vm.runInContext(`{const r=summarizeRenderFrames(Array.from({length:100},(_,i)=>({ms:i===99?50:1000/60})));assert.equal(r.frames,100);assert(Math.abs(r.onePercentLowFPS-20)<.001);assert.equal(r.spikesOver33ms,1);assert.equal(r.maxFrameMs,50);assert(r.averageFPS>58&&r.averageFPS<59);}`,ctx);
+console.log('PASS: bounded backing resolution stays stable, shadows snap in light space, mipmaps and bounded anisotropy use alpha-correct filtering, and real frame statistics preserve spikes.');

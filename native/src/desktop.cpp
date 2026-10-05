@@ -34,8 +34,8 @@ VeldrenDesktopQuality veldren_desktop_quality(bool ultra) {
 
 VeldrenDesktopAssets veldren_desktop_assets(const std::filesystem::path& root) {
   VeldrenDesktopAssets assets{root,
-                              root / "dist/assets/realms/atlas.png",
-                              root / "dist/assets/realms/ground-surfaces.png",
+                              root / "client/assets/realms/atlas.png",
+                              root / "client/assets/realms/ground-surfaces.png",
                               {}};
   for (const char* relative : kFoliageModels) assets.foliage_models.push_back(root / relative);
   return assets;

@@ -6,7 +6,7 @@
   "total": 4,
   "results": [
     {
-      "test": "tests/classic-ui.cjs",
+      "test": "tests/gameplay/classic-ui.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -14,7 +14,7 @@
       "output": "PASS: persistent browser fullscreen on desktop/mobile with an independent settings control; ten wired tabs with Tool belt excluded, preserved controls across panel switches, chat alongside friends, early notices, chat-only toast messages, and live map vitals.\n"
     },
     {
-      "test": "tests/combat-experience.cjs",
+      "test": "tests/gameplay/combat-experience.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -22,7 +22,7 @@
       "output": "PASS: every combat/training style, damage scaling per hit, visible XP, misses, overkill, dead targets, spirit single/area damage, repeat prevention and spell base XP.\n"
     },
     {
-      "test": "tests/identity-server.mjs",
+      "test": "tests/server/identity-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -30,7 +30,7 @@
       "output": "PASS: authoritative passive triggers, zero damage, slowing, two-Spirit limit, durable receipt retries, client healing and bond XP exactly once across save/reload.\n"
     },
     {
-      "test": "tests/identity-spirits.mjs",
+      "test": "tests/server/identity-spirits.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

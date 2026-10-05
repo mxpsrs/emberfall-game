@@ -1,29 +1,29 @@
-tests/camera-pose.cjs
+tests/rendering/camera-pose.cjs
 PASS: shared camera projection/picking over 36 poses, smooth manual orbit, wall/terrain obstruction, recovery, and independent editor camera.
-tests/camera-input.cjs
+tests/rendering/camera-input.cjs
 PASS: saved zoom migration, slider/wheel/pinch/button limits, reset readout, touch and mouse pitch, pinch zoom, hold/cancel, held arrow keys, input focus, modal guards and unconsumed WASD.
-tests/camera-height-cache.cjs
+tests/rendering/camera-height-cache.cjs
 Camera-ground projection reuse and edit invalidation verified
-tests/editor-camera.cjs
+tests/editor/editor-camera.cjs
 PASS: editor camera/navigation, scene-authored transforms and subtree editing, verified v2 save/revert, and temporary placement lifecycle.
-tests/terrain-camera-coverage.cjs
+tests/world/terrain-camera-coverage.cjs
 PASS: perspective near-plane terrain coverage, bounded local retention, remote culling and moved-camera coverage.
-tests/terrain-frame-budget.cjs
+tests/world/terrain-frame-budget.cjs
 PASS: fallback deadline, shared coarse/fine budget, eventual completion, unchanged buffer reuse and atomic terrain replacement.
-tests/terrain-native-invalidation.cjs
+tests/world/terrain-native-invalidation.cjs
 PASS: cooked Scene hydration, actor movement and door state retain baked terrain; real building and prop edits still invalidate.
-tests/briar-haven-overhaul.cjs
+tests/world/briar-haven-overhaul.cjs
 Native building projection benchmark: {"frames":120,"buildings":12,"totalMs":119.5}
 PASS: twelve distinct Briar Haven plans, accepted entity IDs, complete real floor coverage, linked door/collision, structural cutaways, supported loft furniture, stair travel, Relic access and native serialization.
-tests/building-entry.cjs
+tests/world/building-entry.cjs
 PASS: roof and wall hit regions at four camera angles, Enter routes to the correct door, distant mesh detail reduction.
-tests/door-access.cjs
+tests/world/door-access.cjs
 PASS: 234 building doors open, enter, exit and close; all three castle gate models and click targets are present; entry never moves the camera.
-tests/world-building-components.cjs
+tests/world/world-building-components.cjs
 PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.
-tests/editor-commands.mjs
+tests/editor/editor-commands.mjs
 PASS: actual WASM command execution, native asset references, grouped drag, mixed undo/redo, incremental notifications, dirty state, rollback and exact reload.
-tests/editor-building-history.cjs
+tests/editor/editor-building-history.cjs
 PASS: building component dimensions, module edits, door portal hierarchy, duplicate/delete and native persistence.
-tests/editor-terrain-integration.cjs
+tests/editor/editor-terrain-integration.cjs
 PASS: actual-WASM terrain and entity shared undo/redo, saved boundary, no-op, transaction rollback, validation, blocked preview rollback and persistence

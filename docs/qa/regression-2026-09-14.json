@@ -9,7 +9,7 @@
   "total": 96,
   "results": [
     {
-      "test": "tests/account-flow.cjs",
+      "test": "tests/server/account-flow.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -18,7 +18,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/action-animations.cjs",
+      "test": "tests/gameplay/action-animations.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -27,7 +27,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/action-timing.cjs",
+      "test": "tests/gameplay/action-timing.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -36,7 +36,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/android-rendering.cjs",
+      "test": "tests/gameplay/android-rendering.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -45,7 +45,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/appearance.cjs",
+      "test": "tests/gameplay/appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -54,7 +54,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/apprenticeship.cjs",
+      "test": "tests/gameplay/apprenticeship.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -63,7 +63,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/approved-creatures.cjs",
+      "test": "tests/gameplay/approved-creatures.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -72,7 +72,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/armour-shells.cjs",
+      "test": "tests/gameplay/armour-shells.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -81,7 +81,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/audio.cjs",
+      "test": "tests/gameplay/audio.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -90,7 +90,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/authored-motion.cjs",
+      "test": "tests/gameplay/authored-motion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -99,7 +99,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/branding.cjs",
+      "test": "tests/gameplay/branding.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -108,7 +108,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/briarhaven-art.cjs",
+      "test": "tests/world/briarhaven-art.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -117,7 +117,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/briarhaven-map.cjs",
+      "test": "tests/world/briarhaven-map.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -126,7 +126,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/building-entry.cjs",
+      "test": "tests/world/building-entry.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -135,7 +135,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/building-layout.cjs",
+      "test": "tests/world/building-layout.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -144,7 +144,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -153,7 +153,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/camera-input.cjs",
+      "test": "tests/rendering/camera-input.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -162,7 +162,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/character-creation.cjs",
+      "test": "tests/gameplay/character-creation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -171,7 +171,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/character-reset.mjs",
+      "test": "tests/gameplay/character-reset.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -180,7 +180,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/classic-ui.cjs",
+      "test": "tests/gameplay/classic-ui.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -189,7 +189,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/coin-pouch.cjs",
+      "test": "tests/gameplay/coin-pouch.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -198,7 +198,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/combat-experience.cjs",
+      "test": "tests/gameplay/combat-experience.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -207,7 +207,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/combat-scaling.cjs",
+      "test": "tests/gameplay/combat-scaling.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -216,7 +216,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/combat-skills.cjs",
+      "test": "tests/gameplay/combat-skills.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -225,7 +225,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/cooking-lesson.cjs",
+      "test": "tests/gameplay/cooking-lesson.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -234,7 +234,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/creature-animation.cjs",
+      "test": "tests/gameplay/creature-animation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -243,7 +243,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/creature-renderer.cjs",
+      "test": "tests/rendering/creature-renderer.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -252,7 +252,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/desktop-rendering.cjs",
+      "test": "tests/gameplay/desktop-rendering.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -261,16 +261,16 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/encounters.cjs",
+      "test": "tests/gameplay/encounters.cjs",
       "passed": false,
       "exitCode": 1,
       "timedOut": false,
       "seconds": 20,
-      "output": "Starter rat / 1,000 real simulated fights: median 67.50s; p95 110.70s; mean HP lost 2.10; deaths 0. Zero hits are preserved.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: median starter rat stays near the requested 15 seconds; measured 67.50s\n    at evalmachine.<anonymous>:160:1\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/78f9dab719ee/veldren/tests/encounters.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n",
+      "output": "Starter rat / 1,000 real simulated fights: median 67.50s; p95 110.70s; mean HP lost 2.10; deaths 0. Zero hits are preserved.\nnode:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: median starter rat stays near the requested 15 seconds; measured 67.50s\n    at evalmachine.<anonymous>:160:1\n    at Script.runInContext (node:vm:149:12)\n    at Object.runInContext (node:vm:301:6)\n    at Object.<anonymous> (/workspace/scratch/78f9dab719ee/veldren/tests/gameplay/encounters.cjs:5:4)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.19.0\n",
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/engine-world.cjs",
+      "test": "tests/gameplay/engine-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -279,7 +279,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/equipment-fit.cjs",
+      "test": "tests/gameplay/equipment-fit.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -288,7 +288,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/equipment-interface.cjs",
+      "test": "tests/gameplay/equipment-interface.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -297,7 +297,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/equipped-ammunition.cjs",
+      "test": "tests/gameplay/equipped-ammunition.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -306,7 +306,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/follow-network.cjs",
+      "test": "tests/gameplay/follow-network.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -315,7 +315,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/game.cjs",
+      "test": "tests/gameplay/game.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -324,7 +324,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/gathering-appearance.cjs",
+      "test": "tests/gameplay/gathering-appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -333,7 +333,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/global-reset.mjs",
+      "test": "tests/server/global-reset.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -342,7 +342,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/icon-system.cjs",
+      "test": "tests/gameplay/icon-system.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -351,7 +351,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/icon-tooltips.cjs",
+      "test": "tests/gameplay/icon-tooltips.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -360,7 +360,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/item-input.cjs",
+      "test": "tests/gameplay/item-input.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -369,7 +369,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/item-models.cjs",
+      "test": "tests/gameplay/item-models.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -378,7 +378,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/item-use.cjs",
+      "test": "tests/gameplay/item-use.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -387,7 +387,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/kingdoms.cjs",
+      "test": "tests/world/kingdoms.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -396,7 +396,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/local-chat.mjs",
+      "test": "tests/server/local-chat.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -405,7 +405,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/local-storage.mjs",
+      "test": "tests/server/local-storage.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -414,7 +414,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/login.mjs",
+      "test": "tests/server/login.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -423,7 +423,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/loot-interaction.cjs",
+      "test": "tests/gameplay/loot-interaction.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -432,7 +432,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/main-story.cjs",
+      "test": "tests/gameplay/main-story.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -441,7 +441,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/map-services.cjs",
+      "test": "tests/world/map-services.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -450,7 +450,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/modular-equipment.cjs",
+      "test": "tests/gameplay/modular-equipment.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -459,7 +459,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/mountain-quest.cjs",
+      "test": "tests/gameplay/mountain-quest.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -468,7 +468,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/movement-loop.cjs",
+      "test": "tests/gameplay/movement-loop.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -477,7 +477,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/multiplayer.mjs",
+      "test": "tests/server/multiplayer.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -486,7 +486,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/nameplates.cjs",
+      "test": "tests/gameplay/nameplates.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -495,7 +495,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/npc-appearance.cjs",
+      "test": "tests/gameplay/npc-appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -504,7 +504,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/online-only.cjs",
+      "test": "tests/gameplay/online-only.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -513,7 +513,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/play-display.cjs",
+      "test": "tests/gameplay/play-display.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -522,7 +522,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/player-options.cjs",
+      "test": "tests/gameplay/player-options.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -531,7 +531,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/ranged-overhaul.cjs",
+      "test": "tests/gameplay/ranged-overhaul.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -540,7 +540,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/rebuilt-world.cjs",
+      "test": "tests/world/rebuilt-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -549,7 +549,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/recording-regressions.cjs",
+      "test": "tests/gameplay/recording-regressions.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -558,7 +558,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/render-benchmark.cjs",
+      "test": "tests/rendering/render-benchmark.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -567,7 +567,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/render-meshes.cjs",
+      "test": "tests/rendering/render-meshes.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -576,7 +576,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/render.cjs",
+      "test": "tests/rendering/render.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -585,7 +585,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/renderer-gl.cjs",
+      "test": "tests/rendering/renderer-gl.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -594,7 +594,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/rowan-crossing.mjs",
+      "test": "tests/server/rowan-crossing.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -603,7 +603,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/saves.mjs",
+      "test": "tests/server/saves.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -612,7 +612,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/scene-handoff.mjs",
+      "test": "tests/gameplay/scene-handoff.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -621,7 +621,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/server-npc-simulation.mjs",
+      "test": "tests/server/server-npc-simulation.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -630,7 +630,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/server-status.mjs",
+      "test": "tests/gameplay/server-status.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -639,7 +639,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/shared-client.cjs",
+      "test": "tests/gameplay/shared-client.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -648,7 +648,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/shared-performance.cjs",
+      "test": "tests/gameplay/shared-performance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -657,7 +657,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/shared-two-clients.mjs",
+      "test": "tests/server/shared-two-clients.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -666,7 +666,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/shared-world.mjs",
+      "test": "tests/server/shared-world.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -675,7 +675,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/skill-progression.cjs",
+      "test": "tests/gameplay/skill-progression.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -684,7 +684,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/sky-combat-guardians.cjs",
+      "test": "tests/gameplay/sky-combat-guardians.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -693,7 +693,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/social-maintenance.mjs",
+      "test": "tests/server/social-maintenance.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -702,7 +702,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/social-ui.cjs",
+      "test": "tests/gameplay/social-ui.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -711,7 +711,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/startup-recovery.cjs",
+      "test": "tests/gameplay/startup-recovery.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -720,7 +720,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/story-server.mjs",
+      "test": "tests/server/story-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -729,7 +729,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/terrain-travel.cjs",
+      "test": "tests/world/terrain-travel.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -738,7 +738,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/texture-skinning.cjs",
+      "test": "tests/rendering/texture-skinning.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -747,7 +747,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/trading.cjs",
+      "test": "tests/gameplay/trading.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -756,7 +756,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/training-pen.cjs",
+      "test": "tests/gameplay/training-pen.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -765,7 +765,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/tutorial-coast.cjs",
+      "test": "tests/gameplay/tutorial-coast.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -774,7 +774,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/tutorial-guidance.cjs",
+      "test": "tests/gameplay/tutorial-guidance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -783,7 +783,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/tutorial-order.cjs",
+      "test": "tests/gameplay/tutorial-order.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -792,7 +792,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/tutorial-world-fit.cjs",
+      "test": "tests/gameplay/tutorial-world-fit.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -801,7 +801,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/varkesh.cjs",
+      "test": "tests/gameplay/varkesh.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -810,7 +810,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/view3d.cjs",
+      "test": "tests/gameplay/view3d.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -819,7 +819,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/walk-in-controls.cjs",
+      "test": "tests/gameplay/walk-in-controls.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -828,7 +828,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/world-art.cjs",
+      "test": "tests/world/world-art.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -837,7 +837,7 @@
       "evidence": "targeted recheck"
     },
     {
-      "test": "tests/world-options.cjs",
+      "test": "tests/world/world-options.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -846,7 +846,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/world-style.cjs",
+      "test": "tests/world/world-style.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -855,7 +855,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/world-timers.cjs",
+      "test": "tests/world/world-timers.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -864,7 +864,7 @@
       "evidence": "full sweep"
     },
     {
-      "test": "tests/xalith.cjs",
+      "test": "tests/gameplay/xalith.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

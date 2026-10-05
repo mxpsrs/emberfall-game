@@ -67,6 +67,6 @@ Reproduce the new focused checks with:
 
 ```sh
 node scripts/check-game.mjs main-story.cjs mountain-quest.cjs quest-journal-selection.cjs arc-rewards.cjs arc-boss-loot.mjs
-node scripts/review-arc-one.cjs .qa/arc-one
+node scripts/qa/review-arc-one.cjs .qa/arc-one
 npm run build
 ```

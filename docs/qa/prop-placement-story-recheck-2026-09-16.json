@@ -1,5 +1,5 @@
 {
-  "test": "tests/main-story.cjs",
+  "test": "tests/gameplay/main-story.cjs",
   "passed": true,
   "exitCode": 0,
   "timedOut": false,

@@ -1,4 +1,4 @@
-// Generated from dist/world.js; keep client and server phasing identical.
+// Generated from client/world.js; keep client and server phasing identical.
 export function questFightVisible(o,state){
  if(!o)return false;
  if(o.mainStoryStage!=null)return (state.mainStoryQuest?.stage||0)<=o.mainStoryStage;

@@ -6,7 +6,7 @@
   "total": 136,
   "results": [
     {
-      "test": "tests/account-flow.cjs",
+      "test": "tests/server/account-flow.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -15,7 +15,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/action-animations.cjs",
+      "test": "tests/gameplay/action-animations.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -24,7 +24,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/action-timing.cjs",
+      "test": "tests/gameplay/action-timing.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -33,7 +33,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/activity-reconnect.cjs",
+      "test": "tests/gameplay/activity-reconnect.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -42,7 +42,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/android-rendering.cjs",
+      "test": "tests/gameplay/android-rendering.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -51,7 +51,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/appearance.cjs",
+      "test": "tests/gameplay/appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -60,7 +60,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/apprenticeship.cjs",
+      "test": "tests/gameplay/apprenticeship.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -69,7 +69,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/approved-creatures.cjs",
+      "test": "tests/gameplay/approved-creatures.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -78,7 +78,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/arc-boss-loot.mjs",
+      "test": "tests/server/arc-boss-loot.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -87,7 +87,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/arc-rewards.cjs",
+      "test": "tests/gameplay/arc-rewards.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -96,7 +96,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/armour-shells.cjs",
+      "test": "tests/gameplay/armour-shells.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -105,7 +105,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/audio.cjs",
+      "test": "tests/gameplay/audio.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -114,7 +114,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/authored-motion.cjs",
+      "test": "tests/gameplay/authored-motion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -123,7 +123,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/branding.cjs",
+      "test": "tests/gameplay/branding.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -132,7 +132,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/briarhaven-art.cjs",
+      "test": "tests/world/briarhaven-art.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -141,7 +141,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/briarhaven-map.cjs",
+      "test": "tests/world/briarhaven-map.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -150,7 +150,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/building-entry.cjs",
+      "test": "tests/world/building-entry.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -159,7 +159,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/building-layout.cjs",
+      "test": "tests/world/building-layout.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -168,7 +168,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -177,7 +177,7 @@
       "evidence": "identity-build-2026-09-16.json"
     },
     {
-      "test": "tests/camera-input.cjs",
+      "test": "tests/rendering/camera-input.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -186,7 +186,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/cave-passages.cjs",
+      "test": "tests/world/cave-passages.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -195,7 +195,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/cave-render-clicks.cjs",
+      "test": "tests/world/cave-render-clicks.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -204,7 +204,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/character-creation.cjs",
+      "test": "tests/gameplay/character-creation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -213,7 +213,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/character-reset.mjs",
+      "test": "tests/gameplay/character-reset.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -222,7 +222,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/classic-ui.cjs",
+      "test": "tests/gameplay/classic-ui.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -231,7 +231,7 @@
       "evidence": "identity-receipts-2026-09-16.json"
     },
     {
-      "test": "tests/coin-pouch.cjs",
+      "test": "tests/gameplay/coin-pouch.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -240,7 +240,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/combat-claims.mjs",
+      "test": "tests/server/combat-claims.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -249,7 +249,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/combat-experience.cjs",
+      "test": "tests/gameplay/combat-experience.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -258,7 +258,7 @@
       "evidence": "identity-receipts-2026-09-16.json"
     },
     {
-      "test": "tests/combat-network-timing.mjs",
+      "test": "tests/server/combat-network-timing.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -267,7 +267,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/combat-scaling.cjs",
+      "test": "tests/gameplay/combat-scaling.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -276,7 +276,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/combat-skills.cjs",
+      "test": "tests/gameplay/combat-skills.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -285,7 +285,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/combat-swing-permits.mjs",
+      "test": "tests/server/combat-swing-permits.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -294,7 +294,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/connection-recovery.cjs",
+      "test": "tests/gameplay/connection-recovery.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -303,7 +303,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/cooking-batch.cjs",
+      "test": "tests/gameplay/cooking-batch.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -312,7 +312,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/cooking-lesson.cjs",
+      "test": "tests/gameplay/cooking-lesson.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -321,7 +321,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/creature-animation.cjs",
+      "test": "tests/gameplay/creature-animation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -330,7 +330,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/creature-renderer.cjs",
+      "test": "tests/rendering/creature-renderer.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -339,7 +339,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/desktop-rendering.cjs",
+      "test": "tests/gameplay/desktop-rendering.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -348,7 +348,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/dungeon-journeys.cjs",
+      "test": "tests/gameplay/dungeon-journeys.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -357,7 +357,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/dungeon-server.mjs",
+      "test": "tests/server/dungeon-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -366,7 +366,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/encounters.cjs",
+      "test": "tests/gameplay/encounters.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -375,7 +375,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/engine-world.cjs",
+      "test": "tests/gameplay/engine-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -384,7 +384,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/equipment-fit.cjs",
+      "test": "tests/gameplay/equipment-fit.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -393,7 +393,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/equipment-interface.cjs",
+      "test": "tests/gameplay/equipment-interface.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -402,7 +402,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/equipped-ammunition.cjs",
+      "test": "tests/gameplay/equipped-ammunition.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -411,7 +411,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/follow-network.cjs",
+      "test": "tests/gameplay/follow-network.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -420,7 +420,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/game.cjs",
+      "test": "tests/gameplay/game.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -429,7 +429,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/gathering-appearance.cjs",
+      "test": "tests/gameplay/gathering-appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -438,7 +438,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/global-reset.mjs",
+      "test": "tests/server/global-reset.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -447,7 +447,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/home-teleport.mjs",
+      "test": "tests/server/home-teleport.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -456,7 +456,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/icon-system.cjs",
+      "test": "tests/gameplay/icon-system.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -465,7 +465,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/icon-tooltips.cjs",
+      "test": "tests/gameplay/icon-tooltips.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -474,7 +474,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/identity-multiplayer.mjs",
+      "test": "tests/server/identity-multiplayer.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -483,7 +483,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/identity-server.mjs",
+      "test": "tests/server/identity-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -492,7 +492,7 @@
       "evidence": "identity-receipts-2026-09-16.json"
     },
     {
-      "test": "tests/identity-spirits.mjs",
+      "test": "tests/server/identity-spirits.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -501,7 +501,7 @@
       "evidence": "identity-receipts-2026-09-16.json"
     },
     {
-      "test": "tests/indoor-light-boundaries.cjs",
+      "test": "tests/world/indoor-light-boundaries.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -510,7 +510,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/item-input.cjs",
+      "test": "tests/gameplay/item-input.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -519,7 +519,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/item-models.cjs",
+      "test": "tests/gameplay/item-models.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -528,7 +528,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/item-use.cjs",
+      "test": "tests/gameplay/item-use.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -537,7 +537,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/kingdoms.cjs",
+      "test": "tests/world/kingdoms.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -546,7 +546,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/level-celebration.cjs",
+      "test": "tests/gameplay/level-celebration.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -555,7 +555,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/local-chat.mjs",
+      "test": "tests/server/local-chat.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -564,7 +564,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/local-storage.mjs",
+      "test": "tests/server/local-storage.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -573,7 +573,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/login.mjs",
+      "test": "tests/server/login.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -582,7 +582,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/loot-interaction.cjs",
+      "test": "tests/gameplay/loot-interaction.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -591,7 +591,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/main-story.cjs",
+      "test": "tests/gameplay/main-story.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -600,7 +600,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/maintenance-outage.mjs",
+      "test": "tests/server/maintenance-outage.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -609,7 +609,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/map-services.cjs",
+      "test": "tests/world/map-services.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -618,7 +618,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/melee-xp-rate.cjs",
+      "test": "tests/gameplay/melee-xp-rate.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -627,7 +627,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/model-picking.cjs",
+      "test": "tests/gameplay/model-picking.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -636,7 +636,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/modular-equipment.cjs",
+      "test": "tests/gameplay/modular-equipment.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -645,7 +645,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/mountain-quest.cjs",
+      "test": "tests/gameplay/mountain-quest.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -654,7 +654,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/movement-loop.cjs",
+      "test": "tests/gameplay/movement-loop.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -663,7 +663,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/multiplayer.mjs",
+      "test": "tests/server/multiplayer.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -672,7 +672,7 @@
       "evidence": "identity-recheck-final-2026-09-16.json"
     },
     {
-      "test": "tests/nameplates.cjs",
+      "test": "tests/gameplay/nameplates.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -681,7 +681,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/npc-appearance.cjs",
+      "test": "tests/gameplay/npc-appearance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -690,7 +690,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/online-only.cjs",
+      "test": "tests/gameplay/online-only.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -699,7 +699,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/play-display.cjs",
+      "test": "tests/gameplay/play-display.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -708,7 +708,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/player-options.cjs",
+      "test": "tests/gameplay/player-options.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -717,7 +717,7 @@
       "evidence": "identity-recheck-final-2026-09-16.json"
     },
     {
-      "test": "tests/quest-celebration.cjs",
+      "test": "tests/gameplay/quest-celebration.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -726,7 +726,7 @@
       "evidence": "identity-recheck-final-2026-09-16.json"
     },
     {
-      "test": "tests/quest-cohesion.cjs",
+      "test": "tests/gameplay/quest-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -735,7 +735,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/quest-fight-phases.mjs",
+      "test": "tests/server/quest-fight-phases.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -744,7 +744,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/quest-journal-selection.cjs",
+      "test": "tests/gameplay/quest-journal-selection.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -753,7 +753,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/quest-navigation.cjs",
+      "test": "tests/gameplay/quest-navigation.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -762,7 +762,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/quest-observer-animation.mjs",
+      "test": "tests/server/quest-observer-animation.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -771,7 +771,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/quest-shared-credit.mjs",
+      "test": "tests/server/quest-shared-credit.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -780,7 +780,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/ranged-overhaul.cjs",
+      "test": "tests/gameplay/ranged-overhaul.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -789,7 +789,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/rebuilt-world.cjs",
+      "test": "tests/world/rebuilt-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -798,7 +798,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/recording-regressions.cjs",
+      "test": "tests/gameplay/recording-regressions.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -807,7 +807,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/render-benchmark.cjs",
+      "test": "tests/rendering/render-benchmark.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -816,7 +816,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/render-meshes.cjs",
+      "test": "tests/rendering/render-meshes.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -825,7 +825,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/render.cjs",
+      "test": "tests/rendering/render.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -834,7 +834,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/renderer-gl.cjs",
+      "test": "tests/rendering/renderer-gl.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -843,7 +843,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/rowan-crossing.mjs",
+      "test": "tests/server/rowan-crossing.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -852,7 +852,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/save-retry.mjs",
+      "test": "tests/server/save-retry.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -861,7 +861,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/saves.mjs",
+      "test": "tests/server/saves.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -870,7 +870,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/scene-handoff.mjs",
+      "test": "tests/gameplay/scene-handoff.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -879,7 +879,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/server-npc-simulation.mjs",
+      "test": "tests/server/server-npc-simulation.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -888,7 +888,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/server-status.mjs",
+      "test": "tests/gameplay/server-status.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -897,7 +897,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-39-clients.mjs",
+      "test": "tests/server/shared-39-clients.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -906,7 +906,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-client.cjs",
+      "test": "tests/gameplay/shared-client.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -915,7 +915,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-database-load.mjs",
+      "test": "tests/server/shared-database-load.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -924,7 +924,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-day-night.cjs",
+      "test": "tests/gameplay/shared-day-night.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -933,7 +933,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-performance.cjs",
+      "test": "tests/gameplay/shared-performance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -942,7 +942,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shared-two-clients.mjs",
+      "test": "tests/server/shared-two-clients.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -951,7 +951,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/shared-world.mjs",
+      "test": "tests/server/shared-world.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -960,7 +960,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/shore-lanterns.cjs",
+      "test": "tests/world/shore-lanterns.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -969,7 +969,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/skill-progression.cjs",
+      "test": "tests/gameplay/skill-progression.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -978,7 +978,7 @@
       "evidence": "identity-recheck-final-2026-09-16.json"
     },
     {
-      "test": "tests/sky-combat-guardians.cjs",
+      "test": "tests/gameplay/sky-combat-guardians.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -987,7 +987,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/social-maintenance.mjs",
+      "test": "tests/server/social-maintenance.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -996,7 +996,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/social-ui.cjs",
+      "test": "tests/gameplay/social-ui.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1005,7 +1005,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/spirit-chat.cjs",
+      "test": "tests/gameplay/spirit-chat.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1014,7 +1014,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/spirit-discovery.cjs",
+      "test": "tests/gameplay/spirit-discovery.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1023,7 +1023,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/spirit-shared.mjs",
+      "test": "tests/server/spirit-shared.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1032,7 +1032,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/startup-recovery.cjs",
+      "test": "tests/gameplay/startup-recovery.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1041,7 +1041,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/story-server.mjs",
+      "test": "tests/server/story-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1050,7 +1050,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/terrain-travel.cjs",
+      "test": "tests/world/terrain-travel.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1059,7 +1059,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/texture-skinning.cjs",
+      "test": "tests/rendering/texture-skinning.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1068,7 +1068,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/trading.cjs",
+      "test": "tests/gameplay/trading.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1077,7 +1077,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/training-pen.cjs",
+      "test": "tests/gameplay/training-pen.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1086,7 +1086,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/tutorial-coast.cjs",
+      "test": "tests/gameplay/tutorial-coast.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1095,7 +1095,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/tutorial-guidance.cjs",
+      "test": "tests/gameplay/tutorial-guidance.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1104,7 +1104,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/tutorial-order.cjs",
+      "test": "tests/gameplay/tutorial-order.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1113,7 +1113,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/tutorial-world-fit.cjs",
+      "test": "tests/gameplay/tutorial-world-fit.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1122,7 +1122,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/varkesh.cjs",
+      "test": "tests/gameplay/varkesh.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1131,7 +1131,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/video-feedback.cjs",
+      "test": "tests/gameplay/video-feedback.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1140,7 +1140,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/view3d.cjs",
+      "test": "tests/gameplay/view3d.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1149,7 +1149,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/walk-in-controls.cjs",
+      "test": "tests/gameplay/walk-in-controls.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1158,7 +1158,7 @@
       "evidence": "identity-recheck-2026-09-16.json"
     },
     {
-      "test": "tests/world-art.cjs",
+      "test": "tests/world/world-art.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1167,7 +1167,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-atlas.cjs",
+      "test": "tests/world/world-atlas.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1176,7 +1176,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-cohesion.cjs",
+      "test": "tests/world/world-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1185,7 +1185,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-lighting.cjs",
+      "test": "tests/world/world-lighting.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1194,7 +1194,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-options.cjs",
+      "test": "tests/world/world-options.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1203,7 +1203,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-style.cjs",
+      "test": "tests/world/world-style.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1212,7 +1212,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/world-timers.cjs",
+      "test": "tests/world/world-timers.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -1221,7 +1221,7 @@
       "evidence": "identity-initial-2026-09-16.json"
     },
     {
-      "test": "tests/xalith.cjs",
+      "test": "tests/gameplay/xalith.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

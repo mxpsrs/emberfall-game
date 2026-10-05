@@ -17,7 +17,7 @@
   "chatChecks": 39,
   "streamFrames": 19227,
   "savedCharacters": 39,
-  "command": "VELDREN_LOAD_ROUNDS=480 node tests/shared-39-clients.mjs",
+  "command": "VELDREN_LOAD_ROUNDS=480 node tests/server/shared-39-clients.mjs",
   "retentionTest": "100,000-event fixture plus ten simulated minutes at 156 public effects/second; bounded history, indexed query without full-history sort, unacknowledged receipts retained",
   "limitations": [
     "Local SQLite, not hosted D1 or physical browsers",

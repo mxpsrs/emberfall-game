@@ -1,5 +1,5 @@
 make: Entering directory '/workspace/scratch/2222b76c39ba/briar-haven/native'
-node tests/core_wasm_test.mjs ../dist/native/veldren-core.wasm
+node tests/core_wasm_test.mjs ../client/native/veldren-core.wasm
 (node:4) ExperimentalWarning: WASI is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 PASS: standalone C++ WebAssembly ABI executes without generated gameplay JavaScript

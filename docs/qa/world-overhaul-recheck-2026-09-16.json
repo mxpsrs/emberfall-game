@@ -6,7 +6,7 @@
   "total": 7,
   "results": [
     {
-      "test": "tests/briarhaven-map.cjs",
+      "test": "tests/world/briarhaven-map.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -14,7 +14,7 @@
       "output": "PASS: all twelve mainland entrances and services, 15 reachable roaming goblins, island preservation, rotated minimap round-trips, fire cancellation and delayed cooking.\n"
     },
     {
-      "test": "tests/built-assets.mjs",
+      "test": "tests/rendering/built-assets.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -22,7 +22,7 @@
       "output": "PASS: five licensed music tracks and 24 CC0 foley clips match source records; music streams partial responses.\nPASS: readable home page, all 91 startup resources, JavaScript parsing, JSON parsing, fresh cache URLs, and conditional requests. 45.28 MiB before hosting compression.\n"
     },
     {
-      "test": "tests/civilization-server.mjs",
+      "test": "tests/server/civilization-server.mjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -30,7 +30,7 @@
       "output": "PASS: two authenticated accounts share castle, inn and watchtower floors and preserve each floor position and belongings through saves.\n"
     },
     {
-      "test": "tests/civilization-world.cjs",
+      "test": "tests/world/civilization-world.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -38,7 +38,7 @@
       "output": "{\"settlements\":13,\"castles\":3,\"floors\":96,\"quarries\":5,\"quests\":\"reachable\",\"goblins\":15}\n"
     },
     {
-      "test": "tests/main-story.cjs",
+      "test": "tests/gameplay/main-story.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -46,7 +46,7 @@
       "output": "Stage 1 reached\nStage 2 reached\nStage 3 reached\nStage 3 reached\nStage 4 reached\nStage 5 reached\nStage 6 reached\nStage 6 reached\nStage 7 reached\nStage 7 reached\nStage 8 reached\nStage 9 reached\nStage 10 reached\nStage 10 reached\nStage 11 reached\nStage 12 reached\nStage 12 reached\nStage 13 reached\nStage 13 reached\nStage 14 reached\nStage 15 reached\nStage 16 reached\nStage 17 reached\nStage 18 reached\nStage 19 reached\nStage 20 reached\nStage 20 reached\nStage 21 reached\nStage 21 reached\nStage 22 reached\nStage 22 reached\nStage 23 reached\nStage 24 reached\nStage 25 reached\nPASS: three ordered quests, real routes and combat, wrong answers, skill gates, interrupted work, both miners escorted, death/retry, durable rewards, journal, relic names and mountain unlock.\nPASS: fresh-runtime recovery and existing mountain progress remain available.\n"
     },
     {
-      "test": "tests/quest-cohesion.cjs",
+      "test": "tests/gameplay/quest-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
@@ -54,7 +54,7 @@
       "output": "PASS: all 8 village quests, current item/skill checks, directions, delivery consumption, timed repair, duplicate rewards, inspection interruption, unique identities, all story-object footprints, named quest sites, camp paths and Brook health semantics.\n"
     },
     {
-      "test": "tests/world-cohesion.cjs",
+      "test": "tests/world/world-cohesion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,

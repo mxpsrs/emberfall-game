@@ -1,7 +1,7 @@
 npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > filament:verify
-> node tests/renderer-filament.cjs && node tests/filament-character-parity.cjs && node tests/filament-runtime.cjs
+> node tests/rendering/renderer-filament.cjs && node tests/rendering/filament-character-parity.cjs && node tests/rendering/filament-runtime.cjs
 
 Filament renderer contract passed
 PASS: selected player and deterministic NPC appearance channels reach Filament unchanged.
