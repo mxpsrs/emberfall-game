@@ -403,9 +403,11 @@ function createRealmFilamentGPU(){
     occlusionRecords.length=0;
     const disabled=window.VELDREN_OCCLUSION===false||String(window.VELDREN_CONTEXT||'').toLowerCase()==='editor';
     if(!disabled){assetDraws.collectOcclusion(occlusionRecords);authoredAssetDraws?.collectOcclusion(occlusionRecords);
-     for(const resource of resources){if(resource.ephemeral||resource.pose||resource.boneCount)continue;for(const pool of resource.pools.values())for(let slot=0;slot<pool.used;slot++){const entity=pool.entities[slot];if(!activeEntities.has(entity)||!pool.transforms[slot])continue;
+     const solidCoverage=occlusionRecords.some(record=>record.data.polygons?.length);
+     if(solidCoverage)for(const resource of resources){if(resource.ephemeral||resource.pose||resource.boneCount)continue;for(const pool of resource.pools.values())for(let slot=0;slot<pool.used;slot++){const entity=pool.entities[slot];if(!activeEntities.has(entity)||!pool.transforms[slot])continue;
       occlusionRecords.push({data:{bounds:resource.bounds},matrix:pool.transforms[slot],castShadows:!resource.terrain,renderables:1,hide(){scene.remove(entity);activeEntities.delete(entity);}});
      }}
+     if(!solidCoverage)occlusionRecords.length=0;
     }
     for(const record of occlusion.evaluate(cameraState,occlusionRecords,disabled))record.hide();
    }

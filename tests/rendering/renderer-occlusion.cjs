@@ -10,6 +10,9 @@ function run(records,cam=camera,opts={}){const controller=O.create('browser',{bu
 const wall=source([[-6,6,-6,6,-5]]),target=box();
 assert.equal(wall.data.polygons.length,14,'shared triangles merge to one quad');
 assert(run([wall,target]).hidden.includes(target));assert(!run([wall,box(0,0,-3)]).hidden.length,'nearer object stays');
+const singleSided=source([[-6,6,-6,6,-5]],{...material,doubleSided:false});assert(run([singleSided,target]).hidden.includes(target),'paired faces preserve the original front winding');
+const backwards=plan([[-6,6,-6,6,-5]]);backwards.geometry[0].indices=new Uint32Array([0,2,1,0,3,2]);
+assert(!run([{data:O.compile(backwards,()=>({...material,doubleSided:false})),matrix:I,castShadows:true},target]).hidden.includes(target),'GPU-culled backfaces cannot supply coverage');
 const opening=source([[-6,-.5,-6,6,-5],[.5,6,-6,6,-5],[-.5,.5,1,6,-5],[-.5,.5,-6,-1,-5]]);
 assert(!run([opening,target]).hidden.includes(target),'opening never becomes solid');assert(!run([wall,box(12)]).hidden.length,'partial silhouette stays');
 for(const alphaMode of ['MASK','BLEND'])assert(!run([source([[-6,6,-6,6,-5]],{...material,alphaMode}),target]).hidden.length);

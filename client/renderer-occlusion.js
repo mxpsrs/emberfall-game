@@ -23,7 +23,7 @@
    for(let i=0;i+2<end;i+=3){const points=[vertex(indices[i]),vertex(indices[i+1]),vertex(indices[i+2])];if(points.flat().some(v=>!Number.isFinite(v)))continue;
     const t={points,used:false},id=triangles.length;triangles.push(t);
     for(let e=0;e<3;e++){const a=points[e].join(','),b=points[(e+1)%3].join(','),reverse=edges.get(b+'|'+a);
-     if(reverse&&!triangles[reverse.id].used&&!t.used){const other=triangles[reverse.id];other.used=t.used=true;const q=[other.points[(reverse.e+2)%3],points[e],points[(e+2)%3],points[(e+1)%3]];polygons.push({points:q,doubleSided:!!material.doubleSided});}
+     if(reverse&&!triangles[reverse.id].used&&!t.used){const other=triangles[reverse.id];other.used=t.used=true;const q=[other.points[(reverse.e+2)%3],points[(e+1)%3],points[(e+2)%3],points[e]];polygons.push({points:q,doubleSided:!!material.doubleSided});}
      else edges.set(a+'|'+b,{id,e});
     }
 

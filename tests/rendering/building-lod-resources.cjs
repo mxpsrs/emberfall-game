@@ -21,7 +21,9 @@ async function main(){
   fs.writeFileSync(path.join(temporary,'filament.cjs'),source);fs.copyFileSync(path.join(root,'client/vendor/filament/filament.wasm'),path.join(temporary,'filament.wasm'));global.window={};
   const factory=require(path.join(temporary,'filament.cjs'));await new Promise(resolve=>factory.init([],resolve));const F=global.__VELDREN_TEST_FILAMENT__;
   const context={URL,TextEncoder,TextDecoder,Uint8Array,Uint16Array,Uint32Array,Float32Array,AbortController,atob,setTimeout,clearTimeout,performance,Filament:F,document:{baseURI:'http://fixture/'}};vm.createContext(context);
-  assets=await require('../helpers/native-assets.cjs')(context,root);context.Worker=BrowserWorker;
+  assets=await require('../helpers/native-assets.cjs')(context,root);context.Worker=BrowserWorker;context.location={href:'http://fixture/'};
+  const normalLease=assets.leaseRenderPlan('rebuilt:Wall_Plaster_Straight'),normalPlan=await normalLease.ready;
+  assert(normalPlan.geometry.every(p=>ArrayBuffer.isView(p.vertices)),'normal asset jobs transfer actual typed geometry');assert(ArrayBuffer.isView(normalPlan.occlusion.polygons));assert(normalPlan.occlusion.polygons.length<=128*14);normalLease.release();assert.equal(assets.diagnostics().dependencyLeases,0);
   const matrix=[1,0,0,0,0,1,0,0,0,0,1,0],modules=Array.from({length:30},(_,i)=>({id:'rebuilt:Wall_Plaster_Straight',matrix:[...matrix.slice(0,3),i*2,...matrix.slice(4)]}));
   const lease=assets.leaseBuildingPlan('qa:whole-building',modules,4*1024*1024),plan=await lease.ready;
   assert(plan.geometry.every(p=>ArrayBuffer.isView(p.vertices)&&ArrayBuffer.isView(p.indices)),'worker transfers typed buffers');assert(plan.stats.draws<plan.stats.sourceDraws);assert(ArrayBuffer.isView(plan.occlusion.polygons),'worker transfers bounded solid coverage');assert(plan.occlusion.polygons.length<=512*14);lease.release();assert.equal(assets.diagnostics().dependencyLeases,0);

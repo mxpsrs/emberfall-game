@@ -5,7 +5,7 @@ import {transform} from 'esbuild';
 import worker from '../../dist/server/index.js';
 const models=JSON.parse(fs.readFileSync('client/assets/canonical/lods.json')).models;
 const records=JSON.parse(fs.readFileSync('client/assets/canonical/registry.json')).records;
-const identityScripts=new Set(['building-lod.js','asset-runtime.js','asset-prepare-worker.js','asset-materials.js','asset-meshes.js','asset-draws.js','renderer-filament.js']);
+const identityScripts=new Set(['building-lod.js','renderer-occlusion.js','asset-runtime.js','asset-prepare-worker.js','asset-materials.js','asset-meshes.js','asset-draws.js','renderer-filament.js']);
 const targets=[...identityScripts,'assets/realms/models.js','assets/realms/monsters.js','assets/realms/approved-creatures.js','assets/briarhaven/models.js',...models.slice(0,3).flatMap(row=>row.lods.map(l=>records.find(r=>r.id===l.asset).derivedPath))];
 const report=JSON.parse(fs.readFileSync('.qa/asset-delivery.json'));
 for(const path of new Set(targets)){
@@ -22,4 +22,5 @@ for(const path of new Set(targets)){
 assert(report.moduleBytes<64*1024*1024);assert(report.packedStreams.parts>0);
 const release=await worker.fetch(new Request('http://fixture/api/release'),{});assert.equal(release.status,200);assert.match((await release.json()).release,/^realm-[a-f0-9]{16}$/);
 const play=await worker.fetch(new Request('http://fixture/play'),{}),html=await play.text();assert.equal(play.status,200);assert(html.includes('sourceURL=building-lod.js?'),'the published play document loads the building planner');
+assert(html.includes('sourceURL=renderer-occlusion.js?'),'the published play document loads the occlusion pass');
 console.log('PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection and the 64 MiB limit');
