@@ -136,6 +136,7 @@ function createRealmFilamentGPU(){
  const materialResources=createVeldrenMaterialResources(engine,VeldrenAssets,textureResources),modelResources=createVeldrenModelResources(engine,VeldrenAssets,materialResources);
  const resourceProfile=realmMobileFilament()?'browser-mobile':'browser',streaming=typeof createVeldrenWorldStreaming==='function'?createVeldrenWorldStreaming(realmNative.scenes,VeldrenAssets,modelResources,resourceProfile):null,constructionBudget=createVeldrenRenderableBudget(resourceProfile);
  const assetDraws=createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget);
+ const buildingLOD=globalThis.VeldrenBuildingLOD?.create(VeldrenAssets,id=>assetDraws.retirePrepared(id),resourceProfile)||null;
  const authoredDraws=typeof createVeldrenSceneRenderer==='function'?createVeldrenSceneRenderer(realmNative.scenes,VeldrenAssets,createVeldrenAssetDraws(engine,scene,VeldrenAssets,modelResources,resourceProfile,Filament,streaming,constructionBudget)):null;
  const canonicalEligibility=new Map();
  function canonicalEntry(mesh,model,style={}){
@@ -327,17 +328,17 @@ function createRealmFilamentGPU(){
   const url=typeof realmAssetURL==='function'?realmAssetURL(path):path,loader=engine.createAssetLoader(),asset=loader.createAsset(await glbSource(path));if(!asset){loader.delete();throw new Error('GLB could not be parsed: '+path);}
   await new Promise((resolve,reject)=>{try{asset.loadResources(resolve,()=>{},url.slice(0,url.lastIndexOf('/')+1),null,{normalizeSkinningWeights:true});}catch(error){reject(error);}});asset.releaseSourceData();return {asset,loader,add(){scene.addEntities(asset.getEntities());},remove(){scene.removeEntities(asset.getEntities());},destroy(){scene.removeEntities(asset.getEntities());loader.destroyAsset(asset);loader.delete();}};
  }
- backend={kind:'filament',skinning:true,textureResources,materialResources,modelResources,assetDraws,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,assemblyFaces,assemblyTransforms,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,retainReplacement(buffer,previous){buffer.previous=resourceByBuffer.has(previous)?previous:previous.previous;previous.previous=null;if(buffer.previous!==previous)this.releaseBuffer(previous);},releaseBuffer(buffer){if(buffer.previous){const previous=buffer.previous;buffer.previous=null;this.releaseBuffer(previous);}const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;buffer.retire=null;for(const [target,bound] of fakeBindings)if(bound===buffer)fakeBindings.delete(target);},loadGlb,
+ backend={kind:'filament',skinning:true,textureResources,materialResources,modelResources,assetDraws,buildingLOD,canonicalEntry,surface,presented:true,engine,scene,view,camera:camera3d,renderer,swapChain,gl:fakeGl,cache,assemblyFaces,assemblyTransforms,sharedMeshes,skinnedMeshes:new WeakMap(),terrain,upload(data){const buffer=fakeGl.createBuffer();buffer.data=new data.constructor(data);return {buffer,count:data.length/12};},frameId:0,width:initialWidth,height:initialHeight,retainReplacement(buffer,previous){buffer.previous=resourceByBuffer.has(previous)?previous:previous.previous;previous.previous=null;if(buffer.previous!==previous)this.releaseBuffer(previous);},releaseBuffer(buffer){if(buffer.previous){const previous=buffer.previous;buffer.previous=null;this.releaseBuffer(previous);}const resource=resourceByBuffer.get(buffer);if(resource)destroyResource(resource);buffer.data=null;buffer.retire=null;for(const [target,bound] of fakeBindings)if(bound===buffer)fakeBindings.delete(target);},loadGlb,
   // Snapshot only on an explicit development request; never enumerate resources
   // in the normal frame loop. GPU bytes are allocation estimates, not driver VRAM.
-  diagnostics(){return {firstRenderMs,paging:globalThis.VeldrenWorldPerformance?.diagnostics()?.paging||null,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
-  performanceSnapshot(){return {frame:frameMetrics,gpuTimerSupported:gpuTimer.supported,activeRenderables:activeEntities.size,construction:constructionBudget.diagnostics(),streaming:streaming?.stats?.()||null,preparation:VeldrenAssets.ioDiagnostics().preparation,residency:residencyStats};},
+  diagnostics(){return {firstRenderMs,buildingLod:buildingLOD?.diagnostics()||null,paging:globalThis.VeldrenWorldPerformance?.diagnostics()?.paging||null,streaming:streaming?.diagnostics()||null,residency:residencyStats,lod:{compatibility:this.lodDiagnostics||null,canonical:globalThis.VeldrenWorldPerformance?.frame(String(currentScene))?.lod||null},frame:frameMetrics?{...frameMetrics}:null,legacy:{meshes:resources.size,materials:materialInstances.size,renderables:activeEntities.size,gpuBytes:[...resources].reduce((n,r)=>n+r.gpuBytes,0),stagingBytes:[...resources].reduce((n,r)=>n+(r.buffer?.data?.byteLength||0),0),cachedGlbBytes:glbSourceBytes},models:modelResources.diagnostics(),materials:materialResources.diagnostics(),textures:textureResources.diagnostics(),draws:assetDraws.diagnostics()};},
+  performanceSnapshot(){return {frame:frameMetrics,buildingLod:buildingLOD?.diagnostics()||null,gpuTimerSupported:gpuTimer.supported,activeRenderables:activeEntities.size,construction:constructionBudget.diagnostics(),streaming:streaming?.stats?.()||null,preparation:VeldrenAssets.ioDiagnostics().preparation,residency:residencyStats};},
   destroy(){
    if(disposed)return;disposed=true;this.presented=false;unsubscribeDispose();
    // Character and compatibility draws also hold native material leases.
    // Remove their renderables before the asset owners release those materials.
    for(const resource of [...resources])destroyResource(resource);
-   unsubscribeLod();assetDraws.destroy();authoredDraws?.destroy();streaming?.destroy();
+   unsubscribeLod();buildingLOD?.destroy();assetDraws.destroy();authoredDraws?.destroy();streaming?.destroy();
    for(const instance of materialInstances.values())engine.destroyMaterialInstance(instance);
    materialInstances.clear();terrainMaterialInstances.clear();worldMaterialInstances.clear();
    assemblyFaces.clear();
@@ -353,6 +354,7 @@ function createRealmFilamentGPU(){
    const groundRevision=realmFilamentGroundRevision(),dpr=realmPixelScale(),width=Math.max(1,Math.floor(screen.w*dpr)),height=Math.max(1,Math.floor(screen.h*dpr));this.width=width;this.height=height;if(surface.width!==width||surface.height!==height){surface.width=width;surface.height=height;view.setViewport([0,0,width,height]);}
    for(const pool of activePools)pool.used=0;activePools.clear();nextEntities.clear();
    const next=nextEntities;streaming?.begin(String(currentScene));assetDraws.begin(currentScene);
+   for(const entry of entries)if(entry.buildingLod)assetDraws.submitPrepared(entry.buildingLod,realmFilamentMatrix(entry.model),entry.distance,entry.instanceId);
    const cameraForLod=realmFilamentCameraState(dpr);let canonicalCount=0,lodChanged=!previousLod||previousLod.generation!==previousLodGeneration||previousLodScene!==currentScene;lodRows.length=0;
    for(const entry of entries)if(entry.canonicalAsset||entry.lodAsset){
     const i=canonicalCount++,matrix=canonicalMatrices[i]||(canonicalMatrices[i]=new Float32Array(16));let source=canonicalSources[i];if(canonicalRevisions[i]!==groundRevision||!realmFilamentSourceMatches(source,entry.model)){realmFilamentMatrixInto(entry.model,matrix);if(!source)source=canonicalSources[i]=new Float64Array(12);realmFilamentRememberSource(source,entry.model);canonicalRevisions[i]=groundRevision;}
@@ -365,7 +367,7 @@ function createRealmFilamentGPU(){
    try{for(const entry of entries)if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];canonicalFallback[index]=!entry.lodAsset&&!assetDraws.submit(selected?.[0]||entry.canonicalAsset,canonicalMatrices[index],lodRows[index]?.[2]||0,null,lodRows[index][0],!!selected);}}finally{assetDraws.end();}
    authoredDraws?.render(String(currentScene),cameraForLod.eye);constructionBudget.drain();
    canonicalIndex=0;
-   for(const entry of entries){if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(entry.lodAsset){const mesh=VeldrenAssets.mesh(selected?.[0]||entry.lodAsset)||entry.mesh;acquire({...realmMeshEntry(backend,mesh),model:entry.model},next,groundRevision);}else if(canonicalFallback[index]&&!assetDraws.ready(selected?.[0]||entry.canonicalAsset,lodRows[index][0]))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next,groundRevision);}else acquire(entry,next,groundRevision);}
+   for(const entry of entries){if(entry.buildingLod)continue;if(entry.canonicalAsset||entry.lodAsset){const index=canonicalIndex++,selected=lodResult?.selections[index];if(entry.lodAsset){const mesh=VeldrenAssets.mesh(selected?.[0]||entry.lodAsset)||entry.mesh;acquire({...realmMeshEntry(backend,mesh),model:entry.model},next,groundRevision);}else if(canonicalFallback[index]&&!assetDraws.ready(selected?.[0]||entry.canonicalAsset,lodRows[index][0]))acquire({...realmMeshEntry(backend,entry.mesh),model:entry.model},next,groundRevision);}else acquire(entry,next,groundRevision);}
    if(dynamic.length){
     const count=Math.floor(dynamic.length/12),capacity=dynamicCapacity(count);dynamicResourceIndex=(dynamicResourceIndex+1)%dynamicResources.length;let resource=dynamicResources[dynamicResourceIndex];
     if(!resource||resource.capacity<capacity){
@@ -411,16 +413,18 @@ function createRealmFilamentGPU(){
 painter3=function(g,project){
  if(project!==project3){const painter=canvasPainterRealm(g,project);painter.software=true;return painter;}
  if(!realmGPU||realmGPU.kind!=='filament')realmGPU=createRealmFilamentGPU();
- const gpu=realmGPU,entries=[],dynamic=[];let ownerId=null,part=0;
+ const gpu=realmGPU,entries=[],dynamic=[];let ownerId=null,part=0;gpu.buildingLOD?.begin(String(currentScene));
  const emit=(mesh,m,style={},entityId=null)=>{const frame=globalThis.VeldrenWorldPerformance?.frame(String(currentScene));if(entityId&&frame?.visibleIds&&!frame.visibleIds.has(entityId))return;const entry=gpu.canonicalEntry(mesh,m,style);entry.entityId=entityId||ownerId;entry.instanceId=entityId?entityId+":draw:0":ownerId?ownerId+":draw:"+(part++):null;entries.push(entry);};
  const painter={entity(id){ownerId=id||null;part=0;},face(points,color,normals,materialId,colors,uvs){realmFaceData(dynamic,points,color,normals,materialId,colors,uvs);},indexed(mesh,m,style={}){emit(mesh,m,style);},skinned(mesh,model,palette){entries.push({...realmSkinnedEntry(gpu,mesh),model,palette,characterMesh:mesh.materialParts?mesh:null});},cached(cached){
   if(cached.kind==='assembly'){
+   const distant=gpu.buildingLOD?.request(cached,ownerId,cameraPose3(),realmFilamentGroundRevision()),distantIdentity=ownerId+':building-lod',distantReady=distant&&gpu.assetDraws.readyPrepared(distant.id,distantIdentity);
+   if(distant){entries.push({buildingLod:distant,model:cached.model,instanceId:distantIdentity,distance:Math.hypot(cached.model[3]-cameraPose3().eye[0],cached.model[11]-cameraPose3().eye[2])});if(distantReady)gpu.buildingLOD.active(distant);}
    const revision=realmFilamentGroundRevision();let state=gpu.assemblyTransforms.get(cached);
    const instances=cached.instances||[],reset=!state||state.revision!==revision||!realmFilamentSourceMatches(state.source,cached.model);
    if(!state){state={matrices:[],children:[],source:new Float64Array(12)};gpu.assemblyTransforms.set(cached,state);}
    for(let j=0;j<instances.length;j++)if(reset||!realmFilamentSourceMatches(state.children[j],instances[j].matrix)){const model=affineMultiply(cached.model,instances[j].matrix);state.matrices[j]=model;state.children[j]=new Float64Array(instances[j].matrix);}
    state.matrices.length=state.children.length=instances.length;state.instances=instances;state.revision=revision;realmFilamentRememberSource(state.source,cached.model);
-   for(let j=0;j<state.matrices.length;j++){const i=state.instances[j],m=state.matrices[j];if(typeof cameraMeshHidden3==='function'&&cameraMeshHidden3(i.mesh,m))continue;emit(i.mesh,m,i.ghost?{dissolve:.45}:{},i.entityId);}
+   if(!distantReady)for(let j=0;j<state.matrices.length;j++){const i=state.instances[j],m=state.matrices[j];if(typeof cameraMeshHidden3==='function'&&cameraMeshHidden3(i.mesh,m))continue;emit(i.mesh,m,i.ghost?{dissolve:.45}:{},i.entityId);}
    const faces=typeof cameraVisibleFaces3==='function'?cameraVisibleFaces3(cached.faces,cached.model):cached.faces;
    if(faces.length){
     // Native assembly projections are temporary wrappers. Their persistent

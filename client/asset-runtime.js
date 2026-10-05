@@ -12,11 +12,11 @@
  function dependencies(id){if(!dependencyClosures.has(id))dependencyClosures.set(id,Object.freeze(request({op:'dependencies',id})));return dependencyClosures.get(id);}
  function expireLeaseRecords(id){records.delete(id);for(const key of dependencies(id))records.delete(key);}
  function stopPlanWorker(){planWorker?.terminate();planWorker=null;for(const job of planRequests.values())job.reject(cancelled('Asset preparation retired'));planRequests.clear();}
- function prepareInWorker(definition){
+ function prepareInWorker(definition,building=null){
   const base=new URL('.',globalThis.document?.baseURI||globalThis.location.href).href;
   if(!planWorker){planWorker=new Worker(new URL(realmAssetURL('asset-prepare-worker.js'),base).href);planWorker.onmessage=({data})=>{const job=planRequests.get(data.request);if(!job)return;planRequests.delete(data.request);if(data.error)job.reject(Error(data.error));else{workerMs+=data.prepareMs||0;workerCompleted++;job.resolve(data.plan);}};planWorker.onerror=stopPlanWorker;}
   const id=++planRequest;let reject;const ready=new Promise((resolve,no)=>{reject=no;planRequests.set(id,{resolve,reject:no});});
-  planWorker.postMessage({op:'prepare',request:id,id:definition.id,sourceHash:definition.sourceHash,url:new URL(realmAssetURL(definition.derivedPath),base).href,base,versions:globalThis.REALM_ASSET_VERSIONS||{}});
+  planWorker.postMessage({op:building?'building':'prepare',request:id,id:definition.id,sourceHash:definition.sourceHash,url:definition.derivedPath?new URL(realmAssetURL(definition.derivedPath),base).href:null,building,base,versions:globalThis.REALM_ASSET_VERSIONS||{}});
   return {ready,cancel(){if(!planRequests.has(id))return;planRequests.delete(id);planWorker?.postMessage({op:'cancel',request:id});reject(cancelled('Asset preparation cancelled'));}};
  }
  function cancelled(message){const error=Error(message);error.name='AbortError';return error;}
@@ -120,6 +120,14 @@
    try{task=prepareInWorker(definition);}catch(error){release();throw error;}
    const ready=task.ready.then(plan=>{if(closed||session!==epoch||record(id).generation!==definition.generation)throw cancelled('Stale asset preparation');for(const key of [id,...dependencies(id)]){const child=record(key);if(child.type!=='texture'&&child.loadState==='loading')assets.state(key,'loaded');}return plan;}).catch(error=>{release();throw error;});
    return Object.freeze({id,ready,release});
+  },
+  leaseBuildingPlan(id,modules,maxBytes){
+   if(typeof Worker==='undefined')throw Error('Background building preparation unavailable');
+   const session=epoch,definitions=[...new Set(modules.map(m=>m.id))].map(id=>record(id)),generations=definitions.map(d=>d.generation);let closed=false,task;
+   const acquired=[];const release=()=>{if(closed)return;closed=true;planLeases.delete(release);task?.cancel();if(session===epoch&&command)for(const id of acquired){assets.release(id);unloadUnused(id);}};
+   try{for(const d of definitions){assets.acquire(d.id);acquired.push(d.id);}task=prepareInWorker({id},{modules,definitions:definitions.map(d=>({id:d.id,sourceHash:d.sourceHash,derivedPath:d.derivedPath})),maxBytes});}catch(error){release();throw error;}
+   planLeases.add(release);const ready=task.ready.then(plan=>{if(closed||session!==epoch||definitions.some((d,i)=>record(d.id).generation!==generations[i]))throw cancelled('Stale building preparation');return plan;}).catch(error=>{release();throw error;});
+   return {ready,release};
   },
   async loadModel(id){const lease=leaseModel(id);let queue=legacyLeases.get(id);if(!queue)legacyLeases.set(id,queue=[]);queue.push(lease);return lease.ready;},
   releaseModel(id){

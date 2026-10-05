@@ -50,9 +50,9 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
   const check=()=>{if(disposed||entry.retired)throw abort();};
   try{
    const prepared=await entry.model.ready;check();const plan=entry.prepared?prepared:assets.renderPlan(prepared);entry.plan=plan;
-   const meshes=new Map();for(const packet of plan.geometry){check();const lease=await buildQueue.schedule(()=>{check();return geometryLease(packet)},entry.profile);check();entry.geometry.push(lease);meshes.set(packet.key,lease.resource);}
+   const meshes=new Map();for(const packet of plan.geometry){check();const lease=await buildQueue.schedule(()=>{check();const lease=geometryLease(packet);entry.geometry.push(lease);return lease;},entry.profile);check();meshes.set(packet.key,lease.resource);}
    const bound=new Map();
-   for(const draw of plan.draws){const material=entry.materialOverride||draw.material;if(bound.has(material))continue;check();const lease=await buildQueue.schedule(()=>{check();return materials.acquire(material,entry.profile)},entry.profile);check();entry.materials.push(lease);bound.set(material,await lease.ready);}
+   for(const draw of plan.draws){const material=entry.materialOverride||draw.material;if(bound.has(material))continue;check();const lease=await buildQueue.schedule(()=>{check();const lease=materials.acquire(material,entry.profile);entry.materials.push(lease);return lease;},entry.profile);check();bound.set(material,await lease.ready);}
    check();return Object.freeze({plan,draws:plan.draws.map(draw=>Object.freeze({...draw,resource:meshes.get(draw.geometry),materialInstance:bound.get(entry.materialOverride||draw.material)}))});
   }catch(error){clean(entry);throw error;}
  }
@@ -68,5 +68,10 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
   return Object.freeze({id,generation,ready:entry.ready.then(value=>{if(lease.closed||disposed)throw abort();return value;}).catch(error=>{release(lease);throw error;}),release:()=>release(lease)});
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const lease of [...leases])release(lease);}
- return Object.freeze({acquire,destroy,scheduleBuild:(work,profile='browser')=>buildQueue.schedule(work,profile),diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes:[...geometry.values()].reduce((n,e)=>n+e.bytes,0),buildQueue:buildQueue.diagnostics()})});
+ function acquirePlan(descriptor,profile){
+  if(disposed)throw Error('Model resource owner destroyed');const key=descriptor.id+'@'+descriptor.generation+':'+profile;let entry=models.get(key);
+  if(!entry){entry={key,profile,materialOverride:null,users:0,retired:false,cleaned:false,geometry:[],materials:[],prepared:true,model:{ready:Promise.resolve(descriptor.plan),release(){}}};models.set(key,entry);entry.ready=Promise.resolve().then(()=>build(entry));}
+  entry.users++;const lease={entry,closed:false};leases.add(lease);return {id:descriptor.id,generation:descriptor.generation,ready:entry.ready.then(value=>{if(lease.closed||disposed)throw abort();return value;}).catch(error=>{release(lease);throw error;}),release:()=>release(lease)};
+ }
+ return Object.freeze({acquire,acquirePlan,destroy,scheduleBuild:(work,profile='browser')=>buildQueue.schedule(work,profile),diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes:[...geometry.values()].reduce((n,e)=>n+e.bytes,0),buildQueue:buildQueue.diagnostics()})});
 }

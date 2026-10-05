@@ -16,11 +16,18 @@ async function initialize(message){
 }
 self.onmessage=async({data})=>{
  if(data.op==='cancel'){jobs.get(data.request)?.abort();return;}
- if(data.op!=='prepare')return;
+ if(data.op!=='prepare'&&data.op!=='building')return;
  const controller=new AbortController();jobs.set(data.request,controller);
  try{
   if(!initialized)initialized=initialize(data);await initialized;
   if(controller.signal.aborted)return;
+  if(data.op==='building'){
+   if(!globalThis.VeldrenBuildingLOD)importScripts(realmAssetURL('building-lod.js'));
+   const plans=new Map();
+   for(const d of data.building.definitions){const response=await fetch(realmAssetURL(d.derivedPath),{signal:controller.signal});if(!response.ok)throw Error('Building source unavailable: '+d.id);const model=await response.json();if(controller.signal.aborted)return;if(model.id!==d.id||model.sourceHash!==d.sourceHash)throw Error('Stale building source: '+d.id);plans.set(d.id,VeldrenAssets.renderPlan(model));}
+   const started=performance.now(),plan=VeldrenBuildingLOD.merge(data.id,data.building.modules.map(m=>({...m,plan:plans.get(m.id)})),data.building.maxBytes),buffers=plan.geometry.flatMap(p=>[p.vertices.buffer,p.normals.buffer,p.tangents.buffer,p.indices.buffer]);
+   if(!controller.signal.aborted)self.postMessage({request:data.request,plan,prepareMs:performance.now()-started},buffers);return;
+  }
   const response=await fetch(data.url,{signal:controller.signal});if(!response.ok)throw Error('Derived model unavailable: '+data.id);
   const model=await response.json();if(controller.signal.aborted)return;
   if(model.id!==data.id||model.sourceHash!==data.sourceHash)throw Error('Stale model in asset worker');

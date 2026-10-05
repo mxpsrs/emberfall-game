@@ -1,0 +1,145 @@
+{
+  "kind": "canonical geometry submissions; not GPU draw calls or FPS",
+  "buildings": [
+    {
+      "name": "Wayfarer’s Rest · Inn",
+      "x": 35,
+      "z": 40,
+      "modules": 120,
+      "sourceDraws": 218,
+      "draws": 24,
+      "triangles": 25177,
+      "bytes": 4806204,
+      "nearTriangles": 27227
+    },
+    {
+      "name": "Mara’s Market · General shop",
+      "x": 65,
+      "z": 52,
+      "modules": 57,
+      "sourceDraws": 96,
+      "draws": 23,
+      "triangles": 12580,
+      "bytes": 2098080,
+      "nearTriangles": 13811
+    },
+    {
+      "name": "Doran’s Smithy",
+      "x": 79,
+      "z": 37,
+      "modules": 60,
+      "sourceDraws": 94,
+      "draws": 20,
+      "triangles": 10391,
+      "bytes": 1787772,
+      "nearTriangles": 11621
+    },
+    {
+      "name": "Briar Haven Magic School",
+      "x": 71,
+      "z": 77,
+      "modules": 143,
+      "sourceDraws": 257,
+      "draws": 32,
+      "triangles": 25566,
+      "bytes": 5025912,
+      "nearTriangles": 28307
+    },
+    {
+      "name": "Briar Haven Bank",
+      "x": 51,
+      "z": 39,
+      "modules": 47,
+      "sourceDraws": 93,
+      "draws": 19,
+      "triangles": 7577,
+      "bytes": 1219404,
+      "nearTriangles": 9250
+    },
+    {
+      "name": "Iona’s Kitchen",
+      "x": 39,
+      "z": 74,
+      "modules": 56,
+      "sourceDraws": 101,
+      "draws": 18,
+      "triangles": 8598,
+      "bytes": 1543176,
+      "nearTriangles": 9727
+    },
+    {
+      "name": "Rose Cottage",
+      "x": 35,
+      "z": 17,
+      "modules": 46,
+      "sourceDraws": 84,
+      "draws": 18,
+      "triangles": 7453,
+      "bytes": 1307076,
+      "nearTriangles": 8223
+    },
+    {
+      "name": "The Weaver’s House",
+      "x": 68,
+      "z": 18,
+      "modules": 139,
+      "sourceDraws": 236,
+      "draws": 21,
+      "triangles": 34001,
+      "bytes": 6281652,
+      "nearTriangles": 36889
+    },
+    {
+      "name": "Orchard Farmhouse",
+      "x": 83,
+      "z": 18,
+      "modules": 63,
+      "sourceDraws": 111,
+      "draws": 18,
+      "triangles": 13214,
+      "bytes": 2230368,
+      "nearTriangles": 14805
+    },
+    {
+      "name": "Gardener’s Croft",
+      "x": 32,
+      "z": 101,
+      "modules": 83,
+      "sourceDraws": 140,
+      "draws": 21,
+      "triangles": 13579,
+      "bytes": 2512068,
+      "nearTriangles": 15553
+    },
+    {
+      "name": "The Copper House",
+      "x": 50,
+      "z": 104,
+      "modules": 111,
+      "sourceDraws": 211,
+      "draws": 20,
+      "triangles": 32816,
+      "bytes": 6045552,
+      "nearTriangles": 34489
+    },
+    {
+      "name": "Briar Haven Woodworkers’ Hall",
+      "x": 66,
+      "z": 99,
+      "modules": 65,
+      "sourceDraws": 106,
+      "draws": 21,
+      "triangles": 11448,
+      "bytes": 1955136,
+      "nearTriangles": 12577
+    }
+  ],
+  "totals": {
+    "modules": 990,
+    "sourceDraws": 1747,
+    "draws": 255,
+    "nearTriangles": 222479,
+    "triangles": 202400,
+    "bytes": 36812400
+  }
+}

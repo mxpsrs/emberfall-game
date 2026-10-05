@@ -83,7 +83,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
  function activateInstance(instance){
   rememberActive(instance);finishInstance(instance);const transform=manager.getInstance(instance.root);
   try{manager.setTransform(transform,instance.pendingMatrix);}finally{transform.delete();}
-  instance.matrix=Array.from(instance.pendingMatrix);instance.pendingMatrix=null;scene.addEntities(instance.entities);instance.active=true;
+  instance.matrix=Array.from(instance.pendingMatrix);instance.pendingMatrix=null;if(!instance.pool.prepared){scene.addEntities(instance.entities);instance.active=true;}
  }
  function makeInstance(model,options={}){
   const instance=beginInstance(model,options);
@@ -95,15 +95,15 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   if(key!==sceneKey){for(const pool of pools.values())removePool(pool);pools.clear();failedModels.clear();sceneKey=key;}
   for(const pool of pools.values())pool.used=0;
  }
- function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false){
-  if(!lodSelected&&assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
-  if(streaming&&!streaming.want(id,matrix,options,identity))return retainPrevious(identity,matrix);
-  const generation=assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
+ function submit(id,matrix,distance=0,options=null,identity=null,lodSelected=false,prepared=null){
+  if(!prepared&&!lodSelected&&assets.record(id).lods?.length>1)id=assets.lod(id,distance).asset;
+  if(!prepared&&streaming&&!streaming.want(id,matrix,options,identity))return retainPrevious(identity,matrix);
+  const generation=prepared?prepared.generation:assets.record(id).generation,key=options?id+JSON.stringify(options)+(options.material?'@'+assets.record(options.material).generation:''):id;let pool=pools.get(key);
   if(pool&&pool.lease.generation!==generation){removePool(pool);pools.delete(key);pool=null;}
   const failure=(!pool||pool.error)&&failedModels.get(key);
   if(failure&&failure.generation===generation){if(failure.attempts>=3||now()<failure.retryAt)return retainPrevious(identity,matrix);if(pool){removePool(pool);pools.delete(key);pool=null;}}
   if(!pool){
-   let lease;try{lease=resources.acquire(id,profile,options||{});}catch(error){failed(key,generation,error);return retainPrevious(identity,matrix);}pool={asset:id,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
+   let lease;try{lease=prepared?resources.acquirePlan(prepared,profile):resources.acquire(id,profile,options||{});}catch(error){failed(key,generation,error);return retainPrevious(identity,matrix);}pool={asset:id,prepared:!!prepared,material:options?.material||'',lease,model:null,error:null,instances:[],identities:new Map(),used:0,lastUsed:frame};pools.set(key,pool);
    const current=pool;lease.ready.then(model=>{if(pools.get(key)!==current)return;failedModels.delete(key);current.model=model;},error=>{if(pools.get(key)!==current)return;current.error=error;failed(key,generation,error);});
   }
   pool.lastUsed=frame;if(pool.error||!pool.model)return retainPrevious(identity,matrix);
@@ -124,7 +124,7 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
    for(const pool of pools.values())for(const instance of pool.instances)if(instance.pending&&instance.seen===frame)constructionBudget.enqueue(constructionOwner,instance);
   }
   for(const [id,pool] of pools){
-   if(!pool.used&&streaming?.retains&&!streaming.retains(pool.asset,pool.material)){removePool(pool);pools.delete(id);continue;}
+   if(!pool.prepared&&!pool.used&&streaming?.retains&&!streaming.retains(pool.asset,pool.material)){removePool(pool);pools.delete(id);continue;}
    for(const instance of pool.instances)if(instance.seen!==frame&&instance.active){scene.removeEntities(instance.entities);instance.active=false;}
    // The small grace interval avoids allocating again on a culling boundary;
    // changing Scene clears immediately, and excess instance slots are removed.
@@ -136,5 +136,5 @@ function createVeldrenAssetDraws(engine,scene,assets,resources,profile,filament=
   }
  }
  function destroy(){if(disposed)return;disposed=true;unsubscribe();for(const pool of pools.values())removePool(pool);pools.clear();failedModels.clear();}
- return Object.freeze({begin,submit,end,destroy,ready(id,identity){const instance=pools.get(id)?.identities.get('entity:'+identity);return !!instance?.active&&instance.seen===frame;},diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),pendingVisibleInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending&&i.seen===frame).length,0),pendingInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending).length,0),construction:constructionBudget?.diagnostics?.()||null,loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
+ return Object.freeze({begin,submit,end,destroy,submitPrepared(descriptor,matrix,distance,identity){return submit(descriptor.id,matrix,distance,null,identity,true,descriptor);},retirePrepared(id){const pool=pools.get(id);if(pool?.prepared){removePool(pool);pools.delete(id);}},readyPrepared(id,identity){const instance=pools.get(id)?.identities.get('entity:'+identity);return !!instance&&!instance.pending&&instance.seen===frame;},ready(id,identity){const instance=pools.get(id)?.identities.get('entity:'+identity);return !!instance?.active&&instance.seen===frame;},diagnostics:()=>({models:pools.size,activeRenderables:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.active).reduce((m,i)=>m+i.entities.length,0),0),submissions:[...pools.values()].reduce((n,p)=>n+p.used*(p.model?.draws.length||0),0),instances:[...pools.values()].reduce((n,p)=>n+p.instances.length,0),pendingVisibleInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending&&i.seen===frame).length,0),pendingInstances:[...pools.values()].reduce((n,p)=>n+p.instances.filter(i=>i.pending).length,0),construction:constructionBudget?.diagnostics?.()||null,loading:[...pools.values()].filter(p=>!p.model&&!p.error).length+(streaming?.pending()||0),failures:[...pools.values()].filter(p=>p.error).map(p=>String(p.error))})});
 }

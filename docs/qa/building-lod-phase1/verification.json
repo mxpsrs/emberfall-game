@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-05",
+  "scope": "Phase one: distant whole-building presentation",
+  "baseGithubCommit": "faa4dffd73c9415e0408570c1aaead6fd182f033",
+  "release": "realm-6b369737c7363ce9",
+  "worker": {
+    "bytes": 65140298,
+    "sha256": "b6c678af3dfd850627c60ae52ea9e9346a983b92f6b9ed0f055f983aaf3db8ca",
+    "limitBytes": 67108864,
+    "headroomBytes": 1968566
+  },
+  "sourceCheck": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> check\n> node scripts/check-source.mjs\n\n452 scripts parse; static imports and current documentation links resolve.",
+  "deliveryCheck": "PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection and the 64 MiB limit",
+  "geometryCheck": "PASS: 12 Briar Haven canonical building plans, colors/UVs/materials, transformed normals/tangents, memory cap, authored immutability, near/editor selection and retirement.\n{\"modules\":990,\"sourceDraws\":1747,\"draws\":255,\"nearTriangles\":222479,\"triangles\":202400,\"bytes\":36812400}",
+  "tests": [
+    {
+      "test": "tests/assets/asset-delivery.mjs",
+      "passed": true
+    },
+    {
+      "test": "tests/assets/asset-meshes.mjs",
+      "passed": true
+    },
+    {
+      "test": "tests/assets/packed-asset-delivery.mjs",
+      "passed": true
+    },
+    {
+      "test": "tests/editor/editor-building-history.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/rendering/building-lod-resources.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/rendering/building-lod.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/rendering/filament-static-transforms.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/world/building-assembly.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/world/camera-building-tour.cjs",
+      "passed": true
+    },
+    {
+      "test": "tests/world/world-buildings-scene.cjs",
+      "passed": true
+    }
+  ],
+  "cameraTour": {
+    "pass": true,
+    "buildings": 228,
+    "briarBuildings": 12,
+    "samples": 648,
+    "poses": 10368,
+    "terrainStops": 0,
+    "hiddenModules": 2096,
+    "visibleModules": 250496
+  },
+  "priorCameraAttempt": {
+    "timedOut": true,
+    "timeoutSeconds": 240,
+    "context": "Executed concurrently with the complete world/terrain build; direct rerun completed successfully."
+  },
+  "resourceCheck": {
+    "backend": "real native WASM worker and Filament WASM NOOP",
+    "sourceSubmissions": 60,
+    "proxyRenderables": 2,
+    "constructionFrames": 3,
+    "dependencyLeasesAfterRetirement": 0,
+    "gpuBytesAfterRetirement": 0
+  },
+  "verificationLimits": {
+    "renderedBrowserViews": false,
+    "gpuDriverDrawCalls": false,
+    "phoneFrameTimes": false,
+    "reason": "Browser preview timed out. Geometry submission counts are not FPS or GPU draw-call measurements."
+  }
+}
