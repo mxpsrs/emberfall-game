@@ -38,7 +38,13 @@ function createVeldrenMaterialResources(engine,assets,textures,filament=Filament
    check();entry.shader=shader(entry.plan.shader,entry.profile);const material=await entry.shader.ready;check();
    for(const binding of entry.plan.textures){
     const bytes=binding.encoded?Uint8Array.from(atob(binding.encoded),c=>c.charCodeAt(0)):await loadBytes(binding.path,signal);check();
-    entry.textures.push(await schedule(()=>{check();return textures.acquire(bytes,binding.processing);},entry.profile));
+    const task=assets.prepareTexture?.(bytes,binding.processing);
+    if(task){
+     const cancel=()=>task.cancel();signal.addEventListener('abort',cancel,{once:true});let prepared;
+     try{prepared=await task.ready;check();entry.textures.push(await schedule(()=>{check();return textures.acquirePrepared(prepared);},entry.profile));}
+     catch(error){prepared?.release();task.cancel();throw error;}
+     finally{signal.removeEventListener('abort',cancel);}
+    }else entry.textures.push(await schedule(()=>{check();return textures.acquire(bytes,binding.processing);},entry.profile));
    }
    check();const instance=entry.instance=await schedule(()=>{
     check();const value=material.createInstance();

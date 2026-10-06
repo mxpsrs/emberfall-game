@@ -10,7 +10,11 @@ function createVeldrenTextureResources(engine,assets,filament=Filament){
  }
  function acquire(encoded,settings){
   if(disposed)throw Error('Texture resource owner destroyed');
-  const native=assets.processTexture(encoded,settings);let resource=resources.get(native.handle);
+  return acquirePrepared(assets.processTexture(encoded,settings));
+ }
+ function acquirePrepared(native){
+  if(disposed){native.release();throw Error('Texture resource owner destroyed');}
+  let resource=resources.get(native.handle);
   try{
    if(!resource){
     const info=native.info,first=info.levels[0];let texture=null;
@@ -27,7 +31,7 @@ function createVeldrenTextureResources(engine,assets,filament=Filament){
     }catch(error){if(texture)engine.destroyTexture(texture);throw error;}
     resource={texture,users:0,bytes:info.gpuBytes,info};resources.set(native.handle,resource);gpuBytes+=resource.bytes;
    }
-   resource.users++;let closed=false;
+   native.discardPixels?.();resource.users++;let closed=false;
    const lease=Object.freeze({texture:resource.texture,info:resource.info,release(){
     if(closed)return;closed=true;leases.delete(lease);
     try{if(--resource.users===0){resources.delete(native.handle);gpuBytes-=resource.bytes;engine.destroyTexture(resource.texture);}}
@@ -35,5 +39,5 @@ function createVeldrenTextureResources(engine,assets,filament=Filament){
    }});leases.add(lease);return lease;
   }catch(error){native.release();throw error;}
  }
- return Object.freeze({acquire,destroy,get gpuBytes(){return gpuBytes;},diagnostics:()=>({textures:resources.size,leases:leases.size,gpuBytes})});
+ return Object.freeze({acquire,acquirePrepared,destroy,get gpuBytes(){return gpuBytes;},diagnostics:()=>({textures:resources.size,leases:leases.size,gpuBytes})});
 }

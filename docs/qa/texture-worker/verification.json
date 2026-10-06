@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-06T07:16:10.952798+00:00",
+  "change": "Texture decoding, resizing and mip generation run in the existing native preparation worker. Filament handle creation and uploads stay in the bounded main-thread build queue.",
+  "baseline": {
+    "scope": "12 actual mobile textures, C++/WASM processing in the local runtime; these are CPU timings, not phone frame times",
+    "largestSynchronousTextureMs": 25.740275999999994,
+    "totalSynchronousTextureMs": 92.44310399999983,
+    "samples": [
+      {
+        "path": "assets/canonical/variants/0c313b946af0bf0e0c97fbb870ee6839347902db35a6bfb4dc9d66edda91519f.png",
+        "ms": 25.740275999999994,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/e5b0f728cdd0cdd5575d7234f286cc6313d9e6d30a7797efccf090ea917e4296.png",
+        "ms": 9.60799499999996,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/images/9ed61f7726a54fe346a78b9e5a18905d8e2b88f86235d97f53cd207a26f3f8c7.png",
+        "ms": 5.070914000000016,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/images/d08e3356a83211bc6ca21fe3a8e39f4b5c1a3b8f85457fc2c0fb57be09935025.png",
+        "ms": 6.983484999999973,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/2227cc8d2c86491f9425d8fd08237a0a2d3120255bc5fbcb4054dc0f2467f060.png",
+        "ms": 6.320697999999993,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/1246e0cb32258da3752ac2162ce1adef636583352068aa7ff910cf5f70aaf048.png",
+        "ms": 6.850935999999933,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/c7fbb24edc68157674f6caeded420972dd92924e04faea555893297ee5f673da.png",
+        "ms": 4.148814000000016,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/images/1c25b096e37c000d021839d813e4f00dabd3d7c2b2fbf572fcb29f5517238eeb.png",
+        "ms": 3.3885870000000295,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/277dafb966aa2362fa1f620905f9d92a9d9244e256c4be29ed32df62e1e403f0.png",
+        "ms": 3.207157999999936,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/d369d68b4425464b5d2b23ea6abf3b8457aed367172e9b8dcc5e910aeb878ac7.png",
+        "ms": 7.043067999999948,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/47423be273f675a0e2dde4a459c4832e414e3bfd562c142847b74bb43facfa6a.png",
+        "ms": 7.3371929999999566,
+        "width": 256,
+        "height": 256
+      },
+      {
+        "path": "assets/canonical/variants/e6a77fbdfb41d389208b9c7b118bbdc94f821601345b25b97452b1db6bf526e2.png",
+        "ms": 6.743980000000079,
+        "width": 256,
+        "height": 256
+      }
+    ]
+  },
+  "verified": {
+    "workerTexturesCompared": 12,
+    "byteExactMipPixels": 4194288,
+    "mainThreadTextureDecodeCallsDuringWorkerPreparation": 0,
+    "sharedNativeTextureIdentity": true,
+    "preparedPixelsDiscardedAfterUpload": true,
+    "cancellationAndReload": true,
+    "realFilamentMaterialsPerContext": 30,
+    "runtimeAndEditorContexts": true,
+    "sharedLeases": 100,
+    "allocationFailureCancellationLateCompletionAndTeardown": true,
+    "modelBuildingStreamingAndTransformRegressions": true,
+    "phaseThreeRetained": true,
+    "assetManifestUnchanged": true
+  },
+  "terrainReuse": {
+    "terrainRelatedRuntimeSourceUnchanged": true,
+    "nativeWorldAndAllOtherTerrainInputsUnchanged": true,
+    "regeneratedPagesMatched": 110
+  },
+  "build": {
+    "workerBytes": 2406784,
+    "workerSha256": "bf4809f7c4da72398c5e1ebcd9adbb2a5777e71cc86a3a7bc2f4b77eab96cc44",
+    "assetManifestSha256": "514ce535a68665dafe3245f9a0bbed1ac296e41745a755b331c878261f026c27"
+  },
+  "reproduction": [
+    "node tests/assets/asset-preparation.mjs",
+    "node tests/assets/asset-materials.mjs",
+    "node tests/assets/asset-meshes.mjs",
+    "node tests/rendering/building-lod-resources.cjs",
+    "node tests/world/world-streaming.mjs",
+    "node tests/world/streaming-frame-budget.mjs",
+    "node tests/assets/asset-textures.mjs",
+    "node tests/rendering/filament-static-transforms.cjs",
+    "node tests/assets/packed-asset-delivery.mjs",
+    "node tests/assets/asset-storage.mjs",
+    "node scripts/check-source.mjs"
+  ],
+  "limits": {
+    "physicalPhoneFPSMeasured": false,
+    "GPUUploadCostRemoved": false,
+    "renderedPixelsVerifiedOnPhone": false
+  }
+}

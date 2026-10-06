@@ -4,7 +4,7 @@
  let registryHandle=0,command=null,destroyNative=null,records=new Map(),catalogs=new Map(),ids=null,ready=false,epoch=0,initializing=null,textureApi=null;
  const payloads=new Map(),models=new Map(),leases=new Set(),legacyLeases=new Map();
  const textureLeases=new Set(),disposeListeners=new Set(),reloadListeners=new Set();
- const planLeases=new Set(),dependencyClosures=new Map();let planWorker=null,planRequest=0,workerMs=0,workerCompleted=0;
+ const planLeases=new Set(),dependencyClosures=new Map();let planWorker=null,planWorkerSerial=0,planRequest=0,workerMs=0,workerCompleted=0;
  const planRequests=new Map();
  const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
  function request(value){if(!command)throw Error('Native asset registry is not ready');return command(value);}
@@ -12,12 +12,13 @@
  function dependencies(id){if(!dependencyClosures.has(id))dependencyClosures.set(id,Object.freeze(request({op:'dependencies',id})));return dependencyClosures.get(id);}
  function expireLeaseRecords(id){records.delete(id);for(const key of dependencies(id))records.delete(key);}
  function stopPlanWorker(){planWorker?.terminate();planWorker=null;for(const job of planRequests.values())job.reject(cancelled('Asset preparation retired'));planRequests.clear();}
- function prepareInWorker(definition,building=null){
+ function prepareInWorker(definition,building=null,texture=null){
   const base=new URL('.',globalThis.document?.baseURI||globalThis.location.href).href;
-  if(!planWorker){planWorker=new Worker(new URL(realmAssetURL('asset-prepare-worker.js'),base).href);planWorker.onmessage=({data})=>{const job=planRequests.get(data.request);if(!job)return;planRequests.delete(data.request);if(data.error)job.reject(Error(data.error));else{workerMs+=data.prepareMs||0;workerCompleted++;job.resolve(data.plan);}};planWorker.onerror=stopPlanWorker;}
+  if(!planWorker){planWorker=new Worker(new URL(realmAssetURL('asset-prepare-worker.js'),base).href);const serial=++planWorkerSerial;planWorker.onmessage=({data})=>{const job=planRequests.get(data.request);if(!job)return;planRequests.delete(data.request);if(data.error)job.reject(Error(data.error));else{workerMs+=data.prepareMs||0;workerCompleted++;job.resolve(data.texture?{...data.texture,handle:'worker:'+serial+':'+data.texture.handle}:data.plan);}};planWorker.onerror=stopPlanWorker;}
   const id=++planRequest;let reject;const ready=new Promise((resolve,no)=>{reject=no;planRequests.set(id,{resolve,reject:no});});
-  planWorker.postMessage({op:building?'building':'prepare',request:id,id:definition.id,sourceHash:definition.sourceHash,url:definition.derivedPath?new URL(realmAssetURL(definition.derivedPath),base).href:null,building,base,versions:globalThis.REALM_ASSET_VERSIONS||{}});
-  return {ready,cancel(){if(!planRequests.has(id))return;planRequests.delete(id);planWorker?.postMessage({op:'cancel',request:id});reject(cancelled('Asset preparation cancelled'));}};
+  const worker=planWorker,bytes=texture?.bytes.slice();
+  worker.postMessage({op:texture?'texture':building?'building':'prepare',request:id,id:definition.id,sourceHash:definition.sourceHash,url:definition.derivedPath?new URL(realmAssetURL(definition.derivedPath),base).href:null,building,texture:texture?{bytes,options:texture.options}:null,base,versions:globalThis.REALM_ASSET_VERSIONS||{}},bytes?[bytes.buffer]:[]);
+  return {ready,cancel(){const pending=planRequests.has(id);if(!pending&&!texture)return;planRequests.delete(id);try{worker.postMessage({op:'cancel',request:id});}catch{}if(pending)reject(cancelled('Asset preparation cancelled'));}};
  }
  function cancelled(message){const error=Error(message);error.name='AbortError';return error;}
  function retire(entry){
@@ -136,6 +137,18 @@
   ioDiagnostics:()=>({models:models.size,leases:leases.size,preparation:{pending:planRequests.size,leases:planLeases.size,completed:workerCompleted,workerMs}}),
   onDispose(listener){disposeListeners.add(listener);return ()=>disposeListeners.delete(listener);},
   onReload(listener){reloadListeners.add(listener);return ()=>reloadListeners.delete(listener);},
+  prepareTexture(bytes,options={}){
+   if(!ready||!command)throw Error('Native texture processing unavailable');
+   if(typeof Worker==='undefined')return null;
+   const session=epoch;let closed=false,task,pixels=null;
+   const release=()=>{if(closed)return;closed=true;if(pixels)pixels.length=0;planLeases.delete(release);task?.cancel();};
+   task=prepareInWorker({id:'texture'},null,{bytes,options});planLeases.add(release);
+   const completion=task.ready.then(texture=>{
+    if(closed||session!==epoch){release();throw cancelled('Texture preparation retired');}
+    pixels=texture.levels;return Object.freeze({handle:texture.handle,info:freeze(texture.info),release(){texture.levels.length=0;release();},discardPixels(){texture.levels.length=0;},level(index){if(closed||session!==epoch)throw cancelled('Texture lease released');const level=texture.levels[index];if(!level)throw Error('Invalid prepared mip level');return level;}});
+   }).catch(error=>{release();throw error;});
+   return {ready:completion,cancel:release};
+  },
   processTexture(bytes,options={}){
    if(!ready||!textureApi?.veldren_texture_create)throw Error('Native texture processing unavailable');
    const api=textureApi,session=epoch;

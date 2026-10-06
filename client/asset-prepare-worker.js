@@ -1,7 +1,7 @@
 'use strict';
 // Background IO and native render planning. Filament handles stay on the main
 // thread; the same canonical C++ planner validates these packets.
-let initialized=null,api=null;const jobs=new Map();
+let initialized=null,api=null;const jobs=new Map(),textureLeases=new Map();
 async function initialize(message){
  globalThis.realmAssetURL=path=>new URL(message.versions?.[path]||path,message.base).href;
  importScripts(realmAssetURL('asset-runtime.js'));
@@ -16,12 +16,17 @@ async function initialize(message){
  await VeldrenAssets.initialize(api);
 }
 self.onmessage=async({data})=>{
- if(data.op==='cancel'){jobs.get(data.request)?.abort();return;}
- if(data.op!=='prepare'&&data.op!=='building')return;
+ if(data.op==='cancel'){jobs.get(data.request)?.abort();textureLeases.get(data.request)?.release();textureLeases.delete(data.request);return;}
+ if(data.op!=='prepare'&&data.op!=='building'&&data.op!=='texture')return;
  const controller=new AbortController();jobs.set(data.request,controller);
  try{
   if(!initialized)initialized=initialize(data);await initialized;
   if(controller.signal.aborted)return;
+  if(data.op==='texture'){
+   const started=performance.now(),native=VeldrenAssets.processTexture(data.texture.bytes,data.texture.options);
+   textureLeases.set(data.request,native);const levels=native.info.levels.map((_,i)=>native.level(i));
+   self.postMessage({request:data.request,texture:{handle:native.handle,info:native.info,levels},prepareMs:performance.now()-started},levels.map(level=>level.buffer));return;
+  }
   if(data.op==='building'){
    if(!globalThis.VeldrenBuildingLOD)importScripts(realmAssetURL('building-lod.js'));
    const plans=new Map();
@@ -41,6 +46,6 @@ self.onmessage=async({data})=>{
   plan.occlusion=VeldrenOcclusion.compile(plan,id=>VeldrenAssets.materialPlan(id,'browser'));
   if(plan.occlusion)buffers.push(plan.occlusion.polygons.buffer);
   if(!controller.signal.aborted)self.postMessage({request:data.request,plan,prepareMs:performance.now()-started},buffers);
- }catch(error){if(!controller.signal.aborted)self.postMessage({request:data.request,error:String(error.message||error)});}
+ }catch(error){textureLeases.get(data.request)?.release();textureLeases.delete(data.request);if(!controller.signal.aborted)self.postMessage({request:data.request,error:String(error.message||error)});}
  finally{jobs.delete(data.request);}
 };

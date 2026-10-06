@@ -4,6 +4,22 @@ import vm from 'node:vm';
 import os from 'node:os';
 import path from 'node:path';
 import {createRequire} from 'node:module';
+import {Worker as NodeWorker} from 'node:worker_threads';
+
+const browserWorkers=[],workerRoot=path.resolve('client');
+const workerSource=`
+ const fs=require('node:fs'),vm=require('node:vm'),{parentPort,workerData}=require('node:worker_threads');
+ global.self=global;global.postMessage=(data,transfer)=>parentPort.postMessage(data,transfer);
+ global.fetch=async url=>{const bytes=fs.readFileSync(workerData.root+new URL(url).pathname);return {ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),json:async()=>JSON.parse(bytes)};};
+ global.importScripts=url=>vm.runInThisContext(fs.readFileSync(workerData.root+new URL(url).pathname,'utf8'));
+ vm.runInThisContext(fs.readFileSync(workerData.root+'/asset-prepare-worker.js','utf8'));
+ parentPort.on('message',data=>self.onmessage({data}));
+`;
+class BrowserWorker{
+ constructor(){this.worker=new NodeWorker(workerSource,{eval:true,workerData:{root:workerRoot}});browserWorkers.push(this);this.worker.on('message',data=>this.onmessage?.({data}));this.worker.on('error',error=>this.onerror?.(error));}
+ postMessage(data,transfer){this.worker.postMessage(data,transfer);}
+ terminate(){return this.worker.terminate();}
+}
 
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'veldren-textures-'));
 const source=fs.readFileSync('client/vendor/filament/filament.js','utf8').replace('Filament = Object.assign(module, Filament);','Filament = Object.assign(module, Filament);globalThis.__VELDREN_TEXTURE_FILAMENT__=Filament;');
@@ -25,11 +41,11 @@ try{
    const record=structuredClone(seed);record.id='test:material/'+unlit+'/'+alphaMode;record.name='Material test';record.material.id=record.id;
    record.material.unlit=unlit;record.material.alphaMode=alphaMode;record.material.alphaCutoff=.3;testRegistry.records.push(record);
   }
-  const context={VELDREN_CONTEXT:mode,TextEncoder,TextDecoder,Uint8Array,AbortController,atob,Filament:F,realmAssetURL:p=>p,
+  const context={Worker:BrowserWorker,location:{href:'http://fixture/'},document:{baseURI:'http://fixture/'},URL,VELDREN_CONTEXT:mode,TextEncoder,TextDecoder,Uint8Array,AbortController,atob,Filament:F,realmAssetURL:p=>p,
    fetch:async()=>({ok:true,json:async()=>testRegistry})};
   vm.createContext(context);
   for(const file of ['asset-runtime','asset-textures','asset-materials'])vm.runInContext(fs.readFileSync('client/'+file+'.js','utf8'),context);
-  const assets=context.VeldrenAssets;await assets.initialize(api);
+  const assets={...context.VeldrenAssets,processTexture(){throw Error('Main-thread texture decode is forbidden');}};await assets.initialize(api);
   const engine=F.Engine._create(F.Backend.NOOP,F.Engine.createDefaultConfig());
   const pool=context.createVeldrenTextureResources(engine,assets,F);
   const registry=JSON.parse(fs.readFileSync('client/assets/asset-registry.json','utf8'));
@@ -78,4 +94,4 @@ try{
   console.log('PASS: '+mode+' '+plans+' native material plans, '+checked.size+' distinct real GPU materials, 100 shared leases, failure/cancellation/late completion, repeated unload and teardown.');
  }
  function assetsPlanShader(registry,id){const m=registry.records.find(r=>r.id===id).material;return 'materials/veldren-pbr-'+(m.unlit?'unlit':'lit')+'-'+m.alphaMode.toLowerCase()+'.filamat';}
-}finally{fs.rmSync(temporary,{recursive:true,force:true});delete global.window;delete global.__VELDREN_TEXTURE_FILAMENT__;}
+}finally{await Promise.all(browserWorkers.map(w=>w.terminate()));fs.rmSync(temporary,{recursive:true,force:true});delete global.window;delete global.__VELDREN_TEXTURE_FILAMENT__;}
