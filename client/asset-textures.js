@@ -2,7 +2,7 @@
 // Filament handle marshalling. C++ determines texture identity, processing and
 // shared pixel ownership; this adapter owns the handles for one rendering engine.
 function createVeldrenTextureResources(engine,assets,filament=Filament){
- const resources=new Map(),leases=new Set();let disposed=false;
+ const resources=new Map(),leases=new Set();let disposed=false,gpuBytes=0;
  const unsubscribe=assets.onDispose(destroy);
  function destroy(){
   if(disposed)return;disposed=true;unsubscribe();
@@ -25,15 +25,15 @@ function createVeldrenTextureResources(engine,assets,filament=Filament){
       catch(error){if(!buffer.isDeleted())buffer.delete();throw error;}
      }
     }catch(error){if(texture)engine.destroyTexture(texture);throw error;}
-    resource={texture,users:0,bytes:info.gpuBytes,info};resources.set(native.handle,resource);
+    resource={texture,users:0,bytes:info.gpuBytes,info};resources.set(native.handle,resource);gpuBytes+=resource.bytes;
    }
    resource.users++;let closed=false;
    const lease=Object.freeze({texture:resource.texture,info:resource.info,release(){
     if(closed)return;closed=true;leases.delete(lease);
-    try{if(--resource.users===0){resources.delete(native.handle);engine.destroyTexture(resource.texture);}}
+    try{if(--resource.users===0){resources.delete(native.handle);gpuBytes-=resource.bytes;engine.destroyTexture(resource.texture);}}
     finally{native.release();}
    }});leases.add(lease);return lease;
   }catch(error){native.release();throw error;}
  }
- return Object.freeze({acquire,destroy,diagnostics:()=>({textures:resources.size,leases:leases.size,gpuBytes:[...resources.values()].reduce((sum,entry)=>sum+entry.bytes,0)})});
+ return Object.freeze({acquire,destroy,get gpuBytes(){return gpuBytes;},diagnostics:()=>({textures:resources.size,leases:leases.size,gpuBytes})});
 }

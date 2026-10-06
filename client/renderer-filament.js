@@ -385,11 +385,11 @@ function createRealmFilamentGPU(){
    if(remove.length)scene.removeEntities(remove);if(add.length)scene.addEntities(add);activeEntities.clear();for(const entity of next)activeEntities.add(entity);
    const cameraState=cameraForLod,{eye,center,near,far,left,right,bottom,top}=cameraState;
    camera3d.lookAt(eye,center,[0,1,0]);camera3d.setProjection(Filament.Camera$Projection.PERSPECTIVE,left,right,bottom,top,near,far);
-   streaming?.end(cameraState.center,legacyGpuBytes+modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes);
+   streaming?.end(cameraState.center,legacyGpuBytes+modelResources.gpuBytes+textureResources.gpuBytes);
    // Native policy owns the budget/LRU decision; this layer only inventories
    // existing handles and releases the returned IDs through their owners.
    if(globalThis.realmNative?.scenes?.performance){
-    const inventory=[...resources],reservedGpu=modelResources.diagnostics().gpuBytes+textureResources.diagnostics().gpuBytes;
+    const inventory=[...resources],reservedGpu=modelResources.gpuBytes+textureResources.gpuBytes;
     const rows=inventory.map(r=>[r.residencyId,r.gpuBytes,(r.buffer?.data?.byteLength||0)+(r.indexStaging?.buffer?.data?.byteLength||0)+(r.dynamicArrays?Object.values(r.dynamicArrays).reduce((n,v)=>n+(v?.byteLength||0),0):0)+(r.dynamicTangents?.byteLength||0),r.lastFrame===renderFrame||r.ephemeral&&renderFrame-r.lastFrame<=2,r.buffer?.retire&&!r.ephemeral&&!r.pose?(r.buffer.data?.byteLength||0):0]),same=inventory.every(r=>r.lastFrame===renderFrame||r.ephemeral&&renderFrame-r.lastFrame<=2)&&previousResidency&&previousResidency.reservedGpu===reservedGpu&&previousResidency.scene===currentScene&&previousResidency.rows.length===rows.length&&rows.every((row,i)=>row.every((v,j)=>v===previousResidency.rows[i][j]));
     const result=same&&!residencyStats?.overBudget&&!residencyStats?.evicting?{stats:residencyStats,evict:[],discardStaging:[]}:realmNative.scenes.performance(String(currentScene),{op:'residency',profile:resourceProfile,reservedGpu,resources:rows});previousResidency={reservedGpu,scene:currentScene,rows};
     residencyStats=result.stats;const retire=new Set(result.evict),discard=new Set(result.discardStaging);

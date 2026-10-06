@@ -75,7 +75,7 @@
 // owner shares dependencies and allocations with draw leases and cancels IO.
 function createVeldrenWorldStreaming(native,assets,models,profile){
  const nextEpoch=()=>createVeldrenWorldStreaming.epoch=(createVeldrenWorldStreaming.epoch||0)+1;
- const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=nextEpoch(),previousDemands=null,previousCenter=null,previousPins=null,previousGpu=-1;
+ const entries=new Map(),byAsset=new Map();let scene=null,demands=[],receipts=[],status=null,disposed=false,epoch=nextEpoch(),previousDemands=null,previousCenter=null,previousPins=null,previousGpu=-1,lastScheduleAt=-Infinity;
  const pair=(id,material)=>JSON.stringify([id,material||'']);
  const now=()=>globalThis.performance?.now?.()??Date.now();
  function load(entry){
@@ -88,7 +88,7 @@ function createVeldrenWorldStreaming(native,assets,models,profile){
   };
   try{entry.lease=models.acquire(entry.asset,profile,entry.material?{material:entry.material}:{});entry.lease.ready.then(()=>{if(disposed||entries.get(entry.key)!==entry)return;entry.state='ready';entry.error=null;receipts.push([entry.key,'ready']);},failed);}catch(error){failed(error);}
  }
- function reset(){previousDemands=previousCenter=previousPins=null;previousGpu=-1;epoch=nextEpoch();for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
+ function reset(){previousDemands=previousCenter=previousPins=null;previousGpu=-1;lastScheduleAt=-Infinity;epoch=nextEpoch();for(const entry of entries.values())entry.lease?.release();entries.clear();byAsset.clear();receipts=[];demands=[];status=null;scene=null;}
  const unsubscribeScene=native.subscribe(event=>{if(event.kind==='load')reset();else if(event.scene===scene||event.kind==='batch'&&event.changes.some(c=>c.scene===scene))previousDemands=null;}),unsubscribeReload=assets.onReload(reset),unsubscribeDispose=assets.onDispose(destroy);
  function destroy(){if(disposed)return;disposed=true;unsubscribeScene();unsubscribeReload();unsubscribeDispose();reset();}
  function begin(name){if(disposed)throw Error('World streaming owner destroyed');if(scene!==name){reset();scene=name;}demands=[];}
@@ -104,6 +104,13 @@ function createVeldrenWorldStreaming(native,assets,models,profile){
   // A settled, unchanged view cannot alter residency or the cell schedule.
   // Receipts, camera motion, demand, memory and editor pins reopen the scheduler.
   if(status&&status.stats.tracked===status.stats.required&&status.cells.every(c=>c[4])&&!status.stats.queued&&!status.stats.loading&&!receipts.length&&previousGpu===gpuBytes&&same(previousCenter,center)&&same(previousPins,pins)&&same(previousDemands,demands))return;
+  // Camera motion changes priority, not the resources a visible draw needs.
+  // Bound those background decisions to 10 Hz; new visible demand, completion,
+  // edits, pins, allocation changes and travel still schedule immediately.
+  const stamp=now(),sameMembership=previousDemands&&previousDemands.length===demands.length&&demands.every((row,i)=>row[0]===previousDemands[i][0]&&row[1]===previousDemands[i][1]&&row[2]===previousDemands[i][2]);
+  let retryDue=false;for(const entry of entries.values())if(entry.state==='retrying'&&stamp>=entry.retryAt){retryDue=true;break;}
+  if(status&&!receipts.length&&!retryDue&&previousGpu===gpuBytes&&same(previousPins,pins)&&sameMembership&&previousCenter&&(!same(previousCenter,center)||!same(previousDemands,demands))&&Math.hypot(...center.map((v,i)=>v-previousCenter[i]))<4&&stamp-lastScheduleAt<100)return;
+  lastScheduleAt=stamp;
   previousDemands=demands;previousCenter=Array.from(center);previousPins=Array.from(pins);previousGpu=gpuBytes;
   const consumed=receipts.length,result=native.performance(scene,{op:'streaming',profile,epoch,center,demands,receipts:receipts.slice(0,consumed),pins,gpuBytes});receipts.splice(0,consumed);status=result;
   for(const key of result.release){const entry=entries.get(key);if(entry){entries.delete(key);if(byAsset.get(pair(entry.asset,entry.material))===entry)byAsset.delete(pair(entry.asset,entry.material));entry.lease?.release();}receipts.push([key,'released']);}

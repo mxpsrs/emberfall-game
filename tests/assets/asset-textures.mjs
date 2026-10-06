@@ -46,11 +46,11 @@ try{
    const bytes=new Uint8Array(fs.readFileSync('client/assets/canonical/images/'+file));
    const settings={sourceHash:path.parse(file).name,colorSpace:'srgb',maxDimension:64};
    const leases=Array.from({length:10},()=>pool.acquire(bytes,settings));
-   assert(leases.every(value=>value.texture===leases[0].texture));assert.equal(pool.diagnostics().textures,1);assert.equal(pool.diagnostics().leases,10);
+   assert(leases.every(value=>value.texture===leases[0].texture));assert.equal(pool.diagnostics().textures,1);assert.equal(pool.diagnostics().leases,10);assert.equal(pool.gpuBytes,leases[0].info.gpuBytes);
    assert.equal(leases[0].texture.getWidth(engine),leases[0].info.levels[0].width);
    const linear=pool.acquire(bytes,{...settings,colorSpace:'linear'});assert.notEqual(linear.texture,leases[0].texture);assert.equal(pool.diagnostics().textures,2);
    linear.release();for(const lease of leases){lease.release();lease.release();}
-   assert.equal(pool.diagnostics().gpuBytes,0);assert.equal(pool.diagnostics().textures,0);assert.equal(pool.diagnostics().leases,0);
+   assert.equal(pool.diagnostics().gpuBytes,0);assert.equal(pool.gpuBytes,0);assert.equal(pool.diagnostics().textures,0);assert.equal(pool.diagnostics().leases,0);
   }
   const bytes=new Uint8Array(fs.readFileSync('client/assets/canonical/images/'+files[0]));
   const cpu=assets.processTexture(bytes,{maxDimension:64});const handle=cpu.handle;
@@ -61,7 +61,7 @@ try{
   const original=F.Texture.prototype.setImage;F.Texture.prototype.setImage=function(){throw Error('injected upload failure');};
   assert.throws(()=>pool.acquire(bytes,{maxDimension:64}),/injected upload failure/);assert.equal(pool.diagnostics().textures,0);
   F.Texture.prototype.setImage=original;
-  for(let cycle=0;cycle<100;cycle++){const a=pool.acquire(bytes,{maxDimension:32}),b=pool.acquire(bytes,{maxDimension:32});a.release();b.release();assert.equal(pool.diagnostics().gpuBytes,0);}
+  for(let cycle=0;cycle<100;cycle++){const a=pool.acquire(bytes,{maxDimension:32}),b=pool.acquire(bytes,{maxDimension:32});a.release();b.release();assert.equal(pool.diagnostics().gpuBytes,0);assert.equal(pool.gpuBytes,0);}
   pool.acquire(bytes,{maxDimension:64});assets.destroy();assert.equal(pool.diagnostics().textures,0);assert.equal(pool.diagnostics().leases,0);assert.throws(()=>pool.acquire(bytes,{}),/destroyed/);pool.destroy();
   F.Engine.destroy(engine);
   console.log('PASS: '+mode+' actual C++ WASM + Filament 1.77 NOOP: six PBR binaries, 34 textures, shared GPU handles, color variants, failure cleanup, 100 unload cycles, complete teardown.');

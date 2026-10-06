@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-06T06:58:10.449440+00:00",
+  "scope": "Client streaming and GPU allocation bookkeeping; phase three stored delivery retained",
+  "benchmark": {
+    "scope": "actual C++/WASM streaming scheduler; 900 visible wall entities, one shared model, 60 moving frames at 30 Hz; resource-ready test double, no GPU rendering",
+    "before": {
+      "entities": 900,
+      "frames": 60,
+      "schedulerCalls": 60,
+      "totalMs": 865.704292,
+      "medianMs": 14.351579000000129,
+      "p95Ms": 16.276448999999957
+    },
+    "after": {
+      "entities": 900,
+      "frames": 60,
+      "schedulerCalls": 20,
+      "totalMs": 342.6238239999997,
+      "medianMs": 1.2199269999999842,
+      "p95Ms": 15.510877999999934
+    },
+    "schedulerCallReductionPercent": 66.66666666666667,
+    "aggregateCpuReductionPercent": 60.42253374897214
+  },
+  "changes": [
+    "Camera-only background streaming decisions run at most 10 Hz",
+    "Visible demand, completion receipts, allocation changes, retries, edits, pins and travel bypass the delay",
+    "GPU byte totals update on allocation/final release rather than scanning every resource repeatedly inside rendering"
+  ],
+  "checks": [
+    "streaming-frame-budget.mjs",
+    "world-streaming.mjs",
+    "asset-meshes.mjs",
+    "asset-textures.mjs",
+    "filament-runtime.cjs",
+    "filament-static-transforms.cjs",
+    "world-performance.mjs",
+    "asset-storage.mjs",
+    "packed-asset-delivery.mjs",
+    "check-source.mjs"
+  ],
+  "build": {
+    "workerBytes": 2405355,
+    "workerSha256": "11bd37d11cb515700664a9debb0af6e1cdd64010f36d103371d7510a087ab41e",
+    "assetManifestSha256": "514ce535a68665dafe3245f9a0bbed1ac296e41745a755b331c878261f026c27",
+    "externalObjects": 722,
+    "unchangedExternalPayloads": true,
+    "regeneratedTerrainPagesCompared": 296,
+    "allRegeneratedTerrainPageBytesMatch": true
+  },
+  "limits": {
+    "physicalPhoneFPSMeasured": false,
+    "fullFrameBenchmark": false,
+    "renderedPixelsVerified": false
+  },
+  "productionVerification": "See final deployment result and live route checks; this file records reproducible source/build evidence."
+}

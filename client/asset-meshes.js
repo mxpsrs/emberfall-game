@@ -15,7 +15,7 @@ function getVeldrenFrameBuildQueue(engine){
  veldrenFrameBuildQueues.set(engine,queue);return queue;
 }
 function createVeldrenModelResources(engine,assets,materials,filament=Filament){
- const geometry=new Map(),models=new Map(),leases=new Set(),buildQueue=getVeldrenFrameBuildQueue(engine);let disposed=false;
+ const geometry=new Map(),models=new Map(),leases=new Set(),buildQueue=getVeldrenFrameBuildQueue(engine);let disposed=false,gpuBytes=0;
  const unsubscribe=assets.onDispose(destroy),abort=()=>Object.assign(Error('Model resource retired'),{name:'AbortError'});
  const decode=(value,Type)=>{if(ArrayBuffer.isView(value))return value instanceof Type?value:new Type(value.buffer,value.byteOffset,value.byteLength/Type.BYTES_PER_ELEMENT);const bytes=Uint8Array.from(atob(value),c=>c.charCodeAt(0));return new Type(bytes.buffer);};
  function geometryLease(packet){
@@ -35,10 +35,10 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
     if(packet.joints){vb.setBufferAt(engine,2,Uint16Array.from(decode(packet.joints,Float32Array)));vb.setBufferAt(engine,3,decode(packet.weights,Float32Array));}
     const indices=decode(packet.indices,Uint32Array);ib=filament.IndexBuffer.Builder().indexCount(packet.indexCount).bufferType(filament.IndexBuffer$IndexType.UINT).build(engine);ib.setBuffer(engine,indices);
     entry={vb,ib,bounds:packet.bounds,users:0,bytes:vertices.byteLength+tangents.byteLength+indices.byteLength+(packet.joints?packet.count*24:0)};
-    geometry.set(packet.key,entry);
+    geometry.set(packet.key,entry);gpuBytes+=entry.bytes;
    }catch(error){if(vb)engine.destroyVertexBuffer(vb);if(ib)engine.destroyIndexBuffer(ib);throw error;}
   }
-  entry.users++;let closed=false;return {resource:entry,release(){if(closed)return;closed=true;if(--entry.users===0){engine.destroyVertexBuffer(entry.vb);engine.destroyIndexBuffer(entry.ib);geometry.delete(packet.key);}}};
+  entry.users++;let closed=false;return {resource:entry,release(){if(closed)return;closed=true;if(--entry.users===0){engine.destroyVertexBuffer(entry.vb);engine.destroyIndexBuffer(entry.ib);geometry.delete(packet.key);gpuBytes-=entry.bytes;}}};
  }
  function clean(entry){
   if(entry.cleaned)return;entry.cleaned=true;
@@ -73,5 +73,5 @@ function createVeldrenModelResources(engine,assets,materials,filament=Filament){
   if(!entry){entry={key,profile,materialOverride:null,users:0,retired:false,cleaned:false,geometry:[],materials:[],prepared:true,model:{ready:Promise.resolve(descriptor.plan),release(){}}};models.set(key,entry);entry.ready=Promise.resolve().then(()=>build(entry));}
   entry.users++;const lease={entry,closed:false};leases.add(lease);return {id:descriptor.id,generation:descriptor.generation,ready:entry.ready.then(value=>{if(lease.closed||disposed)throw abort();return value;}).catch(error=>{release(lease);throw error;}),release:()=>release(lease)};
  }
- return Object.freeze({acquire,acquirePlan,destroy,scheduleBuild:(work,profile='browser')=>buildQueue.schedule(work,profile),diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes:[...geometry.values()].reduce((n,e)=>n+e.bytes,0),buildQueue:buildQueue.diagnostics()})});
+ return Object.freeze({acquire,acquirePlan,destroy,get gpuBytes(){return gpuBytes;},scheduleBuild:(work,profile='browser')=>buildQueue.schedule(work,profile),diagnostics:()=>({models:models.size,geometry:geometry.size,leases:leases.size,gpuBytes,buildQueue:buildQueue.diagnostics()})});
 }
