@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-06T06:03:59.570Z",
+  "scope": "October performance phase three: separate asset storage and compatible delivery",
+  "tests": {
+    "date": "2026-10-06T05:57:06.107Z",
+    "seconds": 11,
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "results": [
+      {
+        "test": "tests/assets/asset-storage.mjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 0.1,
+        "output": "PASS: authenticated checksum uploads, immutable keys, repeat safety, streamed Brotli/identity, HEAD, ETag, storage failures and audio ranges.\n"
+      },
+      {
+        "test": "tests/assets/packed-asset-delivery.mjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 2.1,
+        "output": "PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection audio ranges and separate asset storage\n"
+      },
+      {
+        "test": "tests/rendering/filament-static-transforms.cjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 1.9,
+        "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x19bacb0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x303a360 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":39.04,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"collectionDeadlineFailOpen\":true,\"unchangedCameraBudgetRecovery\":true,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
+      },
+      {
+        "test": "tests/rendering/renderer-occlusion.cjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 9.7,
+        "output": "{\"occludedObjects\":214,\"independentVisibilityRays\":17120,\"coverageCells\":14400,\"sunCells\":16384}\nPASS: solid coverage, door/window gaps, alpha exclusion, near plane, camera/source reveals, budget, reflection and shadow guard.\n"
+      },
+      {
+        "test": "tests/server/maintenance-outage.mjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 0.5,
+        "output": "PASS: bounded read recovery, persistent outage fails closed, maintenance lock preserved, diagnostics retained without client disclosure or write replay.\n"
+      },
+      {
+        "test": "tests/server/social-maintenance.mjs",
+        "passed": true,
+        "exitCode": 0,
+        "timedOut": false,
+        "seconds": 0.2,
+        "output": "PASS: local/private isolation, one-way friends and privacy/ignore controls, equipped-item protection, offer revisions, two-stage atomic trade rollback and transfer, replay prevention, stale-save rejection, maintenance countdown and session-only disconnect.\n"
+      }
+    ]
+  },
+  "sourceCheck": "458 scripts parse; static imports and current documentation links resolve",
+  "storage": {
+    "date": "2026-10-06T06:03:36.642Z",
+    "records": 722,
+    "uniqueObjects": 722,
+    "verified": 722,
+    "uploaded": 699,
+    "seconds": 459,
+    "manifestSha256": "514ce535a68665dafe3245f9a0bbed1ac296e41745a755b331c878261f026c27"
+  },
+  "build": {
+    "passed": true,
+    "workerBytes": 2404528,
+    "previousWorkerBytes": 65147820,
+    "reductionPercent": 96.31,
+    "workerSha256": "036203cebd0dc03edc38f324f14b428ee3b70632335ce881c061ae79fdfffdc6",
+    "release": "realm-225059480bed8d53",
+    "embeddedModelStreamParts": 0,
+    "storedAssets": 722,
+    "storedBytes": 57861974
+  },
+  "limits": {
+    "renderedPixelsVerified": false,
+    "physicalPhoneFrameTimesMeasured": false,
+    "production39PlayerCapacityCertified": false
+  }
+}

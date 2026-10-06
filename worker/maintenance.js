@@ -30,7 +30,7 @@ export async function maintenanceGate(request,env){
  try{const state=await maintenanceState(env);return state.status==='locked'?reply({error:'System maintenance. Please reconnect after the update.',maintenance:state},503):null;}
  catch{return reply({error:'Game service is temporarily unavailable.'},503);}
 }
-async function authorized(request,env){
+export async function authorized(request,env){
  const expected=env.MAINTENANCE_TOKEN||env.ACCOUNT_RESET_TOKEN,supplied=request.headers.get('Authorization')?.match(/^Bearer (\S+)$/)?.[1];
  if(!expected||expected.length<32||!supplied||supplied.length>256)return false;
  const digest=async s=>new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));

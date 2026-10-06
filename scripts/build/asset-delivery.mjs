@@ -48,14 +48,15 @@ export const sourceOnlyAssets=new Map([
  ['assets/canonical/registry.json','Build-time input; runtime uses assets/asset-registry.json']
 ]);
 
-export function compressAsset(bytes,cacheRoot='.asset-cache/brotli-v1-q11'){
+export function compressAsset(bytes,cacheRoot='.asset-cache/brotli-v1-q11',quality=11){
+ if(!Number.isInteger(quality)||quality<0||quality>11)throw Error('Invalid Brotli quality');
  const key=createHash('sha256').update(bytes).digest('hex'),file=path.join(cacheRoot,key+'.br');
  let compressed;
  if(fs.existsSync(file)){
   try{const candidate=fs.readFileSync(file);if(brotliDecompressSync(candidate,{maxOutputLength:bytes.length}).equals(bytes))compressed=candidate;}catch{}
  }
  if(!compressed){
-  compressed=brotliCompressSync(bytes,{params:{[constants.BROTLI_PARAM_QUALITY]:11}});
+  compressed=brotliCompressSync(bytes,{params:{[constants.BROTLI_PARAM_QUALITY]:quality}});
   if(!brotliDecompressSync(compressed,{maxOutputLength:bytes.length}).equals(bytes))throw Error('Asset compression roundtrip failed');
   fs.mkdirSync(cacheRoot,{recursive:true});const temporary=file+'.tmp';fs.writeFileSync(temporary,compressed);fs.renameSync(temporary,file);
  }

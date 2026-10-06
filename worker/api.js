@@ -1,3 +1,4 @@
+export {handleAssetUpload,serveStoredAsset} from './asset-storage.js';
 import catalog from './shared-catalog.json' with {type:'json'};
 import {syncSharedWorld,publicAction} from './shared-world.js';
 export {handleActivity} from './activity.js';

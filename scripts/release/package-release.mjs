@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-// Veldren's Worker embeds every browser asset. Packaging the raw art again
-// doubles the payload without adding a runtime dependency.
+// Bulk browser payloads are uploaded to the asset bucket before publication.
+// The deployment archive contains the Worker, binding manifest and migrations.
 const output=path.resolve(process.argv[2]||'../veldren-release.tar.gz');
 for(const file of ['dist/server/index.js','dist/.openai/hosting.json'])if(!fs.statSync(file).isFile())throw new Error('Missing build: '+file);
 const source=JSON.parse(fs.readFileSync('.openai/hosting.json','utf8')),built=JSON.parse(fs.readFileSync('dist/.openai/hosting.json','utf8'));
