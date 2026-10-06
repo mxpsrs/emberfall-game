@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-06T06:11:26.294Z",
+  "date": "2026-10-06T06:16:43.751Z",
   "scope": "October performance phase three: separate asset storage and compatible delivery",
   "tests": {
     "date": "2026-10-06T06:10:38.676Z",
@@ -89,5 +89,64 @@
     "productionDefaultCachePermitted": false,
     "deniedGetterLookupAndWriteFailOpen": true,
     "regressionFailedBeforeFix": true
+  },
+  "production": {
+    "testedVersion": 259,
+    "workerSha256": "99955df7cca050766dd35d648113390c7548a53356ca19b3dfc1318fed30f162",
+    "date": "2026-10-06T06:13:25.862Z",
+    "origin": "https://emberfall-realms.rayfgarrison97.chatgpt.site",
+    "results": [
+      {
+        "path": "/assets/asset-registry.json",
+        "status": 200,
+        "decodedBytes": 4610837,
+        "sha256": "15a8c32a91a533b052d80e509564cdb87b9db4274cb7afb8d5c96a6d418d066d",
+        "expectedBytesMatch": true
+      },
+      {
+        "path": "/vendor/filament/filament.wasm",
+        "status": 200,
+        "decodedBytes": 4452197,
+        "sha256": "c8938bdd991389df764deab9235b7d6e7748290d4b89fcc63f6dfa7c7f6ba4d7",
+        "expectedBytesMatch": true
+      },
+      {
+        "path": "/assets/realms/atlas-filament-mobile.png",
+        "status": 200,
+        "decodedBytes": 1134284,
+        "sha256": "e8be1604e968f0fedb123386ccdc3b468d95ca4e3fc782d54748756dbe14d95c",
+        "expectedBytesMatch": true
+      },
+      {
+        "path": "/assets/canonical/models/017f37c291f74cd4fad7d35c1431ba2f0212f0824f42be30af4a7a256694f0c8.json",
+        "status": 200,
+        "decodedBytes": 387591,
+        "sha256": "934dd4ebeaaf4b3517541bd06ee4afd6ba1cb724b3be1ed4dcbd6158c2a2ff8b",
+        "expectedBytesMatch": true
+      },
+      {
+        "path": "/terrain-cells/-128_-128.json",
+        "status": 200,
+        "decodedBytes": 95335,
+        "sha256": "d897aecccb86ca1f4f8ad45beb2afb256fd596b9ec11553a2f69c5be842d7b47",
+        "expectedBytesMatch": true
+      },
+      {
+        "path": "/assets/audio/cave-theme.mp3",
+        "status": 206,
+        "range": "bytes=10-29",
+        "expectedBytesMatch": true
+      }
+    ],
+    "allPassed": true,
+    "customDomainIdentity": {
+      "origin": "https://playveldren.com",
+      "path": "/assets/asset-registry.json",
+      "status": 200,
+      "decodedBytes": 4610837,
+      "sha256": "15a8c32a91a533b052d80e509564cdb87b9db4274cb7afb8d5c96a6d418d066d",
+      "expectedBytesMatch": true
+    },
+    "errorsAfterCorrectedPublication": 0
   }
 }
