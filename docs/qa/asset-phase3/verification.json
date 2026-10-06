@@ -1,9 +1,9 @@
 {
-  "date": "2026-10-06T06:03:59.570Z",
+  "date": "2026-10-06T06:11:26.294Z",
   "scope": "October performance phase three: separate asset storage and compatible delivery",
   "tests": {
-    "date": "2026-10-06T05:57:06.107Z",
-    "seconds": 11,
+    "date": "2026-10-06T06:10:38.676Z",
+    "seconds": 13,
     "passed": 6,
     "failed": 0,
     "total": 6,
@@ -29,15 +29,15 @@
         "passed": true,
         "exitCode": 0,
         "timedOut": false,
-        "seconds": 1.9,
-        "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x19bacb0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x303a360 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":39.04,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"collectionDeadlineFailOpen\":true,\"unchangedCameraBudgetRecovery\":true,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
+        "seconds": 1.6,
+        "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x17b9170 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x303a020 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":23.98,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"collectionDeadlineFailOpen\":true,\"unchangedCameraBudgetRecovery\":true,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
       },
       {
         "test": "tests/rendering/renderer-occlusion.cjs",
         "passed": true,
         "exitCode": 0,
         "timedOut": false,
-        "seconds": 9.7,
+        "seconds": 12.5,
         "output": "{\"occludedObjects\":214,\"independentVisibilityRays\":17120,\"coverageCells\":14400,\"sunCells\":16384}\nPASS: solid coverage, door/window gaps, alpha exclusion, near plane, camera/source reveals, budget, reflection and shadow guard.\n"
       },
       {
@@ -70,10 +70,10 @@
   },
   "build": {
     "passed": true,
-    "workerBytes": 2404528,
+    "workerBytes": 2404641,
     "previousWorkerBytes": 65147820,
     "reductionPercent": 96.31,
-    "workerSha256": "036203cebd0dc03edc38f324f14b428ee3b70632335ce881c061ae79fdfffdc6",
+    "workerSha256": "99955df7cca050766dd35d648113390c7548a53356ca19b3dfc1318fed30f162",
     "release": "realm-225059480bed8d53",
     "embeddedModelStreamParts": 0,
     "storedAssets": 722,
@@ -83,5 +83,11 @@
     "renderedPixelsVerified": false,
     "physicalPhoneFrameTimesMeasured": false,
     "production39PlayerCapacityCertified": false
+  },
+  "cache": {
+    "optional": true,
+    "productionDefaultCachePermitted": false,
+    "deniedGetterLookupAndWriteFailOpen": true,
+    "regressionFailedBeforeFix": true
   }
 }

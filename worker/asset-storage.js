@@ -47,17 +47,20 @@ export async function serveStoredAsset(request,env,asset,headers,acceptsBrotli,c
  if(asset.mime==='audio/mpeg')headers['Accept-Ranges']='bytes';
  if(!env.GAME_ASSETS)return unavailable();
  try{
-  const edgeCache=globalThis.caches?.default,version=new URL(request.url).searchParams.get('v');
+  // Dispatch runtimes may forbid even reading caches.default. Cache access is
+  // optional; storage reads and browser cache headers remain sufficient.
+  let edgeCache=null;try{edgeCache=globalThis.caches?.default;}catch{}
+  const version=new URL(request.url).searchParams.get('v');
   const canCache=request.method==='GET'&&!selectedRange&&version===asset.version&&headers['Cache-Control'].startsWith('public');
   const cacheUrl=new URL(request.url);cacheUrl.search='';cacheUrl.pathname='/__veldren_asset_cache/'+asset.storageKey;cacheUrl.searchParams.set('representation',passThrough?'br':'identity');
-  const cacheKey=new Request(cacheUrl);if(canCache&&edgeCache){const hit=await edgeCache.match(cacheKey);if(hit)return new Response(hit.body,{status:hit.status,headers:hit.headers,encodeBody:passThrough?'manual':'automatic'});}
+  const cacheKey=new Request(cacheUrl);if(canCache&&edgeCache){try{const hit=await edgeCache.match(cacheKey);if(hit)return new Response(hit.body,{status:hit.status,headers:hit.headers,encodeBody:passThrough?'manual':'automatic'});}catch{edgeCache=null;}}
   const object=request.method==='HEAD'?await env.GAME_ASSETS.head(asset.storageKey):await env.GAME_ASSETS.get(asset.storageKey,selectedRange?{range:selectedRange}:undefined);
   if(!object||object.customMetadata?.sha256!==asset.storageSha256||!selectedRange&&object.size!==asset.storageLength)return unavailable();
   let body=request.method==='HEAD'?null:object.body;
   if(body&&compressed&&!passThrough)body=AssetReadable.toWeb(AssetReadable.fromWeb(body).pipe(AssetBrotliDecompress()));
   if(!selectedRange)headers['Content-Length']=String(passThrough?asset.storageLength:asset.length);
   const response=new Response(body,{status:selectedRange?206:200,headers,encodeBody:passThrough?'manual':'automatic'});
-  if(canCache&&edgeCache&&context?.waitUntil)context.waitUntil(edgeCache.put(cacheKey,response.clone()).catch(()=>{}));
+  if(canCache&&edgeCache&&context?.waitUntil){try{const cached=response.clone();context.waitUntil(Promise.resolve().then(()=>edgeCache.put(cacheKey,cached)).catch(()=>{}));}catch{}}
   return response;
  }catch(error){console.error('asset_read_failed',String(error?.message||error).slice(0,160));return unavailable();}
 }

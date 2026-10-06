@@ -29,5 +29,9 @@ globalThis.caches={default:{async match(request){return cache.get(request.url)?.
 const cachedEnv={...env,GAME_ASSETS:{...bucket,async get(...args){reads++;return bucket.get(...args);}}},context={waitUntil(p){pending.push(p);}};
 for(let i=0;i<2;i++){const r=await serveStoredAsset(new Request('https://fixture/model?v=v1'),cachedEnv,asset,headers(),acceptsBrotli,context);assert(Buffer.from(await r.arrayBuffer()).equals(raw));await Promise.all(pending);}
 assert.equal(reads,1,'versioned public responses reuse edge storage');
-const fresh=await serveStoredAsset(new Request('https://fixture/model'),cachedEnv,asset,headers(),acceptsBrotli,context);await fresh.arrayBuffer();assert.equal(reads,2,'unversioned request does not inherit an immutable cache entry');globalThis.caches=savedCaches;
+const fresh=await serveStoredAsset(new Request('https://fixture/model'),cachedEnv,asset,headers(),acceptsBrotli,context);await fresh.arrayBuffer();assert.equal(reads,2,'unversioned request does not inherit an immutable cache entry');
+for(const blocked of [Object.defineProperty({},'default',{get(){throw Error('This Worker is not permitted to access the default cache.');}}),{default:{async match(){throw Error('Cache lookup unavailable');}}},{default:{async match(){return null;},put(){throw Error('Cache write unavailable');}}}]){
+ globalThis.caches=blocked;const r=await serveStoredAsset(new Request('https://fixture/model?v=v1'),env,asset,headers(),acceptsBrotli,context);assert.equal(r.status,200,'cache restrictions cannot block asset reads');assert(Buffer.from(await r.arrayBuffer()).equals(raw));await Promise.all(pending);
+}
+globalThis.caches=savedCaches;
 console.log('PASS: authenticated checksum uploads, immutable keys, repeat safety, streamed Brotli/identity, HEAD, ETag, storage failures and audio ranges.');

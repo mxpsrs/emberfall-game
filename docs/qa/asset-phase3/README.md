@@ -11,7 +11,10 @@ Text and WASM use precompressed Brotli when useful. The server streams stored
 bytes to browsers that accept Brotli and streams decompression otherwise. Runtime
 scripts retain their previous identity delivery. Filament atlases retain PNG
 bytes. Audio supports byte ranges. Versioned public assets use browser caching
-and the edge cache; editor access rules still run before asset delivery.
+and optional edge caching where the runtime permits it; editor access rules
+still run before asset delivery. The current Sites dispatch runtime prohibits
+access to the default edge cache. That restriction bypasses the optional cache
+and cannot block direct bucket reads or browser caching.
 
 Uploads require the existing private operator credential. SHA-256 must match the
 object key before a payload can be written. Repeating an upload is safe. Missing
