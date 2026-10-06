@@ -84,7 +84,7 @@
    // Reuse only an exactly identical camera, complete instance inventory, source
    // geometry and transforms. A changed input never inherits temporal coverage.
    const valid=[];
-   for(const r of records){if(valid.length>=4096||!(valid.length%64)&&now()-started>=budgetMs*.4)break;if(!r.data?.bounds||!r.matrix||r.matrix.some(v=>!Number.isFinite(v))||determinant(r.matrix)<=0)continue;
+   for(const r of records){if(valid.length>=4096||!(valid.length%64)&&now()-started>=budgetMs*.4){exhausted=true;break;}if(!r.data?.bounds||!r.matrix||r.matrix.some(v=>!Number.isFinite(v))||determinant(r.matrix)<=0)continue;
     const bounds=corners(r.data.bounds,r.matrix);valid.push({record:r,bounds,distance:Math.hypot(...r.matrix.slice(12,15).map((v,a)=>v-camera.eye[a]))});
    }
    valid.sort((a,b)=>a.distance-b.distance);
@@ -93,7 +93,7 @@
     if(r.castShadows&&!covered(bounds,sun,shadow)){stats.shadowGuarded++;continue;}result.push(r);stats.hiddenObjects++;stats.hiddenRenderables+=r.renderables||1;
    }
    stats.checks=checks;stats.ms=Math.max(0,now()-started);stats.budgetExhausted=exhausted;stats.rasterLimited=rasterLimited;
-   if(records.length<=4096&&(result.length||!exhausted&&!rasterLimited))previous={camera:cameraKey,records:records.map(r=>({bounds:r.data?.bounds,polygons:r.data?.polygons,castShadows:r.castShadows,matrix:Array.from(r.matrix||[])})),hidden:result.map(r=>records.indexOf(r)),stats:{...stats}};
+   if(records.length<=4096&&!exhausted&&(result.length||!rasterLimited))previous={camera:cameraKey,records:records.map(r=>({bounds:r.data?.bounds,polygons:r.data?.polygons,castShadows:r.castShadows,matrix:Array.from(r.matrix||[])})),hidden:result.map(r=>records.indexOf(r)),stats:{...stats}};
    return result;
   }
   return {evaluate,diagnostics:()=>({...stats})};

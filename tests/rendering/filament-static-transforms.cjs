@@ -207,7 +207,12 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   // frame while an authored wall is ready. Neither may starve the wall queue.
   assert(context.realmNative.scenes.upsert('overworld',{id:'starvation-fixture',name:'Construction acceptance',parent:null,active:true,transform:{position:[0,0,0],rotation:[0,0,0,1],scale:[1,1,1]},components:{MeshRenderer:{asset:'rebuilt:Wall_Plaster_Straight',renderPath:'canonical'}},metadata:{}}));
   context.VELDREN_FILAMENT_ASSETS.atlasBytes=textures;context.VELDREN_FILAMENT_ASSETS.groundSurfacesBytes=textures;
+  // Control only the occlusion clock: Scene integration must not depend on host
+  // CPU contention. Exercise the real deadline path explicitly below.
+  const createOcclusion=context.VeldrenOcclusion.create;let occlusionTime=0,occlusionStep=0;
+  context.VeldrenOcclusion.create=(profile,options)=>createOcclusion(profile,{...options,now:()=>{const t=occlusionTime;occlusionTime+=occlusionStep;return t;}});
   const mixedGpu=context.createRealmFilamentGPU(),wallId='rebuilt:Wall_Plaster_Straight';
+  context.VeldrenOcclusion.create=createOcclusion;
   const wallLease=mixedGpu.modelResources.acquire(wallId,'browser'),wallModel=await wallLease.ready;
   const walls=Array.from({length:12},(_,i)=>({canonicalAsset:wallId,instanceId:'starvation-wall:'+i,mesh:{packed:beforeRetirement},model:models[i]}));
   const expectedWalls=walls.length*wallModel.draws.length;
@@ -231,6 +236,14 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   while(occlusionFrames++<50){mixedGpu.render([preparedWall,hiddenEntry],[],null);await new Promise(resolve=>setTimeout(resolve,2));if(mixedGpu.diagnostics().occlusion.hiddenRenderables===1)break;}
   assert.equal(mixedGpu.diagnostics().occlusion.hiddenRenderables,1,'production pass removes the hidden legacy terrain renderable');
   assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length,'only solid source renderables remain');
+  // Invalidate the completed cache, then simulate a pause before collection.
+  context.cameraPose3=()=>({eye:[.001,1,10],center:[.001,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
+  occlusionStep=10;mixedGpu.render([preparedWall,hiddenEntry],[],null);
+  assert(mixedGpu.diagnostics().occlusion.budgetExhausted,'production pass reports collection deadline');
+  assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length+1,'deadline restores the hidden object immediately');
+  occlusionStep=0;mixedGpu.render([preparedWall,hiddenEntry],[],null);
+  assert.equal(mixedGpu.diagnostics().occlusion.hiddenRenderables,1,'same camera retries after deadline and removes hidden terrain');
+  assert(!mixedGpu.diagnostics().occlusion.reused,'deadline did not cache incomplete collection');
   context.cameraPose3=()=>({eye:[10,1,10],center:[10,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
   mixedGpu.render([preparedWall,hiddenEntry],[],null);assert.equal(mixedGpu.scene.getRenderableCount(),wallModel.draws.length+1,'camera turn restores the skipped object in the same frame');
   context.cameraPose3=()=>({eye:[0,1,10],center:[0,1,0],near:.1,far:320,left:-.1,right:.1,bottom:-.1,top:.1});
@@ -269,6 +282,6 @@ new Promise((resolve,reject)=>Factory.init([],async()=>{
   assert.equal(mixedGpu.materialResources.diagnostics().materials,0);
   buildingGpu.destroy();mixedGpu.destroy();
   context.realmNative.destroy();
-  console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256,productionOcclusionRemoved:1,cameraReveal:true,editorFailOpen:true,sourceRemovalReveal:true}));resolve();
+  console.log(JSON.stringify({initialTransforms,steadyTransforms,movementTransforms,groundingTransforms,steadyMs:Number(steadyMs.toFixed(2)),frames:30,entities:256,productionOcclusionRemoved:1,collectionDeadlineFailOpen:true,unchangedCameraBudgetRecovery:true,cameraReveal:true,editorFailOpen:true,sourceRemovalReveal:true}));resolve();
  }catch(error){reject(error);}
 })).finally(()=>fs.rmSync(temporary,{recursive:true,force:true})).catch(error=>{console.error(error);process.exitCode=1;});

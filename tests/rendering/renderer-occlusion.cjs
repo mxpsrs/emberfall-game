@@ -34,6 +34,14 @@ const cached=O.create('browser',{budgetMs:1000,maxChecks:1000000}),mutable={...t
 assert(cached.evaluate(camera,[wall,mutable]).includes(mutable));assert(cached.evaluate(camera,[wall,mutable]).includes(mutable));assert(cached.diagnostics().reused);
 mutable.matrix[12]=20;assert(!cached.evaluate(camera,[wall,mutable]).includes(mutable),'in-place transform mutation invalidates exact reuse');assert(!cached.diagnostics().reused);
 assert(!run([wall,target],camera,{budgetMs:0}).hidden.length,'zero time allowance fails open');
+// A scheduler pause before collection must not become a permanent empty cache.
+let clockCalls=0,paused=true;
+const recovery=O.create('browser',{now:()=>paused?(clockCalls++===0?0:10):10});
+assert(!recovery.evaluate(camera,[wall,target]).length,'collection deadline retains every object');
+assert(recovery.diagnostics().budgetExhausted,'collection deadline is reported');
+paused=false;
+assert(recovery.evaluate(camera,[wall,target]).includes(target),'unchanged inputs retry after a collection deadline');
+assert(!recovery.diagnostics().reused,'incomplete collection is never cached');
 // Independent ray/triangle oracle: every random point on a culled bound must
 // intersect original solid triangles before reaching the point, including doors.
 function rayHit(p,rects){return rects.some(([x0,x1,y0,y1,z])=>{const t=z/p[2];return t>0&&t<1&&p[0]*t>x0&&p[0]*t<x1&&p[1]*t>y0&&p[1]*t<y1;});}

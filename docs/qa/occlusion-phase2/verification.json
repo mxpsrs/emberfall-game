@@ -2,6 +2,14 @@
   "kind": "October performance phase two: software integration, not hardware FPS",
   "tests": [
     {
+      "test": "tests/assets/packed-asset-delivery.mjs",
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 6,
+      "output": "PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection and the 64 MiB limit\n"
+    },
+    {
       "test": "tests/editor/editor-building-history.cjs",
       "passed": true,
       "exitCode": 0,
@@ -14,7 +22,7 @@
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 1.6,
+      "seconds": 1.4,
       "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"workerSourceDraws\":60,\"proxyRenderables\":2,\"occlusionRemovedRenderables\":2,\"constructionFrames\":3,\"dependencyLeases\":0,\"gpuBytesAfterRetirement\":0}\nPASS: real native worker transfers, cancellation/reload, Filament NOOP buffers/materials, atomic construction handoff and full resource retirement.\n"
     },
     {
@@ -22,7 +30,7 @@
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 49,
+      "seconds": 51.7,
       "output": "PASS: 12 Briar Haven canonical building plans, colors/UVs/materials, transformed normals/tangents, memory cap, authored immutability, near/editor selection and retirement.\n{\"modules\":990,\"sourceDraws\":1747,\"draws\":255,\"nearTriangles\":222479,\"triangles\":202400,\"bytes\":36812400}\n"
     },
     {
@@ -30,7 +38,7 @@
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 1,
+      "seconds": 1.7,
       "output": "PASS: indoor and outdoor wall/tree cutaways, eye containment, restored geometry, terrain/matrix invalidation, software/GL/Filament submission and matching picking.\n"
     },
     {
@@ -38,15 +46,15 @@
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 1.5,
-      "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x17b8ae0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x303b080 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":23.48,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
+      "seconds": 1.8,
+      "output": "FEngine (32 bits) created at 0x2028a0 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x17b9170 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\nFEngine (32 bits) created at 0x3080880 (threading is disabled)\n\nBackend feature level: 1\n\nFEngine feature level: 1\n\n{\"initialTransforms\":256,\"steadyTransforms\":0,\"movementTransforms\":1,\"groundingTransforms\":256,\"steadyMs\":23.4,\"frames\":30,\"entities\":256,\"productionOcclusionRemoved\":1,\"collectionDeadlineFailOpen\":true,\"unchangedCameraBudgetRecovery\":true,\"cameraReveal\":true,\"editorFailOpen\":true,\"sourceRemovalReveal\":true}\n"
     },
     {
       "test": "tests/rendering/renderer-occlusion.cjs",
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 10.8,
+      "seconds": 9.1,
       "output": "{\"occludedObjects\":214,\"independentVisibilityRays\":17120,\"coverageCells\":14400,\"sunCells\":16384}\nPASS: solid coverage, door/window gaps, alpha exclusion, near plane, camera/source reveals, budget, reflection and shadow guard.\n"
     },
     {
@@ -54,7 +62,7 @@
       "passed": true,
       "exitCode": 0,
       "timedOut": false,
-      "seconds": 0.4,
+      "seconds": 0.5,
       "output": "PASS: actual-WASM grounded visibility, off-screen demand removal, stationary-frame reuse, terrain revision refresh and unchanged canonical entities.\n"
     },
     {
@@ -64,14 +72,6 @@
       "timedOut": false,
       "seconds": 0.6,
       "output": "PASS: actual-WASM stable native LOD batch with real asset IDs and unchanged Scene\nPASS: actual-WASM memory budgets retire presentation only and preserve the complete WorldDocument\nPASS: actual-WASM partition, movement/undo, exact load, native identity bridge and teardown\n"
-    },
-    {
-      "test": "tests/assets/packed-asset-delivery.mjs",
-      "passed": true,
-      "exitCode": 0,
-      "timedOut": false,
-      "seconds": 7,
-      "output": "PASS: built Worker serves unchanged packed catalogs/PBR models, Brotli and identity, HEAD, ETags, stale-version rejection and the 64 MiB limit\n"
     }
   ],
   "passed": 9,
@@ -90,19 +90,22 @@
     "editorFailOpen": true,
     "sourceRemovalReveal": true,
     "gpuBytesAfterRetirement": 0,
-    "dependencyLeasesAfterRetirement": 0
+    "dependencyLeasesAfterRetirement": 0,
+    "collectionDeadlineFailOpen": true,
+    "unchangedCameraBudgetRecovery": true
   },
   "limits": {
     "renderedPixelsVerified": false,
     "productionGpuSavingsMeasured": false,
     "physicalPhoneFrameTimesMeasured": false,
-    "production39PlayerCapacityCertified": false
+    "production39PlayerCapacityCertified": false,
+    "renderedPixelsVerificationBlocker": "No Chromium executable is installed in this execution workspace."
   },
   "build": {
     "passed": true,
-    "release": "realm-c349ec52b06c40f6",
-    "workerBytes": 65147701,
-    "workerSha256": "3b73c1cf2c5f145ea189c14ece246072638a1688465de0f195620932227aa8cc",
+    "release": "realm-225059480bed8d53",
+    "workerBytes": 65147820,
+    "workerSha256": "5c754c1ac7b99e9ab3816cbe234d432feda5d6bdde11af62722dc7f4d37d93e6",
     "workerLimitBytes": 67108864,
     "cookedScenes": 259,
     "terrainPages": 1408,
@@ -111,5 +114,12 @@
     "sameConstructionKey": "3e033aa586f6393d",
     "deliveryVerifiedAgainstExactSource": true
   },
-  "date": "2026-10-05T22:18:30.629030+00:00"
+  "date": "2026-10-06T05:30:21.513Z",
+  "correction": {
+    "issue": "An expired collection deadline cached an incomplete empty result, preventing an unchanged view from retrying.",
+    "regressionFailedAgainstPreviousSource": true,
+    "controlledOcclusionClock": true,
+    "productionCollectionDeadlineFailOpen": true,
+    "productionUnchangedCameraRecovery": true
+  }
 }

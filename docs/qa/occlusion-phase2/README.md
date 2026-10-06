@@ -34,6 +34,13 @@ that frame. Editor views bypass the pass. `VELDREN_OCCLUSION = false` provides a
 runtime comparison switch; diagnostics report actual removed renderables, guarded
 casters, reused results and budget limits.
 
+The October 6 correction handles a deadline before candidate collection finishes.
+Previously, a scheduler pause before the first candidate could cache an empty
+result as complete and leave culling inactive for an unchanged view. Collection
+now reports exhaustion and cannot populate the reuse cache. The next frame retries
+the same camera and inventory. The regression first failed against the published
+source, then passed with this correction.
+
 ## Verification
 
 - The independent visibility oracle checks 17,120 rays through 214 culled bounds
@@ -48,6 +55,10 @@ casters, reused results and budget limits.
   renderable behind a real native wall plan. Moving the camera, entering editor
   mode or removing the wall restores it immediately. Existing static-transform
   acceptance still records zero steady transform uploads and terrain samples.
+  Its occlusion clock is controlled so host CPU contention cannot determine the
+  expected Scene count. A forced deadline restores the object, then an unchanged
+  camera retries and removes it once the clock permits work. This fixture checks
+  scheduling behavior and Scene integration, not real elapsed performance.
 - Building LOD, camera cutaway, editor history, native visibility and terrain
   grounding regressions pass. [verification.json](verification.json) records the
   receipts and built release provenance.
