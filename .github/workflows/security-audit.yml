@@ -1,0 +1,43 @@
+name: Dependency and source security checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'worker/**'
+      - 'scripts/build.mjs'
+      - 'dist/account-auth.js'
+      - '.github/workflows/security-audit.yml'
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'worker/**'
+      - 'scripts/build.mjs'
+      - 'dist/account-auth.js'
+      - '.github/workflows/security-audit.yml'
+  schedule:
+    - cron: '17 8 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: 'npm'
+      - name: Verify JavaScript syntax
+        run: |
+          node --check scripts/build.mjs
+          node --check worker/auth.js
+          node --check dist/account-auth.js
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Audit development and build dependencies
+        run: npm audit --audit-level=high

@@ -22,7 +22,8 @@ export async function handleAuth(request,env){
  let body;try{body=JSON.parse(raw);}catch{return reply({error:'Invalid request'},400);}
  const username=typeof body.username==='string'?body.username.trim():'',password=body.password;
  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username))return reply({error:'Use a username of 3–20 letters, numbers, or underscores.'},400);
- if(typeof password!=='string'||password.length<5)return reply({error:'Your password must be at least 5 characters.'},400);
+ const minPasswordLength=action==='register'?15:5;
+ if(typeof password!=='string'||[...password].length<minPasswordLength)return reply({error:'Your password must be at least '+minPasswordLength+' characters.'},400);
  if(new TextEncoder().encode(password).length>72)return reply({error:'That password is too long. Use 72 bytes or fewer.'},400);
  const normalized=username.toLowerCase(),now=Date.now(),window=Math.floor(now/900000),ip=request.headers.get('cf-connecting-ip')||'unknown';
  for(const [key,limit]of [[await tokenDigest('ip:'+ip),40],[await tokenDigest('user:'+normalized),12]]){
